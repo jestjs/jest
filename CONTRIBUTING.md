@@ -42,7 +42,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of April 14th 2021, `v14.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of October 29th 2021, `v16.x` is recommended).
 
     ```sh
     node -v

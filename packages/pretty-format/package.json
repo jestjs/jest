@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "27.3.1",
+  "version": "27.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,12 +11,15 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^27.2.5",
+    "@jest/types": "^27.4.2",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "react-is": "^17.0.1"
@@ -26,7 +29,7 @@
     "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
-    "jest-util": "^27.3.1",
+    "jest-util": "^27.4.2",
     "react": "*",
     "react-dom": "*",
     "react-test-renderer": "*"

@@ -66,6 +66,10 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     if (typeof AbortController !== 'undefined') {
       global.AbortController = AbortController;
     }
+    // AbortSignal is global in Node >= 15
+    if (typeof AbortSignal !== 'undefined') {
+      global.AbortSignal = AbortSignal;
+    }
     // Event is global in Node >= 15.4
     if (typeof Event !== 'undefined') {
       global.Event = Event;

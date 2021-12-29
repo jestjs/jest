@@ -9,6 +9,7 @@
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
+import zlib from 'zlib';
 import collectHandles from '../collectHandles';
 
 describe('collectHandles', () => {
@@ -49,6 +50,20 @@ describe('collectHandles', () => {
 
     expect(openHandles).not.toContainEqual(
       expect.objectContaining({message: 'DNSCHANNEL'}),
+    );
+  });
+
+  it('should not collect the ZLIB open handle', async () => {
+    const handleCollector = collectHandles();
+
+    const decompressed = zlib.inflateRawSync(
+      Buffer.from('cb2a2d2e5128492d2ec9cc4b0700', 'hex'),
+    );
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'ZLIB'}),
     );
   });
 

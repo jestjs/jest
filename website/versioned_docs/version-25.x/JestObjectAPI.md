@@ -5,6 +5,14 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
+## Methods
+
+import TOCInline from "@theme/TOCInline"
+
+<TOCInline toc={toc.slice(1)}/>
+
+---
+
 ## Mock Modules
 
 ### `jest.disableAutomock()`
@@ -439,7 +447,7 @@ jest.isolateModules(() => {
 const otherCopyOfMyModule = require('myModule');
 ```
 
-## Mock functions
+## Mock Functions
 
 ### `jest.fn(implementation)`
 
@@ -552,7 +560,7 @@ test('plays audio', () => {
 
 ### `jest.clearAllMocks()`
 
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+Clears the `mock.calls`, `mock.instances` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
 
 Returns the `jest` object for chaining.
 
@@ -566,7 +574,7 @@ Returns the `jest` object for chaining.
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
-## Mock timers
+## Mock Timers
 
 ### `jest.useFakeTimers()`
 

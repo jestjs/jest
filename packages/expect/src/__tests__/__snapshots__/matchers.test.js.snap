@@ -3334,6 +3334,15 @@ Expected value: <g>1</>
 Received value: <r>{"c": {"d": 1}}</>
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('.a.b.c') 1`] = `
+<d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
+
+Expected path: <g>".a.b.c"</>
+Received path: <r>[]</>
+
+Received value: <r>{"a": {"b": {"c": {}}}}</>
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d') 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
 
@@ -3549,6 +3558,30 @@ exports[`.toHaveProperty() {pass: true} expect([Function memoized]).toHaveProper
 Expected path: <g>"memo"</>
 
 Expected value: not <g>[]</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [[{"c": [{"d": 1}]}]]}}).toHaveProperty('a.b[0][0].c[0].d', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0][0].c[0].d"</>
+
+Expected value: not <g>1</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": [{"d": 1}]}]}}).toHaveProperty('a.b[0].c[0].d', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0].c[0].d"</>
+
+Expected value: not <g>1</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": {"d": [{"e": 1}, {"f": 2}]}}]}}).toHaveProperty('a.b[0].c.d[1].f', 2) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0].c.d[1].f"</>
+
+Expected value: not <g>2</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `

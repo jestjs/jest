@@ -123,6 +123,7 @@ div.jest-card-front,
 }
 
 div.jest-card-front {
+  z-index: 1;
   background-color: #fff;
   border: 1px solid #bbb;
 }

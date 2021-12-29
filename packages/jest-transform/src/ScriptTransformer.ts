@@ -876,9 +876,9 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
   if (content == null) {
     return null;
   }
-  const code = content.substr(33);
+  const code = content.substring(33);
   const checksum = createHash('md5').update(code).digest('hex');
-  if (checksum === content.substr(0, 32)) {
+  if (checksum === content.substring(0, 32)) {
     return code;
   }
   return null;

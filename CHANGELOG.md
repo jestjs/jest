@@ -2,19 +2,81 @@
 
 ### Features
 
-- `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
-- `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
-
 ### Fixes
 
-- `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
-- `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
+- `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12136](https://github.com/facebook/jest/pull/12136))
+- `[jest-environment-node]` Add `AbortSignal` ([#12157](https://github.com/facebook/jest/pull/12157))
 - `[jest-environment-node]` Add Missing node global `performance` ([#12002](https://github.com/facebook/jest/pull/12002))
-- `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
 
 ### Chore & Maintenance
 
 ### Performance
+
+- `jest-config` perf: only register ts-node once when loading TS config files ([#12160](https://github.com/facebook/jest/pull/12160))
+
+## 27.4.5
+
+### Fixes
+
+- `[jest-worker]` Stop explicitly passing `process.env` ([#12141](https://github.com/facebook/jest/pull/12141))
+
+## 27.4.4
+
+### Fixes
+
+- `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
+- `[jest-environment]` Add `mocked` to `jest` object ([#12133](https://github.com/facebook/jest/pull/12133))
+- `[jest-worker]` Stop explicitly passing `execArgv` ([#12128](https://github.com/facebook/jest/pull/12128))
+
+### Chore & Maintenance
+
+- `[website]` Fix the card front that looks overlapping part of the card back
+
+## 27.4.3
+
+### Fixes
+
+- `[jest-environment-jsdom]` Remove `@types/jsdom` dependency (and make its `dom` property `private`) ([#12107](https://github.com/facebook/jest/pull/12107))
+
+## 27.4.2
+
+### Fixes
+
+- `[jest-worker]` Add additional `execArgv` to filter ([#12103](https://github.com/facebook/jest/pull/12103))
+
+## 27.4.1
+
+### Fixes
+
+- `[jest-worker]` Filter `execArgv` correctly ([#12097](https://github.com/facebook/jest/pull/12097))
+
+## 27.4.0
+
+### Features
+
+- `[expect]` Enhancing the `toHaveProperty` matcher to support array selection ([#12092](https://github.com/facebook/jest/pull/12092))
+- `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
+- `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
+- `[jest-mock]` Add `ts-jest` mock util functions ([#12089](https://github.com/facebook/jest/pull/12089))
+
+### Fixes
+
+- `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
+- `[jest-circus, jest-jasmine2]` Avoid false concurrent test failures due to unhandled promise rejections ([#11987](https://github.com/facebook/jest/pull/11987))
+- `[jest-config]` Add missing `slash` dependency to `package.json` ([#12080](https://github.com/facebook/jest/pull/12080))
+- `[jest-core]` Incorrect detection of open ZLIB handles ([#12022](https://github.com/facebook/jest/pull/12022))
+- `[jest-diff]` Break dependency cycle ([#10818](https://github.com/facebook/jest/pull/10818))
+- `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
+- `[jest-environment-jsdom]` Do not reset the global.document too early on teardown ([#11871](https://github.com/facebook/jest/pull/11871))
+- `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
+- `[jest-worker]` Pass `execArgv` correctly to `worker_threads` worker ([#12069](https://github.com/facebook/jest/pull/12069))
+
+### Chore & Maintenance
+
+- `[docs]` CLI options alphabetized ([#11586](https://github.com/facebook/jest/pull/11586))
+- `[jest-runner]` Add info regarding timers to forcedExit message([#12083](https://github.com/facebook/jest/pull/12083))
+- `[*]` Replaced `substr` method with `substring` ([#12066](https://github.com/facebook/jest/pull/12066))
+- `[*]` Add `types` entry to all export maps ([#12073](https://github.com/facebook/jest/pull/12073))
 
 ## 27.3.1
 

@@ -98,6 +98,8 @@ function getCacheKeyFromConfig(
     .update(process.env.NODE_ENV || '')
     .update('\0', 'utf8')
     .update(process.env.BABEL_ENV || '')
+    .update('\0', 'utf8')
+    .update(process.version)
     .digest('hex');
 }
 
