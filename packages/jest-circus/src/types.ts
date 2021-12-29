@@ -19,13 +19,16 @@ export const RETRY_TIMES = Symbol.for(
 export const TEST_TIMEOUT_SYMBOL = Symbol.for(
   'TEST_TIMEOUT_SYMBOL',
 ) as unknown as 'TEST_TIMEOUT_SYMBOL';
-
+export const LOG_TEST_ERRORS_BEFORE_RETRY = Symbol.for(
+  'LOG_TEST_ERRORS_BEFORE_RETRY',
+) as unknown as 'LOG_TEST_ERRORS_BEFORE_RETRY';
 declare global {
   namespace NodeJS {
     interface Global {
       STATE_SYM_SYMBOL: Circus.State;
       RETRY_TIMES_SYMBOL: string;
       TEST_TIMEOUT_SYMBOL: number;
+      LOG_TEST_ERRORS_BEFORE_RETRY: boolean;
       expect: typeof expect;
     }
   }

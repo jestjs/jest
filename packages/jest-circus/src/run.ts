@@ -44,6 +44,7 @@ const _runTestsForDescribeBlock = async (
 
   // Tests that fail and are retried we run after other tests
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const logTestErrorsBeforeRetry = (global[LOG_TEST_ERRORS_BEFORE_RETRY]) || false
   const deferredRetryTests = [];
 
   for (const child of describeBlock.children) {
@@ -73,6 +74,8 @@ const _runTestsForDescribeBlock = async (
     let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
+
+      if(global)
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
 
