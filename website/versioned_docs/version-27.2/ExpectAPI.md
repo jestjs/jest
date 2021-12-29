@@ -67,7 +67,25 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this (`toBeWithinRange.ts`):
+
+```ts
+expect.extend({
+  toBeWithinRange(received, floor, ceiling) {
+    // ...
+  }
+});
+
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
+If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
 
 ```ts
 declare global {
@@ -77,6 +95,8 @@ declare global {
     }
   }
 }
+
+export {};
 ```
 
 #### Async Matchers
