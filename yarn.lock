@@ -12717,7 +12717,7 @@ __metadata:
     "@jest/fake-timers": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
-    "@types/jsdom": ^16.2.14
+    "@types/jsdom": ^16.2.4
     "@types/node": "*"
     jest-mock: ^27.4.2
     jest-util: ^27.4.2
