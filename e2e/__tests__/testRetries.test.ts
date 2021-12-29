@@ -29,6 +29,15 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
+    expect(result.stderr).toBe(false);
+  });
+
+  it('logs error(s) before retry', () => {
+    const result = runJest('test-retries', ['logErrorsBeforeRetry.test.js']);
+    console.log(result);
+    expect(result.exitCode).toEqual(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toBe(true);
   });
 
   it('reporter shows more than 1 invocation if test is retried', () => {
