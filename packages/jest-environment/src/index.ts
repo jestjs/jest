@@ -193,11 +193,20 @@ export interface Jest {
    */
   restoreAllMocks(): Jest;
   mocked: typeof JestMockMocked;
+
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted. This only works with `jest-circus`!
    */
   retryTimes(numRetries: number): Jest;
+
+  /**
+   * This sets whether Jest will log the test errors before a retry happens
+   * When tests fail, whether due to an error or timeout, it is unclear
+   * what the reason for the failure is because no logging takes place.
+   */
+  setLogTestErrorsBeforeRetry(condition: boolean): Jest;
+
   /**
    * Exhausts tasks queued by setImmediate().
    *
