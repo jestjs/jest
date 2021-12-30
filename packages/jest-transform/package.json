@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/types": "^27.4.2",
-    "babel-plugin-istanbul": "^6.0.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
