@@ -7,15 +7,18 @@
 
 'use strict';
 
-const {modulePathIgnorePatterns} = require('./jest.config');
+const rootDirs = ['<rootDir>/packages/expect', '<rootDir>/packages/jest-types'];
 
-module.exports = {
+const projects = rootDirs.map(rootDir => ({
   displayName: {
     color: 'blue',
     name: 'types',
   },
-  modulePathIgnorePatterns,
-  roots: ['<rootDir>/packages'],
+  rootDir,
   runner: 'jest-runner-tsd',
-  testMatch: ['**/__typechecks__/**/*.ts'],
+  testMatch: ['**/__typechecks__/**/*.test.ts'],
+}));
+
+module.exports = {
+  projects,
 };
