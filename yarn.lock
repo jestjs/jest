@@ -4390,31 +4390,31 @@ __metadata:
   linkType: hard
 
 "@testing-library/dom@npm:^8.0.0":
-  version: 8.6.0
-  resolution: "@testing-library/dom@npm:8.6.0"
+  version: 8.11.1
+  resolution: "@testing-library/dom@npm:8.11.1"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.12.5
     "@types/aria-query": ^4.2.0
-    aria-query: ^4.2.2
+    aria-query: ^5.0.0
     chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.6
+    dom-accessibility-api: ^0.5.9
     lz-string: ^1.4.4
     pretty-format: ^27.0.2
-  checksum: ab8e17578310b57edc47f1f6a2ade4d013bd1cce318b5d0257e83eda4a17ad85d8399b7a18467fdb2443830162f7ea771901783c55b86bd370130d45a414168e
+  checksum: a51d45574792db25a70298a01e6317fb3a5cefeec0c45dfe5d5cd95ab537c7e7e948acb3375f3652ba675f84aa1e204dba600b034aa6b6e8cbe7f03c2fc29b9a
   languageName: node
   linkType: hard
 
 "@testing-library/react@npm:*":
-  version: 12.1.1
-  resolution: "@testing-library/react@npm:12.1.1"
+  version: 12.1.2
+  resolution: "@testing-library/react@npm:12.1.2"
   dependencies:
     "@babel/runtime": ^7.12.5
     "@testing-library/dom": ^8.0.0
   peerDependencies:
     react: "*"
     react-dom: "*"
-  checksum: 99a205666c5e374d9f593c97a4da341a72bb00d68ac3ea88f573b9c7e5cf43abb10d1546fb6ed93160b80c8414e93def434879d0673ccde864a044fca42efc52
+  checksum: d48b14b34d1c24987b44c00ce040e24d5cd0ea37866f24f8fbc000e09b3965de6d754c9f92d56f93dc281d4af199a7dd6a4897d7cd940742ad5c619684eaaff6
   languageName: node
   linkType: hard
 
@@ -11691,9 +11691,9 @@ __metadata:
   linkType: hard
 
 "immutable@npm:^4.0.0-rc.12":
-  version: 4.0.0-rc.15
-  resolution: "immutable@npm:4.0.0-rc.15"
-  checksum: 0b288a3f64f565eb4c3cf15109fe879d6b8c15a05f570a31b78fe5d66143feb736df4ea3ad9c331f1911b75b525d946e6a99ed2a7abc79b272ab694f735afeec
+  version: 4.0.0
+  resolution: "immutable@npm:4.0.0"
+  checksum: b213379f1a5e764c9c301c5aee26342ca1486e50b8e1bf7cdcb5586ddcedcab4f75cffc8cd50b7a44133e4ecce71cbd066af016b11024b86c18ee6d6cf3209d0
   languageName: node
   linkType: hard
 
