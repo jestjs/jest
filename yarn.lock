@@ -264,7 +264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.0, @babel/code-frame@npm:^7.8.3":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.15.8, @babel/code-frame@npm:^7.16.0, @babel/code-frame@npm:^7.8.3":
   version: 7.16.0
   resolution: "@babel/code-frame@npm:7.16.0"
   dependencies:
@@ -2625,7 +2625,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^1.1.0
+    jest-runner-tsd: ^1.2.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-snapshot-serializer-raw: ^1.1.0
@@ -7882,16 +7882,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest-runner@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "create-jest-runner@npm:0.6.0"
+"create-jest-runner@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "create-jest-runner@npm:0.9.0"
   dependencies:
-    chalk: ^3.0.0
-    jest-worker: ^25.1.0
-    throat: ^5.0.0
+    chalk: ^4.1.0
+    jest-worker: ^27.0.6
+    throat: ^6.0.1
+  peerDependencies:
+    "@jest/test-result": ^27.0.0
+    "@jest/types": ^27.0.0
+    jest-runner: ^27.0.0
+  peerDependenciesMeta:
+    "@jest/test-result":
+      optional: true
+    "@jest/types":
+      optional: true
+    jest-runner:
+      optional: true
   bin:
     create-jest-runner: generator/index.js
-  checksum: 18cce006b1ec46435e4a3c50c91670bc1a5b22c4e2506b3625d8016976da93506bc0f12c968ad5c620b6c2203e93aebeef4d7e6e664f03bf249cf30cd43d2e86
+  checksum: 6dfacc8ac461e2f3065e29f4f95b201a070f9d05e0f3c18e69ab96d962d05a708a60417be2d19c0640d018cb900ebca549dea065599d459c97870c51932ef335
   languageName: node
   linkType: hard
 
@@ -10862,7 +10873,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
+"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.8":
   version: 4.2.8
   resolution: "graceful-fs@npm:4.2.8"
   checksum: b07e032c0a17e928d3e8ab0f0fea1492efd4568b55a3d2675aaaccf1619eca91156edfa0cb05e99b923e24edf5e26fdce22ffa58ec14d5b13a3b1392460f37f0
@@ -12679,7 +12690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-docblock@^27.4.0, jest-docblock@workspace:packages/jest-docblock":
+"jest-docblock@^27.0.6, jest-docblock@^27.4.0, jest-docblock@workspace:packages/jest-docblock":
   version: 0.0.0-use.local
   resolution: "jest-docblock@workspace:packages/jest-docblock"
   dependencies:
@@ -12687,15 +12698,6 @@ __metadata:
     detect-newline: ^3.0.0
   languageName: unknown
   linkType: soft
-
-"jest-docblock@npm:^26.0.0":
-  version: 26.0.0
-  resolution: "jest-docblock@npm:26.0.0"
-  dependencies:
-    detect-newline: ^3.0.0
-  checksum: 54b8ea1c8445a4b15e9ee5035f1bd60b0d492b87258995133a1b5df43a07803c93b54e8adaa45eae05778bd61ad57745491c625e7aa65198a9aa4f0c79030b56
-  languageName: node
-  linkType: hard
 
 "jest-each@^27.4.2, jest-each@workspace:packages/jest-each":
   version: 0.0.0-use.local
@@ -12995,14 +12997,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "jest-runner-tsd@npm:1.1.0"
+"jest-runner-tsd@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "jest-runner-tsd@npm:1.2.0"
   dependencies:
-    create-jest-runner: ^0.6.0
-    jest-docblock: ^26.0.0
+    "@babel/code-frame": ^7.15.8
+    chalk: ^4.1.2
+    create-jest-runner: ^0.9.0
+    graceful-fs: ^4.2.8
+    jest-docblock: ^27.0.6
     mlh-tsd: ^0.14.1
-  checksum: 93a1dada88c6bceeabb8e60495bb295321ee7b57ba9f02137e6ace10d34baa5eb0e096da06acc9a1d1d6f6ab42fe95cb9486c8160dab257c0db5508ce8e03271
+  checksum: 0e5b75ce3cbe0a5f4405b1d2bd4c3b462323398873f301937475b109c2e214123acd12dc8d0aed326828b232e5a092354528d5081ead132b6ff0a003dcbae6b9
   languageName: node
   linkType: hard
 
@@ -13283,16 +13288,6 @@ __metadata:
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
-
-"jest-worker@npm:^25.1.0":
-  version: 25.5.0
-  resolution: "jest-worker@npm:25.5.0"
-  dependencies:
-    merge-stream: ^2.0.0
-    supports-color: ^7.0.0
-  checksum: 20ae005c58f9db5be0f9bced0df6aeca340c64e7e0c7c27264b5f5964c94013e98ccd678df935d629889136ce45594d230e547624ccce73de581a05d4a8e6315
-  languageName: node
-  linkType: hard
 
 "jest-worker@npm:^26.0.0, jest-worker@npm:^26.2.1, jest-worker@npm:^26.6.2":
   version: 26.6.2
