@@ -2,6 +2,9 @@
 
 ### Features
 
+- `[jest-circus]` Support error logging before retry` ([#12201](https://github.com/facebook/jest/pull/12201))
+
+
 ### Fixes
 
 - `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12136](https://github.com/facebook/jest/pull/12136))

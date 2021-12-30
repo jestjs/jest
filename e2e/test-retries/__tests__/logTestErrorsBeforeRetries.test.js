@@ -6,8 +6,14 @@
  */
 'use strict';
 
-jest.retryTimes(1);
+let i = 0;
+jest.retryTimes(3);
 jest.setLogTestErrorsBeforeRetry(true);
 it('retryTimes set', () => {
-  expect(true).toBeFalsy();
+  i++;
+  if (i === 2) {
+    expect(true).toBeTruthy();
+  } else {
+    expect(true).toBeFalsy();
+  }
 });

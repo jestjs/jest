@@ -19,7 +19,8 @@ describe('Test Retries', () => {
     'e2e/test-retries/',
     outputFileName,
   );
-
+  const logTestErrorsBeforeRetryErrorMessage =
+    'Errors that caused Jest to retry test: ';
   afterAll(() => {
     fs.unlinkSync(outputFilePath);
   });
@@ -29,15 +30,20 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stderr).toBe(false);
+    expect(result.stdout.includes(logTestErrorsBeforeRetryErrorMessage)).toBe(
+      false,
+    );
   });
 
   it('logs error(s) before retry', () => {
-    const result = runJest('test-retries', ['logErrorsBeforeRetry.test.js']);
-    console.log(result);
+    const result = runJest('test-retries', [
+      'logTestErrorsBeforeRetries.test.js',
+    ]);
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stderr).toBe(true);
+    expect(result.stdout.includes(logTestErrorsBeforeRetryErrorMessage)).toBe(
+      true,
+    );
   });
 
   it('reporter shows more than 1 invocation if test is retried', () => {
@@ -64,7 +70,6 @@ describe('Test Retries', () => {
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
     }
-
     expect(jsonResult.numPassedTests).toBe(0);
     expect(jsonResult.numFailedTests).toBe(1);
     expect(jsonResult.numPendingTests).toBe(0);
