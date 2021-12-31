@@ -39,6 +39,7 @@
     "throat": "^6.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.0",
     "@babel/register": "^7.0.0",
     "@types/co": "^4.6.0",
     "@types/dedent": "^0.7.0",

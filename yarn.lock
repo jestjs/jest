@@ -12603,6 +12603,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
+    "@babel/core": ^7.1.0
     "@babel/register": ^7.0.0
     "@jest/environment": ^27.4.4
     "@jest/test-result": ^27.4.2
