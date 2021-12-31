@@ -5,33 +5,33 @@ __metadata:
   version: 4
   cacheKey: 7
 
-"@babel/helper-plugin-utils@npm:^7.0.0, @babel/helper-plugin-utils@npm:^7.14.5":
-  version: 7.14.5
-  resolution: "@babel/helper-plugin-utils@npm:7.14.5"
-  checksum: 76404ef3aadc25879f7b4c5945bafcca935d4af0cf451a95ff9f131f29ac3dc589e2ed19904ce746c7cf6c2a8a7ea33fa4eaf881b9b272d31f2be91984f505d6
+"@babel/helper-plugin-utils@npm:^7.0.0, @babel/helper-plugin-utils@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/helper-plugin-utils@npm:7.16.7"
+  checksum: bad83930f7e3777ef543591396c60532321e9a355c4c5ae605a072e0b8753df587aa4b8038efb40528e134ee1aeee6e03c6f1b8852a2fb2948cab4e282838ede
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-flow@npm:^7.14.5":
-  version: 7.14.5
-  resolution: "@babel/plugin-syntax-flow@npm:7.14.5"
+"@babel/plugin-syntax-flow@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/plugin-syntax-flow@npm:7.16.7"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.14.5
+    "@babel/helper-plugin-utils": ^7.16.7
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 18cdeb6aa2d186b16c3886136b08578690cfaadaf9670ee26f7b981251247e5c92f6652f0e5a978cb5470024bca78e3827922ce7f49758103ee0c004e247c681
+  checksum: 3dd44ebf4896de321fe122a7b54917078e1ed1496bfcf8d6111d5dc93d4d39198889fbb56590f04c02ac7314e88feab077b57e44b281366b31509bbba7c0cc55
   languageName: node
   linkType: hard
 
 "@babel/plugin-transform-flow-strip-types@npm:^7.0.0":
-  version: 7.14.5
-  resolution: "@babel/plugin-transform-flow-strip-types@npm:7.14.5"
+  version: 7.16.7
+  resolution: "@babel/plugin-transform-flow-strip-types@npm:7.16.7"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.14.5
-    "@babel/plugin-syntax-flow": ^7.14.5
+    "@babel/helper-plugin-utils": ^7.16.7
+    "@babel/plugin-syntax-flow": ^7.16.7
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: b217fb548b4879b98d28cea6740bd7dff1d35b738126019da08439ae59f377e4e5db1d3f574c2a88a3e3323051043734eef09b9c24aaabaa1a8fffc0dd096bcc
+  checksum: b7a8b43310e964d19b0eab566d904b0a14efdc2e8b753e5f0e41d590f559679bf51cab7ea954545a0a5989da082fa49c35323943ecf9a9941a2d84a5c82ed428
   languageName: node
   linkType: hard
 
