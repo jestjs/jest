@@ -111,17 +111,17 @@ PASS __tests__/console.test.js
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
 
     console.log
-      {"message":"Info message from winston","level":"info"}
+      {"level":"info","message":"Info message from winston"}
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
 
     console.log
-      {"message":"Warn message from winston","level":"warn"}
+      {"level":"warn","message":"Warn message from winston"}
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
 
     console.log
-      {"message":"Error message from winston","level":"error"}
+      {"level":"error","message":"Error message from winston"}
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
 `;
