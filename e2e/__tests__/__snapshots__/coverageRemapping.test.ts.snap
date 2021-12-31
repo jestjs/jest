@@ -26,11 +26,11 @@ Object {
       "0": Object {
         "loc": Object {
           "end": Object {
-            "column": 35,
+            "column": 39,
             "line": 11,
           },
           "start": Object {
-            "column": 34,
+            "column": 27,
             "line": 11,
           },
         },
@@ -61,11 +61,11 @@ Object {
       "1": Object {
         "loc": Object {
           "end": Object {
-            "column": 35,
+            "column": 39,
             "line": 12,
           },
           "start": Object {
-            "column": 34,
+            "column": 27,
             "line": 12,
           },
         },
@@ -96,7 +96,7 @@ Object {
       "2": Object {
         "loc": Object {
           "end": Object {
-            "column": 31,
+            "column": 48,
             "line": 13,
           },
           "start": Object {
@@ -141,11 +141,11 @@ Object {
       "3": Object {
         "loc": Object {
           "end": Object {
-            "column": 40,
+            "column": 53,
             "line": 14,
           },
           "start": Object {
-            "column": 30,
+            "column": 23,
             "line": 14,
           },
         },

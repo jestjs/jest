@@ -21,7 +21,7 @@
     "@jest/transform": "^27.4.5",
     "@jest/types": "^27.4.2",
     "@types/babel__core": "^7.1.14",
-    "babel-plugin-istanbul": "^6.0.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "babel-preset-jest": "^27.4.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
