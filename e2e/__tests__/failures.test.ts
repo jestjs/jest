@@ -42,10 +42,10 @@ test('not throwing Error objects', () => {
   if (nodeMajorVersion < 12) {
     const lineEntry = '(__tests__/duringTests.test.js:43:8)';
 
-    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
+    expect(stderr).toContain(`at Object.done ${lineEntry}`);
 
     stderr = stderr.replace(
-      `at Object.<anonymous>.done ${lineEntry}`,
+      `at Object.done ${lineEntry}`,
       `at Object.<anonymous> ${lineEntry}`,
     );
   }

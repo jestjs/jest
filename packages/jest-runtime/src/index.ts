@@ -9,7 +9,6 @@ import * as nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
-  Script,
   // @ts-expect-error: experimental, not added to the types
   SourceTextModule,
   // @ts-expect-error: experimental, not added to the types
@@ -17,6 +16,7 @@ import {
   Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
+  compileFunction,
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
@@ -133,8 +133,6 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 const unmockRegExpCache = new WeakMap();
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
-
-type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -1353,22 +1351,26 @@ export default class Runtime {
       value: this._createRequireImplementation(module, options),
     });
 
-    const transformedCode = this.transformFile(filename, options);
-
     let compiledFunction: ModuleWrapper | null = null;
-
-    const script = this.createScriptFromCode(transformedCode, filename);
-
-    let runScript: RunScriptEvalResult | null = null;
 
     const vmContext = this._environment.getVmContext();
 
     if (vmContext) {
-      runScript = script.runInContext(vmContext, {filename});
-    }
-
-    if (runScript !== null) {
-      compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+      try {
+        compiledFunction = compileFunction(
+          this.transformFile(filename, options),
+          this.constructInjectedModuleParameters(),
+          {
+            filename,
+            parsingContext: vmContext,
+            // memory leaks when importModuleDynamically is implemented
+            // // @ts-expect-error: Experimental ESM API
+            // importModuleDynamically: () => {}
+          },
+        ) as ModuleWrapper;
+      } catch (e: any) {
+        throw handlePotentialSyntaxError(e);
+      }
     }
 
     if (compiledFunction === null) {
@@ -1490,39 +1492,6 @@ export default class Runtime {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
     }
     return transformedFile.code;
-  }
-
-  private createScriptFromCode(scriptSource: string, filename: string) {
-    try {
-      const scriptFilename = this._resolver.isCoreModule(filename)
-        ? `jest-nodejs-core-${filename}`
-        : filename;
-      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
-        displayErrors: true,
-        filename: scriptFilename,
-        // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: async (specifier: string) => {
-          invariant(
-            runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-          );
-
-          const context = this._environment.getVmContext?.();
-
-          invariant(context, 'Test environment has been torn down');
-
-          const module = await this.resolveModule(
-            specifier,
-            scriptFilename,
-            context,
-          );
-
-          return this.linkAndEvaluateModule(module);
-        },
-      });
-    } catch (e: any) {
-      throw handlePotentialSyntaxError(e);
-    }
   }
 
   private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
@@ -2042,10 +2011,6 @@ export default class Runtime {
       `\n${message}\n` +
         formatStackTrace(stack, this._config, {noStackTrace: false}),
     );
-  }
-
-  private wrapCodeInModuleWrapper(content: string) {
-    return this.constructModuleWrapperStart() + content + '\n}});';
   }
 
   private constructModuleWrapperStart() {

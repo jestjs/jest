@@ -35,9 +35,7 @@ test('prints console.logs when run with forceExit', () => {
   const {rest, summary} = extractSummary(stderr);
 
   if (nodeMajorVersion < 12) {
-    expect(stdout).toContain(
-      'at Object.<anonymous>.test (__tests__/a-banana.js:1:1)',
-    );
+    expect(stdout).toContain('at Object.log (__tests__/a-banana.js:1:30)');
 
     stdout = stdout.replace(
       'at Object.<anonymous>.test (__tests__/a-banana.js:1:1)',

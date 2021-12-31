@@ -98,7 +98,7 @@
     "jest-jasmine": "JEST_JASMINE=1 yarn jest",
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
-    "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
+    "lint": "eslint . --fix --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --check --ignore-path .gitignore",
     "remove-examples": "node ./scripts/remove-examples.js",

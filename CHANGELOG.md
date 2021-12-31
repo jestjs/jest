@@ -8,6 +8,8 @@
 
 ### Performance
 
+- `[jest-runtime]` Replace `vm.Script` with `vm.compileFunction` to address memory leak ([#12205](https://github.com/facebook/jest/pull/12205))
+
 ## 27.4.6
 
 ### Fixes
