@@ -78,6 +78,10 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     if (typeof EventTarget !== 'undefined') {
       global.EventTarget = EventTarget;
     }
+    // performance is global in Node >= 16
+    if (typeof performance !== 'undefined') {
+      global.performance = performance;
+    }
     installCommonGlobals(global, config.globals);
 
     this.moduleMocker = new ModuleMocker(global);
