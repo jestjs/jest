@@ -19,7 +19,6 @@
   "dependencies": {
     "@babel/core": "^7.7.2",
     "@babel/generator": "^7.7.2",
-    "@babel/parser": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.0.0",
@@ -36,7 +35,6 @@
     "jest-haste-map": "^27.4.5",
     "jest-matcher-utils": "^27.4.2",
     "jest-message-util": "^27.4.2",
-    "jest-resolve": "^27.4.5",
     "jest-util": "^27.4.2",
     "natural-compare": "^1.4.0",
     "pretty-format": "^27.4.2",

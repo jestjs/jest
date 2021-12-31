@@ -32,7 +32,6 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.4.2",
     "@types/yargs": "^16.0.0",
     "execa": "^5.0.0"
   },
