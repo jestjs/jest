@@ -2627,7 +2627,7 @@ __metadata:
     isbinaryfile: ^4.0.0
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-report: ^3.0.0
-    istanbul-reports: ^3.0.0
+    istanbul-reports: ^3.1.3
     jest: "workspace:*"
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
@@ -2692,7 +2692,7 @@ __metadata:
     istanbul-lib-instrument: ^5.1.0
     istanbul-lib-report: ^3.0.0
     istanbul-lib-source-maps: ^4.0.0
-    istanbul-reports: ^3.0.2
+    istanbul-reports: ^3.1.3
     jest-haste-map: ^27.4.5
     jest-resolve: ^27.4.5
     jest-util: ^27.4.2
@@ -12558,7 +12558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-reports@npm:^3.0.0, istanbul-reports@npm:^3.0.2":
+"istanbul-reports@npm:^3.1.3":
   version: 3.1.3
   resolution: "istanbul-reports@npm:3.1.3"
   dependencies:
