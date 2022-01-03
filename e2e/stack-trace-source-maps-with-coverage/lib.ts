@@ -11,6 +11,6 @@ interface NotUsedButTakesUpLines {
   b: string;
 }
 
-export function error() {
+export function error():void {
   throw new Error('This did not work!');
 }

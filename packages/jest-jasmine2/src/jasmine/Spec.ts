@@ -98,7 +98,7 @@ export default class Spec {
 
   static pendingSpecExceptionMessage: string;
 
-  static isPendingSpecException(e: Error) {
+  static isPendingSpecException(e: Error):boolean {
     return !!(
       e &&
       e.toString &&
@@ -157,7 +157,7 @@ export default class Spec {
     passed: boolean,
     data: ExpectationResultFactoryOptions,
     isError?: boolean,
-  ) {
+  ): void {
     const expectationResult = expectationResultFactory(data, this.initError);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
@@ -170,7 +170,7 @@ export default class Spec {
     }
   }
 
-  execute(onComplete?: () => void, enabled?: boolean) {
+  execute(onComplete?: () => void, enabled?: boolean): void {
     const self = this;
 
     this.onStart(this);
@@ -212,13 +212,13 @@ export default class Spec {
     }
   }
 
-  cancel() {
+  cancel():void {
     if (this.currentRun) {
       this.currentRun.cancel();
     }
   }
 
-  onException(error: ExpectationFailed | AssertionErrorWithStack) {
+  onException(error: ExpectationFailed | AssertionErrorWithStack): void{
     if (Spec.isPendingSpecException(error)) {
       this.pend(extractCustomPendingMessage(error));
       return;
@@ -243,22 +243,22 @@ export default class Spec {
     );
   }
 
-  disable() {
+  disable(): void {
     this.disabled = true;
   }
 
-  pend(message?: string) {
+  pend(message?: string): void {
     this.markedPending = true;
     if (message) {
       this.result.pendingReason = message;
     }
   }
 
-  todo() {
+  todo(): void {
     this.markedTodo = true;
   }
 
-  getResult() {
+  getResult():SpecResult {
     this.result.status = this.status();
     return this.result;
   }
@@ -283,15 +283,15 @@ export default class Spec {
     }
   }
 
-  isExecutable() {
+  isExecutable(): boolean {
     return !this.disabled;
   }
 
-  getFullName() {
+  getFullName(): string {
     return this.getSpecName(this);
   }
 
-  isAssertionError(error: Error) {
+  isAssertionError(error: Error): boolean {
     return (
       error instanceof AssertionError ||
       (error && error.name === AssertionError.name)

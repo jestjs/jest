@@ -5,19 +5,19 @@ export default class Memory {
     this.current = 0;
   }
 
-  add(entry: number) {
+  add(entry: number):number {
     this.current += entry;
 
     return this.current;
   }
 
-  subtract(entry: number) {
+  subtract(entry: number):number {
     this.current -= entry;
 
     return this.current;
   }
 
-  reset() {
+  reset():void {
     this.current = 0;
   }
 }

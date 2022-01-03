@@ -97,7 +97,7 @@ export default class Suite {
       testPath: attrs.getTestPath(),
     };
   }
-  getFullName() {
+  getFullName(): string {
     const fullName = [];
     for (
       let parentSuite: Suite | undefined = this;
@@ -110,30 +110,30 @@ export default class Suite {
     }
     return fullName.join(' ');
   }
-  disable() {
+  disable(): void {
     this.disabled = true;
   }
-  pend(_message?: string) {
+  pend(_message?: string): void {
     this.markedPending = true;
   }
-  beforeEach(fn: QueueableFn) {
+  beforeEach(fn: QueueableFn): void {
     this.beforeFns.unshift(fn);
   }
-  beforeAll(fn: QueueableFn) {
+  beforeAll(fn: QueueableFn): void{
     this.beforeAllFns.push(fn);
   }
-  afterEach(fn: QueueableFn) {
+  afterEach(fn: QueueableFn): void {
     this.afterFns.unshift(fn);
   }
-  afterAll(fn: QueueableFn) {
+  afterAll(fn: QueueableFn): void {
     this.afterAllFns.unshift(fn);
   }
 
-  addChild(child: Suite | Spec) {
+  addChild(child: Suite | Spec): void {
     this.children.push(child);
   }
 
-  status() {
+  status(): string | string | string | string   {
     if (this.disabled) {
       return 'disabled';
     }
@@ -149,20 +149,20 @@ export default class Suite {
     }
   }
 
-  isExecutable() {
+  isExecutable(): boolean {
     return !this.disabled;
   }
 
-  canBeReentered() {
+  canBeReentered(): boolean {
     return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
   }
 
-  getResult() {
+  getResult(): SuiteResult {
     this.result.status! = this.status();
     return this.result;
   }
 
-  sharedUserContext() {
+  sharedUserContext(): object {
     if (!this.sharedContext) {
       this.sharedContext = {};
     }
@@ -170,11 +170,11 @@ export default class Suite {
     return this.sharedContext;
   }
 
-  clonedSharedUserContext() {
+  clonedSharedUserContext(): object {
     return this.sharedUserContext();
   }
 
-  onException(...args: Parameters<Spec['onException']>) {
+  onException(...args: Parameters<Spec['onException']>): void{
     if (args[0] instanceof ExpectationFailed) {
       return;
     }
@@ -196,7 +196,7 @@ export default class Suite {
     }
   }
 
-  addExpectationResult(...args: Parameters<Spec['addExpectationResult']>) {
+  addExpectationResult(...args: Parameters<Spec['addExpectationResult']>):void {
     if (isAfterAll(this.children) && isFailure(args)) {
       const data = args[1];
       this.result.failedExpectations.push(expectationResultFactory(data));
@@ -215,7 +215,7 @@ export default class Suite {
     }
   }
 
-  execute(..._args: Array<any>) {}
+  execute(..._args: Array<any>): void {}
 }
 
 function isAfterAll(children: Array<Spec | Suite>) {

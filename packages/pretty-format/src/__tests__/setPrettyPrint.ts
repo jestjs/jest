@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-const setPrettyPrint = (plugins: Plugins) => {
+const setPrettyPrint = (plugins: Plugins): void => {
   expect.extend({
     toPrettyPrintTo(
       received: unknown,

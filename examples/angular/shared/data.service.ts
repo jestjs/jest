@@ -6,7 +6,7 @@ import {SubService} from './sub.service';
 export class DataService {
   constructor(private subService: SubService) {}
 
-  getTitle() {
+  getTitle():string {
     return this.subService.getTitle();
   }
 }
