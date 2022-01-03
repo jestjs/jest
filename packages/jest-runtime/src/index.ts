@@ -114,7 +114,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
-const logTestErrorsBeforeRetry = Symbol.for('LOG_TEST_ERRORS_BEFORE_RETRY');
+const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
@@ -1937,15 +1937,18 @@ export default class Runtime {
       return jestObject;
     };
 
-    const setLogTestErrorsBeforeRetry = (condition: boolean) => {
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
-      this._environment.global[logTestErrorsBeforeRetry] = condition;
-      return jestObject;
-    };
-
-    const retryTimes = (numTestRetries: number) => {
+    const retryTimes = (
+      numTestRetries: number,
+      options?: {
+        logErrorsBeforeRetry?: boolean;
+      },
+    ) => {
       // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[retryTimesSymbol] = numTestRetries;
+      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
+      this._environment.global[logErrorsBeforeRetrySymbol] =
+        options?.logErrorsBeforeRetry;
+
       return jestObject;
     };
 
@@ -2004,7 +2007,6 @@ export default class Runtime {
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      setLogTestErrorsBeforeRetry,
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
       setSystemTime: (now?: number | Date) => {

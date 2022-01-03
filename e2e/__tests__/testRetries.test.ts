@@ -19,8 +19,9 @@ describe('Test Retries', () => {
     'e2e/test-retries/',
     outputFileName,
   );
-  const logTestErrorsBeforeRetryErrorMessage =
+  const logErrorsBeforeRetryErrorMessage =
     'Errors that caused Jest to retry test: ';
+
   afterAll(() => {
     fs.unlinkSync(outputFilePath);
   });
@@ -30,20 +31,16 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stdout.includes(logTestErrorsBeforeRetryErrorMessage)).toBe(
+    expect(result.stdout.includes(logErrorsBeforeRetryErrorMessage)).toBe(
       false,
     );
   });
 
   it('logs error(s) before retry', () => {
-    const result = runJest('test-retries', [
-      'logTestErrorsBeforeRetries.test.js',
-    ]);
+    const result = runJest('test-retries', ['logErrorsBeforeRetries.test.js']);
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stdout.includes(logTestErrorsBeforeRetryErrorMessage)).toBe(
-      true,
-    );
+    expect(result.stdout.includes(logErrorsBeforeRetryErrorMessage)).toBe(true);
   });
 
   it('reporter shows more than 1 invocation if test is retried', () => {

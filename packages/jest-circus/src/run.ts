@@ -7,7 +7,7 @@
 
 import type {Circus} from '@jest/types';
 import {dispatch, getState} from './state';
-import {LOG_TEST_ERRORS_BEFORE_RETRY, RETRY_TIMES} from './types';
+import {LOG_ERRORS_BEFORE_RETRY, RETRY_TIMES} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -44,8 +44,7 @@ const _runTestsForDescribeBlock = async (
 
   // Tests that fail and are retried we run after other tests
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
-  const logTestErrorsBeforeRetry =
-    global[LOG_TEST_ERRORS_BEFORE_RETRY] || false;
+  const logErrorsBeforeRetry = global[LOG_ERRORS_BEFORE_RETRY] || false;
   const deferredRetryTests = [];
 
   for (const child of describeBlock.children) {
@@ -75,7 +74,7 @@ const _runTestsForDescribeBlock = async (
     let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
-      if (logTestErrorsBeforeRetry) {
+      if (logErrorsBeforeRetry) {
         console.error('Errors that caused Jest to retry test: ', test.errors);
       }
       // Clear errors so retries occur

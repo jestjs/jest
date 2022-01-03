@@ -33,7 +33,7 @@ expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {virtual: true}));
 expectType<typeof jest>(jest.resetModules());
 expectType<typeof jest>(jest.isolateModules(() => {}));
 expectType<typeof jest>(jest.retryTimes(3));
-expectType<typeof jest>(jest.setLogTestErrorsBeforeRetry(true));
+expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
 expectType<Mock<Promise<string>, []>>(
   jest
     .fn(() => Promise.resolve('string value'))
