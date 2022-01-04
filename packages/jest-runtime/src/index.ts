@@ -1928,7 +1928,7 @@ export default class Runtime {
       this._moduleMocker.mocked?.bind(this._moduleMocker) ??
       (() => {
         throw new Error(
-          'Your test environment does not support `mocked`, please update it',
+          'Your test environment does not support `mocked`, please update it.',
         );
       });
 
