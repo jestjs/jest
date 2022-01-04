@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "27.4.5",
+  "version": "27.4.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -26,12 +26,12 @@
     "jest-regex-util": "^27.4.0",
     "jest-serializer": "^27.4.0",
     "jest-util": "^27.4.2",
-    "jest-worker": "^27.4.5",
+    "jest-worker": "^27.4.6",
     "micromatch": "^4.0.4",
     "walker": "^1.0.7"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.4.2",
+    "@jest/test-utils": "^27.4.6",
     "@types/fb-watchman": "^2.0.0",
     "@types/micromatch": "^4.0.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
