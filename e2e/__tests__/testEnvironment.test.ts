@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import slash = require('slash');
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 import * as testFixturePackage from '../test-environment/package.json';
@@ -29,7 +30,9 @@ it('handles missing `mocked` property', () => {
   createEmptyPackage(DIR);
   writeFiles(DIR, {
     'env.js': `
-      const Node = require('${require.resolve('jest-environment-node')}');
+      const Node = require('${slash(
+        require.resolve('jest-environment-node'),
+      )}');
 
       module.exports = class Thing extends Node {
         constructor(...args) {
