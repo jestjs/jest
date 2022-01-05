@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "27.4.6",
+  "version": "27.4.7",
   "main": "./build/jest.js",
   "types": "./build/jest.d.ts",
   "exports": {
@@ -24,7 +24,7 @@
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
     "jest-changed-files": "^27.4.2",
-    "jest-config": "^27.4.6",
+    "jest-config": "^27.4.7",
     "jest-haste-map": "^27.4.6",
     "jest-message-util": "^27.4.6",
     "jest-regex-util": "^27.4.0",
