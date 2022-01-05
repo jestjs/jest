@@ -61,7 +61,6 @@ export default class ExperimentalWorker implements WorkerInterface {
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
-      // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,

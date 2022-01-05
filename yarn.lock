@@ -2599,14 +2599,14 @@ __metadata:
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
-    "@tsconfig/node10": ^1.0.8
+    "@tsconfig/node12": ^1.0.9
     "@tsd/typescript": ~4.1.5
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
     "@types/dedent": 0.7.0
     "@types/jest": ^26.0.15
-    "@types/node": ~10.14.0
+    "@types/node": ~12.12.0
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^4.1.0
     "@typescript-eslint/parser": ^4.1.0
@@ -4464,10 +4464,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node10@npm:^1.0.8":
-  version: 1.0.8
-  resolution: "@tsconfig/node10@npm:1.0.8"
-  checksum: 0336493b89fb7c06409a1247a3fb00fac2755f21f3f8ae4b9dd2457859abfc5e8ca42b6d9ca5a279fe81bc70fe1f3450eef61e5dd5a63a7b4a6946ff31874816
+"@tsconfig/node12@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "@tsconfig/node12@npm:1.0.9"
+  checksum: 5532bfb5df47ed3a507da533c731a2fb80ee2e886edadbf20e664dcd3172d5c159577a281d15733b8d0c30bfa4e6b48496bef0704192c085520bc76bb9938068
   languageName: node
   linkType: hard
 
@@ -4928,17 +4928,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:~10.14.0":
-  version: 10.14.22
-  resolution: "@types/node@npm:10.14.22"
-  checksum: 392965766fc7f221169d62e4dafbfc875ba172ce610ac48fec26eaf572386913bd2c5d2e036bb747bb49923f1ade9eed2b2d09a391cbf5fbaaa864a74a4dad60
+"@types/node@npm:*, @types/node@npm:~12.12.0":
+  version: 12.12.70
+  resolution: "@types/node@npm:12.12.70"
+  checksum: ef0ea535b8301d7d8f89d848bb7d5028bbd702d8d96b812100cba71829b460fc0d00cbbf296909254c49d0efe5a57dd37d40ba3abaca902dc170034e90f651a2
   languageName: node
   linkType: hard
 
 "@types/node@npm:^14.0.27":
-  version: 14.18.3
-  resolution: "@types/node@npm:14.18.3"
-  checksum: 6e592ab47ced8c54f0bc8036e11fbd40581025d2c7cc477bb85486eea41027d946d0495311a8f2f2137b4caf0500bf74813257ee2adecb51a2ed507bae0d224b
+  version: 14.18.10
+  resolution: "@types/node@npm:14.18.10"
+  checksum: c5a7abb126c8d08b215193500ce7d061ac8191f21c712c9b9e35356b8fd7b6b47ac8887b459deba161b4d310962706a623e0e919798cc932a75623894a4e3a3f
   languageName: node
   linkType: hard
 
