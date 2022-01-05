@@ -48,7 +48,10 @@ Your `package.json` should look something like this (where `<current-version>` i
 
 ```js title="babel.config.js"
 module.exports = {
-  presets: ['@babel/preset-env', '@babel/preset-react'],
+  presets: [
+    '@babel/preset-env',
+    ['@babel/preset-react', {runtime: 'automatic'}],
+  ],
 };
 ```
 
@@ -58,15 +61,15 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```tsx title="Link.react.js"
-import React, {useState} from 'react';
+```tsx title="Link.js"
+import {useState} from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-const Link = ({page, children}) => {
+export default function Link({page, children}) {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
@@ -87,21 +90,38 @@ const Link = ({page, children}) => {
       {children}
     </a>
   );
-};
+}
 
-export default Link;
 ```
 
 > Note: Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx title="Link.react.test.js"
-import React from 'react';
+```tsx title="Link.test.js"
+import Link from '../Link';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
 
-test('Link changes the class when hovered', () => {
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="http://www.facebook.com">Facebook</Link>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+it('renders as an anchor when no page is set', () => {
+  const tree = renderer.create(<Link>Facebook</Link>).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+it('properly escapes quotes', () => {
+  const tree = renderer
+    .create(<Link>{"\"Facebook\" \\'is \\ 'awesome'"}</Link>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+it('changes the class when hovered', () => {
   const component = renderer.create(
     <Link page="http://www.facebook.com">Facebook</Link>,
   );
@@ -109,13 +129,17 @@ test('Link changes the class when hovered', () => {
   expect(tree).toMatchSnapshot();
 
   // manually trigger the callback
-  tree.props.onMouseEnter();
+  renderer.act(() => {
+    tree.props.onMouseEnter();
+  });
   // re-rendering
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 
   // manually trigger the callback
-  tree.props.onMouseLeave();
+  renderer.act(() => {
+    tree.props.onMouseLeave();
+  });
   // re-rendering
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
@@ -124,33 +148,69 @@ test('Link changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript title="__tests__/__snapshots__/Link.react.test.js.snap"
-exports[`Link changes the class when hovered 1`] = `
+```javascript title="__tests__/__snapshots__/Link.test.js.snap"
+exports[`changes the class when hovered 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 2`] = `
+exports[`changes the class when hovered 2`] = `
 <a
   className="hovered"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 3`] = `
+exports[`changes the class when hovered 3`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
+  Facebook
+</a>
+`;
+
+exports[`properly escapes quotes 1`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  "Facebook" \\'is \\ 'awesome'
+</a>
+`;
+
+exports[`renders as an anchor when no page is set 1`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  Facebook
+</a>
+`;
+
+exports[`renders correctly 1`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
@@ -205,9 +265,9 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 Let's implement a checkbox which swaps between two labels:
 
 ```tsx title="CheckboxWithLabel.js"
-import React, {useState} from 'react';
+import {useState} from 'react';
 
-const CheckboxWithLabel = ({labelOn, labelOff}) => {
+export default function CheckboxWithLabel({labelOn, labelOff}) {
   const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
@@ -220,13 +280,10 @@ const CheckboxWithLabel = ({labelOn, labelOff}) => {
       {isChecked ? labelOn : labelOff}
     </label>
   );
-};
-
-export default CheckboxWithLabel;
+}
 ```
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
-import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
@@ -256,11 +313,14 @@ You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
-import React from 'react';
-import {shallow} from 'enzyme';
+import Enzyme, {shallow} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({adapter: new Adapter()});
+
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-test('CheckboxWithLabel changes the text after click', () => {
+it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
 
