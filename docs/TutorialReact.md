@@ -61,7 +61,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```tsx title="Link.js"
+```tsx title="Link.react.js"
 import {useState} from 'react';
 
 const STATUS = {
@@ -97,8 +97,8 @@ export default function Link({page, children}) {
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx title="Link.test.js"
-import Link from '../Link';
+```tsx title="Link.react.test.js"
+import Link from '../Link.react';
 import renderer from 'react-test-renderer';
 
 it('changes the class when hovered', () => {
@@ -128,7 +128,7 @@ it('changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript title="__tests__/__snapshots__/Link.test.js.snap"
+```javascript title="__tests__/__snapshots__/Link.react.test.js.snap"
 exports[`changes the class when hovered 1`] = `
 <a
   className="normal"
