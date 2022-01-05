@@ -220,7 +220,7 @@ The next time you run the tests, the rendered output will be compared to the pre
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/main/examples/snapshot).
 
-#### Snapshot Testing with Mocks, Enzyme and React 16
+#### Snapshot Testing with Mocks, Enzyme and React 16+
 
 There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:
 
