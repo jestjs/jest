@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[docs, examples]` Update React examples to match with the new React guidelines for code examples ([#12217](https://github.com/facebook/jest/pull/12217))
+
 ### Performance
 
 ## 27.4.7
