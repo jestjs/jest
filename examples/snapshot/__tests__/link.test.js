@@ -2,8 +2,7 @@
 
 'use strict';
 
-import React from 'react';
-import Link from '../Link.react';
+import Link from '../Link';
 import renderer from 'react-test-renderer';
 
 it('renders correctly', () => {

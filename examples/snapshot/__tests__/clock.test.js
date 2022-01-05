@@ -2,8 +2,7 @@
 
 'use strict';
 
-import React from 'react';
-import Clock from '../Clock.react';
+import Clock from '../Clock';
 import renderer from 'react-test-renderer';
 
 jest.useFakeTimers();
