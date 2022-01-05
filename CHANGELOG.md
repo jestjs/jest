@@ -8,14 +8,20 @@
 
 ### Performance
 
+## 27.4.7
+
+### Fixes
+
+- `jest-config` Add missing `@babel/core` dependency ([#12216](https://github.com/facebook/jest/pull/12216))
+
 ## 27.4.6
 
 ### Fixes
 
 - `[jest-environment-node]` Add `AbortSignal` ([#12157](https://github.com/facebook/jest/pull/12157))
 - `[jest-environment-node]` Add Missing node global `performance` ([#12002](https://github.com/facebook/jest/pull/12002))
-- `[jest-runtime]` Handle missing `mocked` property ([#12002](https://github.com/facebook/jest/pull/12002))
-- `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12213](https://github.com/facebook/jest/pull/12213))
+- `[jest-runtime]` Handle missing `mocked` property ([#12213](https://github.com/facebook/jest/pull/12213))
+- `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12002](https://github.com/facebook/jest/pull/12002))
 
 ### Performance
 
