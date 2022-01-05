@@ -91,7 +91,6 @@ export default function Link({page, children}) {
     </a>
   );
 }
-
 ```
 
 > Note: Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
