@@ -2484,7 +2484,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/core@^27.4.6, @jest/core@workspace:packages/jest-core":
+"@jest/core@^27.4.7, @jest/core@workspace:packages/jest-core":
   version: 0.0.0-use.local
   resolution: "@jest/core@workspace:packages/jest-core"
   dependencies:
@@ -2506,7 +2506,7 @@ __metadata:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-changed-files: ^27.4.2
-    jest-config: ^27.4.6
+    jest-config: ^27.4.7
     jest-haste-map: ^27.4.6
     jest-message-util: ^27.4.6
     jest-regex-util: ^27.4.0
@@ -12628,11 +12628,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-cli@^27.4.6, jest-cli@workspace:packages/jest-cli":
+"jest-cli@^27.4.7, jest-cli@workspace:packages/jest-cli":
   version: 0.0.0-use.local
   resolution: "jest-cli@workspace:packages/jest-cli"
   dependencies:
-    "@jest/core": ^27.4.6
+    "@jest/core": ^27.4.7
     "@jest/test-result": ^27.4.6
     "@jest/types": ^27.4.2
     "@types/exit": ^0.1.30
@@ -12643,7 +12643,7 @@ __metadata:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     import-local: ^3.0.2
-    jest-config: ^27.4.6
+    jest-config: ^27.4.7
     jest-util: ^27.4.2
     jest-validate: ^27.4.6
     prompts: ^2.0.1
@@ -12658,7 +12658,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-config@^27.4.6, jest-config@workspace:packages/jest-config":
+"jest-config@^27.4.7, jest-config@workspace:packages/jest-config":
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
@@ -12993,7 +12993,7 @@ __metadata:
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
     execa: ^5.0.0
-    jest-config: ^27.4.6
+    jest-config: ^27.4.7
     jest-runtime: ^27.4.6
     jest-util: ^27.4.2
     jest-validate: ^27.4.6
@@ -13353,9 +13353,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest@workspace:packages/jest"
   dependencies:
-    "@jest/core": ^27.4.6
+    "@jest/core": ^27.4.7
     import-local: ^3.0.2
-    jest-cli: ^27.4.6
+    jest-cli: ^27.4.7
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
