@@ -102,25 +102,6 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 import Link from '../Link';
 import renderer from 'react-test-renderer';
 
-it('renders correctly', () => {
-  const tree = renderer
-    .create(<Link page="http://www.facebook.com">Facebook</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
-});
-
-it('renders as an anchor when no page is set', () => {
-  const tree = renderer.create(<Link>Facebook</Link>).toJSON();
-  expect(tree).toMatchSnapshot();
-});
-
-it('properly escapes quotes', () => {
-  const tree = renderer
-    .create(<Link>{"\"Facebook\" \\'is \\ 'awesome'"}</Link>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
-});
-
 it('changes the class when hovered', () => {
   const component = renderer.create(
     <Link page="http://www.facebook.com">Facebook</Link>,
@@ -172,39 +153,6 @@ exports[`changes the class when hovered 2`] = `
 `;
 
 exports[`changes the class when hovered 3`] = `
-<a
-  className="normal"
-  href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  Facebook
-</a>
-`;
-
-exports[`properly escapes quotes 1`] = `
-<a
-  className="normal"
-  href="#"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  "Facebook" \\'is \\ 'awesome'
-</a>
-`;
-
-exports[`renders as an anchor when no page is set 1`] = `
-<a
-  className="normal"
-  href="#"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
->
-  Facebook
-</a>
-`;
-
-exports[`renders correctly 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
