@@ -25,6 +25,7 @@
     }
   },
   "dependencies": {
+    "@babel/core": "^7.8.0",
     "@jest/test-sequencer": "^27.4.6",
     "@jest/types": "^27.4.2",
     "babel-jest": "^27.4.6",
