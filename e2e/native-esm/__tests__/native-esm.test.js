@@ -72,7 +72,7 @@ test('import cjs', async () => {
   expect(half(4)).toBe(2);
 });
 
-test('import esm from cjs', async () => {
+test.skip('import esm from cjs', async () => {
   const {default: halfPromise} = await import('../fromEsm.cjs');
   expect(await halfPromise(1)).toBe(2);
 });
