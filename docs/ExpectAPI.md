@@ -71,7 +71,7 @@ _Note_: In TypeScript, when using `@types/jest` for example, you can declare the
 
 ```ts
 expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
+  toBeWithinRange(received: number, floor: number, ceiling: number) {
     // ...
   }
 });
