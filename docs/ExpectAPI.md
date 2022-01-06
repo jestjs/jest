@@ -69,7 +69,7 @@ test('numeric ranges', () => {
 
 _Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this (`toBeWithinRange.ts`):
 
-```ts
+```ts title="toBeWithinRange.ts"
 expect.extend({
   toBeWithinRange(received: number, floor: number, ceiling: number) {
     // ...
