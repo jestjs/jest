@@ -6,9 +6,12 @@
 
 ### Chore & Maintenance
 
+- `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
 - `[docs, examples]` Update React examples to match with the new React guidelines for code examples ([#12217](https://github.com/facebook/jest/pull/12217))
 
 ### Performance
+
+- `[jest-resolve]` perf: skip error creation on not found stat calls ([#11749](https://github.com/facebook/jest/pull/11749))
 
 ## 27.4.7
 

@@ -33,7 +33,7 @@
     "ci-info": "^3.2.0",
     "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
-    "graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.9",
     "jest-circus": "^27.4.6",
     "jest-environment-jsdom": "^27.4.6",
     "jest-environment-node": "^27.4.6",

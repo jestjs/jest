@@ -18,7 +18,7 @@
     "@jest/types": "^27.4.2",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.9",
     "import-local": "^3.0.2",
     "jest-config": "^27.4.7",
     "jest-util": "^27.4.2",

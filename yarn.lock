@@ -2504,7 +2504,7 @@ __metadata:
     chalk: ^4.0.0
     emittery: ^0.8.1
     exit: ^0.1.2
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-changed-files: ^27.4.2
     jest-config: ^27.4.7
     jest-haste-map: ^27.4.6
@@ -2624,7 +2624,7 @@ __metadata:
     find-process: ^1.4.1
     glob: ^7.1.1
     globby: ^11.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     isbinaryfile: ^4.0.0
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-report: ^3.0.0
@@ -2688,7 +2688,7 @@ __metadata:
     collect-v8-coverage: ^1.0.0
     exit: ^0.1.2
     glob: ^7.1.2
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-instrument: ^5.1.0
     istanbul-lib-report: ^3.0.0
@@ -2719,7 +2719,7 @@ __metadata:
   dependencies:
     "@types/graceful-fs": ^4.1.2
     callsites: ^3.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     source-map: ^0.6.0
   languageName: unknown
   linkType: soft
@@ -2741,7 +2741,7 @@ __metadata:
   dependencies:
     "@jest/test-result": ^27.4.6
     "@types/graceful-fs": ^4.1.3
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-haste-map: ^27.4.6
     jest-runtime: ^27.4.6
   languageName: unknown
@@ -2779,7 +2779,7 @@ __metadata:
     convert-source-map: ^1.4.0
     dedent: ^0.7.0
     fast-json-stable-stringify: ^2.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-haste-map: ^27.4.6
     jest-regex-util: ^27.4.0
     jest-snapshot-serializer-raw: ^1.1.0
@@ -6308,7 +6308,7 @@ __metadata:
     babel-plugin-istanbul: ^6.1.1
     babel-preset-jest: ^27.4.0
     chalk: ^4.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     slash: ^3.0.0
   peerDependencies:
     "@babel/core": ^7.8.0
@@ -10957,10 +10957,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
-  version: 4.2.8
-  resolution: "graceful-fs@npm:4.2.8"
-  checksum: b07e032c0a17e928d3e8ab0f0fea1492efd4568b55a3d2675aaaccf1619eca91156edfa0cb05e99b923e24edf5e26fdce22ffa58ec14d5b13a3b1392460f37f0
+"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
+  version: 4.2.9
+  resolution: "graceful-fs@npm:4.2.9"
+  checksum: e0382eb1aab9d04d8dbf0faed61987145cf876548138ff660553168b1ff04e6c65ee407aca102a0047bb2144845261c4a8a5f65934842f64acf12d3a8fd711ba
   languageName: node
   linkType: hard
 
@@ -12612,7 +12612,7 @@ __metadata:
     dedent: ^0.7.0
     execa: ^5.0.0
     expect: ^27.4.6
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     is-generator-fn: ^2.0.0
     jest-each: ^27.4.6
     jest-matcher-utils: ^27.4.6
@@ -12641,7 +12641,7 @@ __metadata:
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
     exit: ^0.1.2
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     import-local: ^3.0.2
     jest-config: ^27.4.7
     jest-util: ^27.4.2
@@ -12673,7 +12673,7 @@ __metadata:
     ci-info: ^3.2.0
     deepmerge: ^4.2.2
     glob: ^7.1.1
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-circus: ^27.4.6
     jest-environment-jsdom: ^27.4.6
     jest-environment-node: ^27.4.6
@@ -12818,7 +12818,7 @@ __metadata:
     anymatch: ^3.0.3
     fb-watchman: ^2.0.0
     fsevents: ^2.3.2
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-regex-util: ^27.4.0
     jest-serializer: ^27.4.0
     jest-snapshot-serializer-raw: ^1.1.0
@@ -12930,7 +12930,7 @@ __metadata:
     "@types/micromatch": ^4.0.1
     "@types/stack-utils": ^2.0.0
     chalk: ^4.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     micromatch: ^4.0.4
     pretty-format: ^27.4.6
     slash: ^3.0.0
@@ -13027,7 +13027,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/resolve": ^1.20.0
     chalk: ^4.0.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-haste-map: ^27.4.6
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.4.2
@@ -13065,7 +13065,7 @@ __metadata:
     chalk: ^4.0.0
     emittery: ^0.8.1
     exit: ^0.1.2
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-docblock: ^27.4.0
     jest-environment-jsdom: ^27.4.6
     jest-environment-node: ^27.4.6
@@ -13102,7 +13102,7 @@ __metadata:
     collect-v8-coverage: ^1.0.0
     execa: ^5.0.0
     glob: ^7.1.3
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-environment-node: ^27.4.6
     jest-haste-map: ^27.4.6
     jest-message-util: ^27.4.6
@@ -13123,7 +13123,7 @@ __metadata:
   dependencies:
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
   languageName: unknown
   linkType: soft
 
@@ -13178,7 +13178,7 @@ __metadata:
     babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
     expect: ^27.4.6
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     jest-diff: ^27.4.6
     jest-get-type: ^27.4.0
     jest-haste-map: ^27.4.6
@@ -13203,7 +13203,7 @@ __metadata:
     "@types/picomatch": ^2.2.2
     chalk: ^4.0.0
     ci-info: ^3.2.0
-    graceful-fs: ^4.2.4
+    graceful-fs: ^4.2.9
     picomatch: ^2.2.3
   languageName: unknown
   linkType: soft

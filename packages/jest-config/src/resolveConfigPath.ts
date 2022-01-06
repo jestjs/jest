@@ -42,7 +42,7 @@ export default (
   // e.g.
   // With a directory structure like this:
   //   my_project/
-  //     packcage.json
+  //     package.json
   //
   // Passing a `my_project/some_directory_that_doesnt_exist` as a project
   // name will resolve into a (possibly empty) `my_project/package.json` and

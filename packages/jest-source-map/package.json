@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "callsites": "^3.0.0",
-    "graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.9",
     "source-map": "^0.6.0"
   },
   "devDependencies": {
