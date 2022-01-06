@@ -24,7 +24,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babel-preset-jest": "^27.4.0",
     "chalk": "^4.0.0",
-    "graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.9",
     "slash": "^3.0.0"
   },
   "devDependencies": {

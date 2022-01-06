@@ -6,7 +6,11 @@
 
 ### Chore & Maintenance
 
+- `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
+
 ### Performance
+
+- `[jest-resolve]` perf: skip error creation on not found stat calls ([#11749](https://github.com/facebook/jest/pull/11749))
 
 ## 27.4.7
 

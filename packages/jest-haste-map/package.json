@@ -22,7 +22,7 @@
     "@types/node": "*",
     "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.9",
     "jest-regex-util": "^27.4.0",
     "jest-serializer": "^27.4.0",
     "jest-util": "^27.4.2",
