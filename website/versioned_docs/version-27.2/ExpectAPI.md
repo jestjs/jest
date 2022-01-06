@@ -674,7 +674,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalled` to ensure that a mock function got called.The specific arguments are checked with a `.toEqual` call.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
