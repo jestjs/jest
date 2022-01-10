@@ -6,6 +6,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]`  Remove babel-jest from "required dependencies" for using Babel ([#12228](https://github.com/facebook/jest/pull/12228))
 - `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
 
 ### Performance
