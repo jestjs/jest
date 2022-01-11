@@ -126,4 +126,4 @@ test('the fetch fails with an error', async () => {
 
 In these cases, `async` and `await` are effectively syntactic sugar for the same logic as the promises example uses.
 
-None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style you feel makes your tests simpler.
+None of these forms are particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style you feel makes your tests simpler.
