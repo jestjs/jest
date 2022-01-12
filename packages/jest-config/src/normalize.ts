@@ -369,8 +369,8 @@ const normalizeMissingOptions = (
   configPath: Config.Path | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
-  if (!options.name) {
-    options.name = createHash('md5')
+  if (!options.id) {
+    options.id = createHash('md5')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -928,7 +928,9 @@ export default async function normalize(
             typeof color !== 'string'
           ) {
             const errorMessage =
-              `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+              `  Option "${chalk.bold(
+                'displayNamename',
+              )}" must be of type:\n\n` +
               '  {\n' +
               '    name: string;\n' +
               '    color: string;\n' +
@@ -978,7 +980,7 @@ export default async function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'name':
+      case 'id':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':

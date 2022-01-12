@@ -380,7 +380,7 @@ export default class Runtime {
       ignorePattern,
       maxWorkers: options?.maxWorkers || 1,
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
-      name: config.name,
+      name: config.id,
       platforms: config.haste.platforms || ['ios', 'android'],
       resetCache: options?.resetCache,
       retainAllFiles: false,

@@ -84,28 +84,28 @@ it('picks a name based on the rootDir', async () => {
 });
 
 it('keeps custom project name based on the projects rootDir', async () => {
-  const name = 'test';
+  const id = 'test';
   const {options} = await normalize(
     {
-      projects: [{name, rootDir: '/path/to/foo'}],
+      projects: [{id, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect(options.projects[0].id).toBe(id);
 });
 
 it('keeps custom names based on the rootDir', async () => {
   const {options} = await normalize(
     {
-      name: 'custom-name',
+      id: 'custom-name',
       rootDir: '/root/path/foo',
     },
     {} as Config.Argv,
   );
 
-  expect(options.name).toBe('custom-name');
+  expect(options.id).toBe('custom-name');
 });
 
 it('minimal config is stable across runs', async () => {

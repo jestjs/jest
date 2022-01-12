@@ -203,7 +203,7 @@ class ScriptTransformer {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
-      'jest-transform-cache-' + this._config.name,
+      'jest-transform-cache-' + this._config.id,
       VERSION,
     );
     // Create sub folders based on the cacheKey to avoid creating one
