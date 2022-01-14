@@ -176,3 +176,17 @@ You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@
 ```bash
 yarn add --dev @types/jest
 ```
+
+#### Resolving: Cannot find module `./<module name>.js` from `./<module_name>.spec.ts`
+
+In order to support resolving import paths with a `.js` extension, which source file comes from a TypeScript module, one can add a custom resolver:
+
+```sh
+npm install --save-dev jest-ts-webcompat-resolver
+```
+
+And add to the `jest.config.js`:
+
+```
+resolver: 'jest-ts-webcompat-resolver'
+```
