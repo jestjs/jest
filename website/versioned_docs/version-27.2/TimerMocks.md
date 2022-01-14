@@ -22,7 +22,7 @@ module.exports = timerGame;
 ```javascript title="__tests__/timerGame-test.js"
 'use strict';
 
-jest.useFakeTimers();
+jest.useFakeTimers(); // or you can set "timers": "fake" globally in configuration file
 jest.spyOn(global, 'setTimeout');
 
 test('waits 1 second before ending the game', () => {
@@ -52,6 +52,8 @@ test('do something with real timers', () => {
   // ...
 });
 ```
+
+All of the following functions need fake timers to be set, either by `jest.useFakeTimers()` or via `"timers": "fake"` in the config file.
 
 ## Run All Timers
 
