@@ -1731,7 +1731,6 @@ describe('cwd', () => {
 describe('Defaults', () => {
   it('should be accepted by normalize', async () => {
     await normalize({...Defaults, rootDir: '/root'}, {} as Config.Argv);
-    console.log('wow');
     expect(console.warn).not.toHaveBeenCalled();
   });
 });

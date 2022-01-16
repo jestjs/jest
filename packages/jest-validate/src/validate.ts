@@ -84,12 +84,6 @@ const _validate = (
       options.recursiveDenylist &&
       !shouldSkipValidationForPath(path, key, options.recursiveDenylist)
     ) {
-      console.log({
-        config: config[key],
-        example: exampleConfig[key],
-        options,
-        arr: [...path, key],
-      });
       _validate(config[key], exampleConfig[key], options, [...path, key]);
     }
   }
