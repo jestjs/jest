@@ -280,6 +280,31 @@ export default async function watch(
     });
   }
 
+  const runTestWatcher = () => {
+    // Create a new testWatcher instance so that re-runs won't be blocked.
+    // The old instance that was passed to Jest will still be interrupted
+    // and prevent test runs from the previous run.
+    testWatcher = new TestWatcher({isWatchMode: true});
+
+    // Do not show any Watch Usage related stuff when running in a
+    // non-interactive environment
+    if (isInteractive) {
+      if (shouldDisplayWatchUsage) {
+        outputStream.write(usage(globalConfig, watchPlugins));
+        shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+        isWatchUsageDisplayed = true;
+      } else {
+        outputStream.write(showToggleUsagePrompt());
+        shouldDisplayWatchUsage = false;
+        isWatchUsageDisplayed = false;
+      }
+    } else {
+      outputStream.write('\n');
+    }
+    initialWatchTestSkipped = true;
+  };
+
+  let initialWatchTestSkipped = false;
   const startRun = (
     globalConfig: Config.GlobalConfig,
   ): Promise<void | null> => {
@@ -289,6 +314,12 @@ export default async function watch(
 
     testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && outputStream.write(specialChars.CLEAR);
+
+    if (!initialWatchTestSkipped) {
+      runTestWatcher();
+      return Promise.resolve();
+    }
+
     preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
@@ -304,27 +335,7 @@ export default async function watch(
       onComplete: results => {
         isRunning = false;
         hooks.getEmitter().onTestRunComplete(results);
-
-        // Create a new testWatcher instance so that re-runs won't be blocked.
-        // The old instance that was passed to Jest will still be interrupted
-        // and prevent test runs from the previous run.
-        testWatcher = new TestWatcher({isWatchMode: true});
-
-        // Do not show any Watch Usage related stuff when running in a
-        // non-interactive environment
-        if (isInteractive) {
-          if (shouldDisplayWatchUsage) {
-            outputStream.write(usage(globalConfig, watchPlugins));
-            shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-            isWatchUsageDisplayed = true;
-          } else {
-            outputStream.write(showToggleUsagePrompt());
-            shouldDisplayWatchUsage = false;
-            isWatchUsageDisplayed = false;
-          }
-        } else {
-          outputStream.write('\n');
-        }
+        runTestWatcher();
         failedTestsCache.setTestResults(results.testResults);
       },
       outputStream,

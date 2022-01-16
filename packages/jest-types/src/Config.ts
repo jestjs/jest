@@ -105,6 +105,7 @@ export type DefaultOptions = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
+  skipInitialWatchTest: boolean;
   slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
@@ -225,6 +226,7 @@ export type InitialOptions = Partial<{
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
+  skipInitialWatchTest: boolean;
   slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
@@ -329,6 +331,7 @@ export type GlobalConfig = {
   rootDir: Path;
   silent?: boolean;
   skipFilter: boolean;
+  skipInitialWatchTest: boolean;
   snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
@@ -388,6 +391,7 @@ export type ProjectConfig = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
+  skipInitialWatchTest: boolean;
   skipNodeResolution?: boolean;
   slowTestThreshold: number;
   snapshotResolver?: Path;
@@ -472,6 +476,7 @@ export type Argv = Arguments<
     setupFilesAfterEnv: Array<string>;
     showConfig: boolean;
     silent: boolean;
+    skipInitialWatchTest: boolean;
     snapshotSerializers: Array<string>;
     testEnvironment: string;
     testEnvironmentOptions: string;

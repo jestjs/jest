@@ -582,6 +582,8 @@ export default async function normalize(
     ),
   );
 
+  // normalized options are file
+
   if (options.preset) {
     options = await setupPreset(options, options.preset);
   }
@@ -995,6 +997,7 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'silent':
       case 'skipFilter':
+      case 'skipInitialWatchTest':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
       case 'snapshotFormat':

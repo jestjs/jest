@@ -38,6 +38,12 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.skipInitialWatchTest && !argv.watch) {
+    throw new Error(
+      `The --skipInitialWatchTest option requires --watch command to be provided`,
+    );
+  }
+
   if (argv.findRelatedTests && argv._.length === 0) {
     throw new Error(
       'The --findRelatedTests option requires file paths to be specified.\n' +
@@ -527,6 +533,10 @@ export const options = {
     description:
       'Disables the filter provided by --filter. Useful for CI jobs, or ' +
       'local enforcement when fixing tests.',
+    type: 'boolean',
+  },
+  skipInitialWatchTest: {
+    description: 'Skips initial tests run when using --watch',
     type: 'boolean',
   },
   snapshotSerializers: {

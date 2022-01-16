@@ -42,7 +42,6 @@ export async function runCLI(
   globalConfig: Config.GlobalConfig;
 }> {
   let results: AggregatedResult | undefined;
-
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
   const outputStream =
@@ -152,6 +151,8 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
+// let hasSkippedInitialWatchTest = false;
+
 const _run10000 = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
@@ -161,8 +162,11 @@ const _run10000 = async (
 ) => {
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
+  // if (globalConfig.skipInitialWatchTest && !hasSkippedInitialWatchTest) {
+  //   hasSkippedInitialWatchTest = true;
+  //   return;
+  // }
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-
   // Filter may need to do an HTTP call or something similar to setup.
   // We will wait on an async response from this before using the filter.
   let filter: Filter | undefined;
