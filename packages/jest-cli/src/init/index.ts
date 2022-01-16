@@ -148,7 +148,7 @@ export default async (
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
 
-  console.log();
+  console.log('');
   console.log(
     `📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`,
   );
