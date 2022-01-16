@@ -104,7 +104,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   setupFiles: [],
   setupFilesAfterEnv: [],
   skipFilter: false,
-  skipInitialWatchTest: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
   snapshotFormat: {},

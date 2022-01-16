@@ -391,7 +391,6 @@ export type ProjectConfig = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
-  skipInitialWatchTest: boolean;
   skipNodeResolution?: boolean;
   slowTestThreshold: number;
   snapshotResolver?: Path;

@@ -31,6 +31,7 @@ import {
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
+import {options} from './../../jest-repl/src/cli/args';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
@@ -315,7 +316,7 @@ export default async function watch(
     testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && outputStream.write(specialChars.CLEAR);
 
-    if (!initialWatchTestSkipped) {
+    if (!initialWatchTestSkipped && globalConfig.skipInitialWatchTest) {
       runTestWatcher();
       return Promise.resolve();
     }
