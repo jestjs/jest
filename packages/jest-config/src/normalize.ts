@@ -27,6 +27,7 @@ import {
   tryRealpath,
 } from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
+import {options} from './../../jest-repl/src/cli/args';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';

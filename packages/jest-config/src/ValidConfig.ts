@@ -108,6 +108,7 @@ const initialOptions: Config.InitialOptions = {
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
+  skipInitialWatchTest: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
   snapshotFormat: PRETTY_FORMAT_DEFAULTS,
