@@ -213,7 +213,6 @@ const groupOptions = (
     setupFiles: options.setupFiles,
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
-    skipInitialWatchTest: options.skipInitialWatchTest,
     skipNodeResolution: options.skipNodeResolution,
     slowTestThreshold: options.slowTestThreshold,
     snapshotFormat: options.snapshotFormat,
