@@ -31,7 +31,6 @@ import {
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
-import {options} from './../../jest-repl/src/cli/args';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';

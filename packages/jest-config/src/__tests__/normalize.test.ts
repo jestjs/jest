@@ -1731,6 +1731,7 @@ describe('cwd', () => {
 describe('Defaults', () => {
   it('should be accepted by normalize', async () => {
     await normalize({...Defaults, rootDir: '/root'}, {} as Config.Argv);
+
     expect(console.warn).not.toHaveBeenCalled();
   });
 });
