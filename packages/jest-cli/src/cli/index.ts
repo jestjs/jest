@@ -72,7 +72,6 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
       : Object.keys(rawArgv),
   );
 
-  // console.log('argv ', argv);
   // strip dashed args
   return Object.keys(argv).reduce<Config.Argv>(
     (result, key) => {

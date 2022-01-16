@@ -582,8 +582,6 @@ export default async function normalize(
     ),
   );
 
-  // normalized options are file
-
   if (options.preset) {
     options = await setupPreset(options, options.preset);
   }

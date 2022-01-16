@@ -283,11 +283,7 @@ export default async function runJest({
     testSchedulerContext,
   );
 
-  // if (!initialWatchTestSkipped) {
-  //   allTests = [];
-  // }
   const results = await scheduler.scheduleTests(allTests, testWatcher);
-  // initialWatchTestSkipped = true;
 
   await sequencer.cacheResults(allTests, results);
 
