@@ -95,6 +95,7 @@ exports[`prints the config object 1`] = `
     "runTestsByPath": false,
     "silent": false,
     "skipFilter": false,
+    "skipInitialWatchTest": false,
     "snapshotFormat": {},
     "testFailureExitCode": 1,
     "testNamePattern": "",
