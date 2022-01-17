@@ -200,7 +200,7 @@ export default class TestRunner {
           await this.eventEmitter.emit('test-file-start', [test]);
         }
 
-        const promise = worker.worker({
+        const promise = await worker.worker({
           config: test.context.config,
           context: {
             ...this._context,

@@ -82,7 +82,7 @@ function testJestWorker() {
 
     async function countToFinish() {
       if (++count === calls) {
-        farm.end();
+        await farm.end();
         const endTime = performance.now();
 
         // Let all workers go down.
