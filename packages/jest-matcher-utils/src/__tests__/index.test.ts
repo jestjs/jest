@@ -342,3 +342,37 @@ describe('matcherHint', () => {
     expect(received).toMatch(substringPositive);
   });
 });
+
+describe('printDiffOrStringify', () => {
+  test('expected asymmetric matchers should be diffable', () => {
+    jest.dontMock('jest-diff');
+    jest.resetModules();
+    const {printDiffOrStringify} = require('../');
+
+    const expected = expect.objectContaining({
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 2,
+        },
+      ],
+      foo: 'bar',
+    });
+    const received = {
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 1,
+        },
+      ],
+      foo: 'bar',
+    };
+    expect(
+      printDiffOrStringify(expected, received, 'Expected', 'Received', false),
+    ).toMatchSnapshot();
+  });
+});
