@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Add a fix for `.toHaveProperty('')` ([#12251](https://github.com/facebook/jest/pull/12251))
+
 ### Chore & Maintenance
 
 - `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
