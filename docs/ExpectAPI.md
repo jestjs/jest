@@ -348,11 +348,16 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that it's of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
+}
+
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
 }
 
 test('randocall calls its callback with a number', () => {
@@ -360,6 +365,13 @@ test('randocall calls its callback with a number', () => {
   randocall(mock);
   expect(mock).toBeCalledWith(expect.any(Number));
 });
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 ```
 
 ### `expect.arrayContaining(array)`
