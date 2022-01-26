@@ -134,7 +134,7 @@ class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions() {
-    return ['node'];
+    return ['node', 'node-addons'];
   }
 
   getVmContext(): Context | null {
