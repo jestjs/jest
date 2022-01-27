@@ -82,6 +82,13 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     if (typeof performance !== 'undefined') {
       global.performance = performance;
     }
+    if (
+      typeof atob !== 'undefined' &&
+      typeof btoa !== 'undefined'
+    ) {
+      global.atob = atob;
+      global.btoa = btoa;
+    }
     installCommonGlobals(global, config.globals);
 
     this.moduleMocker = new ModuleMocker(global);
