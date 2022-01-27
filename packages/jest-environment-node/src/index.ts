@@ -82,7 +82,7 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     if (typeof performance !== 'undefined') {
       global.performance = performance;
     }
-    // performance is global in Node >= 16
+    // atob and btoa are global in Node >= 16
     if (typeof atob !== 'undefined' && typeof btoa !== 'undefined') {
       global.atob = atob;
       global.btoa = btoa;
