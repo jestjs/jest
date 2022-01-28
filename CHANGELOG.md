@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[expect]` Add a fix for `.toHaveProperty('')` ([#12251](https://github.com/facebook/jest/pull/12251))
 - `[jest-environment-node]` Add `atob` and `btoa` ([#12269](https://github.com/facebook/jest/pull/12269))
 
 ### Chore & Maintenance
