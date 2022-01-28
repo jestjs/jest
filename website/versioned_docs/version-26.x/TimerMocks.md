@@ -137,7 +137,7 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
+```javascript title="__tests__/timerGame-test.js"
 jest.useFakeTimers();
 it('calls the callback after 1 second via advanceTimersByTime', () => {
   const timerGame = require('../timerGame');
