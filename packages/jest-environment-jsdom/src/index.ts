@@ -149,7 +149,7 @@ class JSDOMEnvironment implements JestEnvironment<number> {
     this.fakeTimersModern = null;
   }
 
-  exportConditions() {
+  exportConditions(): Array<string> {
     return ['browser'];
   }
 

@@ -133,7 +133,7 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     this.fakeTimersModern = null;
   }
 
-  exportConditions() {
+  exportConditions(): Array<string> {
     return ['node', 'node-addons'];
   }
 
