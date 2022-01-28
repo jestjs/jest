@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-environment-node]` Add `atob` and `btoa` ([#12269](https://github.com/facebook/jest/pull/12269))
+
 ### Chore & Maintenance
 
 - `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
