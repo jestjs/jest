@@ -24,7 +24,7 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/main/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap) that looks like this:
+The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/main/examples/snapshot/__tests__/__snapshots__/link.test.js.snap) that looks like this:
 
 ```javascript
 exports[`renders correctly 1`] = `
