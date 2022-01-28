@@ -112,7 +112,7 @@ describe('custom transformer', () => {
     'transform/custom-instrumenting-preprocessor',
   );
 
-  it('proprocesses files', () => {
+  it('preprocesses files', () => {
     const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
     expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
