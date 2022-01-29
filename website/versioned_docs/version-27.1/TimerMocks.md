@@ -76,6 +76,8 @@ test('calls the callback after 1 second', () => {
 });
 ```
 
+Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `legacy` is still the default one. You can read how to enable `modern` implementation [here](/blog/2020/05/05/jest-26#new-fake-timers).
+
 ## Run Pending Timers
 
 There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
