@@ -14,6 +14,7 @@ import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
 import {format as prettyFormat} from 'pretty-format';
+import {fileURLToPath} from 'url';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
@@ -273,6 +274,9 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
+      if (parsedFrame.file.startsWith('file://')) {
+        parsedFrame.file = fileURLToPath(parsedFrame.file);
+      }
       return parsedFrame as Frame;
     }
   }
