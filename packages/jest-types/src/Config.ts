@@ -37,6 +37,8 @@ export type HasteConfig = {
   /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
+  /** Whether to search for tests in node_modules. */
+  retainAllFiles?: boolean;
   hasteMapModulePath?: string;
 };
 

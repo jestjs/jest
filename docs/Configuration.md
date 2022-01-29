@@ -508,6 +508,8 @@ type HasteConfig = {
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
   /** Whether to throw on error on module collision. */
+  // Whether to search for tests in node_modules.
+  retainAllFiles?: boolean;
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;

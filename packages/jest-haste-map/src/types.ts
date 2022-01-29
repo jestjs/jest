@@ -58,6 +58,7 @@ export type WorkerMessage = {
   rootDir: string;
   filePath: string;
   hasteImplModulePath?: string;
+  retainAllFiles?: boolean;
 };
 
 export type WorkerMetadata = {
