@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[mockFunctions]` Added mockFn.mock.lastCall to retreive last Arguement ([#12285](https://github.com/facebook/jest/pull/12285))
+
 ### Fixes
 
 - `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12136](https://github.com/facebook/jest/pull/12136))
