@@ -7,10 +7,8 @@
 
 import chalk = require('chalk');
 import Emittery = require('emittery');
-import exit = require('exit');
 import throat from 'throat';
 import type {
-  SerializableError,
   Test,
   TestEvents,
   TestFileEvent,
@@ -225,22 +223,6 @@ export default class TestRunner {
         return promise;
       });
 
-    const onError = async (err: SerializableError, test: Test) => {
-      // Remove `if(onFailure)` in Jest 27
-      if (onFailure) {
-        await onFailure(test, err);
-      } else {
-        await this.eventEmitter.emit('test-file-failure', [test, err]);
-      }
-      if (err.type === 'ProcessTerminatedError') {
-        console.error(
-          'A worker process has quit unexpectedly! ' +
-            'Most likely this is an initialization error.',
-        );
-        exit(1);
-      }
-    };
-
     const onInterrupt = new Promise((_, reject) => {
       watcher.on('change', state => {
         if (state.interrupted) {
@@ -262,7 +244,13 @@ export default class TestRunner {
               ]);
             }
           })
-          .catch(error => onError(error, test)),
+          .catch(error => {
+            if (onFailure) {
+              return onFailure(test, error);
+            } else {
+              return this.eventEmitter.emit('test-file-failure', [test, error]);
+            }
+          }),
       ),
     );
 
