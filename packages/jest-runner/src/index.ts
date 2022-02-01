@@ -95,11 +95,10 @@ export default class TestRunner {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
-              let sendMessageToJest: TestFileEvent;
-
               // Remove `if(onStart)` in Jest 27
               if (onStart) {
                 await onStart(test);
+
                 return runTest(
                   test.path,
                   this._globalConfig,
@@ -108,41 +107,42 @@ export default class TestRunner {
                   this._context,
                   undefined,
                 );
-              } else {
-                // `deepCyclicCopy` used here to avoid mem-leak
-                sendMessageToJest = (eventName, args) =>
-                  this.eventEmitter.emit(
-                    eventName,
-                    deepCyclicCopy(args, {keepPrototype: false}),
-                  );
-
-                await this.eventEmitter.emit('test-file-start', [test]);
-                return runTest(
-                  test.path,
-                  this._globalConfig,
-                  test.context.config,
-                  test.context.resolver,
-                  this._context,
-                  sendMessageToJest,
-                );
               }
+
+              // `deepCyclicCopy` used here to avoid mem-leak
+              const sendMessageToJest: TestFileEvent = (eventName, args) =>
+                this.eventEmitter.emit(
+                  eventName,
+                  deepCyclicCopy(args, {keepPrototype: false}),
+                );
+
+              await this.eventEmitter.emit('test-file-start', [test]);
+
+              return runTest(
+                test.path,
+                this._globalConfig,
+                test.context.config,
+                test.context.resolver,
+                this._context,
+                sendMessageToJest,
+              );
             })
             .then(result => {
               if (onResult) {
                 return onResult(test, result);
-              } else {
-                return this.eventEmitter.emit('test-file-success', [
-                  test,
-                  result,
-                ]);
               }
+
+              return this.eventEmitter.emit('test-file-success', [
+                test,
+                result,
+              ]);
             })
             .catch(err => {
               if (onFailure) {
                 return onFailure(test, err);
-              } else {
-                return this.eventEmitter.emit('test-file-failure', [test, err]);
               }
+
+              return this.eventEmitter.emit('test-file-failure', [test, err]);
             }),
         ),
       Promise.resolve(),
@@ -237,19 +237,16 @@ export default class TestRunner {
           .then(result => {
             if (onResult) {
               return onResult(test, result);
-            } else {
-              return this.eventEmitter.emit('test-file-success', [
-                test,
-                result,
-              ]);
             }
+
+            return this.eventEmitter.emit('test-file-success', [test, result]);
           })
           .catch(error => {
             if (onFailure) {
               return onFailure(test, error);
-            } else {
-              return this.eventEmitter.emit('test-file-failure', [test, error]);
             }
+
+            return this.eventEmitter.emit('test-file-failure', [test, error]);
           }),
       ),
     );
@@ -267,6 +264,7 @@ export default class TestRunner {
         );
       }
     };
+
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
