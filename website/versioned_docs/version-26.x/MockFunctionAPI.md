@@ -79,16 +79,6 @@ mockFn.mock.instances[0] === a; // true
 mockFn.mock.instances[1] === b; // true
 ```
 
-### `mockFn.mock.lastCall`
-
-An array containing the call arguments of the last call that was made to this mock function. If the function was not called, it will return `undefined`.
-
-For example: A mock function `f` that has been called twice, with the arguments `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')`, would have a `mock.lastCall` array that looks like this:
-
-```js
-['arg3', 'arg4'];
-```
-
 ### `mockFn.mockClear()`
 
 Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.

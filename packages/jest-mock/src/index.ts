@@ -520,10 +520,10 @@ export class ModuleMocker {
       state = this._defaultMockState();
       this._mockState.set(f, state);
     }
-
-    state.lastCall = state.calls[state.calls.length - 1];
-
-    return state;
+    if (state.calls.length > 0) {
+      state.lastCall = state.calls[state.calls.length - 1];
+      return state;
+    }
   }
 
   private _defaultMockConfig(): MockFunctionConfig {
@@ -543,7 +543,6 @@ export class ModuleMocker {
       calls: [],
       instances: [],
       invocationCallOrder: [],
-      lastCall: undefined,
       results: [],
     };
   }
