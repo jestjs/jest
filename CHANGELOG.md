@@ -3,6 +3,7 @@
 ### Features
 
 - `[expect]` [**BREAKING**] Migrate to ESM ([#12344](https://github.com/facebook/jest/pull/12344))
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
