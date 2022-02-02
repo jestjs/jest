@@ -522,8 +522,8 @@ export class ModuleMocker {
     }
     if (state.calls.length > 0) {
       state.lastCall = state.calls[state.calls.length - 1];
-      return state;
     }
+    return state;
   }
 
   private _defaultMockConfig(): MockFunctionConfig {
