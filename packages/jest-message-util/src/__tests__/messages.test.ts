@@ -373,7 +373,7 @@ describe('formatStackTrace', () => {
 
 it('getTopFrame should return a path for mjs files', () => {
   const frame = getTopFrame([
-    '  at stack (file:///Users/user/project/inline.mjs:1:1)'
+    '  at stack (file:///Users/user/project/inline.mjs:1:1)',
   ]);
 
   expect(frame.file).toBe('/Users/user/project/inline.mjs');
