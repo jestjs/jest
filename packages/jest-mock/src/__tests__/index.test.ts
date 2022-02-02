@@ -1087,7 +1087,7 @@ describe('moduleMocker', () => {
 
     mock.mockReset();
 
-    expect(mock.mock.lastCall).toBeUndefined();
+    expect(mock.mock).not.toHaveProperty('lastCall');
   });
 
   test('mockName gets reset by mockReset', () => {
