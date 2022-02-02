@@ -20,9 +20,8 @@ expectType<typeof jest>(jest.deepUnmock('moduleName'));
 expectType<typeof jest>(jest.disableAutomock());
 expectType<typeof jest>(jest.doMock('moduleName'));
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn()));
-
-expectError(jest.doMock('moduleName', jest.fn(), {}));
-expectError(jest.doMock('moduleName', jest.fn(), {virtual: true}));
+expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {}));
+expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {virtual: true}));
 
 expectType<typeof jest>(jest.dontMock('moduleName'));
 expectType<typeof jest>(jest.enableAutomock());
