@@ -1067,7 +1067,7 @@ describe('moduleMocker', () => {
   test('jest.fn should provide the correct lastCall', () => {
     const mock = jest.fn();
 
-    expect(mock.mock.lastCall).toBeUndefined();
+    expect(mock.mock).not.toHaveProperty('lastCall');
 
     mock('first');
     mock('second');
