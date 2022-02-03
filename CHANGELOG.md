@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect]` Add a fix for `.toHaveProperty('')` ([#12251](https://github.com/facebook/jest/pull/12251))
+- `[jest-each, @jest/globals]` Allow passing `ReadonlyArray` type of a table to `describe.each` and `test.each` ([#12297](https://github.com/facebook/jest/pull/12297))
 - `[@jest/globals]` Add missing `options` argument to `jest.doMock` typing ([#12292](https://github.com/facebook/jest/pull/12292))
 - `[jest-environment-node]` Add `atob` and `btoa` ([#12269](https://github.com/facebook/jest/pull/12269))
 - `[jest-matcher-utils]` Correct diff for expected asymmetric matchers ([#12264](https://github.com/facebook/jest/pull/12264))
