@@ -16,9 +16,9 @@ import {
   validateTemplateTableArguments,
 } from './validation';
 
-export type EachTests = Array<{
+export type EachTests = ReadonlyArray<{
   title: string;
-  arguments: Array<unknown>;
+  arguments: ReadonlyArray<unknown>;
 }>;
 
 // type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
@@ -80,7 +80,7 @@ const getHeadingKeys = (headings: string): Array<string> =>
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
-  params: Array<unknown>,
+  params: ReadonlyArray<unknown>,
   test: Global.EachTestFn<EachCallback>,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length
