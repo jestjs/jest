@@ -24,7 +24,13 @@ const asyncFn = async () => {};
 const genFn = function* () {};
 const timeout = 5;
 const testName = 'Test name';
-const testTable = [[1, 2]];
+
+const list = [1, 2, 3];
+const table = [
+  [1, 2],
+  [3, 4],
+];
+const readonlyTable = [[1, 2], 'one'] as const;
 
 // https://jestjs.io/docs/api#methods
 expectType<void>(afterAll(fn));
@@ -84,25 +90,234 @@ expectError(
 expectType<void>(test(testName, fn));
 expectType<void>(test(testName, asyncFn));
 expectType<void>(test(testName, genFn));
-expectType<void>(test.each(testTable)(testName, fn));
-expectType<void>(test.each(testTable)(testName, fn, timeout));
-expectType<void>(test.only.each(testTable)(testName, fn));
-expectType<void>(test.only.each(testTable)(testName, fn, timeout));
-expectType<void>(test.skip.each(testTable)(testName, fn));
-expectType<void>(test.skip.each(testTable)(testName, fn, timeout));
-expectType<void>(test.concurrent.each(testTable)(testName, asyncFn));
-expectType<void>(test.concurrent.each(testTable)(testName, asyncFn, timeout));
-expectType<void>(test.concurrent.only.each(testTable)(testName, asyncFn));
+
+expectType<void>(test.each(list)(testName, fn));
+expectType<void>(test.each(list)(testName, fn, timeout));
+expectType<void>(test.each(table)(testName, fn));
+expectType<void>(test.each(table)(testName, fn, timeout));
+expectType<void>(test.each(readonlyTable)(testName, fn));
+expectType<void>(test.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(test.only.each(list)(testName, fn));
+expectType<void>(test.only.each(list)(testName, fn, timeout));
+expectType<void>(test.only.each(table)(testName, fn));
+expectType<void>(test.only.each(table)(testName, fn, timeout));
+expectType<void>(test.only.each(readonlyTable)(testName, fn));
+expectType<void>(test.only.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(test.skip.each(list)(testName, fn));
+expectType<void>(test.skip.each(list)(testName, fn, timeout));
+expectType<void>(test.skip.each(table)(testName, fn));
+expectType<void>(test.skip.each(table)(testName, fn, timeout));
+expectType<void>(test.skip.each(readonlyTable)(testName, fn));
+expectType<void>(test.skip.each(readonlyTable)(testName, fn, timeout));
+
 expectType<void>(
-  test.concurrent.only.each(testTable)(testName, asyncFn, timeout),
+  test.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
 );
-expectType<void>(test.concurrent.skip.each(testTable)(testName, asyncFn));
+
 expectType<void>(
-  test.concurrent.skip.each(testTable)(testName, asyncFn, timeout),
+  test.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
 );
-expectType<void>(describe.each(testTable)(testName, fn));
-expectType<void>(describe.each(testTable)(testName, fn, timeout));
-expectType<void>(describe.only.each(testTable)(testName, fn));
-expectType<void>(describe.only.each(testTable)(testName, fn, timeout));
-expectType<void>(describe.skip.each(testTable)(testName, fn));
-expectType<void>(describe.skip.each(testTable)(testName, fn, timeout));
+
+expectType<void>(
+  test.only.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
+);
+
+expectType<void>(
+  test.only.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
+);
+
+expectType<void>(
+  test.skip.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
+);
+
+expectType<void>(
+  test.skip.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
+);
+
+expectType<void>(test.concurrent.each(list)(testName, asyncFn));
+expectType<void>(test.concurrent.each(list)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.each(table)(testName, asyncFn));
+expectType<void>(test.concurrent.each(table)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.each(readonlyTable)(testName, asyncFn));
+expectType<void>(
+  test.concurrent.each(readonlyTable)(testName, asyncFn, timeout),
+);
+
+expectType<void>(test.concurrent.only.each(list)(testName, asyncFn));
+expectType<void>(test.concurrent.only.each(list)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.only.each(table)(testName, asyncFn));
+expectType<void>(test.concurrent.only.each(table)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.only.each(readonlyTable)(testName, asyncFn));
+expectType<void>(
+  test.concurrent.only.each(readonlyTable)(testName, asyncFn, timeout),
+);
+
+expectType<void>(test.concurrent.skip.each(list)(testName, asyncFn));
+expectType<void>(test.concurrent.skip.each(list)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.skip.each(table)(testName, asyncFn));
+expectType<void>(test.concurrent.skip.each(table)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.skip.each(readonlyTable)(testName, asyncFn));
+expectType<void>(
+  test.concurrent.skip.each(readonlyTable)(testName, asyncFn, timeout),
+);
+
+expectType<void>(
+  test.concurrent.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn),
+);
+
+expectType<void>(
+  test.concurrent.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn, timeout),
+);
+
+expectType<void>(
+  test.concurrent.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn),
+);
+
+expectType<void>(
+  test.concurrent.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn, timeout),
+);
+
+expectType<void>(
+  test.concurrent.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn),
+);
+
+expectType<void>(
+  test.concurrent.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`(testName, asyncFn, timeout),
+);
+
+expectType<void>(describe.each(list)(testName, fn));
+expectType<void>(describe.each(list)(testName, fn, timeout));
+expectType<void>(describe.each(table)(testName, fn));
+expectType<void>(describe.each(table)(testName, fn, timeout));
+expectType<void>(describe.each(readonlyTable)(testName, fn));
+expectType<void>(describe.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(describe.only.each(list)(testName, fn));
+expectType<void>(describe.only.each(list)(testName, fn, timeout));
+expectType<void>(describe.only.each(table)(testName, fn));
+expectType<void>(describe.only.each(table)(testName, fn, timeout));
+expectType<void>(describe.only.each(readonlyTable)(testName, fn));
+expectType<void>(describe.only.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(describe.skip.each(list)(testName, fn));
+expectType<void>(describe.skip.each(list)(testName, fn, timeout));
+expectType<void>(describe.skip.each(table)(testName, fn));
+expectType<void>(describe.skip.each(table)(testName, fn, timeout));
+expectType<void>(describe.skip.each(readonlyTable)(testName, fn));
+expectType<void>(describe.skip.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(
+  describe.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
+);
+
+expectType<void>(
+  describe.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
+);
+
+expectType<void>(
+  describe.only.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
+);
+
+expectType<void>(
+  describe.only.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
+);
+
+expectType<void>(
+  describe.skip.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn),
+);
+
+expectType<void>(
+  describe.skip.each`
+    a    | b    | expected
+    ${1} | ${1} | ${2}
+    ${1} | ${2} | ${3}
+    ${2} | ${1} | ${3}
+  `(testName, fn, timeout),
+);
