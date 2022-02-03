@@ -9,7 +9,12 @@
 import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
-import {formatExecError, formatResultsErrors, formatStackTrace} from '..';
+import {
+  formatExecError,
+  formatResultsErrors,
+  formatStackTrace,
+  getTopFrame,
+} from '..';
 
 const rootDir = tempy.directory();
 
@@ -364,4 +369,19 @@ describe('formatStackTrace', () => {
 
     expect(message).toMatchSnapshot();
   });
+});
+
+it('getTopFrame should return a path for mjs files', () => {
+  let stack: Array<string>;
+  let expectedFile: string;
+  if (process.platform === 'win32') {
+    stack = ['  at stack (file:///C:/Users/user/project/inline.mjs:1:1)'];
+    expectedFile = 'C:/Users/user/project/inline.mjs';
+  } else {
+    stack = ['  at stack (file:///Users/user/project/inline.mjs:1:1)'];
+    expectedFile = '/Users/user/project/inline.mjs';
+  }
+  const frame = getTopFrame(stack);
+
+  expect(frame.file).toBe(expectedFile);
 });
