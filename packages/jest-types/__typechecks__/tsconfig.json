@@ -1,6 +1,9 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "@tsconfig/node10/tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true
-  }
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": ["**/*"]
 }
