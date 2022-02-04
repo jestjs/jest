@@ -23,12 +23,5 @@
     "esModuleInterop": false,
     "skipLibCheck": false,
     "resolveJsonModule": true
-  },
-  "exclude": [
-    ".yarn/releases/*",
-    "**/__mocks__/**/*",
-    "**/__tests__/**/*",
-    "**/__typechecks__/**/*",
-    "**/build/**/*"
-  ]
+  }
 }
