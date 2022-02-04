@@ -1,9 +1,3 @@
 {
-  "extends": "@tsconfig/node10/tsconfig.json",
-  "compilerOptions": {
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "strict": true
-  },
-  "include": ["**/*"]
+  "extends": "../../../tsconfig.tsd.json"
 }
