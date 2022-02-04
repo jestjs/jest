@@ -2592,7 +2592,7 @@ __metadata:
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@tsconfig/node10": ^1.0.8
-    "@tsd/typescript": ^4.5.5
+    "@tsd/typescript": ~4.1.5
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -4440,13 +4440,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:^4.5.5":
-  version: 4.5.5
-  resolution: "@tsd/typescript@npm:4.5.5"
+"@tsd/typescript@npm:~4.1.5":
+  version: 4.1.5
+  resolution: "@tsd/typescript@npm:4.1.5"
   bin:
     tsc: typescript/bin/tsc
     tsserver: typescript/bin/tsserver
-  checksum: 8520820b99dbd4121a81d88a3a76ecc3519711c41baac5fb865b06cc90eac23f3b42a1f7c0beefdb042107ccf50db0b92115f7a2fc65852cacd59ebb9c2dd83f
+  checksum: 6f1f27ca5a67f30600c0da7c62ccf915374049a785660913cdbec45ab99dc2f0e1cfa1606cbc043b313cdff20424c0404a94685143e99ed58105efd0cab94df4
   languageName: node
   linkType: hard
 
