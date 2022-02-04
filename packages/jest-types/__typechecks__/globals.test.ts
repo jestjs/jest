@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'mlh-tsd';
+import {expectError, expectType} from 'tsd-lite';
 import {
   afterAll,
   afterEach,
