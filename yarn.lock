@@ -2803,7 +2803,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
-    tsd-lite: ^0.5.0
+    tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
 
@@ -9883,12 +9883,14 @@ __metadata:
   dependencies:
     "@jest/test-utils": ^27.4.6
     "@jest/types": ^27.4.2
+    "@tsd/typescript": ~4.1.5
     chalk: ^4.0.0
     fast-check: ^2.0.0
     immutable: ^4.0.0
     jest-get-type: ^27.4.0
     jest-matcher-utils: ^27.4.6
     jest-message-util: ^27.4.6
+    tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
 
@@ -20663,12 +20665,12 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"tsd-lite@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "tsd-lite@npm:0.5.0"
+"tsd-lite@npm:^0.5.0, tsd-lite@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "tsd-lite@npm:0.5.1"
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 6590ca24f2ac07e961ec3786a94269c26bfa93b09c3d397f5f3c3b09fedee515dbe96aa09de4c24ce3a42a3bbe47543f0a30aa06770b34b4a6eb8b61e92dce21
+  checksum: 875cf890f3cc10c0974a4588568ee9e5202b047480cd261dbe1e7487fb25b56df6217b2a3e95b5cc1a88d27e0e1f13299b3048b908afe2da782369e381ad083c
   languageName: node
   linkType: hard
 

@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {expectError} from 'tsd-lite';
 import type * as expect from 'expect';
 
-export type M = expect.Matchers<void, unknown>;
-export type N = expect.Matchers<void>;
-// @ts-expect-error: Generic type 'Matchers<R, T>' requires between 1 and 2 type arguments.
-export type E = expect.Matchers;
+type M = expect.Matchers<void, unknown>;
+type N = expect.Matchers<void>;
+
+expectError(() => {
+  type E = expect.Matchers;
+});
