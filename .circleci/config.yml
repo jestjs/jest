@@ -28,7 +28,6 @@ jobs:
       - checkout
       - node/install:
           node-version: << parameters.node-version >>
-          install-yarn: true
       - node/install-packages: *install
       - when:
           condition: << parameters.partial >>
@@ -50,7 +49,6 @@ jobs:
       - checkout
       - node/install:
           node-version: lts/*
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak
