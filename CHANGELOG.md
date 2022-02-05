@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-mock]` Added `mockFn.mock.lastCall` to retrieve last argument ([#12285](https://github.com/facebook/jest/pull/12285))
+
 ### Fixes
 
 - `[expect]` Add a fix for `.toHaveProperty('')` ([#12251](https://github.com/facebook/jest/pull/12251))
