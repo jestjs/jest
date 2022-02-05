@@ -2797,6 +2797,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
+    "@tsd/typescript": ~4.1.5
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
