@@ -27,7 +27,7 @@
     "chalk": "^4.0.0"
   },
   "devDependencies": {
-    "mlh-tsd": "^0.14.1"
+    "tsd-lite": "^0.5.0"
   },
   "publishConfig": {
     "access": "public"

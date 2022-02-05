@@ -58,6 +58,7 @@ test('do something with real timers', () => {
 Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
+jest.useFakeTimers();
 test('calls the callback after 1 second', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
@@ -156,7 +157,8 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
+```javascript title="__tests__/timerGame-test.js"
+jest.useFakeTimers();
 it('calls the callback after 1 second via advanceTimersByTime', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();

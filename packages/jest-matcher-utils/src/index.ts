@@ -294,13 +294,6 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   }
 
   if (
-    expectedType === 'object' &&
-    typeof (expected as any).asymmetricMatch === 'function'
-  ) {
-    return false;
-  }
-
-  if (
     receivedType === 'object' &&
     typeof (received as any).asymmetricMatch === 'function'
   ) {

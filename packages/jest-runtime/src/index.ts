@@ -1924,7 +1924,13 @@ export default class Runtime {
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
-    const mocked = this._moduleMocker.mocked.bind(this._moduleMocker);
+    const mocked =
+      this._moduleMocker.mocked?.bind(this._moduleMocker) ??
+      (() => {
+        throw new Error(
+          'Your test environment does not support `mocked`, please update it.',
+        );
+      });
 
     const setTimeout = (timeout: number) => {
       if (this._environment.global.jasmine) {
