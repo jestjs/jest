@@ -22,7 +22,7 @@ module.exports = timerGame;
 ```javascript title="__tests__/timerGame-test.js"
 'use strict';
 
-jest.useFakeTimers();
+jest.useFakeTimers(); // or you can set "timers": "fake" globally in configuration file
 
 test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');
@@ -35,11 +35,14 @@ test('waits 1 second before ending the game', () => {
 
 Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
 
+All of the following functions need fake timers to be set, either by `jest.useFakeTimers()` or via `"timers": "fake"` in the config file.
+
 ## Run All Timers
 
 Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
+jest.useFakeTimers();
 test('calls the callback after 1 second', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
@@ -134,7 +137,8 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
+```javascript title="__tests__/timerGame-test.js"
+jest.useFakeTimers();
 it('calls the callback after 1 second via advanceTimersByTime', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
