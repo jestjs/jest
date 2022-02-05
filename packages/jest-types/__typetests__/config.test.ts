@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable} from 'mlh-tsd';
+import {expectAssignable} from 'tsd-lite';
 import type {Config} from '@jest/types';
 
 expectAssignable<Config.InitialOptions>({

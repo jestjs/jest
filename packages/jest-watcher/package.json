@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "27.4.2",
+  "version": "27.4.6",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -12,7 +12,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "^27.4.2",
+    "@jest/test-result": "^27.4.6",
     "@jest/types": "^27.4.2",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",

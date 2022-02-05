@@ -1,6 +1,6 @@
 **/__mocks__/**
 **/__tests__/**
-__typechecks__
+__typetests__
 src
 tsconfig.json
 tsconfig.tsbuildinfo

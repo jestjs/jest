@@ -36,7 +36,7 @@ module.exports = {
   ],
   testPathIgnorePatterns: [
     '/__arbitraries__/',
-    '/__typechecks__/',
+    '/__typetests__/',
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',

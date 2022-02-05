@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "27.4.2",
+  "version": "27.4.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,7 +22,7 @@
     "chalk": "^4.0.0",
     "jest-get-type": "^27.4.0",
     "leven": "^3.1.0",
-    "pretty-format": "^27.4.2"
+    "pretty-format": "^27.4.6"
   },
   "devDependencies": {
     "@types/yargs": "^16.0.0"
