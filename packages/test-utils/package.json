@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "27.4.6",
+  "version": "27.5.0",
   "private": true,
   "license": "MIT",
   "main": "./build/index.js",
@@ -13,11 +13,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.4.2",
+    "@jest/types": "^27.5.0",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "^27.4.6",
+    "pretty-format": "^27.5.0",
     "semver": "^7.3.2"
   },
   "devDependencies": {

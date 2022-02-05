@@ -1,6 +1,6 @@
 {
   "name": "jest-message-util",
-  "version": "27.4.6",
+  "version": "27.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -21,12 +21,12 @@
   },
   "dependencies": {
     "@babel/code-frame": "^7.12.13",
-    "@jest/types": "^27.4.2",
+    "@jest/types": "^27.5.0",
     "@types/stack-utils": "^2.0.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "micromatch": "^4.0.4",
-    "pretty-format": "^27.4.6",
+    "pretty-format": "^27.5.0",
     "slash": "^3.0.0",
     "stack-utils": "^2.0.3"
   },
