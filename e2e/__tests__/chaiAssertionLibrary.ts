@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -16,5 +15,5 @@ test('chai assertion errors should display properly', () => {
 
   const {stderr} = runJest('chai-assertion-library-errors');
   const {rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });

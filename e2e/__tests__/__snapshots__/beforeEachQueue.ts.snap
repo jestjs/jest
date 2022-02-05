@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Correct beforeEach order ensures the correct order for beforeEach 1`] = `
-  console.log
+"  console.log
     BeforeEach
 
       at Object.log (__tests__/beforeEachQueue.test.js:10:13)
@@ -25,5 +25,5 @@ exports[`Correct beforeEach order ensures the correct order for beforeEach 1`] =
     It Bar
 
       at Object.log (__tests__/beforeEachQueue.test.js:22:13)
-
+"
 `;

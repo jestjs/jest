@@ -7,6 +7,7 @@
 
 'use strict';
 
+/** @type import('@jest/types').Config.InitialOptions */
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
@@ -30,9 +31,11 @@ module.exports = {
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
+  snapshotFormat: {
+    escapeString: false,
+  },
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
-    require.resolve('jest-snapshot-serializer-raw'),
   ],
   testPathIgnorePatterns: [
     '/__arbitraries__/',

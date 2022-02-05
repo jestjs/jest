@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
@@ -42,7 +41,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -53,7 +52,7 @@ describe('babel-jest ignored', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {exitCode, stderr} = runJest(dir, ['--no-cache']);
     expect(exitCode).toBe(1);
-    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
+    expect(extractSummary(stderr).rest).toMatchSnapshot();
   });
 });
 
@@ -101,7 +100,7 @@ describe('no babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -126,7 +125,7 @@ describe('custom transformer', () => {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(exitCode).toBe(0);
   });
 });
@@ -184,7 +183,7 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 

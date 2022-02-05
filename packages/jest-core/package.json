@@ -47,8 +47,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.1",
-    "@types/rimraf": "^3.0.0",
-    "jest-snapshot-serializer-raw": "^1.1.0"
+    "@types/rimraf": "^3.0.0"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"

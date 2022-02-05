@@ -2515,7 +2515,6 @@ __metadata:
     jest-runner: ^27.5.0
     jest-runtime: ^27.5.0
     jest-snapshot: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     jest-validate: ^27.5.0
     jest-watcher: ^27.5.0
@@ -2559,10 +2558,9 @@ __metadata:
     "@jest/types": ^27.5.0
     "@sinonjs/fake-timers": ^8.0.1
     "@types/node": "*"
-    "@types/sinonjs__fake-timers": ^6.0.1
+    "@types/sinonjs__fake-timers": ^8.1.1
     jest-message-util: ^27.5.0
     jest-mock: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
   languageName: unknown
   linkType: soft
@@ -2637,7 +2635,6 @@ __metadata:
     jest-runner-tsd: ^2.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-watch-typeahead: ^0.6.0
     jquery: ^3.2.1
     lerna: ^4.0.0
@@ -2783,7 +2780,6 @@ __metadata:
     graceful-fs: ^4.2.9
     jest-haste-map: ^27.5.0
     jest-regex-util: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     micromatch: ^4.0.4
     pirates: ^4.0.4
@@ -5102,10 +5098,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinonjs__fake-timers@npm:^6.0.1":
-  version: 6.0.4
-  resolution: "@types/sinonjs__fake-timers@npm:6.0.4"
-  checksum: d2f3d2b6461794e20ec6c2ae4d68b63603ab55f2f55c4920299d3c1c2c2d366b50a54d9f91de07f069a9f7b7e86a953e3f26aedf03637a99e23aa405b9844149
+"@types/sinonjs__fake-timers@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "@types/sinonjs__fake-timers@npm:8.1.1"
+  checksum: 78a47b7e7911d9ffe71cd08db37553e1a7897d691dfc2863d505b6671241d25349c704b4d96f5e36e8f8fe7399a170719b33c93c7d9093c56eeae7ce88668393
   languageName: node
   linkType: hard
 
@@ -12558,7 +12554,6 @@ __metadata:
     jest-message-util: ^27.5.0
     jest-runtime: ^27.5.0
     jest-snapshot: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     pretty-format: ^27.5.0
     slash: ^3.0.0
@@ -12621,7 +12616,6 @@ __metadata:
     jest-regex-util: ^27.5.0
     jest-resolve: ^27.5.0
     jest-runner: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     jest-validate: ^27.5.0
     micromatch: ^4.0.4
@@ -12751,7 +12745,6 @@ __metadata:
     graceful-fs: ^4.2.9
     jest-regex-util: ^27.5.0
     jest-serializer: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     jest-worker: ^27.5.0
     micromatch: ^4.0.4
@@ -13042,7 +13035,6 @@ __metadata:
     jest-regex-util: ^27.5.0
     jest-resolve: ^27.5.0
     jest-snapshot: ^27.5.0
-    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.5.0
     slash: ^3.0.0
     strip-bom: ^4.0.0
@@ -13076,13 +13068,6 @@ __metadata:
     chalk: ^4.0.0
     jest-util: ^26.0.0
   checksum: 287f520665c2f794b202eab959df809748a451c26e8e57322fd14014e3b920e7ad635a627c1a88740c17b5c06c29161ec2abbd8a8dee04f76a1a9f9bc125176a
-  languageName: node
-  linkType: hard
-
-"jest-snapshot-serializer-raw@npm:^1.1.0":
-  version: 1.2.0
-  resolution: "jest-snapshot-serializer-raw@npm:1.2.0"
-  checksum: 5474a7cb906ee07d2ea6e7bc192c550e101ae91fe197fdc5005ef77d769f96b6529cdaaae51fe1fb5461340505a7a3e7720cf9be64863791bfbe2f7c536d1eb1
   languageName: node
   linkType: hard
 

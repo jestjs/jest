@@ -5,23 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import wrap from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const extractMessage = (str: string) =>
-  wrap(
-    extractSummary(str)
-      .rest.replace(
-        // circus-jasmine normalization
-        /.+addSpecsToSuite (.+:\d+:\d+).+\n/g,
-        '',
-      )
-      .match(
-        // all lines from the first to the last mentioned "describe" after the "●" line
-        /●(.|\n)*?\n(?<lines>.*describe((.|\n)*describe)*.*)(\n|$)/imu,
-      )?.groups?.lines ?? '',
-  );
+  extractSummary(str)
+    .rest.replace(
+      // circus-jasmine normalization
+      /.+addSpecsToSuite (.+:\d+:\d+).+\n/g,
+      '',
+    )
+    .match(
+      // all lines from the first to the last mentioned "describe" after the "●" line
+      /●(.|\n)*?\n(?<lines>.*describe((.|\n)*describe)*.*)(\n|$)/imu,
+    )?.groups?.lines ?? '';
 
 it('errors if describe returns a Promise', () => {
   const result = runJest('declaration-errors', [

@@ -7,7 +7,6 @@
  */
 
 import chalk from 'chalk';
-import wrap from 'jest-snapshot-serializer-raw';
 // eslint-disable-next-line import/order
 import {KEYS} from 'jest-watcher';
 
@@ -130,7 +129,7 @@ describe('Watch mode flows', () => {
     const assertPattern = hex => {
       pipe.write.mockReset();
       stdin.emit(hex);
-      expect(wrap(pipe.write.mock.calls.join('\n'))).toMatchSnapshot();
+      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     };
 
     // Write a pattern
