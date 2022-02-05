@@ -12,7 +12,7 @@ exports[`codeframe 1`] = `
 
     Whoops!
 
-    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>"Whoops!"</>)<yellow>;</></>
     </> <gray>   |</>       <red><bold>^</></></>
 
       <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
@@ -33,7 +33,7 @@ exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] 
 
 exports[`formatStackTrace prints code frame and stacktrace 1`] = `
 "
-    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>"Whoops!"</>)<yellow>;</></>
     </> <gray>   |</>       <red><bold>^</></></>
 
       <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
@@ -45,11 +45,11 @@ exports[`formatStackTrace should strip node internals 1`] = `
 
       
         Expected value to be of type:
-          \\"number\\"
+          "number"
         Received:
-          \\"\\"
+          ""
         type:
-          \\"string\\"
+          "string"
 <dim></>
 <dim>      <dim>at Object.it (</><dim>__tests__/test.js<dim>:8:14)</><dim></>
 "
@@ -102,11 +102,11 @@ exports[`should not exclude vendor from stack trace 1`] = `
 
       
         Expected value to be of type:
-          \\"number\\"
+          "number"
         Received:
-          \\"\\"
+          ""
         type:
-          \\"string\\"
+          "string"
 <dim></>
 <dim>      <dim>at Object.it (</><dim>__tests__/vendor/cool_test.js<dim>:6:666)</><dim></>
 <dim>      <dim>at Object.asyncFn (</><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</><dim></>

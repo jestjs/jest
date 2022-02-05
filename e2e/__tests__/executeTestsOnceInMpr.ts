@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -55,6 +54,6 @@ test('Tests are executed only once even in an MPR', () => {
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatch(/1 total/);
 });

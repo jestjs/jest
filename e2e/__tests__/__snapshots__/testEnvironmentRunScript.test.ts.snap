@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`throw error if test env does not have getVmContext 1`] = `"Test environment found at \\"<rootDir>/EnvUsingRunScript.js\\" does not export a \\"getVmContext\\" method, which is mandatory from Jest 27. This method is a replacement for \\"runScript\\"."`;
+exports[`throw error if test env does not have getVmContext 1`] = `"Test environment found at "<rootDir>/EnvUsingRunScript.js" does not export a "getVmContext" method, which is mandatory from Jest 27. This method is a replacement for "runScript"."`;

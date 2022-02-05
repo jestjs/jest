@@ -1,68 +1,77 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 1`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites related to files matching /a.js|b.js/i.
+Ran all test suites related to files matching /a.js|b.js/i."
 `;
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 2`] = `
-PASS __tests__/a.test.js
-✓ a
+"PASS __tests__/a.test.js
+✓ a"
 `;
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 3`] = `
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
+  Error: Watchman error: watchman::RootResolveError: RootResolveError: unable to resolve root /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test: failed to parse json from /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test/.watchmanconfig: '[' or '{' expected near end of file. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
 All files |     100 |      100 |     100 |     100 |                   
  a.js     |     100 |      100 |     100 |     100 |                   
-----------|---------|----------|---------|---------|-------------------
+----------|---------|----------|---------|---------|-------------------"
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 1`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 2`] = `
-PASS __tests__/a.test.js
-PASS __tests__/b.test.js
+"PASS __tests__/a.test.js
+PASS __tests__/b.test.js"
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 3`] = `
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
+  Error: Watchman error: watchman::RootResolveError: RootResolveError: unable to resolve root /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test: failed to parse json from /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test/.watchmanconfig: '[' or '{' expected near end of file. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
 All files |     100 |      100 |     100 |     100 |                   
  a.js     |     100 |      100 |     100 |     100 |                   
  b.js     |     100 |      100 |     100 |     100 |                   
-----------|---------|----------|---------|---------|-------------------
+----------|---------|----------|---------|---------|-------------------"
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 4`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites related to files matching /a.js/i.
+Ran all test suites related to files matching /a.js/i."
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 5`] = `
-PASS __tests__/a.test.js
-  ✓ a
+"PASS __tests__/a.test.js
+  ✓ a"
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 6`] = `
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
+  Error: Watchman error: watchman::RootResolveError: RootResolveError: unable to resolve root /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test: failed to parse json from /private/var/folders/gj/0mygpdfn6598xh34njlyrqzc0000gn/T/find-related-tests-test/.watchmanconfig: '[' or '{' expected near end of file. Make sure watchman is running for this project. See https://facebook.github.io/watchman/docs/troubleshooting.
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
 All files |     100 |      100 |     100 |     100 |                   
  a.js     |     100 |      100 |     100 |     100 |                   
-----------|---------|----------|---------|---------|-------------------
+----------|---------|----------|---------|---------|-------------------"
 `;
