@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.5.0
+
+### Features
+
 - `[expect]` Add asymmetric matcher `expect.closeTo` ([#12243](https://github.com/facebook/jest/pull/12243))
 - `[jest-mock]` Added `mockFn.mock.lastCall` to retrieve last argument ([#12285](https://github.com/facebook/jest/pull/12285))
 
@@ -16,11 +26,11 @@
 
 ### Chore & Maintenance
 
-- `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
+- `[*]` Update `graceful-fs` to `^4.2.9` ([#11749](https://github.com/facebook/jest/pull/11749))
 
 ### Performance
 
-- `[jest-resolve]` perf: skip error creation on not found stat calls ([#11749](https://github.com/facebook/jest/pull/11749))
+- `[jest-resolve]` perf: skip error creation on not found `stat` calls ([#11749](https://github.com/facebook/jest/pull/11749))
 
 ## 27.4.7
 
