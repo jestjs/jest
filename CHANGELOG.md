@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[mockFunctions]` Added mockFn.mock.lastCall to retreive last Arguement ([#12285](https://github.com/facebook/jest/pull/12285))
+- `[jest-mock]` Added `mockFn.mock.lastCall` to retrieve last argument ([#12285](https://github.com/facebook/jest/pull/12285))
 
 ### Fixes
 
