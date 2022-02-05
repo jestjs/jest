@@ -19,7 +19,7 @@ const extractMessage = (str: string) =>
       )
       .match(
         // all lines from the first to the last mentioned "describe" after the "●" line
-        /●(.|\n)*?\n(?<lines>.*describe((.|\n)*describe)*.*)(\n|$)/im,
+        /●(.|\n)*?\n(?<lines>.*describe((.|\n)*describe)*.*)(\n|$)/imu,
       )?.groups?.lines ?? '',
   );
 
