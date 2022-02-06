@@ -28,7 +28,7 @@ module.exports.getPackages = function getPackages() {
 
   const nodeEngineRequirement = rootPackage.engines.node;
 
-  packages.forEach(packageDir => {
+  return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
 
     assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
@@ -83,9 +83,9 @@ module.exports.getPackages = function getPackages() {
         }
       });
     }
-  });
 
-  return packages;
+    return {packageDir, pkg};
+  });
 };
 
 module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {

@@ -142,5 +142,5 @@ if (files.length) {
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
-  packages.forEach(buildNodePackage);
+  packages.map(({packageDir}) => packageDir).forEach(buildNodePackage);
 }
