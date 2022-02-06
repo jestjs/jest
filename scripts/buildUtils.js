@@ -65,6 +65,9 @@ module.exports.getPackages = function getPackages() {
               './build/utils': './build/utils.js',
             }
           : {}),
+        ...(pkg.name === 'pretty-format'
+          ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
+          : {}),
       },
       `Package ${pkg.name} does not export correct files`,
     );
