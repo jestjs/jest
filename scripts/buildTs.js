@@ -37,7 +37,7 @@ const readFilePromise = util.promisify(fs.readFile);
   const workspacesWithTs = new Map(
     JSON.parse(`[${allWorkspacesString.split('\n').join(',')}]`)
       .filter(({location}) =>
-        packagesWithTs.some(pkg => pkg.endsWith(location)),
+        packagesWithTs.some(({packageDir}) => packageDir.endsWith(location)),
       )
       .map(({location, name}) => [name, location]),
   );
