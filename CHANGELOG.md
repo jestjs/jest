@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Avoid anonymous default exports ([#12313](https://github.com/facebook/jest/pull/12313))
+
 ### Performance
 
 ## 27.5.0
