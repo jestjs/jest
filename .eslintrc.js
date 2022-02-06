@@ -185,6 +185,18 @@ module.exports = {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowAnonymousClass: false,
+            allowAnonymousFunction: false,
+            allowArray: false,
+            allowArrowFunction: false,
+            allowCallExpression: false,
+            allowLiteral: false,
+            allowObject: true,
+          },
+        ],
       },
     },
     {

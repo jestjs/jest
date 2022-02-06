@@ -16,10 +16,10 @@ const SNAPSHOT_ADDED = chalk.bold.green;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 const SNAPSHOT_OUTDATED = chalk.bold.yellow;
 
-export default (
+export default function getSnapshotStatus(
   snapshot: TestResult['snapshot'],
   afterUpdate: boolean,
-): Array<string> => {
+): Array<string> {
   const statuses = [];
 
   if (snapshot.added) {
@@ -71,4 +71,4 @@ export default (
   }
 
   return statuses;
-};
+}

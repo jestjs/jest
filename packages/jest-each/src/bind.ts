@@ -28,11 +28,14 @@ type GlobalCallback = (
   timeout?: number,
 ) => void;
 
-export default <EachCallback extends Global.TestCallback>(
-    cb: GlobalCallback,
-    supportsDone: boolean = true,
+export default function bind<EachCallback extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone: boolean = true,
+) {
+  return (
+    table: Global.EachTable,
+    ...taggedTemplateData: Global.TemplateData
   ) =>
-  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
     function eachBind(
       title: string,
       test: Global.EachTestFn<EachCallback>,
@@ -57,6 +60,7 @@ export default <EachCallback extends Global.TestCallback>(
         });
       }
     };
+}
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 

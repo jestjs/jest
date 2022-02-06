@@ -15,7 +15,7 @@ import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 
-export default class {
+export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
 
   constructor(value: unknown) {

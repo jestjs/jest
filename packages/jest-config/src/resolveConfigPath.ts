@@ -21,11 +21,11 @@ const isFile = (filePath: Config.Path) =>
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (
+export default function resolveConfigPath(
   pathToResolve: Config.Path,
   cwd: Config.Path,
   skipMultipleConfigWarning = false,
-): Config.Path => {
+): Config.Path {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -61,7 +61,7 @@ export default (
     cwd,
     skipMultipleConfigWarning,
   );
-};
+}
 
 const resolveConfigPathByTraversing = (
   pathToResolve: Config.Path,

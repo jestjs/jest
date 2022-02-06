@@ -20,7 +20,10 @@ const PLACEHOLDER_PREFIX = '%';
 const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
-export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
+export default function array(
+  title: string,
+  arrayTable: Global.ArrayTable,
+): EachTests {
   if (isTemplates(title, arrayTable)) {
     return arrayTable.map((template, index) => ({
       arguments: [template],
@@ -34,7 +37,7 @@ export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
     arguments: row,
     title: formatTitle(title, row, index),
   }));
-};
+}
 
 const isTemplates = (
   title: string,
