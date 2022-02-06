@@ -15,7 +15,8 @@
       "types": "./build/index.d.ts",
       "default": "./build/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./ConvertAnsi": "./build/plugins/ConvertAnsi.js"
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {

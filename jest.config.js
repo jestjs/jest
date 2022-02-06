@@ -35,6 +35,7 @@ module.exports = {
     escapeString: false,
   },
   snapshotSerializers: [
+    // change to require.resolve('pretty-format/ConvertAnsi') when we drop Node 10
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
   ],
   testPathIgnorePatterns: [
