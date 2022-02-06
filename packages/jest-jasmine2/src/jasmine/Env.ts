@@ -49,7 +49,7 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
