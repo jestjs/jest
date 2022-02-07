@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -6,12 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const importLocal = require('import-local');
+import replImport = require('./cli');
 
-if (!importLocal(__filename)) {
-  if (process.env.NODE_ENV == null) {
-    process.env.NODE_ENV = 'test';
-  }
-
-  require('..').run();
-}
+export const repl = replImport;
+export {run as runtime} from './cli/runtime-cli';
