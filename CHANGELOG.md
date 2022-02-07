@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config]` Support comments in JSON config file ([#12316](https://github.com/facebook/jest/pull/12316))
 - `[pretty-format]` Expose `ConvertAnsi` plugin ([#12308](https://github.com/facebook/jest/pull/12308))
 
 ### Fixes

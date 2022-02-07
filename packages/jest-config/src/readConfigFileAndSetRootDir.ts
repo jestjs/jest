@@ -8,6 +8,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import parseJson = require('parse-json');
+import stripJsonComments = require('strip-json-comments');
 import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
@@ -34,7 +35,7 @@ export default async function readConfigFileAndSetRootDir(
       configObject = await loadTSConfigFile(configPath);
     } else if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
-      configObject = parseJson(fileContent, configPath);
+      configObject = parseJson(stripJsonComments(fileContent), configPath);
     } else {
       configObject = await requireOrImportModule<any>(configPath);
     }
