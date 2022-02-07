@@ -473,6 +473,7 @@ testIfHg('monitors only root paths for hg', async () => {
     // skip this test and run it only locally.
     return;
   }
+
   writeFiles(DIR, {
     'file1.txt': 'file1',
     'nested-dir/file2.txt': 'file2',
@@ -492,6 +493,14 @@ testIfHg('monitors only root paths for hg', async () => {
 });
 
 testIfHg('handles a bad revision for "changedSince", for hg', async () => {
+  if (process.env.CI) {
+    // Circle and Travis have very old version of hg (v2, and current
+    // version is v4.2) and its API changed since then and not compatible
+    // any more. Changing the SCM version on CIs is not trivial, so we'll just
+    // skip this test and run it only locally.
+    return;
+  }
+
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
