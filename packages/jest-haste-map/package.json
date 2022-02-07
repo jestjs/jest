@@ -28,7 +28,7 @@
     "jest-util": "^27.5.0",
     "jest-worker": "^27.5.0",
     "micromatch": "^4.0.4",
-    "walker": "^1.0.7"
+    "walker": "^1.0.8"
   },
   "devDependencies": {
     "@jest/test-utils": "^27.5.0",
