@@ -14,6 +14,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-haste-map]` Bump walker version ([#12324](https://github.com/facebook/jest/pull/12324))
 - `[*]` Avoid anonymous default exports ([#12313](https://github.com/facebook/jest/pull/12313))
 
 ### Performance
