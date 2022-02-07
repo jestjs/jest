@@ -278,7 +278,7 @@ export const wrapAnsiString = (
     return string;
   }
 
-  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/g;
+  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/gu;
   const tokens = [];
   let lastIndex = 0;
   let match;

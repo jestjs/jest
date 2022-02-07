@@ -21,11 +21,11 @@ const isFile = (filePath: Config.Path) =>
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (
+export default function resolveConfigPath(
   pathToResolve: Config.Path,
   cwd: Config.Path,
   skipMultipleConfigWarning = false,
-): Config.Path => {
+): Config.Path {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -42,7 +42,7 @@ export default (
   // e.g.
   // With a directory structure like this:
   //   my_project/
-  //     packcage.json
+  //     package.json
   //
   // Passing a `my_project/some_directory_that_doesnt_exist` as a project
   // name will resolve into a (possibly empty) `my_project/package.json` and
@@ -61,7 +61,7 @@ export default (
     cwd,
     skipMultipleConfigWarning,
   );
-};
+}
 
 const resolveConfigPathByTraversing = (
   pathToResolve: Config.Path,

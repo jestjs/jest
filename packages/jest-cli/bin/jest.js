@@ -13,5 +13,5 @@ if (!importLocal(__filename)) {
     process.env.NODE_ENV = 'test';
   }
 
-  require('../build/cli').run();
+  require('..').run();
 }

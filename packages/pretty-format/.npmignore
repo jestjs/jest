@@ -4,3 +4,4 @@ src
 perf
 tsconfig.json
 tsconfig.tsbuildinfo
+api-extractor.json

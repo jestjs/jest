@@ -3,11 +3,11 @@
 exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
 "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
-<yellow>  Option <bold>\\"preprocessorIgnorePatterns\\"</> was replaced by <bold>\\"transformIgnorePatterns\\"</>, which support multiple preprocessors.</>
+<yellow>  Option <bold>"preprocessorIgnorePatterns"</> was replaced by <bold>"transformIgnorePatterns"</>, which support multiple preprocessors.</>
 <yellow></>
 <yellow>  Jest now treats your current configuration as:</>
 <yellow>  {</>
-<yellow>    <bold>\\"transformIgnorePatterns\\"</>: <bold>[\\"bar/baz\\", \\"qux/quux\\"]</></>
+<yellow>    <bold>"transformIgnorePatterns"</>: <bold>["bar/baz", "qux/quux"]</></>
 <yellow>  }</>
 <yellow></>
 <yellow>  Please update your configuration.</>
@@ -30,7 +30,7 @@ exports[`displayName generates a default color for the runner undefined 1`] = `"
 exports[`displayName should throw an error when displayName is is an empty object 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red>  Option "<bold>displayName</>" must be of type:</>
 <red></>
 <red>  {</>
 <red>    name: string;</>
@@ -46,7 +46,7 @@ exports[`displayName should throw an error when displayName is is an empty objec
 exports[`displayName should throw an error when displayName is missing color 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red>  Option "<bold>displayName</>" must be of type:</>
 <red></>
 <red>  {</>
 <red>    name: string;</>
@@ -62,7 +62,7 @@ exports[`displayName should throw an error when displayName is missing color 1`]
 exports[`displayName should throw an error when displayName is missing name 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red>  Option "<bold>displayName</>" must be of type:</>
 <red></>
 <red>  {</>
 <red>    name: string;</>
@@ -78,7 +78,7 @@ exports[`displayName should throw an error when displayName is missing name 1`] 
 exports[`displayName should throw an error when displayName is using invalid values 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red>  Option "<bold>displayName</>" must be of type:</>
 <red></>
 <red>  {</>
 <red>    name: string;</>
@@ -92,46 +92,50 @@ exports[`displayName should throw an error when displayName is using invalid val
 `;
 
 exports[`extensionsToTreatAsEsm should enforce leading dots 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['ts'] includes a string that does not start with a period (.).
-  Please change your configuration to extensionsToTreatAsEsm: ['.ts'].
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </><bold>Validation Error</>:</>
+<red></>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['ts']</> includes a string that does not start with a period (<bold>.</>).</>
+<red>  Please change your configuration to <bold>extensionsToTreatAsEsm: ['.ts']</>.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .cjs 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['.cjs'] includes '.cjs' which is always treated as CommonJS.
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </><bold>Validation Error</>:</>
+<red></>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.cjs']</> includes <bold>'.cjs'</> which is always treated as CommonJS.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .js 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['.js'] includes '.js' which is always inferred based on type in its nearest package.json.
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </><bold>Validation Error</>:</>
+<red></>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.js']</> includes <bold>'.js'</> which is always inferred based on <bold>type</> in its nearest <bold>package.json</>.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['.mjs'] includes '.mjs' which is always treated as an ECMAScript Module.
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </><bold>Validation Error</>:</>
+<red></>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.mjs']</> includes <bold>'.mjs'</> which is always treated as an ECMAScript Module.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
 `;
 
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
+<red>  Module <bold>exist-but-no-jest-preset</> should have "jest-preset.js" or "jest-preset.json" file at the root.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration</>
@@ -171,7 +175,7 @@ exports[`runner throw error when a runner is not found 1`] = `
 exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
 "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
-<yellow>  Option <bold>\\"setupTestFrameworkScriptFile\\"</> was replaced by configuration <bold>\\"setupFilesAfterEnv\\"</>, which supports multiple paths.</>
+<yellow>  Option <bold>"setupTestFrameworkScriptFile"</> was replaced by configuration <bold>"setupFilesAfterEnv"</>, which supports multiple paths.</>
 <yellow></>
 <yellow>  Please update your configuration.</>
 <yellow></>
@@ -218,7 +222,7 @@ exports[`testPathPattern --testPathPattern ignores invalid regular expressions a
 exports[`testTimeout should throw an error if timeout is a negative number 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
-<red>  Option \\"<bold>testTimeout</>\\" must be a natural number.</>
+<red>  Option "<bold>testTimeout</>" must be a natural number.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration</>

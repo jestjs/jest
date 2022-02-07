@@ -89,12 +89,12 @@ const patchJasmine = () => {
   })((global.jasmine as Jasmine).Spec);
 };
 
-export default async ({
+export default async function setupJestGlobals({
   config,
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions): Promise<SnapshotStateType> => {
+}: SetupOptions): Promise<SnapshotStateType> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
@@ -119,4 +119,4 @@ export default async ({
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
-};
+}

@@ -20,7 +20,7 @@ import type {Jasmine, JasmineMatchersObject, RawMatcherFn} from './types';
 
 declare const global: Global.Global;
 
-export default (config: {expand: boolean}): void => {
+export default function jestExpect(config: {expand: boolean}): void {
   global.expect = expect;
   expect.setState({expand: config.expand});
   expect.extend({
@@ -66,4 +66,4 @@ export default (config: {expand: boolean}): void => {
 
     expect.extend(jestMatchersObject);
   };
-};
+}

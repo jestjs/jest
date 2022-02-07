@@ -20,6 +20,7 @@
 
 'use strict';
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const babel = require('@babel/core');
@@ -56,14 +57,19 @@ function getBuildPath(file, buildFolder) {
   return path.resolve(pkgBuildPath, relativeToSrcPath).replace(/\.ts$/, '.js');
 }
 
-function buildNodePackage(p) {
-  const srcDir = path.resolve(p, SRC_DIR);
+function buildNodePackage({packageDir, pkg}) {
+  const srcDir = path.resolve(packageDir, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
 
-  process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
+  process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
   files.forEach(file => buildFile(file, true));
+
+  assert.ok(
+    fs.existsSync(path.resolve(packageDir, pkg.main)),
+    `Main file "${pkg.main}" in ${pkg.name} should exist`,
+  );
 
   process.stdout.write(`${OK}\n`);
 }

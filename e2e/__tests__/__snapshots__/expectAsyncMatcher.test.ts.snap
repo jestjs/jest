@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`shows the correct errors in stderr when failing tests 1`] = `
-FAIL __tests__/failure.test.js
+"FAIL __tests__/failure.test.js
   ✕ fail with expected non promise values
   ✕ fail with expected non promise values and not
   ✕ fail with expected promise values
@@ -81,5 +81,5 @@ FAIL __tests__/failure.test.js
       24 |   ));
       25 |
 
-      at Object.toHaveLengthAsync (__tests__/failure.test.js:22:48)
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:22:48)"
 `;

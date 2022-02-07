@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
@@ -36,7 +35,7 @@ it('prints message about flag on slow tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints message about flag on forceExit', async () => {
@@ -45,7 +44,7 @@ it('prints message about flag on forceExit', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers', async () => {
@@ -57,7 +56,7 @@ it('prints out info about open handlers', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
@@ -132,7 +131,7 @@ it('prints out info about open handlers from inside tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers from tests with a `done` callback', async () => {
@@ -144,7 +143,7 @@ it('prints out info about open handlers from tests with a `done` callback', asyn
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers from lifecycle functions with a `done` callback', async () => {
@@ -164,7 +163,7 @@ it('prints out info about open handlers from lifecycle functions with a `done` c
     'at setTimeout',
   );
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not print info about open handlers for a server that is already closed', async () => {
@@ -176,5 +175,5 @@ it('does not print info about open handlers for a server that is already closed'
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
