@@ -8,7 +8,6 @@
 
 import {createHash} from 'crypto';
 import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import semver = require('semver');
 import stripAnsi from 'strip-ansi';
 import type {Config} from '@jest/types';
@@ -1812,13 +1811,7 @@ describe('extensionsToTreatAsEsm', () => {
     }>;
     (): any;
   }) {
-    expect.assertions(1);
-
-    try {
-      await callback();
-    } catch (error: any) {
-      expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
-    }
+    await expect(callback()).rejects.toThrowErrorMatchingSnapshot();
   }
 
   it('should pass valid config through', async () => {

@@ -1,28 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`not throwing Error objects 1`] = `
-FAIL __tests__/throwNumber.test.js
+"FAIL __tests__/throwNumber.test.js
   ● Test suite failed to run
 
-    Expected an Error, but "1" was thrown
+    Expected an Error, but "1" was thrown"
 `;
 
 exports[`not throwing Error objects 2`] = `
-FAIL __tests__/throwString.test.js
+"FAIL __tests__/throwString.test.js
   ● Test suite failed to run
 
-    banana
+    banana"
 `;
 
 exports[`not throwing Error objects 3`] = `
-FAIL __tests__/throwObject.test.js
+"FAIL __tests__/throwObject.test.js
   ● Test suite failed to run
 
-    thrown: Object {}
+    thrown: Object {}"
 `;
 
 exports[`not throwing Error objects 4`] = `
-FAIL __tests__/assertionCount.test.js
+"FAIL __tests__/assertionCount.test.js
   .assertions()
     ✕ throws
     ✕ throws on redeclare of assertion count
@@ -108,11 +108,11 @@ FAIL __tests__/assertionCount.test.js
       28 |
       29 | describe('.assertions()', () => {
 
-      at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)
+      at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)"
 `;
 
 exports[`not throwing Error objects 5`] = `
-FAIL __tests__/duringTests.test.js
+"FAIL __tests__/duringTests.test.js
   ✕ Promise thrown during test
   ✕ Boolean thrown during test
   ✕ undefined thrown during test
@@ -268,21 +268,21 @@ FAIL __tests__/duringTests.test.js
          | ^
       51 |
 
-      at Object.test (__tests__/duringTests.test.js:50:1)
+      at Object.test (__tests__/duringTests.test.js:50:1)"
 `;
 
 exports[`not throwing Error objects 6`] = `
-FAIL __tests__/throwObjectWithStackProp.test.js
+"FAIL __tests__/throwObjectWithStackProp.test.js
   ● Test suite failed to run
 
     thrown: Object {
 
         "stack": 42,
-      }
+      }"
 `;
 
 exports[`works with assertions in separate files 1`] = `
-FAIL __tests__/testMacro.test.js
+"FAIL __tests__/testMacro.test.js
   ✕ use some imported macro to make assertion
 
   ● use some imported macro to make assertion
@@ -300,11 +300,11 @@ FAIL __tests__/testMacro.test.js
       12 |
 
       at toEqual (macros.js:10:15)
-      at Object.shouldEqual (__tests__/testMacro.test.js:13:3)
+      at Object.shouldEqual (__tests__/testMacro.test.js:13:3)"
 `;
 
 exports[`works with async failures 1`] = `
-FAIL __tests__/asyncFailures.test.js
+"FAIL __tests__/asyncFailures.test.js
   ✕ resolve, but fail
   ✕ reject, but fail
   ✕ expect reject
@@ -401,11 +401,11 @@ FAIL __tests__/asyncFailures.test.js
       24 | }, 5);
       25 |
 
-      at Object.test (__tests__/asyncFailures.test.js:22:1)
+      at Object.test (__tests__/asyncFailures.test.js:22:1)"
 `;
 
 exports[`works with node assert 1`] = `
-FAIL __tests__/assertionError.test.js
+"FAIL __tests__/assertionError.test.js
   ✕ assert
   ✕ assert with a message
   ✕ assert.ok
@@ -858,11 +858,11 @@ FAIL __tests__/assertionError.test.js
       89 | });
       90 |
 
-      at Object.fail (__tests__/assertionError.test.js:88:10)
+      at Object.fail (__tests__/assertionError.test.js:88:10)"
 `;
 
 exports[`works with snapshot failures 1`] = `
-FAIL __tests__/snapshot.test.js
+"FAIL __tests__/snapshot.test.js
   ✕ failing snapshot
 
   ● failing snapshot
@@ -884,11 +884,11 @@ FAIL __tests__/snapshot.test.js
       at Object.toMatchSnapshot (__tests__/snapshot.test.js:11:17)
 
  › 1 snapshot failed.
-
+"
 `;
 
 exports[`works with snapshot failures with hint 1`] = `
-FAIL __tests__/snapshotWithHint.test.js
+"FAIL __tests__/snapshotWithHint.test.js
   ✕ failing snapshot with hint
 
   ● failing snapshot with hint
@@ -910,5 +910,5 @@ FAIL __tests__/snapshotWithHint.test.js
       at Object.toMatchSnapshot (__tests__/snapshotWithHint.test.js:11:17)
 
  › 1 snapshot failed.
-
+"
 `;

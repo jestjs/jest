@@ -1898,6 +1898,7 @@ describe('.toHaveProperty()', () => {
     [new E('div'), 'nodeType', 1],
     ['', 'length', 0],
     [memoized, 'memo', []],
+    [{'': 1}, '', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,

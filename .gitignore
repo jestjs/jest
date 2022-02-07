@@ -17,6 +17,7 @@
 /node_modules
 
 /packages/*/build/
+/packages/*/dist/
 /packages/*/coverage/
 /packages/*/node_modules/
 
@@ -40,6 +41,7 @@ junit.xml
 package-lock.json
 
 *.tsbuildinfo
+api-extractor.json
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored but nested for e2e directories
 **/.yarn/*

@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -25,8 +24,8 @@ test('works with jest.config.ts', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('works with tsconfig.json', () => {
@@ -40,8 +39,8 @@ test('works with tsconfig.json', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('traverses directory tree up until it finds jest.config', () => {
@@ -63,14 +62,12 @@ test('traverses directory tree up until it finds jest.config', () => {
   );
 
   // Snapshot the console.loged `process.cwd()` and make sure it stays the same
-  expect(
-    wrap(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')),
-  ).toMatchSnapshot();
+  expect(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('it does type check the config', () => {
