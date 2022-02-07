@@ -12619,6 +12619,7 @@ __metadata:
     jest-util: ^27.5.0
     jest-validate: ^27.5.0
     micromatch: ^4.0.4
+    parse-json: ^5.2.0
     pretty-format: ^27.5.0
     semver: ^7.3.5
     slash: ^3.0.0
@@ -16340,7 +16341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-json@npm:^5.0.0":
+"parse-json@npm:^5.0.0, parse-json@npm:^5.2.0":
   version: 5.2.0
   resolution: "parse-json@npm:5.2.0"
   dependencies:
