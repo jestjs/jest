@@ -7,12 +7,12 @@
     "directory": "packages/jest-repl"
   },
   "license": "MIT",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "main": "./build/cli/index.js",
+  "types": "./build/cli/index.d.ts",
   "exports": {
     ".": {
-      "types": "./build/index.d.ts",
-      "default": "./build/index.js"
+      "types": "./build/cli/index.d.ts",
+      "default": "./build/cli/index.js"
     },
     "./package.json": "./package.json",
     "./bin/jest-repl": "./bin/jest-repl.js",

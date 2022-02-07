@@ -4,10 +4,16 @@
 
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condtion to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+- `[pretty-format]` Expose `ConvertAnsi` plugin ([#12308](https://github.com/facebook/jest/pull/12308))
 
 ### Fixes
 
+- `[expect]` Add type definitions for asymmetric `closeTo` matcher ([#12304](https://github.com/facebook/jest/pull/12304))
+- `[jest-repl]` Make module importable ([#12311](https://github.com/facebook/jest/pull/12311))
+
 ### Chore & Maintenance
+
+- `[*]` Avoid anonymous default exports ([#12313](https://github.com/facebook/jest/pull/12313))
 
 ### Performance
 

@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {sync: readPkg} = require('read-pkg');
 const {getPackages} = require('./scripts/buildUtils');
 
 const internalPackages = getPackages()
-  .map(packageDir => {
-    const pkg = readPkg({cwd: packageDir});
-
-    return pkg.name;
-  })
+  .map(({pkg}) => pkg.name)
   .sort();
 
 module.exports = {
@@ -185,6 +180,18 @@ module.exports = {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowAnonymousClass: false,
+            allowAnonymousFunction: false,
+            allowArray: false,
+            allowArrowFunction: false,
+            allowCallExpression: false,
+            allowLiteral: false,
+            allowObject: true,
+          },
+        ],
       },
     },
     {

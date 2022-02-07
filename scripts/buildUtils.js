@@ -28,7 +28,7 @@ module.exports.getPackages = function getPackages() {
 
   const nodeEngineRequirement = rootPackage.engines.node;
 
-  packages.forEach(packageDir => {
+  return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
 
     assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
@@ -65,6 +65,9 @@ module.exports.getPackages = function getPackages() {
               './build/utils': './build/utils.js',
             }
           : {}),
+        ...(pkg.name === 'pretty-format'
+          ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
+          : {}),
       },
       `Package ${pkg.name} does not export correct files`,
     );
@@ -80,9 +83,9 @@ module.exports.getPackages = function getPackages() {
         }
       });
     }
-  });
 
-  return packages;
+    return {packageDir, pkg};
+  });
 };
 
 module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {
