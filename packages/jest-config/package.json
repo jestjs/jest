@@ -45,8 +45,10 @@
     "jest-util": "^27.5.0",
     "jest-validate": "^27.5.0",
     "micromatch": "^4.0.4",
+    "parse-json": "^5.2.0",
     "pretty-format": "^27.5.0",
-    "slash": "^3.0.0"
+    "slash": "^3.0.0",
+    "strip-json-comments": "^3.1.1"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
