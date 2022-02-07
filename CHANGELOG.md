@@ -8,6 +8,7 @@
 
 - `[expect]` Add type definitions for asymmetric `closeTo` matcher ([#12304](https://github.com/facebook/jest/pull/12304))
 - `[jest-cli]` Load binary via exported API ([#12315](https://github.com/facebook/jest/pull/12315))
+- `[jest-config]` Replace `jsonlint` with `parse-json` ([#12316](https://github.com/facebook/jest/pull/12316))
 - `[jest-repl]` Make module importable ([#12311](https://github.com/facebook/jest/pull/12311) & [#12315](https://github.com/facebook/jest/pull/12315))
 
 ### Chore & Maintenance
