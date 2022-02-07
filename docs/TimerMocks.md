@@ -53,7 +53,7 @@ test('do something with real timers', () => {
 });
 ```
 
-Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `modern` is still the default one. You can read how to enable `modern` implementation [here](/blog/2020/05/05/jest-26#new-fake-timers).
+Currently, two implementations of the fake timers are included - `modern` and `legacy`, where `modern` is the default one. See [configuration](Configuration.md#timers-string) for how to configure it.
 
 ## Run All Timers
 
