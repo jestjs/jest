@@ -4,6 +4,8 @@
     "outDir": "build",
     "rootDir": "src"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-environment"},
     {"path": "../jest-fake-timers"},

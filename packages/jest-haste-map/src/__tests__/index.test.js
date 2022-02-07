@@ -8,7 +8,6 @@
 
 import crypto from 'crypto';
 import * as path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 
 function mockHashContents(contents) {
   return crypto.createHash('sha1').update(contents).digest('hex');
@@ -746,7 +745,7 @@ describe('HasteMap', () => {
       }).build();
     } catch {
       expect(
-        wrap(console.error.mock.calls[0][0].replace(/\\/g, '/')),
+        console.error.mock.calls[0][0].replace(/\\/g, '/'),
       ).toMatchSnapshot();
     }
   });
@@ -762,9 +761,7 @@ describe('HasteMap', () => {
     // non-determinism later on.
     expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).not.toBeDefined();
 
-    expect(
-      wrap(console.warn.mock.calls[0][0].replace(/\\/g, '/')),
-    ).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0].replace(/\\/g, '/')).toMatchSnapshot();
   });
 
   it('warns on duplicate module ids only once', async () => {
@@ -1330,7 +1327,7 @@ describe('HasteMap', () => {
       }),
     );
 
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   });
 
   it('tries to crawl using node as a fallback when promise fails once', async () => {
@@ -1656,7 +1653,7 @@ describe('HasteMap', () => {
                 H.MODULE,
             }),
           );
-          expect(wrap(error.message.replace(/\\/g, '/'))).toMatchSnapshot();
+          expect(error.message.replace(/\\/g, '/')).toMatchSnapshot();
         }
       }
 

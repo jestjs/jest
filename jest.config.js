@@ -7,6 +7,7 @@
 
 'use strict';
 
+/** @type import('@jest/types').Config.InitialOptions */
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
@@ -30,13 +31,16 @@ module.exports = {
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
+  snapshotFormat: {
+    escapeString: false,
+  },
   snapshotSerializers: [
+    // change to require.resolve('pretty-format/ConvertAnsi') when we drop Node 10
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
-    require.resolve('jest-snapshot-serializer-raw'),
   ],
   testPathIgnorePatterns: [
     '/__arbitraries__/',
-    '/__typechecks__/',
+    '/__typetests__/',
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',

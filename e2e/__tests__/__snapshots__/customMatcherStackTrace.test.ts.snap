@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`custom async matchers 1`] = `
-FAIL __tests__/asynchronous.test.js
+"FAIL __tests__/asynchronous.test.js
   ✕ showing the stack trace for an async matcher
 
   ● showing the stack trace for an async matcher
@@ -16,11 +16,11 @@ FAIL __tests__/asynchronous.test.js
       13 | function toThrowCustomAsyncMatcherError() {
       14 |   const message = () =>
 
-      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:16)
+      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:16)"
 `;
 
 exports[`works with custom matchers 1`] = `
-FAIL __tests__/sync.test.js
+"FAIL __tests__/sync.test.js
   Custom matcher
     ✓ passes
     ✓ fails
@@ -43,5 +43,5 @@ FAIL __tests__/sync.test.js
       at bar (__tests__/sync.test.js:42:23)
       at foo (__tests__/sync.test.js:52:7)
       at Object.callback (__tests__/sync.test.js:11:18)
-      at Object.toCustomMatch (__tests__/sync.test.js:53:8)
+      at Object.toCustomMatch (__tests__/sync.test.js:53:8)"
 `;

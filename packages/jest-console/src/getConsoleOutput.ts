@@ -14,11 +14,11 @@ import {
 } from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
 
-export default (
+export default function getConsoleOutput(
   buffer: ConsoleBuffer,
   config: StackTraceConfig,
   globalConfig: Config.GlobalConfig,
-): string => {
+): string {
   const TITLE_INDENT = globalConfig.verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
@@ -64,4 +64,4 @@ export default (
   }, '');
 
   return logEntries.trimRight() + '\n';
-};
+}

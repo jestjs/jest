@@ -17,7 +17,9 @@ import {
 
 export type Expect = typeof expect;
 
-export default (config: Pick<Config.GlobalConfig, 'expand'>): Expect => {
+export default function jestExpect(
+  config: Pick<Config.GlobalConfig, 'expand'>,
+): Expect {
   expect.setState({expand: config.expand});
   expect.extend({
     toMatchInlineSnapshot,
@@ -29,4 +31,4 @@ export default (config: Pick<Config.GlobalConfig, 'expand'>): Expect => {
   expect.addSnapshotSerializer = addSerializer;
 
   return expect;
-};
+}

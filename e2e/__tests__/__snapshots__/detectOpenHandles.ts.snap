@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`does not print info about open handlers for a server that is already closed 1`] = ``;
+exports[`does not print info about open handlers for a server that is already closed 1`] = `""`;
 
-exports[`prints message about flag on forceExit 1`] = `Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?`;
+exports[`prints message about flag on forceExit 1`] = `"Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?"`;
 
 exports[`prints message about flag on slow tests 1`] = `
-Jest did not exit one second after the test run has completed.
+"Jest did not exit one second after the test run has completed.
 
-This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue.
+This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
 `;
 
 exports[`prints out info about open handlers 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
   ●  TCPSERVERWRAP
 
@@ -22,11 +22,11 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       15 |
 
       at Object.listen (server.js:14:5)
-      at Object.require (__tests__/outside.js:8:1)
+      at Object.require (__tests__/outside.js:8:1)"
 `;
 
 exports[`prints out info about open handlers from inside tests 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
   ●  Timeout
 
@@ -38,11 +38,11 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       11 | });
       12 |
 
-      at Object.setTimeout (__tests__/inside.js:9:3)
+      at Object.setTimeout (__tests__/inside.js:9:3)"
 `;
 
 exports[`prints out info about open handlers from lifecycle functions with a \`done\` callback 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
   ●  Timeout
 
@@ -54,11 +54,11 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       11 | });
       12 |
 
-      at setTimeout (__tests__/in-done-lifecycle.js:9:3)
+      at setTimeout (__tests__/in-done-lifecycle.js:9:3)"
 `;
 
 exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
   ●  Timeout
 
@@ -70,5 +70,5 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       11 |   done();
       12 | });
 
-      at Object.setTimeout (__tests__/in-done-function.js:9:3)
+      at Object.setTimeout (__tests__/in-done-function.js:9:3)"
 `;

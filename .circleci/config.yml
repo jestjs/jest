@@ -12,7 +12,7 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@4.7.0
+  node: circleci/node@5.0.0
 
 jobs:
   test-node:
@@ -28,7 +28,6 @@ jobs:
       - checkout
       - node/install:
           node-version: << parameters.node-version >>
-          install-npm: false
       - node/install-packages: *install
       - when:
           condition: << parameters.partial >>
@@ -49,8 +48,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: '14'
-          install-npm: false
+          node-version: lts/*
       - node/install-packages: *install
       - run:
           command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak
@@ -64,7 +62,7 @@ workflows:
       - test-node:
           matrix:
             parameters:
-              node-version: ['14']
+              node-version: ['lts/*']
       - test-node:
           name: test-node-partial-<< matrix.node-version >>
           partial: true
