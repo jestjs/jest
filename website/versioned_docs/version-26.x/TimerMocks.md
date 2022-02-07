@@ -37,7 +37,7 @@ Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out se
 
 All of the following functions need fake timers to be set, either by `jest.useFakeTimers()` or via `"timers": "fake"` in the config file.
 
-Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `modern` is still the default one. You can read how to enable `legacy` implementation [here](/blog/2020/05/05/jest-26#new-fake-timers).
+Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `legacy` is still the default one. You can read how to enable `legacy` implementation [here](/blog/2020/05/05/jest-26#new-fake-timers).
 
 ## Run All Timers
 
