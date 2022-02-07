@@ -29,7 +29,7 @@ describe('Repl', () => {
         env: process.env,
       });
       expect(output.stderr.trim()).toBe('');
-      expect(output.stdout.trim()).toMatch(/›/);
+      expect(output.stdout.trim()).toMatch(/›/u);
     });
   });
 });

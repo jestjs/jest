@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'mlh-tsd';
+import {expectError, expectType} from 'tsd-lite';
 import {expect} from '@jest/globals';
 
 // asymmetric matchers
@@ -24,6 +24,17 @@ expectError(expect(['A']).toEqual(expect.arrayContaining()));
 expectType<void>(expect(['B']).toEqual(expect.not.arrayContaining(['A'])));
 expectError(expect(['A']).toEqual(expect.not.arrayContaining('A')));
 expectError(expect(['A']).toEqual(expect.not.arrayContaining()));
+
+expectType<void>(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3)));
+expectType<void>(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3, 5)));
+expectError(expect(0.1 + 0.2).toEqual(expect.closeTo('three')));
+expectError(expect(0.1 + 0.2).toEqual(expect.closeTo(0.3, false)));
+expectError(expect(0.1 + 0.2).toEqual(expect.closeTo()));
+expectType<void>(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3)));
+expectType<void>(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3, 5)));
+expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo('three')));
+expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo(0.3, false)));
+expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo()));
 
 expectType<void>(expect({a: 1}).toEqual(expect.objectContaining({a: 1})));
 expectError(expect({a: 1}).toEqual(expect.objectContaining(1)));
@@ -182,26 +193,26 @@ expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 
 expectType<void>(expect(jest.fn()).toBeCalledWith('value'));
 expectType<void>(expect(jest.fn()).toBeCalledWith('value', 123));
-// expectError(expect(jest.fn()).toBeCalledWith());
+expectError(expect(jest.fn()).toBeCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
-// expectError(expect(jest.fn()).toHaveBeenCalledWith());
+expectError(expect(jest.fn()).toHaveBeenCalledWith());
 
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
 expectType<void>(expect(jest.fn()).lastCalledWith('value', 123));
-// expectError(expect(jest.fn()).lastCalledWith());
+expectError(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'));
-// expectError(expect(jest.fn()).toHaveBeenLastCalledWith());
+expectError(expect(jest.fn()).toHaveBeenLastCalledWith());
 
 expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value', 123));
-// expectError(expect(jest.fn()).nthCalledWith());
-// expectError(expect(jest.fn()).nthCalledWith(2));
+expectError(expect(jest.fn()).nthCalledWith());
+expectError(expect(jest.fn()).nthCalledWith(2));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));
-// expectError(expect(jest.fn()).toHaveBeenNthCalledWith());
-// expectError(expect(jest.fn()).toHaveBeenNthCalledWith(2));
+expectError(expect(jest.fn()).toHaveBeenNthCalledWith());
+expectError(expect(jest.fn()).toHaveBeenNthCalledWith(2));
 
 expectType<void>(expect(jest.fn()).toReturn());
 expectError(expect(jest.fn()).toReturn('value'));

@@ -373,9 +373,15 @@ export const partition = <T>(
 };
 
 export const pathAsArray = (propertyPath: string): Array<any> => {
+  const properties: Array<string> = [];
+
+  if (propertyPath === '') {
+    properties.push('');
+    return properties;
+  }
+
   // will match everything that's not a dot or a bracket, and "" for consecutive dots.
   const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
-  const properties: Array<string> = [];
 
   // Because the regex won't match a dot in the beginning of the path, if present.
   if (propertyPath[0] === '.') {

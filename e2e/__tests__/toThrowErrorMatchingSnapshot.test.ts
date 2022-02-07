@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -101,7 +100,7 @@ test('should support rejecting promises', () => {
     );
 
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(wrap(snapshot)).toMatchSnapshot();
+    expect(snapshot).toMatchSnapshot();
     expect(exitCode).toBe(0);
   }
 });

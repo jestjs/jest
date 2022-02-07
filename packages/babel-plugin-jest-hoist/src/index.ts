@@ -268,102 +268,106 @@ const extractJestObjExprIfHoistable = <T extends Node>(
 };
 
 /* eslint-disable sort-keys */
-export default (): PluginObj<{
+export default function jestHoist(): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
-}> => ({
-  pre({path: program}) {
-    this.declareJestObjGetterIdentifier = () => {
-      if (this.jestObjGetterIdentifier) {
+}> {
+  return {
+    pre({path: program}) {
+      this.declareJestObjGetterIdentifier = () => {
+        if (this.jestObjGetterIdentifier) {
+          return this.jestObjGetterIdentifier;
+        }
+
+        this.jestObjGetterIdentifier =
+          program.scope.generateUidIdentifier('getJestObj');
+
+        program.unshiftContainer('body', [
+          createJestObjectGetter({
+            GETTER_NAME: this.jestObjGetterIdentifier.name,
+            JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
+            JEST_GLOBALS_MODULE_NAME,
+          }),
+        ]);
+
         return this.jestObjGetterIdentifier;
-      }
-
-      this.jestObjGetterIdentifier =
-        program.scope.generateUidIdentifier('getJestObj');
-
-      program.unshiftContainer('body', [
-        createJestObjectGetter({
-          GETTER_NAME: this.jestObjGetterIdentifier.name,
-          JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
-          JEST_GLOBALS_MODULE_NAME,
-        }),
-      ]);
-
-      return this.jestObjGetterIdentifier;
-    };
-  },
-  visitor: {
-    ExpressionStatement(exprStmt) {
-      const jestObjExpr = extractJestObjExprIfHoistable(
-        exprStmt.get('expression'),
-      );
-      if (jestObjExpr) {
-        jestObjExpr.replaceWith(
-          callExpression(this.declareJestObjGetterIdentifier(), []),
-        );
-      }
+      };
     },
-  },
-  // in `post` to make sure we come after an import transform and can unshift above the `require`s
-  post({path: program}) {
-    const self = this;
+    visitor: {
+      ExpressionStatement(exprStmt) {
+        const jestObjExpr = extractJestObjExprIfHoistable(
+          exprStmt.get('expression'),
+        );
+        if (jestObjExpr) {
+          jestObjExpr.replaceWith(
+            callExpression(this.declareJestObjGetterIdentifier(), []),
+          );
+        }
+      },
+    },
+    // in `post` to make sure we come after an import transform and can unshift above the `require`s
+    post({path: program}) {
+      const self = this;
 
-    visitBlock(program);
-    program.traverse({BlockStatement: visitBlock});
+      visitBlock(program);
+      program.traverse({BlockStatement: visitBlock});
 
-    function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
-      // use a temporary empty statement instead of the real first statement, which may itself be hoisted
-      const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer('body', [
-        emptyStatement(),
-        emptyStatement(),
-      ]);
-      block.traverse({
-        CallExpression: visitCallExpr,
-        VariableDeclarator: visitVariableDeclarator,
-        // do not traverse into nested blocks, or we'll hoist calls in there out to this block
-        blacklist: ['BlockStatement'],
-      });
-      callsHoistPoint.remove();
-      varsHoistPoint.remove();
+      function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
+        // use a temporary empty statement instead of the real first statement, which may itself be hoisted
+        const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer(
+          'body',
+          [emptyStatement(), emptyStatement()],
+        );
+        block.traverse({
+          CallExpression: visitCallExpr,
+          VariableDeclarator: visitVariableDeclarator,
+          // do not traverse into nested blocks, or we'll hoist calls in there out to this block
+          blacklist: ['BlockStatement'],
+        });
+        callsHoistPoint.remove();
+        varsHoistPoint.remove();
 
-      function visitCallExpr(callExpr: NodePath<CallExpression>) {
-        const {
-          node: {callee},
-        } = callExpr;
-        if (
-          isIdentifier(callee) &&
-          callee.name === self.jestObjGetterIdentifier?.name
-        ) {
-          const mockStmt = callExpr.getStatementParent();
+        function visitCallExpr(callExpr: NodePath<CallExpression>) {
+          const {
+            node: {callee},
+          } = callExpr;
+          if (
+            isIdentifier(callee) &&
+            callee.name === self.jestObjGetterIdentifier?.name
+          ) {
+            const mockStmt = callExpr.getStatementParent();
 
-          if (mockStmt) {
-            const mockStmtParent = mockStmt.parentPath;
-            if (mockStmtParent.isBlock()) {
-              const mockStmtNode = mockStmt.node;
-              mockStmt.remove();
-              callsHoistPoint.insertBefore(mockStmtNode);
+            if (mockStmt) {
+              const mockStmtParent = mockStmt.parentPath;
+              if (mockStmtParent.isBlock()) {
+                const mockStmtNode = mockStmt.node;
+                mockStmt.remove();
+                callsHoistPoint.insertBefore(mockStmtNode);
+              }
             }
           }
         }
-      }
 
-      function visitVariableDeclarator(varDecl: NodePath<VariableDeclarator>) {
-        if (hoistedVariables.has(varDecl.node)) {
-          // should be assert function, but it's not. So let's cast below
-          varDecl.parentPath.assertVariableDeclaration();
+        function visitVariableDeclarator(
+          varDecl: NodePath<VariableDeclarator>,
+        ) {
+          if (hoistedVariables.has(varDecl.node)) {
+            // should be assert function, but it's not. So let's cast below
+            varDecl.parentPath.assertVariableDeclaration();
 
-          const {kind, declarations} = varDecl.parent as VariableDeclaration;
-          if (declarations.length === 1) {
-            varDecl.parentPath.remove();
-          } else {
-            varDecl.remove();
+            const {kind, declarations} = varDecl.parent as VariableDeclaration;
+            if (declarations.length === 1) {
+              varDecl.parentPath.remove();
+            } else {
+              varDecl.remove();
+            }
+            varsHoistPoint.insertBefore(
+              variableDeclaration(kind, [varDecl.node]),
+            );
           }
-          varsHoistPoint.insertBefore(
-            variableDeclaration(kind, [varDecl.node]),
-          );
         }
       }
-    }
-  },
-});
+    },
+  };
+}
 /* eslint-enable */

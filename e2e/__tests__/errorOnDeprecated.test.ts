@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
@@ -57,7 +56,7 @@ testFiles.forEach(testFile => {
       );
     }
 
-    expect(wrap(rest)).toMatchSnapshot();
+    expect(rest).toMatchSnapshot();
   });
 });
 

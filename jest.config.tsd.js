@@ -17,5 +17,5 @@ module.exports = {
   modulePathIgnorePatterns,
   roots: ['<rootDir>/packages'],
   runner: 'jest-runner-tsd',
-  testMatch: ['**/__typechecks__/**/*.ts'],
+  testMatch: ['**/__typetests__/**/*.ts'],
 };

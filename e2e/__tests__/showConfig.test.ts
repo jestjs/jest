@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -40,5 +39,5 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
     .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });

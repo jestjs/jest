@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
@@ -22,7 +21,7 @@ test('prints coverage with missing sourcemaps', () => {
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints coverage with empty sourcemaps', () => {
@@ -35,7 +34,7 @@ test('prints coverage with empty sourcemaps', () => {
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints correct coverage report, if a CJS module is put under test without transformation', () => {
@@ -48,7 +47,7 @@ test('prints correct coverage report, if a CJS module is put under test without 
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints correct coverage report, if a TS module is transpiled by Babel to CJS and put under test', () => {
@@ -61,7 +60,7 @@ test('prints correct coverage report, if a TS module is transpiled by Babel to C
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
@@ -79,7 +78,7 @@ onNodeVersions('>=12.16.0', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   test('prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test', () => {
@@ -95,6 +94,6 @@ onNodeVersions('>=12.16.0', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });

@@ -6,7 +6,6 @@
  */
 
 import {resolve} from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest, {getConfig} from '../runJest';
@@ -29,7 +28,7 @@ onNodeVersions('>=12.16.0', () => {
 
     const {summary} = extractSummary(stderr);
 
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(stdout).toBe('');
     expect(exitCode).toBe(0);
   });
@@ -46,7 +45,7 @@ onNodeVersions('>=14.3.0', () => {
 
     const {summary} = extractSummary(stderr);
 
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(stdout).toBe('');
     expect(exitCode).toBe(0);
   });

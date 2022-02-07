@@ -25,7 +25,7 @@ const readFilePromise = util.promisify(fs.readFile);
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
-    fs.existsSync(path.resolve(p, 'tsconfig.json')),
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
   );
 
   const {stdout: allWorkspacesString} = await execa('yarn', [
@@ -37,14 +37,12 @@ const readFilePromise = util.promisify(fs.readFile);
   const workspacesWithTs = new Map(
     JSON.parse(`[${allWorkspacesString.split('\n').join(',')}]`)
       .filter(({location}) =>
-        packagesWithTs.some(pkg => pkg.endsWith(location)),
+        packagesWithTs.some(({packageDir}) => packageDir.endsWith(location)),
       )
       .map(({location, name}) => [name, location]),
   );
 
-  packagesWithTs.forEach(pkgDir => {
-    const pkg = require(`${pkgDir}/package.json`);
-
+  packagesWithTs.forEach(({packageDir, pkg}) => {
     assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
     assert.strictEqual(
@@ -72,13 +70,18 @@ const readFilePromise = util.promisify(fs.readFile);
         return true;
       })
       .map(dep =>
-        path.relative(pkgDir, `${pkgDir}/../../${workspacesWithTs.get(dep)}`),
+        path.relative(
+          packageDir,
+          `${packageDir}/../../${workspacesWithTs.get(dep)}`,
+        ),
       )
       .sort();
 
     if (jestDependenciesOfPackage.length > 0) {
       const tsConfig = JSON.parse(
-        stripJsonComments(fs.readFileSync(`${pkgDir}/tsconfig.json`, 'utf8')),
+        stripJsonComments(
+          fs.readFileSync(`${packageDir}/tsconfig.json`, 'utf8'),
+        ),
       );
 
       const references = tsConfig.references.map(({path}) => path);
@@ -95,7 +98,12 @@ const readFilePromise = util.promisify(fs.readFile);
     }
   });
 
-  const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
+  const args = [
+    'tsc',
+    '-b',
+    ...packagesWithTs.map(({packageDir}) => packageDir),
+    ...process.argv.slice(2),
+  ];
 
   console.log(chalk.inverse(' Building TypeScript definition files '));
 
@@ -119,11 +127,10 @@ const readFilePromise = util.promisify(fs.readFile);
   try {
     await Promise.all(
       packagesWithTs.map(
-        throat(cpus, async pkgDir => {
-          const buildDir = path.resolve(pkgDir, 'build/**/*.d.ts');
-          const ts3dot4 = path.resolve(pkgDir, 'build/ts3.4');
+        throat(cpus, async ({packageDir, pkg}) => {
+          const buildDir = path.resolve(packageDir, 'build/**/*.d.ts');
 
-          const globbed = await globby([buildDir, `!${ts3dot4}`]);
+          const globbed = await globby([buildDir]);
 
           const files = await Promise.all(
             globbed.map(file =>
@@ -164,8 +171,6 @@ const readFilePromise = util.promisify(fs.readFile);
           );
 
           if (filesWithNodeReference.length > 0) {
-            const pkg = require(pkgDir + '/package.json');
-
             assert.ok(
               pkg.dependencies,
               `Package \`${pkg.name}\` is missing \`dependencies\``,

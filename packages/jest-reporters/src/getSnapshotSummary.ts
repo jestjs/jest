@@ -22,11 +22,11 @@ const SNAPSHOT_REMOVED = chalk.bold.green;
 const SNAPSHOT_SUMMARY = chalk.bold;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 
-export default (
+export default function getSnapshotSummary(
   snapshots: SnapshotSummary,
   globalConfig: Config.GlobalConfig,
   updateCommand: string,
-): Array<string> => {
+): Array<string> {
   const summary = [];
   summary.push(SNAPSHOT_SUMMARY('Snapshot Summary'));
   if (snapshots.added) {
@@ -136,4 +136,4 @@ export default (
   }
 
   return summary;
-};
+}

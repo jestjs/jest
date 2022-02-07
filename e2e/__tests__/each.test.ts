@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
@@ -21,7 +20,7 @@ test('shows error message when not enough arguments are supplied to tests', () =
   const result = runJest(dir, ['eachException.test.js']);
   expect(result.exitCode).toBe(1);
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('shows the correct errors in stderr when failing tests', () => {
@@ -31,33 +30,33 @@ test('shows the correct errors in stderr when failing tests', () => {
     .rest.split('\n')
     .map(line => line.trimRight())
     .join('\n');
-  expect(wrap(output)).toMatchSnapshot();
+  expect(output).toMatchSnapshot();
 });
 
 test('shows only the tests with .only as being ran', () => {
   const result = runJest(dir, ['eachOnly.test.js']);
   expect(result.exitCode).toBe(0);
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('shows only the tests without .skip as being ran', () => {
   const result = runJest(dir, ['eachSkip.test.js']);
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(result.exitCode).toBe(0);
 });
 
 test('runs only the describe.only.each tests', () => {
   const result = runJest(dir, ['describeOnly.test.js']);
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(result.exitCode).toBe(0);
 });
 
 test('formats args with pretty format when given %p', () => {
   const result = runJest(dir, ['pretty.test.js']);
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(result.exitCode).toBe(0);
 });

@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
@@ -87,7 +86,7 @@ test('can pass projects or global config', () => {
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
 
-  expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+  expect(extractSummary(stderr).summary).toMatchSnapshot();
 
   writeFiles(DIR, {
     'global_config.js': `
@@ -112,8 +111,8 @@ test('can pass projects or global config', () => {
   ]));
 
   const result1 = extractSummary(stderr);
-  expect(wrap(result1.summary)).toMatchSnapshot();
-  expect(wrap(sortLines(result1.rest))).toMatchSnapshot();
+  expect(result1.summary).toMatchSnapshot();
+  expect(sortLines(result1.rest)).toMatchSnapshot();
 
   ({stderr} = runJest(DIR, [
     '--no-watchman',
@@ -123,8 +122,8 @@ test('can pass projects or global config', () => {
   ]));
   const result2 = extractSummary(stderr);
 
-  expect(wrap(result2.summary)).toMatchSnapshot();
-  expect(wrap(sortLines(result2.rest))).toMatchSnapshot();
+  expect(result2.summary).toMatchSnapshot();
+  expect(sortLines(result2.rest)).toMatchSnapshot();
 
   // make sure different ways of passing projects work exactly the same
   expect(result1.summary).toBe(result2.summary);
