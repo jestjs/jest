@@ -62,10 +62,7 @@ module.exports.getPackages = function getPackages() {
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
         ...(pkg.name === 'expect'
-          ? {
-              './build/matchers': './build/matchers.js',
-              './build/utils': './build/utils.js',
-            }
+          ? {'./build/matchers': './build/matchers.js'}
           : {}),
         ...(pkg.name === 'pretty-format'
           ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}

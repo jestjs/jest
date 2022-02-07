@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {equals, iterableEquality} from '@jest/expect-utils';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
@@ -21,13 +22,11 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {equals} from './jasmineUtils';
 import type {
   MatcherState,
   MatchersObject,
   SyncExpectationResult,
 } from './types';
-import {iterableEquality} from './utils';
 
 // The optional property of matcher context is true if undefined.
 const isExpand = (expand?: boolean): boolean => expand !== false;

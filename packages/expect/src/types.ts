@@ -6,6 +6,7 @@
  *
  */
 
+import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
@@ -27,19 +28,12 @@ export type RawMatcherFn<T extends MatcherState = MatcherState> = {
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export type Tester = (a: any, b: any) => boolean | undefined;
-
 export type MatcherState = {
   assertionCalls: number;
   currentTestName?: string;
   dontThrow?: () => void;
   error?: Error;
-  equals: (
-    a: unknown,
-    b: unknown,
-    customTesters?: Array<Tester>,
-    strictCheck?: boolean,
-  ) => boolean;
+  equals: EqualsFunction;
   expand?: boolean;
   expectedAssertionsNumber?: number | null;
   expectedAssertionsNumberError?: Error;
