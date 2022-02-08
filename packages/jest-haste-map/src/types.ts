@@ -109,13 +109,6 @@ export type InternalHasteMap = {
   map: ModuleMapData;
   mocks: MockData;
 };
-
-export type IHasteMap = {
-  hasteFS: HasteFS;
-  moduleMap: IModuleMap;
-  __hasteMapForTest?: InternalHasteMap | null;
-};
-
 export type HasteMap = {
   hasteFS: HasteFS;
   moduleMap: ModuleMap;

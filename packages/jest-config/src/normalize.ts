@@ -438,7 +438,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
-          `Could not resolve a module for a custom reporter.\n` +
+          'Could not resolve a module for a custom reporter.\n' +
             `  Module name: ${reporterPath}`,
         );
       }
@@ -485,7 +485,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
-        `Running all tests instead.`,
+        'Running all tests instead.',
     ),
   );
 };
@@ -878,8 +878,8 @@ export default async function normalize(
           !value.includes('js')
         ) {
           const errorMessage =
-            `  moduleFileExtensions must include 'js':\n` +
-            `  but instead received:\n` +
+            "  moduleFileExtensions must include 'js':\n" +
+            '  but instead received:\n' +
             `    ${chalk.bold.red(JSON.stringify(value))}`;
 
           // If `js` is not included, any dependency Jest itself injects into

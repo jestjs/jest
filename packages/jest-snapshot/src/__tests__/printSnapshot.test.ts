@@ -156,7 +156,7 @@ describe('chalk', () => {
     return [
       aColor(`- delete 1${changeLineTrailingSpaceColor(' ')}`),
       cColor(`  common 2${commonLineTrailingSpaceColor('  ')}`),
-      bColor(`+ insert 0`),
+      bColor('+ insert 0'),
     ].join('\n');
   };
 
@@ -1332,7 +1332,7 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
         '<img src="test.png" alt="John &quot;ShotGun&quot; Nelson" />',
@@ -1345,10 +1345,10 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson' />`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\' />',
         '',
         '================================================================================',
       ].join('\n');

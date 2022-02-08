@@ -37,9 +37,9 @@ type PromptsResults = {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default async (
+export default async function init(
   rootDir: string = tryRealpath(process.cwd()),
-): Promise<void> => {
+): Promise<void> {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
 
@@ -95,7 +95,7 @@ export default async (
   console.log();
   console.log(
     chalk.underline(
-      `The following questions will help Jest to create a suitable configuration for your project\n`,
+      'The following questions will help Jest to create a suitable configuration for your project\n',
     ),
   );
 
@@ -152,4 +152,4 @@ export default async (
   console.log(
     `📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`,
   );
-};
+}

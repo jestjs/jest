@@ -1,46 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`basic support: initial write 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
   expect({apple: 'original value'}).toMatchInlineSnapshot(\`
     Object {
       "apple": "original value",
     }
   \`));
-
+"
 `;
 
 exports[`basic support: snapshot mismatch 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
 expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
   Object {
     "apple": "original value",
   }
-\`));
+\`));"
 `;
 
 exports[`basic support: snapshot passed 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
   expect({apple: 'original value'}).toMatchInlineSnapshot(\`
     Object {
       "apple": "original value",
     }
   \`));
-
+"
 `;
 
 exports[`basic support: snapshot updated 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
   expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
     Object {
       "apple": "updated value",
     }
   \`));
-
+"
 `;
 
 exports[`do not indent empty lines: initial write 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
   expect(\`hello
 
 world\`).toMatchInlineSnapshot(\`
@@ -48,11 +48,11 @@ world\`).toMatchInlineSnapshot(\`
 
     world"
   \`));
-
+"
 `;
 
 exports[`do not indent empty lines: snapshot passed 1`] = `
-test('inline snapshots', () =>
+"test('inline snapshots', () =>
   expect(\`hello
 
 world\`).toMatchInlineSnapshot(\`
@@ -60,11 +60,11 @@ world\`).toMatchInlineSnapshot(\`
 
     world"
   \`));
-
+"
 `;
 
 exports[`handles property matchers: initial write 1`] = `
-test('handles property matchers', () => {
+"test('handles property matchers', () => {
   expect({createdAt: new Date()}).toMatchInlineSnapshot(
     {createdAt: expect.any(Date)},
     \`
@@ -74,11 +74,11 @@ test('handles property matchers', () => {
   \`,
   );
 });
-
+"
 `;
 
 exports[`handles property matchers: snapshot failed 1`] = `
-test('handles property matchers', () => {
+"test('handles property matchers', () => {
 expect({createdAt: "string"}).toMatchInlineSnapshot(
   {createdAt: expect.any(Date)},
   \`
@@ -87,11 +87,11 @@ expect({createdAt: "string"}).toMatchInlineSnapshot(
   }
 \`,
 );
-});
+});"
 `;
 
 exports[`handles property matchers: snapshot passed 1`] = `
-test('handles property matchers', () => {
+"test('handles property matchers', () => {
   expect({createdAt: new Date()}).toMatchInlineSnapshot(
     {createdAt: expect.any(Date)},
     \`
@@ -101,11 +101,11 @@ test('handles property matchers', () => {
   \`,
   );
 });
-
+"
 `;
 
 exports[`handles property matchers: snapshot updated 1`] = `
-test('handles property matchers', () => {
+"test('handles property matchers', () => {
   expect({createdAt: 'string'}).toMatchInlineSnapshot(
     {createdAt: expect.any(String)},
     \`
@@ -115,11 +115,11 @@ test('handles property matchers', () => {
   \`,
   );
 });
-
+"
 `;
 
 exports[`indentation is correct in the presences of existing snapshots, when the file is correctly formatted by prettier: existing snapshot 1`] = `
-it('is true', () => {
+"it('is true', () => {
   expect(true).toMatchInlineSnapshot(\`true\`);
   expect([1, 2, 3]).toMatchInlineSnapshot(\`
     Array [
@@ -129,11 +129,11 @@ it('is true', () => {
     ]
   \`);
 });
-
+"
 `;
 
 exports[`indentation is correct in the presences of existing snapshots: existing snapshot 1`] = `
-test('existing snapshot', () => {
+"test('existing snapshot', () => {
   expect({hello: 'world'}).toMatchInlineSnapshot(\`
     Object {
       "hello": "world",
@@ -145,11 +145,11 @@ test('existing snapshot', () => {
     }
   \`);
 });
-
+"
 `;
 
 exports[`multiple custom matchers and native matchers: multiple matchers 1`] = `
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+"const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
   toMatchCustomInlineSnapshot(received, ...args) {
     return toMatchInlineSnapshot.call(this, received, ...args);
@@ -180,49 +180,49 @@ test('inline snapshots', () => {
     }
   \`);
 });
-
+"
 `;
 
 exports[`removes obsolete external snapshots: external snapshot cleaned 1`] = `
-test('removes obsolete external snapshots', () => {
+"test('removes obsolete external snapshots', () => {
   expect('1').toMatchInlineSnapshot(\`"1"\`);
 });
-
+"
 `;
 
 exports[`removes obsolete external snapshots: initial write 1`] = `
-test('removes obsolete external snapshots', () => {
+"test('removes obsolete external snapshots', () => {
   expect('1').toMatchSnapshot();
-});
+});"
 `;
 
 exports[`removes obsolete external snapshots: inline snapshot written 1`] = `
-test('removes obsolete external snapshots', () => {
+"test('removes obsolete external snapshots', () => {
   expect('1').toMatchInlineSnapshot(\`"1"\`);
 });
-
+"
 `;
 
 exports[`supports async matchers 1`] = `
-test('inline snapshots', async () => {
+"test('inline snapshots', async () => {
   expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot(
     \`"success"\`,
   );
   expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot(\`"fail"\`);
 });
-
+"
 `;
 
 exports[`supports async tests 1`] = `
-test('inline snapshots', async () => {
+"test('inline snapshots', async () => {
   await 'next tick';
   expect(42).toMatchInlineSnapshot(\`42\`);
 });
-
+"
 `;
 
 exports[`supports custom matchers with property matcher: custom matchers with property matcher 1`] = `
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+"const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
   toMatchCustomInlineSnapshot(received, ...args) {
     return toMatchInlineSnapshot.call(this, received, ...args);
@@ -266,11 +266,11 @@ test('inline snapshots', () => {
     }
   \`);
 });
-
+"
 `;
 
 exports[`supports custom matchers: custom matchers 1`] = `
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+"const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
   toMatchCustomInlineSnapshot(received, ...args) {
     return toMatchInlineSnapshot.call(this, received, ...args);
@@ -283,16 +283,16 @@ test('inline snapshots', () => {
     }
   \`);
 });
-
+"
 `;
 
 exports[`writes snapshots with non-literals in expect(...) 1`] = `
-it('works with inline snapshots', () => {
+"it('works with inline snapshots', () => {
   expect({a: 1}).toMatchInlineSnapshot(\`
     Object {
       "a": 1,
     }
   \`);
 });
-
+"
 `;

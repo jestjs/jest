@@ -92,7 +92,6 @@ export type MockedClass<T extends Constructable> = MockInstance<
 > & {
   prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
 } & T;
-
 export interface Constructable {
   new (...args: Array<any>): any;
 }
@@ -167,6 +166,10 @@ type MockFunctionState<T, Y extends Array<unknown>> = {
   calls: Array<Y>;
   instances: Array<T>;
   invocationCallOrder: Array<number>;
+  /**
+   * Getter for retrieving the last call arguments
+   */
+  lastCall?: Y;
   /**
    * List of results of calls to the mock function.
    */
@@ -516,6 +519,9 @@ export class ModuleMocker {
     if (!state) {
       state = this._defaultMockState();
       this._mockState.set(f, state);
+    }
+    if (state.calls.length > 0) {
+      state.lastCall = state.calls[state.calls.length - 1];
     }
     return state;
   }

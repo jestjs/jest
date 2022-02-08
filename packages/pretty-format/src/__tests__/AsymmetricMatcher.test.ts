@@ -57,12 +57,12 @@ beforeEach(() => {
   });
 });
 
-test(`anything()`, () => {
+test('anything()', () => {
   const result = prettyFormat(expect.anything(), options);
   expect(result).toEqual('Anything');
 });
 
-test(`arrayContaining()`, () => {
+test('arrayContaining()', () => {
   const result = prettyFormat(expect.arrayContaining([1, 2]), options);
   expect(result).toEqual(`ArrayContaining [
   1,
@@ -70,7 +70,7 @@ test(`arrayContaining()`, () => {
 ]`);
 });
 
-test(`arrayNotContaining()`, () => {
+test('arrayNotContaining()', () => {
   const result = prettyFormat(expect.not.arrayContaining([1, 2]), options);
   expect(result).toEqual(`ArrayNotContaining [
   1,
@@ -78,14 +78,14 @@ test(`arrayNotContaining()`, () => {
 ]`);
 });
 
-test(`objectContaining()`, () => {
+test('objectContaining()', () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toEqual(`ObjectContaining {
   "a": "test",
 }`);
 });
 
-test(`objectNotContaining()`, () => {
+test('objectNotContaining()', () => {
   const result = prettyFormat(
     expect.not.objectContaining({a: 'test'}),
     options,
@@ -95,43 +95,43 @@ test(`objectNotContaining()`, () => {
 }`);
 });
 
-test(`stringContaining(string)`, () => {
+test('stringContaining(string)', () => {
   const result = prettyFormat(expect.stringContaining('jest'), options);
-  expect(result).toEqual(`StringContaining "jest"`);
+  expect(result).toEqual('StringContaining "jest"');
 });
 
-test(`not.stringContaining(string)`, () => {
+test('not.stringContaining(string)', () => {
   const result = prettyFormat(expect.not.stringContaining('jest'), options);
-  expect(result).toEqual(`StringNotContaining "jest"`);
+  expect(result).toEqual('StringNotContaining "jest"');
 });
 
-test(`stringMatching(string)`, () => {
+test('stringMatching(string)', () => {
   const result = prettyFormat(expect.stringMatching('jest'), options);
   expect(result).toEqual('StringMatching /jest/');
 });
 
-test(`stringMatching(regexp)`, () => {
+test('stringMatching(regexp)', () => {
   const result = prettyFormat(expect.stringMatching(/(jest|niema).*/), options);
   expect(result).toEqual('StringMatching /(jest|niema).*/');
 });
 
-test(`stringMatching(regexp) {escapeRegex: false}`, () => {
+test('stringMatching(regexp) {escapeRegex: false}', () => {
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
   expect(result).toEqual('StringMatching /regexp\\d/gi');
 });
 
-test(`stringMatching(regexp) {escapeRegex: true}`, () => {
+test('stringMatching(regexp) {escapeRegex: true}', () => {
   options.escapeRegex = true;
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
   expect(result).toEqual('StringMatching /regexp\\\\d/gi');
 });
 
-test(`stringNotMatching(string)`, () => {
+test('stringNotMatching(string)', () => {
   const result = prettyFormat(expect.not.stringMatching('jest'), options);
   expect(result).toEqual('StringNotMatching /jest/');
 });
 
-test(`supports multiple nested asymmetric matchers`, () => {
+test('supports multiple nested asymmetric matchers', () => {
   const result = prettyFormat(
     {
       test: {
@@ -165,7 +165,7 @@ test(`supports multiple nested asymmetric matchers`, () => {
 }`);
 });
 
-describe(`indent option`, () => {
+describe('indent option', () => {
   const val = {
     nested: expect.objectContaining({
       a: expect.arrayContaining([1]),
@@ -198,16 +198,16 @@ describe(`indent option`, () => {
   },
 }`;
 
-  test(`default implicit: 2 spaces`, () => {
+  test('default implicit: 2 spaces', () => {
     expect(prettyFormat(val, options)).toEqual(result);
   });
-  test(`default explicit: 2 spaces`, () => {
+  test('default explicit: 2 spaces', () => {
     options.indent = 2;
     expect(prettyFormat(val, options)).toEqual(result);
   });
 
   // Tests assume that no strings in val contain multiple adjacent spaces!
-  test(`non-default: 0 spaces`, () => {
+  test('non-default: 0 spaces', () => {
     options.indent = 0;
     expect(prettyFormat(val, options)).toEqual(result.replace(/ {2}/g, ''));
   });
@@ -219,8 +219,8 @@ describe(`indent option`, () => {
   });
 });
 
-describe(`maxDepth option`, () => {
-  test(`matchers as leaf nodes`, () => {
+describe('maxDepth option', () => {
+  test('matchers as leaf nodes', () => {
     options.maxDepth = 2;
     const val = {
       // ++depth === 1
@@ -253,7 +253,7 @@ describe(`maxDepth option`, () => {
   ],
 }`);
   });
-  test(`matchers as internal nodes`, () => {
+  test('matchers as internal nodes', () => {
     options.maxDepth = 2;
     const val = [
       // ++depth === 1
@@ -290,7 +290,7 @@ describe(`maxDepth option`, () => {
   });
 });
 
-test(`min option`, () => {
+test('min option', () => {
   options.min = true;
   const result = prettyFormat(
     {
@@ -308,6 +308,6 @@ test(`min option`, () => {
     options,
   );
   expect(result).toEqual(
-    `{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}`,
+    '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',
   );
 });

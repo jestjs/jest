@@ -6,14 +6,12 @@
  */
 
 import * as path from 'path';
-import {extractSummary, runYarnInstall} from '../Utils';
+import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
 
 test('mocks async functions', () => {
-  runYarnInstall(dir);
-
   // --no-cache because babel can cache stuff and result in false green
   const {stderr} = runJest(dir, ['--no-cache']);
   expect(extractSummary(stderr).summary).toMatch(

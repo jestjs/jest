@@ -212,7 +212,7 @@ export default class Runtime {
     string,
     boolean
   >;
-  private readonly _sourceMapRegistry: Map<string, string>;
+  private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
@@ -1672,7 +1672,7 @@ export default class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: https://jestjs.io/docs/manual-mocks#content`,
+            'See: https://jestjs.io/docs/manual-mocks#content',
         );
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
@@ -1924,6 +1924,13 @@ export default class Runtime {
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
+    const mocked =
+      this._moduleMocker.mocked?.bind(this._moduleMocker) ??
+      (() => {
+        throw new Error(
+          'Your test environment does not support `mocked`, please update it.',
+        );
+      });
 
     const setTimeout = (timeout: number) => {
       // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
@@ -1971,6 +1978,7 @@ export default class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
+      mocked,
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,

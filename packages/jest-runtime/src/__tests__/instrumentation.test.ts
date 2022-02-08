@@ -34,5 +34,5 @@ it('instruments files', async () => {
   // We can't really snapshot the resulting coverage, because it depends on
   // absolute path of the file, which will be different on different
   // machines
-  expect(instrumented.code).toMatch(`gcv = "__coverage__"`);
+  expect(instrumented.code).toMatch('gcv = "__coverage__"');
 });

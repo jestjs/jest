@@ -1717,7 +1717,7 @@ describe('.toMatch()', () => {
     ['foo', undefined],
   ].forEach(([n1, n2]) => {
     it(
-      `throws if non String/RegExp expected value passed:` +
+      'throws if non String/RegExp expected value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
@@ -1898,6 +1898,7 @@ describe('.toHaveProperty()', () => {
     [new E('div'), 'nodeType', 1],
     ['', 'length', 0],
     [memoized, 'memo', []],
+    [{'': 1}, '', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,

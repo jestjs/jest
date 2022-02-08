@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: lts/*
           cache: yarn
 
       - name: Validate cache
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 12.x
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -114,10 +114,10 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
+      - name: Use Node.js LTS
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually, @typescript-eslint/no-unused-vars */
+/* eslint-disable local/ban-types-eventually */
 
 export = function difference(a: number, b: number): number {
   const branch1: boolean = true ? 1 : 0;
