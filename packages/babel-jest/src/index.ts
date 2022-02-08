@@ -172,10 +172,11 @@ const createTransformer: CreateTransformer = userOptions => {
     filename: Config.Path,
     transformOptions: JestTransformOptions,
   ): TransformOptions {
-    const {cwd} = transformOptions.config;
+    const {cwd, rootDir} = transformOptions.config;
     // `cwd` first to allow incoming options to override it
     return {
       cwd,
+      root: rootDir,
       ...options,
       caller: {
         ...options.caller,
