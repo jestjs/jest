@@ -343,7 +343,7 @@ it('does not find changes in files with no diff, for git', async () => {
 test('handles a bad revision for "changedSince", for git', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -481,7 +481,7 @@ testIfHg('monitors only root paths for hg', async () => {
 testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });

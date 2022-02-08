@@ -53,7 +53,7 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
@@ -74,7 +74,7 @@ jest.mock(
 jest.mock(
   'test_async_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),

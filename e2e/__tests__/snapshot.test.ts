@@ -132,8 +132,8 @@ describe('Snapshot', () => {
 
     // Write the second snapshot
     const testData =
-      `test('escape strings two', () => expect('two: \\\'\"').` +
-      `toMatchSnapshot());`;
+      "test('escape strings two', () => expect('two: \\'\"')." +
+      'toMatchSnapshot());';
     const newTestData = initialTestData + testData;
     fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
 

@@ -155,6 +155,17 @@ module.exports = {
         'sort-keys': 'off',
       },
     },
+    // snapshots in examples plus inline snapshots need to keep backtick
+    {
+      files: ['*.md', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
+      rules: {
+        quotes: [
+          'error',
+          'single',
+          {allowTemplateLiterals: true, avoidEscape: true},
+        ],
+      },
+    },
     {
       files: ['website/**/*'],
       rules: {
@@ -469,7 +480,7 @@ module.exports = {
     quotes: [
       'error',
       'single',
-      {allowTemplateLiterals: true, avoidEscape: true},
+      {allowTemplateLiterals: false, avoidEscape: true},
     ],
     radix: 'warn',
     'require-jsdoc': 'off',

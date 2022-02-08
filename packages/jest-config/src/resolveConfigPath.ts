@@ -49,7 +49,7 @@ export default function resolveConfigPath(
   // try to run all tests it finds under `my_project` directory.
   if (!fs.existsSync(absolutePath)) {
     throw new Error(
-      `Can't find a root directory while resolving a config file path.\n` +
+      "Can't find a root directory while resolving a config file path.\n" +
         `Provided path to resolve: ${pathToResolve}\n` +
         `cwd: ${cwd}`,
     );
