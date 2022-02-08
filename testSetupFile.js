@@ -7,4 +7,4 @@
 
 // Some of the `jest-runtime` tests are very slow and cause
 // timeouts on travis
-jest.setTimeout(90000);
+jest.setTimeout(70000);
