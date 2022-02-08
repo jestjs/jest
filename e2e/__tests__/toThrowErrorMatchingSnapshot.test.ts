@@ -33,7 +33,7 @@ test('works fine when function throws error', () => {
   }
 });
 
-test(`throws the error if tested function didn't throw error`, () => {
+test("throws the error if tested function didn't throw error", () => {
   const filename = 'throws-if-tested-function-did-not-throw.test.js';
   const template =
     makeTemplate(`test('throws the error if tested function did not throw error', () => {

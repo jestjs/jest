@@ -485,7 +485,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
     const message = pass
       ? () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
-          `\n\n` +
+          '\n\n' +
           `Expected number of calls: not ${printExpected(expected)}`
       : () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
@@ -523,7 +523,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
     const message = pass
       ? () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
-          `\n\n` +
+          '\n\n' +
           `Expected number of returns: not ${printExpected(expected)}` +
           (received.mock.calls.length !== count
             ? `\n\nReceived number of calls:       ${printReceived(

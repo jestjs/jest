@@ -22,7 +22,7 @@ afterAll(() => cleanup(TESTS_DIR));
 test('basic support', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(
-    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
+    "test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n",
   );
 
   {
@@ -73,7 +73,7 @@ test('basic support', () => {
 test('do not indent empty lines', () => {
   const filename = 'empty-line-indent.test.js';
   const template = makeTemplate(
-    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
+    "test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n",
   );
 
   {

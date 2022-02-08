@@ -33,7 +33,7 @@ export function check(argv: Config.Argv): true {
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      `Both --onlyFailures and --watchAll were specified, but these two ` +
+      'Both --onlyFailures and --watchAll were specified, but these two ' +
         'options do not make sense together.',
     );
   }

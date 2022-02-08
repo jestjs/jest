@@ -252,7 +252,7 @@ const traverseAst = (
   });
 
   if (remainingSnapshots.size) {
-    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
+    throw new Error("Jest: Couldn't locate all inline snapshots.");
   }
 };
 

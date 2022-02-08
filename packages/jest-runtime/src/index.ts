@@ -1672,7 +1672,7 @@ export default class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: https://jestjs.io/docs/manual-mocks#content`,
+            'See: https://jestjs.io/docs/manual-mocks#content',
         );
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);

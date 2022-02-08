@@ -144,8 +144,8 @@ function assertionErrorMessage(
   if (operatorName === 'doesNotThrow') {
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function not to throw an error.\n`) +
-      chalk.reset(`Instead, it threw:\n`) +
+      chalk.reset('Expected the function not to throw an error.\n') +
+      chalk.reset('Instead, it threw:\n') +
       `  ${printReceived(actual)}` +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
@@ -155,8 +155,8 @@ function assertionErrorMessage(
   if (operatorName === 'throws') {
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function to throw an error.\n`) +
-      chalk.reset(`But it didn't throw anything.`) +
+      chalk.reset('Expected the function to throw an error.\n') +
+      chalk.reset("But it didn't throw anything.") +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
     );
@@ -174,7 +174,7 @@ function assertionErrorMessage(
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
-    chalk.reset(`Received:\n`) +
+    chalk.reset('Received:\n') +
     `  ${printReceived(actual)}` +
     chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +

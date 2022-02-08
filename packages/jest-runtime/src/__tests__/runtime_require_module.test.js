@@ -240,7 +240,7 @@ describe('Runtime requireModule', () => {
     expect(exports.isExclusivelyManualMockModule).toBe(true);
   });
 
-  it(`doesn't override real modules with manual mocks when explicitly unmocked`, async () => {
+  it("doesn't override real modules with manual mocks when explicitly unmocked", async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
     });
@@ -420,7 +420,7 @@ describe('Runtime requireModule', () => {
       // createRequire with relative module path
       expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
         new TypeError(
-          `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
+          "The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'",
         ),
       );
 

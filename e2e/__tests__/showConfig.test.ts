@@ -17,7 +17,7 @@ afterEach(() => cleanup(DIR));
 
 test('--showConfig outputs config info and exits', () => {
   writeFiles(DIR, {
-    '__tests__/test.test.js': `test('test', () => {});`,
+    '__tests__/test.test.js': "test('test', () => {});",
     'package.json': JSON.stringify({jest: {environment: 'node'}}),
   });
 

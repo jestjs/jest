@@ -95,7 +95,7 @@ export default async function init(
   console.log();
   console.log(
     chalk.underline(
-      `The following questions will help Jest to create a suitable configuration for your project\n`,
+      'The following questions will help Jest to create a suitable configuration for your project\n',
     ),
   );
 
