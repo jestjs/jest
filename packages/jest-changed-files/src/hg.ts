@@ -18,9 +18,7 @@ const adapter: SCMAdapter = {
 
     const args = ['status', '-amnu'];
     if (options.withAncestor) {
-      // working suggestion
-      // args.push('--rev', 'min((not public() and ancestors(.))^ or .^)');
-      args.push('--rev', 'min((!public() & ::.)+.)^1');
+      args.push('--rev', 'first(min(not public() & ::.)^+.^)');
     } else if (options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options.lastCommit === true) {
