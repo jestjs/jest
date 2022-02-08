@@ -40,10 +40,10 @@ export default function getNoTestFoundVerbose(
           `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
           statsMessage
       : `No files found in ${config.rootDir}.\n` +
-          `Make sure Jest's configuration does not exclude this directory.` +
-          `\nTo set up Jest, make sure a package.json file exists.\n` +
-          `Jest Documentation: ` +
-          `https://jestjs.io/docs/configuration`;
+          "Make sure Jest's configuration does not exclude this directory." +
+          '\nTo set up Jest, make sure a package.json file exists.\n' +
+          'Jest Documentation: ' +
+          'https://jestjs.io/docs/configuration';
   });
   let dataMessage;
 

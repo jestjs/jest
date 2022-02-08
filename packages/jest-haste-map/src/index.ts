@@ -771,17 +771,17 @@ export default class HasteMap extends EventEmitter {
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
-          `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-            `crawler.\n` +
-            `  Usually this happens when watchman isn't running. Create an ` +
-            `empty \`.watchmanconfig\` file in your project's root folder or ` +
-            `initialize a git or hg repository in your project.\n` +
-            `  ` +
+          'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
+            'crawler.\n' +
+            "  Usually this happens when watchman isn't running. Create an " +
+            "empty `.watchmanconfig` file in your project's root folder or " +
+            'initialize a git or hg repository in your project.\n' +
+            '  ' +
             error,
         );
         return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
-            `Crawler retry failed:\n` +
+            'Crawler retry failed:\n' +
               `  Original error: ${error.message}\n` +
               `  Retry error: ${e.message}\n`,
           );

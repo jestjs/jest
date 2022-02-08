@@ -4,6 +4,17 @@
 
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condtion to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.5.1
+
+### Features
+
 - `[jest-config]` Support comments in JSON config file ([#12316](https://github.com/facebook/jest/pull/12316))
 - `[pretty-format]` Expose `ConvertAnsi` plugin ([#12308](https://github.com/facebook/jest/pull/12308))
 
@@ -17,8 +28,6 @@
 ### Chore & Maintenance
 
 - `[*]` Avoid anonymous default exports ([#12313](https://github.com/facebook/jest/pull/12313))
-
-### Performance
 
 ## 27.5.0
 

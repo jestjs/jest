@@ -14,7 +14,7 @@ import {Worker} from '../..';
 let workerFile!: string;
 beforeAll(() => {
   workerFile = join(tmpdir(), 'baz.js');
-  writeFileSync(workerFile, `module.exports.fn = () => {};`);
+  writeFileSync(workerFile, 'module.exports.fn = () => {};');
 });
 
 let worker!: Worker;

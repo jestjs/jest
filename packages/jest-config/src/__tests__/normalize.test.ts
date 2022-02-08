@@ -9,7 +9,6 @@
 import {createHash} from 'crypto';
 import path from 'path';
 import semver = require('semver');
-import stripAnsi from 'strip-ansi';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';

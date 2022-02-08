@@ -9,7 +9,7 @@ import jestSnapshot from '../';
 
 const {toMatchSnapshot} = jestSnapshot;
 
-it(`matcher returns matcher name, expected and actual values`, () => {
+it('matcher returns matcher name, expected and actual values', () => {
   const actual = 'a';
   const expected = 'b';
   const matcher = toMatchSnapshot.bind({

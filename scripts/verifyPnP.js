@@ -33,7 +33,7 @@ try {
     JSON.stringify(
       {
         dependencies: {
-          jest: `*`,
+          jest: '*',
         },
         name: 'test-pnp',
         resolutions: {
@@ -62,7 +62,7 @@ try {
   });
   execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
-  console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
+  console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
 } finally {
   rimraf.sync(cwd);
 }

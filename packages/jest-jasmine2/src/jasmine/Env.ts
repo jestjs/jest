@@ -384,7 +384,7 @@ export default function jasmineEnv(j$: Jasmine) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {

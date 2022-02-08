@@ -55,6 +55,8 @@ test('do something with real timers', () => {
 
 All of the following functions need fake timers to be set, either by `jest.useFakeTimers()` or via `"timers": "fake"` in the config file.
 
+Currently, two implementations of the fake timers are included - `modern` and `legacy`, where `modern` is the default one. See [configuration](Configuration.md#timers-string) for how to configure it.
+
 ## Run All Timers
 
 Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:

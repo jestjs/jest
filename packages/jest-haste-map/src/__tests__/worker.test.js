@@ -142,7 +142,7 @@ describe('worker', () => {
       error = err;
     }
 
-    expect(error.message).toEqual(`Cannot read path '/kiwi.js'.`);
+    expect(error.message).toEqual("Cannot read path '/kiwi.js'.");
   });
 
   it('simply computes SHA-1s when requested (works well with binary data)', async () => {

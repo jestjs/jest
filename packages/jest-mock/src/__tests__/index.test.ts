@@ -759,7 +759,7 @@ describe('moduleMocker', () => {
       ]);
     });
 
-    it(`a call that throws undefined is tracked properly`, () => {
+    it('a call that throws undefined is tracked properly', () => {
       const fn = moduleMocker.fn(() => {
         // eslint-disable-next-line no-throw-literal
         throw undefined;
