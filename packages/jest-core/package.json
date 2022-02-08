@@ -2,12 +2,12 @@
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
   "version": "27.5.1",
-  "main": "./build/jest.js",
-  "types": "./build/jest.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "types": "./build/jest.d.ts",
-      "default": "./build/jest.js"
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
