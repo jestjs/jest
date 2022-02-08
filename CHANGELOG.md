@@ -3,6 +3,7 @@
 ### Features
 
 ### Fixes
+
 - `[jest-changed-files]` Improve `changedFilesWithAncestor` pattern for Mercurial SCM ([#12322](https://github.com/facebook/jest/pull/12322))
 
 ### Chore & Maintenance
