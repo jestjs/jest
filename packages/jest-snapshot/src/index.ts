@@ -184,7 +184,8 @@ const toMatchSnapshot = function (
         options.secondArgumentColor = BOLD_WEIGHT;
 
         if (propertiesOrHint == null) {
-          printedWithType += `\n\nTo provide a hint without properties: toMatchSnapshot('hint')`;
+          printedWithType +=
+            "\n\nTo provide a hint without properties: toMatchSnapshot('hint')";
         }
       }
 
@@ -256,7 +257,7 @@ const toMatchInlineSnapshot = function (
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
-          `Inline snapshot must be a string`,
+          'Inline snapshot must be a string',
           printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
         ),
       );
@@ -303,7 +304,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     throw new Error(
       matcherHintFromConfig(config, false) +
         '\n\n' +
-        `Snapshot state must be initialized` +
+        'Snapshot state must be initialized' +
         '\n\n' +
         printWithType('Snapshot state', snapshotState, stringify),
     );
@@ -377,9 +378,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           printSnapshotName(currentTestName, hint, count) +
           '\n\n' +
           `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
-          `must be explicitly passed to write a new snapshot.\n\n` +
-          `This is likely because this test is run in a continuous integration ` +
-          `(CI) environment in which snapshots are not written by default.\n\n` +
+          'must be explicitly passed to write a new snapshot.\n\n' +
+          'This is likely because this test is run in a continuous integration ' +
+          '(CI) environment in which snapshots are not written by default.\n\n' +
           `Received:${actual.includes('\n') ? '\n' : ' '}${bReceivedColor(
             actual,
           )}`
@@ -448,7 +449,7 @@ const toThrowErrorMatchingInlineSnapshot = function (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
-        `Inline snapshot must be a string`,
+        'Inline snapshot must be a string',
         printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
       ),
     );

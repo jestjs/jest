@@ -24,7 +24,8 @@ test('triggers unexpected token error message for non-JS assets', () => {
   });
 
   writeFiles(DIR, {
-    '__tests__/asset.test.js': `require('../asset.css'); test('asset', () => {});`,
+    '__tests__/asset.test.js':
+      "require('../asset.css'); test('asset', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
@@ -43,7 +44,8 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   });
 
   writeFiles(DIR, {
-    '__tests__/untranspiledModule.test.js': `require('untranspiled-module'); test('untranspiled', () => {});`,
+    '__tests__/untranspiledModule.test.js':
+      "require('untranspiled-module'); test('untranspiled', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
@@ -69,8 +71,10 @@ test('does not trigger unexpected token error message for regular syntax errors'
   });
 
   writeFiles(DIR, {
-    '__tests__/faulty.test.js': `require('../faulty'); test('faulty', () => {});`,
-    '__tests__/faulty2.test.js': `require('../faulty2'); test('faulty2', () => {});`,
+    '__tests__/faulty.test.js':
+      "require('../faulty'); test('faulty', () => {});",
+    '__tests__/faulty2.test.js':
+      "require('../faulty2'); test('faulty2', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
