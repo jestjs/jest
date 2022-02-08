@@ -413,15 +413,15 @@ testIfHg('gets changed files for hg', async () => {
     'file4.txt': 'file4',
   });
 
-  // ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-  //   withAncestor: true,
-  // }));
-  // // Returns files from current uncommitted state + the last commit
-  // expect(
-  //   Array.from(files)
-  //     .map(filePath => path.basename(filePath))
-  //     .sort(),
-  // ).toEqual(['file1.txt', 'file4.txt']);
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {
+    withAncestor: true,
+  }));
+  // Returns files from current uncommitted state + the last commit
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt', 'file4.txt']);
 
   run(`${HG} add file4.txt`, DIR);
   run(`${HG} commit -m "test3"`, DIR);
