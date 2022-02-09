@@ -29,7 +29,7 @@ const tsConfig = {
 };
 const cwd = tempy.directory();
 
-const tsVersion = '3.8';
+const tsVersion = '4.2';
 
 try {
   fs.writeFileSync(path.join(cwd, '.yarnrc.yml'), 'nodeLinker: node-modules\n');
