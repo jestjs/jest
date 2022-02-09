@@ -10,6 +10,8 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
+- `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
+- `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 
 ### Performance
 
