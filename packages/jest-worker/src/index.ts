@@ -6,6 +6,7 @@
  */
 
 import {cpus} from 'os';
+import {isAbsolute} from 'path';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -78,6 +79,10 @@ export class Worker {
   constructor(workerPath: string, options?: FarmOptions) {
     this._options = {...options};
     this._ending = false;
+
+    if (!isAbsolute(workerPath)) {
+      throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
+    }
 
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,

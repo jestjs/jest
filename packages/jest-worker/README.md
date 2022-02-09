@@ -2,7 +2,7 @@
 
 Module for executing heavy tasks under forked processes in parallel, by providing a `Promise` based interface, minimum overhead, and bound workers.
 
-The module works by providing an absolute path of the module to be loaded in all forked processes. Files relative to a node module are also accepted. All methods are exposed on the parent process as promises, so they can be `await`'ed. Child (worker) methods can either be synchronous or asynchronous.
+The module works by providing an absolute path of the module to be loaded in all forked processes. All methods are exposed on the parent process as promises, so they can be `await`'ed. Child (worker) methods can either be synchronous or asynchronous.
 
 The module also implements support for bound workers. Binding a worker means that, based on certain parameters, the same task will always be executed by the same worker. The way bound workers work is by using the returned string of the `computeWorkerKey` method. If the string was used before for a task, the call will be queued to the related worker that processed the task earlier; if not, it will be executed by the first available worker, then sticked to the worker that executed it; so the next time it will be processed by the same worker. If you have no preference on the worker executing the task, but you have defined a `computeWorkerKey` method because you want _some_ of the tasks to be sticked, you can return `null` from it.
 
