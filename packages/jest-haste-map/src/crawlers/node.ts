@@ -191,7 +191,7 @@ function findNative(
   });
 }
 
-export = async function nodeCrawl(options: CrawlerOptions): Promise<{
+export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
@@ -237,4 +237,4 @@ export = async function nodeCrawl(options: CrawlerOptions): Promise<{
       find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
-};
+}

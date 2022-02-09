@@ -90,7 +90,7 @@ async function capabilityCheck(
   });
 }
 
-export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
+export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
@@ -353,4 +353,4 @@ export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
     hasteMap: data,
     removedFiles,
   };
-};
+}

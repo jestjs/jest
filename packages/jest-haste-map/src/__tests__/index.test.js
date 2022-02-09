@@ -31,8 +31,8 @@ jest.mock('jest-worker', () => ({
 }));
 
 jest.mock('../crawlers/node');
-jest.mock('../crawlers/watchman', () =>
-  jest.fn(options => {
+jest.mock('../crawlers/watchman', () => ({
+  watchmanCrawl: jest.fn(options => {
     const path = require('path');
 
     const {data, ignore, rootDir, roots, computeSha1} = options;
@@ -66,7 +66,7 @@ jest.mock('../crawlers/watchman', () =>
       removedFiles,
     });
   }),
-);
+}));
 
 const mockWatcherConstructor = jest.fn(root => {
   const EventEmitter = require('events').EventEmitter;
@@ -555,7 +555,7 @@ describe('HasteMap', () => {
 
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
     it.each([false, true])('uses watchman: %s', async useWatchman => {
-      const node = require('../crawlers/node');
+      const node = require('../crawlers/node').nodeCrawl;
 
       node.mockImplementation(options => {
         const {data} = options;
@@ -1195,7 +1195,7 @@ describe('HasteMap', () => {
   });
 
   it('ignores files that do not exist', async () => {
-    const watchman = require('../crawlers/watchman');
+    const watchman = require('../crawlers/watchman').watchmanCrawl;
     const mockImpl = watchman.getMockImplementation();
     // Wrap the watchman mock and add an invalid file to the file list.
     watchman.mockImplementation(options =>
@@ -1293,8 +1293,8 @@ describe('HasteMap', () => {
   });
 
   it('tries to crawl using node as a fallback', async () => {
-    const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node');
+    const watchman = require('../crawlers/watchman').watchmanCrawl;
+    const node = require('../crawlers/node').nodeCrawl;
 
     watchman.mockImplementation(() => {
       throw new Error('watchman error');
@@ -1331,8 +1331,8 @@ describe('HasteMap', () => {
   });
 
   it('tries to crawl using node as a fallback when promise fails once', async () => {
-    const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node');
+    const watchman = require('../crawlers/watchman').watchmanCrawl;
+    const node = require('../crawlers/node').nodeCrawl;
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1369,8 +1369,8 @@ describe('HasteMap', () => {
 
   it('stops crawling when both crawlers fail', async () => {
     expect.assertions(1);
-    const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node');
+    const watchman = require('../crawlers/watchman').watchmanCrawl;
+    const node = require('../crawlers/node').nodeCrawl;
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),

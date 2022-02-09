@@ -140,7 +140,7 @@ describe('node crawler', () => {
 
   it('crawls for files based on patterns', async () => {
     childProcess = require('child_process');
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     mockResponse = [
       '/project/fruits/pear.js',
@@ -187,7 +187,7 @@ describe('node crawler', () => {
   });
 
   it('updates only changed files', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     // In this test sample, strawberry is changed and tomato is unchanged
     const tomato = ['', 33, 42, 1, '', null];
@@ -218,7 +218,7 @@ describe('node crawler', () => {
   });
 
   it('returns removed files', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     // In this test sample, previouslyExisted was present before and will not be
     // when crawling this directory.
@@ -254,7 +254,7 @@ describe('node crawler', () => {
     mockSpawnExit = 1;
     childProcess = require('child_process');
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const {hasteMap, removedFiles} = await nodeCrawl({
       data: {
@@ -285,7 +285,7 @@ describe('node crawler', () => {
     childProcess.spawn.mockImplementationOnce(() => {
       throw new Error();
     });
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const {hasteMap, removedFiles} = await nodeCrawl({
       data: {
@@ -308,7 +308,7 @@ describe('node crawler', () => {
 
   it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', async () => {
     childProcess = require('child_process');
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -331,7 +331,7 @@ describe('node crawler', () => {
   });
 
   it('completes with empty roots', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -348,7 +348,7 @@ describe('node crawler', () => {
   });
 
   it('completes with fs.readdir throwing an error', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -365,7 +365,7 @@ describe('node crawler', () => {
   });
 
   it('avoids calling lstat for directories and symlinks', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
     const fs = require('graceful-fs');
 
     const files = new Map();
