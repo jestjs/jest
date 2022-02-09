@@ -11,6 +11,7 @@
 ### Fixes
 
 - `[jest-phabricator]` [**BREAKING**] Convert to ESM ([#12341](https://github.com/facebook/jest/pull/12341))
+
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
