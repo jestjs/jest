@@ -91,7 +91,7 @@ The `resourceLimits` option which will be passed to `worker_threads` workers.
 
 The arguments that will be passed to the `setup` method during initialization.
 
-### `taskQueue: TaskQueue` (optional)
+#### `taskQueue: TaskQueue` (optional)
 
 The task queue defines in which order tasks (method calls) are processed by the workers. `jest-worker` ships with a `FifoQueue` and `PriorityQueue`:
 
@@ -102,7 +102,7 @@ The task queue defines in which order tasks (method calls) are processed by the 
 
 Provide a custom WorkerPool class to be used for spawning child processes.
 
-### `workerSchedulingPolicy: 'round-robin' | 'in-order'` (optional)
+#### `workerSchedulingPolicy: 'round-robin' | 'in-order'` (optional)
 
 Specifies the policy how tasks are assigned to workers if multiple workers are _idle_:
 
