@@ -20,7 +20,6 @@ import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -62,7 +61,7 @@ export const initialize = async ({
   setGlobalsForRuntime: (globals: JestGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
-  snapshotState: SnapshotStateType;
+  snapshotState: SnapshotState;
 }> => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
@@ -268,7 +267,7 @@ export const runAndTransformResultsToJestFormat = async ({
 };
 
 const handleSnapshotStateAfterRetry =
-  (snapshotState: SnapshotStateType) => (event: Circus.Event) => {
+  (snapshotState: SnapshotState) => (event: Circus.Event) => {
     switch (event.name) {
       case 'test_retry': {
         // Clear any snapshot data that occurred in previous test run
