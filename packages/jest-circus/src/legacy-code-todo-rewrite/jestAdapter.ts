@@ -128,4 +128,4 @@ const _addSnapshotData = (
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 };
 
-export = jestAdapter;
+export default jestAdapter;
