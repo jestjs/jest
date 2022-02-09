@@ -11,15 +11,12 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const util = require('util');
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');
 const stripJsonComments = require('strip-json-comments');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
-
-const readFilePromise = util.promisify(fs.readFile);
 
 (async () => {
   const packages = getPackages();
@@ -124,6 +121,9 @@ const readFilePromise = util.promisify(fs.readFile);
   // we want to limit the number of processes we spawn
   const cpus = Math.max(1, os.cpus().length - 1);
 
+  const typesReferenceDirective = '/// <reference types';
+  const typesNodeReferenceDirective = `${typesReferenceDirective}="node" />`;
+
   try {
     await Promise.all(
       packagesWithTs.map(
@@ -134,12 +134,12 @@ const readFilePromise = util.promisify(fs.readFile);
 
           const files = await Promise.all(
             globbed.map(file =>
-              Promise.all([file, readFilePromise(file, 'utf8')]),
+              Promise.all([file, fs.promises.readFile(file, 'utf8')]),
             ),
           );
 
           const filesWithTypeReferences = files
-            .filter(([, content]) => content.includes('/// <reference types'))
+            .filter(([, content]) => content.includes(typesReferenceDirective))
             .filter(hit => hit.length > 0);
 
           const filesWithReferences = filesWithTypeReferences
@@ -147,8 +147,9 @@ const readFilePromise = util.promisify(fs.readFile);
               name,
               content
                 .split('\n')
-                .filter(line => line !== '/// <reference types="node" />')
-                .filter(line => line.includes('/// <reference types'))
+                .map(line => line.trim())
+                .filter(line => line.includes(typesReferenceDirective))
+                .filter(line => line !== typesNodeReferenceDirective)
                 .join('\n'),
             ])
             .filter(([, content]) => content.length > 0)
