@@ -231,25 +231,51 @@ export default class TestRunner {
       });
     });
 
-    const runAllTests = Promise.all(
-      tests.map(test =>
-        runTestInWorker(test)
-          .then(result => {
-            if (onResult) {
-              return onResult(test, result);
-            }
+    const parallelTests = tests.filter(test => !test.context.config.runInBand);
+    const inBandTests = tests.filter(test => test.context.config.runInBand);
 
-            return this.eventEmitter.emit('test-file-success', [test, result]);
-          })
-          .catch(error => {
-            if (onFailure) {
-              return onFailure(test, error);
-            }
-
-            return this.eventEmitter.emit('test-file-failure', [test, error]);
-          }),
-      ),
+    // Then we group the in band tests by their projectId
+    const inBandProjectGroups = inBandTests.reduce(
+      (groups, test) => ({
+        ...groups,
+        [test.context.config.name]: (
+          groups[test.context.config.name] || []
+        ).concat([test]),
+      }),
+      {} as Record<string, Array<Test>>,
     );
+
+    const doTest = (test: Test) =>
+      runTestInWorker(test)
+        .then(result => {
+          if (onResult) {
+            return onResult(test, result);
+          }
+
+          return this.eventEmitter.emit('test-file-success', [test, result]);
+        })
+        .catch(error => {
+          if (onFailure) {
+            return onFailure(test, error);
+          }
+
+          return this.eventEmitter.emit('test-file-failure', [test, error]);
+        });
+
+    const runAllTests = Promise.all([
+      // Go through each project which needs to be run in band,
+      // and make a promise chain to execute all the tests in the
+      // project in band
+      ...Object.values(inBandProjectGroups).map(group =>
+        group.reduce(
+          (previousTest, test) => previousTest.then(() => doTest(test)),
+          Promise.resolve(),
+        ),
+      ),
+      // Resolve as a promise, to make sure the inband projects
+      // have the same priority
+      ...(await Promise.resolve().then(() => parallelTests.map(doTest))),
+    ]);
 
     const cleanup = async () => {
       const {forceExited} = await worker.end();

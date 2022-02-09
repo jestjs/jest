@@ -5,6 +5,7 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condtion to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
+- `[jest-config]` Allow `runInBand` to be configured at project level ([10912](https://github.com/facebook/jest/pull/10912))
 
 ### Fixes
 
