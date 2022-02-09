@@ -162,7 +162,7 @@ export const initialize = async ({
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`
-  setState({snapshotState, testPath});
+  expect.setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
