@@ -9,7 +9,6 @@ import type {Config, Global} from '@jest/types';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -94,7 +93,7 @@ export default async function setupJestGlobals({
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions): Promise<SnapshotStateType> {
+}: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
