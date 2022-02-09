@@ -10,6 +10,7 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
+- `[*]` [**BREAKING**] Drop support for `typescript@3.8`, minimum version is now `4.2` ([#11142](https://github.com/facebook/jest/pull/11142))
 - `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 - `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 

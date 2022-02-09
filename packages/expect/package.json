@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "^27.5.1",
-    "@tsd/typescript": "~4.1.5",
+    "@tsd/typescript": "~4.5.5",
     "chalk": "^4.0.0",
     "fast-check": "^2.0.0",
     "immutable": "^4.0.0",

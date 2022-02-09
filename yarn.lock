@@ -2600,7 +2600,7 @@ __metadata:
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@tsconfig/node12": ^1.0.9
-    "@tsd/typescript": ~4.1.5
+    "@tsd/typescript": ~4.5.5
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -2642,7 +2642,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^2.0.0
+    jest-runner-tsd: ^3.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^0.6.0
@@ -2666,7 +2666,7 @@ __metadata:
     tempy: ^1.0.0
     throat: ^6.0.1
     ts-node: ^9.0.0
-    type-fest: ^1.1.1
+    type-fest: ^2.11.2
     typescript: ^4.0.2
     which: ^2.0.1
   languageName: unknown
@@ -2803,7 +2803,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
-    "@tsd/typescript": ~4.1.5
+    "@tsd/typescript": ~4.5.5
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
@@ -4486,13 +4486,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:~4.1.5":
-  version: 4.1.5
-  resolution: "@tsd/typescript@npm:4.1.5"
+"@tsd/typescript@npm:~4.5.5":
+  version: 4.5.5
+  resolution: "@tsd/typescript@npm:4.5.5"
   bin:
     tsc: typescript/bin/tsc
     tsserver: typescript/bin/tsserver
-  checksum: a4a26ccec418c9f55b50eaa8b1d24566d56cced6657812b84d075dba7c5a5267e8c0f36288bebcdac6ced9ced7dd418ff106557f18bf2b6311b695c5288591fc
+  checksum: 6b57a087b713530966f073b47837c47a52adf7f4b036495853283ff0a6d7b39ec6d6a59105ca4708bb715f7a8551f4dd004de20ca0b72c396103c360841b6aab
   languageName: node
   linkType: hard
 
@@ -9935,7 +9935,7 @@ __metadata:
   dependencies:
     "@jest/test-utils": ^27.5.1
     "@jest/types": ^27.5.1
-    "@tsd/typescript": ~4.1.5
+    "@tsd/typescript": ~4.5.5
     chalk: ^4.0.0
     fast-check: ^2.0.0
     immutable: ^4.0.0
@@ -13026,9 +13026,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jest-runner-tsd@npm:2.0.0"
+"jest-runner-tsd@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jest-runner-tsd@npm:3.0.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
@@ -13036,7 +13036,7 @@ __metadata:
     tsd-lite: ^0.5.0
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 5c86e565036b4d5dd11c2669d5e8ac8508d794c6ee39044ae10f979d5b5ead7d98b6cae34bb1b31d4d197d3fe0bcc11a85ef158aaa61d7ab955c008758ac646d
+  checksum: 33f7145d7dc983ccfa9706e9926c57d30957265bf3c2171a8ecca5bfd7f3ab06b4dd668edcf02b0bd7f356020c4999d16d76aa666eed5b64da8d73ef7b12a061
   languageName: node
   linkType: hard
 
@@ -20857,10 +20857,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^1.1.1":
-  version: 1.4.0
-  resolution: "type-fest@npm:1.4.0"
-  checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
+"type-fest@npm:^2.11.2":
+  version: 2.11.2
+  resolution: "type-fest@npm:2.11.2"
+  checksum: b36f73b9e739d4044f511fa3233eb36d365f5fbf5b120810ec5c6a31b8a6c7a2caeba2fb725491ccfb41a37aac8862e67f4383fc178a0c6074d27c424fe7c764
   languageName: node
   linkType: hard
 
@@ -20890,23 +20890,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@*, typescript@^4.0.2, typescript@^4.0.3":
-  version: 4.1.6
-  resolution: "typescript@npm:4.1.6"
+"typescript@*, typescript@npm:^4.0.2, typescript@npm:^4.0.3":
+  version: 4.5.5
+  resolution: "typescript@npm:4.5.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 54aed909f94b16178c8a8d8911871b4e1c04454a3e6c82166715e28083e7ce6271e4d1df6f82c89544a4759b07aec780785032534e9c93b254e2107a18712c05
+  checksum: 506f4c919dc8aeaafa92068c997f1d213b9df4d9756d0fae1a1e7ab66b585ab3498050e236113a1c9e57ee08c21ec6814ca7a7f61378c058d79af50a4b1f5a5e
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.3#~builtin<compat/typescript>":
-  version: 4.1.6
-  resolution: "typescript@patch:typescript@npm%3A4.1.6#~builtin<compat/typescript>::version=4.1.6&hash=493e53"
+  version: 4.5.5
+  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 3bd9915f236817e4e2d32dd0d90e8902875929f014bb87a478000e32adda91d12f0425931ee6f9d6a2bc7d0c9242588fcee1050ac294497dfabf27d3d73b335c
+  checksum: c05c318d79c690f101d7ffb34cd6c7d6bbd884d3af9cefe7749ad0cd6be43c7082f098280982ca945dcba23fde34a08fed9602bb26540936baf8c0520727d3ba
   languageName: node
   linkType: hard
 
