@@ -22,7 +22,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        # for some reason the Windows cache doesn't work
+        os: [ubuntu-latest, macOS-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
