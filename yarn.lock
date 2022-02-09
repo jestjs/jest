@@ -2562,6 +2562,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/expect-utils@^27.5.1, @jest/expect-utils@workspace:packages/expect-utils":
+  version: 0.0.0-use.local
+  resolution: "@jest/expect-utils@workspace:packages/expect-utils"
+  dependencies:
+    jest-get-type: ^27.5.1
+    jest-matcher-utils: ^27.5.1
+  languageName: unknown
+  linkType: soft
+
 "@jest/fake-timers@^27.5.1, @jest/fake-timers@workspace:packages/jest-fake-timers":
   version: 0.0.0-use.local
   resolution: "@jest/fake-timers@workspace:packages/jest-fake-timers"
@@ -9933,6 +9942,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
+    "@jest/expect-utils": ^27.5.1
     "@jest/test-utils": ^27.5.1
     "@jest/types": ^27.5.1
     "@tsd/typescript": ~4.5.5
@@ -13147,6 +13157,7 @@ __metadata:
     "@babel/preset-react": ^7.7.2
     "@babel/traverse": ^7.7.2
     "@babel/types": ^7.0.0
+    "@jest/expect-utils": ^27.5.1
     "@jest/test-utils": ^27.5.1
     "@jest/transform": ^27.5.1
     "@jest/types": ^27.5.1

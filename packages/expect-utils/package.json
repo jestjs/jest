@@ -1,10 +1,10 @@
 {
-  "name": "expect",
+  "name": "@jest/expect-utils",
   "version": "27.5.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
-    "directory": "packages/expect"
+    "directory": "packages/expect-utils"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -14,23 +14,13 @@
       "types": "./build/index.d.ts",
       "default": "./build/index.js"
     },
-    "./package.json": "./package.json",
-    "./build/matchers": "./build/matchers.js"
+    "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/expect-utils": "^27.5.1",
-    "@jest/types": "^27.5.1",
-    "jest-get-type": "^27.5.1",
-    "jest-matcher-utils": "^27.5.1",
-    "jest-message-util": "^27.5.1"
+    "jest-get-type": "^27.5.1"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.5.1",
-    "@tsd/typescript": "~4.5.5",
-    "chalk": "^4.0.0",
-    "fast-check": "^2.0.0",
-    "immutable": "^4.0.0",
-    "tsd-lite": "^0.5.1"
+    "jest-matcher-utils": "^27.5.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

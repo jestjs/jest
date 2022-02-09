@@ -99,7 +99,7 @@ const GENERIC_IGNORED_PATTERNS = [
 const CUSTOM_IGNORED_PATTERNS = [
   '\\.(example|map)$',
   '^examples/.*',
-  '^packages/expect/src/jasmineUtils\\.ts$',
+  '^packages/expect-utils/src/jasmineUtils\\.ts$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
   '^packages/jest-haste-map/src/watchers/common\\.js$',
   '^packages/jest-haste-map/src/watchers/NodeWatcher\\.js$',

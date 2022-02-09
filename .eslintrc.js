@@ -91,7 +91,7 @@ module.exports = {
         'packages/expect/src/matchers.ts',
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
-        'packages/expect/src/utils.ts',
+        'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
@@ -214,8 +214,7 @@ module.exports = {
     {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
-        'packages/expect/src/jasmineUtils.ts',
-        '**/vendor/**/*',
+        'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
         'eslint-comments/disable-enable-pair': 'off',

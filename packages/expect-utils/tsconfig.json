@@ -7,11 +7,7 @@
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
   "references": [
-    {"path": "../expect-utils"},
     {"path": "../jest-get-type"},
-    {"path": "../jest-matcher-utils"},
-    {"path": "../jest-message-util"},
-    {"path": "../jest-types"},
-    {"path": "../test-utils"}
+    {"path": "../jest-matcher-utils"}
   ]
 }

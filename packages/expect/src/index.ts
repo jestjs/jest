@@ -8,6 +8,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {
   any,
@@ -24,7 +25,6 @@ import {
   stringNotMatching,
 } from './asymmetricMatchers';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
-import {equals} from './jasmineUtils';
 import {
   INTERNAL_MATCHER_FLAG,
   getMatchers,
@@ -49,7 +49,6 @@ import type {
   SyncExpectationResult,
   ThrowingMatcherFn,
 } from './types';
-import {iterableEquality, subsetEquality} from './utils';
 
 class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
