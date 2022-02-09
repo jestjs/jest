@@ -3,14 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @jest-environment <rootDir>/deno-env.js
  */
 
-'use strict';
+import {fn} from 'fake-dual-dep';
 
-const BrowserEnv = require('jest-environment-jsdom');
-
-module.exports = class BrowserEnvWithConditions extends BrowserEnv {
-  exportConditions() {
-    return ['browser'];
-  }
-};
+test('returns correct message', () => {
+  expect(fn()).toEqual('hello from deno');
+});

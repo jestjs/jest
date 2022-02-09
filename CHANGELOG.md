@@ -2,6 +2,9 @@
 
 ### Features
 
+- `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condtion to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+- `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+
 ### Fixes
 
 ### Chore & Maintenance
