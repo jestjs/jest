@@ -2530,6 +2530,7 @@ __metadata:
     jest-validate: ^27.5.1
     jest-watcher: ^27.5.1
     micromatch: ^4.0.4
+    pretty-format: ^27.5.1
     rimraf: ^3.0.0
     slash: ^3.0.0
     strip-ansi: ^6.0.0
