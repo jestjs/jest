@@ -26,6 +26,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "babel-jest": "workspace:^",
+    "babel-loader": "^8.2.3",
     "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
@@ -80,6 +81,8 @@
     "tempy": "^1.0.0",
     "ts-node": "^10.5.0",
     "typescript": "^5.0.4",
+    "webpack": "^5.68.0",
+    "webpack-node-externals": "^3.0.0",
     "which": "^3.0.0"
   },
   "scripts": {

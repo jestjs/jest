@@ -13,13 +13,17 @@ import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
 import stringLength from 'string-length';
+import nodeExternals from 'webpack-node-externals';
+import babelConfig from '../babel.config.js';
 
 export const PACKAGES_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../packages',
 );
+const require = createRequire(import.meta.url);
 
 export const OK = chalk.reset.inverse.bold.green(' DONE ');
+export const ERROR = chalk.reset.inverse.bold.red(' BOOM ');
 
 // Get absolute paths of all directories under packages/*
 export function getPackages() {
@@ -28,7 +32,6 @@ export function getPackages() {
     .map(file => path.resolve(PACKAGES_DIR, file))
     .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
     .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
-  const require = createRequire(import.meta.url);
   const rootPackage = require('../package.json');
 
   const nodeEngineRequirement = rootPackage.engines.node;
@@ -126,4 +129,108 @@ export function getPackagesWithTsConfig() {
   return getPackages().filter(p =>
     fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
   );
+}
+
+export const INLINE_REQUIRE_EXCLUDE_LIST =
+  /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
+
+export function createWebpackConfigs() {
+  const packages = getPackages();
+
+  return packages.map(({packageDir, pkg}) => {
+    const input = `${packageDir}/src/index.ts`;
+
+    if (!fs.existsSync(input)) {
+      return {packageDir, pkg};
+    }
+
+    const options = Object.assign({}, babelConfig);
+    options.plugins = options.plugins.slice();
+
+    if (INLINE_REQUIRE_EXCLUDE_LIST.test(input)) {
+      // The excluded modules are injected into the user's sandbox
+      // We need to guard some globals there.
+      options.plugins.push(
+        require.resolve('./babel-plugin-jest-native-globals'),
+      );
+    } else {
+      options.plugins = options.plugins.map(plugin => {
+        if (
+          Array.isArray(plugin) &&
+          plugin[0] === '@babel/plugin-transform-modules-commonjs'
+        ) {
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
+        }
+
+        return plugin;
+      });
+    }
+
+    return {
+      packageDir,
+      pkg,
+      webpackConfig: {
+        devtool: false,
+        entry: input,
+        externals: nodeExternals(),
+        mode: 'production',
+        module: {
+          rules: [
+            {
+              test: /.ts$/,
+              use: {
+                loader: 'babel-loader',
+                options,
+              },
+            },
+          ],
+        },
+        output: {
+          filename: 'index.js',
+          library: {
+            type: 'commonjs2',
+          },
+          path: path.resolve(packageDir, 'build'),
+        },
+        plugins: [new IgnoreDynamicRequire()],
+        resolve: {
+          extensions: ['.ts', '.js'],
+        },
+        target: 'node',
+      },
+    };
+  });
+}
+
+// inspired by https://framagit.org/Glandos/webpack-ignore-dynamic-require
+class IgnoreDynamicRequire {
+  apply(compiler) {
+    compiler.hooks.normalModuleFactory.tap('IgnoreDynamicRequire', factory => {
+      factory.hooks.parser
+        .for('javascript/auto')
+        .tap('IgnoreDynamicRequire', parser => {
+          // This is a SyncBailHook, so returning anything stops the parser, and nothing (undefined) allows to continue
+          function ignoreRequireCallExpression(expression) {
+            if (expression.arguments.length === 0) {
+              return undefined;
+            }
+            const arg = parser.evaluateExpression(expression.arguments[0]);
+            if (arg.isString() && !arg.string.startsWith('.')) {
+              return true;
+            }
+            if (!arg.isString() && !arg.isConditional()) {
+              return true;
+            }
+            return undefined;
+          }
+
+          parser.hooks.call
+            .for('require')
+            .tap('IgnoreDynamicRequire', ignoreRequireCallExpression);
+          parser.hooks.call
+            .for('require.resolve')
+            .tap('IgnoreDynamicRequire', ignoreRequireCallExpression);
+        });
+    });
+  }
 }
