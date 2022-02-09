@@ -7,7 +7,7 @@
 
 'use strict';
 
-const NodeEnv = require('jest-environment-node');
+const NodeEnv = require('jest-environment-node').default;
 
 module.exports = class DenoEnvWithConditions extends NodeEnv {
   exportConditions() {

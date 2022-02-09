@@ -22,7 +22,7 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment<number> {
+export default class JSDOMEnvironment implements JestEnvironment<number> {
   private dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -161,4 +161,4 @@ class JSDOMEnvironment implements JestEnvironment<number> {
   }
 }
 
-export = JSDOMEnvironment;
+export const TestEnvironment = JSDOMEnvironment;

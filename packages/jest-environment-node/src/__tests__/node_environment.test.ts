@@ -6,9 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import NodeEnvironment = require('../');
-
-const isTextEncoderDefined = typeof TextEncoder === 'function';
+import NodeEnvironment from '../';
 
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {
@@ -39,7 +37,6 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      // @ts-expect-error
       expect(timer.id).not.toBeUndefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
@@ -52,9 +49,7 @@ describe('NodeEnvironment', () => {
     expect(env.fakeTimersModern).toBeDefined();
   });
 
-  if (isTextEncoderDefined) {
-    test('TextEncoder references the same global Uint8Array constructor', () => {
-      expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
-    });
-  }
+  test('TextEncoder references the same global Uint8Array constructor', () => {
+    expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
+  });
 });
