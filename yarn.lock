@@ -2666,7 +2666,7 @@ __metadata:
     tempy: ^1.0.0
     throat: ^6.0.1
     ts-node: ^9.0.0
-    type-fest: ^1.1.1
+    type-fest: ^2.11.2
     typescript: ^4.0.2
     which: ^2.0.1
   languageName: unknown
@@ -20878,10 +20878,10 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^1.1.1":
-  version: 1.4.0
-  resolution: "type-fest@npm:1.4.0"
-  checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
+"type-fest@npm:^2.11.2":
+  version: 2.11.2
+  resolution: "type-fest@npm:2.11.2"
+  checksum: b36f73b9e739d4044f511fa3233eb36d365f5fbf5b120810ec5c6a31b8a6c7a2caeba2fb725491ccfb41a37aac8862e67f4383fc178a0c6074d27c424fe7c764
   languageName: node
   linkType: hard
 
