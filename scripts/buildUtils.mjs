@@ -166,12 +166,35 @@ export function createWebpackConfigs() {
       });
     }
 
+    const extraEntries =
+      pkg.name === 'jest-worker'
+        ? {
+            processChild: path.resolve(
+              packageDir,
+              './src/workers/processChild.ts',
+            ),
+            threadChild: path.resolve(
+              packageDir,
+              './src/workers/threadChild.ts',
+            ),
+          }
+        : pkg.name === 'jest-haste-map'
+        ? {worker: path.resolve(packageDir, './src/worker.ts')}
+        : pkg.name === '@jest/reporters'
+        ? {CoverageWorker: path.resolve(packageDir, './src/CoverageWorker.ts')}
+        : pkg.name === 'jest-runner'
+        ? {testWorker: path.resolve(packageDir, './src/testWorker.ts')}
+        : {};
+
     return {
       packageDir,
       pkg,
       webpackConfig: {
         devtool: false,
-        entry: input,
+        entry: {
+          index: input,
+          ...extraEntries,
+        },
         externals: nodeExternals(),
         mode: 'production',
         module: {
@@ -186,13 +209,13 @@ export function createWebpackConfigs() {
           ],
         },
         output: {
-          filename: 'index.js',
+          filename: '[name].js',
           library: {
             type: 'commonjs2',
           },
           path: path.resolve(packageDir, 'build'),
         },
-        plugins: [new IgnoreDynamicRequire()],
+        plugins: [new IgnoreDynamicRequire(extraEntries)],
         resolve: {
           extensions: ['.ts', '.js'],
         },
@@ -204,13 +227,19 @@ export function createWebpackConfigs() {
 
 // inspired by https://framagit.org/Glandos/webpack-ignore-dynamic-require
 class IgnoreDynamicRequire {
+  constructor(extraEntries) {
+    this.separateFiles = new Set(
+      Object.keys(extraEntries).map(entry => `./${entry}`),
+    );
+  }
+
   apply(compiler) {
     compiler.hooks.normalModuleFactory.tap('IgnoreDynamicRequire', factory => {
       factory.hooks.parser
         .for('javascript/auto')
         .tap('IgnoreDynamicRequire', parser => {
           // This is a SyncBailHook, so returning anything stops the parser, and nothing (undefined) allows to continue
-          function ignoreRequireCallExpression(expression) {
+          const ignoreRequireCallExpression = expression => {
             if (expression.arguments.length === 0) {
               return undefined;
             }
@@ -221,8 +250,12 @@ class IgnoreDynamicRequire {
             if (!arg.isString() && !arg.isConditional()) {
               return true;
             }
+
+            if (arg.isString() && this.separateFiles.has(arg.string)) {
+              return true;
+            }
             return undefined;
-          }
+          };
 
           parser.hooks.call
             .for('require')
