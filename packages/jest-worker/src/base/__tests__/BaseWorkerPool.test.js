@@ -102,16 +102,6 @@ describe('BaseWorkerPool', () => {
     });
   });
 
-  it('makes a non-existing relative worker throw', () => {
-    expect(() => {
-      // eslint-disable-next-line no-new
-      new MockWorkerPool('./baz.js', {
-        exposedMethods: [],
-        numWorkers: 1,
-      });
-    }).toThrow();
-  });
-
   it('create multiple workers with unique worker ids', () => {
     // eslint-disable-next-line no-new
     new MockWorkerPool('/tmp/baz.js', {

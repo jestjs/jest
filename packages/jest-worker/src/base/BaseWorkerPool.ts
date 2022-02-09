@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_END,
@@ -31,10 +30,6 @@ export default class BaseWorkerPool {
   constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
     this._workers = new Array(options.numWorkers);
-
-    if (!path.isAbsolute(workerPath)) {
-      workerPath = require.resolve(workerPath);
-    }
 
     const stdout = mergeStream();
     const stderr = mergeStream();
