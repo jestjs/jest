@@ -2,14 +2,15 @@
 
 ### Features
 
-- `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condtion to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+- `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+- `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
+- `[jest-environment-node]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
 
 ### Fixes
 
 - `[jest-phabricator]` [**BREAKING**] Convert to ESM ([#12341](https://github.com/facebook/jest/pull/12341))
-
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
