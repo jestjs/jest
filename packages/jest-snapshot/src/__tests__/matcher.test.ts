@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestSnapshot from '../';
-
-const {toMatchSnapshot} = jestSnapshot;
+import {toMatchSnapshot} from '../';
 
 it('matcher returns matcher name, expected and actual values', () => {
   const actual = 'a';

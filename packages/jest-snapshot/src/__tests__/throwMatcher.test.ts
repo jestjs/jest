@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestSnapshot from '..';
-
-const {toThrowErrorMatchingSnapshot} = jestSnapshot;
+import {toThrowErrorMatchingSnapshot} from '..';
 
 let matchFn: jest.Mock;
 
