@@ -25,7 +25,6 @@
     "@typescript-eslint/parser": "^4.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
