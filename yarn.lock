@@ -2621,7 +2621,6 @@ __metadata:
     "@typescript-eslint/parser": ^4.1.0
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
-    babel-plugin-replace-ts-export-assignment: ^0.0.2
     camelcase: ^6.2.0
     chalk: ^4.0.0
     chokidar: ^3.3.0
@@ -6499,13 +6498,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: ecca4389fd557554efc6de834f84f7c85e83c348d5283de2032d35429bc7121ed6f336553d3d704021f9bef22fca339fbee560d3b0fb8bb1d4eca2fecaaeebcb
-  languageName: node
-  linkType: hard
-
-"babel-plugin-replace-ts-export-assignment@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "babel-plugin-replace-ts-export-assignment@npm:0.0.2"
-  checksum: da749130fe0479cd9da73f8b3aafc62e05885b12732ce0e25976a7138dad1688a03366791b12633afdd8a702e2018ec01764c4ddb0ed0dbc3783b7e75b1b148a
   languageName: node
   linkType: hard
 
