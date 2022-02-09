@@ -113,8 +113,6 @@ module.exports = {
         'packages/jest-snapshot/src/printSnapshot.ts',
         'packages/jest-snapshot/src/types.ts',
         'packages/jest-util/src/convertDescriptorToString.ts',
-        'packages/jest-worker/src/Farm.ts',
-        'packages/jest-worker/src/index.ts',
         'packages/pretty-format/src/index.ts',
         'packages/pretty-format/src/plugins/DOMCollection.ts',
       ],
