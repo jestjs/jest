@@ -17,7 +17,7 @@ import {VERSION} from './version';
 
 const REPL_SCRIPT = require.resolve('./repl.js');
 
-export = function (): void {
+export function run(): void {
   const argv = <Config.Argv>yargs.usage(args.usage).options(args.options).argv;
 
   validateCLIOptions(argv, {...args.options, deprecationEntries});
@@ -25,4 +25,4 @@ export = function (): void {
   argv._ = [REPL_SCRIPT];
 
   runtimeCLI(argv, [`Jest REPL v${VERSION}`]);
-};
+}
