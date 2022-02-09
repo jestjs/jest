@@ -15,6 +15,8 @@
 
 ### Performance
 
+- `[jest-haste-map]` [**BREAKING**] Default to `node` crawler over shelling out to `find` if `watchman` is not enabled ([#12320](https://github.com/facebook/jest/pull/12320))
+
 ## 27.5.1
 
 ### Features
