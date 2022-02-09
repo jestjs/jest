@@ -372,47 +372,45 @@ describe('Runtime requireModule', () => {
     ).toThrowError();
   });
 
-  onNodeVersions('>=12.12.0', () => {
-    it('overrides module.createRequire', async () => {
-      const runtime = await createRuntime(__filename);
-      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+  it('overrides module.createRequire', async () => {
+    const runtime = await createRuntime(__filename);
+    const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
 
-      expect(exports.createRequire).not.toBe(createRequire);
+    expect(exports.createRequire).not.toBe(createRequire);
 
-      // createRequire with string
-      {
-        const customRequire = exports.createRequire(runtime.__mockRootPath);
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with string
+    {
+      const customRequire = exports.createRequire(runtime.__mockRootPath);
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with URL object
-      {
-        const customRequire = exports.createRequire(
-          pathToFileURL(runtime.__mockRootPath),
-        );
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with URL object
+    {
+      const customRequire = exports.createRequire(
+        pathToFileURL(runtime.__mockRootPath),
+      );
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with file URL string
-      {
-        const customRequire = exports.createRequire(
-          pathToFileURL(runtime.__mockRootPath).toString(),
-        );
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with file URL string
+    {
+      const customRequire = exports.createRequire(
+        pathToFileURL(runtime.__mockRootPath).toString(),
+      );
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with absolute module path
-      {
-        const customRequire = exports.createRequire(runtime.__mockRootPath);
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with absolute module path
+    {
+      const customRequire = exports.createRequire(runtime.__mockRootPath);
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      expect(exports.syncBuiltinESMExports).not.toThrow();
-      expect(exports.builtinModules).toEqual(builtinModules);
-    });
+    expect(exports.syncBuiltinESMExports).not.toThrow();
+    expect(exports.builtinModules).toEqual(builtinModules);
   });
 
-  onNodeVersions('>=12.12.0 <16.0.0', () => {
+  onNodeVersions('<16.0.0', () => {
     it('overrides module.createRequireFromPath', async () => {
       const runtime = await createRuntime(__filename);
       const exports = runtime.requireModule(runtime.__mockRootPath, 'module');

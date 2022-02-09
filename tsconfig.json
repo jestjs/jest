@@ -1,8 +1,6 @@
 {
-  "extends": "@tsconfig/node10/tsconfig.json",
+  "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
-    // Object.fromEntries
-    "lib": ["es2019.object"],
     "declaration": true,
     "composite": true,
     "emitDeclarationOnly": true,

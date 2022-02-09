@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
+
 ### Performance
 
 ## 27.5.1

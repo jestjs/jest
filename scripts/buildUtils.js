@@ -31,16 +31,18 @@ module.exports.getPackages = function getPackages() {
   return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
 
-    assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
+    assert.ok(pkg.engines, `Engine requirement in "${pkg.name}" should exist`);
 
     assert.strictEqual(
       pkg.engines.node,
-      // TODO: remove special casing for Jest 28
-      pkg.name === 'jest-worker' ? '>= 10.13.0' : nodeEngineRequirement,
-      `Engine requirement in ${pkg.name} should match root`,
+      nodeEngineRequirement,
+      `Engine requirement in "${pkg.name}" should match root`,
     );
 
-    assert.ok(pkg.exports, `Package ${pkg.name} is missing \`exports\` field`);
+    assert.ok(
+      pkg.exports,
+      `Package "${pkg.name}" is missing \`exports\` field`,
+    );
     assert.deepStrictEqual(
       pkg.exports,
       {
@@ -69,7 +71,7 @@ module.exports.getPackages = function getPackages() {
           ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
           : {}),
       },
-      `Package ${pkg.name} does not export correct files`,
+      `Package "${pkg.name}" does not export correct files`,
     );
 
     if (pkg.bin) {
@@ -78,7 +80,7 @@ module.exports.getPackages = function getPackages() {
 
         if (!fs.existsSync(fullBinPath)) {
           throw new Error(
-            `Binary in package ${pkg.name} with name "${binName}" at ${binPath} does not exist`,
+            `Binary in package "${pkg.name}" with name "${binName}" at ${binPath} does not exist`,
           );
         }
       });
