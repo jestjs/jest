@@ -2642,7 +2642,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^2.0.0
+    jest-runner-tsd: ^3.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^0.6.0
@@ -13004,9 +13004,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jest-runner-tsd@npm:2.0.0"
+"jest-runner-tsd@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jest-runner-tsd@npm:3.0.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
@@ -13014,7 +13014,7 @@ __metadata:
     tsd-lite: ^0.5.0
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 5c86e565036b4d5dd11c2669d5e8ac8508d794c6ee39044ae10f979d5b5ead7d98b6cae34bb1b31d4d197d3fe0bcc11a85ef158aaa61d7ab955c008758ac646d
+  checksum: 33f7145d7dc983ccfa9706e9926c57d30957265bf3c2171a8ecca5bfd7f3ab06b4dd668edcf02b0bd7f356020c4999d16d76aa666eed5b64da8d73ef7b12a061
   languageName: node
   linkType: hard
 
