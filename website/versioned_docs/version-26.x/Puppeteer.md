@@ -142,7 +142,7 @@ describe(
   () => {
     let page;
     beforeAll(async () => {
-      page = await global.__BROWSER__.newPage();
+      page = await global.__BROWSER_GLOBAL__.newPage();
       await page.goto('https://google.com');
     }, timeout);
 
