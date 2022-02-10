@@ -12811,7 +12811,6 @@ __metadata:
     jest-environment-jsdom: ^27.5.1
     jest-environment-node: ^27.5.1
     jest-get-type: ^27.5.1
-    jest-jasmine2: ^27.5.1
     jest-regex-util: ^27.5.1
     jest-resolve: ^27.5.1
     jest-runner: ^27.5.1

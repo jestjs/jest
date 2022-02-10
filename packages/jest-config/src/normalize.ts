@@ -626,11 +626,22 @@ export default async function normalize(
   if (
     !options.testRunner ||
     options.testRunner === 'circus' ||
-    options.testRunner === 'jest-circus'
+    options.testRunner === 'jest-circus' ||
+    options.testRunner === 'jest-circus/runner'
   ) {
     options.testRunner = require.resolve('jest-circus/runner');
   } else if (options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
+    try {
+      options.testRunner = require.resolve('jest-jasmine2');
+    } catch (error: any) {
+      if (error.code === 'MODULE_NOT_FOUND') {
+        createConfigError(
+          'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
+        );
+      }
+
+      throw error;
+    }
   }
 
   if (!options.coverageDirectory) {
