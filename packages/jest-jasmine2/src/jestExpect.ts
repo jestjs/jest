@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import expect = require('expect');
+import {MatcherState, expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -17,7 +17,7 @@ import {
 } from 'jest-snapshot';
 import type {JasmineMatchersObject, RawMatcherFn} from './types';
 
-export default (config: {expand: boolean}): void => {
+export default function jestExpect(config: {expand: boolean}): void {
   global.expect = expect;
   expect.setState({expand: config.expand});
   expect.extend({
@@ -39,7 +39,7 @@ export default (config: {expand: boolean}): void => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function (
-        this: expect.MatcherState,
+        this: MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
@@ -63,4 +63,4 @@ export default (config: {expand: boolean}): void => {
 
     expect.extend(jestMatchersObject);
   };
-};
+}

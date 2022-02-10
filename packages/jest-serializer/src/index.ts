@@ -4,8 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-// TODO: Remove this
-/// <reference path="../v8.d.ts" />
 
 import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
 import * as fs from 'graceful-fs';

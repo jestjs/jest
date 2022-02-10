@@ -50,6 +50,8 @@ jest.mock('../__test_modules__/f', () => {
     },
   };
 });
+// uses backticks on purpose
+// eslint-disable-next-line quotes
 jest.mock(`../__test_modules__/jestBackticks`);
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.

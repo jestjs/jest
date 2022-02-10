@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "27.4.2",
+  "version": "27.5.1",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -12,12 +12,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "^27.4.2",
-    "@jest/types": "^27.4.2",
+    "@jest/test-result": "^27.5.1",
+    "@jest/types": "^27.5.1",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "jest-util": "^27.4.2",
+    "jest-util": "^27.5.1",
     "string-length": "^4.0.1"
   },
   "repository": {
@@ -29,7 +29,7 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

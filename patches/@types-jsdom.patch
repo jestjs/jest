@@ -1,0 +1,13 @@
+diff --git a/base.d.ts b/base.d.ts
+index fcfed640a5652394461bc49cc426c1119eef2635..acce8ed3958e575427a705c3dcba2b7114ab1ad8 100755
+--- a/base.d.ts
++++ b/base.d.ts
+@@ -71,7 +71,7 @@ declare module "jsdom" {
+         sendTo(console: Console, options?: VirtualConsoleSendToOptions): this;
+     }
+ 
+-    type BinaryData = ArrayBufferLike | NodeJS.ArrayBufferView;
++    type BinaryData = ArrayBufferLike;
+     interface BaseOptions {
+         /**
+          * referrer just affects the value read from document.referrer.

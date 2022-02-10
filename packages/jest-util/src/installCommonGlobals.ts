@@ -12,7 +12,7 @@ import deepCyclicCopy from './deepCyclicCopy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
-export default function (
+export default function installCommonGlobals(
   globalObject: typeof globalThis,
   globals: Config.ConfigGlobals,
 ): typeof globalThis & Config.ConfigGlobals {

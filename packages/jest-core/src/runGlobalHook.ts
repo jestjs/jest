@@ -11,7 +11,7 @@ import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import prettyFormat from 'pretty-format';
 
-export default async ({
+export default async function runGlobalHook({
   allTests,
   globalConfig,
   moduleName,
@@ -19,7 +19,7 @@ export default async ({
   allTests: Array<Test>;
   globalConfig: Config.GlobalConfig;
   moduleName: 'globalSetup' | 'globalTeardown';
-}): Promise<void> => {
+}): Promise<void> {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
   );
@@ -58,7 +58,7 @@ export default async ({
             await globalModule(globalConfig);
           },
         );
-      } catch (error: unknown) {
+      } catch (error) {
         if (util.types.isNativeError(error)) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 
@@ -74,4 +74,4 @@ export default async ({
       }
     }
   }
-};
+}

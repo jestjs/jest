@@ -23,7 +23,7 @@ export async function run(
   project?: Config.Path,
 ): Promise<void> {
   try {
-    const argv: Config.Argv = buildArgv(maybeArgv);
+    const argv = await buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -48,14 +48,15 @@ export async function run(
   }
 }
 
-export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
+export async function buildArgv(
+  maybeArgv?: Array<string>,
+): Promise<Config.Argv> {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Config.Argv | Array<string> =
-    maybeArgv || process.argv.slice(2);
-  const argv: Config.Argv = yargs(rawArgv)
+  const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
+  const argv: Config.Argv = await yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -82,7 +83,7 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
     },
     {$0: argv.$0, _: argv._},
   );
-};
+}
 
 const getProjectListFromCLIArgs = (
   argv: Config.Argv,

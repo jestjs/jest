@@ -17,7 +17,6 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-replace-ts-export-assignment',
         require.resolve(
           './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
@@ -38,7 +37,6 @@ module.exports = {
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    '@babel/plugin-proposal-class-properties',
     require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [

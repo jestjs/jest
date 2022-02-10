@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import EventEmitter from 'events';
 import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
@@ -36,10 +34,6 @@ function assertCallsToChild(childNum, ...calls) {
     ).toEqual([CHILD_MESSAGE_CALL, true, methodName, args]);
   });
 }
-
-jest.mock('worker_threads', () => {
-  throw Error('Unsupported');
-});
 
 describe('Jest Worker Integration', () => {
   beforeEach(() => {

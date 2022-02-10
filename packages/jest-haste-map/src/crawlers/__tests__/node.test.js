@@ -34,8 +34,6 @@ jest.mock('child_process', () => ({
   }),
 }));
 
-let mockHasReaddirWithFileTypesSupport = false;
-
 jest.mock('graceful-fs', () => {
   const slash = require('slash');
   let mtime = 32;
@@ -73,55 +71,42 @@ jest.mock('graceful-fs', () => {
         throw new Error('readdir: callback is not a function!');
       }
 
-      if (mockHasReaddirWithFileTypesSupport) {
-        if (slash(dir) === '/project/fruits') {
-          setTimeout(
-            () =>
-              callback(null, [
-                {
-                  isDirectory: () => true,
-                  isSymbolicLink: () => false,
-                  name: 'directory',
-                },
-                {
-                  isDirectory: () => false,
-                  isSymbolicLink: () => false,
-                  name: 'tomato.js',
-                },
-                {
-                  isDirectory: () => false,
-                  isSymbolicLink: () => true,
-                  name: 'symlink',
-                },
-              ]),
-            0,
-          );
-        } else if (slash(dir) === '/project/fruits/directory') {
-          setTimeout(
-            () =>
-              callback(null, [
-                {
-                  isDirectory: () => false,
-                  isSymbolicLink: () => false,
-                  name: 'strawberry.js',
-                },
-              ]),
-            0,
-          );
-        } else if (slash(dir) == '/error') {
-          setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
-        }
-      } else {
-        if (slash(dir) === '/project/fruits') {
-          setTimeout(
-            () => callback(null, ['directory', 'tomato.js', 'symlink']),
-            0,
-          );
-        } else if (slash(dir) === '/project/fruits/directory') {
-          setTimeout(() => callback(null, ['strawberry.js']), 0);
-        } else if (slash(dir) == '/error') {
-          setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
-        }
+      if (slash(dir) === '/project/fruits') {
+        setTimeout(
+          () =>
+            callback(null, [
+              {
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                name: 'directory',
+              },
+              {
+                isDirectory: () => false,
+                isSymbolicLink: () => false,
+                name: 'tomato.js',
+              },
+              {
+                isDirectory: () => false,
+                isSymbolicLink: () => true,
+                name: 'symlink',
+              },
+            ]),
+          0,
+        );
+      } else if (slash(dir) === '/project/fruits/directory') {
+        setTimeout(
+          () =>
+            callback(null, [
+              {
+                isDirectory: () => false,
+                isSymbolicLink: () => false,
+                name: 'strawberry.js',
+              },
+            ]),
+          0,
+        );
+      } else if (slash(dir) == '/error') {
+        setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),
     stat: jest.fn(stat),
@@ -155,7 +140,7 @@ describe('node crawler', () => {
 
   it('crawls for files based on patterns', async () => {
     childProcess = require('child_process');
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     mockResponse = [
       '/project/fruits/pear.js',
@@ -202,7 +187,7 @@ describe('node crawler', () => {
   });
 
   it('updates only changed files', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     // In this test sample, strawberry is changed and tomato is unchanged
     const tomato = ['', 33, 42, 1, '', null];
@@ -233,7 +218,7 @@ describe('node crawler', () => {
   });
 
   it('returns removed files', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     // In this test sample, previouslyExisted was present before and will not be
     // when crawling this directory.
@@ -269,7 +254,7 @@ describe('node crawler', () => {
     mockSpawnExit = 1;
     childProcess = require('child_process');
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const {hasteMap, removedFiles} = await nodeCrawl({
       data: {
@@ -300,7 +285,7 @@ describe('node crawler', () => {
     childProcess.spawn.mockImplementationOnce(() => {
       throw new Error();
     });
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const {hasteMap, removedFiles} = await nodeCrawl({
       data: {
@@ -323,7 +308,7 @@ describe('node crawler', () => {
 
   it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', async () => {
     childProcess = require('child_process');
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -346,7 +331,7 @@ describe('node crawler', () => {
   });
 
   it('completes with empty roots', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -363,7 +348,7 @@ describe('node crawler', () => {
   });
 
   it('completes with fs.readdir throwing an error', async () => {
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').nodeCrawl;
 
     const files = new Map();
     const {hasteMap, removedFiles} = await nodeCrawl({
@@ -379,65 +364,30 @@ describe('node crawler', () => {
     expect(removedFiles).toEqual(new Map());
   });
 
-  describe('readdir withFileTypes support', () => {
-    it('calls lstat for directories and symlinks if readdir withFileTypes is not supported', async () => {
-      nodeCrawl = require('../node');
-      const fs = require('graceful-fs');
+  it('avoids calling lstat for directories and symlinks', async () => {
+    nodeCrawl = require('../node').nodeCrawl;
+    const fs = require('graceful-fs');
 
-      const files = new Map();
-      const {hasteMap, removedFiles} = await nodeCrawl({
-        data: {files},
-        extensions: ['js'],
-        forceNodeFilesystemAPI: true,
-        ignore: pearMatcher,
-        rootDir,
-        roots: ['/project/fruits'],
-      });
-
-      expect(hasteMap.files).toEqual(
-        createMap({
-          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
-          'fruits/tomato.js': ['', 32, 42, 0, '', null],
-        }),
-      );
-      expect(removedFiles).toEqual(new Map());
-      // once for /project/fruits, once for /project/fruits/directory
-      expect(fs.readdir).toHaveBeenCalledTimes(2);
-      // once for each of:
-      // 1. /project/fruits/directory
-      // 2. /project/fruits/directory/strawberry.js
-      // 3. /project/fruits/tomato.js
-      // 4. /project/fruits/symlink
-      // (we never call lstat on the root /project/fruits, since we know it's a directory)
-      expect(fs.lstat).toHaveBeenCalledTimes(4);
+    const files = new Map();
+    const {hasteMap, removedFiles} = await nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      forceNodeFilesystemAPI: true,
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
     });
 
-    it('avoids calling lstat for directories and symlinks if readdir withFileTypes is supported', async () => {
-      mockHasReaddirWithFileTypesSupport = true;
-      nodeCrawl = require('../node');
-      const fs = require('graceful-fs');
-
-      const files = new Map();
-      const {hasteMap, removedFiles} = await nodeCrawl({
-        data: {files},
-        extensions: ['js'],
-        forceNodeFilesystemAPI: true,
-        ignore: pearMatcher,
-        rootDir,
-        roots: ['/project/fruits'],
-      });
-
-      expect(hasteMap.files).toEqual(
-        createMap({
-          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
-          'fruits/tomato.js': ['', 32, 42, 0, '', null],
-        }),
-      );
-      expect(removedFiles).toEqual(new Map());
-      // once for /project/fruits, once for /project/fruits/directory
-      expect(fs.readdir).toHaveBeenCalledTimes(2);
-      // once for strawberry.js, once for tomato.js
-      expect(fs.lstat).toHaveBeenCalledTimes(2);
-    });
+    expect(hasteMap.files).toEqual(
+      createMap({
+        'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
+        'fruits/tomato.js': ['', 32, 42, 0, '', null],
+      }),
+    );
+    expect(removedFiles).toEqual(new Map());
+    // once for /project/fruits, once for /project/fruits/directory
+    expect(fs.readdir).toHaveBeenCalledTimes(2);
+    // once for strawberry.js, once for tomato.js
+    expect(fs.lstat).toHaveBeenCalledTimes(2);
   });
 });

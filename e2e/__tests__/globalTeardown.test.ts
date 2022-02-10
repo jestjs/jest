@@ -41,7 +41,7 @@ test('globalTeardown is triggered once after all test suites', () => {
   const teardownPath = path.resolve(e2eDir, 'teardown.js');
   const result = runWithJson('global-teardown', [
     `--globalTeardown=${teardownPath}`,
-    `--testPathPattern=__tests__`,
+    '--testPathPattern=__tests__',
   ]);
 
   expect(result.exitCode).toBe(0);
@@ -55,7 +55,7 @@ test('jest throws an error when globalTeardown does not export a function', () =
   const teardownPath = path.resolve(e2eDir, 'invalidTeardown.js');
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    `--testPathPattern=__tests__`,
+    '--testPathPattern=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
@@ -126,7 +126,7 @@ test('globalTeardown throws with named export', () => {
 
   const {exitCode, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
-    `--testPathPattern=__tests__`,
+    '--testPathPattern=__tests__',
   ]);
 
   expect(exitCode).toBe(1);
@@ -138,7 +138,7 @@ test('globalTeardown throws with named export', () => {
 
 onNodeVersions('>=12.17.0', () => {
   test('globalTeardown works with ESM modules', () => {
-    const {exitCode} = runJest('global-teardown-esm', [`--no-cache`], {
+    const {exitCode} = runJest('global-teardown-esm', ['--no-cache'], {
       nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 

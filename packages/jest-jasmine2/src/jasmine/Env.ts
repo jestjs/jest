@@ -49,7 +49,7 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -384,7 +384,7 @@ export default function (j$: Jasmine) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {

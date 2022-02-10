@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {cpus} from 'os';
+import {isAbsolute} from 'path';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -18,9 +17,11 @@ import type {
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+
 export {default as PriorityQueue} from './PriorityQueue';
 export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
+export type {PromiseWithCustomMessage, TaskQueue};
 
 function getExposedMethods(
   workerPath: string,
@@ -30,10 +31,9 @@ function getExposedMethods(
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Record<string, unknown> = require(workerPath);
+    const module: Record<string, unknown> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
-      // @ts-expect-error: no index
       name => typeof module[name] === 'function',
     );
 
@@ -80,6 +80,10 @@ export class Worker {
     this._options = {...options};
     this._ending = false;
 
+    if (!isAbsolute(workerPath)) {
+      throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
+    }
+
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
@@ -90,7 +94,6 @@ export class Worker {
     };
 
     if (this._options.WorkerPool) {
-      // @ts-expect-error: constructor target any?
       this._workerPool = new this._options.WorkerPool(
         workerPath,
         workerPoolOptions,
@@ -132,7 +135,7 @@ export class Worker {
 
   private _callFunctionWithArgs(
     method: string,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ): Promise<unknown> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
@@ -158,5 +161,3 @@ export class Worker {
     return this._workerPool.end();
   }
 }
-
-export type {PromiseWithCustomMessage, TaskQueue};
