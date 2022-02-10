@@ -58,7 +58,7 @@
     "jest-runner-tsd": "^3.0.0",
     "jest-silent-reporter": "^0.5.0",
     "jest-snapshot": "workspace:*",
-    "jest-watch-typeahead": "^0.6.0",
+    "jest-watch-typeahead": "^1.0.0",
     "jquery": "^3.2.1",
     "lerna": "^4.0.0",
     "micromatch": "^4.0.4",

@@ -2646,7 +2646,7 @@ __metadata:
     jest-runner-tsd: ^3.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
-    jest-watch-typeahead: ^0.6.0
+    jest-watch-typeahead: ^1.0.0
     jquery: ^3.2.1
     lerna: ^4.0.0
     micromatch: ^4.0.4
@@ -7292,6 +7292,13 @@ __metadata:
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
   checksum: b563e4b6039b15213114626621e7a3d12f31008bdce20f9c741d69987f62aeaace7ec30f6018890ad77b2e9b4d95324c9f5acfca58a9441e3b1dcdd1e2525d17
+  languageName: node
+  linkType: hard
+
+"char-regex@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "char-regex@npm:2.0.0"
+  checksum: 6084a8f0f652cdeba71cb7bbab40a2878bd41286044dffbe439fba81813a4fbf7c74ecaeb093caa8163f60e9865d4578ff42e6389ade3d7571d17af7691fcabe
   languageName: node
   linkType: hard
 
@@ -13376,20 +13383,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-watch-typeahead@npm:^0.6.0":
-  version: 0.6.5
-  resolution: "jest-watch-typeahead@npm:0.6.5"
+"jest-watch-typeahead@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "jest-watch-typeahead@npm:1.0.0"
   dependencies:
     ansi-escapes: ^4.3.1
     chalk: ^4.0.0
     jest-regex-util: ^27.0.0
     jest-watcher: ^27.0.0
-    slash: ^3.0.0
-    string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    slash: ^4.0.0
+    string-length: ^5.0.1
+    strip-ansi: ^7.0.1
   peerDependencies:
-    jest: ^26.0.0 || ^27.0.0
-  checksum: 01f5113e51cb49365661986144bfc6520d9e8d74d8a5d7527d5edb8e2bc8f128f6cf7baa512bb6bb35fdbb86fa92f0b26a4a7a4db66ac4dc3f7ea603ba48ca81
+    jest: ^27.0.0
+  checksum: 388d5189744e3fad21a8dd9e7fb5bbb9e8c12b4d07b76f8fa9c8df47fa93f25427602b20d9061431abb54290f9a24690adbf5204fd2d8cef7a7688c2f81db18d
   languageName: node
   linkType: hard
 
@@ -19622,6 +19629,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"slash@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "slash@npm:4.0.0"
+  checksum: da8e4af73712253acd21b7853b7e0dbba776b786e82b010a5bfc8b5051a1db38ed8aba8e1e8f400dd2c9f373be91eb1c42b66e91abb407ff42b10feece5e1d2d
+  languageName: node
+  linkType: hard
+
 "slice-ansi@npm:^2.0.0":
   version: 2.1.0
   resolution: "slice-ansi@npm:2.1.0"
@@ -20093,6 +20107,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"string-length@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "string-length@npm:5.0.1"
+  dependencies:
+    char-regex: ^2.0.0
+    strip-ansi: ^7.0.1
+  checksum: 71f73b8c8a743e01dcd001bcf1b197db78d5e5e53b12bd898cddaf0961be09f947dfd8c429783db3694b55b05cb5a51de6406c5085ff1aaa10c4771440c8396d
+  languageName: node
+  linkType: hard
+
 "string-width@npm:^1.0.1":
   version: 1.0.2
   resolution: "string-width@npm:1.0.2"
@@ -20218,7 +20242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^7.0.0":
+"strip-ansi@npm:^7.0.0, strip-ansi@npm:^7.0.1":
   version: 7.0.1
   resolution: "strip-ansi@npm:7.0.1"
   dependencies:
