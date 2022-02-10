@@ -659,11 +659,6 @@ export const options = {
       'Display individual test results with the test suite hierarchy.',
     type: 'boolean',
   },
-  version: {
-    alias: 'v',
-    description: 'Print the version and exit',
-    type: 'boolean',
-  },
   watch: {
     description:
       'Watch files for changes and rerun tests related to ' +

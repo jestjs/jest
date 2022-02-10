@@ -25,7 +25,7 @@
     "pretty-format": "^27.5.1"
   },
   "devDependencies": {
-    "@types/yargs": "^16.0.0"
+    "@types/yargs": "^17.0.8"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

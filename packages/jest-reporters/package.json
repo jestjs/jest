@@ -49,7 +49,7 @@
     "@types/istanbul-lib-source-maps": "^4.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node-notifier": "^8.0.0",
-    "mock-fs": "^4.4.1",
+    "mock-fs": "^5.1.2",
     "strip-ansi": "^6.0.0"
   },
   "peerDependencies": {
