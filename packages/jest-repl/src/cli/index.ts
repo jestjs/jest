@@ -18,7 +18,8 @@ import {VERSION} from './version';
 const REPL_SCRIPT = require.resolve('./repl.js');
 
 export function run(): void {
-  const argv = <Config.Argv>yargs.usage(args.usage).options(args.options).argv;
+  const argv = yargs.usage(args.usage).options(args.options)
+    .argv as Config.Argv;
 
   validateCLIOptions(argv, {...args.options, deprecationEntries});
 

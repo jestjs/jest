@@ -2809,7 +2809,7 @@ __metadata:
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
-    "@types/yargs": ^16.0.0
+    "@types/yargs": ^17.0.8
     chalk: ^4.0.0
     tsd-lite: ^0.5.1
   languageName: unknown
@@ -5378,12 +5378,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yargs@npm:^16.0.0":
-  version: 16.0.4
-  resolution: "@types/yargs@npm:16.0.4"
+"@types/yargs@npm:^17.0.8":
+  version: 17.0.8
+  resolution: "@types/yargs@npm:17.0.8"
   dependencies:
     "@types/yargs-parser": "*"
-  checksum: caa21d2c957592fe2184a8368c8cbe5a82a6c2e2f2893722e489f842dc5963293d2f3120bc06fe3933d60a3a0d1e2eb269649fd6b1947fe1820f8841ba611dd9
+  checksum: 63d06700ffbed745f00d7994eb92416649c8a3ead22f26446979d383f3af52fa9400bb185268f3a44a2348749098ffe33a8185ca676b77bc3206c63b8b73fd01
   languageName: node
   linkType: hard
 
@@ -12789,7 +12789,7 @@ __metadata:
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/prompts": ^2.0.1
-    "@types/yargs": ^16.0.0
+    "@types/yargs": ^17.0.8
     chalk: ^4.0.0
     exit: ^0.1.2
     graceful-fs: ^4.2.9
@@ -12798,7 +12798,7 @@ __metadata:
     jest-util: ^27.5.1
     jest-validate: ^27.5.1
     prompts: ^2.0.1
-    yargs: ^16.2.0
+    yargs: ^17.3.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -13129,7 +13129,7 @@ __metadata:
     "@jest/environment": ^27.5.1
     "@jest/transform": ^27.5.1
     "@jest/types": ^27.5.1
-    "@types/yargs": ^16.0.0
+    "@types/yargs": ^17.0.8
     chalk: ^4.0.0
     execa: ^5.0.0
     jest-config: ^27.5.1
@@ -13137,7 +13137,7 @@ __metadata:
     jest-util: ^27.5.1
     jest-validate: ^27.5.1
     repl: ^0.1.3
-    yargs: ^16.2.0
+    yargs: ^17.3.1
   bin:
     jest-repl: ./bin/jest-repl.js
     jest-runtime: ./bin/jest-runtime-cli.js
@@ -13360,7 +13360,7 @@ __metadata:
   resolution: "jest-validate@workspace:packages/jest-validate"
   dependencies:
     "@jest/types": ^27.5.1
-    "@types/yargs": ^16.0.0
+    "@types/yargs": ^17.0.8
     camelcase: ^6.2.0
     chalk: ^4.0.0
     jest-get-type: ^27.5.1
@@ -20128,7 +20128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.0.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.2":
+"string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.0.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.2, string-width@npm:^4.2.3":
   version: 4.2.3
   resolution: "string-width@npm:4.2.3"
   dependencies:
@@ -22734,6 +22734,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yargs-parser@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "yargs-parser@npm:21.0.0"
+  checksum: 1e205fca1cb7a36a1585e2b94a64e641c12741b53627d338e12747f4dca3c3610cdd9bb235040621120548dd74c3ef03a8168d52a1eabfedccbe4a62462b6731
+  languageName: node
+  linkType: hard
+
 "yargs@npm:^15.1.0, yargs@npm:^15.3.1":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
@@ -22765,6 +22772,21 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^20.2.2
   checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^17.3.1":
+  version: 17.3.1
+  resolution: "yargs@npm:17.3.1"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.3
+    y18n: ^5.0.5
+    yargs-parser: ^21.0.0
+  checksum: 64fc2e32c56739f1d14d2d24acd17a6944c3c8e3e3558f09fc1953ac112e868cc16013d282886b9d5be22187f8b9ed4f60741a6b1011f595ce2718805a656852
   languageName: node
   linkType: hard
 
