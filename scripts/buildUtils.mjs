@@ -13,6 +13,7 @@ import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
 import stringLength from 'string-length';
+import webpack from 'webpack';
 import nodeExternals from 'webpack-node-externals';
 import babelConfig from '../babel.config.js';
 
@@ -68,7 +69,9 @@ export function getPackages() {
             Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
           {},
         ),
-        ...(pkg.name === 'jest-circus' ? {'./runner': './build/runner.js'} : {}),
+        ...(pkg.name === 'jest-circus'
+          ? {'./runner': './build/runner.js'}
+          : {}),
         ...(pkg.name === 'expect'
           ? {
               './build/matchers': './build/matchers.js',
@@ -134,6 +137,15 @@ export function getPackagesWithTsConfig() {
 export const INLINE_REQUIRE_EXCLUDE_LIST =
   /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
+export const copyrightSnippet = `
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+`.trim();
+
 export function createWebpackConfigs() {
   const packages = getPackages();
 
@@ -166,7 +178,7 @@ export function createWebpackConfigs() {
       });
     }
 
-    const workerEntriesEntries =
+    const separateChunks =
       pkg.name === 'jest-worker'
         ? {
             processChild: path.resolve(
@@ -184,6 +196,27 @@ export function createWebpackConfigs() {
         ? {CoverageWorker: path.resolve(packageDir, './src/CoverageWorker.ts')}
         : pkg.name === 'jest-runner'
         ? {testWorker: path.resolve(packageDir, './src/testWorker.ts')}
+        : pkg.name === 'jest-circus'
+        ? {
+            jestAdapterInit: path.resolve(
+              packageDir,
+              './src/legacy-code-todo-rewrite/jestAdapterInit.ts',
+            ),
+          }
+        : pkg.name === 'jest-jasmine2'
+        ? {
+            'jasmine/jasmineLight': path.resolve(
+              packageDir,
+              './src/jasmine/jasmineLight.ts',
+            ),
+            jestExpect: path.resolve(packageDir, './src/jestExpect.ts'),
+            setup_jest_globals: path.resolve(
+              packageDir,
+              './src/setup_jest_globals.ts',
+            ),
+          }
+        : pkg.name === 'jest-repl'
+        ? {repl: path.resolve(packageDir, './src/cli/repl.ts')}
         : {};
 
     const extraEntryPoints =
@@ -213,10 +246,11 @@ export function createWebpackConfigs() {
       packageDir,
       pkg,
       webpackConfig: {
+        context: packageDir,
         devtool: false,
         entry: {
           index: input,
-          ...workerEntriesEntries,
+          ...separateChunks,
           ...extraEntryPoints,
         },
         externals: nodeExternals(),
@@ -232,6 +266,9 @@ export function createWebpackConfigs() {
             },
           ],
         },
+        optimization: {
+          moduleIds: 'named',
+        },
         output: {
           filename: '[name].js',
           library: {
@@ -239,7 +276,10 @@ export function createWebpackConfigs() {
           },
           path: path.resolve(packageDir, 'build'),
         },
-        plugins: [new IgnoreDynamicRequire(workerEntriesEntries)],
+        plugins: [
+          new webpack.BannerPlugin(copyrightSnippet),
+          new IgnoreDynamicRequire(separateChunks),
+        ],
         resolve: {
           extensions: ['.ts', '.js'],
         },
@@ -263,30 +303,28 @@ class IgnoreDynamicRequire {
         .for('javascript/auto')
         .tap('IgnoreDynamicRequire', parser => {
           // This is a SyncBailHook, so returning anything stops the parser, and nothing (undefined) allows to continue
-          const ignoreRequireCallExpression = expression => {
-            if (expression.arguments.length === 0) {
-              return undefined;
-            }
-            const arg = parser.evaluateExpression(expression.arguments[0]);
-            if (arg.isString() && !arg.string.startsWith('.')) {
-              return true;
-            }
-            if (!arg.isString() && !arg.isConditional()) {
-              return true;
-            }
-
-            if (arg.isString() && this.separateFiles.has(arg.string)) {
-              return true;
-            }
-            return undefined;
-          };
-
           parser.hooks.call
             .for('require')
-            .tap('IgnoreDynamicRequire', ignoreRequireCallExpression);
+            .tap('IgnoreDynamicRequire', expression => {
+              if (expression.arguments.length === 0) {
+                return undefined;
+              }
+              const arg = parser.evaluateExpression(expression.arguments[0]);
+              if (arg.isString() && !arg.string.startsWith('.')) {
+                return true;
+              }
+              if (!arg.isString() && !arg.isConditional()) {
+                return true;
+              }
+
+              if (arg.isString() && this.separateFiles.has(arg.string)) {
+                return true;
+              }
+              return undefined;
+            });
           parser.hooks.call
             .for('require.resolve')
-            .tap('IgnoreDynamicRequire', ignoreRequireCallExpression);
+            .tap('IgnoreDynamicRequire', () => true);
         });
     });
   }
