@@ -62,7 +62,7 @@
     "jquery": "^3.2.1",
     "lerna": "^4.0.0",
     "micromatch": "^4.0.4",
-    "mock-fs": "^4.4.1",
+    "mock-fs": "^5.1.2",
     "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^10.0.0",
     "pkg-dir": "^5.0.0",
