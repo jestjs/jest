@@ -79,7 +79,7 @@
     "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
     "throat": "^6.0.1",
-    "ts-node": "^9.0.0",
+    "ts-node": "^10.5.0",
     "type-fest": "^2.11.2",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
