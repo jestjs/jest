@@ -18,6 +18,7 @@
 ### Fixes
 
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
+- `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
 - `[jest-phabricator]` [**BREAKING**] Convert to ESM ([#12341](https://github.com/facebook/jest/pull/12341))
 
 ### Chore & Maintenance
