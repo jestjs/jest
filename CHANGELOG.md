@@ -25,7 +25,7 @@
 - `[jest-config]` [**BREAKING**] Remove `getTestEnvironment` export ([#12353](https://github.com/facebook/jest/pull/12353))
 - `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 - `[jest-resolve]` [**BREAKING**] Make `requireResolveFunction` argument mandatory ([#12353](https://github.com/facebook/jest/pull/12353))
-- `[jest-runner]` [**BREAKING**] Remove some type exports from  `@jest/test-result` ([#12353](https://github.com/facebook/jest/pull/12353))
+- `[jest-runner]` [**BREAKING**] Remove some type exports from `@jest/test-result` ([#12353](https://github.com/facebook/jest/pull/12353))
 - `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 
 ### Performance
