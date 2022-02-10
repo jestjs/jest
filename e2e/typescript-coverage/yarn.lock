@@ -13,7 +13,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-typescript@^3.3.1:
+"typescript@npm:^3.3.1":
   version: 3.9.10
   resolution: "typescript@npm:3.9.10"
   bin:
