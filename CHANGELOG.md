@@ -2,10 +2,8 @@
 
 ### Features
 
-<<<<<<< HEAD
 - `[jest-circus]` Support error logging before retry` ([#12201](https://github.com/facebook/jest/pull/12201))
 
-=======
 - `[expect]` [**BREAKING**] Migrate to ESM ([#12344](https://github.com/facebook/jest/pull/12344))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
@@ -14,7 +12,6 @@
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[jest-snapshot]` [**BREAKING**] Migrate to ESM ([#12342](https://github.com/facebook/jest/pull/12342))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
->>>>>>> 29534331e2d3d3f70cf153d7e53569d9dd80ecfe
 
 ### Fixes
 
