@@ -6,7 +6,6 @@
     "emitDeclarationOnly": true,
     "isolatedModules": true,
     "importsNotUsedAsValues": "error",
-
     "strict": true,
 
     /* Additional Checks */
