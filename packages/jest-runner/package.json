@@ -27,7 +27,6 @@
     "emittery": "^0.8.1",
     "graceful-fs": "^4.2.9",
     "jest-docblock": "^27.5.1",
-    "jest-environment-jsdom": "^27.5.1",
     "jest-environment-node": "^27.5.1",
     "jest-haste-map": "^27.5.1",
     "jest-leak-detector": "^27.5.1",

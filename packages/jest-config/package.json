@@ -35,7 +35,6 @@
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.9",
     "jest-circus": "^27.5.1",
-    "jest-environment-jsdom": "^27.5.1",
     "jest-environment-node": "^27.5.1",
     "jest-get-type": "^27.5.1",
     "jest-regex-util": "^27.5.1",
