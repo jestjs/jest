@@ -105,6 +105,10 @@ declare module '@jest/types' {
   namespace Global {
     interface GlobalAdditions {
       jasmine: Jasmine;
+      fail: () => void;
+      pending: () => void;
+      spyOn: () => void;
+      spyOnProperty: () => void;
     }
   }
 }
