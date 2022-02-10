@@ -17,6 +17,7 @@ module.exports = {
     '!**/perf/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
+    '!**/__typetests__/**',
     '!**/build/**',
     '!**/vendor/**',
     '!e2e/**',
