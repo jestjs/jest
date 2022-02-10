@@ -51,12 +51,6 @@ export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
-// TODO: Get rid of this at some point
-type Jasmine = {
-  _DEFAULT_TIMEOUT_INTERVAL?: number;
-  addMatchers: (matchers: Record<string, unknown>) => void;
-};
-
 type Each<EachCallback extends TestCallback> =
   | ((
       table: EachTable,
@@ -124,11 +118,6 @@ export interface TestFrameworkGlobals {
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
-  jasmine: Jasmine;
-  fail: () => void;
-  pending: () => void;
-  spyOn: () => void;
-  spyOnProperty: () => void;
 }
 
 export interface Global

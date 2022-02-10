@@ -96,6 +96,19 @@ declare global {
   namespace NodeJS {
     interface Global {
       expect: Expect;
+      jasmine: Jasmine;
+    }
+  }
+}
+
+declare module '@jest/types' {
+  namespace Global {
+    interface GlobalAdditions {
+      jasmine: Jasmine;
+      fail: () => void;
+      pending: () => void;
+      spyOn: () => void;
+      spyOnProperty: () => void;
     }
   }
 }

@@ -12,6 +12,7 @@
 - `[jest-environment-node]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[jest-jasmine2, jest-runtime]` [**BREAKING**] Use `Symbol` to pass `jest.setTimeout` value instead of `jasmine` specific logic ([#12124](https://github.com/facebook/jest/pull/12124))
+- `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 - `[jest-snapshot]` [**BREAKING**] Migrate to ESM ([#12342](https://github.com/facebook/jest/pull/12342))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 

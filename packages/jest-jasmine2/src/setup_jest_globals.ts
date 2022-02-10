@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, Global} from '@jest/types';
+import type {Config} from '@jest/types';
 import {expect} from 'expect';
 import {
   SnapshotState,
@@ -18,9 +18,6 @@ import type {
   default as JasmineSpec,
   SpecResult,
 } from './jasmine/Spec';
-import type {Jasmine} from './types';
-
-declare const global: Global.Global;
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -66,7 +63,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  (global.jasmine as Jasmine).Spec = (realSpec => {
+  global.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
@@ -85,7 +82,7 @@ const patchJasmine = () => {
     }
 
     return Spec;
-  })((global.jasmine as Jasmine).Spec);
+  })(global.jasmine.Spec);
 };
 
 export default async function setupJestGlobals({
