@@ -135,7 +135,7 @@ function createPathFilter(
 
     // this `index` thing can backfire, but `resolve` adds it: https://github.com/browserify/resolve/blob/f1b51848ecb7f56f77bfb823511d032489a13eab/lib/sync.js#L192
     const isRootRequire =
-      !originalPath.endsWith('/index') && pathToUse === 'index';
+      pathToUse === 'index' && !originalPath.endsWith('/index');
 
     const newPath = isRootRequire ? '.' : slash(pathToUse);
 
