@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "27.5.1",
+  "version": "28.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,14 +18,14 @@
     "./build/matchers": "./build/matchers.js"
   },
   "dependencies": {
-    "@jest/expect-utils": "^27.5.1",
-    "@jest/types": "^27.5.1",
-    "jest-get-type": "^27.5.1",
-    "jest-matcher-utils": "^27.5.1",
-    "jest-message-util": "^27.5.1"
+    "@jest/expect-utils": "^28.0.0-alpha.0",
+    "@jest/types": "^28.0.0-alpha.0",
+    "jest-get-type": "^28.0.0-alpha.0",
+    "jest-matcher-utils": "^28.0.0-alpha.0",
+    "jest-message-util": "^28.0.0-alpha.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.5.1",
+    "@jest/test-utils": "^28.0.0-alpha.0",
     "@tsd/typescript": "~4.5.5",
     "chalk": "^4.0.0",
     "fast-check": "^2.0.0",
