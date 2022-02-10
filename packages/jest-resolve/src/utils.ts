@@ -96,7 +96,7 @@ const resolveWithPrefix = (
 export const resolveTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
-  requireResolveFunction
+  requireResolveFunction,
 }: {
   rootDir: Config.Path;
   testEnvironment: string;
