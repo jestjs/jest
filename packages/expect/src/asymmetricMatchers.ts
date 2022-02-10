@@ -38,7 +38,6 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function getPrototype(obj: object) {
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj);
@@ -51,7 +50,6 @@ function getPrototype(obj: object) {
   return obj.constructor.prototype;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function hasProperty(obj: object | null, property: string): boolean {
   if (!obj) {
     return false;
