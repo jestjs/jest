@@ -8,6 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import {isError} from '@jest/expect-utils';
 import type {Expect} from '@jest/types';
 import {
   EXPECTED_COLOR,
@@ -29,7 +30,6 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
 
@@ -101,7 +101,7 @@ export const createMatcher = (
       } else {
         try {
           received();
-        } catch (e: unknown) {
+        } catch (e) {
           thrown = getThrown(e);
         }
       }

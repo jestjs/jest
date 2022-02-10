@@ -10,6 +10,7 @@ import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {
   fn as JestMockFn,
+  mocked as JestMockMocked,
   spyOn as JestMockSpyOn,
   ModuleMocker,
 } from 'jest-mock';
@@ -91,7 +92,11 @@ export interface Jest {
    * the top of the code block. Use this method if you want to explicitly avoid
    * this behavior.
    */
-  doMock(moduleName: string, moduleFactory?: () => unknown): Jest;
+  doMock(
+    moduleName: string,
+    moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
   /**
    * Indicates that the module system should never return a mocked version
    * of the specified module from require() (e.g. that it should always return
@@ -191,6 +196,7 @@ export interface Jest {
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
+  mocked: typeof JestMockMocked;
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted. This only works with `jest-circus`!

@@ -40,7 +40,7 @@ type FsEventsWatcherEvent =
  * Export `FSEventsWatcher` class.
  * Watches `dir`.
  */
-class FSEventsWatcher extends EventEmitter {
+export class FSEventsWatcher extends EventEmitter {
   public readonly root: string;
   public readonly ignored?: Matcher;
   public readonly glob: Array<string>;
@@ -187,5 +187,3 @@ class FSEventsWatcher extends EventEmitter {
     this.emit(ALL_EVENT, type, file, this.root, stat);
   }
 }
-
-export = FSEventsWatcher;

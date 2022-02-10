@@ -157,7 +157,7 @@ const _callCircusHook = async ({
       timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
   }
 };
@@ -168,7 +168,7 @@ const _callCircusTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
-  invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
+  invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
   if (test.errors.length) {
     return; // We don't run the test if there's already an error in before hooks.
@@ -180,7 +180,7 @@ const _callCircusTest = async (
       timeout,
     });
     await dispatch({name: 'test_fn_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
   }
 };

@@ -6,6 +6,7 @@
  */
 
 import type {Jest} from '@jest/environment';
+import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import type {Global} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
@@ -36,7 +37,8 @@ throw new Error(
 declare module '@jest/types' {
   namespace Expect {
     interface MatcherState {
-      // TODO remove utils in Jest 28, users should import them from 'jest-matcher-utils'
+      // TODO consider removing all utils from MatcherState
+      equals: EqualsFunction;
       utils: typeof jestMatcherUtils & {
         iterableEquality: Tester;
         subsetEquality: Tester;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`shows error messages when called with invalid argument 1`] = `
-FAIL __tests__/todoNonString.test.js
+"FAIL __tests__/todoNonString.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -12,11 +12,11 @@ FAIL __tests__/todoNonString.test.js
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoNonString.test.js:8:4)
+      at Object.todo (__tests__/todoNonString.test.js:8:4)"
 `;
 
 exports[`shows error messages when called with multiple arguments 1`] = `
-FAIL __tests__/todoMultipleArgs.test.js
+"FAIL __tests__/todoMultipleArgs.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -27,11 +27,11 @@ FAIL __tests__/todoMultipleArgs.test.js
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoMultipleArgs.test.js:8:4)
+      at Object.todo (__tests__/todoMultipleArgs.test.js:8:4)"
 `;
 
 exports[`shows error messages when called with no arguments 1`] = `
-FAIL __tests__/todoNoArgs.test.js
+"FAIL __tests__/todoNoArgs.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -42,19 +42,19 @@ FAIL __tests__/todoNoArgs.test.js
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoNoArgs.test.js:8:4)
+      at Object.todo (__tests__/todoNoArgs.test.js:8:4)"
 `;
 
 exports[`shows todo messages when in verbose mode 1`] = `
-PASS __tests__/verbose.test.js
+"PASS __tests__/verbose.test.js
   todos in verbose reporter
     ✎ todo this
     ✎ todo should
-    ✎ todo work
+    ✎ todo work"
 `;
 
 exports[`works with all statuses 1`] = `
-FAIL __tests__/statuses.test.js
+"FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
   ○ skipped skips
@@ -75,5 +75,5 @@ FAIL __tests__/statuses.test.js
       15 |
       16 | it.skip('skips', () => {
 
-      at Object.toBe (__tests__/statuses.test.js:13:14)
+      at Object.toBe (__tests__/statuses.test.js:13:14)"
 `;

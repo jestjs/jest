@@ -9,6 +9,17 @@
 /* eslint-disable local/ban-types-eventually */
 
 import type {Expect} from '@jest/types';
+import {
+  arrayBufferEquality,
+  equals,
+  getObjectSubset,
+  getPath,
+  iterableEquality,
+  pathAsArray,
+  sparseArrayEquality,
+  subsetEquality,
+  typeEquality,
+} from '@jest/expect-utils';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
@@ -28,7 +39,6 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {equals} from './jasmineUtils';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -39,16 +49,6 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
-  arrayBufferEquality,
-  getObjectSubset,
-  getPath,
-  iterableEquality,
-  pathAsArray,
-  sparseArrayEquality,
-  subsetEquality,
-  typeEquality,
-} from './utils';
 
 // Omit colon and one or more spaces, so can call getLabelPrinter.
 const EXPECTED_LABEL = 'Expected';

@@ -8,6 +8,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import type {Expect} from '@jest/types';
 import * as matcherUtils from 'jest-matcher-utils';
 import {
@@ -15,6 +16,8 @@ import {
   anything,
   arrayContaining,
   arrayNotContaining,
+  closeTo,
+  notCloseTo,
   objectContaining,
   objectNotContaining,
   stringContaining,
@@ -23,7 +26,6 @@ import {
   stringNotMatching,
 } from './asymmetricMatchers';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
-import {equals} from './jasmineUtils';
 import {
   BUILD_IN_MATCHER_FLAG,
   BuildInRawMatcherFn,
@@ -37,10 +39,9 @@ import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
-import {iterableEquality, subsetEquality} from './utils';
 import './types-patch';
 
-class JestAssertionError extends Error {
+export class JestAssertionError extends Error {
   matcherResult?: Omit<Expect.SyncExpectationResult, 'message'> & {
     message: string;
   };
@@ -76,7 +77,7 @@ const getPromiseMatcher = (name: string, matcher: Expect.RawMatcherFn) => {
   return null;
 };
 
-const expect: Expect.Expect = (actual: any, ...rest: Array<any>) => {
+export const expect: Expect.Expect = (actual: any, ...rest: Array<any>) => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -174,7 +175,7 @@ const makeResolveMatcher =
         outerErr.message =
           matcherUtils.matcherHint(matcherName, undefined, '', options) +
           '\n\n' +
-          `Received promise rejected instead of resolved\n` +
+          'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(reason)}`;
         return Promise.reject(outerErr);
       },
@@ -221,7 +222,7 @@ const makeRejectMatcher =
         outerErr.message =
           matcherUtils.matcherHint(matcherName, undefined, '', options) +
           '\n\n' +
-          `Received promise resolved instead of rejected\n` +
+          'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         return Promise.reject(outerErr);
       },
@@ -355,13 +356,15 @@ expect.any = any;
 
 expect.not = {
   arrayContaining: arrayNotContaining,
+  closeTo: notCloseTo,
   objectContaining: objectNotContaining,
   stringContaining: stringNotContaining,
   stringMatching: stringNotMatching,
 };
 
-expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
+expect.closeTo = closeTo;
+expect.objectContaining = objectContaining;
 expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 
@@ -383,7 +386,7 @@ const _validateResult = (result: any) => {
   }
 };
 
-function assertions(expected: number) {
+function assertions(expected: number): void {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, assertions);
@@ -394,7 +397,7 @@ function assertions(expected: number) {
     expectedAssertionsNumberError: error,
   });
 }
-function hasAssertions(...args: Array<any>) {
+function hasAssertions(...args: Array<unknown>): void {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -418,12 +421,4 @@ expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-const expectExport = expect as Expect.Expect;
-
-// TODO: remove reexport of types in Jest 28. The types must be imported directly from @jest/types
-declare namespace expectExport {
-  export type MatcherState = Expect.MatcherState;
-  export interface Matchers<R, T = unknown> extends Expect.Matchers<R, T> {}
-}
-
-export = expectExport;
+export default expect;

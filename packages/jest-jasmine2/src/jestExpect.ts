@@ -8,7 +8,7 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import type {Expect, Global} from '@jest/types';
-import expect = require('expect');
+import {expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -20,7 +20,7 @@ import type {Jasmine, JasmineMatchersObject} from './types';
 
 declare const global: Global.Global;
 
-export default (config: {expand: boolean}): void => {
+export default function jestExpect(config: {expand: boolean}): void {
   const jestExpect = expect as Expect.JestExpect;
 
   global.expect = jestExpect;
@@ -68,4 +68,4 @@ export default (config: {expand: boolean}): void => {
 
     jestExpect.extend(jestMatchersObject);
   };
-};
+}

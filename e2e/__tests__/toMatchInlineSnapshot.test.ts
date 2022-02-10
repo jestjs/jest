@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -23,7 +22,7 @@ afterAll(() => cleanup(TESTS_DIR));
 test('basic support', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(
-    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
+    "test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n",
   );
 
   {
@@ -34,7 +33,7 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
   }
 
   {
@@ -43,7 +42,7 @@ test('basic support', () => {
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
+    expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 
   {
@@ -54,7 +53,7 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshot name: `inline snapshots 1`');
     expect(exitCode).toBe(1);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot mismatch');
+    expect(fileAfter).toMatchSnapshot('snapshot mismatch');
   }
 
   {
@@ -67,14 +66,14 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
+    expect(fileAfter).toMatchSnapshot('snapshot updated');
   }
 });
 
 test('do not indent empty lines', () => {
   const filename = 'empty-line-indent.test.js';
   const template = makeTemplate(
-    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
+    "test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n",
   );
 
   {
@@ -85,7 +84,7 @@ test('do not indent empty lines', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
   }
 
   {
@@ -94,7 +93,7 @@ test('do not indent empty lines', () => {
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
+    expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 });
 
@@ -111,7 +110,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
   }
 
   {
@@ -119,7 +118,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
+    expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 
   {
@@ -131,7 +130,7 @@ test('handles property matchers', () => {
     expect(stderr).toMatch('Snapshot name: `handles property matchers 1`');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot failed');
+    expect(fileAfter).toMatchSnapshot('snapshot failed');
   }
 
   {
@@ -147,7 +146,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
+    expect(fileAfter).toMatchSnapshot('snapshot updated');
   }
 });
 
@@ -170,7 +169,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
@@ -180,7 +179,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
     expect(exitCode).toBe(1);
-    expect(wrap(fileAfter)).toMatchSnapshot('inline snapshot written');
+    expect(fileAfter).toMatchSnapshot('inline snapshot written');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
@@ -194,7 +193,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
     expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('external snapshot cleaned');
+    expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
     expect(fs.existsSync(snapshotPath)).toEqual(false);
   }
 });
@@ -213,7 +212,7 @@ test('supports async matchers', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('2 snapshots written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot();
+  expect(fileAfter).toMatchSnapshot();
 });
 
 test('supports async tests', () => {
@@ -230,7 +229,7 @@ test('supports async tests', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot();
+  expect(fileAfter).toMatchSnapshot();
 });
 
 test('writes snapshots with non-literals in expect(...)', () => {
@@ -247,7 +246,7 @@ test('writes snapshots with non-literals in expect(...)', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot();
+  expect(fileAfter).toMatchSnapshot();
 });
 
 // issue: https://github.com/facebook/jest/issues/6702
@@ -287,7 +286,7 @@ test('supports custom matchers', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot('custom matchers');
+  expect(fileAfter).toMatchSnapshot('custom matchers');
 });
 
 test('supports custom matchers with property matcher', () => {
@@ -329,9 +328,7 @@ test('supports custom matchers with property matcher', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('2 snapshots written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot(
-    'custom matchers with property matcher',
-  );
+  expect(fileAfter).toMatchSnapshot('custom matchers with property matcher');
 });
 
 test('multiple custom matchers and native matchers', () => {
@@ -359,7 +356,7 @@ test('multiple custom matchers and native matchers', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('4 snapshots written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot('multiple matchers');
+  expect(fileAfter).toMatchSnapshot('multiple matchers');
 });
 
 test('indentation is correct in the presences of existing snapshots', () => {
@@ -380,7 +377,7 @@ test('indentation is correct in the presences of existing snapshots', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot('existing snapshot');
+  expect(fileAfter).toMatchSnapshot('existing snapshot');
 });
 
 test('indentation is correct in the presences of existing snapshots, when the file is correctly formatted by prettier', () => {
@@ -397,5 +394,5 @@ test('indentation is correct in the presences of existing snapshots, when the fi
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
-  expect(wrap(fileAfter)).toMatchSnapshot('existing snapshot');
+  expect(fileAfter).toMatchSnapshot('existing snapshot');
 });

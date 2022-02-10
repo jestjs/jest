@@ -9,7 +9,7 @@ exports[`should work without error 1`] = `
 
     expect(received).toBe(expected) // Object.is equality
 
-    If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"
+    If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
     Expected: <div />
     Received: serializes to the same string

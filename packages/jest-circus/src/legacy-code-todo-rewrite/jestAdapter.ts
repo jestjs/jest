@@ -9,7 +9,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -101,7 +101,7 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult,
-  snapshotState: SnapshotStateType,
+  snapshotState: SnapshotState,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
@@ -128,4 +128,4 @@ const _addSnapshotData = (
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 };
 
-export = jestAdapter;
+export default jestAdapter;

@@ -28,19 +28,11 @@ export type ThrowingMatcherFn = (actual: any) => void;
 
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export type Tester = (a: any, b: any) => boolean | undefined;
-
 export interface MatcherState {
   assertionCalls: number;
   currentTestName?: string;
   dontThrow?: () => void;
   error?: Error;
-  equals: (
-    a: unknown,
-    b: unknown,
-    customTesters?: Array<Tester>,
-    strictCheck?: boolean,
-  ) => boolean;
   expand?: boolean;
   expectedAssertionsNumber?: number | null;
   expectedAssertionsNumberError?: Error;
@@ -50,7 +42,7 @@ export interface MatcherState {
   promise: string;
   suppressedErrors: Array<Error>;
   testPath?: Config.Path;
-  // not possible to have `utils` here as it creates circular dependencies
+  // Not possible to have `utils` here. Importing `jest-matcher-utils` would cause circular dependencies
 }
 
 export type AsymmetricMatcher = {
@@ -70,15 +62,6 @@ export type ExpectedAssertionsErrors = Array<{
   expected: string;
 }>;
 
-export interface AsymmetricMatchers {
-  any(sample: unknown): AsymmetricMatcher;
-  anything(): AsymmetricMatcher;
-  arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
-  objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
-  stringContaining(sample: string): AsymmetricMatcher;
-  stringMatching(sample: string | RegExp): AsymmetricMatcher;
-}
-
 type BaseExpect = {
   assertions(numberOfAssertions: number): void;
   extend(matchers: MatchersObject): void;
@@ -86,20 +69,54 @@ type BaseExpect = {
   getState(): MatcherState;
   hasAssertions(): void;
   setState(state: Partial<MatcherState>): void;
-} & AsymmetricMatchers & {
-    not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
-  };
+};
 
 export type Expect = BaseExpect & {
-  <T = unknown>(actual: T): Matchers<void, T>;
+  <T = unknown>(actual: T): Matchers<void> &
+    InverseMatchers<void> &
+    PromiseMatchers;
+} & AsymmetricMatchers &
+  InverseAsymmetricMatchers;
+
+type InverseAsymmetricMatchers = {
+  /**
+   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
+   */
+  not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
 };
 
-export type JestExpect = BaseExpect & {
-  <T = unknown>(actual: T): JestMatchers<void, T>;
-  addSnapshotSerializer(serializer: unknown): void;
+export interface AsymmetricMatchers {
+  any(sample: unknown): AsymmetricMatcher;
+  anything(): AsymmetricMatcher;
+  arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
+  closeTo(sample: number, precision?: number): AsymmetricMatcher;
+  objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
+  stringContaining(sample: string): AsymmetricMatcher;
+  stringMatching(sample: string | RegExp): AsymmetricMatcher;
+}
+
+type PromiseMatchers = {
+  /**
+   * Unwraps the reason of a rejected promise so any other matcher can be chained.
+   * If the promise is fulfilled the assertion fails.
+   */
+  rejects: Matchers<Promise<void>> & InverseMatchers<Promise<void>>;
+  /**
+   * Unwraps the value of a fulfilled promise so any other matcher can be chained.
+   * If the promise is rejected the assertion fails.
+   */
+  resolves: Matchers<Promise<void>> & InverseMatchers<Promise<void>>;
 };
 
-export interface Matchers<R, T = unknown> {
+type InverseMatchers<R extends void | Promise<void>> = {
+  /**
+   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
+   */
+  not: Matchers<R>;
+};
+
+// This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
+export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -109,10 +126,6 @@ export interface Matchers<R, T = unknown> {
    */
   lastReturnedWith(expected: unknown): R;
   /**
-   * If you know how to test something, `.not` lets you test its opposite.
-   */
-  not: Matchers<R, T>;
-  /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
   nthCalledWith(nth: number, ...expected: [unknown, ...Array<unknown>]): R;
@@ -120,16 +133,6 @@ export interface Matchers<R, T = unknown> {
    * Ensure that the nth call to a mock function has returned a specified value.
    */
   nthReturnedWith(nth: number, expected: unknown): R;
-  /**
-   * Use resolves to unwrap the value of a fulfilled promise so any other
-   * matcher can be chained. If the promise is rejected the assertion fails.
-   */
-  resolves: Matchers<Promise<R>, T>;
-  /**
-   * Unwraps the reason of a rejected promise so any other matcher can be chained.
-   * If the promise is fulfilled the assertion fails.
-   */
-  rejects: Matchers<Promise<R>, T>;
   /**
    * Checks that a value is what you expect. It uses `===` to check strict equality.
    * Don't use `toBe` with floating-point numbers.
@@ -365,4 +368,35 @@ export interface SnapshotMatchers<R, T = unknown> {
   toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
 }
 
-type JestMatchers<R, T> = Matchers<R, T> & SnapshotMatchers<R, T>;
+type JestMatchers<R extends void | Promise<void>, T = unknown> = Matchers<R> &
+  SnapshotMatchers<R, T>;
+
+type InverseJestMatchers<R extends void | Promise<void>, T = unknown> = {
+  /**
+   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
+   */
+  not: JestMatchers<R, T>;
+};
+
+type PromiseJestMatchers<T = unknown> = {
+  /**
+   * Unwraps the reason of a rejected promise so any other matcher can be chained.
+   * If the promise is fulfilled the assertion fails.
+   */
+  rejects: JestMatchers<Promise<void>, T> &
+    InverseJestMatchers<Promise<void>, T>;
+  /**
+   * Unwraps the value of a fulfilled promise so any other matcher can be chained.
+   * If the promise is rejected the assertion fails.
+   */
+  resolves: JestMatchers<Promise<void>, T> &
+    InverseJestMatchers<Promise<void>, T>;
+};
+
+export type JestExpect = BaseExpect & {
+  <T = unknown>(actual: T): JestMatchers<void, T> &
+    InverseJestMatchers<void, T> &
+    PromiseJestMatchers;
+  addSnapshotSerializer(serializer: unknown): void;
+} & AsymmetricMatchers &
+  InverseAsymmetricMatchers;

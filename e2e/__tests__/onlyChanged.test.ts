@@ -46,7 +46,7 @@ afterEach(() => cleanup(DIR));
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -69,7 +69,7 @@ test('run for "onlyChanged" and "changedSince"', () => {
 test('run only changed files', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -90,10 +90,10 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR, ['-o']));
@@ -249,7 +249,7 @@ test('collect test coverage when using onlyChanged', () => {
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {onlyChanged: true}}),
   });
@@ -273,10 +273,10 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR));
@@ -321,7 +321,7 @@ testIfHg('gets changed files for hg', async () => {
   }
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -337,9 +337,9 @@ testIfHg('gets changed files for hg', async () => {
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stdout, stderr} = runJest(DIR, ['-o']));
@@ -349,7 +349,7 @@ testIfHg('gets changed files for hg', async () => {
   run(`${HG} commit -m "test2"`, DIR);
 
   writeFiles(DIR, {
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
   ({stdout, stderr} = runJest(DIR, ['-o']));
@@ -372,7 +372,7 @@ test('path on Windows is case-insensitive', () => {
 
   writeFiles(modifiedDIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -385,10 +385,10 @@ test('path on Windows is case-insensitive', () => {
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   const {stderr} = runJest(incorrectModifiedDIR, ['-o']);
