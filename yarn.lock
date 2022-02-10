@@ -4946,7 +4946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:*":
+"@types/jsdom@npm:^16.2.4":
   version: 16.2.14
   resolution: "@types/jsdom@npm:16.2.14"
   dependencies:
@@ -4954,17 +4954,6 @@ __metadata:
     "@types/parse5": "*"
     "@types/tough-cookie": "*"
   checksum: 12bb926fa74ea07c0ba0bfd5bf185ac0fd771b28666a5e8784b9af4bb96bb0c51fc5f494eff7da1d3cd804e4757f640a23c344c1cd5d188f95ab0ab51770d88b
-  languageName: node
-  linkType: hard
-
-"@types/jsdom@patch:@types/jsdom@*#./patches/@types-jsdom.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 16.2.14
-  resolution: "@types/jsdom@patch:@types/jsdom@npm%3A16.2.14#./patches/@types-jsdom.patch::version=16.2.14&hash=9eeb46&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@types/node": "*"
-    "@types/parse5": "*"
-    "@types/tough-cookie": "*"
-  checksum: cd7e0b652b397bf2e4fb3ec2e3909f07cd76ba43d2105db653b4199eaf878eaa7da84c06cc53aacad55affb73ae2c6bdc35a9c2b42b12ff29e3e365e7ed9c00b
   languageName: node
   linkType: hard
 

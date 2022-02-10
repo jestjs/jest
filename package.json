@@ -154,7 +154,6 @@
     "@testing-library/dom/pretty-format": "26.6.1",
     "@types/jest/jest-diff": "^26.0.0",
     "@types/jest/pretty-format": "^26.0.0",
-    "@types/jsdom": "patch:@types/jsdom@*#./patches/@types-jsdom.patch",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
