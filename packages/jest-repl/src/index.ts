@@ -5,7 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import replImport = require('./cli');
-
-export const repl = replImport;
+export {run as repl} from './cli';
 export {run as runtime} from './cli/runtime-cli';

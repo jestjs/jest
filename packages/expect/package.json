@@ -15,10 +15,10 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
-    "./build/utils": "./build/utils.js",
     "./build/matchers": "./build/matchers.js"
   },
   "dependencies": {
+    "@jest/expect-utils": "^27.5.1",
     "@jest/types": "^27.5.1",
     "jest-get-type": "^27.5.1",
     "jest-matcher-utils": "^27.5.1",
@@ -26,14 +26,14 @@
   },
   "devDependencies": {
     "@jest/test-utils": "^27.5.1",
-    "@tsd/typescript": "~4.1.5",
+    "@tsd/typescript": "~4.5.5",
     "chalk": "^4.0.0",
     "fast-check": "^2.0.0",
     "immutable": "^4.0.0",
     "tsd-lite": "^0.5.1"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

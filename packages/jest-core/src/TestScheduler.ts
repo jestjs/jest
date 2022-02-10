@@ -31,7 +31,10 @@ import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import type TestRunner from 'jest-runner';
 import type {Context} from 'jest-runtime';
-import snapshot = require('jest-snapshot');
+import {
+  buildSnapshotResolver,
+  cleanup as cleanupSnapshots,
+} from 'jest-snapshot';
 import {requireOrImportModule} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';
@@ -170,15 +173,12 @@ class TestScheduler {
       const contextsWithSnapshotResolvers = await Promise.all(
         Array.from(contexts).map(
           async context =>
-            [
-              context,
-              await snapshot.buildSnapshotResolver(context.config),
-            ] as const,
+            [context, await buildSnapshotResolver(context.config)] as const,
         ),
       );
 
       contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
-        const status = snapshot.cleanup(
+        const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
           snapshotResolver,
@@ -286,7 +286,7 @@ class TestScheduler {
             );
           }
         }
-      } catch (error: unknown) {
+      } catch (error) {
         if (!watcher.isInterrupted()) {
           throw error;
         }

@@ -18,7 +18,7 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment<Timer> {
+export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -46,22 +46,16 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     global.Uint8Array = Uint8Array;
 
     // URL and URLSearchParams are global in Node >= 10
-    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      global.URL = URL;
-      global.URLSearchParams = URLSearchParams;
-    }
+    global.URL = URL;
+    global.URLSearchParams = URLSearchParams;
+
     // TextDecoder and TextDecoder are global in Node >= 11
-    if (
-      typeof TextEncoder !== 'undefined' &&
-      typeof TextDecoder !== 'undefined'
-    ) {
-      global.TextEncoder = TextEncoder;
-      global.TextDecoder = TextDecoder;
-    }
+    global.TextEncoder = TextEncoder;
+    global.TextDecoder = TextDecoder;
+
     // queueMicrotask is global in Node >= 11
-    if (typeof queueMicrotask !== 'undefined') {
-      global.queueMicrotask = queueMicrotask;
-    }
+    global.queueMicrotask = queueMicrotask;
+
     // AbortController is global in Node >= 15
     if (typeof AbortController !== 'undefined') {
       global.AbortController = AbortController;
@@ -133,9 +127,13 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     this.fakeTimersModern = null;
   }
 
+  exportConditions(): Array<string> {
+    return ['node', 'node-addons'];
+  }
+
   getVmContext(): Context | null {
     return this.context;
   }
 }
 
-export = NodeEnvironment;
+export const TestEnvironment = NodeEnvironment;

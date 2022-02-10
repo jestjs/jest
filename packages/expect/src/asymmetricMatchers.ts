@@ -6,20 +6,61 @@
  *
  */
 
+import {
+  equals,
+  isA,
+  iterableEquality,
+  subsetEquality,
+} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherState,
 } from './types';
-import {iterableEquality, subsetEquality} from './utils';
+
+const functionToString = Function.prototype.toString;
+
+function fnNameFor(func: () => unknown) {
+  if (func.name) {
+    return func.name;
+  }
+
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
+  return matches ? matches[1] : '<anonymous>';
+}
 
 const utils = Object.freeze({
   ...matcherUtils,
   iterableEquality,
   subsetEquality,
 });
+
+function getPrototype(obj: object) {
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj);
+  }
+
+  if (obj.constructor.prototype == obj) {
+    return null;
+  }
+
+  return obj.constructor.prototype;
+}
+
+export function hasProperty(obj: object | null, property: string): boolean {
+  if (!obj) {
+    return false;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(obj, property)) {
+    return true;
+  }
+
+  return hasProperty(getPrototype(obj), property);
+}
 
 export abstract class AsymmetricMatcher<
   T,
@@ -123,7 +164,7 @@ class Any extends AsymmetricMatcher<any> {
 
 class Anything extends AsymmetricMatcher<void> {
   asymmetricMatch(other: unknown) {
-    return !isUndefined(other) && other !== null;
+    return other != null;
   }
 
   toString() {

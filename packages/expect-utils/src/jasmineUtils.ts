@@ -26,18 +26,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Tester} from './types';
 
-// Extracted out of jasmine 2.5.2
-export function equals(
+export type EqualsFunction = (
   a: unknown,
   b: unknown,
   customTesters?: Array<Tester>,
   strictCheck?: boolean,
-): boolean {
+) => boolean;
+
+// Extracted out of jasmine 2.5.2
+export const equals: EqualsFunction = (a, b, customTesters, strictCheck) => {
   customTesters = customTesters || [];
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
-}
-
-const functionToString = Function.prototype.toString;
+};
 
 function isAsymmetric(obj: any) {
   return !!obj && isA('Function', obj.asymmetricMatch);
@@ -218,45 +218,6 @@ function isDomNode(obj: any): boolean {
     typeof obj.nodeName === 'string' &&
     typeof obj.isEqualNode === 'function'
   );
-}
-
-export function fnNameFor(func: Function) {
-  if (func.name) {
-    return func.name;
-  }
-
-  const matches = functionToString
-    .call(func)
-    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
-  return matches ? matches[1] : '<anonymous>';
-}
-
-export function isUndefined(obj: any) {
-  return obj === void 0;
-}
-
-function getPrototype(obj: object) {
-  if (Object.getPrototypeOf) {
-    return Object.getPrototypeOf(obj);
-  }
-
-  if (obj.constructor.prototype == obj) {
-    return null;
-  }
-
-  return obj.constructor.prototype;
-}
-
-export function hasProperty(obj: object | null, property: string): boolean {
-  if (!obj) {
-    return false;
-  }
-
-  if (Object.prototype.hasOwnProperty.call(obj, property)) {
-    return true;
-  }
-
-  return hasProperty(getPrototype(obj), property);
 }
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js

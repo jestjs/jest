@@ -28,9 +28,6 @@ import type {
   TestWatcher,
 } from './types';
 
-// TODO: remove re-export in Jest 28
-export type {Test, TestFileEvent, TestEvents} from '@jest/test-result';
-
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
 interface WorkerInterface extends Worker {

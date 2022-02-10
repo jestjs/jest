@@ -2,12 +2,12 @@
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
   "version": "27.5.1",
-  "main": "./build/jest.js",
-  "types": "./build/jest.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "types": "./build/jest.d.ts",
-      "default": "./build/jest.js"
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -37,6 +37,7 @@
     "jest-validate": "^27.5.1",
     "jest-watcher": "^27.5.1",
     "micromatch": "^4.0.4",
+    "pretty-format": "^27.5.1",
     "rimraf": "^3.0.0",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"
@@ -58,7 +59,7 @@
     }
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "repository": {
     "type": "git",

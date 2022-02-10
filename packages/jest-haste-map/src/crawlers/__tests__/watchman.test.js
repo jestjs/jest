@@ -68,7 +68,7 @@ const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 describe('watchman watch', () => {
   beforeEach(() => {
-    watchmanCrawl = require('../watchman');
+    watchmanCrawl = require('../watchman').watchmanCrawl;
 
     watchman = require('fb-watchman');
 

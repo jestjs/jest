@@ -7,7 +7,7 @@
 
 'use strict';
 
-const JSDOMEnvironment = require('jest-environment-jsdom');
+const JSDOMEnvironment = require('jest-environment-jsdom').default;
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 

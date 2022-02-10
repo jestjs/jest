@@ -672,7 +672,7 @@ export class ModuleMocker {
 
             return undefined;
           })();
-        } catch (error: unknown) {
+        } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
           thrownError = error;
           callDidThrowError = true;

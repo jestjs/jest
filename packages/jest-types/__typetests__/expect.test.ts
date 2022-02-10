@@ -57,7 +57,7 @@ expectType<void>(expect('two').toEqual(expect.not.stringMatching(/^[No]ne/)));
 expectError(expect('two').toEqual(expect.not.stringMatching(1)));
 expectError(expect('two').toEqual(expect.not.stringMatching()));
 
-// chainers and utilities
+// modifiers and utilities
 
 expectType<void>(expect.assertions(2));
 expectError(expect.assertions());
@@ -70,8 +70,26 @@ expectType<Promise<void>>(
 );
 
 expectType<Promise<void>>(
+  expect(Promise.resolve('lemon')).resolves.not.toBe('lemon'),
+);
+
+expectType<Promise<void>>(
   expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus'),
 );
+
+expectType<Promise<void>>(
+  expect(Promise.reject(new Error('octopus'))).rejects.not.toThrow('octopus'),
+);
+
+expectError(expect(1).not.not.toBe(2));
+expectError(expect(1).not.resolves.toBe(2));
+expectError(expect(1).not.rejects.toBe(2));
+
+expectError(expect(1).resolves.resolves.toBe(2));
+expectError(expect(1).resolves.rejects.toBe(2));
+
+expectError(expect(1).rejects.resolves.toBe(2));
+expectError(expect(1).rejects.rejects.toBe(2));
 
 // equality and relational matchers
 

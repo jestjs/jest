@@ -17,7 +17,6 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-replace-ts-export-assignment',
         require.resolve(
           './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),

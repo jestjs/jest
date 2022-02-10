@@ -35,10 +35,6 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
-        '@typescript-eslint/no-implicit-any-catch': [
-          'error',
-          {allowExplicitAny: true},
-        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
@@ -46,8 +42,6 @@ module.exports = {
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // TS verifies this
         'consistent-return': 'off',
-        // Since we do `export =`. Remove for Jest 27
-        'import/default': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
       },
@@ -95,7 +89,7 @@ module.exports = {
         'packages/expect/src/matchers.ts',
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
-        'packages/expect/src/utils.ts',
+        'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
@@ -113,8 +107,6 @@ module.exports = {
         'packages/jest-snapshot/src/printSnapshot.ts',
         'packages/jest-snapshot/src/types.ts',
         'packages/jest-util/src/convertDescriptorToString.ts',
-        'packages/jest-worker/src/Farm.ts',
-        'packages/jest-worker/src/index.ts',
         'packages/pretty-format/src/index.ts',
         'packages/pretty-format/src/plugins/DOMCollection.ts',
       ],
@@ -220,8 +212,7 @@ module.exports = {
     {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
-        'packages/expect/src/jasmineUtils.ts',
-        '**/vendor/**/*',
+        'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
         'eslint-comments/disable-enable-pair': 'off',

@@ -19,7 +19,12 @@ jobs:
 
   prepare-yarn-cache:
     name: Prepare yarn cache
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # for some reason the Windows cache doesn't work
+        os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +59,7 @@ jobs:
         run: yarn build
       - name: test typings
         run: yarn test-types
-      - name: verify TypeScript@3.8 compatibility
+      - name: verify TypeScript@4.2 compatibility
         run: yarn verify-old-ts
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
@@ -69,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.x, 17.x]
+        node-version: [12.x, 14.x, 16.x, 17.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache

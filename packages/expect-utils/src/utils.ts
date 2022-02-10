@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {isPrimitive} from 'jest-get-type';
 import {
   equals,

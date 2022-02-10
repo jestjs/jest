@@ -6,7 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
-import expect = require('expect');
+import {Expect, expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -14,8 +14,6 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-
-export type Expect = typeof expect;
 
 export default function jestExpect(
   config: Pick<Config.GlobalConfig, 'expand'>,

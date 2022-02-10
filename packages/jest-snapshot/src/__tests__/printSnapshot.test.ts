@@ -19,7 +19,12 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
-import jestSnapshot = require('../index');
+import {
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../index';
 import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
@@ -131,13 +136,6 @@ expect.addSnapshotSerializer({
     return typeof val === 'string';
   },
 });
-
-const {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} = jestSnapshot;
 
 describe('chalk', () => {
   // Because these tests give code coverage of get functions
