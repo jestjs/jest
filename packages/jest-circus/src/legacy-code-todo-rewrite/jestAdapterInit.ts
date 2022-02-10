@@ -37,6 +37,14 @@ import createExpect from './jestExpect';
 
 type Process = NodeJS.Process;
 
+declare module '@jest/types' {
+  namespace Expect {
+    interface MatcherState {
+      snapshotState: SnapshotState;
+    }
+  }
+}
+
 export const initialize = async ({
   config,
   environment,

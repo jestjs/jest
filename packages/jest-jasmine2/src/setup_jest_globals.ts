@@ -22,6 +22,14 @@ import type {Jasmine} from './types';
 
 declare const global: Global.Global;
 
+declare module '@jest/types' {
+  namespace Expect {
+    interface MatcherState {
+      snapshotState: SnapshotState;
+    }
+  }
+}
+
 export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;

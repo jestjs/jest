@@ -8,7 +8,7 @@
 import {expectError, expectType} from 'tsd-lite';
 import {expect} from '@jest/globals';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 
 // asymmetric matchers
 
@@ -380,7 +380,7 @@ expectType<void>(
       expectType<Error | undefined>(this.isExpectingAssertionsError);
       expectType<boolean>(this.isNot);
       expectType<string>(this.promise);
-      expectType<SnapshotStateType>(this.snapshotState);
+      expectType<SnapshotState>(this.snapshotState);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);

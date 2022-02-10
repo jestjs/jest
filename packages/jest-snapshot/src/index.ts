@@ -33,7 +33,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {MatchSnapshotConfig} from './types';
+import type {Context, MatchSnapshotConfig} from './types';
 import {deepMerge, escapeBacktickString, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
@@ -159,7 +159,7 @@ export const cleanup = (
 };
 
 export const toMatchSnapshot = function (
-  this: Expect.MatcherState,
+  this: Context,
   received: unknown,
   propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
@@ -218,7 +218,7 @@ export const toMatchSnapshot = function (
 };
 
 export const toMatchInlineSnapshot = function (
-  this: Expect.MatcherState,
+  this: Context,
   received: unknown,
   propertiesOrSnapshot?: object | string,
   inlineSnapshot?: string,
@@ -412,7 +412,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 };
 
 export const toThrowErrorMatchingSnapshot = function (
-  this: Expect.MatcherState,
+  this: Context,
   received: unknown,
   hint?: string,
   fromPromise?: boolean,
@@ -435,7 +435,7 @@ export const toThrowErrorMatchingSnapshot = function (
 };
 
 export const toThrowErrorMatchingInlineSnapshot = function (
-  this: Expect.MatcherState,
+  this: Context,
   received: unknown,
   inlineSnapshot?: string,
   fromPromise?: boolean,
