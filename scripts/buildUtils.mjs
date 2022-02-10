@@ -68,7 +68,7 @@ export function getPackages() {
             Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
           {},
         ),
-        ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
+        ...(pkg.name === 'jest-circus' ? {'./runner': './build/runner.js'} : {}),
         ...(pkg.name === 'expect'
           ? {
               './build/matchers': './build/matchers.js',
@@ -166,7 +166,7 @@ export function createWebpackConfigs() {
       });
     }
 
-    const extraEntries =
+    const workerEntriesEntries =
       pkg.name === 'jest-worker'
         ? {
             processChild: path.resolve(
@@ -186,6 +186,29 @@ export function createWebpackConfigs() {
         ? {testWorker: path.resolve(packageDir, './src/testWorker.ts')}
         : {};
 
+    const extraEntryPoints =
+      // skip expect for now
+      pkg.name === 'expect'
+        ? {}
+        : Object.keys(pkg.exports)
+            .filter(
+              key =>
+                key !== '.' &&
+                key !== './package.json' &&
+                !key.startsWith('./bin'),
+            )
+            .reduce((previousValue, currentValue) => {
+              return {
+                ...previousValue,
+                // skip `./`
+                [currentValue.slice(2)]: path.resolve(
+                  packageDir,
+                  './src',
+                  `${currentValue}.ts`,
+                ),
+              };
+            }, {});
+
     return {
       packageDir,
       pkg,
@@ -193,7 +216,8 @@ export function createWebpackConfigs() {
         devtool: false,
         entry: {
           index: input,
-          ...extraEntries,
+          ...workerEntriesEntries,
+          ...extraEntryPoints,
         },
         externals: nodeExternals(),
         mode: 'production',
@@ -215,7 +239,7 @@ export function createWebpackConfigs() {
           },
           path: path.resolve(packageDir, 'build'),
         },
-        plugins: [new IgnoreDynamicRequire(extraEntries)],
+        plugins: [new IgnoreDynamicRequire(workerEntriesEntries)],
         resolve: {
           extensions: ['.ts', '.js'],
         },

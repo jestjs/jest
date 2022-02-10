@@ -15,7 +15,7 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
-    "./runner": "./runner.js"
+    "./runner": "./build/runner.js"
   },
   "dependencies": {
     "@jest/environment": "workspace:^",
