@@ -101,15 +101,25 @@ export const resolveTestEnvironment = ({
   rootDir: Config.Path;
   testEnvironment: string;
   requireResolveFunction: (moduleName: string) => string;
-}): string =>
-  resolveWithPrefix(undefined, {
-    filePath,
-    humanOptionName: 'Test environment',
-    optionName: 'testEnvironment',
-    prefix: 'jest-environment-',
-    requireResolveFunction,
-    rootDir,
-  });
+}): string => {
+  try {
+    return resolveWithPrefix(undefined, {
+      filePath,
+      humanOptionName: 'Test environment',
+      optionName: 'testEnvironment',
+      prefix: 'jest-environment-',
+      requireResolveFunction,
+      rootDir,
+    });
+  } catch (error: any) {
+    if (filePath === 'jsdom' || filePath === 'jest-environment-jsdom') {
+      error.message +=
+        '\n\nAs of Jest 28 "jest-environment-jsdom" is no longer shipped by default, make sure to install it separately.';
+    }
+
+    throw error;
+  }
+};
 
 /**
  * Finds the watch plugins to use:

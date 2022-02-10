@@ -10,7 +10,6 @@
   // jest-test-sequencer, but that is just `require.resolve`d, so no real use
   // for their types
   "references": [
-    {"path": "../jest-environment-jsdom"},
     {"path": "../jest-environment-node"},
     {"path": "../jest-get-type"},
     {"path": "../jest-regex-util"},

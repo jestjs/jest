@@ -113,7 +113,7 @@ const initialOptions: Config.InitialOptions = {
   snapshotFormat: PRETTY_FORMAT_DEFAULTS,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {userAgent: 'Agent/007'},
   testFailureExitCode: 1,
   testLocationInResults: false,

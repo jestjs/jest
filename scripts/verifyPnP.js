@@ -34,6 +34,7 @@ try {
       {
         dependencies: {
           jest: '*',
+          'jest-environment-jsdom': '*',
         },
         name: 'test-pnp',
       },
@@ -42,7 +43,7 @@ try {
     ),
   );
   fs.writeFileSync(
-    path.join(cwd, 'test.js'),
+    path.join(cwd, 'jsdom.test.js'),
     dedent`
      /*
       * @jest-environment jsdom
@@ -50,6 +51,14 @@ try {
 
      test('dummy', () => {
        expect(window).toBeDefined();
+     });
+    `,
+  );
+  fs.writeFileSync(
+    path.join(cwd, 'node.test.js'),
+    dedent`
+     test('dummy', () => {
+       expect(typeof window).toBe('undefined');
      });
     `,
   );
