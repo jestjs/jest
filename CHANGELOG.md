@@ -18,7 +18,6 @@
 
 ### Fixes
 
-- `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[jest-phabricator]` [**BREAKING**] Convert to ESM ([#12341](https://github.com/facebook/jest/pull/12341))
 
