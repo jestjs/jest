@@ -15,9 +15,9 @@ import * as args from './args';
 import {run as runtimeCLI} from './runtime-cli';
 import {VERSION} from './version';
 
-const REPL_SCRIPT = require.resolve('./repl.js');
+const REPL_SCRIPT = require.resolve('./repl');
 
-export function run(): void {
+export function run(): Promise<void> {
   const argv = yargs.usage(args.usage).options(args.options)
     .argv as Config.Argv;
 
@@ -25,5 +25,5 @@ export function run(): void {
 
   argv._ = [REPL_SCRIPT];
 
-  runtimeCLI(argv, [`Jest REPL v${VERSION}`]);
+  return runtimeCLI(argv, [`Jest REPL v${VERSION}`]);
 }
