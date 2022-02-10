@@ -4,19 +4,19 @@ exports[`Snapshot serializers renders snapshot 1`] = `
 Object {
   "snapshot serializers works with array of strings in property matcher 1": "
 Object {
-  \\"arrayOfStrings\\": Array [
-    \\"stream\\",
+  "arrayOfStrings": Array [
+    "stream",
   ],
 }
 ",
   "snapshot serializers works with default serializers 1": "
 <div
-  id=\\"foo\\"
+  id="foo"
 />
 ",
   "snapshot serializers works with expect.XXX within array in property matcher 1": "
 Object {
-  \\"arrayOfStrings\\": Array [
+  "arrayOfStrings": Array [
     Any<String>,
   ],
 }
@@ -27,7 +27,7 @@ Object {
 <div
   aProp={
     Object {
-      \\"a\\": 6,
+      "a": 6,
     }
   }
   bProp={foo - 8}
@@ -37,7 +37,7 @@ Object {
 <div
   aProp={
     Object {
-      \\"a\\": 6,
+      "a": 6,
     }
   }
   bProp={Foo: 8}
@@ -47,7 +47,7 @@ Object {
 <div
   aProp={
     Object {
-      \\"a\\": 6,
+      "a": 6,
     }
   }
   bProp={FOO: 8}

@@ -7,6 +7,8 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import parseJson = require('parse-json');
+import stripJsonComments = require('strip-json-comments');
 import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
@@ -15,8 +17,6 @@ import {
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
-// @ts-expect-error: vendored
-import jsonlint from './vendor/jsonlint';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
@@ -33,23 +33,21 @@ export default async function readConfigFileAndSetRootDir(
   try {
     if (isTS) {
       configObject = await loadTSConfigFile(configPath);
+    } else if (isJSON) {
+      const fileContent = fs.readFileSync(configPath, 'utf8');
+      configObject = parseJson(stripJsonComments(fileContent), configPath);
     } else {
       configObject = await requireOrImportModule<any>(configPath);
     }
-  } catch (error: unknown) {
-    if (isJSON) {
-      throw new Error(
-        `Jest: Failed to parse config file ${configPath}\n` +
-          `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
-      );
-    } else if (isTS) {
+  } catch (error) {
+    if (isTS) {
       throw new Error(
         `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
           `  ${error}`,
       );
-    } else {
-      throw error;
     }
+
+    throw error;
   }
 
   if (configPath.endsWith(PACKAGE_JSON)) {

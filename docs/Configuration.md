@@ -1103,7 +1103,7 @@ Example:
 
 ```js
 // my-custom-environment
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').default;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -1261,6 +1261,8 @@ This option allows the use of a custom results processor. This processor must be
   ]
 }
 ```
+
+`testResultsProcessor` and `reporters` are very similar to each other. One difference is that a test result processor only gets called after all tests finished. Whereas a reporter has the ability to receive test results after individual tests and/or test suites are finished.
 
 ### `testRunner` \[string]
 

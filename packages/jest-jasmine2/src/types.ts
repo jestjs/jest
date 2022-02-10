@@ -7,7 +7,7 @@
 
 import type {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
-import expect = require('expect');
+import type {Expect} from 'expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -89,13 +89,13 @@ export type Jasmine = {
   version: string;
   testPath: Config.Path;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & typeof expect &
+} & Expect &
   typeof globalThis;
 
 declare global {
   namespace NodeJS {
     interface Global {
-      expect: typeof expect;
+      expect: Expect;
     }
   }
 }

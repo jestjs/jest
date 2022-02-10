@@ -7,7 +7,6 @@
 
 import * as util from 'util';
 import {runInNewContext} from 'vm';
-import wrap from 'jest-snapshot-serializer-raw';
 import {ModuleMocker} from 'jest-mock';
 import FakeTimers from '../legacyFakeTimers';
 
@@ -521,7 +520,7 @@ describe('FakeTimers', () => {
       });
       timers.runAllTimers();
       expect(
-        wrap(consoleWarn.mock.calls[0][0].split('\nStack Trace')[0]),
+        consoleWarn.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
       consoleWarn.mockRestore();
     });

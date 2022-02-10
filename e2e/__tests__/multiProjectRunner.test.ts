@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
@@ -21,9 +20,9 @@ afterEach(() => cleanup(DIR));
 test("--listTests doesn't duplicate the test files", () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '/project1.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
-    '/project2.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
-    '__tests__/inBothProjectsTest.js': `test('test', () => {});`,
+    '/project1.js': "module.exports = {rootDir: './', displayName: 'BACKEND'}",
+    '/project2.js': "module.exports = {rootDir: './', displayName: 'BACKEND'}",
+    '__tests__/inBothProjectsTest.js': "test('test', () => {});",
     'package.json': JSON.stringify({
       jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
     }),
@@ -87,7 +86,7 @@ test('can pass projects or global config', () => {
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
 
-  expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+  expect(extractSummary(stderr).summary).toMatchSnapshot();
 
   writeFiles(DIR, {
     'global_config.js': `
@@ -112,8 +111,8 @@ test('can pass projects or global config', () => {
   ]));
 
   const result1 = extractSummary(stderr);
-  expect(wrap(result1.summary)).toMatchSnapshot();
-  expect(wrap(sortLines(result1.rest))).toMatchSnapshot();
+  expect(result1.summary).toMatchSnapshot();
+  expect(sortLines(result1.rest)).toMatchSnapshot();
 
   ({stderr} = runJest(DIR, [
     '--no-watchman',
@@ -123,8 +122,8 @@ test('can pass projects or global config', () => {
   ]));
   const result2 = extractSummary(stderr);
 
-  expect(wrap(result2.summary)).toMatchSnapshot();
-  expect(wrap(sortLines(result2.rest))).toMatchSnapshot();
+  expect(result2.summary).toMatchSnapshot();
+  expect(sortLines(result2.rest)).toMatchSnapshot();
 
   // make sure different ways of passing projects work exactly the same
   expect(result1.summary).toBe(result2.summary);
@@ -140,13 +139,13 @@ test('"No tests found" message for projects', () => {
       test('file1', () => {});
     `,
     'project1/file1.js': SAMPLE_FILE_CONTENT,
-    'project1/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project1/jest.config.js': "module.exports = {rootDir: './'}",
     'project2/__tests__/file1.test.js': `
       const file1 = require('../file1');
       test('file1', () => {});
     `,
     'project2/file1.js': SAMPLE_FILE_CONTENT,
-    'project2/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project2/jest.config.js': "module.exports = {rootDir: './'}",
   });
   const {stdout: verboseOutput} = runJest(DIR, [
     '--no-watchman',
@@ -353,9 +352,11 @@ test('resolves projects and their <rootDir> properly', () => {
       setupFiles: ['<rootDir>/project1_setup.js'],
       testEnvironment: 'node',
     }),
-    'project1/__tests__/test.test.js': `test('project1', () => expect(global.project1).toBe(true))`,
+    'project1/__tests__/test.test.js':
+      "test('project1', () => expect(global.project1).toBe(true))",
     'project1/project1_setup.js': 'global.project1 = true;',
-    'project2/__tests__/test.test.js': `test('project2', () => expect(global.project2).toBe(true))`,
+    'project2/__tests__/test.test.js':
+      "test('project2', () => expect(global.project2).toBe(true))",
     'project2/project2.conf.json': JSON.stringify({
       name: 'project2',
       rootDir: '../', // root dir is set to the top level
@@ -428,7 +429,7 @@ test('resolves projects and their <rootDir> properly', () => {
 
   ({stderr} = runJest(DIR, ['--no-watchman']));
   expect(stderr).toMatch(
-    `Can't find a root directory while resolving a config file path.`,
+    "Can't find a root directory while resolving a config file path.",
   );
   expect(stderr).toMatch(/banana/);
 });

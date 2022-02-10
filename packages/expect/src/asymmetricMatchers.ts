@@ -6,20 +6,63 @@
  *
  */
 
+import {
+  equals,
+  isA,
+  iterableEquality,
+  subsetEquality,
+} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherState,
 } from './types';
-import {iterableEquality, subsetEquality} from './utils';
+
+const functionToString = Function.prototype.toString;
+
+function fnNameFor(func: () => unknown) {
+  if (func.name) {
+    return func.name;
+  }
+
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
+  return matches ? matches[1] : '<anonymous>';
+}
 
 const utils = Object.freeze({
   ...matcherUtils,
   iterableEquality,
   subsetEquality,
 });
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function getPrototype(obj: object) {
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj);
+  }
+
+  if (obj.constructor.prototype == obj) {
+    return null;
+  }
+
+  return obj.constructor.prototype;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function hasProperty(obj: object | null, property: string): boolean {
+  if (!obj) {
+    return false;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(obj, property)) {
+    return true;
+  }
+
+  return hasProperty(getPrototype(obj), property);
+}
 
 export abstract class AsymmetricMatcher<
   T,
@@ -123,7 +166,7 @@ class Any extends AsymmetricMatcher<any> {
 
 class Anything extends AsymmetricMatcher<void> {
   asymmetricMatch(other: unknown) {
-    return !isUndefined(other) && other !== null;
+    return other != null;
   }
 
   toString() {
@@ -253,6 +296,46 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     return 'string';
   }
 }
+class CloseTo extends AsymmetricMatcher<number> {
+  private precision: number;
+  constructor(sample: number, precision: number = 2, inverse: boolean = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+
+    if (!isA('Number', precision)) {
+      throw new Error('Precision is not a Number');
+    }
+
+    super(sample);
+    this.inverse = inverse;
+    this.precision = precision;
+  }
+
+  asymmetricMatch(other: number) {
+    if (!isA('Number', other)) {
+      return false;
+    }
+    let result: boolean = false;
+    if (other === Infinity && this.sample === Infinity) {
+      result = true; // Infinity - Infinity is NaN
+    } else if (other === -Infinity && this.sample === -Infinity) {
+      result = true; // -Infinity - -Infinity is NaN
+    } else {
+      result =
+        Math.abs(this.sample - other) < Math.pow(10, -this.precision) / 2;
+    }
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}CloseTo`;
+  }
+
+  getExpectedType() {
+    return 'number';
+  }
+}
 
 export const any = (expectedObject: unknown): Any => new Any(expectedObject);
 export const anything = (): Anything => new Anything();
@@ -274,3 +357,7 @@ export const stringMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected);
 export const stringNotMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected, true);
+export const closeTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision);
+export const notCloseTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision, true);

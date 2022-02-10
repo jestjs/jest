@@ -11,18 +11,18 @@ import type {EachTests} from '../bind';
 import type {Headings, Template, Templates} from './interpolation';
 import {interpolateVariables} from './interpolation';
 
-export default (
+export default function template(
   title: string,
   headings: Headings,
   row: Global.Row,
-): EachTests => {
+): EachTests {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
   return templates.map((template, index) => ({
     arguments: [template],
     title: interpolateVariables(title, template, index),
   }));
-};
+}
 
 const convertRowToTable = (row: Global.Row, headings: Headings): Global.Table =>
   Array.from({length: row.length / headings.length}).map((_, index) =>

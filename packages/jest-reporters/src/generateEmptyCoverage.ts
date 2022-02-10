@@ -24,7 +24,7 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default async function (
+export default async function generateEmptyCoverage(
   source: string,
   filename: Config.Path,
   globalConfig: Config.GlobalConfig,

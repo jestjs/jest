@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -45,7 +44,7 @@ describe('Custom Reporters Integration', () => {
       'add.test.js',
     ]);
 
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(exitCode).toBe(0);
   });
 
@@ -61,7 +60,7 @@ describe('Custom Reporters Integration', () => {
     ]);
 
     expect(exitCode).toBe(1);
-    expect(wrap(stderr)).toMatchSnapshot();
+    expect(stderr).toMatchSnapshot();
   });
 
   test('default reporters enabled', () => {
@@ -77,8 +76,8 @@ describe('Custom Reporters Integration', () => {
     const parsedJSON = JSON.parse(stdout);
 
     expect(exitCode).toBe(0);
-    expect(wrap(rest)).toMatchSnapshot();
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(parsedJSON).toMatchSnapshot();
   });
 
@@ -119,7 +118,7 @@ describe('Custom Reporters Integration', () => {
     expect(exitCode).toBe(0);
     expect(stderr).toBe('');
 
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   test('reporters can be default exports', () => {
@@ -134,12 +133,12 @@ describe('Custom Reporters Integration', () => {
 
     expect(stderr).toBe('');
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   test('prints reporter errors', () => {
     writeFiles(DIR, {
-      '__tests__/test.test.js': `test('test', () => {});`,
+      '__tests__/test.test.js': "test('test', () => {});",
       'package.json': JSON.stringify({
         jest: {
           reporters: ['default', '<rootDir>/reporter.js'],
@@ -164,7 +163,7 @@ describe('Custom Reporters Integration', () => {
   onNodeVersions('>=12.17.0', () => {
     test('supports reporter written in ESM', () => {
       writeFiles(DIR, {
-        '__tests__/test.test.js': `test('test', () => {});`,
+        '__tests__/test.test.js': "test('test', () => {});",
         'package.json': JSON.stringify({
           jest: {
             reporters: ['default', '<rootDir>/reporter.mjs'],

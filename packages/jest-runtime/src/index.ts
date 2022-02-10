@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as nativeModule from 'module';
+import nativeModule = require('module');
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
@@ -50,7 +50,7 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
-import Snapshot = require('jest-snapshot');
+import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {
   createOutsideJestVmPath,
@@ -213,7 +213,7 @@ export default class Runtime {
     string,
     boolean
   >;
-  private readonly _sourceMapRegistry: Map<string, string>;
+  private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
@@ -374,7 +374,7 @@ export default class Runtime {
       console: options?.console,
       dependencyExtractor: config.dependencyExtractor,
       enableSymlinks: config.haste.enableSymlinks,
-      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [SnapshotExtension].concat(config.moduleFileExtensions),
       forceNodeFilesystemAPI: config.haste.forceNodeFilesystemAPI,
       hasteImplModulePath: config.haste.hasteImplModulePath,
       hasteMapModulePath: config.haste.hasteMapModulePath,
@@ -513,7 +513,7 @@ export default class Runtime {
         this._esmoduleRegistry.set(cacheKey, module);
 
         transformResolve();
-      } catch (error: unknown) {
+      } catch (error) {
         transformReject(error);
         throw error;
       }
@@ -839,7 +839,7 @@ export default class Runtime {
         options,
         moduleRegistry,
       );
-    } catch (error: unknown) {
+    } catch (error) {
       moduleRegistry.delete(modulePath);
       throw error;
     }
@@ -1014,7 +1014,7 @@ export default class Runtime {
       } else {
         return this.requireModule<T>(from, moduleName);
       }
-    } catch (e: unknown) {
+    } catch (e) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
       if (moduleNotFound) {
         if (
@@ -1280,7 +1280,7 @@ export default class Runtime {
       return this._resolveModule(from, moduleName, {
         conditions: this.cjsConditions,
       });
-    } catch (err: unknown) {
+    } catch (err) {
       const module = this._resolver.getMockModule(from, moduleName);
 
       if (module) {
@@ -1673,7 +1673,7 @@ export default class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: https://jestjs.io/docs/manual-mocks#content`,
+            'See: https://jestjs.io/docs/manual-mocks#content',
         );
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
@@ -1719,7 +1719,7 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName, options);
-    } catch (e: unknown) {
+    } catch (e) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
@@ -1925,7 +1925,13 @@ export default class Runtime {
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
-    const mocked = this._moduleMocker.mocked.bind(this._moduleMocker);
+    const mocked =
+      this._moduleMocker.mocked?.bind(this._moduleMocker) ??
+      (() => {
+        throw new Error(
+          'Your test environment does not support `mocked`, please update it.',
+        );
+      });
 
     const setTimeout = (timeout: number) => {
       if (this._environment.global.jasmine) {

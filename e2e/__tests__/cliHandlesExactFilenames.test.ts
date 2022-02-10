@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -31,8 +30,8 @@ test('CLI accepts exact file names if matchers matched', () => {
     result.stderr.replace('\\\\foo\\\\bar', '\\/foo\\/bar'),
   );
 
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(result.stdout).toBe('');
 });
 

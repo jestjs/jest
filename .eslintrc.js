@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {sync: readPkg} = require('read-pkg');
 const {getPackages} = require('./scripts/buildUtils');
 
 const internalPackages = getPackages()
-  .map(packageDir => {
-    const pkg = readPkg({cwd: packageDir});
-
-    return pkg.name;
-  })
+  .map(({pkg}) => pkg.name)
   .sort();
 
 module.exports = {
@@ -40,10 +35,6 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
-        '@typescript-eslint/no-implicit-any-catch': [
-          'error',
-          {allowExplicitAny: true},
-        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
@@ -51,8 +42,6 @@ module.exports = {
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // TS verifies this
         'consistent-return': 'off',
-        // Since we do `export =`. Remove for Jest 27
-        'import/default': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
       },
@@ -100,8 +89,7 @@ module.exports = {
         'packages/expect/src/matchers.ts',
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
-        'packages/expect/src/types.ts',
-        'packages/expect/src/utils.ts',
+        'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
@@ -119,8 +107,6 @@ module.exports = {
         'packages/jest-snapshot/src/printSnapshot.ts',
         'packages/jest-snapshot/src/types.ts',
         'packages/jest-util/src/convertDescriptorToString.ts',
-        'packages/jest-worker/src/Farm.ts',
-        'packages/jest-worker/src/index.ts',
         'packages/pretty-format/src/index.ts',
         'packages/pretty-format/src/plugins/DOMCollection.ts',
       ],
@@ -161,6 +147,17 @@ module.exports = {
         'sort-keys': 'off',
       },
     },
+    // snapshots in examples plus inline snapshots need to keep backtick
+    {
+      files: ['*.md', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
+      rules: {
+        quotes: [
+          'error',
+          'single',
+          {allowTemplateLiterals: true, avoidEscape: true},
+        ],
+      },
+    },
     {
       files: ['website/**/*'],
       rules: {
@@ -186,6 +183,18 @@ module.exports = {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowAnonymousClass: false,
+            allowAnonymousFunction: false,
+            allowArray: false,
+            allowArrowFunction: false,
+            allowCallExpression: false,
+            allowLiteral: false,
+            allowObject: true,
+          },
+        ],
       },
     },
     {
@@ -203,8 +212,7 @@ module.exports = {
     {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
-        'packages/expect/src/jasmineUtils.ts',
-        '**/vendor/**/*',
+        'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
         'eslint-comments/disable-enable-pair': 'off',
@@ -234,7 +242,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/__typechecks__/**', '*.md'],
+      files: ['**/__typetests__/**', '*.md'],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',
@@ -259,11 +267,13 @@ module.exports = {
         'website/**',
         '**/__mocks__/**',
         '**/__tests__/**',
+        '**/__typetests__/**',
         '**/__performance_tests__/**',
         'packages/diff-sequences/perf/index.js',
         'packages/pretty-format/perf/test.js',
       ],
       rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
         'no-unused-vars': 'off',
@@ -303,7 +313,7 @@ module.exports = {
         devDependencies: [
           '**/__mocks__/**',
           '**/__tests__/**',
-          '**/__typechecks__/**',
+          '**/__typetests__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
           'babel.config.js',
@@ -461,7 +471,7 @@ module.exports = {
     quotes: [
       'error',
       'single',
-      {allowTemplateLiterals: true, avoidEscape: true},
+      {allowTemplateLiterals: false, avoidEscape: true},
     ],
     radix: 'warn',
     'require-jsdoc': 'off',

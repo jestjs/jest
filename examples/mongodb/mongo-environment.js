@@ -1,5 +1,5 @@
 // mongo-environment.js
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').default;
 
 const path = require('path');
 

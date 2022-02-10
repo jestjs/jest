@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`errors if describe returns a Promise 1`] = `
-    Returning a Promise from "describe" is not supported. Tests must be defined synchronously.
+"    Returning a Promise from "describe" is not supported. Tests must be defined synchronously.
 
        9 | 'use strict';
       10 |
@@ -11,11 +11,11 @@ exports[`errors if describe returns a Promise 1`] = `
       13 |   return Promise.resolve();
       14 | });
 
-      at Object.describe (__tests__/describeReturnPromise.test.js:11:1)
+      at Object.describe (__tests__/describeReturnPromise.test.js:11:1)"
 `;
 
 exports[`errors if describe returns something 1`] = `
-    A "describe" callback must not return a value.
+"    A "describe" callback must not return a value.
 
        9 | 'use strict';
       10 |
@@ -25,5 +25,5 @@ exports[`errors if describe returns something 1`] = `
       13 |   return 42;
       14 | });
 
-      at Object.describe (__tests__/describeReturnSomething.test.js:11:1)
+      at Object.describe (__tests__/describeReturnSomething.test.js:11:1)"
 `;
