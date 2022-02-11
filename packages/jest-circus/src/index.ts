@@ -46,7 +46,8 @@ const _dispatchDescribe = (
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
-    asyncError.message = `Missing second argument. It must be a callback function.`;
+    asyncError.message =
+      'Missing second argument. It must be a callback function.';
     throw asyncError;
   }
   if (typeof blockFn !== 'function') {

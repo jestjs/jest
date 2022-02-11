@@ -11,7 +11,7 @@ import type {Options} from 'yargs';
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 
 const runtimeCLIOptions: Record<
-  'cache' | 'config' | 'debug' | 'version' | 'watchman',
+  'cache' | 'config' | 'debug' | 'watchman',
   Options
 > = {
   cache: {
@@ -28,11 +28,6 @@ const runtimeCLIOptions: Record<
   },
   debug: {
     description: 'Print debugging info about your jest config.',
-    type: 'boolean',
-  },
-  version: {
-    alias: 'v',
-    description: 'Print the version and exit',
     type: 'boolean',
   },
   watchman: {

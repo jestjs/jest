@@ -160,24 +160,78 @@ describe('findNodeModule', () => {
     });
 
     test('resolves with import', () => {
-      const result = Resolver.findNodeModule('import', {
+      const result = Resolver.findNodeModule('exports', {
         basedir: conditionsRoot,
         conditions: ['import'],
       });
 
       expect(result).toEqual(
-        path.resolve(conditionsRoot, './node_modules/import/file.js'),
+        path.resolve(conditionsRoot, './node_modules/exports/import.js'),
       );
     });
 
     test('resolves with require', () => {
-      const result = Resolver.findNodeModule('require', {
+      const result = Resolver.findNodeModule('exports', {
         basedir: conditionsRoot,
         conditions: ['require'],
       });
 
       expect(result).toEqual(
-        path.resolve(conditionsRoot, './node_modules/require/file.js'),
+        path.resolve(conditionsRoot, './node_modules/exports/require.js'),
+      );
+    });
+
+    test('gets default when nothing is passed', () => {
+      const result = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/default.js'),
+      );
+    });
+
+    test('respects order in package.json, not conditions', () => {
+      const resultImport = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: ['import', 'require'],
+      });
+      const resultRequire = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: ['require', 'import'],
+      });
+
+      expect(resultImport).toEqual(resultRequire);
+    });
+
+    test('supports nested paths', () => {
+      const result = Resolver.findNodeModule('exports/nested', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
+      );
+    });
+
+    test('supports nested conditions', () => {
+      const resultRequire = Resolver.findNodeModule('exports/deeplyNested', {
+        basedir: conditionsRoot,
+        conditions: ['require'],
+      });
+      const resultDefault = Resolver.findNodeModule('exports/deeplyNested', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(resultRequire).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedRequire.js'),
+      );
+
+      expect(resultDefault).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
       );
     });
   });
@@ -251,8 +305,8 @@ describe('resolveModule', () => {
     const src = require.resolve('../');
     const resolved = resolver.resolveModule(src, 'mockJsDependency', {
       paths: [
-        path.resolve(__dirname, '../../src/__tests__'),
         path.resolve(__dirname, '../../src/__mocks__'),
+        path.resolve(__dirname, '../../src/__tests__'),
       ],
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));

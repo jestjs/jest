@@ -32,7 +32,7 @@ it('handles missing `mocked` property', () => {
     'env.js': `
       const Node = require('${slash(
         require.resolve('jest-environment-node'),
-      )}');
+      )}').default;
 
       module.exports = class Thing extends Node {
         constructor(...args) {

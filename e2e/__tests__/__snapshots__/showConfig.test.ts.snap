@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--showConfig outputs config info and exits 1`] = `
-{
+"{
   "configs": [
     {
       "automock": false,
@@ -22,7 +22,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "haste": {
         "computeSha1": false,
         "enableSymlinks": false,
-        "forceNodeFilesystemAPI": false,
+        "forceNodeFilesystemAPI": true,
         "throwOnModuleCollision": false
       },
       "injectGlobals": true,
@@ -128,5 +128,5 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "watchman": true
   },
   "version": "[version]"
-}
+}"
 `;

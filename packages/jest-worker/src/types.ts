@@ -7,15 +7,11 @@
 
 import type {ForkOptions} from 'child_process';
 import type {EventEmitter} from 'events';
+import type {ResourceLimits} from 'worker_threads';
 
-// import type {ResourceLimits} from 'worker_threads';
-// This is not present in the Node 12 typings
-export interface ResourceLimits {
-  maxYoungGenerationSizeMb?: number;
-  maxOldGenerationSizeMb?: number;
-  codeRangeSizeMb?: number;
-  stackSizeMb?: number;
-}
+export type FunctionLike = (
+  ...args: Array<unknown>
+) => unknown | Promise<unknown>;
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
@@ -34,18 +30,20 @@ export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
   | typeof PARENT_MESSAGE_SETUP_ERROR;
 
+export type WorkerCallback = (
+  workerId: number,
+  request: ChildMessage,
+  onStart: OnStart,
+  onEnd: OnEnd,
+  onCustomMessage: OnCustomMessage,
+) => void;
+
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
   getStdout(): NodeJS.ReadableStream;
   getWorkers(): Array<WorkerInterface>;
   createWorker(options: WorkerOptions): WorkerInterface;
-  send(
-    workerId: number,
-    request: ChildMessage,
-    onStart: OnStart,
-    onEnd: OnEnd,
-    onCustomMessage: OnCustomMessage,
-  ): void;
+  send: WorkerCallback;
   end(): Promise<PoolExitResult>;
 }
 
@@ -74,8 +72,6 @@ export interface PromiseWithCustomMessage<T> extends Promise<T> {
 
 // Option objects.
 
-export type {ForkOptions};
-
 export interface TaskQueue {
   /**
    * Enqueues the task in the queue for the specified worker or adds it to the
@@ -87,27 +83,29 @@ export interface TaskQueue {
   enqueue(task: QueueChildMessage, workerId?: number): void;
 
   /**
-   * Dequeues the next item from the queue for the speified worker
+   * Dequeues the next item from the queue for the specified worker
    * @param workerId the id of the worker for which the next task should be retrieved
    */
   dequeue(workerId: number): QueueChildMessage | null;
 }
 
+export type WorkerSchedulingPolicy = 'round-robin' | 'in-order';
+
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
+  enableWorkerThreads?: boolean;
   exposedMethods?: ReadonlyArray<string>;
   forkOptions?: ForkOptions;
-  workerSchedulingPolicy?: 'round-robin' | 'in-order';
-  resourceLimits?: ResourceLimits;
-  setupArgs?: Array<unknown>;
   maxRetries?: number;
   numWorkers?: number;
+  resourceLimits?: ResourceLimits;
+  setupArgs?: Array<unknown>;
   taskQueue?: TaskQueue;
-  WorkerPool?: (
+  WorkerPool?: new (
     workerPath: string,
     options?: WorkerPoolOptions,
   ) => WorkerPoolInterface;
-  enableWorkerThreads?: boolean;
+  workerSchedulingPolicy?: WorkerSchedulingPolicy;
 };
 
 export type WorkerPoolOptions = {

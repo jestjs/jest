@@ -61,6 +61,13 @@ afterEach(() => {
   jest.resetModules();
 });
 
+it('makes a non-existing relative worker throw', () => {
+  expect(() => {
+    // eslint-disable-next-line no-new
+    new Farm('./relative/worker-module.js');
+  }).toThrow("'workerPath' must be absolute");
+});
+
 it('exposes the right API using default working', () => {
   const farm = new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],

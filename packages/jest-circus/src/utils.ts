@@ -253,7 +253,7 @@ export const callAsyncCircusFn = (
     } else {
       try {
         returnedValue = fn.call(testContext);
-      } catch (error: unknown) {
+      } catch (error) {
         reject(error);
         return;
       }

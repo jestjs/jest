@@ -61,7 +61,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```tsx title="Link.react.js"
+```tsx title="Link.js"
 import {useState} from 'react';
 
 const STATUS = {

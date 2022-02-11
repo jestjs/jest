@@ -4,6 +4,8 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-changed-files"},
     {"path": "../jest-config"},
@@ -24,6 +26,7 @@
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
     {"path": "../jest-watcher"},
+    {"path": "../pretty-format"},
     {"path": "../test-utils"}
   ]
 }

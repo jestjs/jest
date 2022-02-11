@@ -348,9 +348,20 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
+}
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
 }
@@ -674,7 +685,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 

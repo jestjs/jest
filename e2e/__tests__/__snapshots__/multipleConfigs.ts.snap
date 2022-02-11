@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`multiple configs will warn 1`] = `
-● Multiple configurations found:
+"● Multiple configurations found:
     * <rootDir>/e2e/multiple-configs/jest.config.js
     * <rootDir>/e2e/multiple-configs/jest.config.json
     * \`jest\` key in <rootDir>/e2e/multiple-configs/package.json
@@ -13,13 +13,13 @@ exports[`multiple configs will warn 1`] = `
   https://jestjs.io/docs/configuration.html
 
 PASS Config from js file __tests__/test.js
-  ✓ dummy test
+  ✓ dummy test"
 `;
 
 exports[`multiple configs will warn 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;

@@ -7,8 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import type {Global} from '@jest/types';
-import expect = require('expect');
+import {MatcherState, expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -16,11 +15,9 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {Jasmine, JasmineMatchersObject, RawMatcherFn} from './types';
+import type {JasmineMatchersObject, RawMatcherFn} from './types';
 
-declare const global: Global.Global;
-
-export default (config: {expand: boolean}): void => {
+export default function jestExpect(config: {expand: boolean}): void {
   global.expect = expect;
   expect.setState({expand: config.expand});
   expect.extend({
@@ -31,7 +28,7 @@ export default (config: {expand: boolean}): void => {
   });
   expect.addSnapshotSerializer = addSerializer;
 
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   jasmine.anything = expect.anything;
   jasmine.any = expect.any;
   jasmine.objectContaining = expect.objectContaining;
@@ -42,7 +39,7 @@ export default (config: {expand: boolean}): void => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function (
-        this: expect.MatcherState,
+        this: MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
@@ -66,4 +63,4 @@ export default (config: {expand: boolean}): void => {
 
     expect.extend(jestMatchersObject);
   };
-};
+}

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import NodeEnvironment from 'jest-environment-node';
+import {TestEnvironment} from 'jest-environment-node';
 
-export default class Env extends NodeEnvironment {
+export default class Env extends TestEnvironment {
   constructor(...args) {
     super(...args);
     this.global.someVar = 42;
