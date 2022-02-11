@@ -84,6 +84,42 @@ Instead was called with: undefined
 "
 `;
 
+exports[`jest-each .test.concurrent throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty Array of table data.
+"
+`;
+
+exports[`jest-each .test.concurrent throws an error when not called with an array 1`] = `
+"\`.each\` must be called with an Array or Tagged Template Literal.
+
+Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .test.concurrent.only throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty Array of table data.
+"
+`;
+
+exports[`jest-each .test.concurrent.only throws an error when not called with an array 1`] = `
+"\`.each\` must be called with an Array or Tagged Template Literal.
+
+Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .test.concurrent.skip throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty Array of table data.
+"
+`;
+
+exports[`jest-each .test.concurrent.skip throws an error when not called with an array 1`] = `
+"\`.each\` must be called with an Array or Tagged Template Literal.
+
+Instead was called with: undefined
+"
+`;
+
 exports[`jest-each .test.only throws an error when called with an empty array 1`] = `
 "Error: \`.each\` called with an empty Array of table data.
 "

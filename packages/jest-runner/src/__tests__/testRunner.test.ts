@@ -11,8 +11,8 @@ import TestRunner from '../index';
 
 let mockWorkerFarm;
 
-jest.mock('jest-worker', () =>
-  jest.fn(
+jest.mock('jest-worker', () => ({
+  Worker: jest.fn(
     worker =>
       (mockWorkerFarm = {
         end: jest.fn().mockResolvedValue({forceExited: false}),
@@ -21,7 +21,7 @@ jest.mock('jest-worker', () =>
         worker: jest.fn((data, callback) => require(worker)(data, callback)),
       }),
   ),
-);
+}));
 
 jest.mock('../testWorker', () => {});
 
@@ -41,9 +41,9 @@ test('injects the serializable module map into each worker in watch mode', async
       {context, path: './file2.test.js'},
     ],
     new TestWatcher({isWatchMode: globalConfig.watch}),
-    () => {},
-    () => {},
-    () => {},
+    undefined,
+    undefined,
+    undefined,
     {serial: false},
   );
 
@@ -75,9 +75,9 @@ test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () =>
   await new TestRunner(globalConfig).runTests(
     [{context, path: './file.test.js'}],
     new TestWatcher({isWatchMode: globalConfig.watch}),
-    () => {},
-    () => {},
-    () => {},
+    undefined,
+    undefined,
+    undefined,
     {serial: true},
   );
 

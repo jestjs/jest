@@ -5,14 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import type {Config, TestResult} from '@jest/types';
+import {fileURLToPath} from 'url';
+import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 import slash = require('slash');
-import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
+import type {Config, TestResult} from '@jest/types';
+import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
@@ -26,7 +28,7 @@ let nodeInternals: Array<RegExp> = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals();
-} catch (e) {
+} catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
 }
@@ -45,8 +47,10 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JASMINE_IGNORE =
+  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JEST_INTERNALS_IGNORE =
+  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
@@ -110,7 +114,7 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   return (
     chalk.bold.red(
       `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+        'https://jestjs.io/docs/configuration#testenvironment-string',
       )}.\nConsider using the "${env}" test environment.\n\n`,
     ) + error
   );
@@ -139,7 +143,10 @@ export const formatExecError = (
     stack = error;
   } else {
     message = error.message;
-    stack = error.stack;
+    stack =
+      typeof error.stack === 'string'
+        ? error.stack
+        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -159,9 +166,12 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
+  if (
+    typeof stack !== 'string' ||
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
+  ) {
     // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
+    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   let messageToUse;
@@ -264,6 +274,9 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
+      if (parsedFrame.file.startsWith('file://')) {
+        parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
+      }
       return parsedFrame as Frame;
     }
   }
@@ -283,9 +296,8 @@ export const formatStackTrace = (
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (!options.noCodeFrame) {
+  if (!options.noStackTrace && !options.noCodeFrame) {
     const topFrame = getTopFrame(lines);
-
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
 
@@ -296,7 +308,7 @@ export const formatStackTrace = (
           // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
-        } catch (e) {
+        } catch {
           // the file does not exist or is inaccessible, we ignore
         }
       }
@@ -329,9 +341,9 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages
-        .map(checkForCommonEnvironmentErrors)
-        .forEach(content => errors.push({content, result}));
+      result.failureMessages.forEach(item => {
+        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      });
       return errors;
     },
     [],

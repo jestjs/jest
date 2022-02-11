@@ -5,24 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
+import type {Context} from 'vm';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
-import jestMock = require('jest-mock');
 import type {
-  JestFakeTimers as LegacyFakeTimers,
-  LolexFakeTimers,
-} from '@jest/fake-timers';
+  fn as JestMockFn,
+  mocked as JestMockMocked,
+  spyOn as JestMockSpyOn,
+  ModuleMocker,
+} from 'jest-mock';
 
-type JestMockFn = typeof jestMock.fn;
-type JestMockSpyOn = typeof jestMock.spyOn;
-
-// In Jest 25, remove `Partial` since it's incorrect. The properties are always
-// passed, or not. The context itself is optional, not properties within it.
-export type EnvironmentContext = Partial<{
+export type EnvironmentContext = {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
   testPath: Config.Path;
-}>;
+};
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
@@ -32,45 +29,27 @@ export type ModuleWrapper = (
   require: Module['require'],
   __dirname: string,
   __filename: Module['filename'],
-  global: Global.Global,
-  jest: Jest,
+  jest?: Jest,
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
-export declare class JestEnvironment {
+export declare class JestEnvironment<Timer = unknown> {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: LegacyFakeTimers<unknown> | null;
-  fakeTimersLolex: LolexFakeTimers | null;
-  moduleMocker: jestMock.ModuleMocker | null;
-  /**
-   * @deprecated implement getVmContext instead
-   */
-  runScript<T = unknown>(script: Script): T | null;
-  getVmContext?(): Context | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
+  fakeTimersModern: ModernFakeTimers | null;
+  moduleMocker: ModuleMocker | null;
+  getVmContext(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(
-    event: Circus.Event,
-    state: Circus.State,
-  ): void | Promise<void>;
+  handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
 
-export interface LocalModuleRequire extends NodeRequire {
-  requireActual(moduleName: string): unknown;
-  requireMock(moduleName: string): unknown;
-}
-
 // TODO: Move to some separate package
 export interface Jest {
-  /**
-   * Provides a way to add Jasmine-compatible matchers into your Jest context.
-   *
-   * @deprecated Use `expect.extend` instead
-   */
-  addMatchers(matchers: Record<string, any>): void;
   /**
    * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
    * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
@@ -113,7 +92,11 @@ export interface Jest {
    * the top of the code block. Use this method if you want to explicitly avoid
    * this behavior.
    */
-  doMock(moduleName: string, moduleFactory?: () => unknown): Jest;
+  doMock(
+    moduleName: string,
+    moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
   /**
    * Indicates that the module system should never return a mocked version
    * of the specified module from require() (e.g. that it should always return
@@ -127,7 +110,17 @@ export interface Jest {
   /**
    * Creates a mock function. Optionally takes a mock implementation.
    */
-  fn: JestMockFn;
+  fn: typeof JestMockFn;
+  /**
+   * Given the name of a module, use the automatic mocking system to generate a
+   * mocked version of the module for you.
+   *
+   * This is useful when you want to create a manual mock that extends the
+   * automatic mock's behavior.
+   *
+   * @deprecated Use `jest.createMockFromModule()` instead
+   */
+  genMockFromModule(moduleName: string): unknown;
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -135,17 +128,27 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  genMockFromModule(moduleName: string): unknown;
+  createMockFromModule(moduleName: string): unknown;
   /**
    * Determines if the given function is a mocked function.
    */
-  isMockFunction(fn: Function): fn is ReturnType<JestMockFn>;
+  isMockFunction(
+    fn: (...args: Array<any>) => unknown,
+  ): fn is ReturnType<typeof JestMockFn>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock(
     moduleName: string,
     moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -183,13 +186,6 @@ export interface Jest {
   /**
    * Resets the module registry - the cache of all required modules. This is
    * useful to isolate modules where local state might conflict between tests.
-   *
-   * @deprecated Use `jest.resetModules()`
-   */
-  resetModuleRegistry(): Jest;
-  /**
-   * Resets the module registry - the cache of all required modules. This is
-   * useful to isolate modules where local state might conflict between tests.
    */
   resetModules(): Jest;
   /**
@@ -200,6 +196,7 @@ export interface Jest {
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
+  mocked: typeof JestMockMocked;
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted. This only works with `jest-circus`!
@@ -207,6 +204,8 @@ export interface Jest {
   retryTimes(numRetries: number): Jest;
   /**
    * Exhausts tasks queued by setImmediate().
+   *
+   * > Note: This function is not available when using Lolex as fake timers implementation
    */
   runAllImmediates(): void;
   /**
@@ -232,13 +231,6 @@ export interface Jest {
    * executed within this timeframe will be executed.
    */
   advanceTimersByTime(msToRun: number): void;
-  /**
-   * Executes only the macro task queue (i.e. all tasks queued by setTimeout()
-   * or setInterval() and setImmediate()).
-   *
-   * @deprecated Use `jest.advanceTimersByTime()`
-   */
-  runTimersToTime(msToRun: number): void;
   /**
    * Returns the number of fake timers still left to run.
    */
@@ -267,7 +259,7 @@ export interface Jest {
    * Note: By default, jest.spyOn also calls the spied method. This is
    * different behavior from most other test libraries.
    */
-  spyOn: JestMockSpyOn;
+  spyOn: typeof JestMockSpyOn;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from require() (e.g. that it should always return the
@@ -277,7 +269,7 @@ export interface Jest {
   /**
    * Instructs Jest to use fake versions of the standard timer functions.
    */
-  useFakeTimers(): Jest;
+  useFakeTimers(implementation?: 'modern' | 'legacy'): Jest;
   /**
    * Instructs Jest to use the real versions of the standard timer functions.
    */
@@ -289,4 +281,18 @@ export interface Jest {
    * every test so that local module state doesn't conflict between tests.
    */
   isolateModules(fn: () => void): Jest;
+
+  /**
+   * When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
+   *
+   * > Note: This function is only available when using Lolex as fake timers implementation
+   */
+  getRealSystemTime(): number;
+
+  /**
+   *  Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+   *
+   *  > Note: This function is only available when using Lolex as fake timers implementation
+   */
+  setSystemTime(now?: number | Date): void;
 }

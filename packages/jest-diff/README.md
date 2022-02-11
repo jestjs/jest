@@ -2,7 +2,7 @@
 
 Display differences clearly so people can review changes confidently.
 
-The default export serializes JavaScript **values**, compares them line-by-line, and returns a string which includes comparison lines.
+The `diff` named export serializes JavaScript **values**, compares them line-by-line, and returns a string which includes comparison lines.
 
 Two named exports compare **strings** character-by-character:
 
@@ -21,9 +21,9 @@ To add this package as a dependency of a project, run either of the following co
 - `npm install jest-diff`
 - `yarn add jest-diff`
 
-## Usage of default export
+## Usage of `diff()`
 
-Given JavaScript **values**, `diffDefault(a, b, options?)` does the following:
+Given JavaScript **values**, `diff(a, b, options?)` does the following:
 
 1. **serialize** the values as strings using the `pretty-format` package
 2. **compare** the strings line-by-line using the `diff-sequences` package
@@ -31,16 +31,16 @@ Given JavaScript **values**, `diffDefault(a, b, options?)` does the following:
 
 To use this function, write either of the following:
 
-- `const diffDefault = require('jest-diff').default;` in CommonJS modules
-- `import diffDefault from 'jest-diff';` in ECMAScript modules
+- `const {diff} = require('jest-diff');` in CommonJS modules
+- `import {diff} from 'jest-diff';` in ECMAScript modules
 
-### Example of default export
+### Example of `diff()`
 
 ```js
 const a = ['delete', 'common', 'changed from'];
 const b = ['common', 'changed to', 'insert'];
 
-const difference = diffDefault(a, b);
+const difference = diff(a, b);
 ```
 
 The returned **string** consists of:
@@ -61,7 +61,7 @@ The returned **string** consists of:
   ]
 ```
 
-### Edge cases of default export
+### Edge cases of `diff()`
 
 Here are edge cases for the return value:
 
@@ -165,7 +165,7 @@ You might call this function for case insensitive or Unicode equivalence compari
 ### Example of diffLinesUnified2
 
 ```js
-import format from 'pretty-format';
+import {format} from 'pretty-format';
 
 const a = {
   text: 'Ignore indentation in serialized object',
@@ -374,7 +374,7 @@ The default options are for the report when an assertion fails from the `expect`
 
 For other applications, you can provide an options object as a third argument:
 
-- `diffDefault(a, b, options)`
+- `diff(a, b, options)`
 - `diffStringsUnified(a, b, options)`
 - `diffLinesUnified(aLines, bLines, options)`
 - `diffLinesUnified2(aLinesDisplay, bLinesDisplay, aLinesCompare, bLinesCompare, options)`
@@ -394,6 +394,7 @@ For other applications, you can provide an options object as a third argument:
 | `commonColor`                     | `chalk.dim`        |
 | `commonIndicator`                 | `' '`              |
 | `commonLineTrailingSpaceColor`    | `string => string` |
+| `compareKeys`                     | `undefined`        |
 | `contextLines`                    | `5`                |
 | `emptyFirstOrLastLinePlaceholder` | `''`               |
 | `expand`                          | `true`             |
@@ -452,7 +453,7 @@ const options = {
 
 ### Example of option to format trailing spaces
 
-Because the default export does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
+Because `diff()` does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
 
 - If change lines have a background color, then you can see trailing spaces.
 - If common lines have default dim color, then you cannot see trailing spaces. You might want yellowish background color to see them.
@@ -553,7 +554,7 @@ const options = {
   includeChangeCounts: true,
 };
 
-const difference = diffDefault(a, b, options);
+const difference = diff(a, b, options);
 ```
 
 ```diff
@@ -612,3 +613,59 @@ If a content line is empty, then the corresponding comparison line is automatica
 |      `aIndicator` | `'-·'`    | `'-'`   |
 |      `bIndicator` | `'+·'`    | `'+'`   |
 | `commonIndicator` | `' ·'`    | `''`    |
+
+### Example of option for sorting object keys
+
+When two objects are compared their keys are printed in alphabetical order by default. If this was not the original order of the keys the diff becomes harder to read as the keys are not in their original position.
+
+Use `compareKeys` to pass a function which will be used when sorting the object keys.
+
+```js
+const a = {c: 'c', b: 'b1', a: 'a'};
+const b = {c: 'c', b: 'b2', a: 'a'};
+
+const options = {
+  // The keys will be in their original order
+  compareKeys: () => 0,
+};
+
+const difference = diff(a, b, options);
+```
+
+```diff
+- Expected
++ Received
+
+  Object {
+    "c": "c",
+-   "b": "b1",
++   "b": "b2",
+    "a": "a",
+  }
+```
+
+Depending on the implementation of `compareKeys` any sort order can be used.
+
+```js
+const a = {c: 'c', b: 'b1', a: 'a'};
+const b = {c: 'c', b: 'b2', a: 'a'};
+
+const options = {
+  // The keys will be in reverse order
+  compareKeys: (a, b) => (a > b ? -1 : 1),
+};
+
+const difference = diff(a, b, options);
+```
+
+```diff
+- Expected
++ Received
+
+  Object {
+    "a": "a",
+-   "b": "b1",
++   "b": "b2",
+    "c": "c",
+  }
+```

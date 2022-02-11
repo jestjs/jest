@@ -5,10 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AggregatedResult, TestResult} from '@jest/test-result';
-import type {Test} from 'jest-runner';
-import type {Context} from 'jest-runtime';
+/* eslint-disable local/ban-types-eventually */
+
 import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import type {
+  AggregatedResult,
+  Test,
+  TestCaseResult,
+  TestResult,
+} from '@jest/test-result';
+import type {Context} from 'jest-runtime';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;
@@ -27,25 +33,31 @@ export default class ReporterDispatcher {
     );
   }
 
-  async onTestResult(
+  async onTestFileResult(
     test: Test,
     testResult: TestResult,
     results: AggregatedResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onTestResult &&
-        (await reporter.onTestResult(test, testResult, results));
+      if (reporter.onTestFileResult) {
+        await reporter.onTestFileResult(test, testResult, results);
+      } else if (reporter.onTestResult) {
+        await reporter.onTestResult(test, testResult, results);
+      }
     }
 
     // Release memory if unused later.
-    testResult.sourceMaps = undefined;
     testResult.coverage = undefined;
     testResult.console = undefined;
   }
 
-  async onTestStart(test: Test): Promise<void> {
+  async onTestFileStart(test: Test): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onTestStart && (await reporter.onTestStart(test));
+      if (reporter.onTestFileStart) {
+        await reporter.onTestFileStart(test);
+      } else if (reporter.onTestStart) {
+        await reporter.onTestStart(test);
+      }
     }
   }
 
@@ -58,13 +70,25 @@ export default class ReporterDispatcher {
     }
   }
 
+  async onTestCaseResult(
+    test: Test,
+    testCaseResult: TestCaseResult,
+  ): Promise<void> {
+    for (const reporter of this._reporters) {
+      if (reporter.onTestCaseResult) {
+        await reporter.onTestCaseResult(test, testCaseResult);
+      }
+    }
+  }
+
   async onRunComplete(
     contexts: Set<Context>,
     results: AggregatedResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onRunComplete &&
-        (await reporter.onRunComplete(contexts, results));
+      if (reporter.onRunComplete) {
+        await reporter.onRunComplete(contexts, results);
+      }
     }
   }
 

@@ -6,60 +6,58 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
+import parseJson = require('parse-json');
+import stripJsonComments = require('strip-json-comments');
+import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
-// @ts-ignore: vendored
-import jsonlint from './vendor/jsonlint';
-import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
-import importEsm from './importEsm';
+import {interopRequireDefault, requireOrImportModule} from 'jest-util';
+import {
+  JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_TS,
+  PACKAGE_JSON,
+} from './constants';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
+// 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
+// 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> {
+  const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
-    configObject = require(configPath);
-  } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      try {
-        const importedConfig = await importEsm(configPath);
-
-        if (!importedConfig.default) {
-          throw new Error(
-            `Jest: Failed to load mjs config file ${configPath} - did you use a default export?`,
-          );
-        }
-
-        configObject = importedConfig.default;
-      } catch (innerError) {
-        if (innerError.message === 'Not supported') {
-          throw new Error(
-            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${configPath}`,
-          );
-        }
-
-        throw innerError;
-      }
+    if (isTS) {
+      configObject = await loadTSConfigFile(configPath);
     } else if (isJSON) {
-      throw new Error(
-        `Jest: Failed to parse config file ${configPath}\n` +
-          `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
-      );
+      const fileContent = fs.readFileSync(configPath, 'utf8');
+      configObject = parseJson(stripJsonComments(fileContent), configPath);
     } else {
-      throw error;
+      configObject = await requireOrImportModule<any>(configPath);
     }
+  } catch (error) {
+    if (isTS) {
+      throw new Error(
+        `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
+          `  ${error}`,
+      );
+    }
+
+    throw error;
   }
 
   if (configPath.endsWith(PACKAGE_JSON)) {
     // Event if there's no "jest" property in package.json we will still use
     // an empty object.
     configObject = configObject.jest || {};
+  }
+
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
   }
 
   if (configObject.rootDir) {
@@ -78,3 +76,40 @@ export default async function readConfigFileAndSetRootDir(
 
   return configObject;
 }
+
+let registerer: Service;
+
+// Load the TypeScript configuration
+const loadTSConfigFile = async (
+  configPath: Config.Path,
+): Promise<Config.InitialOptions> => {
+  // Register TypeScript compiler instance
+  try {
+    registerer ||= require('ts-node').register({
+      compilerOptions: {
+        module: 'CommonJS',
+      },
+    });
+  } catch (e: any) {
+    if (e.code === 'MODULE_NOT_FOUND') {
+      throw new Error(
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+      );
+    }
+
+    throw e;
+  }
+
+  registerer.enabled(true);
+
+  let configObject = interopRequireDefault(require(configPath)).default;
+
+  // In case the config is a function which imports more Typescript code
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
+  }
+
+  registerer.enabled(false);
+
+  return configObject;
+};

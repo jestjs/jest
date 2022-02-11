@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {PassThrough} from 'stream';
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
+  OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -30,6 +30,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _request: ChildMessage | null;
   private _retries!: number;
   private _onProcessEnd!: OnEnd;
+  private _onCustomMessage!: OnCustomMessage;
 
   private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
@@ -57,21 +58,13 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   initialize(): void {
-    this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
+    this._worker = new Worker(require.resolve('./threadChild'), {
       eval: false,
+      resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,
-      workerData: {
-        cwd: process.cwd(),
-        env: {
-          ...process.env,
-          JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-        } as NodeJS.ProcessEnv,
-        // Suppress --debug / --inspect flags while preserving others (like --harmony).
-        execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-        silent: true,
-        ...this._options.forkOptions,
-      },
+      workerData: this._options.workerData,
+      ...this._options.forkOptions,
     });
 
     if (this._worker.stdout) {
@@ -102,6 +95,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       false,
       this._options.workerPath,
       this._options.setupArgs,
+      String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
     ]);
 
     this._retries++;
@@ -145,7 +139,7 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         if (error != null && typeof error === 'object') {
           const extra = error;
-          // @ts-ignore: no index
+          // @ts-expect-error: no index
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
@@ -154,7 +148,7 @@ export default class ExperimentalWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-ignore: no index
+            // @ts-expect-error: no index
             error[key] = extra[key];
           }
         }
@@ -164,11 +158,14 @@ export default class ExperimentalWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-ignore: adding custom properties to errors.
+        // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 
         this._onProcessEnd(error, null);
+        break;
+      case PARENT_MESSAGE_CUSTOM:
+        this._onCustomMessage(response[1]);
         break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);
@@ -199,15 +196,24 @@ export default class ExperimentalWorker implements WorkerInterface {
   send(
     request: ChildMessage,
     onProcessStart: OnStart,
-    onProcessEnd: OnEnd,
+    onProcessEnd: OnEnd | null,
+    onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
-      return onProcessEnd(...args);
+
+      const res = onProcessEnd?.(...args);
+
+      // Clean up the reference so related closures can be garbage collected.
+      onProcessEnd = null;
+
+      return res;
     };
+
+    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
 
     this._request = request;
     this._retries = 0;

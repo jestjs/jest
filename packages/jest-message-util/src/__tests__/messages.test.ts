@@ -6,20 +6,25 @@
  *
  */
 
-import {readFileSync} from 'fs';
+import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
-import {formatExecError, formatResultsErrors} from '..';
+import {
+  formatExecError,
+  formatResultsErrors,
+  formatStackTrace,
+  getTopFrame,
+} from '..';
 
 const rootDir = tempy.directory();
 
-jest.mock('fs', () => ({
+jest.mock('graceful-fs', () => ({
   ...jest.requireActual('fs'),
   readFileSync: jest.fn(),
 }));
 
 const unixStackTrace =
-  `  ` +
+  '  ' +
   `at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
   at Object.addResult (../jest-jasmine2/build/jasmine-2.4.1.js:1550:14)
   at jasmine.addResult (../jest-jasmine2/build/index.js:82:44)
@@ -288,4 +293,95 @@ it('no stack', () => {
   );
 
   expect(message).toMatchSnapshot();
+});
+
+describe('formatStackTrace', () => {
+  it('prints code frame and stacktrace', () => {
+    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    const message = formatStackTrace(
+      `
+      at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
+      at Module._compile (internal/modules/cjs/loader.js:1158:30)
+      at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
+      at Module.load (internal/modules/cjs/loader.js:1002:32)
+      at Function.Module._load (internal/modules/cjs/loader.js:901:14)
+      at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
+  `,
+      {
+        rootDir,
+        testMatch: [],
+      },
+      {
+        noCodeFrame: false,
+        noStackTrace: false,
+      },
+      'path_test',
+    );
+
+    expect(message).toMatchSnapshot();
+  });
+
+  it('does not print code frame when noCodeFrame = true', () => {
+    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    const message = formatStackTrace(
+      `
+      at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
+      at Module._compile (internal/modules/cjs/loader.js:1158:30)
+      at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
+      at Module.load (internal/modules/cjs/loader.js:1002:32)
+      at Function.Module._load (internal/modules/cjs/loader.js:901:14)
+      at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
+  `,
+      {
+        rootDir,
+        testMatch: [],
+      },
+      {
+        noCodeFrame: true,
+        noStackTrace: false,
+      },
+      'path_test',
+    );
+
+    expect(message).toMatchSnapshot();
+  });
+
+  it('does not print codeframe when noStackTrace = true', () => {
+    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    const message = formatStackTrace(
+      `
+      at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
+      at Module._compile (internal/modules/cjs/loader.js:1158:30)
+      at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
+      at Module.load (internal/modules/cjs/loader.js:1002:32)
+      at Function.Module._load (internal/modules/cjs/loader.js:901:14)
+      at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
+  `,
+      {
+        rootDir,
+        testMatch: [],
+      },
+      {
+        noStackTrace: true,
+      },
+      'path_test',
+    );
+
+    expect(message).toMatchSnapshot();
+  });
+});
+
+it('getTopFrame should return a path for mjs files', () => {
+  let stack: Array<string>;
+  let expectedFile: string;
+  if (process.platform === 'win32') {
+    stack = ['  at stack (file:///C:/Users/user/project/inline.mjs:1:1)'];
+    expectedFile = 'C:/Users/user/project/inline.mjs';
+  } else {
+    stack = ['  at stack (file:///Users/user/project/inline.mjs:1:1)'];
+    expectedFile = '/Users/user/project/inline.mjs';
+  }
+  const frame = getTopFrame(stack);
+
+  expect(frame.file).toBe(expectedFile);
 });

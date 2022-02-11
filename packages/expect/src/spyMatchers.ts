@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getType = require('jest-get-type');
+import {equals, iterableEquality} from '@jest/expect-utils';
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
@@ -26,8 +27,6 @@ import type {
   MatchersObject,
   SyncExpectationResult,
 } from './types';
-import {equals} from './jasmineUtils';
-import {iterableEquality} from './utils';
 
 // The optional property of matcher context is true if undefined.
 const isExpand = (expand?: boolean): boolean => expand !== false;
@@ -278,7 +277,7 @@ const isLineDiffableArg = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (getType.isPrimitive(expected)) {
+  if (isPrimitive(expected)) {
     return false;
   }
 
@@ -485,7 +484,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
     const message = pass
       ? () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
-          `\n\n` +
+          '\n\n' +
           `Expected number of calls: not ${printExpected(expected)}`
       : () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
@@ -523,7 +522,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
     const message = pass
       ? () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
-          `\n\n` +
+          '\n\n' +
           `Expected number of returns: not ${printExpected(expected)}` +
           (received.mock.calls.length !== count
             ? `\n\nReceived number of calls:       ${printReceived(

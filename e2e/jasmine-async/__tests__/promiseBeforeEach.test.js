@@ -13,7 +13,7 @@ describe('promise beforeEach', () => {
       process.nextTick(resolve);
     }).then(() => {
       this.flag = 1;
-    })
+    }),
   );
 
   // passing tests

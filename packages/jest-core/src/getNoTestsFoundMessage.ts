@@ -6,19 +6,19 @@
  */
 
 import type {Config} from '@jest/types';
-import type {TestRunData} from './types';
 import getNoTestFound from './getNoTestFound';
-import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
-import getNoTestFoundVerbose from './getNoTestFoundVerbose';
 import getNoTestFoundFailed from './getNoTestFoundFailed';
 import getNoTestFoundPassWithNoTests from './getNoTestFoundPassWithNoTests';
+import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
+import getNoTestFoundVerbose from './getNoTestFoundVerbose';
+import type {TestRunData} from './types';
 
 export default function getNoTestsFoundMessage(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
 ): string {
   if (globalConfig.onlyFailures) {
-    return getNoTestFoundFailed();
+    return getNoTestFoundFailed(globalConfig);
   }
   if (globalConfig.onlyChanged) {
     return getNoTestFoundRelatedToChangedFiles(globalConfig);

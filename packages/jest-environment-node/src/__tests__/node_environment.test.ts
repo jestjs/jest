@@ -5,10 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import NodeEnvironment = require('../');
-import {makeProjectConfig} from '../../../../TestUtils';
-
-const isTextEncoderDefined = typeof TextEncoder === 'function';
+import {makeProjectConfig} from '@jest/test-utils';
+import NodeEnvironment from '../';
 
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {
@@ -39,22 +37,19 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      // @ts-ignore
       expect(timer.id).not.toBeUndefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
+  it('has modern fake timers implementation', () => {
     const env = new NodeEnvironment(makeProjectConfig());
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
   });
 
-  if (isTextEncoderDefined) {
-    test('TextEncoder references the same global Uint8Array constructor', () => {
-      expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
-    });
-  }
+  test('TextEncoder references the same global Uint8Array constructor', () => {
+    expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
+  });
 });

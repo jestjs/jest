@@ -1,0 +1,15 @@
+name: 'Close issues'
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  questions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Issue
+        uses: peter-evans/close-issue@v1
+        if: "${{ github.event.label.name == ':speech_balloon: Question' }}"
+        with:
+          comment: Please note this issue tracker is not a help forum. We recommend using [StackOverflow](https://stackoverflow.com/questions/tagged/jestjs) or our [discord channel](https://discord.gg/j6FKKQQrW9) for questions.

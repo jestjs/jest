@@ -5,10 +5,49 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Stats} from 'fs';
+import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
-import type ModuleMap from './ModuleMap';
 import type HasteFS from './HasteFS';
+import type ModuleMap from './ModuleMap';
+
+type ValueType<T> = T extends Map<string, infer V> ? V : never;
+
+export type SerializableModuleMap = {
+  duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
+  map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
+  mocks: ReadonlyArray<[string, ValueType<MockData>]>;
+  rootDir: Config.Path;
+};
+
+export interface IModuleMap<S = SerializableModuleMap> {
+  getModule(
+    name: string,
+    platform?: string | null,
+    supportsNativePlatform?: boolean | null,
+    type?: HTypeValue | null,
+  ): Config.Path | null;
+
+  getPackage(
+    name: string,
+    platform: string | null | undefined,
+    _supportsNativePlatform: boolean | null,
+  ): Config.Path | null;
+
+  getMockModule(name: string): Config.Path | undefined;
+
+  getRawModuleMap(): RawModuleMap;
+
+  toJSON(): S;
+}
+
+export type HasteMapStatic<S = SerializableModuleMap> = {
+  getCacheFilePath(
+    tmpdir: Config.Path,
+    name: string,
+    ...extra: Array<string>
+  ): string;
+  getModuleMapFromJSON(json: S): IModuleMap<S>;
+};
 
 export type IgnoreMatcher = (item: string) => boolean;
 
@@ -30,6 +69,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
@@ -45,17 +85,18 @@ export type HasteImpl = {
 export type FileData = Map<Config.Path, FileMetaData>;
 
 export type FileMetaData = [
-  /* id */ string,
-  /* mtime */ number,
-  /* size */ number,
-  /* visited */ 0 | 1,
-  /* dependencies */ string,
-  /* sha1 */ string | null | undefined,
+  id: string,
+  mtime: number,
+  size: number,
+  visited: 0 | 1,
+  dependencies: string,
+  sha1: string | null | undefined,
 ];
 
 export type MockData = Map<string, Config.Path>;
 export type ModuleMapData = Map<string, ModuleMapItem>;
-export type WatchmanClocks = Map<Config.Path, string>;
+export type WatchmanClockSpec = string | {scm: {'mergebase-with': string}};
+export type WatchmanClocks = Map<Config.Path, WatchmanClockSpec>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type DuplicatesSet = Map<string, /* type */ number>;
@@ -68,7 +109,6 @@ export type InternalHasteMap = {
   map: ModuleMapData;
   mocks: MockData;
 };
-
 export type HasteMap = {
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
@@ -83,7 +123,7 @@ export type RawModuleMap = {
 };
 
 type ModuleMapItem = {[platform: string]: ModuleMetaData};
-export type ModuleMetaData = [Config.Path, /* type */ number];
+export type ModuleMetaData = [path: Config.Path, type: number];
 
 export type HType = {
   ID: 0;

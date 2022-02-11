@@ -17,7 +17,7 @@ module.exports = {
           module: tsc.ModuleKind.CommonJS,
         },
         path,
-        []
+        [],
       );
     }
     return src;

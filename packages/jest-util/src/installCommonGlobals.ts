@@ -5,20 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
-export default function (
-  globalObject: NodeJS.Global,
+export default function installCommonGlobals(
+  globalObject: typeof globalThis,
   globals: Config.ConfigGlobals,
-): NodeJS.Global & Config.ConfigGlobals {
+): typeof globalThis & Config.ConfigGlobals {
   globalObject.process = createProcessObject();
 
-  const symbol = (globalObject.Symbol as unknown) as SymbolConstructor;
+  const symbol = globalObject.Symbol as unknown as SymbolConstructor;
   // Keep a reference to some globals that Jest needs
   Object.defineProperties(globalObject, {
     [symbol.for('jest-native-promise')]: {
@@ -55,17 +55,12 @@ export default function (
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
-    // @ts-ignore: no index
+    // @ts-expect-error: no index
     globalObject[dtrace] = function (...args: Array<any>) {
-      // @ts-ignore: no index
+      // @ts-expect-error: no index
       return global[dtrace].apply(this, args);
     };
   });
-
-  // Forward some others (this breaks the sandbox but for now it's OK).
-  globalObject.Buffer = global.Buffer;
-  globalObject.setImmediate = global.setImmediate;
-  globalObject.clearImmediate = global.clearImmediate;
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }

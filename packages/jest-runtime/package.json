@@ -1,63 +1,56 @@
 {
   "name": "jest-runtime",
-  "version": "25.4.0",
+  "version": "28.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-runtime"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/console": "^25.4.0",
-    "@jest/environment": "^25.4.0",
-    "@jest/source-map": "^25.2.6",
-    "@jest/test-result": "^25.4.0",
-    "@jest/transform": "^25.4.0",
-    "@jest/types": "^25.4.0",
-    "@types/yargs": "^15.0.0",
-    "chalk": "^3.0.0",
+    "@jest/environment": "^28.0.0-alpha.0",
+    "@jest/fake-timers": "^28.0.0-alpha.0",
+    "@jest/globals": "^28.0.0-alpha.0",
+    "@jest/source-map": "^28.0.0-alpha.0",
+    "@jest/test-result": "^28.0.0-alpha.0",
+    "@jest/transform": "^28.0.0-alpha.0",
+    "@jest/types": "^28.0.0-alpha.0",
+    "chalk": "^4.0.0",
+    "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
-    "exit": "^0.1.2",
+    "execa": "^5.0.0",
     "glob": "^7.1.3",
-    "graceful-fs": "^4.2.3",
-    "jest-config": "^25.4.0",
-    "jest-haste-map": "^25.4.0",
-    "jest-message-util": "^25.4.0",
-    "jest-mock": "^25.4.0",
-    "jest-regex-util": "^25.2.6",
-    "jest-resolve": "^25.4.0",
-    "jest-snapshot": "^25.4.0",
-    "jest-util": "^25.4.0",
-    "jest-validate": "^25.4.0",
-    "realpath-native": "^2.0.0",
+    "graceful-fs": "^4.2.9",
+    "jest-haste-map": "^28.0.0-alpha.0",
+    "jest-message-util": "^28.0.0-alpha.0",
+    "jest-mock": "^28.0.0-alpha.0",
+    "jest-regex-util": "^28.0.0-alpha.0",
+    "jest-resolve": "^28.0.0-alpha.0",
+    "jest-snapshot": "^28.0.0-alpha.0",
+    "jest-util": "^28.0.0-alpha.0",
     "slash": "^3.0.0",
-    "strip-bom": "^4.0.0",
-    "yargs": "^15.3.1"
+    "strip-bom": "^4.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^25.3.0",
-    "@types/exit": "^0.1.30",
+    "@jest/test-utils": "^28.0.0-alpha.0",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
-    "execa": "^3.2.0",
-    "jest-environment-node": "^25.4.0",
-    "jest-snapshot-serializer-raw": "^1.1.0"
+    "@types/node": "^14.0.27",
+    "jest-environment-node": "^28.0.0-alpha.0"
   },
-  "bin": "./bin/jest-runtime.js",
   "engines": {
-    "node": ">= 8.3"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

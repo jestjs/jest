@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'graceful-fs';
 import callsites = require('callsites');
+import {readFileSync} from 'graceful-fs';
 import {SourceMapConsumer} from 'source-map';
 import type {SourceMapRegistry} from './types';
 
@@ -46,23 +46,23 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (
+export default function getCallsite(
   level: number,
   sourceMaps?: SourceMapRegistry | null,
-): callsites.CallSite => {
+): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
 
   if (sourceMapFileName) {
     try {
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-      // @ts-ignore: Not allowed to pass string
+      // @ts-expect-error: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
 
   return stack;
-};
+}

@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
+import {format as prettyFormat} from 'pretty-format';
 
-export default class {
+const tick = promisify(setImmediate);
+
+export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
 
   constructor(value: unknown) {
@@ -28,7 +31,7 @@ export default class {
     try {
       // eslint-disable-next-line import/no-extraneous-dependencies
       weak = require('weak-napi');
-    } catch (err) {
+    } catch (err: any) {
       if (!err || err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
@@ -46,12 +49,15 @@ export default class {
     value = null;
   }
 
-  isLeaking(): Promise<boolean> {
+  async isLeaking(): Promise<boolean> {
     this._runGarbageCollector();
 
-    return new Promise(resolve =>
-      setImmediate(() => resolve(this._isReferenceBeingHeld)),
-    );
+    // wait some ticks to allow GC to run properly, see https://github.com/nodejs/node/issues/34636#issuecomment-669366235
+    for (let i = 0; i < 10; i++) {
+      await tick();
+    }
+
+    return this._isReferenceBeingHeld;
   }
 
   private _runGarbageCollector() {

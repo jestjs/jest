@@ -16,6 +16,7 @@ export default class NullConsole extends CustomConsole {
   log(): void {}
   time(): void {}
   timeEnd(): void {}
+  timeLog(): void {}
   trace(): void {}
   warn(): void {}
   group(): void {}

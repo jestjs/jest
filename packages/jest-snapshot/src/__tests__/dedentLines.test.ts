@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import format = require('pretty-format');
+import {plugins as builtinPlugins, format} from 'pretty-format';
 import {dedentLines} from '../dedentLines';
 
 const $$typeof = Symbol.for('react.test.json');
-const plugins = [format.plugins.ReactTestComponent];
+const plugins = [builtinPlugins.ReactTestComponent];
 
 const formatLines2 = val => format(val, {indent: 2, plugins}).split('\n');
 const formatLines0 = val => format(val, {indent: 0, plugins}).split('\n');

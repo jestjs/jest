@@ -6,10 +6,13 @@
  *
  */
 
-import type {Config, Printer, Refs} from './types';
+import type {CompareKeys, Config, Printer, Refs} from './types';
 
-const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
-  const keys: Array<string | symbol> = Object.keys(object).sort();
+const getKeysOfEnumerableProperties = (
+  object: Record<string, unknown>,
+  compareKeys: CompareKeys,
+) => {
+  const keys: Array<string | symbol> = Object.keys(object).sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
@@ -142,9 +145,11 @@ export function printListItems(
     const indentationNext = indentation + config.indent;
 
     for (let i = 0; i < list.length; i++) {
-      result +=
-        indentationNext +
-        printer(list[i], config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (i in list) {
+        result += printer(list[i], config, indentationNext, depth, refs);
+      }
 
       if (i < list.length - 1) {
         result += ',' + config.spacingInner;
@@ -173,7 +178,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  const keys = getKeysOfEnumerableProperties(val);
+  const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
   if (keys.length) {
     result += config.spacingOuter;

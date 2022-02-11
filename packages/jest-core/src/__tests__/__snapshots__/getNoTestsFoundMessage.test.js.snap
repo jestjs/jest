@@ -2,10 +2,7 @@
 
 exports[`getNoTestsFoundMessage returns correct message when monitoring only changed 1`] = `"<bold>No tests found related to files changed since last commit.</>"`;
 
-exports[`getNoTestsFoundMessage returns correct message when monitoring only failures 1`] = `
-"<bold>No failed test found.</>
-<bold></><dim>Press \`f\` to quit \\"only failed tests\\" mode.</>"
-`;
+exports[`getNoTestsFoundMessage returns correct message when monitoring only failures 1`] = `"<bold>No failed test found.</>"`;
 
 exports[`getNoTestsFoundMessage returns correct message with passWithNoTests 1`] = `"<bold>No tests found, exiting with code 0</>"`;
 

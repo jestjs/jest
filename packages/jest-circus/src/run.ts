@@ -6,9 +6,8 @@
  */
 
 import type {Circus} from '@jest/types';
-import {RETRY_TIMES} from './types';
-
 import {dispatch, getState} from './state';
+import {RETRY_TIMES} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -35,24 +34,37 @@ const _runTestsForDescribeBlock = async (
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
-  for (const hook of beforeAll) {
-    await _callCircusHook({describeBlock, hook});
+  const isSkipped = describeBlock.mode === 'skip';
+
+  if (!isSkipped) {
+    for (const hook of beforeAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
   }
 
   // Tests that fail and are retried we run after other tests
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
-  for (const test of describeBlock.tests) {
-    const hasErrorsBeforeTestRun = test.errors.length > 0;
-    await _runTest(test);
+  for (const child of describeBlock.children) {
+    switch (child.type) {
+      case 'describeBlock': {
+        await _runTestsForDescribeBlock(child);
+        break;
+      }
+      case 'test': {
+        const hasErrorsBeforeTestRun = child.errors.length > 0;
+        await _runTest(child, isSkipped);
 
-    if (
-      hasErrorsBeforeTestRun === false &&
-      retryTimes > 0 &&
-      test.errors.length > 0
-    ) {
-      deferredRetryTests.push(test);
+        if (
+          hasErrorsBeforeTestRun === false &&
+          retryTimes > 0 &&
+          child.errors.length > 0
+        ) {
+          deferredRetryTests.push(child);
+        }
+        break;
+      }
     }
   }
 
@@ -64,28 +76,30 @@ const _runTestsForDescribeBlock = async (
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
 
-      await _runTest(test);
+      await _runTest(test, isSkipped);
       numRetriesAvailable--;
     }
   }
 
-  for (const child of describeBlock.children) {
-    await _runTestsForDescribeBlock(child);
-  }
-
-  for (const hook of afterAll) {
-    await _callCircusHook({describeBlock, hook});
+  if (!isSkipped) {
+    for (const hook of afterAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
   }
 
   await dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
-const _runTest = async (test: Circus.TestEntry): Promise<void> => {
+const _runTest = async (
+  test: Circus.TestEntry,
+  parentSkipped: boolean,
+): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
   const {hasFocusedTests, testNamePattern} = getState();
 
   const isSkipped =
+    parentSkipped ||
     test.mode === 'skip' ||
     (hasFocusedTests && test.mode !== 'only') ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));
@@ -138,7 +152,10 @@ const _callCircusHook = async ({
   const timeout = hook.timeout || getState().testTimeout;
 
   try {
-    await callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout});
+    await callAsyncCircusFn(hook, testContext, {
+      isHook: true,
+      timeout,
+    });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
   } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
@@ -151,14 +168,17 @@ const _callCircusTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
-  invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
+  invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
   if (test.errors.length) {
     return; // We don't run the test if there's already an error in before hooks.
   }
 
   try {
-    await callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout});
+    await callAsyncCircusFn(test, testContext, {
+      isHook: false,
+      timeout,
+    });
     await dispatch({name: 'test_fn_success', test});
   } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});

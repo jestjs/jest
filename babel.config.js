@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const semver = require('semver');
+const pkg = require('./package.json');
+
+const supportedNodeVersion = semver.minVersion(pkg.engines.node).version;
+
 module.exports = {
   babelrcRoots: ['examples/*'],
   // we don't wanna run the transforms in this file over react native
@@ -12,43 +17,37 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-typescript-strip-namespaces',
-        'babel-plugin-replace-ts-export-assignment',
         require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-require-assignment.js'
+          './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
       ],
-      presets: ['@babel/preset-typescript'],
-      test: /\.tsx?$/,
-    },
-    // we want this file to keep `import()`, so exclude the transform for it
-    {
-      plugins: ['@babel/plugin-syntax-dynamic-import'],
       presets: [
-        '@babel/preset-typescript',
         [
-          '@babel/preset-env',
+          '@babel/preset-typescript',
           {
-            exclude: ['@babel/plugin-proposal-dynamic-import'],
-            shippedProposals: true,
-            targets: {node: '8.3'},
+            // will be the default in Babel 8, so let's just turn it on now
+            allowDeclareFields: true,
+            // will be default in the future, but we don't want to use it
+            allowNamespaces: false,
           },
         ],
       ],
-      test: 'packages/jest-config/src/importEsm.ts',
+      test: /\.tsx?$/,
     },
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    '@babel/plugin-transform-strict-mode',
-    '@babel/plugin-proposal-class-properties',
+    require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [
     [
       '@babel/preset-env',
       {
+        bugfixes: true,
+        // we manually include the CJS plugin above, so let's make preset-env do less work
+        modules: false,
         shippedProposals: true,
-        targets: {node: '8.3'},
+        targets: {node: supportedNodeVersion},
       },
     ],
   ],

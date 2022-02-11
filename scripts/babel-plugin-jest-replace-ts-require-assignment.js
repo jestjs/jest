@@ -23,7 +23,7 @@ module.exports = ({template}) => {
           moduleExportsDeclaration({
             IMPORT: node.moduleReference.expression,
             NAME: node.id,
-          })
+          }),
         );
       },
     },

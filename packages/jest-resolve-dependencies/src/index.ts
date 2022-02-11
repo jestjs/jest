@@ -5,24 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-import Resolver = require('jest-resolve');
+import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-namespace DependencyResolver {
-  export type ResolvedModule = {
-    file: Config.Path;
-    dependencies: Array<Config.Path>;
-  };
-}
+export type ResolvedModule = {
+  file: Config.Path;
+  dependencies: Array<Config.Path>;
+};
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-/* eslint-disable-next-line no-redeclare */
-class DependencyResolver {
+export class DependencyResolver {
   private _hasteFS: HasteFS;
   private _resolver: Resolver;
   private _snapshotResolver: SnapshotResolver;
@@ -39,7 +37,7 @@ class DependencyResolver {
 
   resolve(
     file: Config.Path,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Array<Config.Path> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
@@ -50,7 +48,9 @@ class DependencyResolver {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
+
       let resolvedDependency;
+      let resolvedMockDependency;
       try {
         resolvedDependency = this._resolver.resolveModule(
           file,
@@ -65,8 +65,35 @@ class DependencyResolver {
         }
       }
 
-      if (resolvedDependency) {
-        acc.push(resolvedDependency);
+      if (!resolvedDependency) {
+        return acc;
+      }
+
+      acc.push(resolvedDependency);
+
+      // If we resolve a dependency, then look for a mock dependency
+      // of the same name in that dependency's directory.
+      try {
+        resolvedMockDependency = this._resolver.getMockModule(
+          resolvedDependency,
+          path.basename(dependency),
+        );
+      } catch {
+        // leave resolvedMockDependency as undefined if nothing can be found
+      }
+
+      if (resolvedMockDependency) {
+        const dependencyMockDir = path.resolve(
+          path.dirname(resolvedDependency),
+          '__mocks__',
+        );
+
+        resolvedMockDependency = path.resolve(resolvedMockDependency);
+
+        // make sure mock is in the correct directory
+        if (dependencyMockDir === path.dirname(resolvedMockDependency)) {
+          acc.push(resolvedMockDependency);
+        }
       }
 
       return acc;
@@ -76,19 +103,19 @@ class DependencyResolver {
   resolveInverseModuleMap(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolver.ResolveModuleConfig,
-  ): Array<DependencyResolver.ResolvedModule> {
+    options?: ResolveModuleConfig,
+  ): Array<ResolvedModule> {
     if (!paths.size) {
       return [];
     }
 
     const collectModules = (
       related: Set<Config.Path>,
-      moduleMap: Array<DependencyResolver.ResolvedModule>,
+      moduleMap: Array<ResolvedModule>,
       changed: Set<Config.Path>,
     ) => {
       const visitedModules = new Set();
-      const result: Array<DependencyResolver.ResolvedModule> = [];
+      const result: Array<ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
           moduleMap.reduce<Array<Config.Path>>((acc, module) => {
@@ -128,7 +155,7 @@ class DependencyResolver {
         }
       }
     }
-    const modules: Array<DependencyResolver.ResolvedModule> = [];
+    const modules: Array<ResolvedModule> = [];
     for (const file of this._hasteFS.getAbsoluteFileIterator()) {
       modules.push({
         dependencies: this.resolve(file, options),
@@ -141,12 +168,10 @@ class DependencyResolver {
   resolveInverse(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Array<Config.Path> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,
     );
   }
 }
-
-export = DependencyResolver;

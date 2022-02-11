@@ -9,11 +9,11 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const chokidar = require('chokidar');
 const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
@@ -23,18 +23,18 @@ let filesToBuild = new Map();
 const exists = filename => {
   try {
     return fs.statSync(filename).isFile();
-  } catch (e) {}
+  } catch {}
   return false;
 };
 const rebuild = filename => filesToBuild.set(filename, true);
 
 chokidar
   .watch(
-    getPackages().map(p => path.resolve(p, 'src')),
+    getPackages().map(p => path.resolve(p.packageDir, 'src')),
     {
       ignoreInitial: true,
       ignored: /(^|[\/\\])\../, // ignore dotfiles
-    }
+    },
   )
   .on('all', (event, filePath) => {
     if (
@@ -43,7 +43,7 @@ chokidar
     ) {
       console.log(
         chalk.green('->'),
-        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`
+        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`,
       );
       rebuild(filePath);
     } else {
@@ -51,7 +51,7 @@ chokidar
       const buildFile = filePath
         .replace(
           path.join(path.sep, 'src', path.sep),
-          path.join(path.sep, 'build', path.sep)
+          path.join(path.sep, 'build', path.sep),
         )
         .replace(/\.ts$/, '.js');
       try {
@@ -59,10 +59,10 @@ chokidar
         process.stdout.write(
           `${chalk.red('  \u2022 ')}${path.relative(
             PACKAGES_DIR,
-            buildFile
-          )} (deleted)\n`
+            buildFile,
+          )} (deleted)\n`,
         );
-      } catch (e) {}
+      } catch {}
     }
   });
 
@@ -72,7 +72,7 @@ setInterval(() => {
     filesToBuild = new Map();
     try {
       execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
-    } catch (e) {}
+    } catch {}
   }
 }, 100);
 

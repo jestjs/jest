@@ -5,13 +5,7 @@
  */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Text,
-  TextInput,
-} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TextInput} from 'react-native';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
 
@@ -30,14 +24,6 @@ it('renders the ActivityIndicator component', () => {
   expect(tree).toMatchSnapshot();
 });
 
-it('renders the Image component', done => {
-  Image.getSize('path.jpg', (width, height) => {
-    const tree = renderer.create(<Image style={{height, width}} />).toJSON();
-    expect(tree).toMatchSnapshot();
-    done();
-  });
-});
-
 it('renders the TextInput component', () => {
   const tree = renderer
     .create(<TextInput autoCorrect={false} value="apple banana kiwi" />)
@@ -52,7 +38,7 @@ it('renders the FlatList component', () => {
         data={['apple', 'banana', 'kiwi']}
         keyExtractor={item => item}
         renderItem={({item}) => <Text>{item}</Text>}
-      />
+      />,
     )
     .toJSON();
   expect(tree).toMatchSnapshot();

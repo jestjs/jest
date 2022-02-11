@@ -13,7 +13,7 @@ import type {
   WatchPlugin,
 } from './types';
 
-class BaseWatchPlugin implements WatchPlugin {
+abstract class BaseWatchPlugin implements WatchPlugin {
   protected _stdin: NodeJS.ReadStream;
   protected _stdout: NodeJS.WriteStream;
 
@@ -28,13 +28,13 @@ class BaseWatchPlugin implements WatchPlugin {
     this._stdout = stdout;
   }
 
-  apply(_hooks: JestHookSubscriber) {}
+  apply(_hooks: JestHookSubscriber): void {}
 
   getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
     return null;
   }
 
-  onKey(_key: string) {}
+  onKey(_key: string): void {}
 
   run(
     _globalConfig: Config.GlobalConfig,

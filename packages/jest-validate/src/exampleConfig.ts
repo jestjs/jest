@@ -12,12 +12,12 @@ const config: ValidationOptions = {
   condition: () => true,
   deprecate: () => false,
   deprecatedConfig: {
-    key: () => {},
+    key: (): string => 'Deprecation message',
   },
   error: () => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
-  recursiveBlacklist: [],
+  recursiveDenylist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',

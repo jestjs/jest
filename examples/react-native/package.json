@@ -7,15 +7,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react": "17.0.2",
+    "react-native": "0.67.2"
   },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
     "babel-jest": "*",
     "jest": "*",
-    "metro-react-native-babel-preset": "*",
-    "react-test-renderer": "16.9.0"
+    "metro-react-native-babel-preset": "0.66.2",
+    "react-test-renderer": "17.0.2"
   }
 }

@@ -5,14 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {skipSuiteOnWindows} from '@jest/test-utils';
-import runJest from '../runJest';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
-
-skipSuiteOnWindows();
+import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'show-config-test');
 
@@ -21,7 +17,7 @@ afterEach(() => cleanup(DIR));
 
 test('--showConfig outputs config info and exits', () => {
   writeFiles(DIR, {
-    '__tests__/test.test.js': `test('test', () => {});`,
+    '__tests__/test.test.js': "test('test', () => {});",
     'package.json': JSON.stringify({jest: {environment: 'node'}}),
   });
 
@@ -33,6 +29,9 @@ test('--showConfig outputs config info and exits', () => {
   ]);
 
   stdout = stdout
+    .replace(/\\\\node_modules\\\\/g, 'node_modules')
+    .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
+    .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
     .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
     .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
@@ -40,5 +39,5 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
     .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
+import type {ScrollOptions} from '../types';
 
 export default class Prompt {
   private _entering: boolean;
@@ -88,6 +88,12 @@ export default class Prompt {
         break;
       case KEYS.ARROW_LEFT:
       case KEYS.ARROW_RIGHT:
+        break;
+      case KEYS.CONTROL_U:
+        this._value = '';
+        this._offset = -1;
+        this._selection = null;
+        this._onChange();
         break;
       default:
         this._value =

@@ -19,6 +19,19 @@ test('validates yargs special options', () => {
   expect(validateCLIOptions(argv, options)).toBe(true);
 });
 
+test('validates testURL', () => {
+  const options = {
+    testURL: {
+      description: 'This option sets the URL for the jsdom environment.',
+      type: 'string',
+    },
+  };
+  const argv = {
+    testURL: 'http://localhost',
+  };
+  expect(validateCLIOptions(argv, options)).toBe(true);
+});
+
 test('fails for unknown option', () => {
   const options = ['$0', '_', 'help', 'h'];
   const argv = {
@@ -36,6 +49,28 @@ test('fails for multiple unknown options', () => {
     $0: true,
     jest: 'cool',
     test: 'unknown',
+  };
+  expect(() =>
+    validateCLIOptions(argv, options),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('does not show suggestion when unrecognized cli param length <= 1', () => {
+  const options = ['$0', '_', 'help', 'h'];
+  const argv = {
+    $0: true,
+    l: true,
+  };
+  expect(() =>
+    validateCLIOptions(argv, options),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('shows suggestion when unrecognized cli param length > 1', () => {
+  const options = ['$0', '_', 'help', 'h'];
+  const argv = {
+    $0: true,
+    hell: true,
   };
   expect(() =>
     validateCLIOptions(argv, options),

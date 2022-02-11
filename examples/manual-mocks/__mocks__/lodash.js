@@ -1,6 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-const lodash = jest.genMockFromModule('lodash');
+const lodash = jest.createMockFromModule('lodash');
 
 lodash.head = arr => 5;
 

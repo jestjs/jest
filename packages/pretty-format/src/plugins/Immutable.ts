@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, NewPlugin, Printer, Refs} from '../types';
 import {printIteratorEntries, printIteratorValues} from '../collections';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js
 const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';

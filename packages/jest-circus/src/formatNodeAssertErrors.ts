@@ -6,6 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
+import chalk = require('chalk');
 import type {Circus} from '@jest/types';
 import {
   DiffOptions,
@@ -13,8 +14,7 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
+import {format as prettyFormat} from 'pretty-format';
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;
@@ -38,9 +38,12 @@ const humanReadableOperators: Record<string, string> = {
   strictEqual: 'to strictly be equal',
 };
 
-const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
+const formatNodeAssertErrors = (
+  event: Circus.Event,
+  state: Circus.State,
+): void => {
   if (event.name === 'test_done') {
-    event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
+    event.test.errors = event.test.errors.map(errors => {
       let error;
       if (Array.isArray(errors)) {
         const [originalError, asyncError] = errors;
@@ -141,8 +144,8 @@ function assertionErrorMessage(
   if (operatorName === 'doesNotThrow') {
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function not to throw an error.\n`) +
-      chalk.reset(`Instead, it threw:\n`) +
+      chalk.reset('Expected the function not to throw an error.\n') +
+      chalk.reset('Instead, it threw:\n') +
       `  ${printReceived(actual)}` +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
@@ -152,8 +155,8 @@ function assertionErrorMessage(
   if (operatorName === 'throws') {
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
-      chalk.reset(`Expected the function to throw an error.\n`) +
-      chalk.reset(`But it didn't throw anything.`) +
+      chalk.reset('Expected the function to throw an error.\n') +
+      chalk.reset("But it didn't throw anything.") +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
     );
@@ -171,7 +174,7 @@ function assertionErrorMessage(
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
-    chalk.reset(`Received:\n`) +
+    chalk.reset('Received:\n') +
     `  ${printReceived(actual)}` +
     chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +

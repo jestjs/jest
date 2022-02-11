@@ -9,8 +9,8 @@
 
 const fs = require('fs');
 const os = require('os');
+const JSDOMEnvironment = require('jest-environment-jsdom').default;
 const {createDirectory} = require('jest-util');
-const JSDOMEnvironment = require('jest-environment-jsdom');
 
 const DIR = os.tmpdir() + '/jest-test-environment';
 
@@ -34,8 +34,8 @@ class TestEnvironment extends JSDOMEnvironment {
     });
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 }
 

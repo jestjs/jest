@@ -5,36 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// @ts-ignore ignore vendor file
+import {formatTime} from 'jest-util';
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
-type Global = NodeJS.Global;
-
 export type Options = {
-  clearTimeout: Global['clearTimeout'];
+  clearTimeout: typeof globalThis['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: Global['setTimeout'];
-  userContext: any;
+  setTimeout: typeof globalThis['setTimeout'];
+  userContext: unknown;
 };
 
+export interface DoneFn {
+  (error?: any): void;
+  fail: (error: Error) => void;
+}
+
 export type QueueableFn = {
-  fn: (done: (error?: any) => void) => void;
+  fn: (done: DoneFn) => void;
   timeout?: () => number;
   initError?: Error;
 };
 
-// har to type :(
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function queueRunner(options: Options) {
-  const token = new PCancelable((onCancel: Function, resolve: Function) => {
+type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
+
+export default function queueRunner(options: Options): PromiseLike<void> & {
+  cancel: () => void;
+  catch: (onRejected?: PromiseCallback) => Promise<void>;
+} {
+  const token = new PCancelable<void>((onCancel, resolve) => {
     onCancel(resolve);
   });
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
-    let promise = new Promise(resolve => {
+    let promise = new Promise<void>(resolve => {
       const next = function (...args: [Error]) {
         const err = args[0];
         if (err) {
@@ -49,13 +55,13 @@ export default function queueRunner(options: Options) {
       };
       try {
         fn.call(options.userContext, next);
-      } catch (e) {
+      } catch (e: any) {
         options.onException(e);
         resolve();
       }
     });
 
-    promise = Promise.race([promise, token]);
+    promise = Promise.race<void>([promise, token]);
 
     if (!timeout) {
       return promise;
@@ -71,8 +77,8 @@ export default function queueRunner(options: Options) {
       () => {
         initError.message =
           'Timeout - Async callback was not invoked within the ' +
-          timeoutMs +
-          'ms timeout specified by jest.setTimeout.';
+          formatTime(timeoutMs) +
+          ' timeout specified by jest.setTimeout.';
         initError.stack = initError.message + initError.stack;
         options.onException(initError);
       },

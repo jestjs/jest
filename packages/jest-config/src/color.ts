@@ -6,9 +6,11 @@
  */
 
 import {createHash} from 'crypto';
-import chalk = require('chalk');
+import type {ForegroundColor} from 'chalk';
 
-const colors: Array<keyof typeof chalk> = [
+type Color = typeof ForegroundColor;
+
+const colors: Array<Color> = [
   'red',
   'green',
   'yellow',
@@ -18,7 +20,7 @@ const colors: Array<keyof typeof chalk> = [
   'white',
 ];
 
-export const getDisplayNameColor = (seed?: string): typeof colors[number] => {
+export const getDisplayNameColor = (seed?: string): Color => {
   if (seed === undefined) {
     return 'white';
   }

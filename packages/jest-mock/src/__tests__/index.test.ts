@@ -6,13 +6,15 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+
 import vm, {Context} from 'vm';
-import {ModuleMocker} from '../';
+import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
   let mockContext: Context;
-  let mockGlobals: NodeJS.Global;
+  let mockGlobals: typeof globalThis;
 
   beforeEach(() => {
     mockContext = vm.createContext();
@@ -757,7 +759,7 @@ describe('moduleMocker', () => {
       ]);
     });
 
-    it(`a call that throws undefined is tracked properly`, () => {
+    it('a call that throws undefined is tracked properly', () => {
       const fn = moduleMocker.fn(() => {
         // eslint-disable-next-line no-throw-literal
         throw undefined;
@@ -765,7 +767,7 @@ describe('moduleMocker', () => {
 
       try {
         fn(2, 4);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -1062,6 +1064,32 @@ describe('moduleMocker', () => {
     expect(fn.getMockName()).toBe('myMockFn');
   });
 
+  test('jest.fn should provide the correct lastCall', () => {
+    const mock = jest.fn();
+
+    expect(mock.mock).not.toHaveProperty('lastCall');
+
+    mock('first');
+    mock('second');
+    mock('last', 'call');
+
+    expect(mock).toHaveBeenLastCalledWith('last', 'call');
+    expect(mock.mock.lastCall).toEqual(['last', 'call']);
+  });
+
+  test('lastCall gets reset by mockReset', () => {
+    const mock = jest.fn();
+
+    mock('first');
+    mock('last', 'call');
+
+    expect(mock.mock.lastCall).toEqual(['last', 'call']);
+
+    mock.mockReset();
+
+    expect(mock.mock).not.toHaveProperty('lastCall');
+  });
+
   test('mockName gets reset by mockReset', () => {
     const fn = jest.fn();
     expect(fn.getMockName()).toBe('jest.fn()');
@@ -1173,6 +1201,58 @@ describe('moduleMocker', () => {
       expect(methodTwoCalls).toBe(2);
       expect(spy1.mock.calls.length).toBe(1);
       expect(spy2.mock.calls.length).toBe(1);
+    });
+
+    it('should work with getters', () => {
+      let isOriginalCalled = false;
+      let originalCallThis;
+      let originalCallArguments;
+      const obj = {
+        get method() {
+          return function () {
+            isOriginalCalled = true;
+            originalCallThis = this;
+            originalCallArguments = arguments;
+          };
+        },
+      };
+
+      const spy = moduleMocker.spyOn(obj, 'method');
+
+      const thisArg = {this: true};
+      const firstArg = {first: true};
+      const secondArg = {second: true};
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).toHaveBeenCalled();
+
+      isOriginalCalled = false;
+      originalCallThis = null;
+      originalCallArguments = null;
+      spy.mockRestore();
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should work with object of null prototype', () => {
+      const Foo = Object.assign(Object.create(null), {
+        foo() {},
+      });
+
+      const spy = moduleMocker.spyOn(Foo, 'foo');
+
+      Foo.foo();
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -1396,4 +1476,18 @@ describe('moduleMocker', () => {
       expect(spy2.mock.calls.length).toBe(1);
     });
   });
+});
+
+describe('mocked', () => {
+  it('should return unmodified input', () => {
+    const subject = {};
+    expect(mocked(subject)).toBe(subject);
+  });
+});
+
+test('`fn` and `spyOn` do not throw', () => {
+  expect(() => {
+    fn();
+    spyOn({apple: () => {}}, 'apple');
+  }).not.toThrow();
 });

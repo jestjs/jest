@@ -8,25 +8,25 @@
 
 export async function toHaveLengthAsync(
   received: any,
-  lengthPromise: Promise<number>
+  lengthPromise: Promise<number>,
 ) {
   const length = await lengthPromise;
 
   const pass = received.length === length;
   const message = pass
     ? () =>
-        `Expected value to not have length:\n` +
+        'Expected value to not have length:\n' +
         `  ${length}\n` +
-        `Received:\n` +
+        'Received:\n' +
         `  ${received}\n` +
-        `received.length:\n` +
+        'received.length:\n' +
         `  ${received.length}`
     : () =>
-        `Expected value to have length:\n` +
+        'Expected value to have length:\n' +
         `  ${length}\n` +
-        `Received:\n` +
+        'Received:\n' +
         `  ${received}\n` +
-        `received.length:\n` +
+        'received.length:\n' +
         `  ${received.length}`;
 
   return {message, pass};

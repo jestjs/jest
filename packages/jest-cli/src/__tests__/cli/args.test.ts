@@ -8,8 +8,8 @@
 
 import type {Config} from '@jest/types';
 import {constants} from 'jest-config';
-import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
+import {check} from '../../cli/args';
 
 describe('check', () => {
   it('returns true if the arguments are valid', () => {
@@ -31,6 +31,13 @@ describe('check', () => {
     );
   });
 
+  it('raises an exception if onlyFailures and watchAll are both specified', () => {
+    const argv = {onlyFailures: true, watchAll: true} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'Both --onlyFailures and --watchAll were specified',
+    );
+  });
+
   it('raises an exception when lastCommit and watchAll are both specified', () => {
     const argv = {lastCommit: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
@@ -49,14 +56,14 @@ describe('check', () => {
   });
 
   it('raises an exception if maxWorkers is specified with no number', () => {
-    const argv = ({maxWorkers: undefined} as unknown) as Config.Argv;
+    const argv = {maxWorkers: undefined} as unknown as Config.Argv;
     expect(() => check(argv)).toThrow(
       'The --maxWorkers (-w) option requires a number or string to be specified',
     );
   });
 
   it('allows maxWorkers to be a %', () => {
-    const argv = ({maxWorkers: '50%'} as unknown) as Config.Argv;
+    const argv = {maxWorkers: '50%'} as unknown as Config.Argv;
     expect(() => check(argv)).not.toThrow();
   });
 
@@ -72,16 +79,23 @@ describe('check', () => {
     },
   );
 
+  it('raises an exception if selectProjects is not provided any project names', () => {
+    const argv: Config.Argv = {selectProjects: []} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'The --selectProjects option requires the name of at least one project to be specified.\n',
+    );
+  });
+
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .mjs, .cjs, .json',
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json',
     );
   });
 
   it('raises an exception if config is not a supported file type', () => {
     const message =
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .mjs, .cjs, .json';
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json';
 
     expect(() => check({config: 'jest.configjs'} as Config.Argv)).toThrow(
       message,
@@ -93,13 +107,13 @@ describe('check', () => {
 });
 
 describe('buildArgv', () => {
-  it('should return only camelcased args ', () => {
-    // @ts-ignore
+  it('should return only camelcased args ', async () => {
     const mockProcessArgv = jest
+      // @ts-expect-error
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
-    // @ts-ignore
-    const actual = buildArgv(null);
+
+    const actual = await buildArgv();
     expect(actual).not.toHaveProperty('clear-mocks');
     expect(actual).toHaveProperty('clearMocks', true);
     mockProcessArgv.mockRestore();

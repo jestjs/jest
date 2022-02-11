@@ -9,13 +9,14 @@ import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
+  OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -55,6 +56,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _request: ChildMessage | null;
   private _retries!: number;
   private _onProcessEnd!: OnEnd;
+  private _onCustomMessage!: OnCustomMessage;
 
   private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
@@ -87,7 +89,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         ...process.env,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         ...forceColor,
-      } as NodeJS.ProcessEnv,
+      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       silent: true,
@@ -132,7 +134,9 @@ export default class ChildProcessWorker implements WorkerInterface {
     // coming from the child. This avoids code duplication related with cleaning
     // the queue, and scheduling the next call.
     if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
+      const error = new Error(
+        `Jest worker encountered ${this._retries} child process exceptions, exceeding retry limit`,
+      );
 
       this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
@@ -155,7 +159,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onMessage(response: ParentMessage) {
-    let error;
+    // TODO: Add appropriate type check
+    let error: any;
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
@@ -167,7 +172,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
         if (error != null && typeof error === 'object') {
           const extra = error;
-          // @ts-ignore: no index
+          // @ts-expect-error: no index
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
@@ -176,7 +181,6 @@ export default class ChildProcessWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-ignore: adding custom properties to errors.
             error[key] = extra[key];
           }
         }
@@ -187,21 +191,23 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-ignore: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 
         this._onProcessEnd(error, null);
         break;
-
+      case PARENT_MESSAGE_CUSTOM:
+        this._onCustomMessage(response[1]);
+        break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }
 
-  private _onExit(exitCode: number) {
+  private _onExit(exitCode: number | null) {
     if (
       exitCode !== 0 &&
+      exitCode !== null &&
       exitCode !== SIGTERM_EXIT_CODE &&
       exitCode !== SIGKILL_EXIT_CODE
     ) {
@@ -219,6 +225,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     request: ChildMessage,
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
+    onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
@@ -228,9 +235,11 @@ export default class ChildProcessWorker implements WorkerInterface {
       return onProcessEnd(...args);
     };
 
+    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
+
     this._request = request;
     this._retries = 0;
-    this._child.send(request);
+    this._child.send(request, () => {});
   }
 
   waitForExit(): Promise<void> {

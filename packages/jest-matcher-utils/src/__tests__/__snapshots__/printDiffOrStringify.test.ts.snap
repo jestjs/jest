@@ -198,3 +198,16 @@ exports[`printDiffOrStringify has no common after clean up chaff one-line 1`] = 
 Expected: <g>"delete"</>
 Received: <r>"insert"</>
 `;
+
+exports[`printDiffOrStringify object contain readonly symbol key object 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "b": 2,</>
+<r>+   "b": 1,</>
+<d>    Symbol(key): Object {</>
+<d>      "a": 1,</>
+<d>    },</>
+<d>  }</>
+`;

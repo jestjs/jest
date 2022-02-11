@@ -32,8 +32,11 @@ type ThemeReceived = {
   value?: string;
 };
 
+export type CompareKeys = ((a: string, b: string) => number) | undefined;
+
 export type Options = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   escapeRegex: boolean;
   escapeString: boolean;
   highlight: boolean;
@@ -41,12 +44,14 @@ export type Options = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   theme: Theme;
 };
 
-export type OptionsReceived = {
+export interface PrettyFormatOptions {
   callToJSON?: boolean;
+  compareKeys?: CompareKeys;
   escapeRegex?: boolean;
   escapeString?: boolean;
   highlight?: boolean;
@@ -54,12 +59,16 @@ export type OptionsReceived = {
   maxDepth?: number;
   min?: boolean;
   plugins?: Plugins;
+  printBasicPrototype?: boolean;
   printFunctionName?: boolean;
   theme?: ThemeReceived;
-};
+}
+
+export type OptionsReceived = PrettyFormatOptions;
 
 export type Config = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   colors: Colors;
   escapeRegex: boolean;
   escapeString: boolean;
@@ -67,6 +76,7 @@ export type Config = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   spacingInner: string;
   spacingOuter: string;

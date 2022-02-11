@@ -6,17 +6,17 @@
  */
 
 import * as path from 'path';
+import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
-import {run} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
 beforeEach(() => {
-  run('yarn', DIR);
+  runYarnInstall(DIR);
 });
 
-it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
+it('successfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage']);
   expect(json.success).toBe(true);
-  expect(json.numTotalTestSuites).toBe(3);
+  expect(json.numTotalTestSuites).toBe(4);
 });

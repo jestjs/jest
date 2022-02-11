@@ -6,16 +6,15 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {AggregatedResult} from '@jest/test-result';
-import {clearLine} from 'jest-util';
-import {validateCLIOptions} from 'jest-validate';
-import {deprecationEntries} from 'jest-config';
-import {getVersion, runCLI} from '@jest/core';
 import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
-import {sync as realpath} from 'realpath-native';
+import {getVersion, runCLI} from '@jest/core';
+import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {deprecationEntries} from 'jest-config';
+import {clearLine, tryRealpath} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import init from '../init';
 import * as args from './args';
 
@@ -24,7 +23,7 @@ export async function run(
   project?: Config.Path,
 ): Promise<void> {
   try {
-    const argv: Config.Argv = buildArgv(maybeArgv);
+    const argv = await buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -35,10 +34,10 @@ export async function run(
 
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
-  } catch (error) {
+  } catch (error: any) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    if (error.stack) {
+    if (error?.stack) {
       console.error(chalk.red(error.stack));
     } else {
       console.error(chalk.red(error));
@@ -49,14 +48,15 @@ export async function run(
   }
 }
 
-export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
+export async function buildArgv(
+  maybeArgv?: Array<string>,
+): Promise<Config.Argv> {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Config.Argv | Array<string> =
-    maybeArgv || process.argv.slice(2);
-  const argv: Config.Argv = yargs(rawArgv)
+  const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
+  const argv: Config.Argv = await yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -83,7 +83,7 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
     },
     {$0: argv.$0, _: argv._},
   );
-};
+}
 
 const getProjectListFromCLIArgs = (
   argv: Config.Argv,
@@ -97,8 +97,8 @@ const getProjectListFromCLIArgs = (
 
   if (!projects.length && process.platform === 'win32') {
     try {
-      projects.push(realpath(process.cwd()));
-    } catch (err) {
+      projects.push(tryRealpath(process.cwd()));
+    } catch {
       // do nothing, just catch error
       // process.binding('fs').realpath can throw, e.g. on mapped drives
     }

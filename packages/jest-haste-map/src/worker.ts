@@ -8,10 +8,10 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
+import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -60,10 +60,10 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
         id = fileData.name;
         module = [relativeFilePath, H.PACKAGE];
       }
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
     }
-  } else if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+  } else if (!blacklist.has(filePath.substring(filePath.lastIndexOf('.')))) {
     // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);

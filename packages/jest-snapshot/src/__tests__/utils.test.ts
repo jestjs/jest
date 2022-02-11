@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as fs from 'fs';
-import * as path from 'path';
 import assert = require('assert');
+import * as path from 'path';
 import chalk = require('chalk');
-
+import * as fs from 'graceful-fs';
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
@@ -81,9 +80,9 @@ test('getSnapshotData() throws when no snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     chalk.red(
       `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
-        `Jest 19 introduced versioned snapshots to ensure all developers on ` +
-        `a project are using the same version of Jest. ` +
-        `Please update all snapshots during this upgrade of Jest.\n\n`,
+        'Jest 19 introduced versioned snapshots to ensure all developers on ' +
+        'a project are using the same version of Jest. ' +
+        'Please update all snapshots during this upgrade of Jest.\n\n',
     ) + SNAPSHOT_VERSION_WARNING,
   );
 });
@@ -100,13 +99,13 @@ test('getSnapshotData() throws for older snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     chalk.red(
       `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
-        `file associated with this test is outdated. The snapshot file ` +
-        `version ensures that all developers on a project are using ` +
-        `the same version of Jest. ` +
-        `Please update all snapshots during this upgrade of Jest.\n\n`,
+        'file associated with this test is outdated. The snapshot file ' +
+        'version ensures that all developers on a project are using ' +
+        'the same version of Jest. ' +
+        'Please update all snapshots during this upgrade of Jest.\n\n',
     ) +
       `Expected: v${SNAPSHOT_VERSION}\n` +
-      `Received: v0.99\n\n` +
+      'Received: v0.99\n\n' +
       SNAPSHOT_VERSION_WARNING,
   );
 });
@@ -123,14 +122,14 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     chalk.red(
       `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
-        `snapshot file indicates that this project is meant to be used ` +
-        `with a newer version of Jest. ` +
-        `The snapshot file version ensures that all developers on a project ` +
-        `are using the same version of Jest. ` +
-        `Please update your version of Jest and re-run the tests.\n\n`,
+        'snapshot file indicates that this project is meant to be used ' +
+        'with a newer version of Jest. ' +
+        'The snapshot file version ensures that all developers on a project ' +
+        'are using the same version of Jest. ' +
+        'Please update your version of Jest and re-run the tests.\n\n',
     ) +
       `Expected: v${SNAPSHOT_VERSION}\n` +
-      `Received: v2`,
+      'Received: v2',
   );
 });
 
@@ -179,8 +178,7 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // @ts-ignore
-  const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
+  const exports = {};
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
   expect(readData).toEqual({key: data});
@@ -418,6 +416,26 @@ describe('DeepMerge with property matchers', () => {
           five: 'five',
         },
       },
+    ],
+
+    [
+      'an array of objects',
+      // Target
+      [{name: 'one'}, {name: 'two'}, {name: 'three'}],
+      // Matchers
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+      // Expected
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+    ],
+
+    [
+      'an array of arrays',
+      // Target
+      [['one'], ['two'], ['three']],
+      // Matchers
+      [['one'], [matcher], [matcher]],
+      // Expected
+      [['one'], [matcher], [matcher]],
     ],
   ];
   /* eslint-enable sort-keys */

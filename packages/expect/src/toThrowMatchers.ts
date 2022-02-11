@@ -6,7 +6,9 @@
  *
  */
 
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+/* eslint-disable local/ban-types-eventually */
+
+import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
   MatcherHintOptions,
@@ -18,6 +20,7 @@ import {
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
@@ -33,7 +36,6 @@ import type {
   RawMatcherFn,
   SyncExpectationResult,
 } from './types';
-import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
 
@@ -76,7 +78,6 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   function (
     this: MatcherState,
     received: Function,

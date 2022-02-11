@@ -35,7 +35,7 @@ it.skip.each`
   'Should not be ran: fails all rows expected $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );
 
 describe.skip.each([

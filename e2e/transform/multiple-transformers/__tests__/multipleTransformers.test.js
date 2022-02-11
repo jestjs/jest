@@ -7,7 +7,6 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-
 import App from '../src/App';
 
 it('generates a snapshot with correctly transformed dependencies', () => {

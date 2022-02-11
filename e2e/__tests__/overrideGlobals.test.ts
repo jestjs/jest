@@ -13,7 +13,7 @@ test('overriding native promise does not freeze Jest', () => {
 });
 
 test('has a duration even if time is faked', () => {
-  const regex = /works well \((\d+)ms\)/;
+  const regex = /works well \((\d+) ms\)/;
   const {stderr} = runJest('override-globals', ['--verbose']);
 
   expect(stderr).toMatch(regex);

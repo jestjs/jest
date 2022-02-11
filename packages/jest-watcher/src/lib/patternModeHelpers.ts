@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
+import chalk = require('chalk');
 import stringLength = require('string-length');
 
 export const printPatternCaret = (

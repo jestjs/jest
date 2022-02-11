@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {FormattedTestResults} from '@jest/test-result';
 import runJest from '../runJest';
 
@@ -30,7 +30,7 @@ describe('JSON Reporter', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
@@ -71,7 +71,7 @@ describe('JSON Reporter', () => {
 
     try {
       jsonResult = JSON.parse(result.stdout);
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(
         "Can't parse the JSON result from stdout" + err.toString(),
       );

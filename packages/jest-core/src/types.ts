@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context} from 'jest-runtime';
-import type {Test} from 'jest-runner';
+import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
+import type {Context} from 'jest-runtime';
 
 export type Stats = {
   roots: number;
@@ -41,8 +41,6 @@ export type FilterResult = {
   message: string;
 };
 
-export type Filter = (
-  testPaths: Array<string>,
-) => Promise<{
+export type Filter = (testPaths: Array<string>) => Promise<{
   filtered: Array<FilterResult>;
 }>;

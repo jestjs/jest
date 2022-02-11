@@ -5,23 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import type {Config} from '@jest/types';
-
-// eslint-disable-next-line import/named
-import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import makeDir = require('make-dir');
-import rimraf = require('rimraf');
 import dedent = require('dedent');
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
+import rimraf = require('rimraf');
+import type {PackageJson} from 'type-fest';
+import which = require('which');
+import type {Config} from '@jest/types';
 
 interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
 }
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+export const run = (
+  cmd: string,
+  cwd?: Config.Path,
+  env?: Record<string, string>,
+): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, preferLocal: false, reject: false};
+  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
@@ -41,24 +44,40 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   return result;
 };
 
+export const runYarnInstall = (
+  cwd: Config.Path,
+  env?: Record<string, string>,
+) => {
+  const lockfilePath = path.resolve(cwd, 'yarn.lock');
+  let exists = true;
+
+  // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
+  if (!fs.existsSync(lockfilePath)) {
+    exists = false;
+    fs.writeFileSync(lockfilePath, '');
+  }
+
+  return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
+};
+
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  makeDir.sync(destination);
+  fs.mkdirSync(destination, {recursive: true});
   rimraf.sync(destination);
-  fs.symlinkSync(packagePath, destination, 'dir');
+  fs.symlinkSync(packagePath, destination, 'junction');
 };
 
-export const makeTemplate = (
-  str: string,
-): ((values?: Array<any>) => string) => (values?: Array<any>) =>
-  str.replace(/\$(\d+)/g, (_match, number) => {
-    if (!Array.isArray(values)) {
-      throw new Error('Array of values must be passed to the template.');
-    }
-    return values[number - 1];
-  });
+export const makeTemplate =
+  (str: string): ((values?: Array<unknown>) => string) =>
+  (values = []) =>
+    str.replace(/\$(\d+)/g, (_match, number) => {
+      if (!Array.isArray(values)) {
+        throw new Error('Array of values must be passed to the template.');
+      }
+      return values[number - 1];
+    });
 
 export const cleanup = (directory: string) => rimraf.sync(directory);
 
@@ -76,12 +95,12 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -94,17 +113,18 @@ export const writeSymlinks = (
   directory: string,
   symlinks: {[existingFile: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(symlinks).forEach(fileOrPath => {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.symlinkSync(
       path.resolve(directory, ...fileOrPath.split('/')),
       path.resolve(directory, ...symLinkPath.split('/')),
+      'junction',
     );
   });
 };
@@ -140,7 +160,7 @@ export const copyDir = (src: string, dest: string) => {
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
@@ -149,25 +169,30 @@ export const sortLines = (output: string) =>
     .split('\n')
     .sort()
     .map(str => str.trim())
-    .filter(Boolean)
     .join('\n');
+
+interface JestPackageJson extends PackageJson {
+  jest: Config.InitialOptions;
+}
+
+const DEFAULT_PACKAGE_JSON: JestPackageJson = {
+  jest: {
+    testEnvironment: 'node',
+  },
+};
 
 export const createEmptyPackage = (
   directory: Config.Path,
-  packageJson?: {[keys: string]: any},
+  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
-  const DEFAULT_PACKAGE_JSON = {
+  const packageJsonWithDefaults = {
+    ...packageJson,
     description: 'THIS IS AN AUTOGENERATED FILE AND SHOULD NOT BE ADDED TO GIT',
-    jest: {
-      testEnvironment: 'node',
-    },
   };
-
-  makeDir.sync(directory);
-  packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
+  fs.mkdirSync(directory, {recursive: true});
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
-    JSON.stringify(packageJson, null, 2),
+    JSON.stringify(packageJsonWithDefaults, null, 2),
   );
 };
 
@@ -192,7 +217,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
+    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),
@@ -203,21 +228,20 @@ export const extractSummary = (stdout: string) => {
 const sortTests = (stdout: string) =>
   stdout
     .split('\n')
-    .reduce((tests: Array<Array<string>>, line) => {
+    .reduce<Array<Array<string>>>((tests, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
-        tests.push([line.trimRight()]);
-      } else if (line) {
-        tests[tests.length - 1].push(line.trimRight());
+        tests.push([line]);
+      } else {
+        tests[tests.length - 1].push(line);
       }
       return tests;
     }, [])
     .sort(([a], [b]) => (a > b ? 1 : -1))
-    .reduce(
-      (array, lines = []) =>
-        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
-      [],
+    .map(strings =>
+      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
     )
-    .join('\n');
+    .join('\n')
+    .trim();
 
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
@@ -230,7 +254,8 @@ export const extractSortedSummary = (stdout: string) => {
 export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
-  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+  const regex =
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];
@@ -259,4 +284,20 @@ export const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
+};
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+let hgIsInstalled: boolean | null = null;
+
+export const testIfHg = (...args: Parameters<typeof test>) => {
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Mercurial (hg) is not installed - skipping some tests');
+    test.skip(...args);
+  }
 };

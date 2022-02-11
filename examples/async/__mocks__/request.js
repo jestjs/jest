@@ -15,7 +15,7 @@ export default function request(url) {
         ? resolve(users[userID])
         : reject({
             error: 'User with ' + userID + ' not found.',
-          })
+          }),
     );
   });
 }
