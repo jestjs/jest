@@ -364,7 +364,7 @@ const makeThrowingMatcher = (
 
 expect.extend = <T extends MatcherState = MatcherState>(
   matchers: MatchersObject<T>,
-): void => setMatchers(matchers, false, expect);
+) => setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
