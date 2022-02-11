@@ -7,7 +7,7 @@
 
 import type {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
-import type {Expect} from 'expect';
+import type {Expect, RawMatcherFn} from 'expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -24,25 +24,6 @@ export type SpecDefinitionsFn = () => void;
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
-
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: unknown,
-  actual: unknown,
-  options?: unknown,
-) => ExpectationResult;
-// -------END-------
 
 export type RunDetails = {
   totalSpecsDefined?: number;
