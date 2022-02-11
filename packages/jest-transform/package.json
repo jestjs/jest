@@ -31,7 +31,7 @@
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
     "source-map": "^0.6.1",
-    "write-file-atomic": "^4.0.0"
+    "write-file-atomic": "^4.0.1"
   },
   "devDependencies": {
     "@jest/test-utils": "^28.0.0-alpha.0",
@@ -40,7 +40,7 @@
     "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.1",
-    "@types/write-file-atomic": "^3.0.0",
+    "@types/write-file-atomic": "^4.0.0",
     "dedent": "^0.7.0"
   },
   "engines": {
