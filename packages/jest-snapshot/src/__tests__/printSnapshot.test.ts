@@ -8,7 +8,7 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
-import format from 'pretty-format';
+import format, {NewPlugin} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -20,6 +20,7 @@ import {
   bForeground3,
 } from '../colors';
 import {
+  addSerializer,
   toMatchInlineSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
@@ -137,8 +138,8 @@ expect.addSnapshotSerializer({
   },
 });
 
-let customSerializer: format.NewPlugin | null = null;
-jestSnapshot.addSerializer({
+let customSerializer: NewPlugin | null = null;
+addSerializer({
   serialize(...args) {
     return customSerializer!.serialize(...args);
   },
@@ -1282,17 +1283,18 @@ describe('printSnapshotAndReceived', () => {
 
     test('ignores custom indentation of unchanged line', () => {
       try {
-        const pluginGeneratedContent = `  **some plugin-generated string with custom leading whitespace**\n\n`;
+        const pluginGeneratedContent =
+          '  **some plugin-generated string with custom leading whitespace**\n\n';
         const seen = new WeakSet();
 
-        const plugin: format.NewPlugin = {
-          test: val => typeof val === 'object' && val.props && !seen.has(val),
+        const plugin: NewPlugin = {
           serialize: (val, config, indentation, depth, refs, printer) => {
             seen.add(val);
             const serialized = printer(val, config, indentation, depth, refs);
             seen.delete(val);
             return pluginGeneratedContent + serialized;
           },
+          test: val => typeof val === 'object' && val.props && !seen.has(val),
         };
 
         customSerializer = plugin;
