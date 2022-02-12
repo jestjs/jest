@@ -49,7 +49,13 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
-export type {Expect, MatcherState, Matchers} from './types';
+export type {
+  AsymmetricMatchers,
+  Expect,
+  MatcherState,
+  Matchers,
+  RawMatcherFn,
+} from './types';
 
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
@@ -358,7 +364,7 @@ const makeThrowingMatcher = (
 
 expect.extend = <T extends MatcherState = MatcherState>(
   matchers: MatchersObject<T>,
-): void => setMatchers(matchers, false, expect);
+) => setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;

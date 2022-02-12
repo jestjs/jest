@@ -9896,6 +9896,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"example-expect-extend@workspace:examples/expect-extend":
+  version: 0.0.0-use.local
+  resolution: "example-expect-extend@workspace:examples/expect-extend"
+  dependencies:
+    "@babel/core": "*"
+    "@babel/preset-env": "*"
+    "@babel/preset-typescript": "*"
+    "@jest/globals": "workspace:*"
+    babel-jest: "workspace:*"
+    expect: "workspace:*"
+    jest: "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "example-getting-started@workspace:examples/getting-started":
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
@@ -10105,7 +10119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@^28.0.0-alpha.0, expect@workspace:packages/expect":
+"expect@^28.0.0-alpha.0, expect@workspace:*, expect@workspace:packages/expect":
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:

@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {MatcherState, expect} from 'expect';
+import {type MatcherState, type RawMatcherFn, expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -15,7 +15,7 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {JasmineMatchersObject, RawMatcherFn} from './types';
+import type {JasmineMatchersObject} from './types';
 
 export default function jestExpect(config: {expand: boolean}): void {
   global.expect = expect;

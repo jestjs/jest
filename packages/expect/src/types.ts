@@ -13,7 +13,7 @@ import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;
-  message: () => string;
+  message(): string;
 };
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
@@ -21,7 +21,8 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn<T extends MatcherState = MatcherState> = {
-  (this: T, received: any, expected: any, options?: any): ExpectationResult;
+  (this: T, actual: any, expected: any, options?: any): ExpectationResult;
+  /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
@@ -31,7 +32,7 @@ export type PromiseMatcherFn = (actual: any) => Promise<void>;
 export type MatcherState = {
   assertionCalls: number;
   currentTestName?: string;
-  dontThrow?: () => void;
+  dontThrow?(): void;
   error?: Error;
   equals: EqualsFunction;
   expand?: boolean;
@@ -56,7 +57,7 @@ export interface AsymmetricMatcher {
   toAsymmetricMatcher?(): string;
 }
 export type MatchersObject<T extends MatcherState = MatcherState> = {
-  [id: string]: RawMatcherFn<T>;
+  [name: string]: RawMatcherFn<T>;
 };
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
@@ -73,7 +74,7 @@ export type Expect<State extends MatcherState = MatcherState> = {
   assertions(numberOfAssertions: number): void;
   // TODO: remove this `T extends` - should get from some interface merging
   extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
-  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
+  extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): State;
   hasAssertions(): void;
   setState(state: Partial<State>): void;

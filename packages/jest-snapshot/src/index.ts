@@ -7,6 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import type {RawMatcherFn} from 'expect';
 import type {FS as HasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
@@ -30,7 +31,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, ExpectationResult, MatchSnapshotConfig} from './types';
+import type {Context, MatchSnapshotConfig} from './types';
 import {deepMerge, escapeBacktickString, serialize} from './utils';
 
 export {addSerializer, getSerializers} from './plugins';
@@ -155,12 +156,11 @@ export const cleanup = (
   };
 };
 
-export const toMatchSnapshot = function (
-  this: Context,
+export const toMatchSnapshot: RawMatcherFn<Context> = function (
   received: unknown,
   propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
-): ExpectationResult {
+) {
   const matcherName = 'toMatchSnapshot';
   let properties;
 
@@ -214,12 +214,11 @@ export const toMatchSnapshot = function (
   });
 };
 
-export const toMatchInlineSnapshot = function (
-  this: Context,
+export const toMatchInlineSnapshot: RawMatcherFn<Context> = function (
   received: unknown,
   propertiesOrSnapshot?: object | string,
   inlineSnapshot?: string,
-): ExpectationResult {
+) {
   const matcherName = 'toMatchInlineSnapshot';
   let properties;
 
@@ -408,12 +407,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-export const toThrowErrorMatchingSnapshot = function (
-  this: Context,
+export const toThrowErrorMatchingSnapshot: RawMatcherFn<Context> = function (
   received: unknown,
   hint: string | undefined, // because error TS1016 for hint?: string
   fromPromise: boolean,
-): ExpectationResult {
+) {
   const matcherName = 'toThrowErrorMatchingSnapshot';
 
   // Future breaking change: Snapshot hint must be a string
@@ -431,44 +429,40 @@ export const toThrowErrorMatchingSnapshot = function (
   );
 };
 
-export const toThrowErrorMatchingInlineSnapshot = function (
-  this: Context,
-  received: unknown,
-  inlineSnapshot?: string,
-  fromPromise?: boolean,
-): ExpectationResult {
-  const matcherName = 'toThrowErrorMatchingInlineSnapshot';
+export const toThrowErrorMatchingInlineSnapshot: RawMatcherFn<Context> =
+  function (received: unknown, inlineSnapshot?: string, fromPromise?: boolean) {
+    const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 
-  if (inlineSnapshot !== undefined && typeof inlineSnapshot !== 'string') {
-    const options: MatcherHintOptions = {
-      expectedColor: noColor,
-      isNot: this.isNot,
-      promise: this.promise,
-    };
+    if (inlineSnapshot !== undefined && typeof inlineSnapshot !== 'string') {
+      const options: MatcherHintOptions = {
+        expectedColor: noColor,
+        isNot: this.isNot,
+        promise: this.promise,
+      };
 
-    throw new Error(
-      matcherErrorMessage(
-        matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
-        'Inline snapshot must be a string',
-        printWithType('Inline snapshot', inlineSnapshot, serialize),
-      ),
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
+          'Inline snapshot must be a string',
+          printWithType('Inline snapshot', inlineSnapshot, serialize),
+        ),
+      );
+    }
+
+    return _toThrowErrorMatchingSnapshot(
+      {
+        context: this,
+        inlineSnapshot:
+          inlineSnapshot !== undefined
+            ? stripAddedIndentation(inlineSnapshot)
+            : undefined,
+        isInline: true,
+        matcherName,
+        received,
+      },
+      fromPromise,
     );
-  }
-
-  return _toThrowErrorMatchingSnapshot(
-    {
-      context: this,
-      inlineSnapshot:
-        inlineSnapshot !== undefined
-          ? stripAddedIndentation(inlineSnapshot)
-          : undefined,
-      isInline: true,
-      matcherName,
-      received,
-    },
-    fromPromise,
-  );
-};
+  };
 
 const _toThrowErrorMatchingSnapshot = (
   config: MatchSnapshotConfig,
