@@ -1132,7 +1132,7 @@ export default async function normalize(
   }
 
   newOptions.updateSnapshot =
-    argv.ci && !argv.updateSnapshot
+    (!!argv.ci || DEFAULT_CONFIG.ci) && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
       ? 'all'

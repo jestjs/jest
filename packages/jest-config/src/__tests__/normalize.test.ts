@@ -1844,19 +1844,22 @@ describe('extensionsToTreatAsEsm', () => {
 describe('haste.enableSymlinks', () => {
   it('should throw if watchman is not disabled', async () => {
     await expect(
-      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/'},
+        {} as Config.Argv,
+      ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     await expect(
       normalize(
         {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
-        {},
+        {} as Config.Argv,
       ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     const {options} = await normalize(
       {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.enableSymlinks).toBe(true);
@@ -1868,10 +1871,46 @@ describe('haste.forceNodeFilesystemAPI', () => {
   it('should pass option through', async () => {
     const {options} = await normalize(
       {haste: {forceNodeFilesystemAPI: true}, rootDir: '/root/'},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.forceNodeFilesystemAPI).toBe(true);
     expect(console.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateSnapshot', () => {
+  it('should be all if updateSnapshot is true', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      updateSnapshot: true,
+    } as Config.Argv);
+    expect(options.updateSnapshot).toBe('all');
+  });
+  it('should be new if updateSnapshot is falsy', async () => {
+    {
+      const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+      expect(options.updateSnapshot).toBe('new');
+    }
+    {
+      const {options} = await normalize({rootDir: '/root/'}, {
+        updateSnapshot: false,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('new');
+    }
+  });
+  it('should be none if updateSnapshot is falsy and ci mode is true', async () => {
+    {
+      const {options} = await normalize({rootDir: '/root/'}, {
+        ci: true,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+    }
+    {
+      const defaultCiConfig = Defaults.ci;
+      Defaults.ci = true;
+      const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+      Defaults.ci = defaultCiConfig;
+    }
   });
 });
