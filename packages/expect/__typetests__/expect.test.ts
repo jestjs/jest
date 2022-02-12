@@ -80,6 +80,8 @@ expectType<void>(
   }),
 );
 
+// ExpectationResult
+
 const toBeResult = (received: string): ExpectationResult => {
   if (received === 'result') {
     return {
@@ -102,6 +104,20 @@ expectError(() => {
       return {
         message: () => 'is result',
         pass: true,
+      };
+    }
+  };
+});
+
+expectError(() => {
+  const lacksMessage = (received: string): ExpectationResult => {
+    if (received === 'result') {
+      return {
+        pass: true,
+      };
+    } else {
+      return {
+        pass: false,
       };
     }
   };
