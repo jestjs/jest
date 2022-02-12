@@ -21,7 +21,7 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn<T extends MatcherState = MatcherState> = {
-  (this: T, actual: any, expected: any, options?: any): ExpectationResult;
+  (this: T, actual: any, ...expected: Array<any>): ExpectationResult;
   /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };

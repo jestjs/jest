@@ -6,13 +6,13 @@
  */
 
 import {expect} from '@jest/globals';
-import type {RawMatcherFn} from 'expect';
+import type {ExpectationResult} from 'expect';
 
-const toBeWithinRange: RawMatcherFn = (
+const toBeWithinRange = (
   actual: number,
   floor: number,
   ceiling: number,
-) => {
+): ExpectationResult => {
   const pass = actual >= floor && actual <= ceiling;
   if (pass) {
     return {
