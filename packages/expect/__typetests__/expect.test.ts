@@ -7,7 +7,7 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import {type Matchers, expect} from 'expect';
+import {type ExpectationResult, type Matchers, expect} from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 type M = Matchers<void, unknown>;
@@ -79,3 +79,30 @@ expectType<void>(
     bananas: expect.not.toBeWithinRange(11, 20),
   }),
 );
+
+const toBeResult = (received: string): ExpectationResult => {
+  if (received === 'result') {
+    return {
+      message: () => 'is result',
+      pass: true,
+    };
+  } else {
+    return {
+      message: () => 'is not result',
+      pass: false,
+    };
+  }
+};
+
+expectType<void>(expect.extend({toBeResult}));
+
+expectError(() => {
+  const lacksElseBranch = (received: string): ExpectationResult => {
+    if (received === 'result') {
+      return {
+        message: () => 'is result',
+        pass: true,
+      };
+    }
+  };
+});
