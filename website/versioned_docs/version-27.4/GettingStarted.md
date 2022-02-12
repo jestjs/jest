@@ -147,6 +147,8 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
+### Using TypeScript
+
 ### Using TypeScript via Babel
 
 Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
