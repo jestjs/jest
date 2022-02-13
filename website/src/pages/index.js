@@ -565,11 +565,13 @@ class Index extends React.Component {
               <div className="blockContent">
                 <MarkdownBlock>
                   <Translate>
-                  The Meta Open Source team has put together a short overview of Jest, 
-                  where they explained the project in beginner's terms. 
-                  You can also find other content about [Meta Open Source projects](https://opensource.fb.com/) 
-                  on their [YouTube Channel](https://www.youtube.com/channel/UCCQY962PmHabTjaHv2wJzfQ).
-                  </Translate> 
+                    The Meta Open Source team has put together a short overview
+                    of Jest, where they explained the project in beginner's
+                    terms. You can also find other content about [Meta Open
+                    Source projects](https://opensource.fb.com/) on their
+                    [YouTube
+                    Channel](https://www.youtube.com/channel/UCCQY962PmHabTjaHv2wJzfQ).
+                  </Translate>
                 </MarkdownBlock>
               </div>
             </div>
