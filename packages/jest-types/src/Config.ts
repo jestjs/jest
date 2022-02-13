@@ -289,6 +289,7 @@ export type GlobalConfig = {
   bail: number;
   changedSince?: string;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<Glob>;
   collectCoverageOnlyFrom?: {

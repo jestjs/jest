@@ -4,6 +4,7 @@
 
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-environment-jsdom` by default ([#12354](https://github.com/facebook/jest/pull/12354))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-jasmine2` by default ([#12355](https://github.com/facebook/jest/pull/12355))
+- `[jest-config, @jest/types]` Add `ci` to `GlobalConfig` ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
@@ -16,6 +17,7 @@
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[expect]` Expose `AsymmetricMatchers` and `RawMatcherFn` interfaces ([#12363](https://github.com/facebook/jest/pull/12363))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
+- `[jest-config]` Correctly detect CI environment and update snapshots accordingly ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 
 ### Chore & Maintenance
