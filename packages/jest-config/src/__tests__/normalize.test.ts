@@ -1899,18 +1899,19 @@ describe('updateSnapshot', () => {
     }
   });
   it('should be none if updateSnapshot is falsy and ci mode is true', async () => {
+    const defaultCiConfig = Defaults.ci;
     {
+      Defaults.ci = false;
       const {options} = await normalize({rootDir: '/root/'}, {
         ci: true,
       } as Config.Argv);
       expect(options.updateSnapshot).toBe('none');
     }
     {
-      const defaultCiConfig = Defaults.ci;
       Defaults.ci = true;
       const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
       expect(options.updateSnapshot).toBe('none');
-      Defaults.ci = defaultCiConfig;
     }
+    Defaults.ci = defaultCiConfig;
   });
 });

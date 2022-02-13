@@ -85,6 +85,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "globalConfig": {
     "bail": 0,
     "changedFilesWithAncestor": false,
+    "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
