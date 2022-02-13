@@ -2825,7 +2825,7 @@ __metadata:
     "@types/fast-json-stable-stringify": ^2.0.0
     "@types/graceful-fs": ^4.1.2
     "@types/micromatch": ^4.0.1
-    "@types/write-file-atomic": ^3.0.0
+    "@types/write-file-atomic": ^4.0.0
     babel-plugin-istanbul: ^6.1.1
     chalk: ^4.0.0
     convert-source-map: ^1.4.0
@@ -2839,7 +2839,7 @@ __metadata:
     pirates: ^4.0.4
     slash: ^3.0.0
     source-map: ^0.6.1
-    write-file-atomic: ^4.0.0
+    write-file-atomic: ^4.0.1
   languageName: unknown
   linkType: soft
 
@@ -5394,12 +5394,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/write-file-atomic@npm:^3.0.0":
-  version: 3.0.3
-  resolution: "@types/write-file-atomic@npm:3.0.3"
+"@types/write-file-atomic@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@types/write-file-atomic@npm:4.0.0"
   dependencies:
     "@types/node": "*"
-  checksum: 11dc5f02b219bf35eacf267f48478c086e4d0aa7851ba435d815e4c42472ff0b4e6fd640203bad052ce05e32137a649f9356a2636456c2ba887f96a841b0e20c
+  checksum: 8abd0f24442414cdd6eabe1a1c9c31f4a5d283150f33163b24d8c3bb4affb47de745a1aa0581237a2bc566e847793b4b5d626fada1aba4e2ec8d3c1c61e2c1cd
   languageName: node
   linkType: hard
 
@@ -9896,6 +9896,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"example-expect-extend@workspace:examples/expect-extend":
+  version: 0.0.0-use.local
+  resolution: "example-expect-extend@workspace:examples/expect-extend"
+  dependencies:
+    "@babel/core": "*"
+    "@babel/preset-env": "*"
+    "@babel/preset-typescript": "*"
+    "@jest/globals": "workspace:*"
+    babel-jest: "workspace:*"
+    expect: "workspace:*"
+    jest: "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "example-getting-started@workspace:examples/getting-started":
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
@@ -10105,7 +10119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@^28.0.0-alpha.0, expect@workspace:packages/expect":
+"expect@^28.0.0-alpha.0, expect@workspace:*, expect@workspace:packages/expect":
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
@@ -19687,7 +19701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"signal-exit@npm:^3.0.0, signal-exit@npm:^3.0.2, signal-exit@npm:^3.0.3":
+"signal-exit@npm:^3.0.0, signal-exit@npm:^3.0.2, signal-exit@npm:^3.0.3, signal-exit@npm:^3.0.7":
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
@@ -21219,13 +21233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedarray-to-buffer@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "typedarray-to-buffer@npm:4.0.0"
-  checksum: c1e4dc6597c98de417c3363da88263d92aefd23569a892b2d8a9b9385858b2c7323f6cae010ecb73fa63cae403d20763b8cad9a25a77f5597a9fb3da506ac7df
-  languageName: node
-  linkType: hard
-
 "typedarray@npm:^0.0.6":
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
@@ -22663,15 +22670,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"write-file-atomic@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "write-file-atomic@npm:4.0.0"
+"write-file-atomic@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "write-file-atomic@npm:4.0.1"
   dependencies:
     imurmurhash: ^0.1.4
-    is-typedarray: ^1.0.0
-    signal-exit: ^3.0.2
-    typedarray-to-buffer: ^4.0.0
-  checksum: c3f10342e5808f0c55f876fec5e5a1d1b341e4dd6a2ba83a44068b9ee2063453c12b5b5afab3d028437fea64a4c8f0cf527297429b9a4cb3545c9c026fdf6577
+    signal-exit: ^3.0.7
+  checksum: 8f780232533ca6223c63c9b9c01c4386ca8c625ebe5017a9ed17d037aec19462ae17109e0aa155bff5966ee4ae7a27b67a99f55caf3f32ffd84155e9da3929fc
   languageName: node
   linkType: hard
 
