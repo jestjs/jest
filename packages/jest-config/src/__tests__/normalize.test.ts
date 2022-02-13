@@ -1888,11 +1888,11 @@ describe('updateSnapshot', () => {
   });
   it('should be new if updateSnapshot is falsy', async () => {
     {
-      const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+      const {options} = await normalize({ci: false, rootDir: '/root/'}, {} as Config.Argv);
       expect(options.updateSnapshot).toBe('new');
     }
     {
-      const {options} = await normalize({rootDir: '/root/'}, {
+      const {options} = await normalize({ci: false, rootDir: '/root/'}, {
         updateSnapshot: false,
       } as Config.Argv);
       expect(options.updateSnapshot).toBe('new');
