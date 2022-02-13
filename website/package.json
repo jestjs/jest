@@ -38,7 +38,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-github-btn": "^1.2.0",
-    "react-markdown": "^5.0.3"
+    "react-markdown": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
