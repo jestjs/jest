@@ -14,7 +14,7 @@ A similar approach can be taken when it comes to testing your React components. 
 ```tsx
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
+import Link from '../Link';
 
 it('renders correctly', () => {
   const tree = renderer
