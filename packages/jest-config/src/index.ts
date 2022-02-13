@@ -117,6 +117,7 @@ const groupOptions = (
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
+    ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
