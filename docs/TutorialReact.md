@@ -98,8 +98,8 @@ export default function Link({page, children}) {
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
 ```tsx title="Link.react.test.js"
-import Link from '../Link.react';
 import renderer from 'react-test-renderer';
+import Link from '../Link.react';
 
 it('changes the class when hovered', () => {
   const component = renderer.create(
@@ -262,10 +262,9 @@ Let's rewrite the test from above using Enzyme instead of react-testing-library.
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
 import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 Enzyme.configure({adapter: new Adapter()});
-
-import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document

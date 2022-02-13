@@ -17,6 +17,7 @@ module.exports = {
     node: true,
   },
   extends: [
+    'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
     'plugin:prettier/recommended',
@@ -134,10 +135,12 @@ module.exports = {
 
     // to make it more suitable for running on code examples in docs/ folder
     {
-      files: ['*.md'],
+      files: ['**/*.md/**'],
       rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
         'arrow-body-style': 'off',
         'consistent-return': 'off',
+        'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
@@ -149,7 +152,7 @@ module.exports = {
     },
     // snapshots in examples plus inline snapshots need to keep backtick
     {
-      files: ['*.md', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
+      files: ['**/*.md/**', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
       rules: {
         quotes: [
           'error',
@@ -242,7 +245,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/__typetests__/**', '*.md'],
+      files: ['**/__typetests__/**', '**/*.md/**'],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',
@@ -284,7 +287,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['markdown', 'import', 'jest'],
+  plugins: ['import', 'jest'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
