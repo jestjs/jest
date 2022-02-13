@@ -1116,7 +1116,7 @@ describe('preset', () => {
         {} as Config.Argv,
       ),
     ).rejects.toThrowError(
-      /Unexpected token } in JSON at position 104[\s\S]* at /,
+      /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
     );
   });
 
