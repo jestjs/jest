@@ -7,7 +7,12 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import {type ExpectationResult, type Matchers, expect} from 'expect';
+import {
+  type ExpectationResult,
+  type MatcherState,
+  type Matchers,
+  expect,
+} from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 type M = Matchers<void, unknown>;
@@ -122,3 +127,38 @@ expectError(() => {
     }
   };
 });
+
+// MatcherState
+
+function toHaveContext(
+  this: MatcherState,
+  received: string,
+): ExpectationResult {
+  expectType<number>(this.assertionCalls);
+  expectType<string | undefined>(this.currentTestName);
+  expectType<(() => void) | undefined>(this.dontThrow);
+  expectType<Error | undefined>(this.error);
+  expectType<EqualsFunction>(this.equals);
+  expectType<boolean | undefined>(this.expand);
+  expectType<number | null | undefined>(this.expectedAssertionsNumber);
+  expectType<Error | undefined>(this.expectedAssertionsNumberError);
+  expectType<boolean | undefined>(this.isExpectingAssertions);
+  expectType<Error | undefined>(this.isExpectingAssertionsError);
+  expectType<boolean>(this.isNot);
+  expectType<string>(this.promise);
+  expectType<Array<Error>>(this.suppressedErrors);
+  expectType<string | undefined>(this.testPath);
+  expectType<MatcherUtils>(this.utils);
+
+  if (received === 'result') {
+    return {
+      message: () => 'is result',
+      pass: true,
+    };
+  } else {
+    return {
+      message: () => 'is not result',
+      pass: false,
+    };
+  }
+}
