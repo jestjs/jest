@@ -14,8 +14,7 @@
 ### Fixes
 
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
-- `[expect]` Expose `AsymmetricMatchers` and `RawMatcherFn` interfaces ([#12363](https://github.com/facebook/jest/pull/12363))
-- `[expect]` Expose `ExpectationResult` type instead of `RawMatcherFn` type (partly reverts #12363) ([#12376](https://github.com/facebook/jest/pull/12376))
+- `[expect]` Expose `AsymmetricMatchers` and `ExpectationResult` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 
