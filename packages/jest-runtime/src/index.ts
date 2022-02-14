@@ -553,6 +553,56 @@ export default class Runtime {
       return globals;
     }
 
+    if (specifier.startsWith('data:')) {
+      const fromCache = this._esmoduleRegistry.get(specifier);
+
+      if (fromCache) {
+        return fromCache;
+      }
+
+      const match = specifier.match(
+        /^data:text\/javascript;(charset=utf-8|base64),(.*)$/,
+      );
+
+      if (!match) {
+        throw new Error('Invalid data URI');
+      }
+
+      let code = match[2];
+      if (match[1] === 'base64') {
+        code = atob(code);
+      } else if (match[1] === 'charset=utf-8') {
+        code = decodeURIComponent(code);
+      }
+
+      const module = new SourceTextModule(code, {
+        context,
+        identifier: specifier,
+        importModuleDynamically: async (
+          specifier: string,
+          referencingModule: VMModule,
+        ) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+          );
+          const module = await this.resolveModule(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          );
+
+          return this.linkAndEvaluateModule(module);
+        },
+        initializeImportMeta(meta: ImportMeta) {
+          meta.url = specifier;
+        },
+      });
+
+      this._esmoduleRegistry.set(specifier, module);
+      return module;
+    }
+
     if (specifier.startsWith('file://')) {
       specifier = fileURLToPath(specifier);
     }
