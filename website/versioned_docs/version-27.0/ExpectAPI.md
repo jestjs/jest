@@ -1124,6 +1124,8 @@ test('the flavor list contains lime', () => {
 });
 ```
 
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
+
 ### `.toContainEqual(item)`
 
 Use `.toContainEqual` when you want to check that an item with a specific structure and values is contained in an array. For testing the items in the array, this matcher recursively checks the equality of all fields, rather than checking for object identity.
