@@ -20,6 +20,7 @@
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
+    "@jest/schemas": "28.0.0-alpha.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "react-is": "^17.0.1"

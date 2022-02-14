@@ -2753,6 +2753,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/schemas@28.0.0-alpha.0, @jest/schemas@workspace:packages/jest-schemas":
+  version: 0.0.0-use.local
+  resolution: "@jest/schemas@workspace:packages/jest-schemas"
+  dependencies:
+    "@sinclair/typebox": ^0.23.3
+  languageName: unknown
+  linkType: soft
+
 "@jest/source-map@^28.0.0-alpha.0, @jest/source-map@workspace:packages/jest-source-map":
   version: 0.0.0-use.local
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
@@ -2847,6 +2855,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
+    "@jest/schemas": 28.0.0-alpha.0
     "@tsd/typescript": ~4.5.5
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
@@ -4356,6 +4365,13 @@ __metadata:
   version: 2.0.0
   resolution: "@sideway/pinpoint@npm:2.0.0"
   checksum: 0f4491e5897fcf5bf02c46f5c359c56a314e90ba243f42f0c100437935daa2488f20482f0f77186bd6bf43345095a95d8143ecf8b1f4d876a7bc0806aba9c3d2
+  languageName: node
+  linkType: hard
+
+"@sinclair/typebox@npm:^0.23.3":
+  version: 0.23.3
+  resolution: "@sinclair/typebox@npm:0.23.3"
+  checksum: c8d961c8af1b701e67641770376010634730076f0412dda34b01f1d6f54d98916414335b51929285ade43ab85bb14a372bbc287575ce4b1e0179d8af808ec4d7
   languageName: node
   linkType: hard
 
@@ -17802,6 +17818,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
+    "@jest/schemas": 28.0.0-alpha.0
     "@types/react": "*"
     "@types/react-is": ^17.0.0
     "@types/react-test-renderer": "*"
