@@ -236,6 +236,76 @@ jest.mock('./sound-player', () => {
 
 This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, unless the code is transpiled to ES5, e.g. by `@babel/preset-env`. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
 
+## Mocking a specific method of a class
+
+Lets say that you want to mock or spy the method `playSoundFile` within the class `SoundPlayer`. A simple example:
+
+```javascript
+// your jest test file below
+import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
+
+const playSoundFileMock = jest
+  .spyOn(SoundPlayer.prototype, 'playSoundFile')
+  .mockImplementation(() => {
+    console.log('mocked function');
+  }); // comment this line if just want to "spy"
+
+it('player consumer plays music', () => {
+  const player = new SoundPlayerConsumer();
+  player.playSomethingCool();
+  expect(playSoundFileMock).toHaveBeenCalled();
+});
+```
+
+### Static, getter and setter methods
+
+Lets imagine our class `SoundPlayer` has a getter method `foo` and a static method `brand`
+
+```javascript
+export default class SoundPlayer {
+  constructor() {
+    this.foo = 'bar';
+  }
+
+  playSoundFile(fileName) {
+    console.log('Playing sound file ' + fileName);
+  }
+
+  get foo() {
+    return 'bar';
+  }
+  static brand() {
+    return 'player-brand';
+  }
+}
+```
+
+You can mock/spy them easily, here is an example:
+
+```javascript
+// your jest test file below
+import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
+
+const staticMethodMock = jest
+  .spyOn(SoundPlayer, 'brand')
+  .mockImplementation(() => 'some-mocked-brand');
+
+const getterMethodMock = jest
+  .spyOn(SoundPlayer.prototype, 'foo', 'get')
+  .mockImplementation(() => 'some-mocked-result');
+
+it('custom methods are called', () => {
+  const player = new SoundPlayer();
+  const foo = player.foo;
+  const brand = SoundPlayer.brand();
+
+  expect(staticMethodMock).toHaveBeenCalled();
+  expect(getterMethodMock).toHaveBeenCalled();
+});
+```
+
 ## Keeping track of usage (spying on the mock)
 
 Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor and methods are called with the correct parameters.
