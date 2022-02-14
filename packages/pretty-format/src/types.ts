@@ -24,7 +24,9 @@ export type CompareKeys = ((a: string, b: string) => number) | undefined;
 
 type RequiredOptions = Required<PrettyFormatOptions>;
 
-export interface Options extends Omit<RequiredOptions, 'theme'> {
+export interface Options
+  extends Omit<RequiredOptions, 'compareKeys' | 'theme'> {
+  compareKeys: CompareKeys;
   theme: Required<RequiredOptions['theme']>;
 }
 
