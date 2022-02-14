@@ -290,20 +290,20 @@ import SoundPlayerConsumer from './sound-player-consumer';
 
 const staticMethodMock = jest
   .spyOn(SoundPlayer, 'brand')
-  .mockImplementation(()=>"some-mocked-brand)
+  .mockImplementation(() => 'some-mocked-brand');
 
 const getterMethodMock = jest
-  .spyOn(SoundPlayer.prototype, 'foo','get')
-  .mockImplementation(()=>"some-mocked-result")
+  .spyOn(SoundPlayer.prototype, 'foo', 'get')
+  .mockImplementation(() => 'some-mocked-result');
 
-it("custom methods are called", ()=>{
-const player = new SoundPlayer()
-const foo = player.foo
-const brand = SoundPlayer.brand()
+it('custom methods are called', () => {
+  const player = new SoundPlayer();
+  const foo = player.foo;
+  const brand = SoundPlayer.brand();
 
-expect(staticMethodMock).toHaveBeenCalled()
-expect(getterMethodMock).toHaveBeenCalled()
-})
+  expect(staticMethodMock).toHaveBeenCalled();
+  expect(getterMethodMock).toHaveBeenCalled();
+});
 ```
 
 ## Keeping track of usage (spying on the mock)
