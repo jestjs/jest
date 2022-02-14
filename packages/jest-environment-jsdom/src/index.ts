@@ -36,6 +36,13 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
+
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    virtualConsole.on('jsdomError', error => {
+      context.console.error(error);
+    });
+
     this.dom = new JSDOM(
       typeof projectConfig.testEnvironmentOptions.html === 'string'
         ? projectConfig.testEnvironmentOptions.html
@@ -50,7 +57,6 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
             : undefined,
         runScripts: 'dangerously',
         url: 'http://localhost/',
-        virtualConsole: new VirtualConsole().sendTo(context.console),
         ...projectConfig.testEnvironmentOptions,
       },
     );
