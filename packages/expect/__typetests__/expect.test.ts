@@ -9,6 +9,8 @@ import {expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
   type ExpectationResult,
+  type MatcherFunction,
+  type MatcherFunctionWithContext,
   type MatcherState,
   type Matchers,
   expect,
@@ -29,6 +31,7 @@ type MatcherUtils = typeof jestMatcherUtils & {
   subsetEquality: Tester;
 };
 
+// TODO `actual` should be allowed to have only `unknown` type
 expectType<void>(
   expect.extend({
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
@@ -85,80 +88,111 @@ expectType<void>(
   }),
 );
 
-// ExpectationResult
+// MatcherFunction
 
-const toBeResult = (received: string): ExpectationResult => {
-  if (received === 'result') {
+expectError(() => {
+  const actualMustBeUnknown: MatcherFunction = (actual: string) => {
     return {
-      message: () => 'is result',
-      pass: true,
+      message: () => `result: ${actual}`,
+      pass: actual === 'result',
     };
-  } else {
+  };
+});
+
+expectError(() => {
+  const lacksMessage: MatcherFunction = (actual: unknown) => {
     return {
-      message: () => 'is not result',
-      pass: false,
+      pass: actual === 'result',
     };
-  }
+  };
+});
+
+expectError(() => {
+  const lacksPass: MatcherFunction = (actual: unknown) => {
+    return {
+      message: () => `result: ${actual}`,
+    };
+  };
+});
+
+type ToBeWithinRange = (
+  this: MatcherState,
+  actual: unknown,
+  floor: number,
+  ceiling: number,
+) => ExpectationResult;
+
+const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
+  actual: unknown,
+  floor: unknown,
+  ceiling: unknown,
+) => {
+  return {
+    message: () => `actual ${actual}; range ${floor}-${ceiling}`,
+    pass: true,
+  };
 };
 
-expectType<void>(expect.extend({toBeResult}));
+expectType<ToBeWithinRange>(toBeWithinRange);
 
-expectError(() => {
-  const lacksElseBranch = (received: string): ExpectationResult => {
-    if (received === 'result') {
-      return {
-        message: () => 'is result',
-        pass: true,
-      };
-    }
-  };
-});
+type AllowOmittingExpected = (
+  this: MatcherState,
+  actual: unknown,
+) => ExpectationResult;
 
-expectError(() => {
-  const lacksMessage = (received: string): ExpectationResult => {
-    if (received === 'result') {
-      return {
-        pass: true,
-      };
-    } else {
-      return {
-        pass: false,
-      };
-    }
+const allowOmittingExpected: MatcherFunction = (actual: unknown) => {
+  return {
+    message: () => `actual ${actual}`,
+    pass: true,
   };
-});
+};
+
+expectType<AllowOmittingExpected>(allowOmittingExpected);
 
 // MatcherState
 
-function toHaveContext(
-  this: MatcherState,
-  received: string,
-): ExpectationResult {
-  expectType<number>(this.assertionCalls);
-  expectType<string | undefined>(this.currentTestName);
-  expectType<(() => void) | undefined>(this.dontThrow);
-  expectType<Error | undefined>(this.error);
-  expectType<EqualsFunction>(this.equals);
-  expectType<boolean | undefined>(this.expand);
-  expectType<number | null | undefined>(this.expectedAssertionsNumber);
-  expectType<Error | undefined>(this.expectedAssertionsNumberError);
-  expectType<boolean | undefined>(this.isExpectingAssertions);
-  expectType<Error | undefined>(this.isExpectingAssertionsError);
-  expectType<boolean>(this.isNot);
-  expectType<string>(this.promise);
-  expectType<Array<Error>>(this.suppressedErrors);
-  expectType<string | undefined>(this.testPath);
-  expectType<MatcherUtils>(this.utils);
+const toHaveContext: MatcherFunction = function (actual: unknown) {
+  expectType<MatcherState>(this);
 
-  if (received === 'result') {
-    return {
-      message: () => 'is result',
-      pass: true,
-    };
-  } else {
-    return {
-      message: () => 'is not result',
-      pass: false,
-    };
-  }
+  return {
+    message: () => `result: ${actual}`,
+    pass: actual === 'result',
+  };
+};
+
+interface CustomContext extends MatcherState {
+  customMethod(): void;
 }
+
+const customContext: MatcherFunctionWithContext<CustomContext> = function (
+  actual: unknown,
+) {
+  expectType<CustomContext>(this);
+  expectType<void>(this.customMethod());
+
+  return {
+    message: () => `result: ${actual}`,
+    pass: actual === 'result',
+  };
+};
+
+type CustomContextAndExpected = (
+  this: CustomContext,
+  actual: unknown,
+  count: number,
+) => ExpectationResult;
+
+const customContextAndExpected: MatcherFunctionWithContext<
+  CustomContext,
+  [count: number]
+> = function (actual: unknown, count: unknown) {
+  expectType<CustomContext>(this);
+  expectType<void>(this.customMethod());
+
+  return {
+    message: () => `count: ${count}`,
+    pass: actual === count,
+  };
+};
+
+expectType<CustomContextAndExpected>(customContextAndExpected);

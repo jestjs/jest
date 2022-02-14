@@ -20,6 +20,19 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
+export type MatcherFunctionWithContext<
+  Context extends MatcherState = MatcherState,
+  Expected extends Array<any> = [],
+> = (
+  this: Context,
+  actual: unknown,
+  ...expected: Expected
+) => ExpectationResult;
+
+export type MatcherFunction<Expected extends Array<any> = []> =
+  MatcherFunctionWithContext<MatcherState, Expected>;
+
+// TODO should be replaced with `MatcherFunctionWithContext`
 export type RawMatcherFn<T extends MatcherState = MatcherState> = {
   (this: T, actual: any, ...expected: Array<any>): ExpectationResult;
   /** @internal */
@@ -29,7 +42,7 @@ export type RawMatcherFn<T extends MatcherState = MatcherState> = {
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export type MatcherState = {
+export interface MatcherState {
   assertionCalls: number;
   currentTestName?: string;
   dontThrow?(): void;
@@ -48,7 +61,7 @@ export type MatcherState = {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
-};
+}
 
 export interface AsymmetricMatcher {
   asymmetricMatch(other: unknown): boolean;

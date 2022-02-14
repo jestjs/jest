@@ -53,6 +53,8 @@ export type {
   AsymmetricMatchers,
   Expect,
   ExpectationResult,
+  MatcherFunction,
+  MatcherFunctionWithContext,
   MatcherState,
   Matchers,
 } from './types';

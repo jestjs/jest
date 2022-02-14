@@ -8,9 +8,9 @@
 import type {MatcherState} from 'expect';
 import type SnapshotState from './State';
 
-export type Context = MatcherState & {
+export interface Context extends MatcherState {
   snapshotState: SnapshotState;
-};
+}
 
 export type MatchSnapshotConfig = {
   context: Context;
