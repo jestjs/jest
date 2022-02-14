@@ -1,0 +1,6 @@
+**/__mocks__/**
+**/__tests__/**
+src
+tsconfig.json
+tsconfig.tsbuildinfo
+api-extractor.json
