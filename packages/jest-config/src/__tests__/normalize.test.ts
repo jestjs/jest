@@ -9,6 +9,7 @@
 import {createHash} from 'crypto';
 import path from 'path';
 import semver = require('semver');
+import type {SnapshotFormat} from '@jest/schemas';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
@@ -1916,5 +1917,22 @@ describe('updateSnapshot', () => {
       expect(options.updateSnapshot).toBe('none');
     }
     Defaults.ci = defaultCiConfig;
+  });
+});
+
+describe('snapshotFormat', () => {
+  it('should accept custom `compareKeys`', async () => {
+    const compareKeys = () => 0;
+
+    const {options} = await normalize(
+      {
+        ci: false,
+        rootDir: '/root/',
+        snapshotFormat: {compareKeys} as SnapshotFormat,
+      },
+      {} as Config.Argv,
+    );
+
+    expect((options.snapshotFormat as any).compareKeys).toBe(compareKeys);
   });
 });

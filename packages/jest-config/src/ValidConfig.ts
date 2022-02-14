@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {SnapshotFormat} from '@jest/schemas';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
@@ -110,7 +111,10 @@ const initialOptions: Config.InitialOptions = {
   skipFilter: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
-  snapshotFormat: PRETTY_FORMAT_DEFAULTS,
+  snapshotFormat: {
+    ...PRETTY_FORMAT_DEFAULTS,
+    compareKeys: () => {},
+  } as SnapshotFormat,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-node',
