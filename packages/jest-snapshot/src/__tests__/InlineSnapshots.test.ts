@@ -26,13 +26,13 @@ beforeEach(() => {
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
   const filename = path.join(dir, 'my.test.js');
-  fs.writeFileSync(filename, `expect(1).toMatchInlineSnapshot();\n`);
+  fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot();\n');
 
   saveInlineSnapshots(
     [
       {
         frame: {column: 11, file: filename, line: 1} as Frame,
-        snapshot: `1`,
+        snapshot: '1',
       },
     ],
     'prettier',
@@ -59,7 +59,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
       frame: {column: 11, file: filename, line} as Frame,
-      snapshot: `[1, 2]`,
+      snapshot: '[1, 2]',
     })),
     null,
   );
@@ -89,7 +89,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
       frame: {column: 11, file: filename, line} as Frame,
-      snapshot: `[1, 2]`,
+      snapshot: '[1, 2]',
     })),
     'bad-prettier',
   );
@@ -120,7 +120,7 @@ expect(a).toMatchInlineSnapshot();
     [
       {
         frame: {column: 11, file: filename, line: 5} as Frame,
-        snapshot: `[{ foo: 'one' }, { foo: 'two' }]`,
+        snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
       },
     ],
     null,
@@ -154,7 +154,7 @@ it('foos', async () => {
     [
       {
         frame: {column: 13, file: filename, line: 4} as Frame,
-        snapshot: `<div>hello</div>`,
+        snapshot: '<div>hello</div>',
       },
     ],
     null,
@@ -195,7 +195,7 @@ expect(a).toMatchInlineSnapshot();
     [
       {
         frame: {column: 11, file: filename, line: 3} as Frame,
-        snapshot: `<div>hello</div>`,
+        snapshot: '<div>hello</div>',
       },
     ],
     null,
@@ -226,7 +226,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
       frame: {column: 11, file: filename, line} as Frame,
-      snapshot: `[1, 2]`,
+      snapshot: '[1, 2]',
     })),
     'prettier',
   );
@@ -252,7 +252,7 @@ test.each([['babel'], ['flow'], ['typescript']])(
       [
         {
           frame: {column: 11, file: filename, line: 1} as Frame,
-          snapshot: `1`,
+          snapshot: '1',
         },
       ],
       'prettier',
@@ -276,7 +276,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
     [
       {
         frame: {column: 11, file: filename, line: 1} as Frame,
-        snapshot: `1`,
+        snapshot: '1',
       },
     ],
     'prettier',
@@ -297,7 +297,7 @@ test.each(['prettier', null])(
       [
         {
           frame: {column: 11, file: filename, line: 1} as Frame,
-          snapshot: `1`,
+          snapshot: '1',
         },
       ],
       prettierModule,
@@ -322,7 +322,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
             file: filename,
             line: 1,
           } as Frame,
-          snapshot: `1`,
+          snapshot: '1',
         },
       ],
       'prettier',
@@ -339,8 +339,8 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
   const save = () =>
     saveInlineSnapshots(
       [
-        {frame, snapshot: `1`},
-        {frame, snapshot: `2`},
+        {frame, snapshot: '1'},
+        {frame, snapshot: '2'},
       ],
       'prettier',
     );
@@ -364,7 +364,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(dir, 'my.test.js');
-  fs.writeFileSync(filename, `expect({a: 'a'}).toMatchInlineSnapshot();\n`);
+  fs.writeFileSync(filename, "expect({a: 'a'}).toMatchInlineSnapshot();\n");
   (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
@@ -374,7 +374,7 @@ test('saveInlineSnapshots() works with non-literals in expect call', () => {
     [
       {
         frame: {column: 18, file: filename, line: 1} as Frame,
-        snapshot: `{a: 'a'}`,
+        snapshot: "{a: 'a'}",
       },
     ],
     'prettier',
@@ -402,7 +402,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
     [
       {
         frame: {column: 20, file: filename, line: 2} as Frame,
-        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
     'prettier',
@@ -444,7 +444,7 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
     [
       {
         frame: {column: 20, file: filename, line: 10} as Frame,
-        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
     'prettier',
@@ -493,7 +493,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
     [
       {
         frame: {column: 20, file: filename, line: 2} as Frame,
-        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
     'prettier',
@@ -535,7 +535,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
     [
       {
         frame: {column: 20, file: filename, line: 2} as Frame,
-        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
     'prettier',
@@ -567,7 +567,7 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
     [
       {
         frame: {column: 40, file: filename, line: 1} as Frame,
-        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
     'prettier',
@@ -598,7 +598,7 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
     [
       {
         frame: {column: 9, file: filename, line: 3} as Frame,
-        snapshot: `\nhello\n\nworld\n`,
+        snapshot: '\nhello\n\nworld\n',
       },
     ],
     'prettier',

@@ -62,21 +62,6 @@ describe('BaseWorkerPool', () => {
     expect(pool.getWorkerById(3)).toBeDefined();
   });
 
-  it('creates and expoeses n workers', () => {
-    const pool = new MockWorkerPool('/tmp/baz.js', {
-      forkOptions: {execArgv: []},
-      maxRetries: 6,
-      numWorkers: 4,
-      setupArgs: [],
-    });
-
-    expect(pool.getWorkers()).toHaveLength(4);
-    expect(pool.getWorkerById(0)).toBeDefined();
-    expect(pool.getWorkerById(1)).toBeDefined();
-    expect(pool.getWorkerById(2)).toBeDefined();
-    expect(pool.getWorkerById(3)).toBeDefined();
-  });
-
   it('creates workers with the right options', () => {
     // eslint-disable-next-line no-new
     new MockWorkerPool('/tmp/baz.js', {
@@ -115,16 +100,6 @@ describe('BaseWorkerPool', () => {
       workerId: 3,
       workerPath: '/tmp/baz.js',
     });
-  });
-
-  it('makes a non-existing relative worker throw', () => {
-    expect(() => {
-      // eslint-disable-next-line no-new
-      new MockWorkerPool('./baz.js', {
-        exposedMethods: [],
-        numWorkers: 1,
-      });
-    }).toThrow();
   });
 
   it('create multiple workers with unique worker ids', () => {

@@ -1,13 +1,13 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import React, {useState} from 'react';
+import {useState} from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-const Link = ({page, children}) => {
+export default function Link({page, children}) {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
@@ -28,6 +28,4 @@ const Link = ({page, children}) => {
       {children}
     </a>
   );
-};
-
-export default Link;
+}

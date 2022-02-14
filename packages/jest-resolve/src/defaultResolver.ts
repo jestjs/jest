@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {isAbsolute} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import {sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import {
   PkgJson,
@@ -59,10 +60,8 @@ export default function defaultResolver(
     ...options,
     isDirectory,
     isFile,
-    packageFilter: createPackageFilter(
-      options.conditions,
-      options.packageFilter,
-    ),
+    packageFilter: createPackageFilter(path, options.packageFilter),
+    pathFilter: createPathFilter(path, options.conditions, options.pathFilter),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
@@ -82,45 +81,68 @@ function readPackageSync(_: unknown, file: Config.Path): PkgJson {
 }
 
 function createPackageFilter(
-  conditions?: Array<string>,
+  originalPath: Config.Path,
   userFilter?: ResolverOptions['packageFilter'],
 ): ResolverOptions['packageFilter'] {
-  function attemptExportsFallback(pkg: PkgJson) {
-    const options: ResolveExportsOptions = conditions
-      ? {conditions, unsafe: true}
-      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
-        {browser: false, require: true};
-
-    try {
-      return resolveExports(pkg, '.', options);
-    } catch {
-      return undefined;
-    }
+  if (shouldIgnoreRequestForExports(originalPath)) {
+    return userFilter;
   }
 
-  return function packageFilter(pkg, packageDir) {
+  return function packageFilter(pkg, ...rest) {
     let filteredPkg = pkg;
 
     if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, packageDir);
+      filteredPkg = userFilter(filteredPkg, ...rest);
     }
 
-    if (filteredPkg.main != null) {
-      return filteredPkg;
-    }
-
-    const indexInRoot = resolve(packageDir, './index.js');
-
-    // if the module contains an `index.js` file in root, `resolve` will request
-    // that if there is no `main`. Since we don't wanna break that, add this
-    // check
-    if (isFile(indexInRoot)) {
+    if (filteredPkg.exports == null) {
       return filteredPkg;
     }
 
     return {
       ...filteredPkg,
-      main: attemptExportsFallback(filteredPkg),
+      // remove `main` so `resolve` doesn't look at it and confuse the `.`
+      // loading in `pathFilter`
+      main: undefined,
     };
   };
 }
+
+function createPathFilter(
+  originalPath: Config.Path,
+  conditions?: Array<string>,
+  userFilter?: ResolverOptions['pathFilter'],
+): ResolverOptions['pathFilter'] {
+  if (shouldIgnoreRequestForExports(originalPath)) {
+    return userFilter;
+  }
+
+  const options: ResolveExportsOptions = conditions
+    ? {conditions, unsafe: true}
+    : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+      {browser: false, require: true};
+
+  return function pathFilter(pkg, path, relativePath, ...rest) {
+    let pathToUse = relativePath;
+
+    if (userFilter) {
+      pathToUse = userFilter(pkg, path, relativePath, ...rest);
+    }
+
+    if (pkg.exports == null) {
+      return pathToUse;
+    }
+
+    // this `index` thing can backfire, but `resolve` adds it: https://github.com/browserify/resolve/blob/f1b51848ecb7f56f77bfb823511d032489a13eab/lib/sync.js#L192
+    const isRootRequire =
+      pathToUse === 'index' && !originalPath.endsWith('/index');
+
+    const newPath = isRootRequire ? '.' : slash(pathToUse);
+
+    return resolveExports(pkg, newPath, options) || pathToUse;
+  };
+}
+
+// if it's a relative import or an absolute path, exports are ignored
+const shouldIgnoreRequestForExports = (path: Config.Path) =>
+  path.startsWith('.') || isAbsolute(path);

@@ -96,21 +96,30 @@ const resolveWithPrefix = (
 export const resolveTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
-  // TODO: remove default in Jest 28
-  requireResolveFunction = require.resolve,
+  requireResolveFunction,
 }: {
   rootDir: Config.Path;
   testEnvironment: string;
-  requireResolveFunction?: (moduleName: string) => string;
-}): string =>
-  resolveWithPrefix(undefined, {
-    filePath,
-    humanOptionName: 'Test environment',
-    optionName: 'testEnvironment',
-    prefix: 'jest-environment-',
-    requireResolveFunction,
-    rootDir,
-  });
+  requireResolveFunction: (moduleName: string) => string;
+}): string => {
+  try {
+    return resolveWithPrefix(undefined, {
+      filePath,
+      humanOptionName: 'Test environment',
+      optionName: 'testEnvironment',
+      prefix: 'jest-environment-',
+      requireResolveFunction,
+      rootDir,
+    });
+  } catch (error: any) {
+    if (filePath === 'jsdom' || filePath === 'jest-environment-jsdom') {
+      error.message +=
+        '\n\nAs of Jest 28 "jest-environment-jsdom" is no longer shipped by default, make sure to install it separately.';
+    }
+
+    throw error;
+  }
+};
 
 /**
  * Finds the watch plugins to use:
@@ -125,12 +134,11 @@ export const resolveWatchPlugin = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
     rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {
@@ -155,12 +163,11 @@ export const resolveRunner = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
     rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {
@@ -177,12 +184,11 @@ export const resolveSequencer = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
     rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {

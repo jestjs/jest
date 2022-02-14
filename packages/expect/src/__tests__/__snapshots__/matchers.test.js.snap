@@ -2175,8 +2175,15 @@ Received: <r>{"0": "a", "1": "b", "2": "c"}</>
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-Expected: <g>ObjectContaining {"a": 2}</>
-Received: <r>{"a": 1, "b": 2}</>
+<g>- Expected  - 2</>
+<r>+ Received  + 3</>
+
+<g>- ObjectContaining {</>
+<g>-   "a": 2,</>
+<r>+ Object {</>
+<r>+   "a": 1,</>
+<r>+   "b": 2,</>
+<d>  }</>
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
@@ -3558,6 +3565,14 @@ exports[`.toHaveProperty() {pass: true} expect([Function memoized]).toHaveProper
 Expected path: <g>"memo"</>
 
 Expected value: not <g>[]</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"": 1}).toHaveProperty('', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>""</>
+
+Expected value: not <g>1</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [[{"c": [{"d": 1}]}]]}}).toHaveProperty('a.b[0][0].c[0].d', 1) 1`] = `

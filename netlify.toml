@@ -8,7 +8,7 @@
   publish = "/website/build"
 
 [build.environment]
-  NODE_VERSION = "v14.17.0"
+  NODE_VERSION = "lts/*"
   NODE_OPTIONS = "--max_old_space_size=4096"
 
 [context.production]

@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`moduleNameMapper correct configuration 1`] = `
-PASS __tests__/index.js
-  ✓ moduleNameMapping correct configuration
+"PASS __tests__/index.js
+  ✓ moduleNameMapping correct configuration"
 `;
 
 exports[`moduleNameMapper correct configuration mocking module of absolute path 1`] = `
-PASS __tests__/index.js
-  ✓ moduleNameMapping correct configuration
+"PASS __tests__/index.js
+  ✓ moduleNameMapping correct configuration"
 `;
 
 exports[`moduleNameMapper wrong array configuration 1`] = `
-FAIL __tests__/index.js
+"FAIL __tests__/index.js
   ● Test suite failed to run
 
     Configuration error:
@@ -41,12 +41,12 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:579:17)
-      at Object.require (index.js:10:1)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:568:17)
+      at Object.require (index.js:10:1)"
 `;
 
 exports[`moduleNameMapper wrong configuration 1`] = `
-FAIL __tests__/index.js
+"FAIL __tests__/index.js
   ● Test suite failed to run
 
     Configuration error:
@@ -70,6 +70,6 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:579:17)
-      at Object.require (index.js:10:1)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:568:17)
+      at Object.require (index.js:10:1)"
 `;

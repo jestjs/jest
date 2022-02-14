@@ -25,7 +25,7 @@ try {
     dedent`
       enableGlobalCache: true
 
-      yarnPath: ${require.resolve('../.yarn/releases/yarn-2.4.3.cjs')}
+      yarnPath: ${require.resolve('../.yarn/releases/yarn-3.1.1.cjs')}
     `,
   );
   fs.writeFileSync(
@@ -33,19 +33,17 @@ try {
     JSON.stringify(
       {
         dependencies: {
-          jest: `*`,
+          jest: '*',
+          'jest-environment-jsdom': '*',
         },
         name: 'test-pnp',
-        resolutions: {
-          typescript: '~4.4',
-        },
       },
       null,
       2,
     ),
   );
   fs.writeFileSync(
-    path.join(cwd, 'test.js'),
+    path.join(cwd, 'jsdom.test.js'),
     dedent`
      /*
       * @jest-environment jsdom
@@ -56,13 +54,21 @@ try {
      });
     `,
   );
+  fs.writeFileSync(
+    path.join(cwd, 'node.test.js'),
+    dedent`
+     test('dummy', () => {
+       expect(typeof window).toBe('undefined');
+     });
+    `,
+  );
   execa.sync('yarn', ['link', '--private', '--all', rootDirectory], {
     cwd,
     stdio: 'inherit',
   });
   execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
-  console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
+  console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
 } finally {
   rimraf.sync(cwd);
 }

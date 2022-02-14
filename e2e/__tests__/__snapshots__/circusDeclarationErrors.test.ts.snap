@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`defining tests and hooks asynchronously throws 1`] = `
-FAIL __tests__/asyncDefinition.test.js
+"FAIL __tests__/asyncDefinition.test.js
 
 
   ● Test suite failed to run
@@ -61,5 +61,5 @@ FAIL __tests__/asyncDefinition.test.js
       21 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:158:11)
-      at afterAll (__tests__/asyncDefinition.test.js:19:3)
+      at afterAll (__tests__/asyncDefinition.test.js:19:3)"
 `;

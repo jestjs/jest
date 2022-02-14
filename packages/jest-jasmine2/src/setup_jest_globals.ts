@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, Global} from '@jest/types';
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import type {Config} from '@jest/types';
+import {expect} from 'expect';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -19,9 +18,6 @@ import type {
   default as JasmineSpec,
   SpecResult,
 } from './jasmine/Spec';
-import type {Jasmine} from './types';
-
-declare const global: Global.Global;
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -34,8 +30,8 @@ export type SetupOptions = {
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = (result: SpecResult) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = expect.getState();
+  expect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     result.status = 'failed';
 
@@ -53,7 +49,7 @@ const addSuppressedErrors = (result: SpecResult) => {
 };
 
 const addAssertionErrors = (result: SpecResult) => {
-  const assertionErrors = extractExpectedAssertionsErrors();
+  const assertionErrors = expect.extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
@@ -67,7 +63,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  (global.jasmine as Jasmine).Spec = (realSpec => {
+  global.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
@@ -78,7 +74,7 @@ const patchJasmine = () => {
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
-          setState({currentTestName: context.getFullName()});
+          expect.setState({currentTestName: context.getFullName()});
           onStart && onStart.call(attr, context);
         };
         super(attr);
@@ -86,15 +82,15 @@ const patchJasmine = () => {
     }
 
     return Spec;
-  })((global.jasmine as Jasmine).Spec);
+  })(global.jasmine.Spec);
 };
 
-export default async ({
+export default async function setupJestGlobals({
   config,
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions): Promise<SnapshotStateType> => {
+}: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
@@ -116,7 +112,7 @@ export default async ({
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`
-  setState({snapshotState, testPath});
+  expect.setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
-};
+}

@@ -174,7 +174,7 @@ export const getSummary = (
     (suitesRun !== suitesTotal
       ? suitesRun + ' of ' + suitesTotal
       : suitesTotal) +
-    ` total`;
+    ' total';
 
   const updatedTestsFailed =
     testsFailed + valuesForCurrentTestCases.numFailingTests;
@@ -244,7 +244,7 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
     estimatedTime && runTime >= estimatedTime + 1
       ? chalk.bold.yellow(formatTime(runTime, 0))
       : formatTime(runTime, 0);
-  let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
+  let time = chalk.bold('Time:') + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
     time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
@@ -278,7 +278,7 @@ export const wrapAnsiString = (
     return string;
   }
 
-  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/g;
+  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/gu;
   const tokens = [];
   let lastIndex = 0;
   let match;

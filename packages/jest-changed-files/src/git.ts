@@ -34,15 +34,13 @@ const findChangedFilesUsingCommand = async (
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const changedSince: string | undefined =
-      options && (options.withAncestor ? 'HEAD^' : options.changedSince);
+    const changedSince = options.withAncestor ? 'HEAD^' : options.changedSince;
 
-    const includePaths: Array<Config.Path> = (
-      (options && options.includePaths) ||
-      []
-    ).map(absoluteRoot => path.normalize(path.relative(cwd, absoluteRoot)));
+    const includePaths = (options.includePaths ?? []).map(absoluteRoot =>
+      path.normalize(path.relative(cwd, absoluteRoot)),
+    );
 
-    if (options && options.lastCommit) {
+    if (options.lastCommit) {
       return findChangedFilesUsingCommand(
         ['show', '--name-only', '--pretty=format:', 'HEAD', '--'].concat(
           includePaths,
