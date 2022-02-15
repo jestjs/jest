@@ -106,7 +106,7 @@
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
     "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-    "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl pretty-format",
+    "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
     "verify-old-ts": "node ./scripts/verifyOldTs.js",
     "verify-pnp": "node ./scripts/verifyPnP.js",
