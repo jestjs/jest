@@ -6,13 +6,14 @@
  *
  */
 
+import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;
-  message: () => string;
+  message(): string;
 };
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
@@ -20,26 +21,20 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn<T extends MatcherState = MatcherState> = {
-  (this: T, received: any, expected: any, options?: any): ExpectationResult;
+  (this: T, actual: any, expected: any, options?: any): ExpectationResult;
+  /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export type Tester = (a: any, b: any) => boolean | undefined;
-
 export type MatcherState = {
   assertionCalls: number;
   currentTestName?: string;
-  dontThrow?: () => void;
+  dontThrow?(): void;
   error?: Error;
-  equals: (
-    a: unknown,
-    b: unknown,
-    customTesters?: Array<Tester>,
-    strictCheck?: boolean,
-  ) => boolean;
+  equals: EqualsFunction;
   expand?: boolean;
   expectedAssertionsNumber?: number | null;
   expectedAssertionsNumberError?: Error;
@@ -62,7 +57,7 @@ export interface AsymmetricMatcher {
   toAsymmetricMatcher?(): string;
 }
 export type MatchersObject<T extends MatcherState = MatcherState> = {
-  [id: string]: RawMatcherFn<T>;
+  [name: string]: RawMatcherFn<T>;
 };
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
@@ -70,32 +65,61 @@ export type ExpectedAssertionsErrors = Array<{
   expected: string;
 }>;
 
-interface AsymmetricMatchers {
-  any(sample: unknown): AsymmetricMatcher;
-  anything(): AsymmetricMatcher;
-  arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
-  objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
-  stringContaining(sample: string): AsymmetricMatcher;
-  stringMatching(sample: string | RegExp): AsymmetricMatcher;
-}
-
 export type Expect<State extends MatcherState = MatcherState> = {
-  <T = unknown>(actual: T): Matchers<void, T>;
+  <T = unknown>(actual: T): Matchers<void, T> &
+    InverseMatchers<void, T> &
+    PromiseMatchers<T>;
   // TODO: this is added by test runners, not `expect` itself
   addSnapshotSerializer(serializer: unknown): void;
   assertions(numberOfAssertions: number): void;
   // TODO: remove this `T extends` - should get from some interface merging
   extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
-  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
+  extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): State;
   hasAssertions(): void;
   setState(state: Partial<State>): void;
-} & AsymmetricMatchers & {
-    not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
-  };
+} & AsymmetricMatchers &
+  InverseAsymmetricMatchers;
+
+type InverseAsymmetricMatchers = {
+  /**
+   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
+   */
+  not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
+};
+
+export interface AsymmetricMatchers {
+  any(sample: unknown): AsymmetricMatcher;
+  anything(): AsymmetricMatcher;
+  arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
+  closeTo(sample: number, precision?: number): AsymmetricMatcher;
+  objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
+  stringContaining(sample: string): AsymmetricMatcher;
+  stringMatching(sample: string | RegExp): AsymmetricMatcher;
+}
+
+type PromiseMatchers<T = unknown> = {
+  /**
+   * Unwraps the reason of a rejected promise so any other matcher can be chained.
+   * If the promise is fulfilled the assertion fails.
+   */
+  rejects: Matchers<Promise<void>, T> & InverseMatchers<Promise<void>, T>;
+  /**
+   * Unwraps the value of a fulfilled promise so any other matcher can be chained.
+   * If the promise is rejected the assertion fails.
+   */
+  resolves: Matchers<Promise<void>, T> & InverseMatchers<Promise<void>, T>;
+};
+
+type InverseMatchers<R extends void | Promise<void>, T = unknown> = {
+  /**
+   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
+   */
+  not: Matchers<R, T>;
+};
 
 // This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
-export interface Matchers<R, T = unknown> {
+export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -105,10 +129,6 @@ export interface Matchers<R, T = unknown> {
    */
   lastReturnedWith(expected: unknown): R;
   /**
-   * If you know how to test something, `.not` lets you test its opposite.
-   */
-  not: Matchers<R, T>;
-  /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
   nthCalledWith(nth: number, ...expected: [unknown, ...Array<unknown>]): R;
@@ -116,16 +136,6 @@ export interface Matchers<R, T = unknown> {
    * Ensure that the nth call to a mock function has returned a specified value.
    */
   nthReturnedWith(nth: number, expected: unknown): R;
-  /**
-   * Use resolves to unwrap the value of a fulfilled promise so any other
-   * matcher can be chained. If the promise is rejected the assertion fails.
-   */
-  resolves: Matchers<Promise<R>, T>;
-  /**
-   * Unwraps the reason of a rejected promise so any other matcher can be chained.
-   * If the promise is fulfilled the assertion fails.
-   */
-  rejects: Matchers<Promise<R>, T>;
   /**
    * Checks that a value is what you expect. It uses `===` to check strict equality.
    * Don't use `toBe` with floating-point numbers.

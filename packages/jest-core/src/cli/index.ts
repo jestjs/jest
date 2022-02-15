@@ -175,7 +175,7 @@ const _run10000 = async (
       filterSetupPromise = (async () => {
         try {
           await rawFilter.setup();
-        } catch (err: unknown) {
+        } catch (err) {
           return err;
         }
         return undefined;

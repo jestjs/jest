@@ -18,7 +18,7 @@ const usage = (entity: string) =>
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim(`to filter by a ${entity} regex pattern.`)}\n` +
-  `\n`;
+  '\n';
 
 const usageRows = usage('').split('\n').length;
 

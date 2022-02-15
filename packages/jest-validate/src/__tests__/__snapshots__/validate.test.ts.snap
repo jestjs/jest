@@ -3,26 +3,26 @@
 exports[`Repeated types within multiple valid examples are coalesced in error report 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"foo\\"</> must be of type:</>
+<red>  Option <bold>"foo"</> must be of type:</>
 <red>    <bold><green>string</><red></> or <bold><green>number</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>boolean</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"foo\\"</>: <bold>\\"foo\\"</></>
+<red>    <bold>"foo"</>: <bold>"foo"</></>
 <red>  }</>
 <red></>
 <red>  or</>
 <red></>
 <red>  {</>
-<red>    <bold>\\"foo\\"</>: <bold>\\"bar\\"</></>
+<red>    <bold>"foo"</>: <bold>"bar"</></>
 <red>  }</>
 <red></>
 <red>  or</>
 <red></>
 <red>  {</>
-<red>    <bold>\\"foo\\"</>: <bold>2</></>
+<red>    <bold>"foo"</>: <bold>2</></>
 <red>  }</>
 <red></>"
 `;
@@ -34,7 +34,7 @@ exports[`displays warning for deprecated config options 1`] = `
 <yellow></>
 <yellow>  Jest now treats your current configuration as:</>
 <yellow>  {</>
-<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>    <bold>"transform"</>: <bold>{".*": "test"}</></>
 <yellow>  }</>
 <yellow></>
 <yellow>  Please update your configuration.</>
@@ -44,7 +44,7 @@ exports[`displays warning for deprecated config options 1`] = `
 exports[`displays warning for unknown config options 1`] = `
 "<yellow><bold><bold>●</><bold> Validation Warning</>:</>
 <yellow></>
-<yellow>  Unknown option <bold>\\"unkwon\\"</> with value <bold>{}</> was found. Did you mean <bold>\\"unknown\\"</>?</>
+<yellow>  Unknown option <bold>"unkwon"</> with value <bold>{}</> was found. Did you mean <bold>"unknown"</>?</>
 <yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
 <yellow></>"
 `;
@@ -52,18 +52,18 @@ exports[`displays warning for unknown config options 1`] = `
 exports[`pretty prints valid config for Array 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"coverageReporters\\"</> must be of type:</>
+<red>  Option <bold>"coverageReporters"</> must be of type:</>
 <red>    <bold><green>array</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>object</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"coverageReporters\\"</>: <bold>[</></>
-<red><bold>      \\"json\\",</></>
-<red><bold>      \\"text\\",</></>
-<red><bold>      \\"lcov\\",</></>
-<red><bold>      \\"clover\\"</></>
+<red>    <bold>"coverageReporters"</>: <bold>[</></>
+<red><bold>      "json",</></>
+<red><bold>      "text",</></>
+<red><bold>      "lcov",</></>
+<red><bold>      "clover"</></>
 <red><bold>    ]</></>
 <red>  }</>
 <red></>"
@@ -72,14 +72,14 @@ exports[`pretty prints valid config for Array 1`] = `
 exports[`pretty prints valid config for Boolean 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"automock\\"</> must be of type:</>
+<red>  Option <bold>"automock"</> must be of type:</>
 <red>    <bold><green>boolean</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>array</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"automock\\"</>: <bold>false</></>
+<red>    <bold>"automock"</>: <bold>false</></>
 <red>  }</>
 <red></>"
 `;
@@ -87,14 +87,14 @@ exports[`pretty prints valid config for Boolean 1`] = `
 exports[`pretty prints valid config for Function 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"fn\\"</> must be of type:</>
+<red>  Option <bold>"fn"</> must be of type:</>
 <red>    <bold><green>function</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>string</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"fn\\"</>: <bold>(_config, _option, _deprecatedOptions) => true</></>
+<red>    <bold>"fn"</>: <bold>(_config, _option, _deprecatedOptions) => true</></>
 <red>  }</>
 <red></>"
 `;
@@ -102,14 +102,14 @@ exports[`pretty prints valid config for Function 1`] = `
 exports[`pretty prints valid config for Object 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"haste\\"</> must be of type:</>
+<red>  Option <bold>"haste"</> must be of type:</>
 <red>    <bold><green>object</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>number</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"haste\\"</>: <bold>{}</></>
+<red>    <bold>"haste"</>: <bold>{}</></>
 <red>  }</>
 <red></>"
 `;
@@ -117,14 +117,14 @@ exports[`pretty prints valid config for Object 1`] = `
 exports[`pretty prints valid config for String 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"preset\\"</> must be of type:</>
+<red>  Option <bold>"preset"</> must be of type:</>
 <red>    <bold><green>string</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>number</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"preset\\"</>: <bold>\\"react-native\\"</></>
+<red>    <bold>"preset"</>: <bold>"react-native"</></>
 <red>  }</>
 <red></>"
 `;
@@ -132,21 +132,21 @@ exports[`pretty prints valid config for String 1`] = `
 exports[`reports errors nicely when failing with multiple valid options 1`] = `
 "<red><bold><bold>●</><bold> Validation Error</>:</>
 <red></>
-<red>  Option <bold>\\"foo\\"</> must be of type:</>
+<red>  Option <bold>"foo"</> must be of type:</>
 <red>    <bold><green>string</><red></> or <bold><green>array</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>number</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"foo\\"</>: <bold>\\"text\\"</></>
+<red>    <bold>"foo"</>: <bold>"text"</></>
 <red>  }</>
 <red></>
 <red>  or</>
 <red></>
 <red>  {</>
-<red>    <bold>\\"foo\\"</>: <bold>[</></>
-<red><bold>      \\"text\\"</></>
+<red>    <bold>"foo"</>: <bold>[</></>
+<red><bold>      "text"</></>
 <red><bold>    ]</></>
 <red>  }</>
 <red></>"
@@ -159,7 +159,7 @@ exports[`works with custom deprecations 1`] = `
 <yellow></>
 <yellow>  Jest now treats your current configuration as:</>
 <yellow>  {</>
-<yellow>    <bold>\\"transform\\"</>: <bold>{\\".*\\": \\"test\\"}</></>
+<yellow>    <bold>"transform"</>: <bold>{".*": "test"}</></>
 <yellow>  }</>
 <yellow></>
 <yellow>  Please update your configuration.</>
@@ -170,14 +170,14 @@ exports[`works with custom deprecations 1`] = `
 exports[`works with custom errors 1`] = `
 "<red><bold>My Custom Error</>:</>
 <red></>
-<red>  Option <bold>\\"test\\"</> must be of type:</>
+<red>  Option <bold>"test"</> must be of type:</>
 <red>    <bold><green>array</><red></></>
 <red>  but instead received:</>
 <red>    <bold><red>string</><red></></>
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"test\\"</>: <bold>[</></>
+<red>    <bold>"test"</>: <bold>[</></>
 <red><bold>      1,</></>
 <red><bold>      2</></>
 <red><bold>    ]</></>
@@ -189,7 +189,7 @@ exports[`works with custom errors 1`] = `
 exports[`works with custom warnings 1`] = `
 "<yellow><bold>My Custom Warning</>:</>
 <yellow></>
-<yellow>  Unknown option <bold>\\"unknown\\"</> with value <bold>\\"string\\"</> was found.</>
+<yellow>  Unknown option <bold>"unknown"</> with value <bold>"string"</> was found.</>
 <yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
 <yellow></>
 <yellow>My custom comment</>"

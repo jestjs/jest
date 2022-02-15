@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {MatcherState} from 'expect';
 import type SnapshotState from './State';
 
@@ -25,9 +23,3 @@ export type MatchSnapshotConfig = {
 };
 
 export type SnapshotData = Record<string, string>;
-
-// copied from `expect` - should be shared
-export type ExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};

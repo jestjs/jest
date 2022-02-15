@@ -40,7 +40,7 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
-// @ts-expect-error: doesn't exist in v10 typings
+// @ts-expect-error: doesn't exist in v12 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
@@ -97,13 +97,12 @@ export default function collectHandles(): HandleCollectionResult {
           // Timer that supports hasRef (Node v11+)
           if ('hasRef' in resource) {
             if (hasWeakRef) {
-              // @ts-expect-error: doesn't exist in v10 typings
+              // @ts-expect-error: doesn't exist in v12 typings
               const ref = new WeakRef(resource);
               isActive = () => {
                 return ref.deref()?.hasRef() ?? false;
               };
             } else {
-              // @ts-expect-error: doesn't exist in v10 typings
               isActive = resource.hasRef.bind(resource);
             }
           } else {

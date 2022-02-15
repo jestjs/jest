@@ -11,7 +11,6 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const util = require('util');
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');
@@ -19,13 +18,11 @@ const stripJsonComments = require('strip-json-comments');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
 
-const readFilePromise = util.promisify(fs.readFile);
-
 (async () => {
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
-    fs.existsSync(path.resolve(p, 'tsconfig.json')),
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
   );
 
   const {stdout: allWorkspacesString} = await execa('yarn', [
@@ -37,14 +34,12 @@ const readFilePromise = util.promisify(fs.readFile);
   const workspacesWithTs = new Map(
     JSON.parse(`[${allWorkspacesString.split('\n').join(',')}]`)
       .filter(({location}) =>
-        packagesWithTs.some(pkg => pkg.endsWith(location)),
+        packagesWithTs.some(({packageDir}) => packageDir.endsWith(location)),
       )
       .map(({location, name}) => [name, location]),
   );
 
-  packagesWithTs.forEach(pkgDir => {
-    const pkg = require(`${pkgDir}/package.json`);
-
+  packagesWithTs.forEach(({packageDir, pkg}) => {
     assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
     assert.strictEqual(
@@ -72,13 +67,18 @@ const readFilePromise = util.promisify(fs.readFile);
         return true;
       })
       .map(dep =>
-        path.relative(pkgDir, `${pkgDir}/../../${workspacesWithTs.get(dep)}`),
+        path.relative(
+          packageDir,
+          `${packageDir}/../../${workspacesWithTs.get(dep)}`,
+        ),
       )
       .sort();
 
     if (jestDependenciesOfPackage.length > 0) {
       const tsConfig = JSON.parse(
-        stripJsonComments(fs.readFileSync(`${pkgDir}/tsconfig.json`, 'utf8')),
+        stripJsonComments(
+          fs.readFileSync(`${packageDir}/tsconfig.json`, 'utf8'),
+        ),
       );
 
       const references = tsConfig.references.map(({path}) => path);
@@ -95,7 +95,12 @@ const readFilePromise = util.promisify(fs.readFile);
     }
   });
 
-  const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
+  const args = [
+    'tsc',
+    '-b',
+    ...packagesWithTs.map(({packageDir}) => packageDir),
+    ...process.argv.slice(2),
+  ];
 
   console.log(chalk.inverse(' Building TypeScript definition files '));
 
@@ -116,23 +121,25 @@ const readFilePromise = util.promisify(fs.readFile);
   // we want to limit the number of processes we spawn
   const cpus = Math.max(1, os.cpus().length - 1);
 
+  const typesReferenceDirective = '/// <reference types';
+  const typesNodeReferenceDirective = `${typesReferenceDirective}="node" />`;
+
   try {
     await Promise.all(
       packagesWithTs.map(
-        throat(cpus, async pkgDir => {
-          const buildDir = path.resolve(pkgDir, 'build/**/*.d.ts');
-          const ts3dot4 = path.resolve(pkgDir, 'build/ts3.4');
+        throat(cpus, async ({packageDir, pkg}) => {
+          const buildDir = path.resolve(packageDir, 'build/**/*.d.ts');
 
-          const globbed = await globby([buildDir, `!${ts3dot4}`]);
+          const globbed = await globby([buildDir]);
 
           const files = await Promise.all(
             globbed.map(file =>
-              Promise.all([file, readFilePromise(file, 'utf8')]),
+              Promise.all([file, fs.promises.readFile(file, 'utf8')]),
             ),
           );
 
           const filesWithTypeReferences = files
-            .filter(([, content]) => content.includes('/// <reference types'))
+            .filter(([, content]) => content.includes(typesReferenceDirective))
             .filter(hit => hit.length > 0);
 
           const filesWithReferences = filesWithTypeReferences
@@ -140,8 +147,9 @@ const readFilePromise = util.promisify(fs.readFile);
               name,
               content
                 .split('\n')
-                .filter(line => line !== '/// <reference types="node" />')
-                .filter(line => line.includes('/// <reference types'))
+                .map(line => line.trim())
+                .filter(line => line.includes(typesReferenceDirective))
+                .filter(line => line !== typesNodeReferenceDirective)
                 .join('\n'),
             ])
             .filter(([, content]) => content.length > 0)
@@ -164,8 +172,6 @@ const readFilePromise = util.promisify(fs.readFile);
           );
 
           if (filesWithNodeReference.length > 0) {
-            const pkg = require(pkgDir + '/package.json');
-
             assert.ok(
               pkg.dependencies,
               `Package \`${pkg.name}\` is missing \`dependencies\``,

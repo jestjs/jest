@@ -16,25 +16,25 @@ const tempy = require('tempy');
 
 const jestDirectory = path.resolve(__dirname, '../packages/jest');
 
+/* eslint-disable sort-keys */
 const tsConfig = {
+  extends: '@tsconfig/node12/tsconfig.json',
   compilerOptions: {
     esModuleInterop: false,
-    lib: ['es2018'],
-    module: 'commonjs',
     moduleResolution: 'node',
     noEmit: true,
-    strict: true,
-    target: 'es5',
   },
 };
+/* eslint-enable */
+
 const cwd = tempy.directory();
 
-const tsVersion = '3.8';
+const tsVersion = '4.2';
 
 try {
   fs.writeFileSync(path.join(cwd, '.yarnrc.yml'), 'nodeLinker: node-modules\n');
   execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
-  execa.sync('yarn', ['add', `typescript@~${tsVersion}`], {
+  execa.sync('yarn', ['add', `typescript@~${tsVersion}`, '@tsconfig/node12'], {
     cwd,
     stdio: 'inherit',
   });

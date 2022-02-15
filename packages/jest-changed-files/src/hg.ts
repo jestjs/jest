@@ -8,22 +8,20 @@
 
 import * as path from 'path';
 import execa = require('execa');
-import type {Config} from '@jest/types';
 import type {SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const includePaths: Array<Config.Path> =
-      (options && options.includePaths) || [];
+    const includePaths = options.includePaths ?? [];
 
     const args = ['status', '-amnu'];
-    if (options && options.withAncestor) {
-      args.push('--rev', `min((!public() & ::.)+.)^`);
-    } else if (options && options.changedSince) {
+    if (options.withAncestor) {
+      args.push('--rev', 'min((!public() & ::.)+.)^');
+    } else if (options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
-    } else if (options && options.lastCommit === true) {
+    } else if (options.lastCommit === true) {
       args.push('--change', '.');
     }
     args.push(...includePaths);

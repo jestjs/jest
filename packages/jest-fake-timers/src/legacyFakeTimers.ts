@@ -308,7 +308,7 @@ export default class FakeTimers<TimerRef> {
     let errThrown = false;
     try {
       cb();
-    } catch (e: unknown) {
+    } catch (e) {
       errThrown = true;
       cbErr = e;
     }
@@ -398,14 +398,14 @@ export default class FakeTimers<TimerRef> {
   private _checkFakeTimers() {
     if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
       this._global.console.warn(
-        `A function to advance timers was called but the timers API is not ` +
-          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
-          `test or enable fake timers globally by setting ` +
-          `\`"timers": "fake"\` in ` +
-          `the configuration file. This warning is likely a result of a ` +
-          `default configuration change in Jest 15.\n\n` +
-          `Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n` +
-          `Stack Trace:\n` +
+        'A function to advance timers was called but the timers API is not ' +
+          'mocked with fake timers. Call `jest.useFakeTimers()` in this ' +
+          'test or enable fake timers globally by setting ' +
+          '`"timers": "fake"` in ' +
+          'the configuration file. This warning is likely a result of a ' +
+          'default configuration change in Jest 15.\n\n' +
+          'Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n' +
+          'Stack Trace:\n' +
           formatStackTrace(new Error().stack!, this._config, {
             noStackTrace: false,
           }),

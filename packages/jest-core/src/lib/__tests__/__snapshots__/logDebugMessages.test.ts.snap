@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prints the config object 1`] = `
-{
+"{
   "configs": {
     "automock": false,
     "cache": false,
@@ -62,6 +62,7 @@ exports[`prints the config object 1`] = `
     "bail": 0,
     "changedFilesWithAncestor": false,
     "changedSince": "",
+    "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "coverage",
@@ -111,5 +112,5 @@ exports[`prints the config object 1`] = `
   },
   "version": 123
 }
-
+"
 `;

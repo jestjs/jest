@@ -11,6 +11,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
+  ci: false,
   collectCoverage: false,
   collectCoverageFrom: [],
   collectCoverageOnlyFrom: undefined,

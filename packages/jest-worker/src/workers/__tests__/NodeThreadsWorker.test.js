@@ -68,7 +68,7 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(workerThreads.mock.calls[0][0]).toBe(thread.replace(/\.ts$/, '.js'));
+  expect(workerThreads.mock.calls[0][0]).toBe(thread);
   expect(workerThreads.mock.calls[0][1]).toEqual({
     eval: false,
     execArgv: ['--inspect', '-p'],

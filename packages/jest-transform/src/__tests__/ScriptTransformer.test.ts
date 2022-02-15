@@ -6,7 +6,6 @@
  *
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
@@ -54,7 +53,7 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
@@ -75,7 +74,7 @@ jest.mock(
 jest.mock(
   'test_async_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
@@ -313,7 +312,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
+    expect(transformedBananaWithCoverage.code).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
@@ -332,7 +331,7 @@ describe('ScriptTransformer', () => {
       '/fruits/kiwi.js',
       getCoverageOptions({collectCoverage: true}),
     );
-    expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
+    expect(transformedKiwiWithCoverage.code).toMatchSnapshot();
 
     expect(transformedBananaWithCoverage.code).not.toEqual(
       transformedKiwiWithCoverage.code,
@@ -358,7 +357,7 @@ describe('ScriptTransformer', () => {
         getCoverageOptions({collectCoverage: true}),
       );
 
-    expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
+    expect(transformedBananaWithCoverage.code).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
@@ -378,7 +377,7 @@ describe('ScriptTransformer', () => {
       '/fruits/kiwi.js',
       getCoverageOptions({collectCoverage: true}),
     );
-    expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
+    expect(transformedKiwiWithCoverage.code).toMatchSnapshot();
 
     expect(transformedBananaWithCoverage.code).not.toEqual(
       transformedKiwiWithCoverage.code,
@@ -584,14 +583,14 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
-    expect(wrap(res1.code)).toMatchSnapshot();
+    expect(res1.code).toMatchSnapshot();
 
     const res2 = scriptTransformer.transform(
       '/node_modules/react.js',
       getCoverageOptions(),
     );
     // ignores preprocessor
-    expect(wrap(res2.code)).toMatchSnapshot();
+    expect(res2.code).toMatchSnapshot();
   });
 
   it('in async mode, uses the supplied preprocessor', async () => {
@@ -604,14 +603,14 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
-    expect(wrap(res1.code)).toMatchSnapshot();
+    expect(res1.code).toMatchSnapshot();
 
     const res2 = await scriptTransformer.transformAsync(
       '/node_modules/react.js',
       getCoverageOptions(),
     );
     // ignores preprocessor
-    expect(wrap(res2.code)).toMatchSnapshot();
+    expect(res2.code).toMatchSnapshot();
   });
 
   it('in async mode, uses the supplied async preprocessor', async () => {
@@ -627,14 +626,14 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
 
-    expect(wrap(res1.code)).toMatchSnapshot();
+    expect(res1.code).toMatchSnapshot();
 
     const res2 = await scriptTransformer.transformAsync(
       '/node_modules/react.js',
       getCoverageOptions(),
     );
     // ignores preprocessor
-    expect(wrap(res2.code)).toMatchSnapshot();
+    expect(res2.code).toMatchSnapshot();
   });
 
   it('uses multiple preprocessors', async () => {
@@ -658,15 +657,15 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
-    expect(wrap(res1.code)).toMatchSnapshot();
-    expect(wrap(res2.code)).toMatchSnapshot();
+    expect(res1.code).toMatchSnapshot();
+    expect(res2.code).toMatchSnapshot();
 
     const res3 = scriptTransformer.transform(
       '/node_modules/react.js',
       getCoverageOptions(),
     );
     // ignores preprocessor
-    expect(wrap(res3.code)).toMatchSnapshot();
+    expect(res3.code).toMatchSnapshot();
   });
 
   it('uses mixture of sync/async preprocessors', async () => {
@@ -690,15 +689,15 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
-    expect(wrap(res1.code)).toMatchSnapshot();
-    expect(wrap(res2.code)).toMatchSnapshot();
+    expect(res1.code).toMatchSnapshot();
+    expect(res2.code).toMatchSnapshot();
 
     const res3 = await scriptTransformer.transformAsync(
       '/node_modules/react.js',
       getCoverageOptions(),
     );
     // ignores preprocessor
-    expect(wrap(res3.code)).toMatchSnapshot();
+    expect(res3.code).toMatchSnapshot();
   });
 
   it('writes source map if preprocessor supplies it', async () => {
@@ -922,7 +921,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -957,7 +956,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -994,7 +993,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
