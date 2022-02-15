@@ -7,14 +7,20 @@
 
 import {resolve} from 'path';
 import execa = require('execa');
+import {existsSync} from 'graceful-fs';
 import {onNodeVersions} from '@jest/test-utils';
 import {getConfig} from '../runJest';
 
 beforeAll(async () => {
-  // the typescript config test needs this type to exist
-  await execa('tsc', ['-b', 'packages/jest-types'], {
-    cwd: resolve(__dirname, '../../'),
-  });
+  // the typescript config test needs `@jest/types` to be built
+  const cwd = resolve(__dirname, '../../');
+  const typesPackageDirectory = 'packages/jest-types';
+
+  const indexDTsFile = resolve(cwd, typesPackageDirectory, 'build/index.d.ts');
+
+  if (!existsSync(indexDTsFile)) {
+    await execa('tsc', ['-b', typesPackageDirectory], {cwd});
+  }
 }, 60_000);
 
 test('reads config from cjs file', () => {
