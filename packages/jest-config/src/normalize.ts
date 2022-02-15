@@ -1131,8 +1131,12 @@ export default async function normalize(
     newOptions.moduleNameMapper = [];
   }
 
+  if (argv.ci != null) {
+    newOptions.ci = argv.ci;
+  }
+
   newOptions.updateSnapshot =
-    argv.ci && !argv.updateSnapshot
+    newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
       ? 'all'

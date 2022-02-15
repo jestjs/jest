@@ -545,6 +545,39 @@ class Index extends React.Component {
           </Container>
           <Container
             padding={['bottom', 'top']}
+            className="section-container bottom-margin docs"
+          >
+            <div className="blockElement imageAlignSide gridBlock video-block">
+              <div className="blockContent ">
+                <div className="video">
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/SyHzgcFefBk"
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="blockElement red bottom-margin">
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <Translate>
+                    The Meta Open Source team has put together a short overview
+                    of Jest, where they explained the project in beginner's
+                    terms. You can also find other content about [Meta Open
+                    Source projects](https://opensource.fb.com/) on their
+                    [YouTube
+                    Channel](https://www.youtube.com/channel/UCCQY962PmHabTjaHv2wJzfQ).
+                  </Translate>
+                </MarkdownBlock>
+              </div>
+            </div>
+          </Container>
+          <Container
+            padding={['bottom', 'top']}
             background="light"
             className="section-container community imageAlignSide twoByGridBlock"
           >

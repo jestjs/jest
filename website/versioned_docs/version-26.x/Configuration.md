@@ -859,14 +859,14 @@ _Note: The `runner` property value can omit the `jest-runner-` prefix of the pac
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 
 ```ts
-async runTests(
+async function runTests(
   tests: Array<Test>,
   watcher: TestWatcher,
   onStart: OnTestStart,
   onResult: OnTestSuccess,
   onFailure: OnTestFailure,
   options: TestRunnerOptions,
-): Promise<void>
+): Promise<void>;
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.

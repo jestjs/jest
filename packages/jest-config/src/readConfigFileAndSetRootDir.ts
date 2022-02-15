@@ -84,21 +84,7 @@ const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
   // Register TypeScript compiler instance
-  try {
-    registerer ||= require('ts-node').register({
-      compilerOptions: {
-        module: 'CommonJS',
-      },
-    });
-  } catch (e: any) {
-    if (e.code === 'MODULE_NOT_FOUND') {
-      throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
-      );
-    }
-
-    throw e;
-  }
+  await registerTsNode();
 
   registerer.enabled(true);
 
@@ -113,3 +99,30 @@ const loadTSConfigFile = async (
 
   return configObject;
 };
+
+async function registerTsNode(): Promise<Service> {
+  if (registerer) {
+    return registerer;
+  }
+
+  try {
+    const tsNode = await import('ts-node');
+    registerer = tsNode.register({
+      compilerOptions: {
+        module: 'CommonJS',
+      },
+      moduleTypes: {
+        '**': 'cjs',
+      },
+    });
+    return registerer;
+  } catch (e: any) {
+    if (e.code === 'ERR_MODULE_NOT_FOUND') {
+      throw new Error(
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+      );
+    }
+
+    throw e;
+  }
+}

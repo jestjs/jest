@@ -5,16 +5,20 @@
 - `[expect]` Expose `AsymmetricMatchers`, `MatcherFunction` and `MatcherFunctionWithState` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-environment-jsdom` by default ([#12354](https://github.com/facebook/jest/pull/12354))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-jasmine2` by default ([#12355](https://github.com/facebook/jest/pull/12355))
+- `[jest-config, @jest/types]` Add `ci` to `GlobalConfig` ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[jest-resolver]` [**BREAKING**] Add support for `package.json` `exports` ([11961](https://github.com/facebook/jest/pull/11961))
+- `[@jes/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 
 ### Fixes
 
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
+- `[jest-config]` Correctly detect CI environment and update snapshots accordingly ([#12378](https://github.com/facebook/jest/pull/12378))
+- `[jest-config]` Pass `moduleTypes` to `ts-node` to enforce CJS when transpiling ([#12397](https://github.com/facebook/jest/pull/12397))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 
@@ -36,6 +40,7 @@
 - `[jest-phabricator]` [**BREAKING**] Migrate to ESM ([#12341](https://github.com/facebook/jest/pull/12341))
 - `[jest-resolve]` [**BREAKING**] Make `requireResolveFunction` argument mandatory ([#12353](https://github.com/facebook/jest/pull/12353))
 - `[jest-runner]` [**BREAKING**] Remove some type exports from `@jest/test-result` ([#12353](https://github.com/facebook/jest/pull/12353))
+- `[jest-serializer]` [**BREAKING**] Deprecate package in favour of using `v8` APIs directly ([#12391](https://github.com/facebook/jest/pull/12391))
 - `[jest-snapshot]` [**BREAKING**] Migrate to ESM ([#12342](https://github.com/facebook/jest/pull/12342))
 - `[jest-transform]` Update `write-file-atomic` to v4 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))

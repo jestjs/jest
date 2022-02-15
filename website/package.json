@@ -29,22 +29,22 @@
     ]
   },
   "dependencies": {
-    "@docusaurus/core": "0.0.0-4269",
-    "@docusaurus/plugin-client-redirects": "0.0.0-4269",
-    "@docusaurus/plugin-pwa": "0.0.0-4269",
-    "@docusaurus/preset-classic": "0.0.0-4269",
+    "@docusaurus/core": "0.0.0-4591",
+    "@docusaurus/plugin-client-redirects": "0.0.0-4591",
+    "@docusaurus/plugin-pwa": "0.0.0-4591",
+    "@docusaurus/preset-classic": "0.0.0-4591",
     "clsx": "^1.1.1",
     "globby": "^11.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-github-btn": "^1.2.0",
-    "react-markdown": "^5.0.3"
+    "react-markdown": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@crowdin/cli": "^3.5.2",
     "@types/react": "^17.0.3",
-    "graphql": "^15.3.0",
-    "graphql-request": "^3.1.0"
+    "graphql": "^16.3.0",
+    "graphql-request": "^4.0.0"
   }
 }

@@ -85,6 +85,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "globalConfig": {
     "bail": 0,
     "changedFilesWithAncestor": false,
+    "ci": true,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
@@ -121,7 +122,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testFailureExitCode": 1,
     "testPathPattern": "",
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
-    "updateSnapshot": "all",
+    "updateSnapshot": "none",
     "useStderr": false,
     "watch": false,
     "watchAll": false,

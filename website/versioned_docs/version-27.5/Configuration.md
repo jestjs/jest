@@ -890,14 +890,14 @@ _Note: The `runner` property value can omit the `jest-runner-` prefix of the pac
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 
 ```ts
-async runTests(
+async function runTests(
   tests: Array<Test>,
   watcher: TestWatcher,
   onStart: OnTestStart,
   onResult: OnTestSuccess,
   onFailure: OnTestFailure,
   options: TestRunnerOptions,
-): Promise<void>
+): Promise<void>;
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
@@ -944,7 +944,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 Default: `undefined`
 
-Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 
 ```json
 {

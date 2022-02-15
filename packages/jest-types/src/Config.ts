@@ -8,6 +8,7 @@
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
+import type {SnapshotFormat} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -59,9 +60,6 @@ export type TransformerConfig = [string, Record<string, unknown>];
 export interface ConfigGlobals {
   [K: string]: unknown;
 }
-
-// This interface gets filled out when pretty-format is included
-export interface PrettyFormatOptions {}
 
 export type DefaultOptions = {
   automock: boolean;
@@ -228,7 +226,7 @@ export type InitialOptions = Partial<{
   slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
-  snapshotFormat: PrettyFormatOptions;
+  snapshotFormat: SnapshotFormat;
   errorOnDeprecated: boolean;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -289,6 +287,7 @@ export type GlobalConfig = {
   bail: number;
   changedSince?: string;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<Glob>;
   collectCoverageOnlyFrom?: {
@@ -329,7 +328,7 @@ export type GlobalConfig = {
   rootDir: Path;
   silent?: boolean;
   skipFilter: boolean;
-  snapshotFormat: PrettyFormatOptions;
+  snapshotFormat: SnapshotFormat;
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
@@ -392,7 +391,7 @@ export type ProjectConfig = {
   slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
-  snapshotFormat: PrettyFormatOptions;
+  snapshotFormat: SnapshotFormat;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;

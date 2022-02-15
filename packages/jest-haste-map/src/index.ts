@@ -12,10 +12,10 @@ import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import type {Stats} from 'graceful-fs';
+import {deserialize, serialize} from 'v8';
+import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import serializer from 'jest-serializer';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -402,7 +402,7 @@ export default class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath) as any;
+      hasteMap = deserialize(readFileSync(this._cachePath));
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -729,7 +729,7 @@ export default class HasteMap extends EventEmitter {
    * 4. serialize the new `HasteMap` in a cache file.
    */
   private _persist(hasteMap: InternalHasteMap) {
-    serializer.writeFileSync(this._cachePath, hasteMap);
+    writeFileSync(this._cachePath, serialize(hasteMap));
   }
 
   /**
