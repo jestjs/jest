@@ -572,17 +572,18 @@ export default class Runtime {
       }
 
       const match = specifier.match(
-        /^data:text\/javascript;(charset=utf-8|base64),(.*)$/,
+        /^data:text\/javascript;(?<encoding>charset=utf-8|base64),(?<code>.*)$/,
       );
 
-      if (!match) {
+      if (!match || !match.groups) {
         throw new Error('Invalid data URI');
       }
 
-      let code = match[2];
-      if (match[1] === 'base64') {
+      const encoding = match.groups.encoding;
+      let code = match.groups.code;
+      if (encoding === 'base64') {
         code = Buffer.from(code, 'base64').toString();
-      } else if (match[1] === 'charset=utf-8') {
+      } else if (encoding === 'charset=utf-8') {
         code = decodeURIComponent(code);
       } else {
         throw new Error('Invalid data URI encoding');
