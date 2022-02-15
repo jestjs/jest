@@ -370,6 +370,9 @@ export default class Resolver {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
     }
+    if (moduleName.startsWith('data:')) {
+      return moduleName;
+    }
     return this._isModuleResolved(from, moduleName)
       ? this.getModule(moduleName)
       : this._getVirtualMockPath(virtualMocks, from, moduleName, options);

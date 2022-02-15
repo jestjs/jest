@@ -554,6 +554,17 @@ export default class Runtime {
     }
 
     if (specifier.startsWith('data:')) {
+      if (
+        this._shouldMock(
+          referencingIdentifier,
+          specifier,
+          this._explicitShouldMockModule,
+          {conditions: this.esmConditions},
+        )
+      ) {
+        return this.importMock(referencingIdentifier, specifier, context);
+      }
+
       const fromCache = this._esmoduleRegistry.get(specifier);
 
       if (fromCache) {
@@ -573,6 +584,8 @@ export default class Runtime {
         code = atob(code);
       } else if (match[1] === 'charset=utf-8') {
         code = decodeURIComponent(code);
+      } else {
+        throw new Error('Invalid data URI encoding');
       }
 
       const module = new SourceTextModule(code, {
