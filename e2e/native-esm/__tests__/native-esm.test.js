@@ -196,7 +196,7 @@ test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
 });
 
-test('supports imports from "data:text/javascript;charset=utf-8" URI', async () => {
+test('supports imports from "data:text/javascript" URI with charset=utf-8 encoding', async () => {
   const code = 'export const something = "some value"';
   const importedEncoded = await import(
     `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
@@ -204,12 +204,60 @@ test('supports imports from "data:text/javascript;charset=utf-8" URI', async () 
   expect(importedEncoded.something).toBe('some value');
 });
 
-test('supports imports from "data:text/javascript;base64" URI', async () => {
+test('supports imports from "data:text/javascript" URI with base64 encoding', async () => {
   const code = 'export const something = "some value"';
   const importedBase64 = await import(
     `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
   );
   expect(importedBase64.something).toBe('some value');
+});
+
+test('supports imports from "data:text/javascript" URI without explicit encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedEncoded = await import(
+    `data:text/javascript,${encodeURIComponent(code)}`
+  );
+  expect(importedEncoded.something).toBe('some value');
+});
+
+test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(
+    async () =>
+      await import(
+        `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+      ),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:" URI with invalid mime type fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(
+    async () => await import(`data:something/else,${encodeURIComponent(code)}`),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:text/javascript" URI with invalid data fail', async () => {
+  await expect(
+    async () =>
+      await import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
+  ).rejects.toThrow("Unexpected token '.'");
+});
+
+test('imports from "data:application/wasm" URI not supported', async () => {
+  await expect(
+    async () => await import('data:application/wasm,96cafe00babe'),
+  ).rejects.toThrow('Unsupported MIME type');
+});
+
+test('supports imports from "data:application/json" URI', async () => {
+  const data = await import('data:application/json,{foo: "bar"}');
+  expect(data.default).toStrictEqual({foo: 'bar'});
+});
+
+test('supports static "data:" URI import', async () => {
+  const module = await import('../staticDataImport.js');
+  expect(module.value()).toStrictEqual({bar: {obj: 456}, foo: '123'});
 });
 
 test('imports from "data:" URI is properly cached', async () => {

@@ -572,21 +572,30 @@ export default class Runtime {
       }
 
       const match = specifier.match(
-        /^data:text\/javascript;(?<encoding>charset=utf-8|base64),(?<code>.*)$/,
+        /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/,
       );
 
       if (!match || !match.groups) {
         throw new Error('Invalid data URI');
       }
 
+      const mime = match.groups.mime;
+      if (mime === 'application/wasm') {
+        throw new Error('Unsupported MIME type');
+      }
+
       const encoding = match.groups.encoding;
       let code = match.groups.code;
-      if (encoding === 'base64') {
-        code = Buffer.from(code, 'base64').toString();
-      } else if (encoding === 'charset=utf-8') {
+      if (!encoding || encoding === 'charset=utf-8') {
         code = decodeURIComponent(code);
+      } else if (encoding === 'base64') {
+        code = Buffer.from(code, 'base64').toString();
       } else {
         throw new Error('Invalid data URI encoding');
+      }
+
+      if (mime === 'application/json') {
+        code = 'export default ' + code;
       }
 
       const module = new SourceTextModule(code, {
