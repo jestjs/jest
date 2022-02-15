@@ -14,7 +14,7 @@ const processSend = process.send;
 const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-import {deserialize} from 'v8';
+import {deserialize, serialize} from 'v8';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -323,12 +323,8 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: expect.anything()},
+    {stringifiedMessage: serialize(67890)},
   ]);
-
-  expect(
-    deserialize(process.send.mock.calls[0][0][1].stringifiedMessage),
-  ).toEqual(67890);
 });
 
 it('removes the message listener on END message', () => {
