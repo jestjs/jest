@@ -97,6 +97,7 @@ export function printIteratorValues(
   printer: Printer,
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -105,9 +106,14 @@ export function printIteratorValues(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
-      result +=
-        indentationNext +
-        printer(current.value, config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '...';
+        break;
+      }
+
+      result += printer(current.value, config, indentationNext, depth, refs);
 
       current = iterator.next();
 

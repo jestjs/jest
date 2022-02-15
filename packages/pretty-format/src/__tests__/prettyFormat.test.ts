@@ -562,20 +562,31 @@ describe('prettyFormat()', () => {
     );
   });
 
-  it('can customize the max width', () => {
-    const val = Array(1_000_000).fill('x');
-    expect(prettyFormat(val, {maxWidth: 5})).toEqual(
-      [
-        'Array [',
-        '  "x",',
-        '  "x",',
-        '  "x",',
-        '  "x",',
-        '  "x",',
-        '  ...',
-        ']',
-      ].join('\n'),
-    );
+  describe('maxWidth option', () => {
+    it('applies to arrays', () => {
+      const val = Array(1_000_000).fill('x');
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Array [',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  ...',
+          ']',
+        ].join('\n'),
+      );
+    });
+
+    it('applies to sets', () => {
+      const val = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  ...', '}'].join(
+          '\n',
+        ),
+      );
+    });
   });
 
   it('can customize the max depth', () => {
