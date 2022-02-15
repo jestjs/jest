@@ -1,8 +1,0 @@
-{
-  "extends": "../../../tsconfig.json",
-  "ts-node": {
-    "moduleTypes": {
-      "jest.config.ts": "cjs"
-    }
-  }
-}

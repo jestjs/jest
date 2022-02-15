@@ -89,6 +89,9 @@ const loadTSConfigFile = async (
       compilerOptions: {
         module: 'CommonJS',
       },
+      moduleTypes: {
+        '**': 'cjs',
+      },
     });
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
