@@ -11,12 +11,12 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
+  FunctionLike,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
-import type {FunctionLike} from '../types';
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
