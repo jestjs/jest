@@ -147,6 +147,11 @@ export function printListItems(
     for (let i = 0; i < list.length; i++) {
       result += indentationNext;
 
+      if (i === config.maxWidth) {
+        result += '...';
+        break;
+      }
+
       if (i in list) {
         result += printer(list[i], config, indentationNext, depth, refs);
       }
