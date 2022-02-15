@@ -1,0 +1,2 @@
+codecov:
+  require_ci_to_pass: false
