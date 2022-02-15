@@ -45,6 +45,7 @@ export type Config = {
   escapeString: boolean;
   indent: string;
   maxDepth: number;
+  maxWidth: number;
   min: boolean;
   plugins: Plugins;
   printBasicPrototype: boolean;

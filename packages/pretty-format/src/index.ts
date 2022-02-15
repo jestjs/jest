@@ -404,6 +404,7 @@ export const DEFAULT_OPTIONS: Options = {
   highlight: false,
   indent: 2,
   maxDepth: Infinity,
+  maxWidth: Infinity,
   min: false,
   plugins: [],
   printBasicPrototype: true,
@@ -506,6 +507,10 @@ const getConfig = (options?: OptionsReceived): Config => ({
     options && options.maxDepth !== undefined
       ? options.maxDepth
       : DEFAULT_OPTIONS.maxDepth,
+  maxWidth:
+    options && options.maxWidth !== undefined
+      ? options.maxWidth
+      : DEFAULT_OPTIONS.maxWidth,
   min: options && options.min !== undefined ? options.min : DEFAULT_OPTIONS.min,
   plugins:
     options && options.plugins !== undefined
