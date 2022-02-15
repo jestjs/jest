@@ -15,7 +15,7 @@ beforeAll(async () => {
   await execa('tsc', ['-b', 'packages/jest-types'], {
     cwd: resolve(__dirname, '../../'),
   });
-}, 30_000);
+}, 60_000);
 
 test('reads config from cjs file', () => {
   const {configs} = getConfig('esm-config/cjs', [], {
