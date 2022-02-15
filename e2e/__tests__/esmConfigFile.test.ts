@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {resolve} from 'path';
+import execa = require('execa');
 import {onNodeVersions} from '@jest/test-utils';
 import {getConfig} from '../runJest';
 
@@ -19,6 +21,12 @@ test('reads config from cjs file', () => {
     name: 'Config from cjs file',
   });
 });
+
+beforeAll(async () => {
+  await execa('tsc', ['-b', 'packages/jest-types'], {
+    cwd: resolve(__dirname, '../../'),
+  });
+}, 30_000);
 
 onNodeVersions('>=12.17.0', () => {
   test('reads config from mjs file', () => {
