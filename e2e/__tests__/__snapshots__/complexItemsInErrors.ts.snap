@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`handles errors with BigInt 1`] = `
-"FAIL __tests__/closure-1.js
+"FAIL __tests__/test-1.js
   ● dummy
 
     expect(received).toEqual(expected) // deep equality
@@ -14,9 +14,9 @@ exports[`handles errors with BigInt 1`] = `
         |              ^
       3 | });
 
-      at Object.toEqual (__tests__/closure-1.js:2:14)
+      at Object.toEqual (__tests__/test-1.js:2:14)
 
-FAIL __tests__/closure-2.js
+FAIL __tests__/test-2.js
   ● dummy
 
     expect(received).toEqual(expected) // deep equality
@@ -29,11 +29,11 @@ FAIL __tests__/closure-2.js
         |              ^
       3 | });
 
-      at Object.toEqual (__tests__/closure-2.js:2:14)"
+      at Object.toEqual (__tests__/test-2.js:2:14)"
 `;
 
 exports[`handles functions that close over outside variables 1`] = `
-"FAIL __tests__/closure-1.js
+"FAIL __tests__/test-1.js
   ● dummy
 
     boom
@@ -46,9 +46,9 @@ exports[`handles functions that close over outside variables 1`] = `
       6 |   error.someProp = () => someString;
       7 |
 
-      at Object.<anonymous> (__tests__/closure-1.js:4:17)
+      at Object.<anonymous> (__tests__/test-1.js:4:17)
 
-FAIL __tests__/closure-2.js
+FAIL __tests__/test-2.js
   ● dummy
 
     boom
@@ -61,5 +61,5 @@ FAIL __tests__/closure-2.js
       6 |   error.someProp = () => someString;
       7 |
 
-      at Object.<anonymous> (__tests__/closure-2.js:4:17)"
+      at Object.<anonymous> (__tests__/test-2.js:4:17)"
 `;

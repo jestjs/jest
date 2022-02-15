@@ -39,8 +39,8 @@ test('handles functions that close over outside variables', async () => {
   `;
 
   writeFiles(tempDir, {
-    '__tests__/closure-1.js': testFileContent,
-    '__tests__/closure-2.js': testFileContent,
+    '__tests__/test-1.js': testFileContent,
+    '__tests__/test-2.js': testFileContent,
   });
 
   const {end, waitUntil} = runContinuous(
@@ -66,8 +66,8 @@ test.skip('handles errors with BigInt', async () => {
   `;
 
   writeFiles(tempDir, {
-    '__tests__/closure-1.js': testFileContent,
-    '__tests__/closure-2.js': testFileContent,
+    '__tests__/test-1.js': testFileContent,
+    '__tests__/test-2.js': testFileContent,
   });
 
   const {end, waitUntil} = runContinuous(
