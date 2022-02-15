@@ -587,6 +587,32 @@ describe('prettyFormat()', () => {
         ),
       );
     });
+
+    it('applies to maps', () => {
+      const val = new Map();
+      val.set('a', 1);
+      val.set('b', 2);
+      val.set('c', 3);
+      val.set('d', 4);
+      val.set('e', 5);
+      val.set('f', 6);
+      val.set('g', 7);
+      val.set('h', 8);
+      val.set('i', 9);
+      val.set('j', 10);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Map {',
+          '  "a" => 1,',
+          '  "b" => 2,',
+          '  "c" => 3,',
+          '  "d" => 4,',
+          '  "e" => 5,',
+          '  ...',
+          '}',
+        ].join('\n'),
+      );
+    });
   });
 
   it('can customize the max depth', () => {

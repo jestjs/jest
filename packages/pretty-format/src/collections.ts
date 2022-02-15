@@ -43,6 +43,7 @@ export function printIteratorEntries(
   separator: string = ': ',
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -51,6 +52,13 @@ export function printIteratorEntries(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '...';
+        break;
+      }
+
       const name = printer(
         current.value[0],
         config,
@@ -66,7 +74,7 @@ export function printIteratorEntries(
         refs,
       );
 
-      result += indentationNext + name + separator + value;
+      result += name + separator + value;
 
       current = iterator.next();
 
