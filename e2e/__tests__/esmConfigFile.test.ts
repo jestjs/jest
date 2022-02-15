@@ -11,18 +11,6 @@ import {existsSync} from 'graceful-fs';
 import {onNodeVersions} from '@jest/test-utils';
 import {getConfig} from '../runJest';
 
-beforeAll(async () => {
-  // the typescript config test needs `@jest/types` to be built
-  const cwd = resolve(__dirname, '../../');
-  const typesPackageDirectory = 'packages/jest-types';
-
-  const indexDTsFile = resolve(cwd, typesPackageDirectory, 'build/index.d.ts');
-
-  if (!existsSync(indexDTsFile)) {
-    await execa('tsc', ['-b', typesPackageDirectory], {cwd});
-  }
-}, 60_000);
-
 test('reads config from cjs file', () => {
   const {configs} = getConfig('esm-config/cjs', [], {
     skipPkgJsonCheck: true,
@@ -60,15 +48,33 @@ onNodeVersions('>=12.17.0', () => {
     });
   });
 
-  test('reads config from ts file when package.json#type=module', () => {
-    const {configs} = getConfig('esm-config/ts', [], {
-      skipPkgJsonCheck: true,
-    });
+  describe('typescript', () => {
+    beforeAll(async () => {
+      // the typescript config test needs `@jest/types` to be built
+      const cwd = resolve(__dirname, '../../');
+      const typesPackageDirectory = 'packages/jest-types';
 
-    expect(configs).toHaveLength(1);
-    expect(configs[0].displayName).toEqual({
-      color: 'white',
-      name: 'Config from ts file',
+      const indexDTsFile = resolve(
+        cwd,
+        typesPackageDirectory,
+        'build/index.d.ts',
+      );
+
+      if (!existsSync(indexDTsFile)) {
+        await execa('tsc', ['-b', typesPackageDirectory], {cwd});
+      }
+    }, 60_000);
+
+    test('reads config from ts file when package.json#type=module', () => {
+      const {configs} = getConfig('esm-config/ts', [], {
+        skipPkgJsonCheck: true,
+      });
+
+      expect(configs).toHaveLength(1);
+      expect(configs[0].displayName).toEqual({
+        color: 'white',
+        name: 'Config from ts file',
+      });
     });
   });
 });
