@@ -278,3 +278,5 @@ const transformer: SyncTransformer<TransformOptions> = {
 };
 
 export default transformer;
+
+export { createTransformer };
