@@ -7,7 +7,7 @@
 
 import {deserialize, serialize} from 'v8';
 
-type StringifiedMessage = {stringifiedMessage: string};
+type StringifiedMessage = {stringifiedMessage: Buffer};
 type WorkerResponse = Array<unknown> | [unknown, StringifiedMessage];
 
 export const stringify = (message: unknown): StringifiedMessage => {
