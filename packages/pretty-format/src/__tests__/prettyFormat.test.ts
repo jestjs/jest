@@ -573,7 +573,7 @@ describe('prettyFormat()', () => {
           '  "x",',
           '  "x",',
           '  "x",',
-          '  ...',
+          '  …',
           ']',
         ].join('\n'),
       );
@@ -582,7 +582,7 @@ describe('prettyFormat()', () => {
     it('applies to sets', () => {
       const val = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
       expect(prettyFormat(val, {maxWidth: 5})).toEqual(
-        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  ...', '}'].join(
+        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  …', '}'].join(
           '\n',
         ),
       );
@@ -608,7 +608,7 @@ describe('prettyFormat()', () => {
           '  "c" => 3,',
           '  "d" => 4,',
           '  "e" => 5,',
-          '  ...',
+          '  …',
           '}',
         ].join('\n'),
       );

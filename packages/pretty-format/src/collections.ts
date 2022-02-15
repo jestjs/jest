@@ -55,7 +55,7 @@ export function printIteratorEntries(
       result += indentationNext;
 
       if (width++ === config.maxWidth) {
-        result += '...';
+        result += '…';
         break;
       }
 
@@ -117,7 +117,7 @@ export function printIteratorValues(
       result += indentationNext;
 
       if (width++ === config.maxWidth) {
-        result += '...';
+        result += '…';
         break;
       }
 
@@ -162,7 +162,7 @@ export function printListItems(
       result += indentationNext;
 
       if (i === config.maxWidth) {
-        result += '...';
+        result += '…';
         break;
       }
 
