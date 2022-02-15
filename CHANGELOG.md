@@ -13,6 +13,7 @@
 - `[jest-resolver]` [**BREAKING**] Add support for `package.json` `exports` ([11961](https://github.com/facebook/jest/pull/11961))
 - `[@jes/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
+- `[jest-worker]` Support serializing complex objects ([#11467](https://github.com/facebook/jest/pull/11467))
 
 ### Fixes
 
