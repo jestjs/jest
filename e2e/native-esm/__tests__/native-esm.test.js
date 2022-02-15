@@ -5,23 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {jest as jestObject} from '@jest/globals'
-import dns from 'dns'
+import dns from 'dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
-import {readFileSync} from 'fs'
-import {createRequire} from 'module'
-import prefixDns from 'node:dns'
-import {dirname, resolve} from 'path'
-import {fileURLToPath} from 'url'
-import staticImportedStatefulFromCjs from '../fromCjs.mjs'
-import {double} from '../index'
-import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs'
-import {bag} from '../namespaceExport.js'
+import {readFileSync} from 'fs';
+import {createRequire} from 'module';
+import prefixDns from 'node:dns';
+import {dirname, resolve} from 'path';
+import {fileURLToPath} from 'url';
+import {jest as jestObject} from '@jest/globals';
+import staticImportedStatefulFromCjs from '../fromCjs.mjs';
+import {double} from '../index';
+import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
+import {bag} from '../namespaceExport.js';
 /* eslint-disable import/no-duplicates */
-import staticImportedStateful from '../stateful.mjs'
-import staticImportedStatefulWithQuery from '../stateful.mjs?query=1'
-import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2'
+import staticImportedStateful from '../stateful.mjs';
+import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
+import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable import/no-duplicates */
 
 test('should have correct import.meta', () => {
@@ -207,7 +207,7 @@ test('supports imports from "data:text/javascript;charset=utf-8" URI', async () 
 test('supports imports from "data:text/javascript;base64" URI', async () => {
   const code = 'export const something = "some value"';
   const importedBase64 = await import(
-    `data:text/javascript;base64,${btoa(code)}`
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
   );
   expect(importedBase64.something).toBe('some value');
 });
@@ -221,7 +221,9 @@ test('imports from "data:" URI is properly cached', async () => {
   expect(data1.wrapper.value).toBe(123);
   data1.set(234);
   expect(data1.wrapper.value).toBe(234);
-  const data2 = await import(`data:text/javascript;base64,${btoa(code)}`);
+  const data2 = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  );
   expect(data2.wrapper.value).toBe(123);
   const data3 = await import(
     `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
@@ -231,7 +233,9 @@ test('imports from "data:" URI is properly cached', async () => {
 
 test('can mock "data:" URI module', async () => {
   const code = 'export const something = "some value"';
-  const dataModule = `data:text/javascript;base64,${btoa(code)}`;
+  const dataModule = `data:text/javascript;base64,${Buffer.from(code).toString(
+    'base64',
+  )}`;
   jestObject.unstable_mockModule(dataModule, () => ({foo: 'bar'}), {
     virtual: true,
   });

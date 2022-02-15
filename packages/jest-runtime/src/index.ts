@@ -581,7 +581,7 @@ export default class Runtime {
 
       let code = match[2];
       if (match[1] === 'base64') {
-        code = atob(code);
+        code = Buffer.from(code, 'base64').toString();
       } else if (match[1] === 'charset=utf-8') {
         code = decodeURIComponent(code);
       } else {
