@@ -149,7 +149,7 @@ async function loadBabelOptionsAsync(
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
-const createTransformer: CreateTransformer = userOptions => {
+export const createTransformer: CreateTransformer = userOptions => {
   const inputOptions = userOptions ?? {};
 
   const options = {
