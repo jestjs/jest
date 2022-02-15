@@ -45,6 +45,7 @@
 - `[jest-snapshot]` [**BREAKING**] Migrate to ESM ([#12342](https://github.com/facebook/jest/pull/12342))
 - `[jest-transform]` Update `write-file-atomic` to v4 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
+- `[docs]` Add note about not mixing `done()` with Promises ([#11077](https://github.com/facebook/jest/pull/11077))
 
 ### Performance
 
