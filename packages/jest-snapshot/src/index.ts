@@ -7,7 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-import type {RawMatcherFn} from 'expect';
+import type {MatcherFunctionWithState} from 'expect';
 import type {FS as HasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
@@ -156,7 +156,7 @@ export const cleanup = (
   };
 };
 
-export const toMatchSnapshot: RawMatcherFn<Context> = function (
+export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
   received: unknown,
   propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
@@ -214,69 +214,70 @@ export const toMatchSnapshot: RawMatcherFn<Context> = function (
   });
 };
 
-export const toMatchInlineSnapshot: RawMatcherFn<Context> = function (
-  received: unknown,
-  propertiesOrSnapshot?: object | string,
-  inlineSnapshot?: string,
-) {
-  const matcherName = 'toMatchInlineSnapshot';
-  let properties;
+export const toMatchInlineSnapshot: MatcherFunctionWithState<Context> =
+  function (
+    received: unknown,
+    propertiesOrSnapshot?: object | string,
+    inlineSnapshot?: string,
+  ) {
+    const matcherName = 'toMatchInlineSnapshot';
+    let properties;
 
-  const length = arguments.length;
-  if (length === 2 && typeof propertiesOrSnapshot === 'string') {
-    inlineSnapshot = propertiesOrSnapshot;
-  } else if (length >= 2) {
-    const options: MatcherHintOptions = {
-      isNot: this.isNot,
-      promise: this.promise,
-    };
-    if (length === 3) {
-      options.secondArgument = SNAPSHOT_ARG;
-      options.secondArgumentColor = noColor;
-    }
+    const length = arguments.length;
+    if (length === 2 && typeof propertiesOrSnapshot === 'string') {
+      inlineSnapshot = propertiesOrSnapshot;
+    } else if (length >= 2) {
+      const options: MatcherHintOptions = {
+        isNot: this.isNot,
+        promise: this.promise,
+      };
+      if (length === 3) {
+        options.secondArgument = SNAPSHOT_ARG;
+        options.secondArgumentColor = noColor;
+      }
 
-    if (
-      typeof propertiesOrSnapshot !== 'object' ||
-      propertiesOrSnapshot === null
-    ) {
-      throw new Error(
-        matcherErrorMessage(
-          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
-          `Expected ${EXPECTED_COLOR('properties')} must be an object`,
-          printWithType(
-            'Expected properties',
-            propertiesOrSnapshot,
-            printExpected,
+      if (
+        typeof propertiesOrSnapshot !== 'object' ||
+        propertiesOrSnapshot === null
+      ) {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+            `Expected ${EXPECTED_COLOR('properties')} must be an object`,
+            printWithType(
+              'Expected properties',
+              propertiesOrSnapshot,
+              printExpected,
+            ),
           ),
-        ),
-      );
+        );
+      }
+
+      if (length === 3 && typeof inlineSnapshot !== 'string') {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+            'Inline snapshot must be a string',
+            printWithType('Inline snapshot', inlineSnapshot, serialize),
+          ),
+        );
+      }
+
+      properties = propertiesOrSnapshot;
     }
 
-    if (length === 3 && typeof inlineSnapshot !== 'string') {
-      throw new Error(
-        matcherErrorMessage(
-          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
-          'Inline snapshot must be a string',
-          printWithType('Inline snapshot', inlineSnapshot, serialize),
-        ),
-      );
-    }
-
-    properties = propertiesOrSnapshot;
-  }
-
-  return _toMatchSnapshot({
-    context: this,
-    inlineSnapshot:
-      inlineSnapshot !== undefined
-        ? stripAddedIndentation(inlineSnapshot)
-        : undefined,
-    isInline: true,
-    matcherName,
-    properties,
-    received,
-  });
-};
+    return _toMatchSnapshot({
+      context: this,
+      inlineSnapshot:
+        inlineSnapshot !== undefined
+          ? stripAddedIndentation(inlineSnapshot)
+          : undefined,
+      isInline: true,
+      matcherName,
+      properties,
+      received,
+    });
+  };
 
 const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   const {context, hint, inlineSnapshot, isInline, matcherName, properties} =
@@ -407,29 +408,26 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-export const toThrowErrorMatchingSnapshot: RawMatcherFn<Context> = function (
-  received: unknown,
-  hint: string | undefined, // because error TS1016 for hint?: string
-  fromPromise: boolean,
-) {
-  const matcherName = 'toThrowErrorMatchingSnapshot';
+export const toThrowErrorMatchingSnapshot: MatcherFunctionWithState<Context> =
+  function (received: unknown, hint?: string, fromPromise?: boolean) {
+    const matcherName = 'toThrowErrorMatchingSnapshot';
 
-  // Future breaking change: Snapshot hint must be a string
-  // if (hint !== undefined && typeof hint !== string) {}
+    // Future breaking change: Snapshot hint must be a string
+    // if (hint !== undefined && typeof hint !== string) {}
 
-  return _toThrowErrorMatchingSnapshot(
-    {
-      context: this,
-      hint,
-      isInline: false,
-      matcherName,
-      received,
-    },
-    fromPromise,
-  );
-};
+    return _toThrowErrorMatchingSnapshot(
+      {
+        context: this,
+        hint,
+        isInline: false,
+        matcherName,
+        received,
+      },
+      fromPromise,
+    );
+  };
 
-export const toThrowErrorMatchingInlineSnapshot: RawMatcherFn<Context> =
+export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithState<Context> =
   function (received: unknown, inlineSnapshot?: string, fromPromise?: boolean) {
     const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 

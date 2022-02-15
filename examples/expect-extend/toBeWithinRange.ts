@@ -6,13 +6,21 @@
  */
 
 import {expect} from '@jest/globals';
-import type {RawMatcherFn} from 'expect';
+import type {MatcherFunction} from 'expect';
 
-const toBeWithinRange: RawMatcherFn = (
-  actual: number,
-  floor: number,
-  ceiling: number,
+const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
+  actual: unknown,
+  floor: unknown,
+  ceiling: unknown,
 ) => {
+  if (
+    typeof actual !== 'number' ||
+    typeof floor !== 'number' ||
+    typeof ceiling !== 'number'
+  ) {
+    throw new Error('These must be of type number!');
+  }
+
   const pass = actual >= floor && actual <= ceiling;
   if (pass) {
     return {
