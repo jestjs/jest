@@ -52,6 +52,9 @@ module.exports = {
             path.resolve('static/css/jest.css'),
           ],
         },
+        gtag: {
+          trackingID: 'UA-44373548-17',
+        },
       },
     ],
   ],
@@ -252,9 +255,6 @@ module.exports = {
       indexName: 'jest-v2',
       apiKey: '833906d7486e4059359fa58823c4ef56',
       contextualSearch: true,
-    },
-    gtag: {
-      trackingID: 'UA-44373548-17',
     },
   },
 };

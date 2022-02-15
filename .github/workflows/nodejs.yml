@@ -133,3 +133,34 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+
+  test-coverage:
+    name: Node LTS on Ubuntu with coverage
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:js
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
+      - name: run tests with coverage
+        run: |
+          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }}
+          yarn test-leak
+      - name: map coverage
+        run: node ./scripts/mapCoverage.js
+        if: always()
+      - uses: codecov/codecov-action@v2
+        if: always()
+        with:
+          directory: ./coverage
