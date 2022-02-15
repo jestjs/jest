@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "28.0.0-alpha.0",
+  "version": "28.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.0.0-alpha.0",
+    "@jest/types": "^28.0.0-alpha.1",
     "jest-regex-util": "^28.0.0-alpha.0",
-    "jest-snapshot": "^28.0.0-alpha.0"
+    "jest-snapshot": "^28.0.0-alpha.1"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.0.0-alpha.0",
-    "jest-haste-map": "^28.0.0-alpha.0",
-    "jest-resolve": "^28.0.0-alpha.0",
-    "jest-runtime": "^28.0.0-alpha.0"
+    "@jest/test-utils": "^28.0.0-alpha.1",
+    "jest-haste-map": "^28.0.0-alpha.1",
+    "jest-resolve": "^28.0.0-alpha.1",
+    "jest-runtime": "^28.0.0-alpha.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

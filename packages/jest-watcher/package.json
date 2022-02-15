@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "28.0.0-alpha.0",
+  "version": "28.0.0-alpha.1",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -12,12 +12,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "^28.0.0-alpha.0",
-    "@jest/types": "^28.0.0-alpha.0",
+    "@jest/test-result": "^28.0.0-alpha.1",
+    "@jest/types": "^28.0.0-alpha.1",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "jest-util": "^28.0.0-alpha.0",
+    "jest-util": "^28.0.0-alpha.1",
     "string-length": "^4.0.1"
   },
   "repository": {
