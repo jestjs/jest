@@ -52,9 +52,8 @@ import type {
 export type {
   AsymmetricMatchers,
   Expect,
-  ExpectationResult,
   MatcherFunction,
-  MatcherFunctionWithContext,
+  MatcherFunctionWithState,
   MatcherState,
   Matchers,
 } from './types';

@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
-  type ExpectationResult,
   type MatcherFunction,
-  type MatcherFunctionWithContext,
+  type MatcherFunctionWithState,
   type MatcherState,
   type Matchers,
   expect,
@@ -120,7 +119,7 @@ type ToBeWithinRange = (
   actual: unknown,
   floor: number,
   ceiling: number,
-) => ExpectationResult;
+) => any;
 
 const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
   actual: unknown,
@@ -133,26 +132,37 @@ const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
   };
 };
 
-expectType<ToBeWithinRange>(toBeWithinRange);
+expectAssignable<ToBeWithinRange>(toBeWithinRange);
 
-type AllowOmittingExpected = (
-  this: MatcherState,
+type AllowOmittingExpected = (this: MatcherState, actual: unknown) => any;
+
+const allowOmittingExpected: MatcherFunction<[]> = (
   actual: unknown,
-) => ExpectationResult;
+  ...expect: Array<unknown>
+) => {
+  if (expect.length !== 0) {
+    throw new Error('This matcher does not take any expected argument.');
+  }
 
-const allowOmittingExpected: MatcherFunction = (actual: unknown) => {
   return {
     message: () => `actual ${actual}`,
     pass: true,
   };
 };
 
-expectType<AllowOmittingExpected>(allowOmittingExpected);
+expectAssignable<AllowOmittingExpected>(allowOmittingExpected);
 
 // MatcherState
 
-const toHaveContext: MatcherFunction = function (actual: unknown) {
+const toHaveContext: MatcherFunction = function (
+  actual: unknown,
+  ...expect: Array<unknown>
+) {
   expectType<MatcherState>(this);
+
+  if (expect.length !== 0) {
+    throw new Error('This matcher does not take any expected argument.');
+  }
 
   return {
     message: () => `result: ${actual}`,
@@ -160,15 +170,20 @@ const toHaveContext: MatcherFunction = function (actual: unknown) {
   };
 };
 
-interface CustomContext extends MatcherState {
+interface CustomState extends MatcherState {
   customMethod(): void;
 }
 
-const customContext: MatcherFunctionWithContext<CustomContext> = function (
+const customContext: MatcherFunctionWithState<CustomState> = function (
   actual: unknown,
+  ...expect: Array<unknown>
 ) {
-  expectType<CustomContext>(this);
+  expectType<CustomState>(this);
   expectType<void>(this.customMethod());
+
+  if (expect.length !== 0) {
+    throw new Error('This matcher does not take any expected argument.');
+  }
 
   return {
     message: () => `result: ${actual}`,
@@ -176,17 +191,17 @@ const customContext: MatcherFunctionWithContext<CustomContext> = function (
   };
 };
 
-type CustomContextAndExpected = (
-  this: CustomContext,
+type CustomStateAndExpected = (
+  this: CustomState,
   actual: unknown,
   count: number,
-) => ExpectationResult;
+) => any;
 
-const customContextAndExpected: MatcherFunctionWithContext<
-  CustomContext,
+const customStateAndExpected: MatcherFunctionWithState<
+  CustomState,
   [count: number]
 > = function (actual: unknown, count: unknown) {
-  expectType<CustomContext>(this);
+  expectType<CustomState>(this);
   expectType<void>(this.customMethod());
 
   return {
@@ -195,4 +210,4 @@ const customContextAndExpected: MatcherFunctionWithContext<
   };
 };
 
-expectType<CustomContextAndExpected>(customContextAndExpected);
+expectAssignable<CustomStateAndExpected>(customStateAndExpected);
