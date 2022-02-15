@@ -10,6 +10,13 @@ import execa = require('execa');
 import {onNodeVersions} from '@jest/test-utils';
 import {getConfig} from '../runJest';
 
+beforeAll(async () => {
+  // the typescript config test needs this type to exist
+  await execa('tsc', ['-b', 'packages/jest-types'], {
+    cwd: resolve(__dirname, '../../'),
+  });
+}, 30_000);
+
 test('reads config from cjs file', () => {
   const {configs} = getConfig('esm-config/cjs', [], {
     skipPkgJsonCheck: true,
@@ -21,12 +28,6 @@ test('reads config from cjs file', () => {
     name: 'Config from cjs file',
   });
 });
-
-beforeAll(async () => {
-  await execa('tsc', ['-b', 'packages/jest-types'], {
-    cwd: resolve(__dirname, '../../'),
-  });
-}, 30_000);
 
 onNodeVersions('>=12.17.0', () => {
   test('reads config from mjs file', () => {
