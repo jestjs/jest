@@ -162,3 +162,5 @@ jobs:
         if: always()
       - uses: codecov/codecov-action@v2
         if: always()
+        with:
+          directory: ./coverage
