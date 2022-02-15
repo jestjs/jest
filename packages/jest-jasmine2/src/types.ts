@@ -7,7 +7,7 @@
 
 import type {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
-import type {Expect, RawMatcherFn} from 'expect';
+import type {Expect} from 'expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -48,8 +48,8 @@ export interface Spy extends Record<string, any> {
 
 type JasmineMatcher = {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
+  compare(...args: Array<unknown>): unknown;
+  negativeCompare(...args: Array<unknown>): unknown;
 };
 
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};

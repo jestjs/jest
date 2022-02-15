@@ -52,9 +52,10 @@ import type {
 export type {
   AsymmetricMatchers,
   Expect,
+  MatcherFunction,
+  MatcherFunctionWithState,
   MatcherState,
   Matchers,
-  RawMatcherFn,
 } from './types';
 
 export class JestAssertionError extends Error {
