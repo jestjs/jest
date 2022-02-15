@@ -6,13 +6,21 @@
  */
 
 import {expect} from '@jest/globals';
-import type {ExpectationResult} from 'expect';
+import type {MatcherFunction} from 'expect';
 
-const toBeWithinRange = (
-  actual: number,
-  floor: number,
-  ceiling: number,
-): ExpectationResult => {
+const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
+  actual: unknown,
+  floor: unknown,
+  ceiling: unknown,
+) => {
+  if (
+    typeof actual !== 'number' ||
+    typeof floor !== 'number' ||
+    typeof ceiling !== 'number'
+  ) {
+    throw new Error('These must be of type number!');
+  }
+
   const pass = actual >= floor && actual <= ceiling;
   if (pass) {
     return {
