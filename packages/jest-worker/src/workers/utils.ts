@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {deserialize, serialize} from 'v8';
+import * as v8 from 'v8';
 
-type StringifiedMessage = {stringifiedMessage: Buffer};
-type WorkerResponse = Array<unknown> | [unknown, StringifiedMessage];
+type SerializedMessage = {serializedMessage: Buffer};
+type WorkerResponse = Array<unknown> | [unknown, SerializedMessage];
 
-export const stringify = (message: unknown): StringifiedMessage => {
-  return {stringifiedMessage: serialize(message)};
+export const serialize = (message: unknown): SerializedMessage => {
+  return {serializedMessage: v8.serialize(message)};
 };
 
-const hasStringifiedMessage = (obj: unknown): obj is StringifiedMessage => {
-  return obj != null && typeof obj === 'object' && 'stringifiedMessage' in obj;
-};
+function hasSerializedMessage(obj: unknown): obj is SerializedMessage {
+  return obj != null && typeof obj === 'object' && 'serializedMessage' in obj;
+}
 
-export const parse = ([, re]: WorkerResponse): unknown => {
-  if (hasStringifiedMessage(re)) {
-    return deserialize(Buffer.from(re.stringifiedMessage));
+export const deserialize = ([, re]: WorkerResponse): unknown => {
+  if (hasSerializedMessage(re)) {
+    return v8.deserialize(Buffer.from(re.serializedMessage));
   }
 
   return re;

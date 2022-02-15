@@ -180,7 +180,7 @@ it('returns results immediately when function is synchronous', () => {
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: serialize(1989)},
+    {serializedMessage: serialize(1989)},
   ]);
 
   process.emit('message', [
@@ -264,7 +264,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: serialize(1989)},
+    {serializedMessage: serialize(1989)},
   ]);
 
   process.emit('message', [
@@ -303,7 +303,7 @@ it('calls the main module if the method call is "default"', () => {
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: serialize(12345)},
+    {serializedMessage: serialize(12345)},
   ]);
 });
 
@@ -323,7 +323,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: serialize(67890)},
+    {serializedMessage: serialize(67890)},
   ]);
 });
 

@@ -22,7 +22,7 @@ import {
   WorkerInterface,
   WorkerOptions,
 } from '../types';
-import {parse} from './utils';
+import {deserialize} from './utils';
 
 export default class ExperimentalWorker implements WorkerInterface {
   private _worker!: Worker;
@@ -132,7 +132,7 @@ export default class ExperimentalWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        this._onProcessEnd(null, parse(response));
+        this._onProcessEnd(null, deserialize(response));
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
@@ -166,7 +166,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_CUSTOM:
-        this._onCustomMessage(parse(response));
+        this._onCustomMessage(deserialize(response));
         break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);
