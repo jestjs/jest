@@ -159,6 +159,8 @@ jobs:
         run: |
           yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }}
           yarn test-leak
-          node ./scripts/mapCoverage.js
+      - name: map coverage
+        run: node ./scripts/mapCoverage.js
+        if: always()
       - uses: codecov/codecov-action@v2
         if: always()
