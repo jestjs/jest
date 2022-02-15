@@ -24,6 +24,7 @@ const mockExtendedError = new ReferenceError('Booo extended');
 const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+import {serialize} from 'v8';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -201,7 +202,7 @@ it('returns results immediately when function is synchronous', () => {
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[1989]'},
+    {stringifiedMessage: serialize(1989)},
   ]);
 
   thread.emit('message', [
@@ -287,7 +288,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[1989]'},
+    {stringifiedMessage: serialize(1989)},
   ]);
 
   thread.emit('message', [
@@ -326,7 +327,7 @@ it('calls the main module if the method call is "default"', () => {
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[12345]'},
+    {stringifiedMessage: serialize(12345)},
   ]);
 });
 
@@ -346,7 +347,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[67890]'},
+    {stringifiedMessage: serialize(67890)},
   ]);
 });
 

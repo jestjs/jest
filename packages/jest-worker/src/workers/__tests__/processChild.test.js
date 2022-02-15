@@ -14,7 +14,7 @@ const processSend = process.send;
 const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-import {deserialize, serialize} from 'v8';
+import {serialize} from 'v8';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -180,7 +180,7 @@ it('returns results immediately when function is synchronous', () => {
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[1989]'},
+    {stringifiedMessage: serialize(1989)},
   ]);
 
   process.emit('message', [
@@ -264,7 +264,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[1989]'},
+    {stringifiedMessage: serialize(1989)},
   ]);
 
   process.emit('message', [
@@ -303,7 +303,7 @@ it('calls the main module if the method call is "default"', () => {
 
   expect(process.send.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    {stringifiedMessage: '[12345]'},
+    {stringifiedMessage: serialize(12345)},
   ]);
 });
 
