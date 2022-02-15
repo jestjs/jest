@@ -181,6 +181,7 @@ export type TestResult = {
   status: TestStatus;
   location?: {column: number; line: number} | null;
   testPath: Array<TestName | BlockName>;
+  retryReasons: Array<Buffer>;
 };
 
 export type RunResult = {
@@ -232,6 +233,7 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
+  retryReasons: Array<Buffer>;
   fn: TestFn;
   invocations: number;
   mode: TestMode;

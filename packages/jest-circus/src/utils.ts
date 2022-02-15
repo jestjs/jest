@@ -70,6 +70,7 @@ export const makeTest = (
   mode,
   name: convertDescriptorToString(name),
   parent,
+  retryReasons: [],
   seenDone: false,
   startedAt: null,
   status: null,
@@ -357,6 +358,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
+    retryReasons: test.retryReasons,
     status,
     testPath: Array.from(testPath),
   };
@@ -478,6 +480,7 @@ export const parseSingleTestResult = (
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: 0,
+    retryReasons: testResult.retryReasons,
     status,
     title: testResult.testPath[testResult.testPath.length - 1],
   };

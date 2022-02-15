@@ -6,11 +6,12 @@
  */
 
 import type {Circus} from '@jest/types';
+import {serialize} from 'jest-serializer';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {TEST_TIMEOUT_SYMBOL} from './types';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -209,6 +210,10 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'test_retry': {
+      const logErrorsBeforeRetry = global[LOG_ERRORS_BEFORE_RETRY] || false;
+      if (logErrorsBeforeRetry) {
+        event.test.retryReasons.push(serialize(event.test.errors));
+      }
       event.test.errors = [];
       break;
     }

@@ -13,6 +13,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
+import {deserialize} from 'jest-serializer';
 import {clearLine, isInteractive} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import Status from './Status';
@@ -184,6 +185,26 @@ export default class DefaultReporter extends BaseReporter {
     config: Config.ProjectConfig,
     result: TestResult,
   ): void {
+    // log retry errors if any exist
+    result.testResults.forEach(testResult => {
+      const testRetryReasons = testResult.retryReasons;
+      if (testRetryReasons && testRetryReasons.length > 0) {
+        this.log(
+          `${chalk.reset.inverse.bold.yellow(
+            ' LOGGING RETRY ERRORS ',
+          )} ${chalk.bold(testResult.fullName)}\n`,
+        );
+        testRetryReasons.forEach((retryReasons, index) => {
+          this.log(
+            `${chalk.reset.inverse.bold.redBright(` RETRY ${index + 1} `)}\n`,
+          );
+          // eslint-disable-next-line no-console
+          console.log(deserialize(retryReasons));
+          this.log('\n');
+        });
+      }
+    });
+
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(

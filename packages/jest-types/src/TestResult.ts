@@ -26,6 +26,7 @@ export type AssertionResult = {
   numPassingAsserts: number;
   status: Status;
   title: string;
+  retryReasons?: Array<Buffer>;
 };
 
 export type SerializableError = {
