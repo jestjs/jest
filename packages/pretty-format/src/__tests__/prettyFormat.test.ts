@@ -562,6 +562,22 @@ describe('prettyFormat()', () => {
     );
   });
 
+  it('can customize the max width', () => {
+    const val = Array(1_000_000).fill('x');
+    expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+      [
+        'Array [',
+        '  "x",',
+        '  "x",',
+        '  "x",',
+        '  "x",',
+        '  "x",',
+        '  ...',
+        ']',
+      ].join('\n'),
+    );
+  });
+
   it('can customize the max depth', () => {
     const val = [
       {
