@@ -44,4 +44,16 @@ onNodeVersions('>=12.17.0', () => {
       name: 'Config from js file',
     });
   });
+
+  test('reads config from ts file when package.json#type=module', () => {
+    const {configs} = getConfig('esm-config/ts', [], {
+      skipPkgJsonCheck: true,
+    });
+
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
+      color: 'white',
+      name: 'Config from ts file',
+    });
+  });
 });
