@@ -136,7 +136,7 @@ expectAssignable<ToBeWithinRange>(toBeWithinRange);
 
 type AllowOmittingExpected = (this: MatcherState, actual: unknown) => any;
 
-const allowOmittingExpected: MatcherFunction<[]> = (
+const allowOmittingExpected: MatcherFunction = (
   actual: unknown,
   ...expect: Array<unknown>
 ) => {
