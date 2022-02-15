@@ -13110,7 +13110,6 @@ __metadata:
     fsevents: ^2.3.2
     graceful-fs: ^4.2.9
     jest-regex-util: ^28.0.0-alpha.0
-    jest-serializer: ^28.0.0-alpha.0
     jest-util: ^28.0.0-alpha.0
     jest-worker: ^28.0.0-alpha.0
     micromatch: ^4.0.4
@@ -13430,16 +13429,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-serializer@^28.0.0-alpha.0, jest-serializer@workspace:packages/jest-serializer":
-  version: 0.0.0-use.local
-  resolution: "jest-serializer@workspace:packages/jest-serializer"
-  dependencies:
-    "@types/graceful-fs": ^4.1.3
-    "@types/node": "*"
-    graceful-fs: ^4.2.9
-  languageName: unknown
-  linkType: soft
-
 "jest-serializer@npm:^26.6.2":
   version: 26.6.2
   resolution: "jest-serializer@npm:26.6.2"
@@ -13449,6 +13438,16 @@ __metadata:
   checksum: dbecfb0d01462fe486a0932cf1680cf6abb204c059db2a8f72c6c2a7c9842a82f6d256874112774cea700764ed8f38fc9e3db982456c138d87353e3390e746fe
   languageName: node
   linkType: hard
+
+"jest-serializer@workspace:packages/jest-serializer":
+  version: 0.0.0-use.local
+  resolution: "jest-serializer@workspace:packages/jest-serializer"
+  dependencies:
+    "@types/graceful-fs": ^4.1.3
+    "@types/node": "*"
+    graceful-fs: ^4.2.9
+  languageName: unknown
+  linkType: soft
 
 "jest-silent-reporter@npm:^0.5.0":
   version: 0.5.0
