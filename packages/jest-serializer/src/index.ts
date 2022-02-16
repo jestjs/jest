@@ -8,8 +8,6 @@
 import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
 import * as fs from 'graceful-fs';
 
-type Path = string;
-
 // JSON and V8 serializers are both stable when it comes to compatibility. The
 // current JSON specification is well defined in RFC 8259, and V8 ensures that
 // the versions are compatible by encoding the serialization version in the own
@@ -27,11 +25,11 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): unknown {
+export function readFileSync(filePath: string): unknown {
   return v8Deserialize(fs.readFileSync(filePath));
 }
 
-export function writeFileSync(filePath: Path, content: unknown): void {
+export function writeFileSync(filePath: string, content: unknown): void {
   return fs.writeFileSync(filePath, v8Serialize(content));
 }
 

@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@jest/expect-utils": "^28.0.0-alpha.1",
-    "@jest/types": "^28.0.0-alpha.1",
     "jest-get-type": "^28.0.0-alpha.0",
     "jest-matcher-utils": "^28.0.0-alpha.1",
     "jest-message-util": "^28.0.0-alpha.1"

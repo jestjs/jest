@@ -579,7 +579,7 @@ describe('SearchSource', () => {
     });
 
     it('returns empty search result for empty input', async () => {
-      const input: Array<Config.Path> = [];
+      const input: Array<string> = [];
       const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });

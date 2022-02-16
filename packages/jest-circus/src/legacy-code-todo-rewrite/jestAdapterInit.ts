@@ -54,8 +54,8 @@ export const initialize = async ({
   config: Config.ProjectConfig;
   environment: JestEnvironment;
   globalConfig: Config.GlobalConfig;
-  localRequire: <T = unknown>(path: Config.Path) => T;
-  testPath: Config.Path;
+  localRequire: <T = unknown>(path: string) => T;
+  testPath: string;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: JestGlobals) => void;

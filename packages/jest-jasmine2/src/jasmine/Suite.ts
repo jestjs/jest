@@ -43,7 +43,7 @@ export type SuiteResult = {
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: string;
   status?: string;
 };
 
@@ -52,7 +52,7 @@ export type Attributes = {
   parentSuite?: Suite;
   description: string;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
 };
 
 export default class Suite {

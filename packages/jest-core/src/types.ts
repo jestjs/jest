@@ -29,11 +29,11 @@ export type TestRunData = Array<{
 
 export type TestPathCases = Array<{
   stat: keyof Stats;
-  isMatch: (path: Config.Path) => boolean;
+  isMatch: (path: string) => boolean;
 }>;
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
-  testPathPattern: (path: Config.Path) => boolean;
+  testPathPattern: (path: string) => boolean;
 };
 
 export type FilterResult = {

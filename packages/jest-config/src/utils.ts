@@ -12,9 +12,9 @@ import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
 type ResolveOptions = {
-  rootDir: Config.Path;
+  rootDir: string;
   key: string;
-  filePath: Config.Path;
+  filePath: string;
   optional?: boolean;
 };
 
@@ -52,12 +52,12 @@ export const resolve = (
   return module as string;
 };
 
-export const escapeGlobCharacters = (path: Config.Path): string =>
+export const escapeGlobCharacters = (path: string): string =>
   path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 
 export const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
+  rootDir: string,
+  filePath: string,
 ): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
@@ -70,7 +70,7 @@ export const replaceRootDirInPath = (
 };
 
 const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   const newConfig = {} as T;
@@ -84,14 +84,14 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
 };
 
 type OrArray<T> = T | Array<T>;
-type ReplaceRootDirConfigObj = Record<string, Config.Path>;
+type ReplaceRootDirConfigObj = Record<string, string>;
 type ReplaceRootDirConfigValues =
   | OrArray<ReplaceRootDirConfigObj>
   | OrArray<RegExp>
-  | OrArray<Config.Path>;
+  | OrArray<string>;
 
 export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   if (config == null) {

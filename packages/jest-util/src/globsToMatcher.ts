@@ -6,10 +6,9 @@
  */
 
 import picomatch = require('picomatch');
-import type {Config} from '@jest/types';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
-type Matcher = (str: Config.Path) => boolean;
+type Matcher = (str: string) => boolean;
 
 const globsToMatchersMap = new Map<
   string,

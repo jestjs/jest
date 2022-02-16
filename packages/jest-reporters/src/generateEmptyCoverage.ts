@@ -26,11 +26,11 @@ export type CoverageWorkerResult =
 
 export default async function generateEmptyCoverage(
   source: string,
-  filename: Config.Path,
+  filename: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  changedFiles?: Set<Config.Path>,
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
+  changedFiles?: Set<string>,
+  sourcesRelatedToTestsInChangedFiles?: Set<string>,
 ): Promise<CoverageWorkerResult | null> {
   const coverageOptions = {
     changedFiles,

@@ -68,7 +68,7 @@ export type Jasmine = {
   Suite: typeof Suite;
   Timer: typeof Timer;
   version: string;
-  testPath: Config.Path;
+  testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
 } & Expect &
   typeof globalThis;

@@ -54,7 +54,7 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-function verifyDirectoryExists(path: Config.Path, key: string) {
+function verifyDirectoryExists(path: string, key: string) {
   try {
     const rootStat = statSync(path);
 
@@ -366,7 +366,7 @@ const normalizePreprocessor = (
 
 const normalizeMissingOptions = (
   options: Config.InitialOptionsWithRootDir,
-  configPath: Config.Path | null | undefined,
+  configPath: string | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.name) {
@@ -550,7 +550,7 @@ function validateExtensionsToTreatAsEsm(
 export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
-  configPath?: Config.Path | null,
+  configPath?: string | null,
   projectIndex = Infinity,
 ): Promise<{
   hasDeprecationWarnings: boolean;

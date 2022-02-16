@@ -113,7 +113,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
+const fileExists = (filePath: string, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 export const cleanup = (
@@ -158,8 +158,8 @@ export const cleanup = (
 
 export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
   received: unknown,
-  propertiesOrHint?: object | Config.Path,
-  hint?: Config.Path,
+  propertiesOrHint?: object | string,
+  hint?: string,
 ) {
   const matcherName = 'toMatchSnapshot';
   let properties;
