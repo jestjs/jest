@@ -136,6 +136,12 @@ export interface AsyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
+/**
+ * We have both sync (process) and async (processAsync) code transformation, which both can be provided.
+ * `require` will always use process, and import will use `processAsync` if it exists, otherwise fall back to process.
+ * Meaning, if you use import exclusively you do not need process, but in most cases supplying both makes sense:
+ * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+ */
 export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
@@ -144,4 +150,9 @@ type TransformerCreator<OptionType = unknown> = (
   options?: OptionType,
 ) => Transformer<OptionType>;
 
+/**
+ * Instead of having your custom transformer implement the Transformer interface
+ * directly, you can choose to export a factory function to dynamically create
+ * transformers. This is to allow having a transformer config in your jest config.
+ */
 export type TransformerFactory = {createTransformer: TransformerCreator};
