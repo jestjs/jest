@@ -17,9 +17,13 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
+    "@types/node": "*",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
+    "@types/node": {
+      "optional": true
+    },
     "ts-node": {
       "optional": true
     }
