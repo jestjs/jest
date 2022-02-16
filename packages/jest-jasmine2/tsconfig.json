@@ -15,6 +15,7 @@
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
     {"path": "../jest-runtime"},
+    {"path": "../jest-snapshot"},
     {"path": "../jest-source-map"},
     {"path": "../jest-test-result"},
     {"path": "../jest-types"},
