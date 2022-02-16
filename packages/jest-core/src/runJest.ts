@@ -285,7 +285,7 @@ export default async function runJest({
 
   const results = await scheduler.scheduleTests(allTests, testWatcher);
 
-  await sequencer.cacheResults(allTests, results);
+  sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
