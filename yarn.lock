@@ -2593,8 +2593,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect@workspace:packages/jest-expect"
   dependencies:
+    "@tsd/typescript": ~4.5.5
     expect: ^28.0.0-alpha.1
     jest-snapshot: ^28.0.0-alpha.1
+    tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
 

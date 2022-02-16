@@ -210,3 +210,7 @@ const customStateAndExpected: MatcherFunctionWithState<
 };
 
 expectAssignable<CustomStateAndExpected>(customStateAndExpected);
+
+expectError(() => {
+  expect({}).toMatchSnapshot();
+});
