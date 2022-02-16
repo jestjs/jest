@@ -119,7 +119,7 @@ export type TestResult = {
     updated: number;
   };
   testExecError?: SerializableError;
-  testFilePath: Config.Path;
+  testFilePath: string;
   testResults: Array<AssertionResult>;
   v8Coverage?: V8CoverageResult;
 };
@@ -185,7 +185,7 @@ export type SnapshotSummary = {
 export type Test = {
   context: Context;
   duration?: number;
-  path: Config.Path;
+  path: string;
 };
 
 type Context = {
@@ -200,7 +200,7 @@ export type TestEvents = {
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];
-  'test-case-result': [Config.Path, AssertionResult];
+  'test-case-result': [string, AssertionResult];
 };
 
 export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (

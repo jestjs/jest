@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@jest/transform": "^28.0.0-alpha.1",
-    "@jest/types": "^28.0.0-alpha.1",
     "@types/babel__core": "^7.1.14",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-preset-jest": "^28.0.0-alpha.0",

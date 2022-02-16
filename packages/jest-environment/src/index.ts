@@ -18,7 +18,7 @@ import type {
 export type EnvironmentContext = {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
-  testPath: Config.Path;
+  testPath: string;
 };
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts

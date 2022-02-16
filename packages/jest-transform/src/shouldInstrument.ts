@@ -31,7 +31,7 @@ const getRegex = (regexStr: string) => {
 };
 
 export default function shouldInstrument(
-  filename: Config.Path,
+  filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {
