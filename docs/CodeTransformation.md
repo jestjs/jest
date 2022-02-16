@@ -21,8 +21,20 @@ If you override the `transform` configuration option `babel-jest` will no longer
 
 You can write your own transformer. The API of a transformer is as follows:
 
+<!-- abbreviated: see packages/jest-transform/src/types.ts in https://github.com/facebook/jest for all types -->
 ```ts
-interface SyncTransformer<OptionType = unknown> {
+export interface TransformOptions<OptionType = unknown>
+  extends ReducedTransformOptions {
+  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  cacheFS: StringMap;
+  config: Config.ProjectConfig;
+  /** A stringified version of the configuration - useful in cache busting */
+  configString: string;
+  /** the options passed through Jest's config by the user */
+  transformerConfig: OptionType;
+}
+
+export interface SyncTransformer<OptionType = unknown> {
   /**
    * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
@@ -30,34 +42,33 @@ interface SyncTransformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
 
-interface AsyncTransformer<OptionType = unknown> {
+export interface AsyncTransformer<OptionType = unknown> {
   /**
    * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
@@ -65,63 +76,52 @@ interface AsyncTransformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
 
-type Transformer<OptionType = unknown> =
+/**
+ * We have both sync (process) and async (processAsync) code transformation, which both can be provided.
+ * `require` will always use process, and import will use `processAsync` if it exists, otherwise fall back to process.
+ * Meaning, if you use import exclusively you do not need process, but in most cases supplying both makes sense:
+ * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+ */
+export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
-interface TransformOptions<OptionType> {
-  /**
-   * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
-   * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
-   * <file path, file contents>
-   */
-  cacheFS: Map<string, string>;
-  config: Config.ProjectConfig;
-  /** A stringified version of the configuration - useful in cache busting */
-  configString: string;
-  instrument: boolean;
-  // names are copied from babel: https://babeljs.io/docs/en/options#caller
-  supportsDynamicImport: boolean;
-  supportsExportNamespaceFrom: boolean;
-  supportsStaticESM: boolean;
-  supportsTopLevelAwait: boolean;
-  /** the options passed through Jest's config by the user */
-  transformerConfig: OptionType;
-}
+type TransformerCreator<OptionType = unknown> = (
+  options?: OptionType,
+) => Transformer<OptionType>;
 
-type TransformedSource =
-  | {code: string; map?: RawSourceMap | string | null}
-  | string;
-
-// Config.ProjectConfig can be seen in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
-// RawSourceMap comes from [`source-map`](https://github.com/mozilla/source-map/blob/0.6.1/source-map.d.ts#L6-L12)
+/**
+ * Instead of having your custom transformer implement the Transformer interface
+ * directly, you can choose to export a factory function to dynamically create
+ * transformers. This is to allow having a transformer config in your jest config.
+ */
+export type TransformerFactory = {createTransformer: TransformerCreator};
 ```
 
 As can be seen, only `process` or `processAsync` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
