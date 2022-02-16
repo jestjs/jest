@@ -69,7 +69,7 @@ test('numeric ranges', () => {
 
 _Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
-````ts
+```ts
 interface CustomMatchers<R = unknown> {
   toBeWithinRange(floor: number, ceiling: number): R;
 }
@@ -112,7 +112,7 @@ test('is divisible by external value', async () => {
   await expect(100).toBeDivisibleByExternalValue();
   await expect(101).not.toBeDivisibleByExternalValue();
 });
-````
+```
 
 #### Custom Matchers API
 
