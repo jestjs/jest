@@ -76,14 +76,14 @@ export type ExpectedAssertionsErrors = Array<{
   expected: string;
 }>;
 
-export type BaseExpect = {
+export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
   extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;
   hasAssertions(): void;
   setState(state: Partial<MatcherState>): void;
-};
+}
 
 export type Expect = {
   <T = unknown>(actual: T): Matchers<void> &

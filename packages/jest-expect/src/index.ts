@@ -18,18 +18,16 @@ import type {JestExpect} from './types';
 export type {JestExpect} from './types';
 
 export function createJestExpect(): JestExpect {
-  const jestExpect = expect as JestExpect;
-
-  jestExpect.extend({
+  expect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
 
-  jestExpect.addSnapshotSerializer = addSerializer;
+  expect.addSnapshotSerializer = addSerializer;
 
-  return jestExpect;
+  return expect as JestExpect;
 }
 
 export const jestExpect = createJestExpect();

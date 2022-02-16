@@ -16,7 +16,6 @@ export type JestExpect = {
   <T = unknown>(actual: T): JestMatchers<void, T> &
     Inverse<JestMatchers<void, T>> &
     PromiseMatchers<T>;
-  addSnapshotSerializer: typeof addSerializer;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
@@ -49,5 +48,8 @@ type PromiseMatchers<T = unknown> = {
 declare module 'expect' {
   interface MatcherState {
     snapshotState: SnapshotState;
+  }
+  interface BaseExpect {
+    addSnapshotSerializer: typeof addSerializer;
   }
 }
