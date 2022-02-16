@@ -131,16 +131,29 @@ export const highlightTrailingWhitespace = (text: string): string =>
 const replaceTrailingSpaces = (text: string): string =>
   text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
-export const printReceived = (object: unknown): string =>
-  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
-export const printExpected = (value: unknown): string =>
-  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
+export function printReceived<T>(object: T): string {
+  return RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
+}
 
-export const printWithType = (
-  name: string, // 'Expected' or 'Received'
-  value: unknown,
-  print: (value: unknown) => string, // printExpected or printReceived
-): string => {
+export function printExpected<T>(value: T): string {
+  return EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
+}
+
+export function printWithType<T>(
+  name: 'Expected',
+  value: T,
+  print: typeof printExpected,
+): string;
+export function printWithType<T>(
+  name: 'Received',
+  value: T,
+  print: typeof printReceived,
+): string;
+export function printWithType<T>(
+  name: 'Expected' | 'Received',
+  value: T,
+  print: typeof printExpected | typeof printReceived,
+): string {
   const type = getType(value);
   const hasType =
     type !== 'null' && type !== 'undefined'
@@ -148,7 +161,7 @@ export const printWithType = (
       : '';
   const hasValue = `${name} has value: ${print(value)}`;
   return hasType + hasValue;
-};
+}
 
 export const ensureNoExpected = (
   expected: unknown,
@@ -511,8 +524,8 @@ export const matcherErrorMessage = (
 // Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
-  received: string = 'received',
-  expected: string = 'expected',
+  received = 'received',
+  expected = 'expected',
   options: MatcherHintOptions = {},
 ): string => {
   const {
