@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import bar from 'data:application/json,{obj: 456}';
+import bar from 'data:application/json,{"obj": 456}';
 import {foo} from 'data:text/javascript,export const foo = "123"';
 
 export function value() {

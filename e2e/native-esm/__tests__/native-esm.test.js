@@ -247,17 +247,17 @@ test('imports from "data:text/javascript" URI with invalid data fail', async () 
 test('imports from "data:application/wasm" URI not supported', async () => {
   await expect(
     async () => await import('data:application/wasm,96cafe00babe'),
-  ).rejects.toThrow('Unsupported MIME type');
+  ).rejects.toThrow('WASM is currently not supported');
 });
 
 test('supports imports from "data:application/json" URI', async () => {
-  const data = await import('data:application/json,{foo: "bar"}');
-  expect(data.default).toStrictEqual({foo: 'bar'});
+  const data = await import('data:application/json,{"foo": "bar"}');
+  expect(data.default).toEqual({foo: 'bar'});
 });
 
 test('supports static "data:" URI import', async () => {
   const module = await import('../staticDataImport.js');
-  expect(module.value()).toStrictEqual({bar: {obj: 456}, foo: '123'});
+  expect(module.value()).toEqual({bar: {obj: 456}, foo: '123'});
 });
 
 test('imports from "data:" URI is properly cached', async () => {

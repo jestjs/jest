@@ -594,33 +594,42 @@ export default class Runtime {
         throw new Error(`Invalid data URI encoding: ${encoding}`);
       }
 
+      let module;
       if (mime === 'application/json') {
-        code = 'export default ' + code;
+        module = new SyntheticModule(
+          ['default'],
+          function () {
+            const obj = JSON.parse(code);
+            // @ts-expect-error: TS doesn't know what `this` is
+            this.setExport('default', obj);
+          },
+          {context, identifier: specifier},
+        );
+      } else {
+        module = new SourceTextModule(code, {
+          context,
+          identifier: specifier,
+          importModuleDynamically: async (
+            specifier: string,
+            referencingModule: VMModule,
+          ) => {
+            invariant(
+              runtimeSupportsVmModules,
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+            );
+            const module = await this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+            );
+
+            return this.linkAndEvaluateModule(module);
+          },
+          initializeImportMeta(meta: ImportMeta) {
+            meta.url = specifier;
+          },
+        });
       }
-
-      const module = new SourceTextModule(code, {
-        context,
-        identifier: specifier,
-        importModuleDynamically: async (
-          specifier: string,
-          referencingModule: VMModule,
-        ) => {
-          invariant(
-            runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-          );
-          const module = await this.resolveModule(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          );
-
-          return this.linkAndEvaluateModule(module);
-        },
-        initializeImportMeta(meta: ImportMeta) {
-          meta.url = specifier;
-        },
-      });
 
       this._esmoduleRegistry.set(specifier, module);
       return module;
