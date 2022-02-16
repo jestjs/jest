@@ -63,6 +63,8 @@ export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
+const dataURIregex = /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
+
 interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: typeof JestGlobals.expect;
 }
@@ -571,9 +573,7 @@ export default class Runtime {
         return fromCache;
       }
 
-      const match = specifier.match(
-        /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/,
-      );
+      const match = specifier.match(dataURIregex);
 
       if (!match || !match.groups) {
         throw new Error('Invalid data URI');
