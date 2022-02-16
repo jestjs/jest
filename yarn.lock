@@ -2614,7 +2614,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/globals@^28.0.0-alpha.2, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
+"@jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
   version: 0.0.0-use.local
   resolution: "@jest/globals@workspace:packages/jest-globals"
   dependencies:
@@ -13355,8 +13355,8 @@ __metadata:
   resolution: "jest-runtime@workspace:packages/jest-runtime"
   dependencies:
     "@jest/environment": ^28.0.0-alpha.2
+    "@jest/expect": ^28.0.0-alpha.2
     "@jest/fake-timers": ^28.0.0-alpha.2
-    "@jest/globals": ^28.0.0-alpha.2
     "@jest/source-map": ^28.0.0-alpha.0
     "@jest/test-result": ^28.0.0-alpha.2
     "@jest/test-utils": ^28.0.0-alpha.2

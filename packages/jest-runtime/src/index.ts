@@ -30,8 +30,8 @@ import type {
   Module,
   ModuleWrapper,
 } from '@jest/environment';
+import type {JestExpect} from '@jest/expect';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
 import {
@@ -66,12 +66,12 @@ const esmIsAvailable = typeof SourceTextModule === 'function';
 const dataURIregex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof JestGlobals.expect;
+interface RuntimeGlobals extends Global.TestFrameworkGlobals {
+  expect: JestExpect;
 }
 
-interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof JestGlobals.jest;
+interface JestGlobals extends RuntimeGlobals {
+  jest: Jest;
 }
 
 type HasteMapOptions = {
@@ -227,7 +227,7 @@ export default class Runtime {
   private readonly _virtualModuleMocks: Map<string, boolean>;
   private _moduleImplementation?: typeof nativeModule.Module;
   private readonly jestObjectCaches: Map<string, Jest>;
-  private jestGlobals?: JestGlobals;
+  private runtimeGlobals?: RuntimeGlobals;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
   private isTornDown = false;
@@ -2157,7 +2157,7 @@ export default class Runtime {
     throw e;
   }
 
-  private getGlobalsForCjs(from: string): JestGlobalsWithJest {
+  private getGlobalsForCjs(from: string): JestGlobals {
     const jest = this.jestObjectCaches.get(from);
 
     invariant(jest, 'There should always be a Jest object already');
@@ -2177,7 +2177,7 @@ export default class Runtime {
       this.jestObjectCaches.set(from, jest);
     }
 
-    const globals: JestGlobalsWithJest = {
+    const globals: JestGlobals = {
       ...this.getGlobalsFromEnvironment(),
       jest,
     };
@@ -2196,9 +2196,9 @@ export default class Runtime {
     return evaluateSyntheticModule(module);
   }
 
-  private getGlobalsFromEnvironment(): JestGlobals {
-    if (this.jestGlobals) {
-      return {...this.jestGlobals};
+  private getGlobalsFromEnvironment(): RuntimeGlobals {
+    if (this.runtimeGlobals) {
+      return {...this.runtimeGlobals};
     }
 
     return {
@@ -2230,8 +2230,8 @@ export default class Runtime {
     return source;
   }
 
-  setGlobalsForRuntime(globals: JestGlobals): void {
-    this.jestGlobals = globals;
+  setGlobalsForRuntime(globals: RuntimeGlobals): void {
+    this.runtimeGlobals = globals;
   }
 }
 
