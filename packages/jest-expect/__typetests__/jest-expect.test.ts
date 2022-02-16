@@ -13,6 +13,7 @@ import {
 } from 'tsd-lite';
 import {jestExpect} from '@jest/expect';
 import {expect} from 'expect';
+import type {Plugin} from 'pretty-format';
 
 expectType<void>(jestExpect({}).toMatchSnapshot());
 
@@ -20,7 +21,7 @@ expectError(() => {
   expect({}).toMatchSnapshot();
 });
 
-expectType<void>(jestExpect.addSnapshotSerializer({} as any));
+expectType<void>(jestExpect.addSnapshotSerializer({} as Plugin));
 
 expectError(() => {
   expect.addSnapshotSerializer();
