@@ -146,7 +146,7 @@ export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
-type TransformerCreator<OptionType = unknown> = (
+export type TransformerCreator<OptionType = unknown> = (
   options?: OptionType,
 ) => Transformer<OptionType>;
 
