@@ -75,7 +75,7 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
@@ -337,7 +337,7 @@ async function runTestInternal(
 }
 
 export default async function runTest(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,

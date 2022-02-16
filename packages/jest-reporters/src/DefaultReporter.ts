@@ -180,7 +180,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileHeader(
-    _testPath: Config.Path,
+    _testPath: string,
     config: Config.ProjectConfig,
     result: TestResult,
   ): void {
@@ -196,7 +196,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileFailureMessage(
-    _testPath: Config.Path,
+    _testPath: string,
     _config: Config.ProjectConfig,
     result: TestResult,
   ): void {

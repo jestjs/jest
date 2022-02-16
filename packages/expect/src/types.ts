@@ -7,7 +7,6 @@
  */
 
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
@@ -56,7 +55,7 @@ export interface MatcherState {
   isNot: boolean;
   promise: string;
   suppressedErrors: Array<Error>;
-  testPath?: Config.Path;
+  testPath?: string;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;

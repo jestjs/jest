@@ -10,7 +10,6 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
-import type {Config} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
@@ -22,21 +21,21 @@ import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
 type FindNodeModuleConfig = {
-  basedir: Config.Path;
+  basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  resolver?: Config.Path | null;
-  rootDir?: Config.Path;
+  paths?: Array<string>;
+  resolver?: string | null;
+  rootDir?: string;
   throwIfNotFound?: boolean;
 };
 
 export type ResolveModuleConfig = {
   conditions?: Array<string>;
   skipNodeResolution?: boolean;
-  paths?: Array<Config.Path>;
+  paths?: Array<string>;
 };
 
 const NATIVE_PLATFORM = 'native';
@@ -55,8 +54,8 @@ export default class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: IModuleMap;
   private readonly _moduleIDCache: Map<string, string>;
-  private readonly _moduleNameCache: Map<string, Config.Path>;
-  private readonly _modulePathCache: Map<string, Array<Config.Path>>;
+  private readonly _moduleNameCache: Map<string, string>;
+  private readonly _modulePathCache: Map<string, Array<string>>;
   private readonly _supportsNativePlatform: boolean;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
@@ -104,9 +103,9 @@ export default class Resolver {
   }
 
   static findNodeModule(
-    path: Config.Path,
+    path: string,
     options: FindNodeModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     const resolver: typeof defaultResolver = options.resolver
       ? require(options.resolver)
       : defaultResolver;
@@ -135,10 +134,10 @@ export default class Resolver {
   static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   resolveModuleFromDirIfExists(
-    dirname: Config.Path,
+    dirname: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     const paths = options?.paths || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const stringifiedOptions = options ? JSON.stringify(options) : '';
@@ -181,7 +180,7 @@ export default class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) => {
+    const resolveNodeModule = (name: string, throwIfNotFound = false) => {
       if (this.isCoreModule(name)) {
         return name;
       }
@@ -230,10 +229,10 @@ export default class Resolver {
   }
 
   resolveModule(
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path {
+  ): string {
     const dirname = path.dirname(from);
     const module =
       this.resolveStubModuleName(from, moduleName) ||
@@ -271,7 +270,7 @@ export default class Resolver {
     );
   }
 
-  getModule(name: string): Config.Path | null {
+  getModule(name: string): string | null {
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
@@ -279,14 +278,14 @@ export default class Resolver {
     );
   }
 
-  getModulePath(from: Config.Path, moduleName: string): Config.Path {
+  getModulePath(from: string, moduleName: string): string {
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
     return path.normalize(path.dirname(from) + '/' + moduleName);
   }
 
-  getPackage(name: string): Config.Path | null {
+  getPackage(name: string): string | null {
     return this._moduleMap.getPackage(
       name,
       this._options.defaultPlatform,
@@ -294,7 +293,7 @@ export default class Resolver {
     );
   }
 
-  getMockModule(from: Config.Path, name: string): Config.Path | null {
+  getMockModule(from: string, name: string): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
@@ -307,7 +306,7 @@ export default class Resolver {
     return null;
   }
 
-  getModulePaths(from: Config.Path): Array<Config.Path> {
+  getModulePaths(from: string): Array<string> {
     const cachedModule = this._modulePathCache.get(from);
     if (cachedModule) {
       return cachedModule;
@@ -325,7 +324,7 @@ export default class Resolver {
 
   getModuleID(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName = '',
     options?: ResolveModuleConfig,
   ): string {
@@ -363,11 +362,14 @@ export default class Resolver {
 
   private _getAbsolutePath(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     if (this.isCoreModule(moduleName)) {
+      return moduleName;
+    }
+    if (moduleName.startsWith('data:')) {
       return moduleName;
     }
     return this._isModuleResolved(from, moduleName)
@@ -375,10 +377,7 @@ export default class Resolver {
       : this._getVirtualMockPath(virtualMocks, from, moduleName, options);
   }
 
-  private _getMockPath(
-    from: Config.Path,
-    moduleName: string,
-  ): Config.Path | null {
+  private _getMockPath(from: string, moduleName: string): string | null {
     return !this.isCoreModule(moduleName)
       ? this.getMockModule(from, moduleName)
       : null;
@@ -386,10 +385,10 @@ export default class Resolver {
 
   private _getVirtualMockPath(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path {
+  ): string {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
@@ -398,16 +397,13 @@ export default class Resolver {
       : from;
   }
 
-  private _isModuleResolved(from: Config.Path, moduleName: string): boolean {
+  private _isModuleResolved(from: string, moduleName: string): boolean {
     return !!(
       this.getModule(moduleName) || this.getMockModule(from, moduleName)
     );
   }
 
-  resolveStubModuleName(
-    from: Config.Path,
-    moduleName: string,
-  ): Config.Path | null {
+  resolveStubModuleName(from: string, moduleName: string): string | null {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
     const extensions = this._options.extensions.slice();

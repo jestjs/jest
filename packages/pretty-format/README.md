@@ -75,6 +75,7 @@ console.log(prettyFormat(onClick, options));
 | `highlight`           | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
 | `indent`              | `number`  | `2`        | spaces in each level of indentation                     |
 | `maxDepth`            | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
+| `maxWidth`            | `number`  | `Infinity` | number of elements to print in arrays, sets, and so on  |
 | `min`                 | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
 | `plugins`             | `array`   | `[]`       | plugins to serialize application-specific data types    |
 | `printBasicPrototype` | `boolean` | `false`    | print the prototype for plain objects and arrays        |

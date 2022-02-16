@@ -23,7 +23,7 @@ export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   localRequire: (moduleName: string) => Plugin;
-  testPath: Config.Path;
+  testPath: string;
 };
 
 // Get suppressed errors form  jest-matchers that weren't throw during

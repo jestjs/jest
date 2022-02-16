@@ -216,7 +216,7 @@ function invariant(condition: unknown, message?: string): asserts condition {
  */
 export default class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
-  private _cachePath: Config.Path;
+  private _cachePath: string;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _options: InternalOptions;
@@ -333,7 +333,7 @@ export default class HasteMap extends EventEmitter {
   }
 
   static getCacheFilePath(
-    tmpdir: Config.Path,
+    tmpdir: string,
     name: string,
     ...extra: Array<string>
   ): string {
@@ -445,7 +445,7 @@ export default class HasteMap extends EventEmitter {
     hasteMap: InternalHasteMap,
     map: ModuleMapData,
     mocks: MockData,
-    filePath: Config.Path,
+    filePath: string,
     workerOptions?: {forceInBand: boolean},
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
@@ -828,7 +828,7 @@ export default class HasteMap extends EventEmitter {
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
-    const createWatcher = (root: Config.Path): Promise<Watcher> => {
+    const createWatcher = (root: string): Promise<Watcher> => {
       const watcher = new Watcher(root, {
         dot: true,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -869,8 +869,8 @@ export default class HasteMap extends EventEmitter {
 
     const onChange = (
       type: string,
-      filePath: Config.Path,
-      root: Config.Path,
+      filePath: string,
+      root: string,
       stat?: Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
@@ -1087,7 +1087,7 @@ export default class HasteMap extends EventEmitter {
   /**
    * Helpers
    */
-  private _ignore(filePath: Config.Path): boolean {
+  private _ignore(filePath: string): boolean {
     const ignorePattern = this._options.ignorePattern;
     const ignoreMatched =
       ignorePattern instanceof RegExp

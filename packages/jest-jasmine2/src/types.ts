@@ -7,7 +7,6 @@
 
 import type {AssertionError} from 'assert';
 import type {JestExpect} from '@jest/expect';
-import type {Config} from '@jest/types';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -68,7 +67,7 @@ export type Jasmine = {
   Suite: typeof Suite;
   Timer: typeof Timer;
   version: string;
-  testPath: Config.Path;
+  testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
 } & JestExpect &
   typeof globalThis;

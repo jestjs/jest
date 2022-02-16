@@ -210,7 +210,7 @@ jest.mock(
 );
 
 const getCachePath = (
-  mockFs: Record<Config.Path, string>,
+  mockFs: Record<string, string>,
   config: Config.ProjectConfig,
 ) => {
   for (const path in mockFs) {
@@ -224,7 +224,7 @@ const getCachePath = (
 let createScriptTransformer: typeof import('../ScriptTransformer').createScriptTransformer;
 let config: Config.ProjectConfig;
 let fs: typeof import('fs');
-let mockFs: Record<Config.Path, string>;
+let mockFs: Record<string, string>;
 let object: <T>(input: T) => T;
 let writeFileAtomic: typeof import('write-file-atomic');
 

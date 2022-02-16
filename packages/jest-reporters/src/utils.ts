@@ -32,7 +32,7 @@ export const printDisplayName = (config: Config.ProjectConfig): string => {
 export const trimAndFormatPath = (
   pad: number,
   config: Config.ProjectConfig | Config.GlobalConfig,
-  testPath: Config.Path,
+  testPath: string,
   columns: number,
 ): string => {
   const maxLength = columns - pad;
@@ -68,7 +68,7 @@ export const trimAndFormatPath = (
 
 export const formatTestPath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  testPath: string,
 ): string => {
   const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
@@ -76,7 +76,7 @@ export const formatTestPath = (
 
 export const relativePath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  testPath: string,
 ): {basename: string; dirname: string} => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback

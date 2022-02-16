@@ -13,7 +13,6 @@ import {
   resolve as resolveExports,
 } from 'resolve.exports';
 import slash = require('slash');
-import type {Config} from '@jest/types';
 import {
   PkgJson,
   isDirectory,
@@ -25,14 +24,14 @@ import {
 // copy from `resolve`'s types so we don't have their types in our definition
 // files
 interface ResolverOptions {
-  basedir: Config.Path;
+  basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
+  paths?: Array<string>;
+  rootDir?: string;
   packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
   pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
@@ -47,9 +46,9 @@ declare global {
 }
 
 export default function defaultResolver(
-  path: Config.Path,
+  path: string,
   options: ResolverOptions,
-): Config.Path {
+): string {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
@@ -76,12 +75,12 @@ export default function defaultResolver(
  * helper functions
  */
 
-function readPackageSync(_: unknown, file: Config.Path): PkgJson {
+function readPackageSync(_: unknown, file: string): PkgJson {
   return readPackageCached(file);
 }
 
 function createPackageFilter(
-  originalPath: Config.Path,
+  originalPath: string,
   userFilter?: ResolverOptions['packageFilter'],
 ): ResolverOptions['packageFilter'] {
   if (shouldIgnoreRequestForExports(originalPath)) {
@@ -109,7 +108,7 @@ function createPackageFilter(
 }
 
 function createPathFilter(
-  originalPath: Config.Path,
+  originalPath: string,
   conditions?: Array<string>,
   userFilter?: ResolverOptions['pathFilter'],
 ): ResolverOptions['pathFilter'] {
@@ -144,5 +143,5 @@ function createPathFilter(
 }
 
 // if it's a relative import or an absolute path, exports are ignored
-const shouldIgnoreRequestForExports = (path: Config.Path) =>
+const shouldIgnoreRequestForExports = (path: string) =>
   path.startsWith('.') || isAbsolute(path);

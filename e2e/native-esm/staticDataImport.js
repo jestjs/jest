@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function replacePathSepForGlob(path: string): string {
-  return path.replace(/\\(?![{}()+?.^$])/g, '/');
+import bar from 'data:application/json,{"obj": 456}';
+import {foo} from 'data:text/javascript,export const foo = "123"';
+
+export function value() {
+  return {bar, foo};
 }

@@ -16,7 +16,7 @@ import type {CoverageReporterSerializedOptions} from './types';
 export type CoverageWorkerData = {
   globalConfig: Config.GlobalConfig;
   config: Config.ProjectConfig;
-  path: Config.Path;
+  path: string;
   options?: CoverageReporterSerializedOptions;
 };
 

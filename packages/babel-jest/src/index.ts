@@ -20,7 +20,6 @@ import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
 } from '@jest/transform';
-import type {Config} from '@jest/types';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
@@ -31,8 +30,8 @@ type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
 
 function assertLoadedBabelConfig(
   babelConfig: Readonly<PartialConfig> | null,
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
 ): asserts babelConfig {
   if (!babelConfig) {
     throw new Error(
@@ -72,7 +71,7 @@ function addIstanbulInstrumentation(
 
 function getCacheKeyFromConfig(
   sourceText: string,
-  sourcePath: Config.Path,
+  sourcePath: string,
   babelOptions: PartialConfig,
   transformOptions: JestTransformOptions,
 ): string {
@@ -104,8 +103,8 @@ function getCacheKeyFromConfig(
 }
 
 function loadBabelConfig(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
 ): PartialConfig {
   const babelConfig = loadPartialConfig(transformOptions);
@@ -116,8 +115,8 @@ function loadBabelConfig(
 }
 
 async function loadBabelConfigAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
 ): Promise<PartialConfig> {
   const babelConfig = await loadPartialConfigAsync(transformOptions);
@@ -128,8 +127,8 @@ async function loadBabelConfigAsync(
 }
 
 function loadBabelOptions(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
   jestTransformOptions: JestTransformOptions,
 ): TransformOptions {
@@ -139,8 +138,8 @@ function loadBabelOptions(
 }
 
 async function loadBabelOptionsAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
   jestTransformOptions: JestTransformOptions,
 ): Promise<TransformOptions> {
@@ -169,7 +168,7 @@ export const createTransformer: CreateTransformer = userOptions => {
   } as const;
 
   function mergeBabelTransformOptions(
-    filename: Config.Path,
+    filename: string,
     transformOptions: JestTransformOptions,
   ): TransformOptions {
     const {cwd} = transformOptions.config;
