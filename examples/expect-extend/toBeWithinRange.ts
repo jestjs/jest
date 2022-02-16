@@ -8,34 +8,39 @@
 import {expect} from '@jest/globals';
 import type {MatcherFunction} from 'expect';
 
-const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
-  actual: unknown,
-  floor: unknown,
-  ceiling: unknown,
-) => {
-  if (
-    typeof actual !== 'number' ||
-    typeof floor !== 'number' ||
-    typeof ceiling !== 'number'
-  ) {
-    throw new Error('These must be of type number!');
-  }
+const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
+  function (actual: unknown, floor: unknown, ceiling: unknown) {
+    if (
+      typeof actual !== 'number' ||
+      typeof floor !== 'number' ||
+      typeof ceiling !== 'number'
+    ) {
+      throw new Error('These must be of type number!');
+    }
 
-  const pass = actual >= floor && actual <= ceiling;
-  if (pass) {
-    return {
-      message: () =>
-        `expected ${actual} not to be within range ${floor} - ${ceiling}`,
-      pass: true,
-    };
-  } else {
-    return {
-      message: () =>
-        `expected ${actual} to be within range ${floor} - ${ceiling}`,
-      pass: false,
-    };
-  }
-};
+    const pass = actual >= floor && actual <= ceiling;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: false,
+      };
+    }
+  };
 
 expect.extend({
   toBeWithinRange,
