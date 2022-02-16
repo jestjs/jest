@@ -136,11 +136,11 @@ export const printReceived = (object: unknown): string =>
 export const printExpected = (value: unknown): string =>
   EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
-export const printWithType = (
-  name: string, // 'Expected' or 'Received'
-  value: unknown,
-  print: (value: unknown) => string, // printExpected or printReceived
-): string => {
+export function printWithType<T>(
+  name: string,
+  value: T,
+  print: (value: T) => string,
+): string {
   const type = getType(value);
   const hasType =
     type !== 'null' && type !== 'undefined'
@@ -148,7 +148,7 @@ export const printWithType = (
       : '';
   const hasValue = `${name} has value: ${print(value)}`;
   return hasType + hasValue;
-};
+}
 
 export const ensureNoExpected = (
   expected: unknown,
@@ -511,8 +511,8 @@ export const matcherErrorMessage = (
 // Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
-  received: string = 'received',
-  expected: string = 'expected',
+  received = 'received',
+  expected = 'expected',
   options: MatcherHintOptions = {},
 ): string => {
   const {
