@@ -15,6 +15,7 @@ const RawSnapshotFormat = Type.Partial(
     highlight: Type.Readonly(Type.Boolean()),
     indent: Type.Readonly(Type.Number({minimum: 0})),
     maxDepth: Type.Readonly(Type.Number({minimum: 0})),
+    maxWidth: Type.Readonly(Type.Number({minimum: 0})),
     min: Type.Readonly(Type.Boolean()),
     printBasicPrototype: Type.Readonly(Type.Boolean()),
     printFunctionName: Type.Readonly(Type.Boolean()),

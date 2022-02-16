@@ -404,6 +404,7 @@ export const DEFAULT_OPTIONS: Options = {
   highlight: false,
   indent: 2,
   maxDepth: Infinity,
+  maxWidth: Infinity,
   min: false,
   plugins: [],
   printBasicPrototype: true,
@@ -465,56 +466,34 @@ const getColorsEmpty = (): Colors =>
   }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>
-  options && options.printFunctionName !== undefined
-    ? options.printFunctionName
-    : DEFAULT_OPTIONS.printFunctionName;
+  options?.printFunctionName ?? DEFAULT_OPTIONS.printFunctionName;
 
 const getEscapeRegex = (options?: OptionsReceived) =>
-  options && options.escapeRegex !== undefined
-    ? options.escapeRegex
-    : DEFAULT_OPTIONS.escapeRegex;
+  options?.escapeRegex ?? DEFAULT_OPTIONS.escapeRegex;
 
 const getEscapeString = (options?: OptionsReceived) =>
-  options && options.escapeString !== undefined
-    ? options.escapeString
-    : DEFAULT_OPTIONS.escapeString;
+  options?.escapeString ?? DEFAULT_OPTIONS.escapeString;
 
 const getConfig = (options?: OptionsReceived): Config => ({
-  callToJSON:
-    options && options.callToJSON !== undefined
-      ? options.callToJSON
-      : DEFAULT_OPTIONS.callToJSON,
-  colors:
-    options && options.highlight
-      ? getColorsHighlight(options)
-      : getColorsEmpty(),
+  callToJSON: options?.callToJSON ?? DEFAULT_OPTIONS.callToJSON,
+  colors: options?.highlight ? getColorsHighlight(options) : getColorsEmpty(),
   compareKeys:
-    options && typeof options.compareKeys === 'function'
+    typeof options?.compareKeys === 'function'
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
-  indent:
-    options && options.min
-      ? ''
-      : createIndent(
-          options && options.indent !== undefined
-            ? options.indent
-            : DEFAULT_OPTIONS.indent,
-        ),
-  maxDepth:
-    options && options.maxDepth !== undefined
-      ? options.maxDepth
-      : DEFAULT_OPTIONS.maxDepth,
-  min: options && options.min !== undefined ? options.min : DEFAULT_OPTIONS.min,
-  plugins:
-    options && options.plugins !== undefined
-      ? options.plugins
-      : DEFAULT_OPTIONS.plugins,
+  indent: options?.min
+    ? ''
+    : createIndent(options?.indent ?? DEFAULT_OPTIONS.indent),
+  maxDepth: options?.maxDepth ?? DEFAULT_OPTIONS.maxDepth,
+  maxWidth: options?.maxWidth ?? DEFAULT_OPTIONS.maxWidth,
+  min: options?.min ?? DEFAULT_OPTIONS.min,
+  plugins: options?.plugins ?? DEFAULT_OPTIONS.plugins,
   printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
-  spacingInner: options && options.min ? ' ' : '\n',
-  spacingOuter: options && options.min ? '' : '\n',
+  spacingInner: options?.min ? ' ' : '\n',
+  spacingOuter: options?.min ? '' : '\n',
 });
 
 function createIndent(indent: number): string {
