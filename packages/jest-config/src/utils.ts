@@ -52,7 +52,7 @@ export const resolve = (
   return module as string;
 };
 
-export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
+export const escapeGlobCharacters = (path: Config.Path): string =>
   path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 
 export const replaceRootDirInPath = (

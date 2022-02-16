@@ -16,8 +16,6 @@ type Timers = 'real' | 'fake' | 'modern' | 'legacy';
 
 export type Path = string;
 
-export type Glob = string;
-
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
@@ -78,7 +76,7 @@ export type DefaultOptions = {
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<Path>;
-  forceCoverageMatch: Array<Glob>;
+  forceCoverageMatch: Array<string>;
   globals: ConfigGlobals;
   haste: HasteConfig;
   injectGlobals: boolean;
@@ -109,14 +107,14 @@ export type DefaultOptions = {
   testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
-  testMatch: Array<Glob>;
+  testMatch: Array<string>;
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string>;
   testRunner: string;
   testSequencer: string;
   testURL: string;
   timers: Timers;
-  transformIgnorePatterns: Array<Glob>;
+  transformIgnorePatterns: Array<string>;
   useStderr: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
@@ -146,7 +144,7 @@ export type InitialOptions = Partial<{
   changedFilesWithAncestor: boolean;
   changedSince: string;
   collectCoverage: boolean;
-  collectCoverageFrom: Array<Glob>;
+  collectCoverageFrom: Array<string>;
   collectCoverageOnlyFrom: {
     [key: string]: boolean;
   };
@@ -164,7 +162,7 @@ export type InitialOptions = Partial<{
   extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
-  forceCoverageMatch: Array<Glob>;
+  forceCoverageMatch: Array<string>;
   forceExit: boolean;
   json: boolean;
   globals: ConfigGlobals;
@@ -197,10 +195,10 @@ export type InitialOptions = Partial<{
   /**
    * @deprecated Use `transformIgnorePatterns` options instead.
    */
-  preprocessorIgnorePatterns: Array<Glob>;
+  preprocessorIgnorePatterns: Array<string>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob | InitialProjectOptions>;
+  projects: Array<string | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -232,7 +230,7 @@ export type InitialOptions = Partial<{
   testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
-  testMatch: Array<Glob>;
+  testMatch: Array<string>;
   testNamePattern: string;
   /**
    * @deprecated Use `roots` options instead.
@@ -249,7 +247,7 @@ export type InitialOptions = Partial<{
   transform: {
     [regex: string]: Path | TransformerConfig;
   };
-  transformIgnorePatterns: Array<Glob>;
+  transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string>;
   updateSnapshot: boolean;
@@ -289,7 +287,7 @@ export type GlobalConfig = {
   changedFilesWithAncestor: boolean;
   ci: boolean;
   collectCoverage: boolean;
-  collectCoverageFrom: Array<Glob>;
+  collectCoverageFrom: Array<string>;
   collectCoverageOnlyFrom?: {
     [key: string]: boolean;
   };
@@ -321,7 +319,7 @@ export type GlobalConfig = {
   onlyChanged: boolean;
   onlyFailures: boolean;
   passWithNoTests: boolean;
-  projects: Array<Glob>;
+  projects: Array<string>;
   replname?: string;
   reporters?: Array<string | ReporterConfig>;
   runTestsByPath: boolean;
@@ -363,7 +361,7 @@ export type ProjectConfig = {
   extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<keyof typeof globalThis>;
   filter?: Path;
-  forceCoverageMatch: Array<Glob>;
+  forceCoverageMatch: Array<string>;
   globalSetup?: string;
   globalTeardown?: string;
   globals: ConfigGlobals;
@@ -394,7 +392,7 @@ export type ProjectConfig = {
   snapshotFormat: SnapshotFormat;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
-  testMatch: Array<Glob>;
+  testMatch: Array<string>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
@@ -402,7 +400,7 @@ export type ProjectConfig = {
   testURL: string;
   timers: Timers;
   transform: Array<[string, Path, Record<string, unknown>]>;
-  transformIgnorePatterns: Array<Glob>;
+  transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
 };

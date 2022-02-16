@@ -79,7 +79,7 @@ export default class HasteFS {
   }
 
   matchFilesWithGlob(
-    globs: Array<Config.Glob>,
+    globs: Array<string>,
     root: Config.Path | null,
   ): Set<Config.Path> {
     const files = new Set<string>();

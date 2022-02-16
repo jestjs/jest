@@ -7,6 +7,6 @@
 
 import type {Config} from '@jest/types';
 
-export default function replacePathSepForGlob(path: Config.Path): Config.Glob {
+export default function replacePathSepForGlob(path: Config.Path): string {
   return path.replace(/\\(?![{}()+?.^$])/g, '/');
 }

@@ -257,7 +257,7 @@ const normalizeCollectCoverageOnlyFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
+  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
     initialCollectCoverageFrom,
   )
     ? initialCollectCoverageFrom // passed from argv
@@ -278,7 +278,7 @@ const normalizeCollectCoverageFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  let value: Array<Config.Glob> | undefined;
+  let value: Array<string> | undefined;
   if (!initialCollectCoverageFrom) {
     value = [];
   }
