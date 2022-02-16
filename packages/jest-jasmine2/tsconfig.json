@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    // we don't want `@types/jest` to be referenced
-    "types": [],
     "rootDir": "src",
-    "outDir": "build"
+    "outDir": "build",
+    // we don't want `@types/jest` to be referenced
+    "types": []
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],

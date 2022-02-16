@@ -63,12 +63,12 @@ export interface MatcherState {
   };
 }
 
-export interface AsymmetricMatcher {
+export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
   toString(): string;
   getExpectedType?(): string;
   toAsymmetricMatcher?(): string;
-}
+};
 
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
