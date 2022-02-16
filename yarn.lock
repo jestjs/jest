@@ -2589,6 +2589,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/expect@^28.0.0-alpha.1, @jest/expect@workspace:packages/jest-expect":
+  version: 0.0.0-use.local
+  resolution: "@jest/expect@workspace:packages/jest-expect"
+  dependencies:
+    "@jest/types": ^28.0.0-alpha.1
+    expect: ^28.0.0-alpha.1
+    jest-snapshot: ^28.0.0-alpha.1
+  languageName: unknown
+  linkType: soft
+
 "@jest/fake-timers@^28.0.0-alpha.1, @jest/fake-timers@workspace:packages/jest-fake-timers":
   version: 0.0.0-use.local
   resolution: "@jest/fake-timers@workspace:packages/jest-fake-timers"
@@ -2608,6 +2618,7 @@ __metadata:
   resolution: "@jest/globals@workspace:packages/jest-globals"
   dependencies:
     "@jest/environment": ^28.0.0-alpha.1
+    "@jest/expect": ^28.0.0-alpha.1
     "@jest/types": ^28.0.0-alpha.1
     expect: ^28.0.0-alpha.1
   languageName: unknown
@@ -12854,6 +12865,7 @@ __metadata:
     "@babel/core": ^7.1.0
     "@babel/register": ^7.0.0
     "@jest/environment": ^28.0.0-alpha.1
+    "@jest/expect": ^28.0.0-alpha.1
     "@jest/test-result": ^28.0.0-alpha.1
     "@jest/types": ^28.0.0-alpha.1
     "@types/co": ^4.6.0

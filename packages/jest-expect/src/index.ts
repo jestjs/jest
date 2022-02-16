@@ -6,7 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
-import {Expect, expect} from 'expect';
+import {expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -14,19 +14,22 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
+import type {JestExpect} from './types';
 
-export default function jestExpect(
-  config: Pick<Config.GlobalConfig, 'expand'>,
-): Expect {
-  expect.setState({expand: config.expand});
-  expect.extend({
+export type {JestExpect} from './types';
+
+export function createJestExpect({expand}: Config.GlobalConfig): JestExpect {
+  const jestExpect = expect as JestExpect;
+
+  jestExpect.setState({expand});
+  jestExpect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
 
-  expect.addSnapshotSerializer = addSerializer;
+  jestExpect.addSnapshotSerializer = addSerializer;
 
-  return expect;
+  return jestExpect;
 }

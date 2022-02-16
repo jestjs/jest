@@ -26,6 +26,7 @@ export default function jestExpect(config: {expand: boolean}): void {
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
+  // @ts-expect-error: TODO
   expect.addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;

@@ -7,6 +7,7 @@
 
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
+import {createJestExpect, type JestExpect} from '@jest/expect';
 import {
   AssertionResult,
   Status,
@@ -15,7 +16,7 @@ import {
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {Expect, expect} from 'expect';
+import {expect} from 'expect';
 import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
@@ -33,12 +34,9 @@ import {
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
 import {getTestID} from '../utils';
-import createExpect from './jestExpect';
 
-type Process = NodeJS.Process;
-
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: Expect;
+interface RuntimeGlobals extends Global.TestFrameworkGlobals {
+  expect: JestExpect;
 }
 
 export const initialize = async ({
@@ -56,9 +54,9 @@ export const initialize = async ({
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
-  parentProcess: Process;
+  parentProcess: NodeJS.Process;
   sendMessageToJest?: TestFileEvent;
-  setGlobalsForRuntime: (globals: JestGlobals) => void;
+  setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotState;
@@ -124,9 +122,9 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  const runtimeGlobals: JestGlobals = {
+  const runtimeGlobals: RuntimeGlobals = {
     ...globalsObject,
-    expect: createExpect(globalConfig),
+    expect: createJestExpect(globalConfig),
   };
   setGlobalsForRuntime(runtimeGlobals);
 
@@ -161,7 +159,7 @@ export const initialize = async ({
     snapshotFormat: config.snapshotFormat,
     updateSnapshot,
   });
-  // @ts-expect-error: snapshotState is a jest extension of `expect`
+
   expect.setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
