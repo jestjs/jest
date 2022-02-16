@@ -140,17 +140,7 @@ export function printExpected<T>(value: T): string {
 }
 
 export function printWithType<T>(
-  name: 'Expected',
-  value: T,
-  print: typeof printExpected,
-): string;
-export function printWithType<T>(
-  name: 'Received',
-  value: T,
-  print: typeof printReceived,
-): string;
-export function printWithType<T>(
-  name: 'Expected' | 'Received',
+  name: string,
   value: T,
   print: typeof printExpected | typeof printReceived,
 ): string {
