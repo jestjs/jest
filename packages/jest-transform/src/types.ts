@@ -76,7 +76,6 @@ export interface SyncTransformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
@@ -111,7 +110,6 @@ export interface AsyncTransformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
@@ -141,3 +139,9 @@ export interface AsyncTransformer<OptionType = unknown> {
 export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
+
+type TransformerCreator<OptionType = unknown> = (
+  options?: OptionType,
+) => Transformer<OptionType>;
+
+export type TransformerFactory = {createTransformer: TransformerCreator};
