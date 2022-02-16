@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {jestExpect} from '@jest/expect';
+import type {Config} from '@jest/types';
 import {
   SnapshotState,
   addSerializer,
