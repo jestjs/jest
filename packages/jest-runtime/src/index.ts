@@ -581,7 +581,7 @@ export default class Runtime {
 
       const mime = match.groups.mime;
       if (mime === 'application/wasm') {
-        throw new Error('Unsupported MIME type');
+        throw new Error('WASM is currently not supported');
       }
 
       const encoding = match.groups.encoding;
