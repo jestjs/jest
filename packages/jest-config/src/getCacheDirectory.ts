@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
 const getCacheDirectory: () => string = () => {

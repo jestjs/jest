@@ -6,7 +6,6 @@
  */
 
 import type {Test} from '@jest/test-result';
-import type {Config} from '@jest/types';
 import type {Context} from 'jest-runtime';
 
 export type Stats = {

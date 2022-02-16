@@ -31,7 +31,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
-import type {Config} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';

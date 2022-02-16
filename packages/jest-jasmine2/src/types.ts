@@ -6,7 +6,6 @@
  */
 
 import type {AssertionError} from 'assert';
-import type {Config} from '@jest/types';
 import type {Expect} from 'expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
