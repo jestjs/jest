@@ -591,7 +591,7 @@ export default class Runtime {
       } else if (encoding === 'base64') {
         code = Buffer.from(code, 'base64').toString();
       } else {
-        throw new Error('Invalid data URI encoding');
+        throw new Error(`Invalid data URI encoding: ${encoding}`);
       }
 
       if (mime === 'application/json') {
