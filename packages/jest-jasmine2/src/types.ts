@@ -69,8 +69,7 @@ export type Jasmine = {
   version: string;
   testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & AsymmetricMatchers &
-  typeof globalThis;
+} & AsymmetricMatchers & {process: NodeJS.Process};
 
 declare global {
   namespace NodeJS {
