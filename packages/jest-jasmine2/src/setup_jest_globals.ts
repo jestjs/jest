@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {jestExpect} from '@jest/expect';
 import type {Config} from '@jest/types';
-import {expect} from 'expect';
 import {
   SnapshotState,
   addSerializer,
@@ -30,8 +30,8 @@ export type SetupOptions = {
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = (result: SpecResult) => {
-  const {suppressedErrors} = expect.getState();
-  expect.setState({suppressedErrors: []});
+  const {suppressedErrors} = jestExpect.getState();
+  jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     result.status = 'failed';
 
@@ -49,7 +49,7 @@ const addSuppressedErrors = (result: SpecResult) => {
 };
 
 const addAssertionErrors = (result: SpecResult) => {
-  const assertionErrors = expect.extractExpectedAssertionsErrors();
+  const assertionErrors = jestExpect.extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
@@ -74,7 +74,7 @@ const patchJasmine = () => {
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
-          expect.setState({currentTestName: context.getFullName()});
+          jestExpect.setState({currentTestName: context.getFullName()});
           onStart && onStart.call(attr, context);
         };
         super(attr);
@@ -111,8 +111,8 @@ export default async function setupJestGlobals({
     snapshotFormat,
     updateSnapshot,
   });
-  // @ts-expect-error: snapshotState is a jest extension of `expect`
-  expect.setState({snapshotState, testPath});
+
+  jestExpect.setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 }

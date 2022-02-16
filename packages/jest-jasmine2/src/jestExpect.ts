@@ -7,41 +7,24 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {type MatcherState, expect} from 'expect';
-import {
-  addSerializer,
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} from 'jest-snapshot';
+import {jestExpect} from '@jest/expect';
 import type {JasmineMatchersObject} from './types';
 
-export default function jestExpect(config: {expand: boolean}): void {
-  global.expect = expect;
-  expect.setState({expand: config.expand});
-  expect.extend({
-    toMatchInlineSnapshot,
-    toMatchSnapshot,
-    toThrowErrorMatchingInlineSnapshot,
-    toThrowErrorMatchingSnapshot,
-  });
-  expect.addSnapshotSerializer = addSerializer;
+export default function jestExpectAdapter(config: {expand: boolean}): void {
+  global.expect = jestExpect;
+  jestExpect.setState({expand: config.expand});
 
   const jasmine = global.jasmine;
-  jasmine.anything = expect.anything;
-  jasmine.any = expect.any;
-  jasmine.objectContaining = expect.objectContaining;
-  jasmine.arrayContaining = expect.arrayContaining;
-  jasmine.stringMatching = expect.stringMatching;
+  jasmine.anything = jestExpect.anything;
+  jasmine.any = jestExpect.any;
+  jasmine.objectContaining = jestExpect.objectContaining;
+  jasmine.arrayContaining = jestExpect.arrayContaining;
+  jasmine.stringMatching = jestExpect.stringMatching;
 
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function (
-        this: MatcherState,
-        ...args: Array<unknown>
-      ) {
+      jestMatchersObject[name] = function (...args: Array<unknown>) {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
@@ -53,6 +36,6 @@ export default function jestExpect(config: {expand: boolean}): void {
       };
     });
 
-    expect.extend(jestMatchersObject);
+    jestExpect.extend(jestMatchersObject);
   };
 }

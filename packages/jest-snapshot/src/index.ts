@@ -42,6 +42,7 @@ export {
 } from './SnapshotResolver';
 export type {SnapshotResolver} from './SnapshotResolver';
 export {default as SnapshotState} from './State';
+export type {SnapshotMatchers} from './types';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(
