@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {
+  expectAssignable,
+  expectError,
+  expectNotAssignable,
+  expectType,
+} from 'tsd-lite';
 import {jestExpect} from '@jest/expect';
 import {expect} from 'expect';
 
@@ -14,3 +19,6 @@ expectType<void>(jestExpect({}).toMatchSnapshot());
 expectError(() => {
   expect({}).toMatchSnapshot();
 });
+
+expectAssignable<typeof expect>(jestExpect);
+expectNotAssignable<typeof jestExpect>(expect);
