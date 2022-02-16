@@ -142,7 +142,7 @@ export function printExpected<T>(value: T): string {
 export function printWithType<T>(
   name: string,
   value: T,
-  print: typeof printExpected | typeof printReceived,
+  print: (value: T) => string,
 ): string {
   const type = getType(value);
   const hasType =
