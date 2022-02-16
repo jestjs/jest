@@ -151,14 +151,13 @@ export const initialize = async ({
     .reverse()
     .forEach(path => addSerializer(localRequire(path)));
 
-  const {expand, updateSnapshot} = globalConfig;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
-    expand,
+    expand: globalConfig.expand,
     prettierPath: config.prettierPath,
     snapshotFormat: config.snapshotFormat,
-    updateSnapshot,
+    updateSnapshot: globalConfig.updateSnapshot,
   });
 
   jestExpect.setState({snapshotState, testPath});
