@@ -7,7 +7,7 @@
 
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
-import {type JestExpect, createJestExpect} from '@jest/expect';
+import {type JestExpect, jestExpect} from '@jest/expect';
 import {
   AssertionResult,
   Status,
@@ -16,7 +16,6 @@ import {
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {expect} from 'expect';
 import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
@@ -122,9 +121,11 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
+  jestExpect.setState({expand: globalConfig.expand});
+
   const runtimeGlobals: RuntimeGlobals = {
     ...globalsObject,
-    expect: createJestExpect(globalConfig),
+    expect: jestExpect,
   };
   setGlobalsForRuntime(runtimeGlobals);
 
@@ -160,7 +161,7 @@ export const initialize = async ({
     updateSnapshot,
   });
 
-  expect.setState({snapshotState, testPath});
+  jestExpect.setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
@@ -277,7 +278,7 @@ const handleSnapshotStateAfterRetry =
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
-      expect.setState({currentTestName: getTestID(event.test)});
+      jestExpect.setState({currentTestName: getTestID(event.test)});
       break;
     }
     case 'test_done': {
@@ -289,7 +290,7 @@ const eventHandler = async (event: Circus.Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
-  const failures = expect.extractExpectedAssertionsErrors();
+  const failures = jestExpect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
@@ -298,8 +299,8 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
-  const {suppressedErrors} = expect.getState();
-  expect.setState({suppressedErrors: []});
+  const {suppressedErrors} = jestExpect.getState();
+  jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     test.errors = test.errors.concat(suppressedErrors);
   }

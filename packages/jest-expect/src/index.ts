@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {expect} from 'expect';
 import {
   addSerializer,
@@ -18,10 +17,9 @@ import type {JestExpect} from './types';
 
 export type {JestExpect} from './types';
 
-export function createJestExpect({expand}: Config.GlobalConfig): JestExpect {
+export function createJestExpect(): JestExpect {
   const jestExpect = expect as JestExpect;
 
-  jestExpect.setState({expand});
   jestExpect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
@@ -33,3 +31,5 @@ export function createJestExpect({expand}: Config.GlobalConfig): JestExpect {
 
   return jestExpect;
 }
+
+export const jestExpect = createJestExpect();
