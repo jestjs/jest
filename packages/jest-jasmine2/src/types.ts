@@ -6,7 +6,7 @@
  */
 
 import type {AssertionError} from 'assert';
-import type {JestExpect} from '@jest/expect';
+import type {AsymmetricMatchers, JestExpect} from '@jest/expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -69,8 +69,7 @@ export type Jasmine = {
   version: string;
   testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & JestExpect &
-  typeof globalThis;
+} & AsymmetricMatchers & {process: NodeJS.Process};
 
 declare global {
   namespace NodeJS {
