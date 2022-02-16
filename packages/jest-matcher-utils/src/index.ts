@@ -131,13 +131,10 @@ export const highlightTrailingWhitespace = (text: string): string =>
 const replaceTrailingSpaces = (text: string): string =>
   text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
-export function printReceived<T>(object: T): string {
-  return RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
-}
-
-export function printExpected<T>(value: T): string {
-  return EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
-}
+export const printReceived = (object: unknown): string =>
+  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
+export const printExpected = (value: unknown): string =>
+  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
 export function printWithType<T>(
   name: string,
