@@ -20,5 +20,11 @@ expectError(() => {
   expect({}).toMatchSnapshot();
 });
 
+expectType<void>(jestExpect.addSnapshotSerializer({} as any));
+
+expectError(() => {
+  expect.addSnapshotSerializer();
+});
+
 expectAssignable<typeof expect>(jestExpect);
 expectNotAssignable<typeof jestExpect>(expect);
