@@ -146,13 +146,16 @@ export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
-export type TransformerCreator<OptionType = unknown> = (
-  options?: OptionType,
-) => Transformer<OptionType>;
+export type TransformerCreator<
+  X extends Transformer<OptionType>,
+  OptionType = unknown,
+> = (options?: OptionType) => X;
 
 /**
  * Instead of having your custom transformer implement the Transformer interface
  * directly, you can choose to export a factory function to dynamically create
  * transformers. This is to allow having a transformer config in your jest config.
  */
-export type TransformerFactory = {createTransformer: TransformerCreator};
+export type TransformerFactory<X extends Transformer> = {
+  createTransformer: TransformerCreator<X>;
+};

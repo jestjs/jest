@@ -74,10 +74,10 @@ async function waitForPromiseWithCleanup(
 }
 
 // type predicate
-function isTransformerFactory(
-  t: Transformer | TransformerFactory,
-): t is TransformerFactory {
-  return typeof (t as TransformerFactory).createTransformer === 'function';
+function isTransformerFactory<X extends Transformer>(
+  t: Transformer | TransformerFactory<X>,
+): t is TransformerFactory<X> {
+  return typeof (t as TransformerFactory<X>).createTransformer === 'function';
 }
 
 class ScriptTransformer {
@@ -267,7 +267,7 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer | TransformerFactory =
+          let transformer: Transformer | TransformerFactory<Transformer> =
             await requireOrImportModule(transformPath);
 
           if (!transformer) {

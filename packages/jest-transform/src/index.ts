@@ -18,6 +18,7 @@ export type {
   AsyncTransformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
+  TransformerCreator,
   TransformOptions,
   TransformResult,
   TransformedSource,
