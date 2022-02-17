@@ -12,7 +12,7 @@
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[@jest/expect]` New module which extends `expect` with `jest-snapshot` matchers ([#12404](https://github.com/facebook/jest/pull/12404), [#12410](https://github.com/facebook/jest/pull/12410), [#12418](https://github.com/facebook/jest/pull/12418))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
-- `[jest-resolver]` [**BREAKING**] Add support for `package.json` `exports` ([11961](https://github.com/facebook/jest/pull/11961))
+- `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[@jest/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
