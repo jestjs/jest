@@ -47,6 +47,45 @@ declare global {
   }
 }
 
+export default function defaultResolver(
+  path: string,
+  options: ResolverOptions,
+): string {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
+    return pnpResolver(path, options);
+  }
+
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
+    ...options,
+    isDirectory,
+    isFile,
+    preserveSymlinks: false,
+    readPackageSync,
+    realpathSync,
+  };
+
+  const pathToResolve = getPathInModule(path, resolveOptions);
+
+  const result =
+    pathToResolve === path
+      ? resolveSync(pathToResolve, resolveOptions)
+      : pathToResolve;
+
+  // Dereference symlinks to ensure we don't create a separate
+  // module instance depending on how it was referenced.
+  return realpathSync(result);
+}
+
+/*
+ * helper functions
+ */
+
+function readPackageSync(_: unknown, file: string): PkgJson {
+  return readPackageCached(file);
+}
+
 function getPathInModule(
   path: string,
   options: UpstreamResolveOptionsWithConditions,
@@ -97,45 +136,6 @@ function getPathInModule(
   }
 
   return path;
-}
-
-export default function defaultResolver(
-  path: string,
-  options: ResolverOptions,
-): string {
-  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
-  // needed for Yarn 1 which implements version 1 of the pnp spec
-  if (process.versions.pnp === '1') {
-    return pnpResolver(path, options);
-  }
-
-  const resolveOptions: UpstreamResolveOptionsWithConditions = {
-    ...options,
-    isDirectory,
-    isFile,
-    preserveSymlinks: false,
-    readPackageSync,
-    realpathSync,
-  };
-
-  const pathToResolve = getPathInModule(path, resolveOptions);
-
-  const result =
-    pathToResolve === path
-      ? resolveSync(pathToResolve, resolveOptions)
-      : pathToResolve;
-
-  // Dereference symlinks to ensure we don't create a separate
-  // module instance depending on how it was referenced.
-  return realpathSync(result);
-}
-
-/*
- * helper functions
- */
-
-function readPackageSync(_: unknown, file: string): PkgJson {
-  return readPackageCached(file);
 }
 
 function createResolveOptions(
