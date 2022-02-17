@@ -20,6 +20,8 @@ jest.mock('../loadBabelConfig', () => {
   };
 });
 
+const defaultBabelJestTransformer = babelJest.createTransformer(null);
+
 //Mock data for all the tests
 const sourceString = `
 const sum = (a, b) => a+b;
@@ -38,11 +40,17 @@ beforeEach(() => {
 });
 
 test('Returns source string with inline maps when no transformOptions is passed', () => {
-  const result = babelJest.process(sourceString, 'dummy_path.js', {
-    config: makeProjectConfig(),
-    configString: JSON.stringify(makeProjectConfig()),
-    instrument: false,
-  }) as any;
+  const result = defaultBabelJestTransformer.process(
+    sourceString,
+    'dummy_path.js',
+    {
+      cacheFS: new Map<string, string>(),
+      config: makeProjectConfig(),
+      configString: JSON.stringify(makeProjectConfig()),
+      instrument: false,
+      transformerConfig: {},
+    },
+  ) as any;
   expect(typeof result).toBe('object');
   expect(result.code).toBeDefined();
   expect(result.map).toBeDefined();
@@ -53,13 +61,15 @@ test('Returns source string with inline maps when no transformOptions is passed'
 });
 
 test('Returns source string with inline maps when no transformOptions is passed async', async () => {
-  const result: any = await babelJest.processAsync!(
+  const result: any = await defaultBabelJestTransformer.processAsync!(
     sourceString,
     'dummy_path.js',
     {
+      cacheFS: new Map<string, string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
       instrument: false,
+      transformerConfig: {},
     },
   );
   expect(typeof result).toBe('object');
@@ -108,10 +118,12 @@ describe('caller option correctly merges from defaults and options', () => {
       },
     ],
   ])('%j -> %j', (input, output) => {
-    babelJest.process(sourceString, 'dummy_path.js', {
+    defaultBabelJestTransformer.process(sourceString, 'dummy_path.js', {
+      cacheFS: new Map<string, string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
       instrument: false,
+      transformerConfig: {},
       ...input,
     });
 
@@ -132,9 +144,11 @@ describe('caller option correctly merges from defaults and options', () => {
 test('can pass null to createTransformer', () => {
   const transformer = createTransformer(null);
   transformer.process(sourceString, 'dummy_path.js', {
+    cacheFS: new Map<string, string>(),
     config: makeProjectConfig(),
     configString: JSON.stringify(makeProjectConfig()),
     instrument: false,
+    transformerConfig: {},
   });
 
   expect(loadPartialConfig).toHaveBeenCalledTimes(1);
