@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {type MatcherFunction, expect} from 'expect';
+import {expect} from '@jest/globals';
+import type {MatcherFunction} from 'expect';
 
 const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
   function (actual: unknown, floor: unknown, ceiling: unknown) {
