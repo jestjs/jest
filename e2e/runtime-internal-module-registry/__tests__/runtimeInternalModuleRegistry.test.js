@@ -16,7 +16,7 @@ describe('Runtime internal module registry', () => {
     // We require from this crazy path so that we can mimick Jest (and its
     // transitive deps) being installed alongside a projects deps (e.g. with an
     // NPM3 flat dep tree)
-    const jestUtil = require('jest-util');
+    const jestUtil = require('../../../packages/jest-util');
 
     // If FS is mocked correctly, this folder won't actually be created on the
     // filesystem
