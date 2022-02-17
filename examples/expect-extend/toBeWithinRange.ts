@@ -6,7 +6,7 @@
  */
 
 import {expect} from '@jest/globals';
-import type {MatcherFunction} from 'expect';
+import type {MatcherFunction} from '@jest/expect';
 
 const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
   function (actual: unknown, floor: unknown, ceiling: unknown) {
@@ -46,11 +46,11 @@ expect.extend({
   toBeWithinRange,
 });
 
-declare module 'expect' {
+declare module '@jest/expect' {
   interface AsymmetricMatchers {
-    toBeWithinRange(a: number, b: number): void;
+    toBeWithinRange(floor: number, ceiling: number): void;
   }
   interface Matchers<R> {
-    toBeWithinRange(a: number, b: number): R;
+    toBeWithinRange(floor: number, ceiling: number): R;
   }
 }
