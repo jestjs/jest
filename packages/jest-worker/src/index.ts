@@ -124,7 +124,8 @@ export class Worker {
         return;
       }
 
-      if (Object.prototype.constructor(name)) {
+      /* eslint-disable   eslint-comments/disable-enable-pair, no-prototype-builtins*/
+      if (this.constructor.prototype.hasOwnProperty(name)) {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
