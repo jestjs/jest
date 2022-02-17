@@ -124,6 +124,7 @@ export class Worker {
         return;
       }
 
+      // eslint-disable-next-line no-prototype-builtins
       if (this.constructor.prototype.hasOwnProperty(name)) {
         throw new TypeError('Cannot define a method called ' + name);
       }
