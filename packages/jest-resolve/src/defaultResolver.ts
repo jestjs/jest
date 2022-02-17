@@ -7,7 +7,7 @@
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {sync as resolveSync} from 'resolve';
+import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
@@ -35,6 +35,9 @@ interface ResolverOptions {
   pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
 
+type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
+  Pick<ResolverOptions, 'conditions'>;
+
 // https://github.com/facebook/jest/pull/10617
 declare global {
   namespace NodeJS {
@@ -44,7 +47,10 @@ declare global {
   }
 }
 
-function getPathInModule(path: string, options: ResolverOptions): string {
+function getPathInModule(
+  path: string,
+  options: UpstreamResolveOptionsWithConditions,
+): string {
   if (isAbsolute(path) || path.startsWith('.')) {
     return path;
   }
@@ -62,14 +68,7 @@ function getPathInModule(path: string, options: ResolverOptions): string {
     let packageJsonPath = '';
 
     try {
-      packageJsonPath = resolveSync(`${moduleName}/package.json`, {
-        ...options,
-        isDirectory,
-        isFile,
-        preserveSymlinks: false,
-        readPackageSync,
-        realpathSync,
-      });
+      packageJsonPath = resolveSync(`${moduleName}/package.json`, options);
     } catch {
       // ignore if package.json cannot be found
     }
@@ -110,16 +109,20 @@ export default function defaultResolver(
     return pnpResolver(path, options);
   }
 
-  const pathToResolve = getPathInModule(path, options);
-
-  const result = resolveSync(pathToResolve, {
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
     ...options,
     isDirectory,
     isFile,
-    packageFilter: createPackageFilter(pathToResolve, options.packageFilter),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
+  };
+
+  const pathToResolve = getPathInModule(path, options);
+
+  const result = resolveSync(pathToResolve, {
+    ...resolveOptions,
+    packageFilter: createPackageFilter(pathToResolve, options.packageFilter),
   });
 
   // Dereference symlinks to ensure we don't create a separate
