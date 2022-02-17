@@ -15,7 +15,13 @@ import {
 } from 'jest-snapshot';
 import type {JestExpect} from './types';
 
-export type {AsymmetricMatchers, MatcherFunction, MatcherState} from 'expect';
+export type {
+  AsymmetricMatchers,
+  Matchers,
+  MatcherFunction,
+  MatcherFunctionWithState,
+  MatcherState,
+} from 'expect';
 export type {JestExpect} from './types';
 
 function createJestExpect(): JestExpect {
