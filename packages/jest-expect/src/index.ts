@@ -19,6 +19,7 @@ export type {
   AsymmetricMatchers,
   Matchers,
   MatcherFunction,
+  MatcherFunctionWithState,
   MatcherState,
 } from 'expect';
 export type {JestExpect} from './types';
