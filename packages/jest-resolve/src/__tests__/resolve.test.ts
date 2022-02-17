@@ -234,6 +234,20 @@ describe('findNodeModule', () => {
         path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
       );
     });
+
+    test('supports separate directory path', () => {
+      const result = Resolver.findNodeModule('exports/directory/file.js', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          conditionsRoot,
+          './node_modules/exports/some-other-directory/file.js',
+        ),
+      );
+    });
   });
 });
 

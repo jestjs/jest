@@ -17,6 +17,9 @@ import {runContinuous} from '../runJest';
 
 const tempDir = path.resolve(tmpdir(), 'complex-errors');
 
+// this is a tiny bit flaky
+jest.retryTimes(3);
+
 beforeEach(() => {
   createEmptyPackage(tempDir);
 });
