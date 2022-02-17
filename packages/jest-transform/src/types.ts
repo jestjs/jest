@@ -137,10 +137,12 @@ export interface AsyncTransformer<OptionType = unknown> {
 }
 
 /**
- * We have both sync (process) and async (processAsync) code transformation, which both can be provided.
- * `require` will always use process, and import will use `processAsync` if it exists, otherwise fall back to process.
- * Meaning, if you use import exclusively you do not need process, but in most cases supplying both makes sense:
+ * We have both sync (`process`) and async (`processAsync`) code transformation, which both can be provided.
+ * `require` will always use `process`, and `import` will use `processAsync` if it exists, otherwise fall back to `process`.
+ * Meaning, if you use `import` exclusively you do not need `process`, but in most cases supplying both makes sense:
  * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+ *
+ * For more info on the sync vs async model, see https://jestjs.io/docs/code-transformation#writing-custom-transformers
  */
 export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>

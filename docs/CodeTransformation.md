@@ -21,8 +21,56 @@ If you override the `transform` configuration option `babel-jest` will no longer
 
 You can write your own transformer. The API of a transformer is as follows:
 
-<!-- abbreviated: see packages/jest-transform/src/types.ts in https://github.com/facebook/jest for all types -->
 ```ts
+export interface ShouldInstrumentOptions
+  extends Pick<
+    Config.GlobalConfig,
+    | 'collectCoverage'
+    | 'collectCoverageFrom'
+    | 'collectCoverageOnlyFrom'
+    | 'coverageProvider'
+  > {
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
+}
+
+export interface Options
+  extends ShouldInstrumentOptions,
+    CallerTransformOptions {
+  isInternalModule?: boolean;
+}
+
+// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
+interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+  version: number;
+}
+
+// TODO: For Jest 26 normalize this (always structured data, never a string)
+export type TransformedSource =
+  | {code: string; map?: FixedRawSourceMap | string | null}
+  | string;
+
+export type TransformResult = TransformTypes.TransformResult;
+
+export interface CallerTransformOptions {
+  // names are copied from babel: https://babeljs.io/docs/en/options#caller
+  supportsDynamicImport: boolean;
+  supportsExportNamespaceFrom: boolean;
+  supportsStaticESM: boolean;
+  supportsTopLevelAwait: boolean;
+}
+
+export interface ReducedTransformOptions extends CallerTransformOptions {
+  instrument: boolean;
+}
+
+export interface RequireAndTranspileModuleOptions
+  extends ReducedTransformOptions {
+  applyInteropRequireDefault: boolean;
+}
+
+export type StringMap = Map<string, string>;
+
 export interface TransformOptions<OptionType = unknown>
   extends ReducedTransformOptions {
   /** a cached file system which is used in jest-runtime - useful to improve performance */
@@ -102,29 +150,25 @@ export interface AsyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
-/**
- * We have both sync (process) and async (processAsync) code transformation, which both can be provided.
- * `require` will always use process, and import will use `processAsync` if it exists, otherwise fall back to process.
- * Meaning, if you use import exclusively you do not need process, but in most cases supplying both makes sense:
- * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
- */
 export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
-type TransformerCreator<OptionType = unknown> = (
-  options?: OptionType,
-) => Transformer<OptionType>;
+export type TransformerCreator<
+  X extends Transformer<OptionType>,
+  OptionType = unknown,
+> = (options?: OptionType) => X;
 
-/**
- * Instead of having your custom transformer implement the Transformer interface
- * directly, you can choose to export a factory function to dynamically create
- * transformers. This is to allow having a transformer config in your jest config.
- */
-export type TransformerFactory = {createTransformer: TransformerCreator};
+export type TransformerFactory<X extends Transformer> = {
+  createTransformer: TransformerCreator<X>;
+};
 ```
 
+We have both sync (`process`) and async (`processAsync`) code transformation, which both can be provided. `require` will always use `process`, and `import` will use `processAsync` if it exists, otherwise falling back to `process`. Meaning, if you use `import` exclusively you do not need `process`, but in most cases supplying both makes sense: Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+
 As can be seen, only `process` or `processAsync` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+
+Instead of having your custom transformer implement the Transformer interface directly, you can choose to export a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
 Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
 
