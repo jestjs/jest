@@ -51,7 +51,7 @@ function getPathInModule(
   path: string,
   options: UpstreamResolveOptionsWithConditions,
 ): string {
-  if (isAbsolute(path) || path.startsWith('.')) {
+  if (shouldIgnoreRequestForExports(path)) {
     return path;
   }
 
@@ -122,10 +122,7 @@ export default function defaultResolver(
 
   const result =
     pathToResolve === path
-      ? resolveSync(pathToResolve, {
-          ...resolveOptions,
-          packageFilter: createPackageFilter(pathToResolve, options),
-        })
+      ? resolveSync(pathToResolve, resolveOptions)
       : pathToResolve;
 
   // Dereference symlinks to ensure we don't create a separate
@@ -139,46 +136,6 @@ export default function defaultResolver(
 
 function readPackageSync(_: unknown, file: string): PkgJson {
   return readPackageCached(file);
-}
-
-function createPackageFilter(
-  originalPath: string,
-  options: ResolverOptions,
-): ResolverOptions['packageFilter'] {
-  if (shouldIgnoreRequestForExports(originalPath)) {
-    return options.packageFilter;
-  }
-
-  return function packageFilter(pkg, ...rest) {
-    let filteredPkg = pkg;
-
-    if (options.packageFilter) {
-      filteredPkg = options.packageFilter(filteredPkg, ...rest);
-    }
-
-    if (filteredPkg.exports == null) {
-      return filteredPkg;
-    }
-
-    let resolvedMain: string | void = undefined;
-
-    try {
-      resolvedMain = resolveExports(
-        filteredPkg,
-        '.',
-        createResolveOptions(options.conditions),
-      );
-    } catch {
-      // ignore
-    }
-
-    return {
-      ...filteredPkg,
-      // override `main` so `resolve` resolves it correctly while respecting
-      // `exports`.
-      main: resolvedMain,
-    };
-  };
 }
 
 function createResolveOptions(
