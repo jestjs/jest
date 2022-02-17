@@ -69,6 +69,7 @@ export default function defaultResolver(
   const pathToResolve = getPathInModule(path, resolveOptions);
 
   const result =
+    // if `getPathInModule` doesn't change the path, attempt to resolve it
     pathToResolve === path
       ? resolveSync(pathToResolve, resolveOptions)
       : pathToResolve;
