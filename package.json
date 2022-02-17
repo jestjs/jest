@@ -84,7 +84,7 @@
     "which": "^2.0.1"
   },
   "scripts": {
-    "build-clean": "rimraf './packages/*/build' './packages/*/dist' './packages/*/tsconfig.tsbuildinfo'",
+    "build-clean": "rimraf './packages/*/build' './packages/*/dist' './packages/*/tsconfig.tsbuildinfo' './packages/*/api-extractor.json' './api-extractor.json'",
     "build": "yarn build:js && yarn build:ts && yarn bundle:ts",
     "build:js": "node ./scripts/build.js",
     "build:ts": "node ./scripts/buildTs.js",
