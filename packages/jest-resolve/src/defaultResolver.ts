@@ -120,10 +120,12 @@ export default function defaultResolver(
 
   const pathToResolve = getPathInModule(path, resolveOptions);
 
-  const result = resolveSync(pathToResolve, {
-    ...resolveOptions,
-    packageFilter: createPackageFilter(pathToResolve, options),
-  });
+  const result = isAbsolute(pathToResolve)
+    ? pathToResolve
+    : resolveSync(pathToResolve, {
+        ...resolveOptions,
+        packageFilter: createPackageFilter(pathToResolve, options),
+      });
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
