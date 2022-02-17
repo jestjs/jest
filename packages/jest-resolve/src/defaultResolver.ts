@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isAbsolute} from 'path';
+import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import {sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
-import slash = require('slash');
 import {
   PkgJson,
   isDirectory,
@@ -45,6 +44,62 @@ declare global {
   }
 }
 
+function getPathInModule(path: string, options: ResolverOptions): string {
+  if (isAbsolute(path) || path.startsWith('.')) {
+    return path;
+  }
+
+  const segments = path.split('/');
+
+  let moduleName = segments.shift();
+
+  if (moduleName) {
+    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
+    if (moduleName.startsWith('@')) {
+      moduleName = `${moduleName}/${segments.shift()}`;
+    }
+
+    let packageJsonPath = '';
+
+    try {
+      packageJsonPath = resolveSync(`${moduleName}/package.json`, {
+        ...options,
+        isDirectory,
+        isFile,
+        preserveSymlinks: false,
+        readPackageSync,
+        realpathSync,
+      });
+    } catch {
+      // ignore if package.json cannot be found
+    }
+
+    if (packageJsonPath && isFile(packageJsonPath)) {
+      const pkg = readPackageCached(packageJsonPath);
+
+      if (pkg.exports) {
+        // we need to make sure resolve ignores `main`
+        delete pkg.main;
+
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        // TODO: should we throw if not?
+        if (resolved) {
+          return pathResolve(dirname(packageJsonPath), resolved);
+        }
+      }
+    }
+  }
+
+  return path;
+}
+
 export default function defaultResolver(
   path: string,
   options: ResolverOptions,
@@ -55,12 +110,13 @@ export default function defaultResolver(
     return pnpResolver(path, options);
   }
 
-  const result = resolveSync(path, {
+  const pathToResolve = getPathInModule(path, options);
+
+  const result = resolveSync(pathToResolve, {
     ...options,
     isDirectory,
     isFile,
-    packageFilter: createPackageFilter(path, options.packageFilter),
-    pathFilter: createPathFilter(path, options.conditions, options.pathFilter),
+    packageFilter: createPackageFilter(pathToResolve, options.packageFilter),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
@@ -107,39 +163,13 @@ function createPackageFilter(
   };
 }
 
-function createPathFilter(
-  originalPath: string,
-  conditions?: Array<string>,
-  userFilter?: ResolverOptions['pathFilter'],
-): ResolverOptions['pathFilter'] {
-  if (shouldIgnoreRequestForExports(originalPath)) {
-    return userFilter;
-  }
-
-  const options: ResolveExportsOptions = conditions
+function createResolveOptions(
+  conditions: Array<string> | undefined,
+): ResolveExportsOptions {
+  return conditions
     ? {conditions, unsafe: true}
     : // no conditions were passed - let's assume this is Jest internal and it should be `require`
       {browser: false, require: true};
-
-  return function pathFilter(pkg, path, relativePath, ...rest) {
-    let pathToUse = relativePath;
-
-    if (userFilter) {
-      pathToUse = userFilter(pkg, path, relativePath, ...rest);
-    }
-
-    if (pkg.exports == null) {
-      return pathToUse;
-    }
-
-    // this `index` thing can backfire, but `resolve` adds it: https://github.com/browserify/resolve/blob/f1b51848ecb7f56f77bfb823511d032489a13eab/lib/sync.js#L192
-    const isRootRequire =
-      pathToUse === 'index' && !originalPath.endsWith('/index');
-
-    const newPath = isRootRequire ? '.' : slash(pathToUse);
-
-    return resolveExports(pkg, newPath, options) || pathToUse;
-  };
 }
 
 // if it's a relative import or an absolute path, exports are ignored
