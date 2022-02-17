@@ -6,10 +6,10 @@
  */
 
 import {fileURLToPath} from 'url';
-import babelJest from 'babel-jest';
+import babelJest, {createTransformer} from 'babel-jest';
 
 export default {
-  ...babelJest.default.createTransformer({
+  ...createTransformer({
     presets: ['@babel/preset-flow'],
     root: fileURLToPath(import.meta.url),
   }),

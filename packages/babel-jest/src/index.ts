@@ -271,6 +271,10 @@ export const createTransformer: TransformerCreator<
   };
 };
 
-const transformer: SyncTransformer<TransformOptions> = createTransformer();
+const transformerFactory = {
+  // Assigned here, instead of as a separate export, due to limitations in Jest's
+  // requireOrImportModule, requiring all exports to be on the `default` export
+  createTransformer,
+};
 
-export default transformer;
+export default transformerFactory;
