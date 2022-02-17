@@ -6,7 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import babelJest from '../index';
+import babelJest, {createTransformer} from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
 
 jest.mock('../loadBabelConfig', () => {
@@ -130,7 +130,7 @@ describe('caller option correctly merges from defaults and options', () => {
 });
 
 test('can pass null to createTransformer', () => {
-  const transformer = babelJest.createTransformer(null);
+  const transformer = createTransformer(null);
   transformer.process(sourceString, 'dummy_path.js', {
     config: makeProjectConfig(),
     configString: JSON.stringify(makeProjectConfig()),
