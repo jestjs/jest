@@ -24,7 +24,6 @@
     "@babel/plugin-proposal-decorators": "*",
     "@babel/preset-env": "*",
     "@babel/preset-typescript": "*",
-    "@types/jest": "*",
     "babel-jest": "*",
     "babel-plugin-transform-typescript-metadata": "*",
     "jest": "*",
