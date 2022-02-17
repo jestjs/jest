@@ -1,4 +1,5 @@
 **/__tests__/**
+__typetests__
 src
 tsconfig.json
 tsconfig.tsbuildinfo
