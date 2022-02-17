@@ -122,7 +122,7 @@ export default function defaultResolver(
 
   const result = resolveSync(pathToResolve, {
     ...resolveOptions,
-    packageFilter: createPackageFilter(pathToResolve, options.packageFilter),
+    packageFilter: createPackageFilter(pathToResolve, options),
   });
 
   // Dereference symlinks to ensure we don't create a separate
@@ -140,28 +140,40 @@ function readPackageSync(_: unknown, file: string): PkgJson {
 
 function createPackageFilter(
   originalPath: string,
-  userFilter?: ResolverOptions['packageFilter'],
+  options: ResolverOptions,
 ): ResolverOptions['packageFilter'] {
   if (shouldIgnoreRequestForExports(originalPath)) {
-    return userFilter;
+    return options.packageFilter;
   }
 
   return function packageFilter(pkg, ...rest) {
     let filteredPkg = pkg;
 
-    if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, ...rest);
+    if (options.packageFilter) {
+      filteredPkg = options.packageFilter(filteredPkg, ...rest);
     }
 
     if (filteredPkg.exports == null) {
       return filteredPkg;
     }
 
+    let resolvedMain: string | void = undefined;
+
+    try {
+      resolvedMain = resolveExports(
+        filteredPkg,
+        '.',
+        createResolveOptions(options.conditions),
+      );
+    } catch {
+      // ignore
+    }
+
     return {
       ...filteredPkg,
-      // remove `main` so `resolve` doesn't look at it and confuse the `.`
-      // loading in `pathFilter`
-      main: undefined,
+      // override `main` so `resolve` resolves it correctly while respecting
+      // `exports`.
+      main: resolvedMain,
     };
   };
 }
