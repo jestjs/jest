@@ -118,7 +118,7 @@ export default function defaultResolver(
     realpathSync,
   };
 
-  const pathToResolve = getPathInModule(path, options);
+  const pathToResolve = getPathInModule(path, resolveOptions);
 
   const result = resolveSync(pathToResolve, {
     ...resolveOptions,
