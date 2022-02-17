@@ -137,7 +137,9 @@ export default class FakeTimers<TimerRef> {
         break;
       }
 
-      if (!this._cancelledTicks.hasOwnProperty(tick.uuid)) {
+      if (
+        !Object.prototype.hasOwnProperty.call(this._cancelledTicks, tick.uuid)
+      ) {
         // Callback may throw, so update the map prior calling.
         this._cancelledTicks[tick.uuid] = true;
         tick.callback();

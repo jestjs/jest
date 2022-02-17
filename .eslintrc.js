@@ -428,7 +428,7 @@ module.exports = {
     'no-process-env': 'off',
     'no-process-exit': 'off',
     'no-proto': 'error',
-    'no-prototype-builtins': 'warn',
+    'no-prototype-builtins': 'error',
     'no-redeclare': 'warn',
     'no-regex-spaces': 'warn',
     'no-restricted-imports': [

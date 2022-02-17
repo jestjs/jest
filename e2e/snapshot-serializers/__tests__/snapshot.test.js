@@ -87,7 +87,7 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides preceding added plugin
     expect.addSnapshotSerializer({
       print: (val, serialize) => `FOO: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
   });

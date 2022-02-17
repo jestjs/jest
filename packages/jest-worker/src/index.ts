@@ -124,7 +124,7 @@ export class Worker {
         return;
       }
 
-      if (this.constructor.prototype.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(this.constructor, name)) {
         throw new TypeError('Cannot define a method called ' + name);
       }
 

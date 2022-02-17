@@ -22,7 +22,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
 
   function deletePropertyWin32(_target: unknown, key: unknown) {
     for (const name in real) {
-      if (real.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(real, name)) {
         if (typeof key === 'string') {
           if (name.toLowerCase() === key.toLowerCase()) {
             delete real[name];
