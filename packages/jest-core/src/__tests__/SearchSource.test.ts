@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {beforeEach, describe, expect, it, jest} from '@jest/globals';
 import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
