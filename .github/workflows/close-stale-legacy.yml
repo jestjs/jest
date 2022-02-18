@@ -1,0 +1,24 @@
+name: 'Close stale issues and PRs older than 12 months'
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v4
+        with:
+          stale-issue-message: 'This issue is stale because it has been open for 1 year with no activity. Remove stale label or comment or this will be closed in 5 days.'
+          stale-pr-message: 'This PR is stale because it has been open 1 year with no activity. Remove stale label or comment or this will be closed in 10 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
+          close-pr-message: 'This PR was closed because it has been stalled for 10 days with no activity.'
+          days-before-issue-stale: 365
+          days-before-pr-stale: 365
+          days-before-issue-close: 5
+          days-before-pr-close: 14
+          exempt-issue-labels: 'Confirmed,Discussion,Documentation :book:,good first issue,Help Wanted'
+          exempt-all-milestones: true
+          exempt-all-assignees: true
+          operations-per-run: 1000
+          debug-only: true
