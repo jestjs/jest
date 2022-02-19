@@ -68,6 +68,8 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     // TODO: remove this ASAP, but it currently causes tests to run really slow
     global.Buffer = Buffer;
+    
+    global.Uint8Array = Uint8Array;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
