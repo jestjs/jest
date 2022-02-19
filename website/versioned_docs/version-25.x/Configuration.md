@@ -45,7 +45,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
 You can retrieve Jest's default options to expand them if needed:
 
 ```js title="jest.config.js"
-const {defaults} = require('jest-config');
+const { defaults } = require('jest-config');
 module.exports = {
   // ...
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
@@ -211,7 +211,12 @@ Additional options can be passed using the tuple form. For example, you may hide
 
 ```json
 {
-  "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
+  "coverageReporters": [
+    "clover",
+    "json",
+    "lcov",
+    ["text", { "skipFull": true }]
+  ]
 }
 ```
 
@@ -657,7 +662,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+    ["<rootDir>/my-custom-reporter.js", { "banana": "yes", "pineapple": "no" }]
   ]
 }
 ```

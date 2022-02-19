@@ -93,7 +93,7 @@ For example:
 ```javascript
 class MyWatchPlugin {
   apply(jestHooks) {
-    jestHooks.onFileChange(({projects}) => {
+    jestHooks.onFileChange(({ projects }) => {
       this._projects = projects;
     });
   }
@@ -197,7 +197,7 @@ If the user provided a custom configuration, it will be passed as an argument to
 
 ```javascript
 class MyWatchPlugin {
-  constructor({config}) {}
+  constructor({ config }) {}
 }
 ```
 

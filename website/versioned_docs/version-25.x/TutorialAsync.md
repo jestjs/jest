@@ -27,7 +27,7 @@ export default function request(url) {
     // This is an example of an http request, for example to fetch
     // user data from an API.
     // This module is being mocked in __mocks__/request.js
-    http.get({path: url}, response => {
+    http.get({ path: url }, response => {
       let data = '';
       response.on('data', _data => (data += _data));
       response.on('end', () => resolve(data));
@@ -40,8 +40,8 @@ Because we don't want to go to the network in our test, we are going to create a
 
 ```js title="__mocks__/request.js"
 const users = {
-  4: {name: 'Mark'},
-  5: {name: 'Paul'},
+  4: { name: 'Mark' },
+  5: { name: 'Paul' },
 };
 
 export default function request(url) {

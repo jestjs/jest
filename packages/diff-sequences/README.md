@@ -245,11 +245,11 @@ Here is simplified code to format **changed and unchanged lines** in expected an
 const formatDiffLines = (a, b) => {
   // Jest depends on pretty-format package to serialize objects as strings.
   // Unindented for comparison to avoid distracting differences:
-  const aLinesUn = format(a, {indent: 0 /*, other options*/}).split('\n');
-  const bLinesUn = format(b, {indent: 0 /*, other options*/}).split('\n');
+  const aLinesUn = format(a, { indent: 0 /*, other options*/ }).split('\n');
+  const bLinesUn = format(b, { indent: 0 /*, other options*/ }).split('\n');
   // Indented to display changed and unchanged lines:
-  const aLinesIn = format(a, {indent: 2 /*, other options*/}).split('\n');
-  const bLinesIn = format(b, {indent: 2 /*, other options*/}).split('\n');
+  const aLinesIn = format(a, { indent: 2 /*, other options*/ }).split('\n');
+  const bLinesIn = format(b, { indent: 2 /*, other options*/ }).split('\n');
 
   const aLength = aLinesIn.length; // Validate: aLinesUn.length === aLength
   const bLength = bLinesIn.length; // Validate: bLinesUn.length === bLength

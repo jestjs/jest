@@ -34,7 +34,7 @@ roots: Array of string paths gathered from [jest roots](https://jestjs.io/docs/c
 ## Usage
 
 ```javascript
-import {getChangedFilesForRoots} from 'jest-changed-files';
+import { getChangedFilesForRoots } from 'jest-changed-files';
 
 getChangedFilesForRoots(['/path/to/test'], {
   lastCommit: true,
@@ -50,7 +50,7 @@ getChangedFilesForRoots(['/path/to/test'], {
 ```
 
 ```javascript
-import {findRepos} from 'jest-changed-files';
+import { findRepos } from 'jest-changed-files';
 
 findRepos(['/path/to/test']).then(repos => {
   /*

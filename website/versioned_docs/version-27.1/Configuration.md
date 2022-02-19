@@ -36,7 +36,7 @@ module.exports = async () => {
 Or through TypeScript (if `ts-node` is installed):
 
 ```ts title="jest.config.ts"
-import type {Config} from '@jest/types';
+import type { Config } from '@jest/types';
 
 // Sync object
 const config: Config.InitialOptions = {
@@ -72,7 +72,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
 You can retrieve Jest's default options to expand them if needed:
 
 ```js title="jest.config.js"
-const {defaults} = require('jest-config');
+const { defaults } = require('jest-config');
 module.exports = {
   // ...
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
@@ -228,7 +228,12 @@ Additional options can be passed using the tuple form. For example, you may hide
 
 ```json
 {
-  "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
+  "coverageReporters": [
+    "clover",
+    "json",
+    "lcov",
+    ["text", { "skipFull": true }]
+  ]
 }
 ```
 
@@ -521,7 +526,7 @@ Default: `true`
 Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
 
 ```ts
-import {expect, jest, test} from '@jest/globals';
+import { expect, jest, test } from '@jest/globals';
 
 jest.useFakeTimers();
 
@@ -719,7 +724,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+    ["<rootDir>/my-custom-reporter.js", { "banana": "yes", "pineapple": "no" }]
   ]
 }
 ```
@@ -951,11 +956,11 @@ Allows overriding specific snapshot formatting options documented in the [pretty
 ```
 
 ```ts
-import {expect, test} from '@jest/globals';
+import { expect, test } from '@jest/globals';
 
 test('does not show prototypes for object and array inline', () => {
   const object = {
-    array: [{hello: 'Danger'}],
+    array: [{ hello: 'Danger' }],
   };
   expect(object).toMatchInlineSnapshot(`
 {

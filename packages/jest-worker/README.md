@@ -21,7 +21,7 @@ This example covers the minimal usage:
 ### File `parent.js`
 
 ```js
-import {Worker as JestWorker} from 'jest-worker';
+import { Worker as JestWorker } from 'jest-worker';
 
 async function main() {
   const worker = new JestWorker(require.resolve('./worker'));
@@ -157,7 +157,7 @@ This example covers the standard usage:
 ### File `parent.js`
 
 ```js
-import {Worker as JestWorker} from 'jest-worker';
+import { Worker as JestWorker } from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./worker'), {
@@ -169,7 +169,7 @@ async function main() {
   console.log(await myWorker.bar('Bob')); // "Hello from bar: Bob"
   console.log(await myWorker.getWorkerId()); // "3" -> this message has sent from the 3rd worker
 
-  const {forceExited} = await myWorker.end();
+  const { forceExited } = await myWorker.end();
   if (forceExited) {
     console.error('Workers failed to exit gracefully');
   }
@@ -201,7 +201,7 @@ This example covers the usage with a `computeWorkerKey` method:
 ### File `parent.js`
 
 ```js
-import {Worker as JestWorker} from 'jest-worker';
+import { Worker as JestWorker } from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./worker'), {
@@ -219,7 +219,7 @@ async function main() {
   // the same worker that processed the file the first time will process it now.
   console.log(await myWorker.transform('/tmp/foo.js'));
 
-  const {forceExited} = await myWorker.end();
+  const { forceExited } = await myWorker.end();
   if (forceExited) {
     console.error('Workers failed to exit gracefully');
   }

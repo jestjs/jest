@@ -30,7 +30,7 @@ module.exports = {
           // homePageId: 'getting-started',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
-          editUrl: ({locale, versionDocsDirPath, docPath}) => {
+          editUrl: ({ locale, versionDocsDirPath, docPath }) => {
             if (locale !== 'en') {
               return `https://crowdin.com/project/jest-v2/${locale}`;
             }
@@ -160,8 +160,8 @@ module.exports = {
           label: 'Help',
           position: 'right',
         },
-        {to: 'blog', label: 'Blog', position: 'right'},
-        {type: 'localeDropdown', position: 'right'},
+        { to: 'blog', label: 'Blog', position: 'right' },
+        { type: 'localeDropdown', position: 'right' },
         {
           href: 'https://github.com/facebook/jest',
           position: 'right',

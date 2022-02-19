@@ -9,7 +9,7 @@ npm install --save jest-validate
 ## Usage
 
 ```js
-import {validate} from 'jest-validate';
+import { validate } from 'jest-validate';
 
 validate(config, validationOptions); // => {hasDeprecationWarnings: boolean, isValid: boolean}
 ```
@@ -91,7 +91,7 @@ The last condition is a special syntax that allows validating where more than on
 Minimal example:
 
 ```js
-validate(config, {exampleConfig});
+validate(config, { exampleConfig });
 ```
 
 Example with slight modifications:
@@ -144,7 +144,7 @@ This will output:
 ## Example validating multiple types
 
 ```js
-import {multipleValidOptions} from 'jest-validate';
+import { multipleValidOptions } from 'jest-validate';
 
 validate(config, {
   // `bar` will accept either a string or a number

@@ -16,7 +16,7 @@ import ArchivedVersions from '@site/archivedVersions.json';
 import Container from '@site/src/components/v1/Container';
 
 export default function VersionsPage() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   const latestVersion = versions[0];
   return (
     <Layout>

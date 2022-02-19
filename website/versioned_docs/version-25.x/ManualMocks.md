@@ -156,7 +156,7 @@ This works if `window.matchMedia()` is used in a function (or method) which is i
 
 ```js
 import './matchMedia.mock'; // Must be imported before the tested file
-import {myMethod} from './file-to-test';
+import { myMethod } from './file-to-test';
 
 describe('myMethod()', () => {
   // Test the method here...

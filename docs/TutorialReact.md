@@ -50,7 +50,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 module.exports = {
   presets: [
     '@babel/preset-env',
-    ['@babel/preset-react', {runtime: 'automatic'}],
+    ['@babel/preset-react', { runtime: 'automatic' }],
   ],
 };
 ```
@@ -62,14 +62,14 @@ module.exports = {
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
 ```tsx title="Link.js"
-import {useState} from 'react';
+import { useState } from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-export default function Link({page, children}) {
+export default function Link({ page, children }) {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
@@ -212,9 +212,9 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 Let's implement a checkbox which swaps between two labels:
 
 ```tsx title="CheckboxWithLabel.js"
-import {useState} from 'react';
+import { useState } from 'react';
 
-export default function CheckboxWithLabel({labelOn, labelOff}) {
+export default function CheckboxWithLabel({ labelOn, labelOff }) {
   const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
@@ -231,7 +231,7 @@ export default function CheckboxWithLabel({labelOn, labelOff}) {
 ```
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
@@ -239,7 +239,7 @@ import CheckboxWithLabel from '../CheckboxWithLabel';
 afterEach(cleanup);
 
 it('CheckboxWithLabel changes the text after click', () => {
-  const {queryByLabelText, getByLabelText} = render(
+  const { queryByLabelText, getByLabelText } = render(
     <CheckboxWithLabel labelOn="On" labelOff="Off" />,
   );
 
@@ -260,11 +260,11 @@ You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
-import Enzyme, {shallow} from 'enzyme';
+import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-Enzyme.configure({adapter: new Adapter()});
+Enzyme.configure({ adapter: new Adapter() });
 
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
@@ -287,7 +287,7 @@ If you need more advanced functionality, you can also build your own transformer
 ```javascript title="custom-transformer.js"
 'use strict';
 
-const {transform} = require('@babel/core');
+const { transform } = require('@babel/core');
 const jestPreset = require('babel-preset-jest');
 
 module.exports = {

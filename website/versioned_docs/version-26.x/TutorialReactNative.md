@@ -31,8 +31,8 @@ Run `yarn test` to run tests with Jest.
 Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
 ```tsx title="Intro.js"
-import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 class Intro extends Component {
   render() {

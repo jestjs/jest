@@ -24,7 +24,7 @@ const VideoTypes = {
 
 class Video extends React.PureComponent {
   render() {
-    const {url, type} = this.props;
+    const { url, type } = this.props;
     switch (type) {
       case VideoTypes.YOUTUBE: {
         return (
@@ -50,7 +50,7 @@ class Video extends React.PureComponent {
 class Videos extends React.Component {
   render() {
     const showcase = VideosJSON.videos.map(
-      ({title, description, type, url}, index) => {
+      ({ title, description, type, url }, index) => {
         const textMarkup = (
           <div className="blockContent padding-horiz--lg">
             <h2>
@@ -104,7 +104,7 @@ class Videos extends React.Component {
             </div>
           </div>
           {showcase}
-          <div style={{textAlign: 'center'}}>
+          <div style={{ textAlign: 'center' }}>
             <a
               href={VideosJSON.editUrl}
               className="button button--primary button--outline"

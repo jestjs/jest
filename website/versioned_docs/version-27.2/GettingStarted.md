@@ -91,7 +91,7 @@ Configure Babel to target your current version of Node by creating a `babel.conf
 
 ```javascript title="babel.config.js"
 module.exports = {
-  presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
+  presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
 };
 ```
 
@@ -162,7 +162,7 @@ Then add `@babel/preset-typescript` to the list of presets in your `babel.config
 ```js title="babel.config.js"
 module.exports = {
   presets: [
-    ['@babel/preset-env', {targets: {node: 'current'}}],
+    ['@babel/preset-env', { targets: { node: 'current' } }],
     // highlight-next-line
     '@babel/preset-typescript',
   ],

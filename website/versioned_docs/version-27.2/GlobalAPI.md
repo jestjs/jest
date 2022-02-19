@@ -112,7 +112,7 @@ beforeAll(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({testData: 'foo'});
+    return globalDatabase.insert({ testData: 'foo' });
   });
 });
 
@@ -148,7 +148,7 @@ beforeEach(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({testData: 'foo'});
+    return globalDatabase.insert({ testData: 'foo' });
   });
 });
 
@@ -276,10 +276,10 @@ describe.each([
 
 ```js
 describe.each([
-  {a: 1, b: 1, expected: 2},
-  {a: 1, b: 2, expected: 3},
-  {a: 2, b: 1, expected: 3},
-])('.add($a, $b)', ({a, b, expected}) => {
+  { a: 1, b: 1, expected: 2 },
+  { a: 1, b: 2, expected: 3 },
+  { a: 2, b: 1, expected: 3 },
+])('.add($a, $b)', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -312,7 +312,7 @@ describe.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('$a + $b', ({a, b, expected}) => {
+`('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -383,7 +383,7 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
@@ -452,7 +452,7 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   test('will not be ran', () => {
     expect(a + b).toBe(expected); // will not be ran
   });
@@ -569,7 +569,7 @@ test.concurrent.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added $b', async ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -606,7 +606,7 @@ test.concurrent.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added $b', async ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 
@@ -647,7 +647,7 @@ test.concurrent.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added $b', async ({ a, b, expected }) => {
   expect(a + b).toBe(expected); // will not be ran
 });
 
@@ -700,10 +700,10 @@ test.each([
 
 ```js
 test.each([
-  {a: 1, b: 1, expected: 2},
-  {a: 1, b: 2, expected: 3},
-  {a: 2, b: 1, expected: 3},
-])('.add($a, $b)', ({a, b, expected}) => {
+  { a: 1, b: 1, expected: 2 },
+  { a: 1, b: 2, expected: 3 },
+  { a: 2, b: 1, expected: 3 },
+])('.add($a, $b)', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -726,7 +726,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -787,7 +787,7 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 
@@ -850,7 +850,7 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected); // will not be ran
 });
 

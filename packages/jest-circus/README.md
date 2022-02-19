@@ -14,7 +14,7 @@ Circus is a flux-based test runner for Jest that is fast, maintainable, and simp
 Circus allows you to bind to events via an optional event handler on any [custom environment](https://jestjs.io/docs/configuration#testenvironment-string). See the [type definitions][type-definitions] for more information on the events and state data currently available.
 
 ```js
-import {Event, State} from 'jest-circus';
+import { Event, State } from 'jest-circus';
 import NodeEnvironment from 'jest-environment-node';
 
 class MyCustomEnvironment extends NodeEnvironment {

@@ -82,7 +82,7 @@ console.log(pragmas); // { everything: "is:awesome", flow: "" }
 const parsed = parseWithComments(docblock);
 console.log(parsed); // { comments: "Everything is awesome!", pragmas: { everything: "is:awesome", flow: "" } }
 
-console.log(print({pragmas, comments: 'hi!'})); // /**\n * hi!\n *\n * @everything is:awesome\n * @flow\n */;
+console.log(print({ pragmas, comments: 'hi!' })); // /**\n * hi!\n *\n * @everything is:awesome\n * @flow\n */;
 ```
 
 ## API Documentation

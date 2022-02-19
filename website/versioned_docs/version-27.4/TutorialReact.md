@@ -59,14 +59,14 @@ module.exports = {
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
 ```tsx title="Link.js"
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-const Link = ({page, children}) => {
+const Link = ({ page, children }) => {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
@@ -205,9 +205,9 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 Let's implement a checkbox which swaps between two labels:
 
 ```tsx title="CheckboxWithLabel.js"
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-const CheckboxWithLabel = ({labelOn, labelOff}) => {
+const CheckboxWithLabel = ({ labelOn, labelOff }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
@@ -227,7 +227,7 @@ export default CheckboxWithLabel;
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
 import React from 'react';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
@@ -235,7 +235,7 @@ import CheckboxWithLabel from '../CheckboxWithLabel';
 afterEach(cleanup);
 
 it('CheckboxWithLabel changes the text after click', () => {
-  const {queryByLabelText, getByLabelText} = render(
+  const { queryByLabelText, getByLabelText } = render(
     <CheckboxWithLabel labelOn="On" labelOff="Off" />,
   );
 
@@ -257,7 +257,7 @@ Let's rewrite the test from above using Enzyme instead of react-testing-library.
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
 import React from 'react';
-import {shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 test('CheckboxWithLabel changes the text after click', () => {
@@ -281,7 +281,7 @@ If you need more advanced functionality, you can also build your own transformer
 ```javascript title="custom-transformer.js"
 'use strict';
 
-const {transform} = require('@babel/core');
+const { transform } = require('@babel/core');
 const jestPreset = require('babel-preset-jest');
 
 module.exports = {

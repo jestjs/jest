@@ -209,7 +209,7 @@ Generate a basic configuration file. Based on your project, Jest will ask you a 
 Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
 
 ```ts
-import {expect, jest, test} from '@jest/globals';
+import { expect, jest, test } from '@jest/globals';
 
 jest.useFakeTimers();
 

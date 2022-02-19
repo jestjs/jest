@@ -9,8 +9,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const {promisify} = require('util');
-const {gql, request} = require('graphql-request');
+const { promisify } = require('util');
+const { gql, request } = require('graphql-request');
 
 const graphqlQuery = gql`
   {

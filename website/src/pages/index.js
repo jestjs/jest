@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
 
-import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimation';
+import { setupLandingAnimation } from '@site/src/pages/animations/_landingAnimation';
 
 // TODO legacy Docusaurus v1 components
 import Container from '@site/src/components/v1/Container';
@@ -68,7 +68,7 @@ class Button extends React.Component {
 }
 
 const Sponsor = ({
-  fromAccount: {name, slug, website, imageUrl},
+  fromAccount: { name, slug, website, imageUrl },
   totalDonations,
 }) => (
   <a
@@ -90,7 +90,7 @@ const Sponsor = ({
 );
 
 const Backer = ({
-  fromAccount: {name, slug, website, imageUrl},
+  fromAccount: { name, slug, website, imageUrl },
   totalDonations,
 }) => (
   <a
@@ -153,7 +153,7 @@ class Contributors extends React.Component {
 
 class Card extends React.Component {
   render() {
-    const {index} = this.props;
+    const { index } = this.props;
     return (
       <div key={index} className="jest-card-hitslop">
         <div className="jest-card jest-card-running" data-index={index}>
@@ -165,7 +165,7 @@ class Card extends React.Component {
             <div className="jest-card-label jest-card-label-reverse">JEST</div>
           </div>
           <div className="jest-card-back">
-            <svg viewBox="0 0 200 200" style={{height: 150, width: 150}}>
+            <svg viewBox="0 0 200 200" style={{ height: 150, width: 150 }}>
               <defs>
                 <path
                   d="M100 100 m -75 0 a75 75 0 1 0 150 0 a 75 75 0 1 0 -150 0"
@@ -287,7 +287,7 @@ const HeroInteractive = () => (
 
 class Index extends React.Component {
   render() {
-    const {config: siteConfig} = this.props;
+    const { config: siteConfig } = this.props;
     const showcase = UsersJSON.users.map((user, i) => (
       <a href={user.infoLink} key={i}>
         <img src={user.image} title={user.caption} alt={user.caption} />
@@ -302,7 +302,7 @@ class Index extends React.Component {
           </title>
         </Head>
         <HeroInteractive config={siteConfig} />
-        <div className="mainContainerV1" style={{padding: 0}}>
+        <div className="mainContainerV1" style={{ padding: 0 }}>
           <Container
             padding={['bottom', 'top']}
             background="light"
@@ -493,13 +493,13 @@ class Index extends React.Component {
                   <Translate>Jest makes testing delightful.</Translate>
                 </MarkdownBlock>
                 <div className="show-small">
-                  <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
+                  <p style={{ fontFamily: 'Monaco, Courier, monospace' }}>
                     <Translate>- Jest Core Team</Translate>
                   </p>
                 </div>
               </div>
               <div className="blockContent flex-end hide-small">
-                <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
+                <p style={{ fontFamily: 'Monaco, Courier, monospace' }}>
                   <Translate>- Jest Core Team</Translate>
                 </p>
               </div>

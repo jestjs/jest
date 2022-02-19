@@ -11,7 +11,7 @@ Consider writing a test case for this `createUser` function:
 import fetch from 'node-fetch';
 
 export const createUser = async () => {
-  const response = await fetch('http://website.com/users', {method: 'POST'});
+  const response = await fetch('http://website.com/users', { method: 'POST' });
   const userId = await response.text();
   return userId;
 };
@@ -22,8 +22,8 @@ Your test will want to mock the `fetch` function so that we can be sure that it 
 ```javascript
 jest.mock('node-fetch');
 
-import fetch, {Response} from 'node-fetch';
-import {createUser} from './createUser';
+import fetch, { Response } from 'node-fetch';
+import { createUser } from './createUser';
 
 test('createUser calls fetch with the right args and returns the user id', async () => {
   fetch.mockReturnValue(Promise.resolve(new Response('4')));
@@ -45,14 +45,14 @@ To get around problems like this, Jest provides the `jest.requireActual` helper.
 ```javascript
 // BEFORE
 jest.mock('node-fetch');
-import fetch, {Response} from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 ```
 
 ```javascript
 // AFTER
 jest.mock('node-fetch');
 import fetch from 'node-fetch';
-const {Response} = jest.requireActual('node-fetch');
+const { Response } = jest.requireActual('node-fetch');
 ```
 
 This allows your test file to import the actual `Response` object from `node-fetch`, rather than a mocked version. This means the test will now pass correctly.

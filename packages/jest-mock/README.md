@@ -3,7 +3,7 @@
 ## API
 
 ```js
-import {ModuleMocker} from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 ```
 
 ### `constructor(global)`
@@ -33,11 +33,11 @@ Where type is one of `array`, `object`, `function`, or `ref`, and members is an 
 const classDef = {
   type: 'function',
   members: {
-    staticMethod: {type: 'function'},
+    staticMethod: { type: 'function' },
     prototype: {
       type: 'object',
       members: {
-        instanceMethod: {type: 'function'},
+        instanceMethod: { type: 'function' },
       },
     },
   },
@@ -51,7 +51,7 @@ const refID = {
   type: 'object',
   refID: 1,
   members: {
-    self: {ref: 1},
+    self: { ref: 1 },
   },
 };
 ```

@@ -19,7 +19,7 @@ Three kinds of API groups are exposed:
 This set of functions take or return a `Buffer`. All the process happens in memory. This is useful when willing to transfer over HTTP, TCP or via UNIX pipes.
 
 ```javascript
-import {deserialize, serialize} from 'jest-serializer';
+import { deserialize, serialize } from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -35,7 +35,7 @@ const myCopyObject = deserialize(buffer);
 This set of functions allow to send to disk a serialization result and retrieve it back, in a synchronous way. It mimics the `fs` API so it looks familiar.
 
 ```javascript
-import {readFileSync, writeFileSync} from 'jest-serializer';
+import { readFileSync, writeFileSync } from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',

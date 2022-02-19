@@ -92,7 +92,7 @@ Create a [manual mock](ManualMocks.md) by saving a mock implementation in the `_
 // Import this named export into your test file:
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
-  return {playSoundFile: mockPlaySoundFile};
+  return { playSoundFile: mockPlaySoundFile };
 });
 
 export default mock;
@@ -101,7 +101,7 @@ export default mock;
 Import the mock and the mock method shared by all instances:
 
 ```javascript title="sound-player-consumer.test.js"
-import SoundPlayer, {mockPlaySoundFile} from './sound-player';
+import SoundPlayer, { mockPlaySoundFile } from './sound-player';
 import SoundPlayerConsumer from './sound-player-consumer';
 jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
 
@@ -135,7 +135,7 @@ import SoundPlayer from './sound-player';
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
-    return {playSoundFile: mockPlaySoundFile};
+    return { playSoundFile: mockPlaySoundFile };
   });
 });
 ```
@@ -148,7 +148,7 @@ import SoundPlayer from './sound-player';
 const fakePlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
-    return {playSoundFile: fakePlaySoundFile};
+    return { playSoundFile: fakePlaySoundFile };
   });
 });
 ```
@@ -216,7 +216,7 @@ In order to mock a constructor function, the module factory must return a constr
 ```javascript
 jest.mock('./sound-player', () => {
   return function () {
-    return {playSoundFile: () => {}};
+    return { playSoundFile: () => {} };
   };
 });
 ```
@@ -229,7 +229,7 @@ Note that the mock can't be an arrow function because calling `new` on an arrow 
 jest.mock('./sound-player', () => {
   return () => {
     // Does not work; arrow functions can't be called with new
-    return {playSoundFile: () => {}};
+    return { playSoundFile: () => {} };
   };
 });
 ```
@@ -319,7 +319,7 @@ import SoundPlayer from './sound-player';
 jest.mock('./sound-player', () => {
   // Works and lets you check for constructor calls:
   return jest.fn().mockImplementation(() => {
-    return {playSoundFile: () => {}};
+    return { playSoundFile: () => {} };
   });
 });
 ```
@@ -331,12 +331,12 @@ This will let us inspect usage of our mocked class, using `SoundPlayer.mock.call
 If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
 
 ```javascript
-import {SoundPlayer} from './sound-player';
+import { SoundPlayer } from './sound-player';
 jest.mock('./sound-player', () => {
   // Works and lets you check for constructor calls:
   return {
     SoundPlayer: jest.fn().mockImplementation(() => {
-      return {playSoundFile: () => {}};
+      return { playSoundFile: () => {} };
     }),
   };
 });
@@ -353,7 +353,7 @@ import SoundPlayer from './sound-player';
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
-    return {playSoundFile: mockPlaySoundFile};
+    return { playSoundFile: mockPlaySoundFile };
     // Now we can track calls to playSoundFile
   });
 });
@@ -365,7 +365,7 @@ The manual mock equivalent of this would be:
 // Import this named export into your test file
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
-  return {playSoundFile: mockPlaySoundFile};
+  return { playSoundFile: mockPlaySoundFile };
 });
 
 export default mock;
@@ -395,7 +395,7 @@ import SoundPlayerConsumer from './sound-player-consumer';
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
-    return {playSoundFile: mockPlaySoundFile};
+    return { playSoundFile: mockPlaySoundFile };
   });
 });
 

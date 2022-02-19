@@ -14,15 +14,15 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const {format: prettyFormat} = require('pretty-format'); // CommonJS
+const { format: prettyFormat } = require('pretty-format'); // CommonJS
 ```
 
 ```js
-import {format as prettyFormat} from 'pretty-format'; // ES2015 modules
+import { format as prettyFormat } from 'pretty-format'; // ES2015 modules
 ```
 
 ```js
-const val = {object: {}};
+const val = { object: {} };
 val.circularReference = val;
 val[Symbol('foo')] = 'foo';
 val.map = new Map([['prop', 'value']]);
@@ -105,23 +105,23 @@ The `pretty-format` package provides some built-in plugins, including:
 // CommonJS
 const React = require('react');
 const renderer = require('react-test-renderer');
-const {format: prettyFormat, plugins} = require('pretty-format');
+const { format: prettyFormat, plugins } = require('pretty-format');
 
-const {ReactElement, ReactTestComponent} = plugins;
+const { ReactElement, ReactTestComponent } = plugins;
 ```
 
 ```js
 // ES2015 modules and destructuring assignment
 import React from 'react';
 import renderer from 'react-test-renderer';
-import {plugins, format as prettyFormat} from 'pretty-format';
+import { plugins, format as prettyFormat } from 'pretty-format';
 
-const {ReactElement, ReactTestComponent} = plugins;
+const { ReactElement, ReactTestComponent } = plugins;
 ```
 
 ```js
 const onClick = () => {};
-const element = React.createElement('button', {onClick}, 'Hello World');
+const element = React.createElement('button', { onClick }, 'Hello World');
 
 const formatted1 = prettyFormat(element, {
   plugins: [ReactElement],

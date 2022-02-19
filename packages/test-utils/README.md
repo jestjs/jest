@@ -24,7 +24,7 @@ Tag names have consistent length to align columns like `Expected` and `Received`
 | `Y` | `bgYellow` |
 
 ```js
-import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import { alignedAnsiStyleSerializer } from '@jest/test-utils';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 ```

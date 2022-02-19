@@ -21,9 +21,9 @@ In this code, `expect(2 + 2)` returns an "expectation" object. You typically won
 
 ```js
 test('object assignment', () => {
-  const data = {one: 1};
+  const data = { one: 1 };
   data['two'] = 2;
-  expect(data).toEqual({one: 1, two: 2});
+  expect(data).toEqual({ one: 1, two: 2 });
 });
 ```
 

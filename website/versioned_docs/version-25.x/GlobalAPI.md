@@ -112,7 +112,7 @@ beforeAll(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({testData: 'foo'});
+    return globalDatabase.insert({ testData: 'foo' });
   });
 });
 
@@ -148,7 +148,7 @@ beforeEach(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({testData: 'foo'});
+    return globalDatabase.insert({ testData: 'foo' });
   });
 });
 
@@ -288,7 +288,7 @@ describe.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('$a + $b', ({a, b, expected}) => {
+`('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -359,7 +359,7 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
@@ -428,7 +428,7 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   test('will not be ran', () => {
     expect(a + b).toBe(expected); // will not be ran
   });
@@ -523,7 +523,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -584,7 +584,7 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 
@@ -647,7 +647,7 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected); // will not be ran
 });
 

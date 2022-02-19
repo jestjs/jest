@@ -165,7 +165,7 @@ You might call this function for case insensitive or Unicode equivalence compari
 ### Example of diffLinesUnified2
 
 ```js
-import {format} from 'pretty-format';
+import { format } from 'pretty-format';
 
 const a = {
   text: 'Ignore indentation in serialized object',
@@ -185,8 +185,8 @@ const difference = diffLinesUnified2(
   format(a).split('\n'),
   format(b).split('\n'),
   // serialize without indentation to compare lines
-  format(a, {indent: 0}).split('\n'),
-  format(b, {indent: 0}).split('\n'),
+  format(a, { indent: 0 }).split('\n'),
+  format(b, { indent: 0 }).split('\n'),
 );
 ```
 
@@ -308,7 +308,7 @@ Depending of your application, you might call `diffLinesRaw` with either array.
 ### Example of split method
 
 ```js
-import {diffLinesRaw} from 'jest-diff';
+import { diffLinesRaw } from 'jest-diff';
 
 const a = 'non-empty string';
 const b = '';
@@ -341,7 +341,7 @@ export const splitLines0 = string =>
 ```
 
 ```js
-import {diffLinesRaw} from 'jest-diff';
+import { diffLinesRaw } from 'jest-diff';
 
 const a = '';
 const b = 'line 1\nline 2\nline 3';
@@ -482,7 +482,7 @@ const options = {
 If you need the TypeScript type of a Color option:
 
 ```ts
-import {DiffOptionsColor} from 'jest-diff';
+import { DiffOptionsColor } from 'jest-diff';
 ```
 
 ### Example of options for no colors
@@ -621,8 +621,8 @@ When two objects are compared their keys are printed in alphabetical order by de
 Use `compareKeys` to pass a function which will be used when sorting the object keys.
 
 ```js
-const a = {c: 'c', b: 'b1', a: 'a'};
-const b = {c: 'c', b: 'b2', a: 'a'};
+const a = { c: 'c', b: 'b1', a: 'a' };
+const b = { c: 'c', b: 'b2', a: 'a' };
 
 const options = {
   // The keys will be in their original order
@@ -647,8 +647,8 @@ const difference = diff(a, b, options);
 Depending on the implementation of `compareKeys` any sort order can be used.
 
 ```js
-const a = {c: 'c', b: 'b1', a: 'a'};
-const b = {c: 'c', b: 'b2', a: 'a'};
+const a = { c: 'c', b: 'b1', a: 'a' };
+const b = { c: 'c', b: 'b2', a: 'a' };
 
 const options = {
   // The keys will be in reverse order

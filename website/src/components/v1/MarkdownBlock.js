@@ -8,10 +8,10 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import Link from '@docusaurus/Link';
-import Translate, {translate} from '@docusaurus/Translate';
+import Translate, { translate } from '@docusaurus/Translate';
 
 const renderers = {
-  a: ({node: _node, ...props}) => <Link {...props} />,
+  a: ({ node: _node, ...props }) => <Link {...props} />,
 };
 
 /*
@@ -31,7 +31,7 @@ function getMarkdown(children) {
   }
 }
 
-export default function MarkdownBlock({children}) {
+export default function MarkdownBlock({ children }) {
   const markdown = getMarkdown(children);
   return (
     <div>

@@ -32,9 +32,9 @@ module.exports = {
   tables: [
     {
       TableName: `files`,
-      KeySchema: [{AttributeName: 'id', KeyType: 'HASH'}],
-      AttributeDefinitions: [{AttributeName: 'id', AttributeType: 'S'}],
-      ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1},
+      KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
+      AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'S' }],
+      ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
     },
     // etc
   ],
@@ -44,7 +44,7 @@ module.exports = {
 4.  Configure DynamoDB client
 
 ```js
-const {DocumentClient} = require('aws-sdk/clients/dynamodb');
+const { DocumentClient } = require('aws-sdk/clients/dynamodb');
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -64,10 +64,12 @@ const ddb = new DocumentClient(config);
 ```js
 it('should insert item into table', async () => {
   await ddb
-    .put({TableName: 'files', Item: {id: '1', hello: 'world'}})
+    .put({ TableName: 'files', Item: { id: '1', hello: 'world' } })
     .promise();
 
-  const {Item} = await ddb.get({TableName: 'files', Key: {id: '1'}}).promise();
+  const { Item } = await ddb
+    .get({ TableName: 'files', Key: { id: '1' } })
+    .promise();
 
   expect(Item).toEqual({
     id: '1',

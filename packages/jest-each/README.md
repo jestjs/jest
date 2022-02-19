@@ -169,10 +169,10 @@ each([
 
 ```js
 each([
-  {a: 1, b: 1, expected: 2},
-  {a: 1, b: 2, expected: 3},
-  {a: 2, b: 1, expected: 3},
-]).test('returns the result of adding $a to $b', ({a, b, expected}) => {
+  { a: 1, b: 1, expected: 2 },
+  { a: 1, b: 2, expected: 3 },
+  { a: 2, b: 1, expected: 3 },
+]).test('returns the result of adding $a to $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -299,10 +299,10 @@ each([
 
 ```js
 each([
-  {a: 1, b: 1, expected: 2},
-  {a: 1, b: 2, expected: 3},
-  {a: 2, b: 1, expected: 3},
-]).describe('.add($a, $b)', ({a, b, expected}) => {
+  { a: 1, b: 1, expected: 2 },
+  { a: 1, b: 2, expected: 3 },
+  { a: 2, b: 1, expected: 3 },
+]).describe('.add($a, $b)', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -365,7 +365,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.test('returns $expected when adding $a to $b', ({a, b, expected}) => {
+`.test('returns $expected when adding $a to $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -390,7 +390,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.describe('$a + $b', ({a, b, expected}) => {
+`.describe('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -430,7 +430,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.test('returns $expected when adding $a to $b', ({a, b, expected}) => {
+`.test('returns $expected when adding $a to $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -445,7 +445,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.test.only('returns $expected when adding $a to $b', ({a, b, expected}) => {
+`.test.only('returns $expected when adding $a to $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -460,7 +460,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.test.skip('returns $expected when adding $a to $b', ({a, b, expected}) => {
+`.test.skip('returns $expected when adding $a to $b', ({ a, b, expected }) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -475,7 +475,7 @@ each`
   ${'hello'}
   ${'mr'}
   ${'spy'}
-`.test('gives 007 secret message: $str', ({str}, done) => {
+`.test('gives 007 secret message: $str', ({ str }, done) => {
   const asynchronousSpy = message => {
     expect(message).toBe(str);
     done();
@@ -492,7 +492,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.describe('$a + $b', ({a, b, expected}) => {
+`.describe('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -519,7 +519,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.describe.only('$a + $b', ({a, b, expected}) => {
+`.describe.only('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });
@@ -536,7 +536,7 @@ each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`.describe.skip('$a + $b', ({a, b, expected}) => {
+`.describe.skip('$a + $b', ({ a, b, expected }) => {
   test(`returns ${expected}`, () => {
     expect(a + b).toBe(expected);
   });

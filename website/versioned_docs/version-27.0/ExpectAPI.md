@@ -60,7 +60,7 @@ expect.extend({
 test('numeric ranges', () => {
   expect(100).toBeWithinRange(90, 110);
   expect(101).not.toBeWithinRange(0, 100);
-  expect({apples: 6, bananas: 3}).toEqual({
+  expect({ apples: 6, bananas: 3 }).toEqual({
     apples: expect.toBeWithinRange(1, 10),
     bananas: expect.not.toBeWithinRange(11, 20),
   });
@@ -160,7 +160,7 @@ There are a number of helpful tools exposed on `this.utils` primarily consisting
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
 ```js
-const {diff} = require('jest-diff');
+const { diff } = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
     const options = {
@@ -191,7 +191,7 @@ expect.extend({
           );
         };
 
-    return {actual: received, message, pass};
+    return { actual: received, message, pass };
   },
 });
 ```
@@ -216,7 +216,7 @@ To use snapshot testing inside of your custom matcher you can import `jest-snaps
 Here's a snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
 
 ```js
-const {toMatchSnapshot} = require('jest-snapshot');
+const { toMatchSnapshot } = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedSnapshot(received, length) {
@@ -242,7 +242,7 @@ exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 It's also possible to create custom matchers for inline snapshots, the snapshots will be correctly added to the custom matchers. However, inline snapshot will always try to append to the first argument or the second when the first argument is the property matcher, so it's not possible to accept custom arguments in the custom matchers.
 
 ```js
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+const { toMatchInlineSnapshot } = require('jest-snapshot');
 
 expect.extend({
   toMatchTrimmedInlineSnapshot(received, ...rest) {
@@ -266,7 +266,7 @@ it('stores only 10 characters', () => {
 If your custom inline snapshot matcher is async i.e. uses `async`-`await` you might encounter an error like "Multiple inline snapshots for the same call are not supported". Jest needs additional context information to find where the custom inline snapshot matcher was used to update the snapshots properly.
 
 ```js
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+const { toMatchInlineSnapshot } = require('jest-snapshot');
 
 expect.extend({
   async toMatchObservationInlineSnapshot(fn, ...rest) {
@@ -305,7 +305,7 @@ Sometimes it might not make sense to continue the test if a prior snapshot faile
 In that case you can implement a custom snapshot matcher that throws on the first mismatch instead of collecting every mismatch.
 
 ```js
-const {toMatchInlineSnapshot} = require('jest-snapshot');
+const { toMatchInlineSnapshot } = require('jest-snapshot');
 
 expect.extend({
   toMatchStateInlineSnapshot(...args) {
@@ -480,10 +480,10 @@ It is the inverse of `expect.objectContaining`.
 
 ```js
 describe('not.objectContaining', () => {
-  const expected = {foo: 'bar'};
+  const expected = { foo: 'bar' };
 
   it('matches if the actual object does not contain expected key: value pairs', () => {
-    expect({bar: 'baz'}).toEqual(expect.not.objectContaining(expected));
+    expect({ bar: 'baz' }).toEqual(expect.not.objectContaining(expected));
   });
 });
 ```
@@ -825,7 +825,7 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns La Croix', () => {
-  const beverage = {name: 'La Croix'};
+  const beverage = { name: 'La Croix' };
   const drink = jest.fn(beverage => beverage.name);
 
   drink(beverage);
@@ -844,8 +844,8 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns La Croix (Orange) last', () => {
-  const beverage1 = {name: 'La Croix (Lemon)'};
-  const beverage2 = {name: 'La Croix (Orange)'};
+  const beverage1 = { name: 'La Croix (Lemon)' };
+  const beverage2 = { name: 'La Croix (Orange)' };
   const drink = jest.fn(beverage => beverage.name);
 
   drink(beverage1);
@@ -865,8 +865,8 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns expected nth calls', () => {
-  const beverage1 = {name: 'La Croix (Lemon)'};
-  const beverage2 = {name: 'La Croix (Orange)'};
+  const beverage1 = { name: 'La Croix (Lemon)' };
+  const beverage2 = { name: 'La Croix (Orange)' };
   const drink = jest.fn(beverage => beverage.name);
 
   drink(beverage1);
@@ -1137,7 +1137,7 @@ Use `.toContainEqual` when you want to check that an item with a specific struct
 ```js
 describe('my beverage', () => {
   test('is delicious and not sour', () => {
-    const myBeverage = {delicious: true, sour: false};
+    const myBeverage = { delicious: true, sour: false };
     expect(myBeverages()).toContainEqual(myBeverage);
   });
 });
@@ -1235,13 +1235,16 @@ test('the house has my desired features', () => {
 ```js
 describe('toMatchObject applied to arrays', () => {
   test('the number of elements must match exactly', () => {
-    expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
+    expect([{ foo: 'bar' }, { baz: 1 }]).toMatchObject([
+      { foo: 'bar' },
+      { baz: 1 },
+    ]);
   });
 
   test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
-    expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
-      {foo: 'bar'},
-      {baz: 1},
+    expect([{ foo: 'bar' }, { baz: 1, extra: 'quux' }]).toMatchObject([
+      { foo: 'bar' },
+      { baz: 1 },
     ]);
   });
 });
@@ -1284,8 +1287,8 @@ class LaCroix {
 
 describe('the La Croix cans on my desk', () => {
   test('are not semantically the same', () => {
-    expect(new LaCroix('lemon')).toEqual({flavor: 'lemon'});
-    expect(new LaCroix('lemon')).not.toStrictEqual({flavor: 'lemon'});
+    expect(new LaCroix('lemon')).toEqual({ flavor: 'lemon' });
+    expect(new LaCroix('lemon')).not.toStrictEqual({ flavor: 'lemon' });
   });
 });
 ```

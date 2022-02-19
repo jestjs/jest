@@ -15,7 +15,7 @@ Tool for identifying modified files in a git/hg repository. Exports two function
 ### Example
 
 ```javascript
-const {getChangedFilesForRoots} = require('jest-changed-files');
+const { getChangedFilesForRoots } = require('jest-changed-files');
 
 // print the set of modified files since last commit in the current repo
 getChangedFilesForRoots(['./'], {
@@ -32,10 +32,10 @@ Tool for visualizing changes in data. Exports a function that compares two value
 ### Example
 
 ```javascript
-const {diff} = require('jest-diff');
+const { diff } = require('jest-diff');
 
-const a = {a: {b: {c: 5}}};
-const b = {a: {b: {c: 6}}};
+const a = { a: { b: { c: 5 } } };
+const b = { a: { b: { c: 6 } } };
 
 const result = diff(a, b);
 
@@ -50,7 +50,7 @@ Tool for extracting and parsing the comments at the top of a JavaScript file. Ex
 ### Example
 
 ```javascript
-const {parseWithComments} = require('jest-docblock');
+const { parseWithComments } = require('jest-docblock');
 
 const code = `
 /**
@@ -77,7 +77,7 @@ Module that identifies the primitive type of any JavaScript value. Exports a fun
 ### Example
 
 ```javascript
-const {getType} = require('jest-get-type');
+const { getType } = require('jest-get-type');
 
 const array = [1, 2, 3];
 const nullValue = null;
@@ -101,7 +101,7 @@ Tool for validating configurations submitted by users. Exports a function that t
 ### Example
 
 ```javascript
-const {validate} = require('jest-validate');
+const { validate } = require('jest-validate');
 
 const configByUser = {
   transform: '<rootDir>/node_modules/my-custom-transform',
@@ -109,7 +109,7 @@ const configByUser = {
 
 const result = validate(configByUser, {
   comment: '  Documentation: http://custom-docs.com',
-  exampleConfig: {transform: '<rootDir>/node_modules/babel-jest'},
+  exampleConfig: { transform: '<rootDir>/node_modules/babel-jest' },
 });
 
 console.log(result);
@@ -137,8 +137,8 @@ async function main() {
 
   // run 2 tasks in parallel with different arguments
   const results = await Promise.all([
-    worker.myHeavyTask({foo: 'bar'}),
-    worker.myHeavyTask({bar: 'foo'}),
+    worker.myHeavyTask({ foo: 'bar' }),
+    worker.myHeavyTask({ bar: 'foo' }),
   ]);
 
   console.log(results);
@@ -156,9 +156,9 @@ Exports a function that converts any JavaScript value into a human-readable stri
 ### Example
 
 ```javascript
-const {format: prettyFormat} = require('pretty-format');
+const { format: prettyFormat } = require('pretty-format');
 
-const val = {object: {}};
+const val = { object: {} };
 val.circularReference = val;
 val[Symbol('foo')] = 'foo';
 val.map = new Map([['prop', 'value']]);
