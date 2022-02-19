@@ -165,15 +165,26 @@ type MockFunctionResult = {
 };
 
 type MockFunctionState<T, Y extends Array<unknown>> = {
+  /**
+   * List of the call arguments of all calls that have been made to the mock.
+   */
   calls: Array<Y>;
+  /**
+   * List of all the object instances that have been instantiated from the mock.
+   */
   instances: Array<T>;
+  /**
+   * List of the call order indexes of the mock. Jest is indexing the order of
+   * invocations of all mocks in a test file. The index is starting with `1`.
+   */
   invocationCallOrder: Array<number>;
   /**
-   * Getter for retrieving the last call arguments
+   * List of the call arguments of the last call that was made to the mock.
+   * If the function was not called, it will return `undefined`.
    */
   lastCall?: Y;
   /**
-   * List of results of calls to the mock function.
+   * List of the results of all calls that have been made to the mock.
    */
   results: Array<MockFunctionResult>;
 };
