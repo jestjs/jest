@@ -46,7 +46,7 @@ export type PropertyKeys<T> = {
 
 // TODO Replace this with TS ConstructorParameters utility type
 // https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
-export type ConstructorParameters<T> = T extends new (...args: infer P) => any
+type ConstructorParameters<T> = T extends new (...args: infer P) => any
   ? P
   : never;
 
