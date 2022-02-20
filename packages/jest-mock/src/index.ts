@@ -32,14 +32,6 @@ export type MockFunctionMetadata<
   length?: number;
 };
 
-type ClassLike = {
-  new (...args: Array<any>): any;
-};
-
-type ObjectLike = {
-  [key: string]: any;
-};
-
 export type MockableFunction = (...args: Array<any>) => any;
 export type MethodKeysOf<T> = {
   [K in keyof T]: T[K] extends MockableFunction ? K : never;
@@ -1022,27 +1014,26 @@ export class ModuleMocker {
     return fn;
   }
 
-  spyOn<
-    T extends ClassLike | ObjectLike,
-    M extends NonFunctionPropertyNames<T>,
-  >(object: T, methodName: M, accessType: 'get'): SpyInstance<T[M], []>;
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
+    object: T,
+    methodName: M,
+    accessType: 'get',
+  ): SpyInstance<T[M], []>;
 
-  spyOn<
-    T extends ClassLike | ObjectLike,
-    M extends NonFunctionPropertyNames<T>,
-  >(object: T, methodName: M, accessType: 'set'): SpyInstance<void, [T[M]]>;
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
+    object: T,
+    methodName: M,
+    accessType: 'set',
+  ): SpyInstance<void, [T[M]]>;
 
-  spyOn<
-    T extends ClassLike | ObjectLike,
-    M extends ConstructorPropertyNames<Required<T>>,
-  >(
+  spyOn<T extends object, M extends ConstructorPropertyNames<Required<T>>>(
     object: T,
     method: M,
   ): T[M] extends new (...args: Array<any>) => any
     ? SpyInstance<InstanceType<T[M]>, ConstructorArgsType<T[M]>>
     : never;
 
-  spyOn<T extends ClassLike | ObjectLike, M extends FunctionPropertyNames<T>>(
+  spyOn<T extends object, M extends FunctionPropertyNames<T>>(
     object: T,
     methodName: M,
   ): T[M] extends (...args: Array<any>) => any
@@ -1050,10 +1041,11 @@ export class ModuleMocker {
     : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<
-    T extends ClassLike | ObjectLike,
-    M extends NonFunctionPropertyNames<T>,
-  >(object: T, methodName: M, accessType?: 'get' | 'set') {
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
+    object: T,
+    methodName: M,
+    accessType?: 'get' | 'set',
+  ) {
     if (accessType) {
       return this._spyOnProperty(object, methodName, accessType);
     }
@@ -1121,7 +1113,7 @@ export class ModuleMocker {
   }
 
   private _spyOnProperty<
-    T extends ClassLike | ObjectLike,
+    T extends object,
     M extends NonFunctionPropertyNames<T>,
   >(obj: T, propertyName: M, accessType: 'get' | 'set' = 'get'): Mock<T> {
     if (typeof obj !== 'object' && typeof obj !== 'function') {

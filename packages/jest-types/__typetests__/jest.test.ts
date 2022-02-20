@@ -238,19 +238,15 @@ expectError(jest.spyOn(true, 'methodA'));
 expectError(jest.spyOn(spiedObject));
 expectError(jest.spyOn());
 
-expectType<
-  SpyInstance<
-    Array<unknown>,
-    [
-      iterable: Iterable<unknown> | ArrayLike<unknown>,
-      mapfn: (v: unknown, k: number) => unknown,
-      thisArg?: any,
-    ]
-  >
->(jest.spyOn(spiedArray as unknown as ArrayConstructor, 'from'));
+expectType<SpyInstance<boolean, [arg: any]>>(
+  jest.spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
+);
+expectError(jest.spyOn(spiedArray, 'isArray'));
+
 expectType<SpyInstance<string, []>>(
   jest.spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
 );
+expectError(jest.spyOn(spiedFunction, 'toString'));
 
 expectType<SpyInstance<Date, [value: string | number | Date]>>(
   jest.spyOn(global, 'Date'),
