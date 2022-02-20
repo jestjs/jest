@@ -232,13 +232,25 @@ expectType<SpyInstance<void, [string]>>(
 expectError(jest.spyOn(spiedObject, 'propertyA'));
 
 expectError(jest.spyOn(spiedObject, 'notThere'));
-expectError(jest.spyOn(spiedArray as unknown as ArrayConstructor, 'from'));
-expectError(jest.spyOn(spiedFunction as unknown as Function, 'toString')); // eslint-disable-line @typescript-eslint/ban-types
 expectError(jest.spyOn('abc', 'methodA'));
 expectError(jest.spyOn(123, 'methodA'));
 expectError(jest.spyOn(true, 'methodA'));
 expectError(jest.spyOn(spiedObject));
 expectError(jest.spyOn());
+
+expectType<
+  SpyInstance<
+    Array<unknown>,
+    [
+      iterable: Iterable<unknown> | ArrayLike<unknown>,
+      mapfn: (v: unknown, k: number) => unknown,
+      thisArg?: any,
+    ]
+  >
+>(jest.spyOn(spiedArray as unknown as ArrayConstructor, 'from'));
+expectType<SpyInstance<string, []>>(
+  jest.spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
+);
 
 expectType<SpyInstance<Date, [value: string | number | Date]>>(
   jest.spyOn(global, 'Date'),
