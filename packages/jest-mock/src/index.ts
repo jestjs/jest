@@ -1006,19 +1006,19 @@ export class ModuleMocker {
     return fn;
   }
 
-  spyOn<T, M extends PropertyKeys<T>>(
+  spyOn<T extends {}, M extends PropertyKeys<T>>(
     object: T,
     methodName: M,
     accessType: 'get',
   ): SpyInstance<T[M], []>;
 
-  spyOn<T, M extends PropertyKeys<T>>(
+  spyOn<T extends {}, M extends PropertyKeys<T>>(
     object: T,
     methodName: M,
     accessType: 'set',
   ): SpyInstance<void, [T[M]]>;
 
-  spyOn<T, M extends MethodKeys<T>>(
+  spyOn<T extends {}, M extends MethodKeys<T>>(
     object: T,
     methodName: M,
   ): T[M] extends FunctionLike
@@ -1026,7 +1026,7 @@ export class ModuleMocker {
     : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T, M extends PropertyKeys<T>>(
+  spyOn<T extends {}, M extends PropertyKeys<T>>(
     object: T,
     methodName: M,
     accessType?: 'get' | 'set',
@@ -1097,7 +1097,7 @@ export class ModuleMocker {
     return object[methodName];
   }
 
-  private _spyOnProperty<T, M extends PropertyKeys<T>>(
+  private _spyOnProperty<T extends {}, M extends PropertyKeys<T>>(
     obj: T,
     propertyName: M,
     accessType: 'get' | 'set' = 'get',
