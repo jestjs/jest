@@ -386,7 +386,7 @@ export default class Runtime {
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       resetCache: options?.resetCache,
-      retainAllFiles: false,
+      retainAllFiles: true,
       rootDir: config.rootDir,
       roots: config.roots,
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
