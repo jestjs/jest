@@ -69,7 +69,7 @@ console.log(prettyFormat(onClick, options));
 | key                   | type      | default    | description                                             |
 | :-------------------- | :-------- | :--------- | :------------------------------------------------------ |
 | `callToJSON`          | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
-| `compareKeys`         | `function`| `undefined`| compare function used when sorting object keys          |
+| `compareKeys`         | `function|null`| `undefined`| compare function used when sorting object keys, `null` can be used to skip over sorting |
 | `escapeRegex`         | `boolean` | `false`    | escape special characters in regular expressions        |
 | `escapeString`        | `boolean` | `true`     | escape special characters in strings                    |
 | `highlight`           | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
@@ -209,7 +209,7 @@ Write `serialize` to return a string, given the arguments:
 | key                 | type      | description                                             |
 | :------------------ | :-------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |
-| `compareKeys`       | `function`| compare function used when sorting object keys          |
+| `compareKeys`       | `function|null`| compare function used when sorting object keys, `null` can be used to skip over sorting |
 | `colors`            | `Object`  | escape codes for colors to highlight syntax             |
 | `escapeRegex`       | `boolean` | escape special characters in regular expressions        |
 | `escapeString`      | `boolean` | escape special characters in strings                    |

@@ -478,7 +478,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
   callToJSON: options?.callToJSON ?? DEFAULT_OPTIONS.callToJSON,
   colors: options?.highlight ? getColorsHighlight(options) : getColorsEmpty(),
   compareKeys:
-    typeof options?.compareKeys === 'function'
+    typeof options?.compareKeys === 'function' || options?.compareKeys === null
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
