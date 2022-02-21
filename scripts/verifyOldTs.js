@@ -12,13 +12,18 @@ const path = require('path');
 const chalk = require('chalk');
 const execa = require('execa');
 const rimraf = require('rimraf');
+const stripJsonComments = require('strip-json-comments');
 const tempy = require('tempy');
 
-const jestDirectory = path.resolve(__dirname, '../packages/jest');
+const baseTsConfig = JSON.parse(
+  stripJsonComments(
+    fs.readFileSync(require.resolve('../tsconfig.json'), 'utf8'),
+  ),
+);
 
 /* eslint-disable sort-keys */
 const tsConfig = {
-  extends: require('../tsconfig.json').extends,
+  extends: baseTsConfig.extends,
   compilerOptions: {
     esModuleInterop: false,
     moduleResolution: 'node',
@@ -30,6 +35,8 @@ const tsConfig = {
 const tsVersion = '4.2';
 
 function smoketest() {
+  const jestDirectory = path.resolve(__dirname, '../packages/jest');
+
   const cwd = tempy.directory();
 
   try {
