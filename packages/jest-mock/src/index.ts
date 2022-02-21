@@ -995,7 +995,7 @@ export class ModuleMocker {
   isMockFunction<T, Y extends Array<unknown> = Array<unknown>>(
     fn: (...args: Y) => T,
   ): fn is Mock<T, Y>;
-  isMockFunction(fn: unknown): boolean;
+  isMockFunction(fn: unknown): fn is Mock<unknown>;
   isMockFunction<T>(fn: unknown): fn is Mock<T> {
     return !!fn && (fn as any)._isMockFunction === true;
   }
