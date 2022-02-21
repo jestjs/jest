@@ -30,15 +30,15 @@ type Timer = {
 
 type TimerAPI = {
   cancelAnimationFrame: FakeTimersGlobal['cancelAnimationFrame'];
-  clearImmediate: typeof global.clearImmediate;
-  clearInterval: typeof global.clearInterval;
-  clearTimeout: typeof global.clearTimeout;
+  clearImmediate: typeof globalThis.clearImmediate;
+  clearInterval: typeof globalThis.clearInterval;
+  clearTimeout: typeof globalThis.clearTimeout;
   nextTick: typeof process.nextTick;
 
   requestAnimationFrame: FakeTimersGlobal['requestAnimationFrame'];
-  setImmediate: typeof global.setImmediate;
-  setInterval: typeof global.setInterval;
-  setTimeout: typeof global.setTimeout;
+  setImmediate: typeof globalThis.setImmediate;
+  setInterval: typeof globalThis.setInterval;
+  setTimeout: typeof globalThis.setTimeout;
 };
 
 type TimerConfig<Ref> = {

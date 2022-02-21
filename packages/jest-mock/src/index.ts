@@ -1211,7 +1211,7 @@ export class ModuleMocker {
   }
 }
 
-const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
+const JestMock = new ModuleMocker(globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);

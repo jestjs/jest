@@ -269,7 +269,7 @@ expectType<SpyInstance<string, []>>(
 expectError(jest.spyOn(spiedFunction, 'toString'));
 
 expectType<SpyInstance<Date, [value: string | number | Date]>>(
-  jest.spyOn(global, 'Date'),
+  jest.spyOn(globalThis, 'Date'),
 );
 expectType<SpyInstance<number, []>>(jest.spyOn(Date, 'now'));
 

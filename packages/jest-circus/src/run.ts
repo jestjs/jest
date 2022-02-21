@@ -43,6 +43,7 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
+  // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 

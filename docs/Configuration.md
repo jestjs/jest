@@ -463,13 +463,13 @@ Example:
 module.exports = async () => {
   // ...
   // Set reference to mongod in order to close the server during teardown.
-  global.__MONGOD__ = mongod;
+  globalThis.__MONGOD__ = mongod;
 };
 ```
 
 ```js title="teardown.js"
 module.exports = async function () {
-  await global.__MONGOD__.stop();
+  await globalThis.__MONGOD__.stop();
 };
 ```
 
@@ -1151,7 +1151,7 @@ module.exports = CustomEnvironment;
 let someGlobalObject;
 
 beforeAll(() => {
-  someGlobalObject = global.someGlobalObject;
+  someGlobalObject = globalThis.someGlobalObject;
 });
 ```
 

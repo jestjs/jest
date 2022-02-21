@@ -140,7 +140,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
