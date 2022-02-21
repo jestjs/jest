@@ -150,14 +150,34 @@ if (!jest.isMockFunction(surelyMock)) {
   expectType<never>(surelyMock);
 }
 
-declare const hardlyMockFn: string;
+declare const stringNotMock: string;
 
-if (!jest.isMockFunction(hardlyMockFn)) {
-  expectType<string>(hardlyMockFn);
+if (!jest.isMockFunction(stringNotMock)) {
+  expectType<string>(stringNotMock);
 }
 
-if (jest.isMockFunction(hardlyMockFn)) {
-  expectType<string>(hardlyMockFn);
+if (jest.isMockFunction(stringNotMock)) {
+  expectType<string>(stringNotMock);
+}
+
+declare const anyNotMock: any;
+
+if (!jest.isMockFunction(anyNotMock)) {
+  expectType<any>(anyNotMock);
+}
+
+if (jest.isMockFunction(anyNotMock)) {
+  expectType<any>(anyNotMock);
+}
+
+declare const unknownNotMock: unknown;
+
+if (!jest.isMockFunction(unknownNotMock)) {
+  expectType<unknown>(unknownNotMock);
+}
+
+if (jest.isMockFunction(unknownNotMock)) {
+  expectType<unknown>(unknownNotMock);
 }
 
 expectType<Mock<unknown>>(jest.fn());
