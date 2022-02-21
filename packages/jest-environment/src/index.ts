@@ -8,12 +8,7 @@
 import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
-import type {
-  fn as JestMockFn,
-  mocked as JestMockMocked,
-  spyOn as JestMockSpyOn,
-  ModuleMocker,
-} from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 
 export type EnvironmentContext = {
   console: Console;
@@ -110,7 +105,7 @@ export interface Jest {
   /**
    * Creates a mock function. Optionally takes a mock implementation.
    */
-  fn: typeof JestMockFn;
+  fn: ModuleMocker['fn'];
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -132,9 +127,7 @@ export interface Jest {
   /**
    * Determines if the given function is a mocked function.
    */
-  isMockFunction(
-    fn: (...args: Array<any>) => unknown,
-  ): fn is ReturnType<typeof JestMockFn>;
+  isMockFunction: ModuleMocker['isMockFunction'];
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
@@ -196,7 +189,7 @@ export interface Jest {
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
-  mocked: typeof JestMockMocked;
+  mocked: ModuleMocker['mocked'];
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted. This only works with `jest-circus`!
@@ -259,7 +252,7 @@ export interface Jest {
    * Note: By default, jest.spyOn also calls the spied method. This is
    * different behavior from most other test libraries.
    */
-  spyOn: typeof JestMockSpyOn;
+  spyOn: ModuleMocker['spyOn'];
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from require() (e.g. that it should always return the

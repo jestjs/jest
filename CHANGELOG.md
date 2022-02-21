@@ -12,6 +12,7 @@
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[@jest/expect]` New module which extends `expect` with `jest-snapshot` matchers ([#12404](https://github.com/facebook/jest/pull/12404), [#12410](https://github.com/facebook/jest/pull/12410), [#12418](https://github.com/facebook/jest/pull/12418))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
+- `[jest-mock]` Improve `isMockFunction` to infer types of passed function ([#12442](https://github.com/facebook/jest/pull/12442))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[@jest/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
@@ -27,6 +28,7 @@
 - `[jest-haste-map]` Don't use partial results if file crawl errors ([#12420](https://github.com/facebook/jest/pull/12420))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 - `[jest-matcher-utils]` Pass maxWidth to `pretty-format` to avoid printing every element in arrays by default ([#12402](https://github.com/facebook/jest/pull/12402))
+- `[jest-mock]` Fix function overloads for `spyOn` to allow more correct type inference in complex object ([#12442](https://github.com/facebook/jest/pull/12442))
 
 ### Chore & Maintenance
 
