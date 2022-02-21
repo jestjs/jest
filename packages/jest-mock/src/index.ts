@@ -1025,7 +1025,7 @@ export class ModuleMocker {
 
   spyOn<T extends object, M extends ConstructorPropertyNames<Required<T>>>(
     object: T,
-    method: M,
+    methodName: M,
   ): T[M] extends new (...args: Array<any>) => any
     ? SpyInstance<InstanceType<T[M]>, ConstructorParameters<T[M]>>
     : never;
