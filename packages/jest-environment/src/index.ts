@@ -28,8 +28,13 @@ export type ModuleWrapper = (
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
+export interface JestEnvironmentConfig {
+  projectConfig: Config.ProjectConfig;
+  globalConfig: Config.GlobalConfig;
+}
+
 export declare class JestEnvironment<Timer = unknown> {
-  constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
+  constructor(config: JestEnvironmentConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
