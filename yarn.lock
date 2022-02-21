@@ -2705,7 +2705,7 @@ __metadata:
     throat: ^6.0.1
     ts-node: ^10.5.0
     type-fest: ^2.11.2
-    typescript: ^4.0.2
+    typescript: ^4.2.4
     which: ^2.0.1
   languageName: unknown
   linkType: soft
@@ -12956,7 +12956,7 @@ __metadata:
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
-    typescript: ^4.0.3
+    typescript: ^4.2.4
   peerDependencies:
     "@types/node": "*"
     ts-node: ">=9.0.0"
@@ -21471,7 +21471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:*, typescript@npm:^4.0.2, typescript@npm:^4.0.3, typescript@npm:~4.5.2":
+"typescript@npm:*, typescript@npm:^4.2.4, typescript@npm:~4.5.2":
   version: 4.5.5
   resolution: "typescript@npm:4.5.5"
   bin:
@@ -21481,7 +21481,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.3#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.2#~builtin<compat/typescript>":
   version: 4.5.5
   resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"
   bin:
