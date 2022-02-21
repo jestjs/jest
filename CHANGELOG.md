@@ -35,6 +35,7 @@
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
 - `[*]` [**BREAKING**] Drop support for `typescript@3.8`, minimum version is now `4.2` ([#11142](https://github.com/facebook/jest/pull/11142))
 - `[*]` Bundle all `.d.ts` files into a single `index.d.ts` per module ([#12345](https://github.com/facebook/jest/pull/12345))
+- `[*]` Use `globalThis` instead of `global` ([#12447](https://github.com/facebook/jest/pull/12447))
 - `[docs]` Add note about not mixing `done()` with Promises ([#11077](https://github.com/facebook/jest/pull/11077))
 - `[docs, examples]` Update React examples to match with the new React guidelines for code examples ([#12217](https://github.com/facebook/jest/pull/12217))
 - `[expect]` [**BREAKING**] Remove support for importing `build/utils` ([#12323](https://github.com/facebook/jest/pull/12323))
