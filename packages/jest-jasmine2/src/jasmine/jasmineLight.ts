@@ -57,9 +57,11 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
     configurable: true,
     enumerable: true,
     get() {
+      // eslint-disable-next-line no-restricted-globals
       return global[testTimeoutSymbol] || createOptions.testTimeout || 5000;
     },
     set(value) {
+      // eslint-disable-next-line no-restricted-globals
       global[testTimeoutSymbol] = value;
     },
   });
