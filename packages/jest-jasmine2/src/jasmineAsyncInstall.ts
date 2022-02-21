@@ -230,7 +230,7 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = globalThis.jasmine;
+  const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();
