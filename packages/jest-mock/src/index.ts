@@ -79,9 +79,6 @@ export type MaybeMocked<T> = T extends MockableFunction
   : T;
 
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
-type ConstructorArgsType<T> = T extends new (...args: infer A) => any
-  ? A
-  : never;
 export type Mocked<T> = {
   [P in keyof T]: T[P] extends (...args: Array<any>) => any
     ? MockInstance<ReturnType<T[P]>, ArgsType<T[P]>>
@@ -1030,7 +1027,7 @@ export class ModuleMocker {
     object: T,
     method: M,
   ): T[M] extends new (...args: Array<any>) => any
-    ? SpyInstance<InstanceType<T[M]>, ConstructorArgsType<T[M]>>
+    ? SpyInstance<InstanceType<T[M]>, ConstructorParameters<T[M]>>
     : never;
 
   spyOn<T extends object, M extends FunctionPropertyNames<T>>(
