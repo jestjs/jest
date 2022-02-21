@@ -7,7 +7,7 @@
 
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
-import {type JestExpect, jestExpect} from '@jest/expect';
+import {JestExpect, jestExpect} from '@jest/expect';
 import {
   AssertionResult,
   Status,
