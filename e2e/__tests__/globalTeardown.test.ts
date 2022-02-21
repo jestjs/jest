@@ -65,7 +65,7 @@ test('jest throws an error when globalTeardown does not export a function', () =
   );
 });
 
-test('globalTeardown function gets jest config object as a parameter', () => {
+test('globalSetup function gets global config object and project config as parameters', () => {
   const teardownPath = path.resolve(e2eDir, 'teardownWithConfig.js');
 
   const testPathPattern = 'pass';
@@ -73,9 +73,10 @@ test('globalTeardown function gets jest config object as a parameter', () => {
   const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
+    '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(testPathPattern);
+  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
 });
 
 test('should call globalTeardown function of multiple projects', () => {
@@ -113,9 +114,10 @@ test('globalTeardown works with default export', () => {
   const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
+    '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(testPathPattern);
+  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
 });
 
 test('globalTeardown throws with named export', () => {
