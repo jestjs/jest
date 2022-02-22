@@ -141,7 +141,7 @@ jest.mock('./sound-player', () => {
 ```
 
 :::caution
-Since calls to `jest.mock()` are hoisted to the top of the file, Jest prevents access to out-of-scope variables. By default, you cannot first define a variable and then use it in the factory. Jest will disable this check for variables that start with the word 'mock'. However, it is still up to you to guarantee that they will be initialized on time. Be aware of [Temporal Dead Zone](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz).
+Since calls to `jest.mock()` are hoisted to the top of the file, Jest prevents access to out-of-scope variables. By default, you cannot first define a variable and then use it in the factory. Jest will disable this check for variables that start with the word `mock`. However, it is still up to you to guarantee that they will be initialized on time. Be aware of [Temporal Dead Zone](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz).
 :::
 
 For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration.
@@ -157,7 +157,7 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-The following will throw a ReferenceError despite using 'mock' in the variable declaration, as the mockSoundPlayer is not wrapped in an arrow function and thus accessed before initialization after hoisting.
+The following will throw a `ReferenceError` despite using `mock` in the variable declaration, as the `mockSoundPlayer` is not wrapped in an arrow function and thus accessed before initialization after hoisting.
 
 ```javascript
 import SoundPlayer from './sound-player';
