@@ -1,6 +1,6 @@
 {
   "name": "jest-repl",
-  "version": "28.0.0-alpha.3",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,15 +19,15 @@
     "./bin/jest-runtime-cli": "./bin/jest-runtime-cli.js"
   },
   "dependencies": {
-    "@jest/console": "^28.0.0-alpha.3",
-    "@jest/environment": "^28.0.0-alpha.3",
-    "@jest/transform": "^28.0.0-alpha.3",
-    "@jest/types": "^28.0.0-alpha.3",
+    "@jest/console": "^28.0.0-alpha.4",
+    "@jest/environment": "^28.0.0-alpha.4",
+    "@jest/transform": "^28.0.0-alpha.4",
+    "@jest/types": "^28.0.0-alpha.4",
     "chalk": "^4.0.0",
-    "jest-config": "^28.0.0-alpha.3",
-    "jest-runtime": "^28.0.0-alpha.3",
-    "jest-util": "^28.0.0-alpha.3",
-    "jest-validate": "^28.0.0-alpha.3",
+    "jest-config": "^28.0.0-alpha.4",
+    "jest-runtime": "^28.0.0-alpha.4",
+    "jest-util": "^28.0.0-alpha.4",
+    "jest-validate": "^28.0.0-alpha.4",
     "repl": "^0.1.3",
     "yargs": "^17.3.1"
   },
