@@ -115,8 +115,8 @@ export interface SpyInstance<T, Y extends Array<unknown>>
 export interface MockInstance<T, Y extends Array<unknown>> {
   _isMockFunction: true;
   _protoImpl: Function;
+  getMockImplementation(): ((...args: Y) => T) | undefined;
   getMockName(): string;
-  getMockImplementation(): Function | undefined;
   mock: MockFunctionState<T, Y>;
   mockClear(): this;
   mockReset(): this;
@@ -716,7 +716,8 @@ export class ModuleMocker {
         mockConstructor,
       ) as unknown as Mock<T, Y>;
       f._isMockFunction = true;
-      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl;
+      f.getMockImplementation = () =>
+        this._ensureMockConfig(f).mockImpl as unknown as (...args: Y) => T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);

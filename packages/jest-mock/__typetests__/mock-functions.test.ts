@@ -15,6 +15,22 @@ import {Mock, SpyInstance, fn, spyOn} from 'jest-mock';
 
 // jest.fn()
 
+expectType<Mock<Promise<string>, []>>(
+  fn(async () => 'value')
+    .mockClear()
+    .mockReset()
+    .mockImplementation(fn())
+    .mockImplementationOnce(fn())
+    .mockName('mock')
+    .mockReturnThis()
+    .mockReturnValue(Promise.resolve('value'))
+    .mockReturnValueOnce(Promise.resolve('value'))
+    .mockResolvedValue('value')
+    .mockResolvedValueOnce('value')
+    .mockRejectedValue('error')
+    .mockRejectedValue('error'),
+);
+
 expectAssignable<Function>(fn()); // eslint-disable-line @typescript-eslint/ban-types
 
 expectType<Mock<unknown>>(fn());
@@ -50,8 +66,12 @@ expectType<{
   connect(): Mock<unknown, Array<unknown>>;
   disconnect(): void;
 }>(new MockObject('credentials'));
-
 expectError(new MockObject());
+
+expectType<((a: string, b?: number | undefined) => boolean) | undefined>(
+  mockFn.getMockImplementation(),
+);
+expectError(mockFn.getMockImplementation('some-mock'));
 
 expectType<string>(mockFn.getMockName());
 expectError(mockFn.getMockName('some-mock'));
