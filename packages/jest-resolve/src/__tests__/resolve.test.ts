@@ -12,7 +12,7 @@ import resolveAsync = require('resolve');
 import {ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import {defaultResolver, defaultResolverAsync} from '../defaultResolver';
+import defaultResolver from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
@@ -287,7 +287,7 @@ describe('findNodeModuleAsync', () => {
       basedir: '/',
       browser: true,
       conditions: ['conditions, woooo'],
-      defaultResolver: defaultResolverAsync,
+      defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: (nodePaths || []).concat(['/something']),
@@ -308,14 +308,12 @@ describe('findNodeModuleAsync', () => {
       resolver: require.resolve('../__mocks__/userResolverAsync'),
     });
 
-    // Question, if we can't mock resolve (async), how do we test this?
-
-    // expect(mockResolveSync).toHaveBeenCalledWith(
-    //   'test',
-    //   expect.objectContaining({
-    //     packageFilter,
-    //   }),
-    // );
+    expect(mockResolveSync).toHaveBeenCalledWith(
+      'test',
+      expect.objectContaining({
+        packageFilter,
+      }),
+    );
   });
 });
 

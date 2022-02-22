@@ -13,7 +13,9 @@ import slash = require('slash');
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
-import {defaultResolver, defaultResolverAsync} from './defaultResolver';
+import defaultResolver, {
+  Resolver as ResolverInterface,
+} from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
@@ -149,12 +151,12 @@ export default class Resolver {
   ): Promise<string | null> {
     // The resolver module could be a synchronous function, or an object with sync and/or async keys.
     const resolverModule = options.resolver ? require(options.resolver) : null;
-    const resolver: typeof defaultResolverAsync =
+    const resolver: ResolverInterface =
       resolverModule &&
       typeof resolverModule === 'object' &&
       typeof resolverModule.async === 'function'
         ? resolverModule.async
-        : defaultResolverAsync;
+        : defaultResolver;
 
     const paths = options.paths;
 
@@ -163,7 +165,7 @@ export default class Resolver {
         basedir: options.basedir,
         browser: options.browser,
         conditions: options.conditions,
-        defaultResolver: defaultResolverAsync,
+        defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,

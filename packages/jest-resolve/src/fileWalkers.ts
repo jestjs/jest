@@ -93,13 +93,13 @@ export function readPackageCached(path: string): PkgJson {
 // to use cached `fs` calls
 export function findClosestPackageJson(start: string): string | undefined {
   let dir = resolve('.', start);
-  if (!isDirectorySync(dir)) {
+  if (!isDirectory(dir)) {
     dir = dirname(dir);
   }
 
   while (true) {
     const pkgJsonFile = resolve(dir, './package.json');
-    const hasPackageJson = isFileSync(pkgJsonFile);
+    const hasPackageJson = isFile(pkgJsonFile);
 
     if (hasPackageJson) {
       return pkgJsonFile;
@@ -117,53 +117,14 @@ export function findClosestPackageJson(start: string): string | undefined {
 /*
  * helper functions
  */
-export function isFileSync(file: string): boolean {
+export function isFile(file: string): boolean {
   return statSyncCached(file) === IPathType.FILE;
 }
 
-export function isFileAsync(
-  file: string,
-  cb: (err: Error | null, isFile?: boolean) => void,
-): void {
-  try {
-    // TODO: create an async version of statSyncCached
-    const isFile = isFileSync(file);
-    cb(null, isFile);
-  } catch (err: any) {
-    cb(err);
-  }
-}
-
-export function isDirectorySync(dir: string): boolean {
+export function isDirectory(dir: string): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
-}
-
-export function isDirectoryAsync(
-  dir: string,
-  cb: (err: Error | null, isDir?: boolean) => void,
-): void {
-  try {
-    // TODO: create an async version of statSyncCached
-    const isDir = isDirectorySync(dir);
-    cb(null, isDir);
-  } catch (err: any) {
-    cb(err);
-  }
 }
 
 export function realpathSync(file: string): string {
   return realpathCached(file);
-}
-
-export function realpathAsync(
-  file: string,
-  cb: (err: Error | null, resolved?: string) => void,
-): void {
-  try {
-    // TODO: create an async version of realpathCached
-    const resolved = realpathCached(file);
-    cb(null, resolved);
-  } catch (err: any) {
-    cb(err);
-  }
 }

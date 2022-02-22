@@ -7,27 +7,22 @@
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import resolveAsync = require('resolve');
+import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
 import {
   PkgJson,
-  isDirectoryAsync,
-  isDirectorySync,
-  isFileAsync,
-  isFileSync,
+  isDirectory,
+  isFile,
   readPackageCached,
-  realpathAsync,
   realpathSync,
 } from './fileWalkers';
 
-const resolveSync = resolveAsync.sync;
-
 // copy from `resolve`'s types so we don't have their types in our definition
 // files
-export interface ResolverOptions {
+interface ResolverOptions {
   basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
@@ -40,15 +35,16 @@ export interface ResolverOptions {
   pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
 
-type ResolverOptionsAsync = Omit<ResolverOptions, 'defaultResolver'> & {
-  defaultResolver: typeof defaultResolverAsync;
-};
-
-type UpstreamSyncResolveOptionsWithConditions = resolveAsync.SyncOpts &
+type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
   Pick<ResolverOptions, 'conditions'>;
 
-type UpstreamAsyncResolveOptionsWithConditions = resolveAsync.AsyncOpts &
-  Pick<ResolverOptions, 'conditions'>;
+type SyncResolver = (path: string, options: ResolverOptions) => string;
+type AsyncResolver = (
+  path: string,
+  options: ResolverOptions,
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -59,17 +55,21 @@ declare global {
   }
 }
 
-export function defaultResolver(
-  path: string,
-  options: ResolverOptions,
-): string {
+const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
-  const resolveOptions = getSyncResolveOptions(options);
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
+    ...options,
+    isDirectory,
+    isFile,
+    preserveSymlinks: false,
+    readPackageSync,
+    realpathSync,
+  };
 
   const pathToResolve = getPathInModule(path, resolveOptions);
 
@@ -82,65 +82,9 @@ export function defaultResolver(
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
-}
+};
 
-export async function defaultResolverAsync(
-  path: string,
-  options: ResolverOptionsAsync,
-): Promise<string> {
-  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
-  // needed for Yarn 1 which implements version 1 of the pnp spec
-  if (process.versions.pnp === '1') {
-    // @ts-expect-error until https://github.com/arcanis/jest-pnp-resolver/pull/10 is released
-    return pnpResolver(path, options);
-  }
-
-  // TODO: handle `exports`
-  return new Promise((resolve, reject) => {
-    function resolveCb(err: Error | null, result?: string) {
-      if (err) {
-        reject(err);
-      }
-      if (result) {
-        resolve(realpathSync(result));
-      }
-    }
-    const opts = getAsyncResolveOptions(options);
-    resolveAsync(path, opts, resolveCb);
-  });
-}
-
-/**
- * getSyncResolveOptions returns resolution options that are used synchronously.
- */
-function getSyncResolveOptions(
-  options: ResolverOptions,
-): UpstreamSyncResolveOptionsWithConditions {
-  return {
-    ...options,
-    isDirectory: isDirectorySync,
-    isFile: isFileSync,
-    preserveSymlinks: false,
-    readPackageSync,
-    realpathSync,
-  };
-}
-
-/**
- * getAsyncResolveOptions returns resolution options that are used asynchronously.
- */
-function getAsyncResolveOptions(
-  options: ResolverOptionsAsync,
-): UpstreamAsyncResolveOptionsWithConditions {
-  return {
-    ...options,
-    isDirectory: isDirectoryAsync,
-    isFile: isFileAsync,
-    preserveSymlinks: false,
-    readPackage: readPackageAsync,
-    realpath: realpathAsync,
-  };
-}
+export default defaultResolver;
 
 /*
  * helper functions
@@ -150,23 +94,9 @@ function readPackageSync(_: unknown, file: string): PkgJson {
   return readPackageCached(file);
 }
 
-function readPackageAsync(
-  _: unknown,
-  pkgfile: string,
-  cb: (err: Error | null, pkgJson?: PkgJson) => void,
-): void {
-  try {
-    // TODO: create an async version of readPackageCached
-    const pkgJson = readPackageCached(pkgfile);
-    cb(null, pkgJson);
-  } catch (err: any) {
-    cb(err);
-  }
-}
-
 function getPathInModule(
   path: string,
-  options: UpstreamSyncResolveOptionsWithConditions,
+  options: UpstreamResolveOptionsWithConditions,
 ): string {
   if (shouldIgnoreRequestForExports(path)) {
     return path;
@@ -190,7 +120,7 @@ function getPathInModule(
       // ignore if package.json cannot be found
     }
 
-    if (packageJsonPath && isFileSync(packageJsonPath)) {
+    if (packageJsonPath && isFile(packageJsonPath)) {
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
