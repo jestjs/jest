@@ -521,6 +521,8 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting all mocks', () => {
+        expect(moduleMocker.hasAnyMocks()).toEqual(false);
+
         const fn1 = moduleMocker.fn();
         fn1.mockImplementation(() => 'abcd');
         fn1(1, 2, 3);
@@ -531,7 +533,10 @@ describe('moduleMocker', () => {
         fn2('a', 'b', 'c');
         expect(fn2.mock.calls).toEqual([['a', 'b', 'c']]);
 
+        expect(moduleMocker.hasAnyMocks()).toEqual(true);
+
         moduleMocker.resetAllMocks();
+        expect(moduleMocker.hasAnyMocks()).toEqual(false);
         expect(fn1.mock.calls).toEqual([]);
         expect(fn2.mock.calls).toEqual([]);
         expect(fn1()).not.toEqual('abcd');
