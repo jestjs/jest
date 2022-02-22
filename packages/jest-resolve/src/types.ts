@@ -14,7 +14,6 @@ export type ResolverConfig = {
   modulePaths?: Array<string>;
   platforms?: Array<string>;
   resolver?: string | null;
-  asyncResolver?: string | null;
   rootDir: string;
 };
 
