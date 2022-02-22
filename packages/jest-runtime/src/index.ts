@@ -559,7 +559,7 @@ export default class Runtime {
 
     if (specifier.startsWith('data:')) {
       if (
-        this._shouldMock(
+        await this._shouldMockModule(
           referencingIdentifier,
           specifier,
           this._explicitShouldMockModule,
@@ -644,7 +644,7 @@ export default class Runtime {
     const [path, query] = specifier.split('?');
 
     if (
-      this._shouldMock(
+      await this._shouldMockModule(
         referencingIdentifier,
         path,
         this._explicitShouldMockModule,
@@ -869,11 +869,10 @@ export default class Runtime {
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
       // Node includes more info in the message
-      const error = new Error(
+      const error: NodeJS.ErrnoException = new Error(
         `Must use import to load ES Module: ${modulePath}`,
       );
 
-      // @ts-expect-error: `code` is not defined
       error.code = 'ERR_REQUIRE_ESM';
 
       throw error;
@@ -1085,7 +1084,7 @@ export default class Runtime {
 
     try {
       if (
-        this._shouldMock(from, moduleName, this._explicitShouldMock, {
+        this._shouldMockCjs(from, moduleName, this._explicitShouldMock, {
           conditions: this.cjsConditions,
         })
       ) {
@@ -1773,7 +1772,7 @@ export default class Runtime {
     );
   }
 
-  private _shouldMock(
+  private _shouldMockCjs(
     from: string,
     moduleName: string,
     explicitShouldMock: Map<string, boolean>,
@@ -1824,6 +1823,80 @@ export default class Runtime {
 
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._resolver.getModuleID(
+      this._virtualMocks,
+      from,
+      undefined,
+      options,
+    );
+    if (
+      this._transitiveShouldMock.get(currentModuleID) === false ||
+      (from.includes(NODE_MODULES) &&
+        modulePath.includes(NODE_MODULES) &&
+        ((this._unmockList && this._unmockList.test(from)) ||
+          explicitShouldMock.get(currentModuleID) === false))
+    ) {
+      this._transitiveShouldMock.set(moduleID, false);
+      this._shouldUnmockTransitiveDependenciesCache.set(key, true);
+      return false;
+    }
+    this._shouldMockModuleCache.set(moduleID, true);
+    return true;
+  }
+
+  private async _shouldMockModule(
+    from: string,
+    moduleName: string,
+    explicitShouldMock: Map<string, boolean>,
+    options: ResolveModuleConfig,
+  ): Promise<boolean> {
+    const moduleID = await this._resolver.getModuleIDAsync(
+      this._virtualMocks,
+      from,
+      moduleName,
+      options,
+    );
+    const key = from + path.delimiter + moduleID;
+
+    if (explicitShouldMock.has(moduleID)) {
+      // guaranteed by `has` above
+      return explicitShouldMock.get(moduleID)!;
+    }
+
+    if (
+      !this._shouldAutoMock ||
+      this._resolver.isCoreModule(moduleName) ||
+      this._shouldUnmockTransitiveDependenciesCache.get(key)
+    ) {
+      return false;
+    }
+
+    if (this._shouldMockModuleCache.has(moduleID)) {
+      // guaranteed by `has` above
+      return this._shouldMockModuleCache.get(moduleID)!;
+    }
+
+    let modulePath;
+    try {
+      modulePath = await this._resolveModule(from, moduleName, options);
+    } catch (e) {
+      const manualMock = await this._resolver.getMockModuleAsync(
+        from,
+        moduleName,
+      );
+      if (manualMock) {
+        this._shouldMockModuleCache.set(moduleID, true);
+        return true;
+      }
+      throw e;
+    }
+
+    if (this._unmockList && this._unmockList.test(modulePath)) {
+      this._shouldMockModuleCache.set(moduleID, false);
+      return false;
+    }
+
+    // transitive unmocking for package managers that store flat packages (npm3)
+    const currentModuleID = await this._resolver.getModuleIDAsync(
       this._virtualMocks,
       from,
       undefined,
