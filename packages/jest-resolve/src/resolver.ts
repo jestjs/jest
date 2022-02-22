@@ -10,7 +10,6 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
-import type {Config} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
@@ -22,21 +21,21 @@ import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
 type FindNodeModuleConfig = {
-  basedir: Config.Path;
+  basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  resolver?: Config.Path | null;
-  rootDir?: Config.Path;
+  paths?: Array<string>;
+  resolver?: string | null;
+  rootDir?: string;
   throwIfNotFound?: boolean;
 };
 
 export type ResolveModuleConfig = {
   conditions?: Array<string>;
   skipNodeResolution?: boolean;
-  paths?: Array<Config.Path>;
+  paths?: Array<string>;
 };
 
 const NATIVE_PLATFORM = 'native';
@@ -55,8 +54,8 @@ export default class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: IModuleMap;
   private readonly _moduleIDCache: Map<string, string>;
-  private readonly _moduleNameCache: Map<string, Config.Path>;
-  private readonly _modulePathCache: Map<string, Array<Config.Path>>;
+  private readonly _moduleNameCache: Map<string, string>;
+  private readonly _modulePathCache: Map<string, Array<string>>;
   private readonly _supportsNativePlatform: boolean;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
@@ -107,9 +106,9 @@ export default class Resolver {
   static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   static findNodeModule(
-    path: Config.Path,
+    path: string,
     options: FindNodeModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     // The resolver module could be a synchronous function, or an object with sync and/or async keys.
     const resolverModule = options.resolver ? require(options.resolver) : null;
     let resolver = defaultResolver;
@@ -145,9 +144,9 @@ export default class Resolver {
   }
 
   static async findNodeModuleAsync(
-    path: Config.Path,
+    path: string,
     options: FindNodeModuleConfig,
-  ): Promise<Config.Path | null> {
+  ): Promise<string | null> {
     // The resolver module could be a synchronous function, or an object with sync and/or async keys.
     const resolverModule = options.resolver ? require(options.resolver) : null;
     const resolver: typeof defaultResolverAsync =
@@ -184,7 +183,7 @@ export default class Resolver {
    * methods, to try to keep them as DRY as possible.
    */
   private _prepareForResolution(
-    dirname: Config.Path,
+    dirname: string,
     moduleName: string,
     options?: ResolveModuleConfig,
   ) {
@@ -224,7 +223,7 @@ export default class Resolver {
     return null;
   }
 
-  private _throwModNotFoundError(from: Config.Path, moduleName: string): never {
+  private _throwModNotFoundError(from: string, moduleName: string): never {
     const relativePath =
       slash(path.relative(this._options.rootDir, from)) || '.';
 
@@ -259,10 +258,10 @@ export default class Resolver {
 
   private _getAbsolutePath(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
     }
@@ -273,10 +272,10 @@ export default class Resolver {
 
   private async _getAbsolutePathAsync(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Promise<Config.Path | null> {
+  ): Promise<string | null> {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
     }
@@ -294,19 +293,16 @@ export default class Resolver {
         );
   }
 
-  private _getMockPath(
-    from: Config.Path,
-    moduleName: string,
-  ): Config.Path | null {
+  private _getMockPath(from: string, moduleName: string): string | null {
     return !this.isCoreModule(moduleName)
       ? this.getMockModule(from, moduleName)
       : null;
   }
 
   private async _getMockPathAsync(
-    from: Config.Path,
+    from: string,
     moduleName: string,
-  ): Promise<Config.Path | null> {
+  ): Promise<string | null> {
     return !this.isCoreModule(moduleName)
       ? await this.getMockModuleAsync(from, moduleName)
       : null;
@@ -314,10 +310,10 @@ export default class Resolver {
 
   private _getVirtualMockPath(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path {
+  ): string {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
@@ -328,10 +324,10 @@ export default class Resolver {
 
   private async _getVirtualMockPathAsync(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Promise<Config.Path> {
+  ): Promise<string> {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
@@ -340,14 +336,14 @@ export default class Resolver {
       : from;
   }
 
-  private _isModuleResolved(from: Config.Path, moduleName: string): boolean {
+  private _isModuleResolved(from: string, moduleName: string): boolean {
     return !!(
       this.getModule(moduleName) || this.getMockModule(from, moduleName)
     );
   }
 
   private async _isModuleResolvedAsync(
-    from: Config.Path,
+    from: string,
     moduleName: string,
   ): Promise<boolean> {
     return !!(
@@ -356,7 +352,7 @@ export default class Resolver {
     );
   }
 
-  private _setResolver(resolver?: Config.Path | null): void {
+  private _setResolver(resolver?: string | null): void {
     this._options.resolver = resolver;
   }
 
@@ -370,7 +366,7 @@ export default class Resolver {
     );
   }
 
-  getModule(name: string): Config.Path | null {
+  getModule(name: string): string | null {
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
@@ -378,14 +374,14 @@ export default class Resolver {
     );
   }
 
-  getModulePath(from: Config.Path, moduleName: string): Config.Path {
+  getModulePath(from: string, moduleName: string): string {
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
     return path.normalize(path.dirname(from) + '/' + moduleName);
   }
 
-  getPackage(name: string): Config.Path | null {
+  getPackage(name: string): string | null {
     return this._moduleMap.getPackage(
       name,
       this._options.defaultPlatform,
@@ -393,7 +389,7 @@ export default class Resolver {
     );
   }
 
-  getModulePaths(from: Config.Path): Array<Config.Path> {
+  getModulePaths(from: string): Array<string> {
     const cachedModule = this._modulePathCache.get(from);
     if (cachedModule) {
       return cachedModule;
@@ -409,10 +405,7 @@ export default class Resolver {
     return paths;
   }
 
-  resolveStubModuleName(
-    from: Config.Path,
-    moduleName: string,
-  ): Config.Path | null {
+  resolveStubModuleName(from: string, moduleName: string): string | null {
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
@@ -469,9 +462,9 @@ export default class Resolver {
   }
 
   async resolveStubModuleNameAsync(
-    from: Config.Path,
+    from: string,
     moduleName: string,
-  ): Promise<Config.Path | null> {
+  ): Promise<string | null> {
     const dirname = path.dirname(from);
 
     const {extensions, moduleDirectory, paths} = this._prepareForResolution(
@@ -527,7 +520,7 @@ export default class Resolver {
     return null;
   }
 
-  getMockModule(from: Config.Path, name: string): Config.Path | null {
+  getMockModule(from: string, name: string): string | null {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
@@ -540,10 +533,7 @@ export default class Resolver {
     return null;
   }
 
-  async getMockModuleAsync(
-    from: Config.Path,
-    name: string,
-  ): Promise<Config.Path | null> {
+  async getMockModuleAsync(from: string, name: string): Promise<string | null> {
     const mock = this._moduleMap.getMockModule(name);
     if (mock) {
       return mock;
@@ -558,7 +548,7 @@ export default class Resolver {
 
   getModuleID(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     _moduleName?: string,
     options?: ResolveModuleConfig,
   ): string {
@@ -594,7 +584,7 @@ export default class Resolver {
 
   async getModuleIDAsync(
     virtualMocks: Map<string, boolean>,
-    from: Config.Path,
+    from: string,
     moduleName = '',
     options?: ResolveModuleConfig,
   ): Promise<string> {
@@ -629,10 +619,10 @@ export default class Resolver {
   }
 
   resolveModuleFromDirIfExists(
-    dirname: Config.Path,
+    dirname: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path | null {
+  ): string | null {
     const {extensions, key, moduleDirectory, paths, skipResolution} =
       this._prepareForResolution(dirname, moduleName, options);
 
@@ -658,7 +648,7 @@ export default class Resolver {
     // requires). This enables us to speed up resolution when we build a
     // dependency graph because we don't have to look at modules that may not
     // exist and aren't mocked.
-    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) => {
+    const resolveNodeModule = (name: string, throwIfNotFound = false) => {
       if (this.isCoreModule(name)) {
         return name;
       }
@@ -703,10 +693,10 @@ export default class Resolver {
   }
 
   async resolveModuleFromDirIfExistsAsync(
-    dirname: Config.Path,
+    dirname: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Promise<Config.Path | null> {
+  ): Promise<string | null> {
     const {extensions, key, moduleDirectory, paths, skipResolution} =
       this._prepareForResolution(dirname, moduleName, options);
 
@@ -732,10 +722,7 @@ export default class Resolver {
     // requires). This enables us to speed up resolution when we build a
     // dependency graph because we don't have to look at modules that may not
     // exist and aren't mocked.
-    const resolveNodeModule = async (
-      name: Config.Path,
-      throwIfNotFound = false,
-    ) => {
+    const resolveNodeModule = async (name: string, throwIfNotFound = false) => {
       if (this.isCoreModule(name)) {
         return name;
       }
@@ -784,10 +771,10 @@ export default class Resolver {
   }
 
   resolveModule(
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Config.Path {
+  ): string {
     const dirname = path.dirname(from);
     const module =
       this.resolveStubModuleName(from, moduleName) ||
@@ -801,10 +788,10 @@ export default class Resolver {
   }
 
   async resolveModuleAsync(
-    from: Config.Path,
+    from: string,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Promise<Config.Path> {
+  ): Promise<string> {
     const dirname = path.dirname(from);
     const module =
       (await this.resolveStubModuleNameAsync(from, moduleName)) ||

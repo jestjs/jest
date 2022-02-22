@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 
@@ -19,10 +18,7 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
 const createValidationError = (message: string) =>
   new ValidationError(`${BULLET}Validation Error`, message, DOCUMENTATION_NOTE);
 
-const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
-): string => {
+const replaceRootDirInPath = (rootDir: string, filePath: string): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
   }
@@ -48,7 +44,7 @@ const resolveWithPrefix = (
     optionName: string;
     prefix: string;
     requireResolveFunction: (moduleName: string) => string;
-    rootDir: Config.Path;
+    rootDir: string;
   },
 ): string => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
@@ -98,7 +94,7 @@ export const resolveTestEnvironment = ({
   testEnvironment: filePath,
   requireResolveFunction,
 }: {
-  rootDir: Config.Path;
+  rootDir: string;
   testEnvironment: string;
   requireResolveFunction: (moduleName: string) => string;
 }): string => {
@@ -137,7 +133,7 @@ export const resolveWatchPlugin = (
     requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
+    rootDir: string;
     requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
@@ -166,7 +162,7 @@ export const resolveRunner = (
     requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
+    rootDir: string;
     requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
@@ -187,7 +183,7 @@ export const resolveSequencer = (
     requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
+    rootDir: string;
     requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
