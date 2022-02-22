@@ -156,12 +156,12 @@ describe('node crawler', () => {
       extensions: ['js', 'json'],
       ignore: pearMatcher,
       rootDir,
-      roots: ['/project/fruits', '/project/vegtables'],
+      roots: ['/project/fruits', '/project/vegetables'],
     });
 
     expect(childProcess.spawn).lastCalledWith('find', [
       '/project/fruits',
-      '/project/vegtables',
+      '/project/vegetables',
       '-type',
       'f',
       '(',

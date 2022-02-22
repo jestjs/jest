@@ -400,7 +400,7 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
   });
 
-  it("doesn't escape string with {excapeString: false}", () => {
+  it("doesn't escape string with {escapeString: false}", () => {
     const val = '"\'\\n';
     expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
   });

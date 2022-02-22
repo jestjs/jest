@@ -44,7 +44,7 @@ exports[`displays warning for deprecated config options 1`] = `
 exports[`displays warning for unknown config options 1`] = `
 "<yellow><bold><bold>●</><bold> Validation Warning</>:</>
 <yellow></>
-<yellow>  Unknown option <bold>"unkwon"</> with value <bold>{}</> was found. Did you mean <bold>"unknown"</>?</>
+<yellow>  Unknown option <bold>"unknown"</> with value <bold>{}</> was found. Did you mean <bold>"unknown"</>?</>
 <yellow>  This is probably a typing mistake. Fixing it will remove this message.</>
 <yellow></>"
 `;

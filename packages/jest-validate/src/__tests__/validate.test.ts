@@ -135,7 +135,7 @@ test('respects recursiveDenylist', () => {
 });
 
 test('displays warning for unknown config options', () => {
-  const config = {unkwon: {}};
+  const config = {unknown: {}};
   const validConfig = {unknown: 'string'};
   const warn = console.warn;
   console.warn = jest.fn();
