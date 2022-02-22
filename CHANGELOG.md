@@ -16,6 +16,7 @@
 - `[jest-mock]` Improve `isMockFunction` to infer types of passed function ([#12442](https://github.com/facebook/jest/pull/12442))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
+- `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
 - `[@jest/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))

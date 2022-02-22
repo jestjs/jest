@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Resolver} from '../defaultResolver';
+'use strict';
 
-declare const userResolver: Resolver;
-
-export default userResolver;
+module.exports = {
+  async: function userResolver(path, options) {
+    return Promise.resolve('module');
+  },
+};

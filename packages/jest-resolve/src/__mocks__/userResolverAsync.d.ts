@@ -7,6 +7,7 @@
 
 import type {Resolver} from '../defaultResolver';
 
+// todo: can be replaced with jest.MockedFunction
 declare const userResolver: Resolver;
 
 export default userResolver;

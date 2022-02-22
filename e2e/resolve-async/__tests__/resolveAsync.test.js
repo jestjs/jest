@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Resolver} from '../defaultResolver';
+import greeting from '../some-file';
 
-declare const userResolver: Resolver;
-
-export default userResolver;
+test('async resolver resolves to correct file', () => {
+  expect(greeting).toEqual('Hello from mapped file!!');
+});
