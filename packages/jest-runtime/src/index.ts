@@ -63,7 +63,7 @@ export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
-const dataURIregex =
+const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
@@ -531,16 +531,17 @@ export default class Runtime {
     return module;
   }
 
-  private resolveModule<T = unknown>(
+  private async resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-  ): Promise<T> | T | void {
+  ): Promise<T> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
+      // @ts-expect-error - exiting
       return;
     }
 
@@ -574,7 +575,7 @@ export default class Runtime {
         return fromCache;
       }
 
-      const match = specifier.match(dataURIregex);
+      const match = specifier.match(dataURIRegex);
 
       if (!match || !match.groups) {
         throw new Error('Invalid data URI');
@@ -653,7 +654,7 @@ export default class Runtime {
       return this.importMock(referencingIdentifier, path, context);
     }
 
-    const resolved = this._resolveModule(referencingIdentifier, path, {
+    const resolved = await this._resolveModule(referencingIdentifier, path, {
       conditions: this.esmConditions,
     });
 
@@ -713,7 +714,7 @@ export default class Runtime {
 
     const [path, query] = (moduleName ?? '').split('?');
 
-    const modulePath = this._resolveModule(from, path, {
+    const modulePath = await this._resolveModule(from, path, {
       conditions: this.esmConditions,
     });
 
@@ -757,7 +758,7 @@ export default class Runtime {
     moduleName: string,
     context: VMContext,
   ): Promise<T> {
-    const moduleID = this._resolver.getModuleID(
+    const moduleID = await this._resolver.getModuleIDAsync(
       this._virtualModuleMocks,
       from,
       moduleName,
@@ -808,7 +809,7 @@ export default class Runtime {
     const namedExports = new Set(exports);
 
     reexports.forEach(reexport => {
-      const resolved = this._resolveModule(modulePath, reexport, {
+      const resolved = this._resolveCjsModule(modulePath, reexport, {
         conditions: this.esmConditions,
       });
 
@@ -861,7 +862,7 @@ export default class Runtime {
     }
 
     if (!modulePath) {
-      modulePath = this._resolveModule(from, moduleName, {
+      modulePath = this._resolveCjsModule(from, moduleName, {
         conditions: this.cjsConditions,
       });
     }
@@ -977,7 +978,9 @@ export default class Runtime {
 
     let modulePath =
       this._resolver.getMockModule(from, moduleName) ||
-      this._resolveModule(from, moduleName, {conditions: this.cjsConditions});
+      this._resolveCjsModule(from, moduleName, {
+        conditions: this.cjsConditions,
+      });
 
     let isManualMock =
       manualMockOrStub &&
@@ -1300,12 +1303,20 @@ export default class Runtime {
     this.isTornDown = true;
   }
 
-  private _resolveModule(
+  private _resolveCjsModule(
     from: string,
     to: string | undefined,
     options?: ResolveModuleConfig,
   ) {
     return to ? this._resolver.resolveModule(from, to, options) : from;
+  }
+
+  private _resolveModule(
+    from: string,
+    to: string | undefined,
+    options?: ResolveModuleConfig,
+  ) {
+    return to ? this._resolver.resolveModuleAsync(from, to, options) : from;
   }
 
   private _requireResolve(
@@ -1353,7 +1364,7 @@ export default class Runtime {
     }
 
     try {
-      return this._resolveModule(from, moduleName, {
+      return this._resolveCjsModule(from, moduleName, {
         conditions: this.cjsConditions,
       });
     } catch (err) {
@@ -1720,7 +1731,9 @@ export default class Runtime {
   private _generateMock(from: string, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
-      this._resolveModule(from, moduleName, {conditions: this.cjsConditions});
+      this._resolveCjsModule(from, moduleName, {
+        conditions: this.cjsConditions,
+      });
     if (!this._mockMetaDataCache.has(modulePath)) {
       // This allows us to handle circular dependencies while generating an
       // automock
@@ -1794,7 +1807,7 @@ export default class Runtime {
 
     let modulePath;
     try {
-      modulePath = this._resolveModule(from, moduleName, options);
+      modulePath = this._resolveCjsModule(from, moduleName, options);
     } catch (e) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
