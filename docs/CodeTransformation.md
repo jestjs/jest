@@ -22,6 +22,10 @@ If you override the `transform` configuration option `babel-jest` will no longer
 You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
+// This version of the interface you are seeing on the website has been trimmed down for brevity
+// For the full definition, see `packages/jest-transform/src/types.ts` in https://github.com/facebook/jest 
+// (taking care in choosing the right tag/commit for your version of Jest)
+
 export interface CallerTransformOptions {
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
