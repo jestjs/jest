@@ -448,7 +448,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
 
 _Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -456,15 +456,11 @@ _Note: Any global variables that are defined through `globalSetup` can only be r
 
 _Note: While code transformation is applied to the linked setup-file, Jest will **not** transform any code in `node_modules`. This is due to the need to load the actual transformers (e.g. `babel` or `typescript`) to perform transformation._
 
-\_Note: User can access Jest [global config](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [project config](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347) as arguments for the function.
-
-Example:
-
 ```js title="setup.js"
-// can be synchronous
-module.exports = async (globalConfig, projectConfig) => {
-  // ...
-  // Can access and use Jest global config and project config
+module.exports = async function (globalConfig, projectConfig) {
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
+
   // Set reference to mongod in order to close the server during teardown.
   globalThis.__MONGOD__ = mongod;
 };
@@ -472,7 +468,9 @@ module.exports = async (globalConfig, projectConfig) => {
 
 ```js title="teardown.js"
 module.exports = async function (globalConfig, projectConfig) {
-  // Can access and use Jest global config and project config
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
+
   await globalThis.__MONGOD__.stop();
 };
 ```
@@ -481,13 +479,11 @@ module.exports = async function (globalConfig, projectConfig) {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
-
-\_Note: User can access Jest [global config](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [project config](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347) as arguments for the function.
 
 ### `haste` \[object]
 
