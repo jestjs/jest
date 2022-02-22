@@ -35,6 +35,7 @@
 - `[*]` Bundle all `.d.ts` files into a single `index.d.ts` per module ([#12345](https://github.com/facebook/jest/pull/12345))
 - `[docs]` Add note about not mixing `done()` with Promises ([#11077](https://github.com/facebook/jest/pull/11077))
 - `[docs, examples]` Update React examples to match with the new React guidelines for code examples ([#12217](https://github.com/facebook/jest/pull/12217))
+- `[docs]` Add clarity for module factory hoisting limitations ([#12453](https://github.com/facebook/jest/pull/12453))
 - `[expect]` [**BREAKING**] Remove support for importing `build/utils` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[expect]` [**BREAKING**] Migrate to ESM ([#12344](https://github.com/facebook/jest/pull/12344))
 - `[expect]` [**BREAKING**] Snapshot matcher types are moved to `@jest/expect` ([#12404](https://github.com/facebook/jest/pull/12404))
@@ -53,7 +54,6 @@
 - `[jest-transform]` Update `write-file-atomic` to v4 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest-types]` [**BREAKING**] Remove `Config.Glob` and `Config.Path` ([#12406](https://github.com/facebook/jest/pull/12406))
 - `[jest]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
-- `[docs, website]` Add clarity for module factory limitations ([#12453](https://github.com/facebook/jest/pull/12453))
 
 ### Performance
 
