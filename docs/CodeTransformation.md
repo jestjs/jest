@@ -22,38 +22,7 @@ If you override the `transform` configuration option `babel-jest` will no longer
 You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
-export interface ShouldInstrumentOptions
-  extends Pick<
-    Config.GlobalConfig,
-    | 'collectCoverage'
-    | 'collectCoverageFrom'
-    | 'collectCoverageOnlyFrom'
-    | 'coverageProvider'
-  > {
-  changedFiles?: Set<string>;
-  sourcesRelatedToTestsInChangedFiles?: Set<string>;
-}
-
-export interface Options
-  extends ShouldInstrumentOptions,
-    CallerTransformOptions {
-  isInternalModule?: boolean;
-}
-
-// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
-  version: number;
-}
-
-// TODO: For Jest 26 normalize this (always structured data, never a string)
-export type TransformedSource =
-  | {code: string; map?: FixedRawSourceMap | string | null}
-  | string;
-
-export type TransformResult = TransformTypes.TransformResult;
-
 export interface CallerTransformOptions {
-  // names are copied from babel: https://babeljs.io/docs/en/options#caller
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
@@ -62,11 +31,6 @@ export interface CallerTransformOptions {
 
 export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
-}
-
-export interface RequireAndTranspileModuleOptions
-  extends ReducedTransformOptions {
-  applyInteropRequireDefault: boolean;
 }
 
 export type StringMap = Map<string, string>;
@@ -83,12 +47,6 @@ export interface TransformOptions<OptionType = unknown>
 }
 
 export interface SyncTransformer<OptionType = unknown> {
-  /**
-   * Indicates if the transformer is capable of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
   canInstrument?: boolean;
 
   getCacheKey?: (
@@ -117,12 +75,6 @@ export interface SyncTransformer<OptionType = unknown> {
 }
 
 export interface AsyncTransformer<OptionType = unknown> {
-  /**
-   * Indicates if the transformer is capable of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
   canInstrument?: boolean;
 
   getCacheKey?: (
