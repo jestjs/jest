@@ -11,28 +11,48 @@ import FakeTimers from '../modernFakeTimers';
 describe('FakeTimers', () => {
   describe('construction', () => {
     it('installs setTimeout mock', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setTimeout).not.toBe(undefined);
     });
 
     it('installs clearTimeout mock', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearTimeout).not.toBe(undefined);
     });
 
     it('installs setInterval mock', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setInterval).not.toBe(undefined);
     });
 
     it('installs clearInterval mock', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearInterval).not.toBe(undefined);
@@ -47,7 +67,7 @@ describe('FakeTimers', () => {
           nextTick: origNextTick,
         },
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.process.nextTick).not.toBe(origNextTick);
@@ -61,7 +81,7 @@ describe('FakeTimers', () => {
         process,
         setImmediate: origSetImmediate,
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.setImmediate).not.toBe(origSetImmediate);
@@ -77,7 +97,7 @@ describe('FakeTimers', () => {
         process,
         setImmediate: origSetImmediate,
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
       expect(global.clearImmediate).not.toBe(origClearImmediate);
@@ -93,7 +113,7 @@ describe('FakeTimers', () => {
           nextTick: () => {},
         },
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
@@ -124,7 +144,7 @@ describe('FakeTimers', () => {
           nextTick,
         },
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
@@ -141,7 +161,7 @@ describe('FakeTimers', () => {
           nextTick: () => {},
         },
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
@@ -165,7 +185,7 @@ describe('FakeTimers', () => {
           nextTick: () => {},
         },
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global, maxLoops: 100});
 
@@ -185,7 +205,12 @@ describe('FakeTimers', () => {
 
   describe('runAllTimers', () => {
     it('runs all timers in order', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -225,7 +250,7 @@ describe('FakeTimers', () => {
         config: {
           rootDir: __dirname,
         },
-        global,
+        global: globalThis,
       });
       timers.runAllTimers();
       expect(
@@ -241,7 +266,7 @@ describe('FakeTimers', () => {
         clearTimeout,
         process,
         setTimeout: nativeSetTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
@@ -249,7 +274,12 @@ describe('FakeTimers', () => {
     });
 
     it('only runs a setTimeout callback once (ever)', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -265,7 +295,12 @@ describe('FakeTimers', () => {
     });
 
     it('runs callbacks with arguments after the interval', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -285,7 +320,7 @@ describe('FakeTimers', () => {
         clearTimeout,
         process,
         setTimeout: nativeSetTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       // @sinonjs/fake-timers uses `setTimeout` during init to figure out if it's in Node or
@@ -302,7 +337,12 @@ describe('FakeTimers', () => {
     });
 
     it('throws before allowing infinite recursion', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global, maxLoops: 100});
       timers.useFakeTimers();
 
@@ -320,7 +360,12 @@ describe('FakeTimers', () => {
     });
 
     it('also clears ticks', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -337,7 +382,12 @@ describe('FakeTimers', () => {
 
   describe('advanceTimersByTime', () => {
     it('runs timers in order', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -376,7 +426,12 @@ describe('FakeTimers', () => {
     });
 
     it('does nothing when no timers have been scheduled', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -386,7 +441,12 @@ describe('FakeTimers', () => {
 
   describe('advanceTimersToNextTimer', () => {
     it('runs timers in order', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -421,7 +481,12 @@ describe('FakeTimers', () => {
     });
 
     it('run correct amount of steps', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -455,7 +520,12 @@ describe('FakeTimers', () => {
     });
 
     it('setTimeout inside setTimeout', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -478,7 +548,12 @@ describe('FakeTimers', () => {
     });
 
     it('does nothing when no timers have been scheduled', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -488,7 +563,12 @@ describe('FakeTimers', () => {
 
   describe('reset', () => {
     it('resets all pending setTimeouts', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -501,7 +581,12 @@ describe('FakeTimers', () => {
     });
 
     it('resets all pending setIntervals', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -522,7 +607,7 @@ describe('FakeTimers', () => {
         },
         setImmediate: () => {},
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -536,7 +621,12 @@ describe('FakeTimers', () => {
     });
 
     it('resets current advanceTimersByTime time cursor', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -562,7 +652,7 @@ describe('FakeTimers', () => {
         process,
         setImmediate: nativeSetImmediate,
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
@@ -623,7 +713,12 @@ describe('FakeTimers', () => {
     });
 
     it('does not run timers that were cleared in another timer', () => {
-      const global = {Date, clearTimeout, process, setTimeout};
+      const global = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -652,7 +747,7 @@ describe('FakeTimers', () => {
         process,
         setInterval: nativeSetInterval,
         setTimeout: nativeSetTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -679,7 +774,7 @@ describe('FakeTimers', () => {
         clearTimeout,
         process: {nextTick: nativeProcessNextTick},
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -703,7 +798,7 @@ describe('FakeTimers', () => {
         process,
         setImmediate: nativeSetImmediate,
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useFakeTimers();
 
@@ -733,7 +828,7 @@ describe('FakeTimers', () => {
         process,
         setInterval: nativeSetInterval,
         setTimeout: nativeSetTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useRealTimers();
 
@@ -760,7 +855,7 @@ describe('FakeTimers', () => {
         clearTimeout,
         process: {nextTick: nativeProcessNextTick},
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const timers = new FakeTimers({global});
       timers.useRealTimers();
 
@@ -784,7 +879,7 @@ describe('FakeTimers', () => {
         process,
         setImmediate: nativeSetImmediate,
         setTimeout,
-      };
+      } as unknown as typeof globalThis;
       const fakeTimers = new FakeTimers({global});
       fakeTimers.useRealTimers();
 
@@ -802,13 +897,13 @@ describe('FakeTimers', () => {
 
   describe('getTimerCount', () => {
     it('returns the correct count', () => {
-      const timers = new FakeTimers({global});
+      const timers = new FakeTimers({global: globalThis});
 
       timers.useFakeTimers();
 
-      global.setTimeout(() => {}, 0);
-      global.setTimeout(() => {}, 0);
-      global.setTimeout(() => {}, 10);
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setTimeout(() => {}, 10);
 
       expect(timers.getTimerCount()).toEqual(3);
 
@@ -822,23 +917,23 @@ describe('FakeTimers', () => {
     });
 
     it('includes immediates and ticks', () => {
-      const timers = new FakeTimers({global});
+      const timers = new FakeTimers({global: globalThis});
 
       timers.useFakeTimers();
 
-      global.setTimeout(() => {}, 0);
-      global.setImmediate(() => {});
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setImmediate(() => {});
       process.nextTick(() => {});
 
       expect(timers.getTimerCount()).toEqual(3);
     });
 
     it('not includes cancelled immediates', () => {
-      const timers = new FakeTimers({global});
+      const timers = new FakeTimers({global: globalThis});
 
       timers.useFakeTimers();
 
-      global.setImmediate(() => {});
+      globalThis.setImmediate(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();
 

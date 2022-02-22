@@ -50,7 +50,7 @@ it('handles missing `mocked` property', () => {
       jest.mocked();
 
       test('halla', () => {
-        expect(global.thing).toBe('nope');
+        expect(globalThis.thing).toBe('nope');
       });
     `,
   });

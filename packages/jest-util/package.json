@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "28.0.0-alpha.2",
+  "version": "28.0.0-alpha.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.0.0-alpha.2",
+    "@jest/types": "^28.0.0-alpha.3",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",

@@ -267,7 +267,7 @@ export default class HasteMap extends EventEmitter {
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
-    this._console = options.console || global.console;
+    this._console = options.console || globalThis.console;
 
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
