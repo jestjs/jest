@@ -1192,6 +1192,10 @@ export class ModuleMocker {
     this._mockState = new WeakMap();
   }
 
+  hasAnyMocks(): boolean {
+    return this._mockConfigRegistry.size > 0 || this._mockState.size > 0;
+  }
+
   restoreAllMocks(): void {
     this._spyState.forEach(restore => restore());
     this._spyState = new Set();
