@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import {Expect, expect} from 'expect';
+import {expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -14,11 +13,18 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
+import type {JestExpect} from './types';
 
-export default function jestExpect(
-  config: Pick<Config.GlobalConfig, 'expand'>,
-): Expect {
-  expect.setState({expand: config.expand});
+export type {
+  AsymmetricMatchers,
+  Matchers,
+  MatcherFunction,
+  MatcherFunctionWithState,
+  MatcherState,
+} from 'expect';
+export type {JestExpect} from './types';
+
+function createJestExpect(): JestExpect {
   expect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
@@ -28,5 +34,7 @@ export default function jestExpect(
 
   expect.addSnapshotSerializer = addSerializer;
 
-  return expect;
+  return expect as JestExpect;
 }
+
+export const jestExpect = createJestExpect();

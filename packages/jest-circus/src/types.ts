@@ -6,26 +6,18 @@
  */
 
 import type {Circus} from '@jest/types';
-import type {Expect} from 'expect';
 
-export const STATE_SYM = Symbol(
-  'JEST_STATE_SYMBOL',
-) as unknown as 'STATE_SYM_SYMBOL';
-export const RETRY_TIMES = Symbol.for(
-  'RETRY_TIMES',
-) as unknown as 'RETRY_TIMES_SYMBOL';
+export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
+export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
 // To pass this value from Runtime object to state we need to use global[sym]
-export const TEST_TIMEOUT_SYMBOL = Symbol.for(
-  'TEST_TIMEOUT_SYMBOL',
-) as unknown as 'TEST_TIMEOUT_SYMBOL';
+export const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 declare global {
   namespace NodeJS {
     interface Global {
-      STATE_SYM_SYMBOL: Circus.State;
-      RETRY_TIMES_SYMBOL: string;
-      TEST_TIMEOUT_SYMBOL: number;
-      expect: Expect;
+      [STATE_SYM]: Circus.State;
+      [RETRY_TIMES]: string;
+      [TEST_TIMEOUT_SYMBOL]: number;
     }
   }
 }

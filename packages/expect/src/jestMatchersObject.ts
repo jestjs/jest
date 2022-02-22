@@ -46,12 +46,11 @@ export const setState = <State extends MatcherState = MatcherState>(
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = <
-  State extends MatcherState = MatcherState,
->(): MatchersObject<State> => (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = (): MatchersObject =>
+  (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = <State extends MatcherState = MatcherState>(
-  matchers: MatchersObject<State>,
+export const setMatchers = (
+  matchers: MatchersObject,
   isInternal: boolean,
   expect: Expect,
 ): void => {
@@ -65,8 +64,7 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
       // expect is defined
 
       class CustomMatcher extends AsymmetricMatcher<
-        [unknown, ...Array<unknown>],
-        State
+        [unknown, ...Array<unknown>]
       > {
         constructor(inverse = false, ...sample: [unknown, ...Array<unknown>]) {
           super(sample, inverse);

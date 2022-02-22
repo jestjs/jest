@@ -1,7 +1,7 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "28.0.0-alpha.1",
+  "version": "28.0.0-alpha.2",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -13,9 +13,9 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^28.0.0-alpha.1",
+    "@jest/core": "^28.0.0-alpha.2",
     "import-local": "^3.0.2",
-    "jest-cli": "^28.0.0-alpha.1"
+    "jest-cli": "^28.0.0-alpha.2"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
