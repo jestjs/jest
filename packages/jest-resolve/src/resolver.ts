@@ -70,6 +70,7 @@ export default class Resolver {
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
       platforms: options.platforms,
+      resolver: options.resolver,
       rootDir: options.rootDir,
     };
     this._supportsNativePlatform = options.platforms
@@ -79,7 +80,6 @@ export default class Resolver {
     this._moduleIDCache = new Map();
     this._moduleNameCache = new Map();
     this._modulePathCache = new Map();
-    this._setResolver(options.resolver);
   }
 
   static ModuleNotFoundError = ModuleNotFoundError;
@@ -103,9 +103,6 @@ export default class Resolver {
     clearFsCache();
     clearCachedLookups();
   }
-
-  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   static findNodeModule(
     path: string,
@@ -180,445 +177,8 @@ export default class Resolver {
     return null;
   }
 
-  /**
-   * _prepareForResolution is shared between the sync and async module resolution
-   * methods, to try to keep them as DRY as possible.
-   */
-  private _prepareForResolution(
-    dirname: string,
-    moduleName: string,
-    options?: ResolveModuleConfig,
-  ) {
-    const paths = options?.paths || this._options.modulePaths;
-    const moduleDirectory = this._options.moduleDirectories;
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = dirname + path.delimiter + moduleName + stringifiedOptions;
-    const defaultPlatform = this._options.defaultPlatform;
-    const extensions = this._options.extensions.slice();
-
-    if (this._supportsNativePlatform) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
-      );
-    }
-    if (defaultPlatform) {
-      extensions.unshift(
-        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
-      );
-    }
-
-    const skipResolution =
-      options && options.skipNodeResolution && !moduleName.includes(path.sep);
-
-    return {extensions, key, moduleDirectory, paths, skipResolution};
-  }
-
-  /**
-   * _getHasteModulePath attempts to return the path to a haste module.
-   */
-  private _getHasteModulePath(moduleName: string) {
-    const parts = moduleName.split('/');
-    const hastePackage = this.getPackage(parts.shift()!);
-    if (hastePackage) {
-      return path.join.apply(path, [path.dirname(hastePackage)].concat(parts));
-    }
-    return null;
-  }
-
-  private _throwModNotFoundError(from: string, moduleName: string): never {
-    const relativePath =
-      slash(path.relative(this._options.rootDir, from)) || '.';
-
-    throw new ModuleNotFoundError(
-      `Cannot find module '${moduleName}' from '${relativePath}'`,
-      moduleName,
-    );
-  }
-
-  private _getModuleType(moduleName: string): 'node' | 'user' {
-    return this.isCoreModule(moduleName) ? 'node' : 'user';
-  }
-
-  private _getMapModuleName(matches: RegExpMatchArray | null) {
-    return matches
-      ? (moduleName: string) =>
-          moduleName.replace(
-            /\$([0-9]+)/g,
-            (_, index) => matches[parseInt(index, 10)],
-          )
-      : (moduleName: string) => moduleName;
-  }
-
-  private _isAliasModule(moduleName: string): boolean {
-    const moduleNameMapper = this._options.moduleNameMapper;
-    if (!moduleNameMapper) {
-      return false;
-    }
-
-    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
-  }
-
-  private _getAbsolutePath(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    moduleName: string,
-    options?: ResolveModuleConfig,
-  ): string | null {
-    if (this.isCoreModule(moduleName)) {
-      return moduleName;
-    }
-    return this._isModuleResolved(from, moduleName)
-      ? this.getModule(moduleName)
-      : this._getVirtualMockPath(virtualMocks, from, moduleName, options);
-  }
-
-  private async _getAbsolutePathAsync(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    moduleName: string,
-    options?: ResolveModuleConfig,
-  ): Promise<string | null> {
-    if (this.isCoreModule(moduleName)) {
-      return moduleName;
-    }
-    const isModuleResolved = await this._isModuleResolvedAsync(
-      from,
-      moduleName,
-    );
-    return isModuleResolved
-      ? this.getModule(moduleName)
-      : await this._getVirtualMockPathAsync(
-          virtualMocks,
-          from,
-          moduleName,
-          options,
-        );
-  }
-
-  private _getMockPath(from: string, moduleName: string): string | null {
-    return !this.isCoreModule(moduleName)
-      ? this.getMockModule(from, moduleName)
-      : null;
-  }
-
-  private async _getMockPathAsync(
-    from: string,
-    moduleName: string,
-  ): Promise<string | null> {
-    return !this.isCoreModule(moduleName)
-      ? await this.getMockModuleAsync(from, moduleName)
-      : null;
-  }
-
-  private _getVirtualMockPath(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    moduleName: string,
-    options?: ResolveModuleConfig,
-  ): string {
-    const virtualMockPath = this.getModulePath(from, moduleName);
-    return virtualMocks.get(virtualMockPath)
-      ? virtualMockPath
-      : moduleName
-      ? this.resolveModule(from, moduleName, options)
-      : from;
-  }
-
-  private async _getVirtualMockPathAsync(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    moduleName: string,
-    options?: ResolveModuleConfig,
-  ): Promise<string> {
-    const virtualMockPath = this.getModulePath(from, moduleName);
-    return virtualMocks.get(virtualMockPath)
-      ? virtualMockPath
-      : moduleName
-      ? await this.resolveModuleAsync(from, moduleName, options)
-      : from;
-  }
-
-  private _isModuleResolved(from: string, moduleName: string): boolean {
-    return !!(
-      this.getModule(moduleName) || this.getMockModule(from, moduleName)
-    );
-  }
-
-  private async _isModuleResolvedAsync(
-    from: string,
-    moduleName: string,
-  ): Promise<boolean> {
-    return !!(
-      this.getModule(moduleName) ||
-      (await this.getMockModuleAsync(from, moduleName))
-    );
-  }
-
-  private _setResolver(resolver?: string | null): void {
-    this._options.resolver = resolver;
-  }
-
-  isCoreModule(moduleName: string): boolean {
-    return (
-      this._options.hasCoreModules &&
-      (isBuiltinModule(moduleName) ||
-        (moduleName.startsWith('node:') &&
-          isBuiltinModule(moduleName.slice('node:'.length)))) &&
-      !this._isAliasModule(moduleName)
-    );
-  }
-
-  getModule(name: string): string | null {
-    return this._moduleMap.getModule(
-      name,
-      this._options.defaultPlatform,
-      this._supportsNativePlatform,
-    );
-  }
-
-  getModulePath(from: string, moduleName: string): string {
-    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
-      return moduleName;
-    }
-    return path.normalize(path.dirname(from) + '/' + moduleName);
-  }
-
-  getPackage(name: string): string | null {
-    return this._moduleMap.getPackage(
-      name,
-      this._options.defaultPlatform,
-      this._supportsNativePlatform,
-    );
-  }
-
-  getModulePaths(from: string): Array<string> {
-    const cachedModule = this._modulePathCache.get(from);
-    if (cachedModule) {
-      return cachedModule;
-    }
-
-    const moduleDirectory = this._options.moduleDirectories;
-    const paths = nodeModulesPaths(from, {moduleDirectory});
-    if (paths[paths.length - 1] === undefined) {
-      // circumvent node-resolve bug that adds `undefined` as last item.
-      paths.pop();
-    }
-    this._modulePathCache.set(from, paths);
-    return paths;
-  }
-
-  resolveStubModuleName(from: string, moduleName: string): string | null {
-    const dirname = path.dirname(from);
-
-    const {extensions, moduleDirectory, paths} = this._prepareForResolution(
-      dirname,
-      moduleName,
-    );
-    const moduleNameMapper = this._options.moduleNameMapper;
-    const resolver = this._options.resolver;
-
-    if (moduleNameMapper) {
-      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-        if (regex.test(moduleName)) {
-          // Note: once a moduleNameMapper matches the name, it must result
-          // in a module, or else an error is thrown.
-          const matches = moduleName.match(regex);
-          const mapModuleName = this._getMapModuleName(matches);
-          const possibleModuleNames = Array.isArray(mappedModuleName)
-            ? mappedModuleName
-            : [mappedModuleName];
-          let module: string | null = null;
-          for (const possibleModuleName of possibleModuleNames) {
-            const updatedName = mapModuleName(possibleModuleName);
-
-            module =
-              this.getModule(updatedName) ||
-              Resolver.findNodeModule(updatedName, {
-                basedir: dirname,
-                extensions,
-                moduleDirectory,
-                paths,
-                resolver,
-                rootDir: this._options.rootDir,
-              });
-
-            if (module) {
-              break;
-            }
-          }
-
-          if (!module) {
-            throw createNoMappedModuleFoundError(
-              moduleName,
-              mapModuleName,
-              mappedModuleName,
-              regex,
-              resolver,
-            );
-          }
-          return module;
-        }
-      }
-    }
-    return null;
-  }
-
-  async resolveStubModuleNameAsync(
-    from: string,
-    moduleName: string,
-  ): Promise<string | null> {
-    const dirname = path.dirname(from);
-
-    const {extensions, moduleDirectory, paths} = this._prepareForResolution(
-      dirname,
-      moduleName,
-    );
-    const moduleNameMapper = this._options.moduleNameMapper;
-    const resolver = this._options.resolver;
-
-    if (moduleNameMapper) {
-      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
-        if (regex.test(moduleName)) {
-          // Note: once a moduleNameMapper matches the name, it must result
-          // in a module, or else an error is thrown.
-          const matches = moduleName.match(regex);
-          const mapModuleName = this._getMapModuleName(matches);
-          const possibleModuleNames = Array.isArray(mappedModuleName)
-            ? mappedModuleName
-            : [mappedModuleName];
-          let module: string | null = null;
-          for (const possibleModuleName of possibleModuleNames) {
-            const updatedName = mapModuleName(possibleModuleName);
-
-            module =
-              this.getModule(updatedName) ||
-              (await Resolver.findNodeModuleAsync(updatedName, {
-                basedir: dirname,
-                extensions,
-                moduleDirectory,
-                paths,
-                resolver,
-                rootDir: this._options.rootDir,
-              }));
-
-            if (module) {
-              break;
-            }
-          }
-
-          if (!module) {
-            throw createNoMappedModuleFoundError(
-              moduleName,
-              mapModuleName,
-              mappedModuleName,
-              regex,
-              resolver,
-            );
-          }
-          return module;
-        }
-      }
-    }
-    return null;
-  }
-
-  getMockModule(from: string, name: string): string | null {
-    const mock = this._moduleMap.getMockModule(name);
-    if (mock) {
-      return mock;
-    } else {
-      const moduleName = this.resolveStubModuleName(from, name);
-      if (moduleName) {
-        return this.getModule(moduleName) || moduleName;
-      }
-    }
-    return null;
-  }
-
-  async getMockModuleAsync(from: string, name: string): Promise<string | null> {
-    const mock = this._moduleMap.getMockModule(name);
-    if (mock) {
-      return mock;
-    } else {
-      const moduleName = await this.resolveStubModuleNameAsync(from, name);
-      if (moduleName) {
-        return this.getModule(moduleName) || moduleName;
-      }
-    }
-    return null;
-  }
-
-  getModuleID(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    _moduleName?: string,
-    options?: ResolveModuleConfig,
-  ): string {
-    const moduleName = _moduleName || '';
-
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
-    const cachedModuleID = this._moduleIDCache.get(key);
-    if (cachedModuleID) {
-      return cachedModuleID;
-    }
-
-    const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutePath(
-      virtualMocks,
-      from,
-      moduleName,
-      options,
-    );
-    const mockPath = this._getMockPath(from, moduleName);
-
-    const sep = path.delimiter;
-    const id =
-      moduleType +
-      sep +
-      (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '') +
-      (stringifiedOptions ? stringifiedOptions + sep : '');
-
-    this._moduleIDCache.set(key, id);
-    return id;
-  }
-
-  async getModuleIDAsync(
-    virtualMocks: Map<string, boolean>,
-    from: string,
-    moduleName = '',
-    options?: ResolveModuleConfig,
-  ): Promise<string> {
-    const stringifiedOptions = options ? JSON.stringify(options) : '';
-    const key = from + path.delimiter + moduleName + stringifiedOptions;
-    const cachedModuleID = this._moduleIDCache.get(key);
-    if (cachedModuleID) {
-      return cachedModuleID;
-    }
-    if (moduleName.startsWith('data:')) {
-      return moduleName;
-    }
-
-    const moduleType = this._getModuleType(moduleName);
-    const absolutePath = await this._getAbsolutePathAsync(
-      virtualMocks,
-      from,
-      moduleName,
-      options,
-    );
-    const mockPath = await this._getMockPathAsync(from, moduleName);
-
-    const sep = path.delimiter;
-    const id =
-      moduleType +
-      sep +
-      (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '');
-
-    this._moduleIDCache.set(key, id);
-    return id;
-  }
+  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
+  static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   resolveModuleFromDirIfExists(
     dirname: string,
@@ -809,6 +369,446 @@ export default class Resolver {
     // produces an error based on the dirname but we have the actual current
     // module name available.
     this._throwModNotFoundError(from, moduleName);
+  }
+
+  /**
+   * _prepareForResolution is shared between the sync and async module resolution
+   * methods, to try to keep them as DRY as possible.
+   */
+  private _prepareForResolution(
+    dirname: string,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ) {
+    const paths = options?.paths || this._options.modulePaths;
+    const moduleDirectory = this._options.moduleDirectories;
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = dirname + path.delimiter + moduleName + stringifiedOptions;
+    const defaultPlatform = this._options.defaultPlatform;
+    const extensions = this._options.extensions.slice();
+
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
+    }
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
+
+    const skipResolution =
+      options && options.skipNodeResolution && !moduleName.includes(path.sep);
+
+    return {extensions, key, moduleDirectory, paths, skipResolution};
+  }
+
+  /**
+   * _getHasteModulePath attempts to return the path to a haste module.
+   */
+  private _getHasteModulePath(moduleName: string) {
+    const parts = moduleName.split('/');
+    const hastePackage = this.getPackage(parts.shift()!);
+    if (hastePackage) {
+      return path.join.apply(path, [path.dirname(hastePackage)].concat(parts));
+    }
+    return null;
+  }
+
+  private _throwModNotFoundError(from: string, moduleName: string): never {
+    const relativePath =
+      slash(path.relative(this._options.rootDir, from)) || '.';
+
+    throw new ModuleNotFoundError(
+      `Cannot find module '${moduleName}' from '${relativePath}'`,
+      moduleName,
+    );
+  }
+
+  private _getMapModuleName(matches: RegExpMatchArray | null) {
+    return matches
+      ? (moduleName: string) =>
+          moduleName.replace(
+            /\$([0-9]+)/g,
+            (_, index) => matches[parseInt(index, 10)],
+          )
+      : (moduleName: string) => moduleName;
+  }
+
+  private _isAliasModule(moduleName: string): boolean {
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (!moduleNameMapper) {
+      return false;
+    }
+
+    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
+  }
+
+  isCoreModule(moduleName: string): boolean {
+    return (
+      this._options.hasCoreModules &&
+      (isBuiltinModule(moduleName) ||
+        (moduleName.startsWith('node:') &&
+          isBuiltinModule(moduleName.slice('node:'.length)))) &&
+      !this._isAliasModule(moduleName)
+    );
+  }
+
+  getModule(name: string): string | null {
+    return this._moduleMap.getModule(
+      name,
+      this._options.defaultPlatform,
+      this._supportsNativePlatform,
+    );
+  }
+
+  getModulePath(from: string, moduleName: string): string {
+    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
+      return moduleName;
+    }
+    return path.normalize(path.dirname(from) + '/' + moduleName);
+  }
+
+  getPackage(name: string): string | null {
+    return this._moduleMap.getPackage(
+      name,
+      this._options.defaultPlatform,
+      this._supportsNativePlatform,
+    );
+  }
+
+  getMockModule(from: string, name: string): string | null {
+    const mock = this._moduleMap.getMockModule(name);
+    if (mock) {
+      return mock;
+    } else {
+      const moduleName = this.resolveStubModuleName(from, name);
+      if (moduleName) {
+        return this.getModule(moduleName) || moduleName;
+      }
+    }
+    return null;
+  }
+
+  async getMockModuleAsync(from: string, name: string): Promise<string | null> {
+    const mock = this._moduleMap.getMockModule(name);
+    if (mock) {
+      return mock;
+    } else {
+      const moduleName = await this.resolveStubModuleNameAsync(from, name);
+      if (moduleName) {
+        return this.getModule(moduleName) || moduleName;
+      }
+    }
+    return null;
+  }
+
+  getModulePaths(from: string): Array<string> {
+    const cachedModule = this._modulePathCache.get(from);
+    if (cachedModule) {
+      return cachedModule;
+    }
+
+    const moduleDirectory = this._options.moduleDirectories;
+    const paths = nodeModulesPaths(from, {moduleDirectory});
+    if (paths[paths.length - 1] === undefined) {
+      // circumvent node-resolve bug that adds `undefined` as last item.
+      paths.pop();
+    }
+    this._modulePathCache.set(from, paths);
+    return paths;
+  }
+
+  getModuleID(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName = '',
+    options?: ResolveModuleConfig,
+  ): string {
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const cachedModuleID = this._moduleIDCache.get(key);
+    if (cachedModuleID) {
+      return cachedModuleID;
+    }
+
+    const moduleType = this._getModuleType(moduleName);
+    const absolutePath = this._getAbsolutePath(
+      virtualMocks,
+      from,
+      moduleName,
+      options,
+    );
+    const mockPath = this._getMockPath(from, moduleName);
+
+    const sep = path.delimiter;
+    const id =
+      moduleType +
+      sep +
+      (absolutePath ? absolutePath + sep : '') +
+      (mockPath ? mockPath + sep : '') +
+      (stringifiedOptions ? stringifiedOptions + sep : '');
+
+    this._moduleIDCache.set(key, id);
+    return id;
+  }
+
+  async getModuleIDAsync(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName = '',
+    options?: ResolveModuleConfig,
+  ): Promise<string> {
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = from + path.delimiter + moduleName + stringifiedOptions;
+    const cachedModuleID = this._moduleIDCache.get(key);
+    if (cachedModuleID) {
+      return cachedModuleID;
+    }
+    if (moduleName.startsWith('data:')) {
+      return moduleName;
+    }
+
+    const moduleType = this._getModuleType(moduleName);
+    const absolutePath = await this._getAbsolutePathAsync(
+      virtualMocks,
+      from,
+      moduleName,
+      options,
+    );
+    const mockPath = await this._getMockPathAsync(from, moduleName);
+
+    const sep = path.delimiter;
+    const id =
+      moduleType +
+      sep +
+      (absolutePath ? absolutePath + sep : '') +
+      (mockPath ? mockPath + sep : '');
+
+    this._moduleIDCache.set(key, id);
+    return id;
+  }
+
+  private _getModuleType(moduleName: string): 'node' | 'user' {
+    return this.isCoreModule(moduleName) ? 'node' : 'user';
+  }
+
+  private _getAbsolutePath(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): string | null {
+    if (this.isCoreModule(moduleName)) {
+      return moduleName;
+    }
+    if (moduleName.startsWith('data:')) {
+      return moduleName;
+    }
+    return this._isModuleResolved(from, moduleName)
+      ? this.getModule(moduleName)
+      : this._getVirtualMockPath(virtualMocks, from, moduleName, options);
+  }
+
+  private async _getAbsolutePathAsync(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Promise<string | null> {
+    if (this.isCoreModule(moduleName)) {
+      return moduleName;
+    }
+    if (moduleName.startsWith('data:')) {
+      return moduleName;
+    }
+    const isModuleResolved = await this._isModuleResolvedAsync(
+      from,
+      moduleName,
+    );
+    return isModuleResolved
+      ? this.getModule(moduleName)
+      : await this._getVirtualMockPathAsync(
+          virtualMocks,
+          from,
+          moduleName,
+          options,
+        );
+  }
+
+  private _getMockPath(from: string, moduleName: string): string | null {
+    return !this.isCoreModule(moduleName)
+      ? this.getMockModule(from, moduleName)
+      : null;
+  }
+
+  private async _getMockPathAsync(
+    from: string,
+    moduleName: string,
+  ): Promise<string | null> {
+    return !this.isCoreModule(moduleName)
+      ? await this.getMockModuleAsync(from, moduleName)
+      : null;
+  }
+
+  private _getVirtualMockPath(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): string {
+    const virtualMockPath = this.getModulePath(from, moduleName);
+    return virtualMocks.get(virtualMockPath)
+      ? virtualMockPath
+      : moduleName
+      ? this.resolveModule(from, moduleName, options)
+      : from;
+  }
+
+  private async _getVirtualMockPathAsync(
+    virtualMocks: Map<string, boolean>,
+    from: string,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Promise<string> {
+    const virtualMockPath = this.getModulePath(from, moduleName);
+    return virtualMocks.get(virtualMockPath)
+      ? virtualMockPath
+      : moduleName
+      ? await this.resolveModuleAsync(from, moduleName, options)
+      : from;
+  }
+
+  private _isModuleResolved(from: string, moduleName: string): boolean {
+    return !!(
+      this.getModule(moduleName) || this.getMockModule(from, moduleName)
+    );
+  }
+
+  private async _isModuleResolvedAsync(
+    from: string,
+    moduleName: string,
+  ): Promise<boolean> {
+    return !!(
+      this.getModule(moduleName) ||
+      (await this.getMockModuleAsync(from, moduleName))
+    );
+  }
+
+  resolveStubModuleName(from: string, moduleName: string): string | null {
+    const dirname = path.dirname(from);
+
+    const {extensions, moduleDirectory, paths} = this._prepareForResolution(
+      dirname,
+      moduleName,
+    );
+    const moduleNameMapper = this._options.moduleNameMapper;
+    const resolver = this._options.resolver;
+
+    if (moduleNameMapper) {
+      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
+        if (regex.test(moduleName)) {
+          // Note: once a moduleNameMapper matches the name, it must result
+          // in a module, or else an error is thrown.
+          const matches = moduleName.match(regex);
+          const mapModuleName = this._getMapModuleName(matches);
+          const possibleModuleNames = Array.isArray(mappedModuleName)
+            ? mappedModuleName
+            : [mappedModuleName];
+          let module: string | null = null;
+          for (const possibleModuleName of possibleModuleNames) {
+            const updatedName = mapModuleName(possibleModuleName);
+
+            module =
+              this.getModule(updatedName) ||
+              Resolver.findNodeModule(updatedName, {
+                basedir: dirname,
+                extensions,
+                moduleDirectory,
+                paths,
+                resolver,
+                rootDir: this._options.rootDir,
+              });
+
+            if (module) {
+              break;
+            }
+          }
+
+          if (!module) {
+            throw createNoMappedModuleFoundError(
+              moduleName,
+              mapModuleName,
+              mappedModuleName,
+              regex,
+              resolver,
+            );
+          }
+          return module;
+        }
+      }
+    }
+    return null;
+  }
+
+  async resolveStubModuleNameAsync(
+    from: string,
+    moduleName: string,
+  ): Promise<string | null> {
+    const dirname = path.dirname(from);
+
+    const {extensions, moduleDirectory, paths} = this._prepareForResolution(
+      dirname,
+      moduleName,
+    );
+    const moduleNameMapper = this._options.moduleNameMapper;
+    const resolver = this._options.resolver;
+
+    if (moduleNameMapper) {
+      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
+        if (regex.test(moduleName)) {
+          // Note: once a moduleNameMapper matches the name, it must result
+          // in a module, or else an error is thrown.
+          const matches = moduleName.match(regex);
+          const mapModuleName = this._getMapModuleName(matches);
+          const possibleModuleNames = Array.isArray(mappedModuleName)
+            ? mappedModuleName
+            : [mappedModuleName];
+          let module: string | null = null;
+          for (const possibleModuleName of possibleModuleNames) {
+            const updatedName = mapModuleName(possibleModuleName);
+
+            module =
+              this.getModule(updatedName) ||
+              (await Resolver.findNodeModuleAsync(updatedName, {
+                basedir: dirname,
+                extensions,
+                moduleDirectory,
+                paths,
+                resolver,
+                rootDir: this._options.rootDir,
+              }));
+
+            if (module) {
+              break;
+            }
+          }
+
+          if (!module) {
+            throw createNoMappedModuleFoundError(
+              moduleName,
+              mapModuleName,
+              mappedModuleName,
+              regex,
+              resolver,
+            );
+          }
+          return module;
+        }
+      }
+    }
+    return null;
   }
 }
 
