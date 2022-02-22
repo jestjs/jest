@@ -14,7 +14,9 @@ import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
+  AsyncResolver,
   Resolver as ResolverInterface,
+  SyncResolver,
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
@@ -108,16 +110,12 @@ export default class Resolver {
     path: string,
     options: FindNodeModuleConfig,
   ): string | null {
-    // The resolver module could be a synchronous function, or an object with sync and/or async keys.
-    const resolverModule = options.resolver ? require(options.resolver) : null;
-    let resolver = defaultResolver;
+    const resolverModule = loadResolver(options.resolver);
+    let resolver: SyncResolver = defaultResolver;
+
     if (typeof resolverModule === 'function') {
       resolver = resolverModule;
-    } else if (
-      resolverModule &&
-      typeof resolverModule === 'object' &&
-      typeof resolverModule.sync === 'function'
-    ) {
+    } else if (typeof resolverModule.sync === 'function') {
       resolver = resolverModule.sync;
     }
 
@@ -146,14 +144,23 @@ export default class Resolver {
     path: string,
     options: FindNodeModuleConfig,
   ): Promise<string | null> {
-    // The resolver module could be a synchronous function, or an object with sync and/or async keys.
-    const resolverModule = options.resolver ? require(options.resolver) : null;
-    const resolver: ResolverInterface =
-      resolverModule &&
-      typeof resolverModule === 'object' &&
-      typeof resolverModule.async === 'function'
-        ? resolverModule.async
-        : defaultResolver;
+    const resolverModule = loadResolver(options.resolver);
+    let resolver: ResolverInterface = defaultResolver;
+
+    if (typeof resolverModule === 'function') {
+      resolver = resolverModule;
+    } else if (
+      typeof resolverModule.async === 'function' ||
+      typeof resolverModule.sync === 'function'
+    ) {
+      const asyncOrSync = resolverModule.async || resolverModule.sync;
+
+      if (asyncOrSync == null) {
+        throw new Error(`Unable to load resolver at ${options.resolver}`);
+      }
+
+      resolver = asyncOrSync;
+    }
 
     const paths = options.paths;
 
@@ -846,3 +853,36 @@ Please check your configuration for these entries:
 
   return error;
 };
+
+type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
+type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
+type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
+
+function loadResolver(
+  resolver: string | undefined | null,
+): SyncResolver | ResolverObject {
+  if (resolver == null) {
+    return defaultResolver;
+  }
+
+  const loadedResolver = require(resolver);
+
+  if (loadedResolver == null) {
+    throw new Error(`Resolver located at ${resolver} does not export anything`);
+  }
+
+  if (typeof loadedResolver === 'function') {
+    return loadedResolver as SyncResolver;
+  }
+
+  if (
+    typeof loadedResolver === 'object' &&
+    (loadedResolver.sync != null || loadedResolver.async != null)
+  ) {
+    return loadedResolver as ResolverObject;
+  }
+
+  throw new Error(
+    `Resolver located at ${resolver} does not export a function or an object with "sync" and "async" props`,
+  );
+}

@@ -38,8 +38,8 @@ interface ResolverOptions {
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
   Pick<ResolverOptions, 'conditions'>;
 
-type SyncResolver = (path: string, options: ResolverOptions) => string;
-type AsyncResolver = (
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
   path: string,
   options: ResolverOptions,
 ) => Promise<string>;
