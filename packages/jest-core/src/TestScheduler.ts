@@ -46,8 +46,8 @@ export type TestSchedulerOptions = {
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export async function createTestScheduler(

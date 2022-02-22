@@ -25,7 +25,7 @@ export {default as descriptions} from './Descriptions';
 export {constants};
 
 type ReadConfig = {
-  configPath: Config.Path | null | undefined;
+  configPath: string | null | undefined;
   globalConfig: Config.GlobalConfig;
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
@@ -33,13 +33,13 @@ type ReadConfig = {
 
 export async function readConfig(
   argv: Config.Argv,
-  packageRootOrConfig: Config.Path | Config.InitialOptions,
+  packageRootOrConfig: string | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigDirname?: Config.Path | null,
+  parentConfigDirname?: string | null,
   projectIndex = Infinity,
   skipMultipleConfigWarning = false,
 ): Promise<ReadConfig> {
@@ -278,7 +278,7 @@ This usually means that your ${chalk.bold(
 // (and only) project.
 export async function readConfigs(
   argv: Config.Argv,
-  projectPaths: Array<Config.Path>,
+  projectPaths: Array<string>,
 ): Promise<{
   globalConfig: Config.GlobalConfig;
   configs: Array<Config.ProjectConfig>;
@@ -288,7 +288,7 @@ export async function readConfigs(
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: Config.Path | null | undefined;
+  let configPath: string | null | undefined;
 
   if (projectPaths.length === 1) {
     const parsedConfig = await readConfig(argv, projects[0]);

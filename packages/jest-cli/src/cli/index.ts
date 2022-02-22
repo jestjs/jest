@@ -20,7 +20,7 @@ import * as args from './args';
 
 export async function run(
   maybeArgv?: Array<string>,
-  project?: Config.Path,
+  project?: string,
 ): Promise<void> {
   try {
     const argv = await buildArgv(maybeArgv);
@@ -85,10 +85,7 @@ export async function buildArgv(
   );
 }
 
-const getProjectListFromCLIArgs = (
-  argv: Config.Argv,
-  project?: Config.Path,
-) => {
+const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {

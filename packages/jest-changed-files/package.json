@@ -17,7 +17,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.0.0-alpha.1",
     "execa": "^5.0.0",
     "throat": "^6.0.1"
   },

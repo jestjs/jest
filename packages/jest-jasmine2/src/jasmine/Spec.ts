@@ -32,7 +32,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {AssertionError} from 'assert';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
-import type {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
@@ -46,7 +45,7 @@ export type Attributes = {
   resultCallback: (result: Spec['result']) => void;
   description: string;
   throwOnExpectationFailure: unknown;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
   queueableFn: QueueableFn;
   beforeAndAfterFns: () => {
     befores: Array<QueueableFn>;
@@ -64,7 +63,7 @@ export type SpecResult = {
   fullName: string;
   duration?: Milliseconds;
   failedExpectations: Array<FailedAssertion>;
-  testPath: Config.Path;
+  testPath: string;
   passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   pendingReason: string;
   status: Status;
