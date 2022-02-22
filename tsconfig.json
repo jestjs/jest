@@ -1,11 +1,11 @@
 {
   "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
     "composite": true,
+    "declaration": true,
     "emitDeclarationOnly": true,
-    "isolatedModules": true,
     "importsNotUsedAsValues": "error",
+    "stripInternal": true,
 
     "strict": true,
 
@@ -19,6 +19,7 @@
     "moduleResolution": "node",
     /* This needs to be false so our types are possible to consume without setting this */
     "esModuleInterop": false,
+    "isolatedModules": true,
     "skipLibCheck": false,
     "resolveJsonModule": true
   }

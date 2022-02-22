@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {MatcherState, expect} from 'expect';
+import {type MatcherState, expect} from 'expect';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -15,7 +15,7 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {JasmineMatchersObject, RawMatcherFn} from './types';
+import type {JasmineMatchersObject} from './types';
 
 export default function jestExpect(config: {expand: boolean}): void {
   global.expect = expect;
@@ -41,23 +41,15 @@ export default function jestExpect(config: {expand: boolean}): void {
       jestMatchersObject[name] = function (
         this: MatcherState,
         ...args: Array<unknown>
-      ): RawMatcherFn {
+      ) {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
         const negativeCompare = result.negativeCompare || result.compare;
 
         return this.isNot
-          ? negativeCompare.apply(
-              null,
-              // @ts-expect-error
-              args,
-            )
-          : result.compare.apply(
-              null,
-              // @ts-expect-error
-              args,
-            );
+          ? negativeCompare.apply(null, args)
+          : result.compare.apply(null, args);
       };
     });
 

@@ -25,7 +25,7 @@ test('--showConfig outputs config info and exits', () => {
     '--showConfig',
     '--no-cache',
     // Make the snapshot flag stable on CI.
-    '--updateSnapshot',
+    '--ci',
   ]);
 
   stdout = stdout

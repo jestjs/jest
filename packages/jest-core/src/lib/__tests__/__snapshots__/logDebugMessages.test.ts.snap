@@ -62,6 +62,7 @@ exports[`prints the config object 1`] = `
     "bail": 0,
     "changedFilesWithAncestor": false,
     "changedSince": "",
+    "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "coverage",

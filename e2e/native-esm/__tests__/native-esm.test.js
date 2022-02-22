@@ -195,3 +195,98 @@ test('can mock module', async () => {
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
 });
+
+test('supports imports from "data:text/javascript" URI with charset=utf-8 encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedEncoded = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(importedEncoded.something).toBe('some value');
+});
+
+test('supports imports from "data:text/javascript" URI with base64 encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedBase64 = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  );
+  expect(importedBase64.something).toBe('some value');
+});
+
+test('supports imports from "data:text/javascript" URI without explicit encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedEncoded = await import(
+    `data:text/javascript,${encodeURIComponent(code)}`
+  );
+  expect(importedEncoded.something).toBe('some value');
+});
+
+test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(
+    async () =>
+      await import(
+        `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+      ),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:" URI with invalid mime type fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(
+    async () => await import(`data:something/else,${encodeURIComponent(code)}`),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:text/javascript" URI with invalid data fail', async () => {
+  await expect(
+    async () =>
+      await import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
+  ).rejects.toThrow("Unexpected token '.'");
+});
+
+test('imports from "data:application/wasm" URI not supported', async () => {
+  await expect(
+    async () => await import('data:application/wasm,96cafe00babe'),
+  ).rejects.toThrow('WASM is currently not supported');
+});
+
+test('supports imports from "data:application/json" URI', async () => {
+  const data = await import('data:application/json,{"foo": "bar"}');
+  expect(data.default).toEqual({foo: 'bar'});
+});
+
+test('supports static "data:" URI import', async () => {
+  const module = await import('../staticDataImport.js');
+  expect(module.value()).toEqual({bar: {obj: 456}, foo: '123'});
+});
+
+test('imports from "data:" URI is properly cached', async () => {
+  const code =
+    'export const wrapper = {value: 123}\nexport const set = (value) => wrapper.value = value';
+  const data1 = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(data1.wrapper.value).toBe(123);
+  data1.set(234);
+  expect(data1.wrapper.value).toBe(234);
+  const data2 = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  );
+  expect(data2.wrapper.value).toBe(123);
+  const data3 = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(data3.wrapper.value).toBe(234);
+});
+
+test('can mock "data:" URI module', async () => {
+  const code = 'export const something = "some value"';
+  const dataModule = `data:text/javascript;base64,${Buffer.from(code).toString(
+    'base64',
+  )}`;
+  jestObject.unstable_mockModule(dataModule, () => ({foo: 'bar'}), {
+    virtual: true,
+  });
+  const mocked = await import(dataModule);
+  expect(mocked.foo).toBe('bar');
+});

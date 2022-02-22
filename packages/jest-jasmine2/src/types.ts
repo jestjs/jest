@@ -25,25 +25,6 @@ export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
 
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: unknown,
-  actual: unknown,
-  options?: unknown,
-) => ExpectationResult;
-// -------END-------
-
 export type RunDetails = {
   totalSpecsDefined?: number;
   failedExpectations?: SuiteResult['failedExpectations'];
@@ -67,8 +48,8 @@ export interface Spy extends Record<string, any> {
 
 type JasmineMatcher = {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
+  compare(...args: Array<unknown>): unknown;
+  negativeCompare(...args: Array<unknown>): unknown;
 };
 
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};

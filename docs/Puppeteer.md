@@ -98,7 +98,7 @@ class PuppeteerEnvironment extends NodeEnvironment {
     }
 
     // connect to puppeteer
-    this.global.__BROWSER__ = await puppeteer.connect({
+    this.global.__BROWSER_GLOBAL__ = await puppeteer.connect({
       browserWSEndpoint: wsEndpoint,
     });
   }
@@ -142,7 +142,7 @@ describe(
   () => {
     let page;
     beforeAll(async () => {
-      page = await global.__BROWSER__.newPage();
+      page = await global.__BROWSER_GLOBAL__.newPage();
       await page.goto('https://google.com');
     }, timeout);
 

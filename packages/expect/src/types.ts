@@ -13,25 +13,39 @@ import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;
-  message: () => string;
+  message(): string;
 };
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn<T extends MatcherState = MatcherState> = {
-  (this: T, received: any, expected: any, options?: any): ExpectationResult;
+export type MatcherFunctionWithState<
+  State extends MatcherState = MatcherState,
+  Expected extends Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
+> = (this: State, actual: unknown, ...expected: Expected) => ExpectationResult;
+
+export type MatcherFunction<Expected extends Array<unknown> = []> =
+  MatcherFunctionWithState<MatcherState, Expected>;
+
+// TODO should be replaced with `MatcherFunctionWithContext`
+export type RawMatcherFn<State extends MatcherState = MatcherState> = {
+  (this: State, actual: any, ...expected: Array<any>): ExpectationResult;
+  /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
+};
+
+export type MatchersObject<T extends MatcherState = MatcherState> = {
+  [name: string]: RawMatcherFn<T>;
 };
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export type MatcherState = {
+export interface MatcherState {
   assertionCalls: number;
   currentTestName?: string;
-  dontThrow?: () => void;
+  dontThrow?(): void;
   error?: Error;
   equals: EqualsFunction;
   expand?: boolean;
@@ -47,7 +61,7 @@ export type MatcherState = {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
-};
+}
 
 export interface AsymmetricMatcher {
   asymmetricMatch(other: unknown): boolean;
@@ -55,9 +69,7 @@ export interface AsymmetricMatcher {
   getExpectedType?(): string;
   toAsymmetricMatcher?(): string;
 }
-export type MatchersObject<T extends MatcherState = MatcherState> = {
-  [id: string]: RawMatcherFn<T>;
-};
+
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
   error: Error;
@@ -73,7 +85,7 @@ export type Expect<State extends MatcherState = MatcherState> = {
   assertions(numberOfAssertions: number): void;
   // TODO: remove this `T extends` - should get from some interface merging
   extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
-  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
+  extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): State;
   hasAssertions(): void;
   setState(state: Partial<State>): void;
@@ -189,6 +201,10 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    */
   toBeLessThanOrEqual(expected: number | bigint): R;
   /**
+   * Used to check that a variable is NaN.
+   */
+  toBeNaN(): R;
+  /**
    * This is the same as `.toBe(null)` but the error messages are a bit nicer.
    * So use `.toBeNull()` when you want to check that something is null.
    */
@@ -203,10 +219,6 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * Used to check that a variable is undefined.
    */
   toBeUndefined(): R;
-  /**
-   * Used to check that a variable is NaN.
-   */
-  toBeNaN(): R;
   /**
    * Used when you want to check that an item is in a list.
    * For testing the items in the list, this uses `===`, a strict equality check.

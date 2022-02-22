@@ -89,13 +89,18 @@ export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
 );
 
-export const stringify = (object: unknown, maxDepth: number = 10): string => {
+export const stringify = (
+  object: unknown,
+  maxDepth: number = 10,
+  maxWidth: number = 10,
+): string => {
   const MAX_LENGTH = 10000;
   let result;
 
   try {
     result = prettyFormat(object, {
       maxDepth,
+      maxWidth,
       min: true,
       plugins: PLUGINS,
     });
@@ -103,14 +108,19 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
+      maxWidth,
       min: true,
       plugins: PLUGINS,
     });
   }
 
-  return result.length >= MAX_LENGTH && maxDepth > 1
-    ? stringify(object, Math.floor(maxDepth / 2))
-    : result;
+  if (result.length >= MAX_LENGTH && maxDepth > 1) {
+    return stringify(object, Math.floor(maxDepth / 2), maxWidth);
+  } else if (result.length >= MAX_LENGTH && maxWidth > 1) {
+    return stringify(object, maxDepth, Math.floor(maxWidth / 2));
+  } else {
+    return result;
+  }
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
@@ -126,11 +136,11 @@ export const printReceived = (object: unknown): string =>
 export const printExpected = (value: unknown): string =>
   EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
-export const printWithType = (
-  name: string, // 'Expected' or 'Received'
-  value: unknown,
-  print: (value: unknown) => string, // printExpected or printReceived
-): string => {
+export function printWithType<T>(
+  name: string,
+  value: T,
+  print: (value: T) => string,
+): string {
   const type = getType(value);
   const hasType =
     type !== 'null' && type !== 'undefined'
@@ -138,7 +148,7 @@ export const printWithType = (
       : '';
   const hasValue = `${name} has value: ${print(value)}`;
   return hasType + hasValue;
-};
+}
 
 export const ensureNoExpected = (
   expected: unknown,
@@ -501,8 +511,8 @@ export const matcherErrorMessage = (
 // Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
-  received: string = 'received',
-  expected: string = 'expected',
+  received = 'received',
+  expected = 'expected',
   options: MatcherHintOptions = {},
 ): string => {
   const {

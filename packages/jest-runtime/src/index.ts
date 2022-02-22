@@ -63,6 +63,9 @@ export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
+const dataURIregex =
+  /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
+
 interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: typeof JestGlobals.expect;
 }
@@ -551,6 +554,86 @@ export default class Runtime {
       this._esmoduleRegistry.set('@jest/globals', globals);
 
       return globals;
+    }
+
+    if (specifier.startsWith('data:')) {
+      if (
+        this._shouldMock(
+          referencingIdentifier,
+          specifier,
+          this._explicitShouldMockModule,
+          {conditions: this.esmConditions},
+        )
+      ) {
+        return this.importMock(referencingIdentifier, specifier, context);
+      }
+
+      const fromCache = this._esmoduleRegistry.get(specifier);
+
+      if (fromCache) {
+        return fromCache;
+      }
+
+      const match = specifier.match(dataURIregex);
+
+      if (!match || !match.groups) {
+        throw new Error('Invalid data URI');
+      }
+
+      const mime = match.groups.mime;
+      if (mime === 'application/wasm') {
+        throw new Error('WASM is currently not supported');
+      }
+
+      const encoding = match.groups.encoding;
+      let code = match.groups.code;
+      if (!encoding || encoding === 'charset=utf-8') {
+        code = decodeURIComponent(code);
+      } else if (encoding === 'base64') {
+        code = Buffer.from(code, 'base64').toString();
+      } else {
+        throw new Error(`Invalid data URI encoding: ${encoding}`);
+      }
+
+      let module;
+      if (mime === 'application/json') {
+        module = new SyntheticModule(
+          ['default'],
+          function () {
+            const obj = JSON.parse(code);
+            // @ts-expect-error: TS doesn't know what `this` is
+            this.setExport('default', obj);
+          },
+          {context, identifier: specifier},
+        );
+      } else {
+        module = new SourceTextModule(code, {
+          context,
+          identifier: specifier,
+          importModuleDynamically: async (
+            specifier: string,
+            referencingModule: VMModule,
+          ) => {
+            invariant(
+              runtimeSupportsVmModules,
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+            );
+            const module = await this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+            );
+
+            return this.linkAndEvaluateModule(module);
+          },
+          initializeImportMeta(meta: ImportMeta) {
+            meta.url = specifier;
+          },
+        });
+      }
+
+      this._esmoduleRegistry.set(specifier, module);
+      return module;
     }
 
     if (specifier.startsWith('file://')) {
