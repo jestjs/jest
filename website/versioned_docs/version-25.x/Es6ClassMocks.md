@@ -146,7 +146,7 @@ Since calls to `jest.mock()` are hoisted to the top of the file, Jest prevents a
 
 :::
 
-For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration.
+For example, the following will throw an out-of-scope error due to the use of `fake` instead of `mock` in the variable declaration.
 
 ```javascript
 // Note: this will fail
