@@ -92,7 +92,6 @@ export type MockedClass<T extends Constructable> = MockInstance<
 > & {
   prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
 } & T;
-
 export interface Constructable {
   new (...args: Array<any>): any;
 }

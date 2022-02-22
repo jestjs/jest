@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "27.4.5",
+  "version": "27.4.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,27 +17,25 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^27.4.4",
+    "@jest/environment": "^27.4.6",
     "@jest/source-map": "^27.4.0",
-    "@jest/test-result": "^27.4.2",
+    "@jest/test-result": "^27.4.6",
     "@jest/types": "^27.4.2",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
-    "expect": "^27.4.2",
+    "expect": "^27.4.6",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^27.4.2",
-    "jest-matcher-utils": "^27.4.2",
-    "jest-message-util": "^27.4.2",
-    "jest-runtime": "^27.4.5",
-    "jest-snapshot": "^27.4.5",
+    "jest-each": "^27.4.6",
+    "jest-matcher-utils": "^27.4.6",
+    "jest-message-util": "^27.4.6",
+    "jest-runtime": "^27.4.6",
+    "jest-snapshot": "^27.4.6",
     "jest-util": "^27.4.2",
-    "pretty-format": "^27.4.2",
+    "pretty-format": "^27.4.6",
     "throat": "^6.0.1"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.2"
   },
   "engines": {

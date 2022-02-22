@@ -30,7 +30,8 @@ function statSyncCached(path: string): IPathType {
 
   let stat;
   try {
-    stat = fs.statSync(path);
+    // @ts-expect-error TS2554 - throwIfNoEntry is only available in recent version of node, but inclusion of the option is a backward compatible no-op.
+    stat = fs.statSync(path, {throwIfNoEntry: false});
   } catch (e: any) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
       throw e;

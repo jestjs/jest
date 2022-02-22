@@ -618,7 +618,7 @@ test('deep', () => {
 test('direct', () => {
   foo.name();
   // here only foo.name is mocked (or its methods if it's an object)
-  expect(mocked(foo.name).mock.calls).toHaveLength(1);
+  expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
 });
 ```
 

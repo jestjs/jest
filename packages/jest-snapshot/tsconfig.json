@@ -11,7 +11,6 @@
     {"path": "../jest-haste-map"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
-    {"path": "../jest-resolve"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},

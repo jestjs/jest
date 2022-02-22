@@ -6,7 +6,30 @@
 
 ### Chore & Maintenance
 
+- `[*]` Update graceful-fs to ^4.2.9 ([#11749](https://github.com/facebook/jest/pull/11749))
+
 ### Performance
+
+- `[jest-resolve]` perf: skip error creation on not found stat calls ([#11749](https://github.com/facebook/jest/pull/11749))
+
+## 27.4.7
+
+### Fixes
+
+- `jest-config` Add missing `@babel/core` dependency ([#12216](https://github.com/facebook/jest/pull/12216))
+
+## 27.4.6
+
+### Fixes
+
+- `[jest-environment-node]` Add `AbortSignal` ([#12157](https://github.com/facebook/jest/pull/12157))
+- `[jest-environment-node]` Add Missing node global `performance` ([#12002](https://github.com/facebook/jest/pull/12002))
+- `[jest-runtime]` Handle missing `mocked` property ([#12213](https://github.com/facebook/jest/pull/12213))
+- `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12002](https://github.com/facebook/jest/pull/12002))
+
+### Performance
+
+- `jest-config` perf: only register ts-node once when loading TS config files ([#12160](https://github.com/facebook/jest/pull/12160))
 
 ## 27.4.5
 

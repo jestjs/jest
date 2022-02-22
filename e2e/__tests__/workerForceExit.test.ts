@@ -63,11 +63,15 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
 
-  const execRes = /pid: \d+/.exec(stderr);
+  const execRes = /pid: (\d+)/.exec(stderr);
 
-  expect(execRes).toHaveLength(1);
+  expect(execRes).toHaveLength(2);
 
-  const [pid] = execRes!;
+  const [, pid] = execRes!;
 
-  expect(await findProcess('pid', Number(pid))).toHaveLength(0);
+  const pidNumber = Number(pid);
+
+  expect(pidNumber).not.toBeNaN();
+
+  expect(await findProcess('pid', pidNumber)).toHaveLength(0);
 });

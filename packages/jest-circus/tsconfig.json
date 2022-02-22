@@ -15,7 +15,6 @@
     {"path": "../jest-test-result"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../pretty-format"},
-    {"path": "../test-utils"}
+    {"path": "../pretty-format"}
   ]
 }
