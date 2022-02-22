@@ -25,7 +25,7 @@ try {
     dedent`
       enableGlobalCache: true
 
-      yarnPath: ${require.resolve('../.yarn/releases/yarn-3.1.1.cjs')}
+      yarnPath: ${require.resolve('../.yarn/releases/yarn-3.2.0.cjs')}
     `,
   );
   fs.writeFileSync(
