@@ -5,14 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {defaultResolverAsync} from '../defaultResolver';
+import type {Resolver} from '../defaultResolver';
 
 // todo: can be replaced with jest.MockedFunction
-declare const userResolver: {
-  async: jest.MockInstance<
-    ReturnType<typeof defaultResolverAsync>,
-    Parameters<typeof defaultResolverAsync>
-  >;
-};
+declare const userResolver: Resolver;
 
 export default userResolver;

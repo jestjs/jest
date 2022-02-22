@@ -8,7 +8,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import resolveAsync = require('resolve');
+import {sync as resolveSync} from 'resolve';
 import {ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
@@ -17,8 +17,7 @@ import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
-jest.mock('../__mocks__/userResolver');
-jest.mock('../__mocks__/userResolverAsync');
+jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
 // Do not fully mock `resolve` because it is used by Jest. Doing it will crash
 // in very strange ways. Instead just spy on it and its `sync` method.
@@ -32,12 +31,7 @@ jest.mock('resolve', () => {
   return m;
 });
 
-const mockResolveSync = <
-  jest.Mock<
-    ReturnType<typeof resolveAsync.sync>,
-    Parameters<typeof resolveAsync.sync>
-  >
->resolveAsync.sync;
+const mockResolveSync = jest.mocked(resolveSync);
 
 beforeEach(() => {
   userResolver.mockClear();

@@ -790,7 +790,7 @@ The options object provided to resolvers has the shape:
 {
   "basedir": string,
   "conditions": [string],
-  "defaultResolver": "function(request, options) -> string | Promise<string>",
+  "defaultResolver": "function(request, options) -> string",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -800,7 +800,7 @@ The options object provided to resolvers has the shape:
 }
 ```
 
-Note: the defaultResolver passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. `(request, options)` and returns a string for sync resolvers and a promise for async resolvers.
+Note: the `defaultResolver` passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom synchronous one, e.g. `(request, options)` and returns a string or throws.
 
 For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
 
