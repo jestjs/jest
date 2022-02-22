@@ -21,9 +21,10 @@ const rootDirectory = path.resolve(__dirname, '..');
 const cwd = tempy.directory();
 
 try {
-  const yarnConfig = yaml.load(
-    fs.readFileSync(path.resolve(rootDirectory, '.yarnrc.yml'), 'utf8'),
-  );
+  const yarnRcPath = path.resolve(rootDirectory, '.yarnrc.yml');
+  const yarnConfig = yaml.load(fs.readFileSync(yarnRcPath, 'utf8'), {
+    filename: yarnRcPath,
+  });
 
   fs.writeFileSync(
     path.join(cwd, '.yarnrc.yml'),
