@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
@@ -20,14 +18,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {
-  EXTENSION,
-  SnapshotResolver as JestSnapshotResolver,
-  buildSnapshotResolver,
-  isSnapshotPath,
-} from './SnapshotResolver';
-import SnapshotState from './State';
-import {addSerializer, getSerializers} from './plugins';
+import {EXTENSION, SnapshotResolver} from './SnapshotResolver';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
@@ -40,7 +31,16 @@ import {
   printSnapshotAndReceived,
 } from './printSnapshot';
 import type {Context, ExpectationResult, MatchSnapshotConfig} from './types';
-import * as utils from './utils';
+import {deepMerge, escapeBacktickString, serialize} from './utils';
+
+export {addSerializer, getSerializers} from './plugins';
+export {
+  EXTENSION,
+  buildSnapshotResolver,
+  isSnapshotPath,
+} from './SnapshotResolver';
+export type {SnapshotResolver} from './SnapshotResolver';
+export {default as SnapshotState} from './State';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(
@@ -61,9 +61,9 @@ const printSnapshotName = (
 
   return (
     'Snapshot name: `' +
-    (hasNames ? utils.escapeBacktickString(concatenatedBlockNames) : '') +
+    (hasNames ? escapeBacktickString(concatenatedBlockNames) : '') +
     (hasNames && hasHint ? ': ' : '') +
-    (hasHint ? BOLD_WEIGHT(utils.escapeBacktickString(hint)) : '') +
+    (hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : '') +
     ' ' +
     count +
     '`'
@@ -115,10 +115,10 @@ function stripAddedIndentation(inlineSnapshot: string) {
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (
+export const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
-  snapshotResolver: JestSnapshotResolver,
+  snapshotResolver: SnapshotResolver,
   testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
 ): {
   filesRemoved: number;
@@ -155,7 +155,7 @@ const cleanup = (
   };
 };
 
-const toMatchSnapshot = function (
+export const toMatchSnapshot = function (
   this: Context,
   received: unknown,
   propertiesOrHint?: object | Config.Path,
@@ -184,7 +184,8 @@ const toMatchSnapshot = function (
         options.secondArgumentColor = BOLD_WEIGHT;
 
         if (propertiesOrHint == null) {
-          printedWithType += `\n\nTo provide a hint without properties: toMatchSnapshot('hint')`;
+          printedWithType +=
+            "\n\nTo provide a hint without properties: toMatchSnapshot('hint')";
         }
       }
 
@@ -213,7 +214,7 @@ const toMatchSnapshot = function (
   });
 };
 
-const toMatchInlineSnapshot = function (
+export const toMatchInlineSnapshot = function (
   this: Context,
   received: unknown,
   propertiesOrSnapshot?: object | string,
@@ -256,8 +257,8 @@ const toMatchInlineSnapshot = function (
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
-          `Inline snapshot must be a string`,
-          printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
+          'Inline snapshot must be a string',
+          printWithType('Inline snapshot', inlineSnapshot, serialize),
         ),
       );
     }
@@ -303,7 +304,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     throw new Error(
       matcherHintFromConfig(config, false) +
         '\n\n' +
-        `Snapshot state must be initialized` +
+        'Snapshot state must be initialized' +
         '\n\n' +
         printWithType('Snapshot state', snapshotState, stringify),
     );
@@ -352,7 +353,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         pass: false,
       };
     } else {
-      received = utils.deepMerge(received, properties);
+      received = deepMerge(received, properties);
     }
   }
 
@@ -377,9 +378,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           printSnapshotName(currentTestName, hint, count) +
           '\n\n' +
           `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
-          `must be explicitly passed to write a new snapshot.\n\n` +
-          `This is likely because this test is run in a continuous integration ` +
-          `(CI) environment in which snapshots are not written by default.\n\n` +
+          'must be explicitly passed to write a new snapshot.\n\n' +
+          'This is likely because this test is run in a continuous integration ' +
+          '(CI) environment in which snapshots are not written by default.\n\n' +
           `Received:${actual.includes('\n') ? '\n' : ' '}${bReceivedColor(
             actual,
           )}`
@@ -407,7 +408,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-const toThrowErrorMatchingSnapshot = function (
+export const toThrowErrorMatchingSnapshot = function (
   this: Context,
   received: unknown,
   hint: string | undefined, // because error TS1016 for hint?: string
@@ -430,7 +431,7 @@ const toThrowErrorMatchingSnapshot = function (
   );
 };
 
-const toThrowErrorMatchingInlineSnapshot = function (
+export const toThrowErrorMatchingInlineSnapshot = function (
   this: Context,
   received: unknown,
   inlineSnapshot?: string,
@@ -448,8 +449,8 @@ const toThrowErrorMatchingInlineSnapshot = function (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
-        `Inline snapshot must be a string`,
-        printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
+        'Inline snapshot must be a string',
+        printWithType('Inline snapshot', inlineSnapshot, serialize),
       ),
     );
   }
@@ -510,7 +511,7 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e: unknown) {
+    } catch (e) {
       error = e;
     }
   }
@@ -531,25 +532,3 @@ const _toThrowErrorMatchingSnapshot = (
     received: error.message,
   });
 };
-
-const JestSnapshot = {
-  EXTENSION,
-  SnapshotState,
-  addSerializer,
-  buildSnapshotResolver,
-  cleanup,
-  getSerializers,
-  isSnapshotPath,
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-  utils,
-};
-
-declare namespace JestSnapshot {
-  export type SnapshotResolver = JestSnapshotResolver;
-  export type SnapshotStateType = SnapshotState;
-}
-
-export = JestSnapshot;

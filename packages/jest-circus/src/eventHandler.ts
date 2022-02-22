@@ -54,7 +54,7 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
-      invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
+      invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {

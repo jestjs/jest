@@ -33,7 +33,7 @@ export function check(argv: Config.Argv): true {
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      `Both --onlyFailures and --watchAll were specified, but these two ` +
+      'Both --onlyFailures and --watchAll were specified, but these two ' +
         'options do not make sense together.',
     );
   }
@@ -657,11 +657,6 @@ export const options = {
   verbose: {
     description:
       'Display individual test results with the test suite hierarchy.',
-    type: 'boolean',
-  },
-  version: {
-    alias: 'v',
-    description: 'Print the version and exit',
     type: 'boolean',
   },
   watch: {

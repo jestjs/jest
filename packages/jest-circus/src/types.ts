@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Used as type
 import type {Circus} from '@jest/types';
-import expect = require('expect');
+import type {Expect} from 'expect';
 
 export const STATE_SYM = Symbol(
   'JEST_STATE_SYMBOL',
@@ -26,7 +25,7 @@ declare global {
       STATE_SYM_SYMBOL: Circus.State;
       RETRY_TIMES_SYMBOL: string;
       TEST_TIMEOUT_SYMBOL: number;
-      expect: typeof expect;
+      expect: Expect;
     }
   }
 }

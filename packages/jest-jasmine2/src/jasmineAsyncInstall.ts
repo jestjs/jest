@@ -212,7 +212,7 @@ function makeConcurrent(
           `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
-    } catch (error: unknown) {
+    } catch (error) {
       promise = Promise.reject(error);
     }
     // Avoid triggering the uncaught promise rejection handler in case the test errors before
@@ -230,7 +230,7 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();

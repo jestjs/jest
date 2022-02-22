@@ -7,11 +7,11 @@
 
 import type {Jest} from '@jest/environment';
 import type {Global} from '@jest/types';
-import importedExpect = require('expect');
+import type {Expect} from 'expect';
 
 export declare const jest: Jest;
 
-export declare const expect: typeof importedExpect;
+export declare const expect: Expect;
 
 export declare const it: Global.GlobalAdditions['it'];
 export declare const test: Global.GlobalAdditions['test'];

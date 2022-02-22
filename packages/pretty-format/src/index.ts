@@ -426,7 +426,7 @@ function validateOptions(options: OptionsReceived) {
 
   if (options.theme !== undefined) {
     if (options.theme === null) {
-      throw new Error(`pretty-format: Option "theme" must not be null.`);
+      throw new Error('pretty-format: Option "theme" must not be null.');
     }
 
     if (typeof options.theme !== 'object') {

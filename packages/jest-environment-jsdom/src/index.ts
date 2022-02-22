@@ -22,8 +22,8 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment<number> {
-  private dom: JSDOM | null;
+export default class JSDOMEnvironment implements JestEnvironment<number> {
+  dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
@@ -149,6 +149,10 @@ class JSDOMEnvironment implements JestEnvironment<number> {
     this.fakeTimersModern = null;
   }
 
+  exportConditions(): Array<string> {
+    return ['browser'];
+  }
+
   getVmContext(): Context | null {
     if (this.dom) {
       return this.dom.getInternalVMContext();
@@ -157,4 +161,4 @@ class JSDOMEnvironment implements JestEnvironment<number> {
   }
 }
 
-export = JSDOMEnvironment;
+export const TestEnvironment = JSDOMEnvironment;

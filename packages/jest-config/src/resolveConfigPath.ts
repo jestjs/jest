@@ -21,11 +21,11 @@ const isFile = (filePath: Config.Path) =>
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (
+export default function resolveConfigPath(
   pathToResolve: Config.Path,
   cwd: Config.Path,
   skipMultipleConfigWarning = false,
-): Config.Path => {
+): Config.Path {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -49,7 +49,7 @@ export default (
   // try to run all tests it finds under `my_project` directory.
   if (!fs.existsSync(absolutePath)) {
     throw new Error(
-      `Can't find a root directory while resolving a config file path.\n` +
+      "Can't find a root directory while resolving a config file path.\n" +
         `Provided path to resolve: ${pathToResolve}\n` +
         `cwd: ${cwd}`,
     );
@@ -61,7 +61,7 @@ export default (
     cwd,
     skipMultipleConfigWarning,
   );
-};
+}
 
 const resolveConfigPathByTraversing = (
   pathToResolve: Config.Path,

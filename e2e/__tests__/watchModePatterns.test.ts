@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -18,7 +17,7 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => val.replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replace(/\[s\[u/g, '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
@@ -51,12 +50,11 @@ test('can press "p" to filter by file name', () => {
   ]);
   const results = extractSummaries(stderr);
 
-  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(exitCode).toBe(0);
 });
@@ -71,12 +69,11 @@ test('can press "t" to filter by test name', () => {
   ]);
   const results = extractSummaries(stderr);
 
-  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(exitCode).toBe(0);
 });

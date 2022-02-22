@@ -17,8 +17,8 @@ afterAll(() => cleanup(DIR));
 
 test('check is not leaking memory', () => {
   writeFiles(DIR, {
-    '__tests__/a.test.js': `test('a', () => console.log('a'));`,
-    '__tests__/b.test.js': `test('b', () => console.log('b'));`,
+    '__tests__/a.test.js': "test('a', () => console.log('a'));",
+    '__tests__/b.test.js': "test('b', () => console.log('b'));",
     'package.json': JSON.stringify({jest: {testEnvironment: 'jsdom'}}),
   });
 

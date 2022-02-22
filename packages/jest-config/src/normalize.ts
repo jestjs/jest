@@ -438,7 +438,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
-          `Could not resolve a module for a custom reporter.\n` +
+          'Could not resolve a module for a custom reporter.\n' +
             `  Module name: ${reporterPath}`,
         );
       }
@@ -485,7 +485,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
-        `Running all tests instead.`,
+        'Running all tests instead.',
     ),
   );
 };
@@ -626,11 +626,22 @@ export default async function normalize(
   if (
     !options.testRunner ||
     options.testRunner === 'circus' ||
-    options.testRunner === 'jest-circus'
+    options.testRunner === 'jest-circus' ||
+    options.testRunner === 'jest-circus/runner'
   ) {
     options.testRunner = require.resolve('jest-circus/runner');
   } else if (options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
+    try {
+      options.testRunner = require.resolve('jest-jasmine2');
+    } catch (error: any) {
+      if (error.code === 'MODULE_NOT_FOUND') {
+        createConfigError(
+          'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
+        );
+      }
+
+      throw error;
+    }
   }
 
   if (!options.coverageDirectory) {
@@ -878,8 +889,8 @@ export default async function normalize(
           !value.includes('js')
         ) {
           const errorMessage =
-            `  moduleFileExtensions must include 'js':\n` +
-            `  but instead received:\n` +
+            "  moduleFileExtensions must include 'js':\n" +
+            '  but instead received:\n' +
             `    ${chalk.bold.red(JSON.stringify(value))}`;
 
           // If `js` is not included, any dependency Jest itself injects into

@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
@@ -15,7 +13,7 @@ import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 
-export default class {
+export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
 
   constructor(value: unknown) {

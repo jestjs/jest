@@ -20,8 +20,8 @@ import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
-import nodeCrawl = require('./crawlers/node');
-import watchmanCrawl = require('./crawlers/watchman');
+import {nodeCrawl} from './crawlers/node';
+import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -42,7 +42,7 @@ import type {
   SerializableModuleMap,
   WorkerMetadata,
 } from './types';
-import FSEventsWatcher = require('./watchers/FSEventsWatcher');
+import {FSEventsWatcher} from './watchers/FSEventsWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
 import NodeWatcher from './watchers/NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
@@ -771,17 +771,17 @@ export default class HasteMap extends EventEmitter {
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
-          `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-            `crawler.\n` +
-            `  Usually this happens when watchman isn't running. Create an ` +
-            `empty \`.watchmanconfig\` file in your project's root folder or ` +
-            `initialize a git or hg repository in your project.\n` +
-            `  ` +
+          'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
+            'crawler.\n' +
+            "  Usually this happens when watchman isn't running. Create an " +
+            "empty `.watchmanconfig` file in your project's root folder or " +
+            'initialize a git or hg repository in your project.\n' +
+            '  ' +
             error,
         );
         return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
-            `Crawler retry failed:\n` +
+            'Crawler retry failed:\n' +
               `  Original error: ${error.message}\n` +
               `  Retry error: ${e.message}\n`,
           );
