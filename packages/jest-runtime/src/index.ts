@@ -754,7 +754,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
-      isInternal ? undefined : {conditions: this.cjsConditions},
+      {conditions: this.cjsConditions},
     );
     let modulePath: string | undefined;
 
@@ -782,11 +782,9 @@ export default class Runtime {
     }
 
     if (!modulePath) {
-      modulePath = this._resolveModule(
-        from,
-        moduleName,
-        isInternal ? undefined : {conditions: this.cjsConditions},
-      );
+      modulePath = this._resolveModule(from, moduleName, {
+        conditions: this.cjsConditions,
+      });
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
