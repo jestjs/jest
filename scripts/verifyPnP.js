@@ -12,6 +12,7 @@ const path = require('path');
 const chalk = require('chalk');
 const dedent = require('dedent');
 const execa = require('execa');
+const yaml = require('js-yaml');
 const rimraf = require('rimraf');
 const tempy = require('tempy');
 
@@ -20,12 +21,16 @@ const rootDirectory = path.resolve(__dirname, '..');
 const cwd = tempy.directory();
 
 try {
+  const yarnConfig = yaml.load(
+    fs.readFileSync(path.resolve(rootDirectory, '.yarnrc.yml'), 'utf8'),
+  );
+
   fs.writeFileSync(
     path.join(cwd, '.yarnrc.yml'),
     dedent`
       enableGlobalCache: true
 
-      yarnPath: ${require.resolve('../.yarn/releases/yarn-3.2.0.cjs')}
+      yarnPath: ${path.resolve(rootDirectory, yarnConfig.yarnPath)}
     `,
   );
   fs.writeFileSync(

@@ -2684,6 +2684,7 @@ __metadata:
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^1.0.0
     jquery: ^3.2.1
+    js-yaml: ^4.1.0
     lerna: ^4.0.0
     micromatch: ^4.0.4
     mock-fs: ^5.1.2
