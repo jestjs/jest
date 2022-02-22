@@ -120,9 +120,14 @@ export type TransformerFactory<X extends Transformer> = {
 };
 ```
 
-We have both sync (`process`) and async (`processAsync`) code transformation, which both can be provided. `require` will always use `process`, and `import` will use `processAsync` if it exists, otherwise falling back to `process`. Meaning, if you use `import` exclusively you do not need `process`, but in most cases supplying both makes sense: Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). 
+This process, also known as "transpilation", might happen _synchronously_ (in the case of require), or  _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
 
-As can be seen, only `process` or `processAsync` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+So if your code base is ESM only  implementing the async variants is sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous variant. Be aware that `node_modules` is not transpiled with default config.
+
+Semi-related to this are the supports flags we pass (see `CallerTransformOptions` above), but those should be used within the transform to figure out if it should return ESM or CJS, and has no bearing on sync vs async
+
+Though not required, we _highly recommend_ implementing `getCacheKey` as well, so we do not waste resources transpiling when we could have read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
 
 Instead of having your custom transformer implement the Transformer interface directly, you can choose to export a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
