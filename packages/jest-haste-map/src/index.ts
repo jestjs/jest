@@ -239,7 +239,7 @@ export default class HasteMap extends EventEmitter {
     }
     const hasteMap = new HasteMap(options);
 
-    await hasteMap._setupCachePath(options);
+    await hasteMap.setupCachePath(options);
 
     return hasteMap;
   }
@@ -304,7 +304,7 @@ export default class HasteMap extends EventEmitter {
     this._worker = null;
   }
 
-  async _setupCachePath(options: Options): Promise<void> {
+  private async setupCachePath(options: Options): Promise<void> {
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
