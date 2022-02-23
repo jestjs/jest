@@ -91,7 +91,7 @@ const ALLOWED_IDENTIFIERS = new Set<string>(
     '__filename',
     '__dirname',
     'undefined',
-    ...Object.getOwnPropertyNames(global),
+    ...Object.getOwnPropertyNames(globalThis),
   ].sort(),
 );
 

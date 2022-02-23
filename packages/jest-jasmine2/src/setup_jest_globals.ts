@@ -63,7 +63,8 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  global.jasmine.Spec = (realSpec => {
+  // @ts-expect-error
+  globalThis.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
@@ -82,7 +83,8 @@ const patchJasmine = () => {
     }
 
     return Spec;
-  })(global.jasmine.Spec);
+    // @ts-expect-error
+  })(globalThis.jasmine.Spec);
 };
 
 export default async function setupJestGlobals({

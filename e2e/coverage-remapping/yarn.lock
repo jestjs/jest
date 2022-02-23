@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 5
+  version: 6
   cacheKey: 8
 
 "root-workspace-0b6124@workspace:.":
@@ -25,7 +25,7 @@ __metadata:
 
 "typescript@patch:typescript@^3.7.4#~builtin<compat/typescript>":
   version: 3.9.10
-  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=493e53"
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

@@ -59,6 +59,7 @@
     "jest-snapshot": "workspace:*",
     "jest-watch-typeahead": "^1.0.0",
     "jquery": "^3.2.1",
+    "js-yaml": "^4.1.0",
     "lerna": "^4.0.0",
     "micromatch": "^4.0.4",
     "mock-fs": "^5.1.2",
@@ -80,7 +81,7 @@
     "throat": "^6.0.1",
     "ts-node": "^10.5.0",
     "type-fest": "^2.11.2",
-    "typescript": "^4.0.2",
+    "typescript": "^4.2.4",
     "which": "^2.0.1"
   },
   "scripts": {
@@ -157,5 +158,5 @@
     "jest-environment-node": "workspace:*",
     "react-native": "patch:react-native@0.67.2#./patches/react-native.patch"
   },
-  "packageManager": "yarn@3.1.1"
+  "packageManager": "yarn@3.2.0"
 }

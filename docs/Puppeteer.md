@@ -65,7 +65,7 @@ module.exports = async function () {
   const browser = await puppeteer.launch();
   // store the browser instance so we can teardown it later
   // this global is only available in the teardown but not in TestEnvironments
-  global.__BROWSER_GLOBAL__ = browser;
+  globalThis.__BROWSER_GLOBAL__ = browser;
 
   // use the file system to expose the wsEndpoint for TestEnvironments
   await mkdir(DIR, {recursive: true});
@@ -125,7 +125,7 @@ const path = require('path');
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {
   // close the browser instance
-  await global.__BROWSER_GLOBAL__.close();
+  await globalThis.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
   await fs.rm(DIR, {recursive: true, force: true});
@@ -142,7 +142,7 @@ describe(
   () => {
     let page;
     beforeAll(async () => {
-      page = await global.__BROWSER_GLOBAL__.newPage();
+      page = await globalThis.__BROWSER_GLOBAL__.newPage();
       await page.goto('https://google.com');
     }, timeout);
 

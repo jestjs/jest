@@ -38,6 +38,14 @@ interface ResolverOptions {
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
   Pick<ResolverOptions, 'conditions'>;
 
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
+  path: string,
+  options: ResolverOptions,
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
+
 // https://github.com/facebook/jest/pull/10617
 declare global {
   namespace NodeJS {
@@ -47,10 +55,7 @@ declare global {
   }
 }
 
-export default function defaultResolver(
-  path: string,
-  options: ResolverOptions,
-): string {
+const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
@@ -77,7 +82,9 @@ export default function defaultResolver(
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
-}
+};
+
+export default defaultResolver;
 
 /*
  * helper functions

@@ -13,8 +13,8 @@ const internalPackages = getPackages()
 
 module.exports = {
   env: {
+    es2020: true,
     'jest/globals': true,
-    node: true,
   },
   extends: [
     'plugin:markdown/recommended',
@@ -23,7 +23,7 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   globals: {
-    BigInt: 'readonly',
+    console: 'readonly',
   },
   overrides: [
     {
@@ -41,7 +41,7 @@ module.exports = {
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
-        // TS verifies this
+        // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
@@ -166,6 +166,7 @@ module.exports = {
       rules: {
         'import/order': 'off',
         'import/sort-keys': 'off',
+        'no-restricted-globals': ['off'],
         'sort-keys': 'off',
       },
     },
@@ -228,9 +229,9 @@ module.exports = {
         'e2e/jasmine-async/__tests__/*',
       ],
       globals: {
-        fail: true,
-        jasmine: true,
-        pending: true,
+        fail: 'readonly',
+        jasmine: 'readonly',
+        pending: 'readonly',
       },
     },
     {
@@ -251,6 +252,10 @@ module.exports = {
         'jest/no-identical-title': 'off',
         'jest/valid-expect': 'off',
       },
+    },
+    {
+      env: {node: true},
+      files: ['*.js', '*.jsx'],
     },
     {
       files: [
@@ -431,6 +436,13 @@ module.exports = {
     'no-prototype-builtins': 'error',
     'no-redeclare': 'warn',
     'no-regex-spaces': 'warn',
+    'no-restricted-globals': [
+      'error',
+      {
+        message: 'Use `globalThis` instead.',
+        name: 'global',
+      },
+    ],
     'no-restricted-imports': [
       'error',
       {message: 'Please use graceful-fs instead.', name: 'fs'},

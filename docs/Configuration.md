@@ -448,7 +448,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
 
 _Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -456,20 +456,22 @@ _Note: Any global variables that are defined through `globalSetup` can only be r
 
 _Note: While code transformation is applied to the linked setup-file, Jest will **not** transform any code in `node_modules`. This is due to the need to load the actual transformers (e.g. `babel` or `typescript`) to perform transformation._
 
-Example:
-
 ```js title="setup.js"
-// can be synchronous
-module.exports = async () => {
-  // ...
+module.exports = async function (globalConfig, projectConfig) {
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
+
   // Set reference to mongod in order to close the server during teardown.
-  global.__MONGOD__ = mongod;
+  globalThis.__MONGOD__ = mongod;
 };
 ```
 
 ```js title="teardown.js"
-module.exports = async function () {
-  await global.__MONGOD__.stop();
+module.exports = async function (globalConfig, projectConfig) {
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
+
+  await globalThis.__MONGOD__.stop();
 };
 ```
 
@@ -477,7 +479,7 @@ module.exports = async function () {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -511,6 +513,8 @@ type HasteConfig = {
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;
+  /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
+  retainAllFiles?: boolean;
 };
 ```
 
@@ -777,13 +781,18 @@ By default, each test file gets its own independent module registry. Enabling `r
 
 Default: `undefined`
 
-This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:
+This option allows the use of a custom resolver. This resolver must be a node module that exports _either_:
+
+1. a function expecting a string as the first argument for the path to resolve and an options object as the second argument. The function should either return a path to the module that should be resolved or throw an error if the module can't be found. _or_
+2. an object containing `async` and/or `sync` properties. The `sync` property should be a function with the shape explained above, and the `async` property should also be a function that accepts the same arguments, but returns a promise which resolves with the path to the module or rejects with an error.
+
+The options object provided to resolvers has the shape:
 
 ```json
 {
   "basedir": string,
   "conditions": [string],
-  "defaultResolver": "function(request, options)",
+  "defaultResolver": "function(request, options) -> string",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -793,9 +802,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 }
 ```
 
-The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
-
-Note: the defaultResolver passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. `(request, options)`.
+Note: the `defaultResolver` passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom synchronous one, e.g. `(request, options)` and returns a string or throws.
 
 For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
 
@@ -1083,7 +1090,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [global config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L284) and [project config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L349) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
@@ -1108,6 +1115,8 @@ const NodeEnvironment = require('jest-environment-node').default;
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
+    console.log(config.globalConfig);
+    console.log(config.projectConfig);
     this.testPath = context.testPath;
     this.docblockPragmas = context.docblockPragmas;
   }
@@ -1151,7 +1160,7 @@ module.exports = CustomEnvironment;
 let someGlobalObject;
 
 beforeAll(() => {
-  someGlobalObject = global.someGlobalObject;
+  someGlobalObject = globalThis.someGlobalObject;
 });
 ```
 

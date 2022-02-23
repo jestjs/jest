@@ -1,6 +1,6 @@
 {
   "name": "diff-sequences",
-  "version": "28.0.0-alpha.3",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",

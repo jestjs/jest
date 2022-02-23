@@ -24,7 +24,7 @@ describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
       `${fn} throws an error when %p is provided as a first argument to it`,
       el => {
         expect(() => {
-          global[fn](el);
+          globalThis[fn](el);
         }).toThrowError(
           'Invalid first argument. It must be a callback function.',
         );

@@ -218,8 +218,8 @@ Write `serialize` to return a string, given the arguments:
 | `min`               | `boolean` | minimize added space: no indentation nor line breaks    |
 | `plugins`           | `array`   | plugins to serialize application-specific data types    |
 | `printFunctionName` | `boolean` | include or omit the name of a function                  |
-| `spacingInner`      | `strong`  | spacing to separate items in a list                     |
-| `spacingOuter`      | `strong`  | spacing to enclose a list of items                      |
+| `spacingInner`      | `string`  | spacing to separate items in a list                     |
+| `spacingOuter`      | `string`  | spacing to enclose a list of items                      |
 
 Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
 
