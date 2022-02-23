@@ -41,7 +41,7 @@ describe('insert', () => {
   });
 
   afterAll(async () => {
-    await connection.close();
+    await connection.close(globalThis.__MONGO_DB_NAME__);
     await db.close();
   });
 

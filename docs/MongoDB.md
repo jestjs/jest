@@ -37,11 +37,12 @@ describe('insert', () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    db = await connection.db();
+    db = await connection.db(globalThis.__MONGO_DB_NAME__);
   });
 
   afterAll(async () => {
     await connection.close();
+    await db.close();
   });
 
   it('should insert a doc into collection', async () => {
