@@ -11,8 +11,8 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 1.  First install `@shelf/jest-mongodb`
 
-```
-yarn add @shelf/jest-mongodb --dev
+```bash npm2yarn
+npm install --save-dev @shelf/jest-mongodb
 ```
 
 2.  Specify preset in your Jest configuration:

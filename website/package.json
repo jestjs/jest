@@ -33,6 +33,7 @@
     "@docusaurus/plugin-client-redirects": "0.0.0-4591",
     "@docusaurus/plugin-pwa": "0.0.0-4591",
     "@docusaurus/preset-classic": "0.0.0-4591",
+    "@docusaurus/remark-plugin-npm2yarn": "0.0.0-4591",
     "clsx": "^1.1.1",
     "globby": "^11.0.1",
     "react": "^17.0.1",

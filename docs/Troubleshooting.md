@@ -162,6 +162,8 @@ Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecommen
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+
 ```bash
 # Using Jest CLI
 jest --runInBand

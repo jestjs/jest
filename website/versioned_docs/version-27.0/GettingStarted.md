@@ -122,23 +122,6 @@ module.exports = {
 
 </details>
 
-<details><summary markdown="span"><strong>Babel 6 support</strong></summary>
-
-Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
-
-```
-"dependencies": {
-  "babel-core": "^6.26.3",
-  "babel-jest": "^23.6.0",
-  "babel-preset-env": "^1.7.0",
-  "jest": "^24.0.0"
-}
-```
-
-While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
-
-</details>
-
 ### Using webpack
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. Webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
