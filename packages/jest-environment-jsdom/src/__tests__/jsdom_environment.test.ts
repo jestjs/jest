@@ -56,6 +56,32 @@ describe('JSDomEnvironment', () => {
     expect(env.dom.window.navigator.userAgent).toEqual('foo');
   });
 
+  it('should respect url option', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    expect(env.dom.window.location.href).toEqual('http://localhost/');
+
+    const envWithUrl = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig({
+          testEnvironmentOptions: {
+            url: 'https://jestjs.io',
+          },
+        }),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    expect(envWithUrl.dom.window.location.href).toEqual('https://jestjs.io/');
+  });
+
   /**
    * When used in conjunction with Custom Elements (part of the WebComponents standard)
    * setting the global.document to null too early is problematic because:

@@ -49,7 +49,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
               })
             : undefined,
         runScripts: 'dangerously',
-        url: projectConfig.testURL,
+        url: 'http://localhost/',
         virtualConsole: new VirtualConsole().sendTo(context.console),
         ...projectConfig.testEnvironmentOptions,
       },
