@@ -1332,12 +1332,6 @@ Default: `5000`
 
 Default timeout of a test in milliseconds.
 
-### `testURL` \[string]
-
-Default: `http://localhost`
-
-This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
-
 ### `timers` \[string]
 
 Default: `real`
