@@ -21,6 +21,10 @@ fit('fit no ancestors', () => {
   expect(true).toBeTruthy();
 });
 
+it.each([true, true])('it each no ancestors', () => {
+  expect(true).toBeTruthy();
+});
+
 describe('nested', () => {
   it('it nested', () => {
     expect(true).toBeTruthy();
@@ -31,6 +35,10 @@ describe('nested', () => {
   });
 
   fit('fit nested', () => {
+    expect(true).toBeTruthy();
+  });
+
+  it.each([true, true])('it each nested', () => {
     expect(true).toBeTruthy();
   });
 });

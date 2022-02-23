@@ -8,18 +8,17 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {sync as realpath} from 'realpath-native';
+import {tryRealpath} from 'jest-util';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
+  paths?: Array<string>;
 };
 
 export default function nodeModulesPaths(
-  basedir: Config.Path,
+  basedir: string,
   options: NodeModulesPathsOptions,
-): Array<Config.Path> {
+): Array<string> {
   const modules =
     options && options.moduleDirectory
       ? Array.from(options.moduleDirectory)
@@ -40,13 +39,13 @@ export default function nodeModulesPaths(
   // traverses parents of the physical path, not the symlinked path
   let physicalBasedir;
   try {
-    physicalBasedir = realpath(basedirAbs);
-  } catch (err) {
+    physicalBasedir = tryRealpath(basedirAbs);
+  } catch {
     // realpath can throw, e.g. on mapped drives
     physicalBasedir = basedirAbs;
   }
 
-  const paths: Array<Config.Path> = [physicalBasedir];
+  const paths: Array<string> = [physicalBasedir];
   let parsed = path.parse(physicalBasedir);
   while (parsed.dir !== paths[paths.length - 1]) {
     paths.push(parsed.dir);
@@ -54,7 +53,7 @@ export default function nodeModulesPaths(
   }
 
   const dirs = paths
-    .reduce(
+    .reduce<Array<string>>(
       (dirs, aPath) =>
         dirs.concat(
           modules.map(moduleDir =>
@@ -65,7 +64,7 @@ export default function nodeModulesPaths(
               : path.join(prefix, aPath, moduleDir),
           ),
         ),
-      [] as Array<Config.Path>,
+      [],
     )
     .filter(dir => dir !== '');
 

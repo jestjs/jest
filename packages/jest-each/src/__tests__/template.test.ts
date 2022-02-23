@@ -27,6 +27,9 @@ const getGlobalTestMocks = () => {
   };
   globals.test.only = jest.fn();
   globals.test.skip = jest.fn();
+  globals.test.concurrent = jest.fn();
+  globals.test.concurrent.only = jest.fn();
+  globals.test.concurrent.skip = jest.fn();
   globals.it.only = jest.fn();
   globals.it.skip = jest.fn();
   globals.describe.only = jest.fn();
@@ -37,6 +40,9 @@ const getGlobalTestMocks = () => {
 describe('jest-each', () => {
   [
     ['test'],
+    ['test', 'concurrent'],
+    ['test', 'concurrent', 'only'],
+    ['test', 'concurrent', 'skip'],
     ['test', 'only'],
     ['it'],
     ['fit'],
@@ -46,6 +52,183 @@ describe('jest-each', () => {
     ['describe', 'only'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
+      test('throws error when there are additional words in first column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a is the left | b    | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('does not throw error when there are multibyte characters in first column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+         ʅ(ツ)ʃ  | b    | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          b: 1,
+          expected: 2,
+          'ʅ(ツ)ʃ': 1,
+        });
+      });
+
+      test('throws error when there are additional words in second column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b is the right | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('does not throw error when there are multibyte characters in second column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | ☝(ʕ⊙ḕ⊙ʔ)☝  | expected
+          ${1} | ${1}           | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          a: 1,
+          expected: 2,
+          '☝(ʕ⊙ḕ⊙ʔ)☝': 1,
+        });
+      });
+
+      test('throws error when there are additional words in last column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected value
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('does not throw error when there are multibyte characters in last column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | (๑ఠ‿ఠ๑)＜expected
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          '(๑ఠ‿ఠ๑)＜expected': 2,
+          a: 1,
+          b: 1,
+        });
+      });
+
+      test('does not throw error when there is additional words in template after heading row', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+          foo
+          bar
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('does not throw error when there is only one column', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${1}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('does not throw error when there is only one column with additional words in template after heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          hello world
+          ${1}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title $a', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('throws error when there are no arguments for given headings', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
@@ -165,17 +348,20 @@ describe('jest-each', () => {
           ${1} | ${1} | ${2}
         `;
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+        testFunction(
+          'expected string: a=$a, b=$b, expected=$expected index=$#',
+          noop,
+        );
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: a=0, b=1, expected=1',
+          'expected string: a=0, b=1, expected=1 index=0',
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: a=1, b=1, expected=2',
+          'expected string: a=1, b=1, expected=2 index=1',
           expectFunction,
           undefined,
         );
@@ -190,19 +376,19 @@ describe('jest-each', () => {
         `;
         const testFunction = get(eachObject, keyPath);
         testFunction(
-          'add($a, $b) expected string: a=$a, b=$b, expected=$expected',
+          'add($a, $b) expected string: a=$a, b=$b, expected=$expected index=$#',
           noop,
         );
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          'add(0, 1) expected string: a=0, b=1, expected=1',
+          'add(0, 1) expected string: a=0, b=1, expected=1 index=0',
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          'add(1, 1) expected string: a=1, b=1, expected=2',
+          'add(1, 1) expected string: a=1, b=1, expected=2 index=1',
           expectFunction,
           undefined,
         );
@@ -315,6 +501,7 @@ describe('jest-each', () => {
     test.each([
       [['test']],
       [['test', 'only']],
+      [['test', 'concurrent', 'only']],
       [['it']],
       [['fit']],
       [['it', 'only']],
@@ -346,7 +533,7 @@ describe('jest-each', () => {
         ${0} | ${1} | ${1}
       `;
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string', function({a, b, expected}, done) {
+        testFunction('expected string', function ({a, b, expected}, done) {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);
@@ -361,6 +548,8 @@ describe('jest-each', () => {
   [
     ['xtest'],
     ['test', 'skip'],
+    ['test', 'concurrent'],
+    ['test', 'concurrent', 'skip'],
     ['xit'],
     ['it', 'skip'],
     ['xdescribe'],
@@ -417,17 +606,20 @@ describe('jest-each', () => {
           ${1} | ${1} | ${2}
         `;
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+        testFunction(
+          'expected string: a=$a, b=$b, expected=$expected index=$#',
+          noop,
+        );
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: a=0, b=1, expected=1',
+          'expected string: a=0, b=1, expected=1 index=0',
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          'expected string: a=1, b=1, expected=2',
+          'expected string: a=1, b=1, expected=2 index=1',
           expectFunction,
           undefined,
         );

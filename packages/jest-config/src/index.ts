@@ -5,45 +5,49 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
-import chalk from 'chalk';
-import {isJSONString, replaceRootDirInPath} from './utils';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
+import * as constants from './constants';
 import normalize from './normalize';
-import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
-export {getTestEnvironment, isJSONString} from './utils';
+import resolveConfigPath from './resolveConfigPath';
+import {isJSONString, replaceRootDirInPath} from './utils';
+
+export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
+export {constants};
 
 type ReadConfig = {
-  configPath: Config.Path | null | undefined;
+  configPath: string | null | undefined;
   globalConfig: Config.GlobalConfig;
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
 };
 
-export function readConfig(
+export async function readConfig(
   argv: Config.Argv,
-  packageRootOrConfig: Config.Path | Config.InitialOptions,
+  packageRootOrConfig: string | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: Config.Path | null,
-  projectIndex: number = Infinity,
-): ReadConfig {
-  let rawOptions;
+  parentConfigDirname?: string | null,
+  projectIndex = Infinity,
+  skipMultipleConfigWarning = false,
+): Promise<ReadConfig> {
+  let rawOptions: Config.InitialOptions;
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigPath) {
-      const parentConfigDirname = path.dirname(parentConfigPath);
+    if (parentConfigDirname) {
       rawOptions = packageRootOrConfig;
       rawOptions.rootDir = rawOptions.rootDir
         ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
@@ -59,7 +63,7 @@ export function readConfig(
     let config;
     try {
       config = JSON.parse(argv.config);
-    } catch (e) {
+    } catch {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
       );
@@ -69,17 +73,25 @@ export function readConfig(
     config.rootDir = config.rootDir || packageRootOrConfig;
     rawOptions = config;
     // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json` or `jest.config.js`
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(argv.config, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    configPath = resolveConfigPath(
+      argv.config,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
+    rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
     // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    configPath = resolveConfigPath(
+      packageRootOrConfig,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
+    rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
 
-  const {options, hasDeprecationWarnings} = normalize(
+  const {options, hasDeprecationWarnings} = await normalize(
     rawOptions,
     argv,
     configPath,
@@ -105,18 +117,18 @@ const groupOptions = (
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
+    ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
     coverageDirectory: options.coverageDirectory,
+    coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
-    enabledTestsMap: options.enabledTestsMap,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
-    extraGlobals: options.extraGlobals,
     filter: options.filter,
     findRelatedTests: options.findRelatedTests,
     forceExit: options.forceExit,
@@ -144,6 +156,7 @@ const groupOptions = (
     runTestsByPath: options.runTestsByPath,
     silent: options.silent,
     skipFilter: options.skipFilter,
+    snapshotFormat: options.snapshotFormat,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
     testPathPattern: options.testPathPattern,
@@ -160,7 +173,6 @@ const groupOptions = (
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
-    browser: options.browser,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
@@ -171,6 +183,7 @@ const groupOptions = (
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
+    extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
     extraGlobals: options.extraGlobals,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
@@ -178,6 +191,7 @@ const groupOptions = (
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
     moduleLoader: options.moduleLoader,
@@ -197,6 +211,8 @@ const groupOptions = (
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
+    slowTestThreshold: options.slowTestThreshold,
+    snapshotFormat: options.snapshotFormat,
     snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,
@@ -206,7 +222,6 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
-    testURL: options.testURL,
     timers: options.timers,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
@@ -260,29 +275,23 @@ This usually means that your ${chalk.bold(
 //
 // If no projects are specified, process.cwd() will be used as the default
 // (and only) project.
-export function readConfigs(
+export async function readConfigs(
   argv: Config.Argv,
-  projectPaths: Array<Config.Path>,
-): {
+  projectPaths: Array<string>,
+): Promise<{
   globalConfig: Config.GlobalConfig;
   configs: Array<Config.ProjectConfig>;
   hasDeprecationWarnings: boolean;
-} {
+}> {
   let globalConfig;
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: Config.Path | null | undefined;
+  let configPath: string | null | undefined;
 
   if (projectPaths.length === 1) {
-    const parsedConfig = readConfig(argv, projects[0]);
+    const parsedConfig = await readConfig(argv, projects[0]);
     configPath = parsedConfig.configPath;
-
-    if (parsedConfig.globalConfig.projects) {
-      // If this was a single project, and its config has `projects`
-      // settings, use that value instead.
-      projects = parsedConfig.globalConfig.projects;
-    }
 
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
@@ -290,32 +299,50 @@ export function readConfigs(
     if (globalConfig.projects && globalConfig.projects.length) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
+      // In other words, if this was a single project,
+      // and its config has `projects` settings, use that value instead.
       projects = globalConfig.projects;
     }
   }
 
-  if (
-    projects.length > 1 ||
-    (projects.length && typeof projects[0] === 'object')
-  ) {
-    const parsedConfigs = projects
-      .filter(root => {
-        // Ignore globbed files that cannot be `require`d.
-        if (
-          typeof root === 'string' &&
-          fs.existsSync(root) &&
-          !fs.lstatSync(root).isDirectory() &&
-          !root.endsWith('.js') &&
-          !root.endsWith('.json')
-        ) {
-          return false;
-        }
+  if (projects.length > 0) {
+    const cwd =
+      process.platform === 'win32' ? tryRealpath(process.cwd()) : process.cwd();
+    const projectIsCwd = projects[0] === cwd;
 
-        return true;
-      })
-      .map((root, projectIndex) =>
-        readConfig(argv, root, true, configPath, projectIndex),
-      );
+    const parsedConfigs = await Promise.all(
+      projects
+        .filter(root => {
+          // Ignore globbed files that cannot be `require`d.
+          if (
+            typeof root === 'string' &&
+            fs.existsSync(root) &&
+            !fs.lstatSync(root).isDirectory() &&
+            !constants.JEST_CONFIG_EXT_ORDER.some(ext => root.endsWith(ext))
+          ) {
+            return false;
+          }
+
+          return true;
+        })
+        .map((root, projectIndex) => {
+          const projectIsTheOnlyProject =
+            projectIndex === 0 && projects.length === 1;
+          const skipArgvConfigOption = !(
+            projectIsTheOnlyProject && projectIsCwd
+          );
+
+          return readConfig(
+            argv,
+            root,
+            skipArgvConfigOption,
+            configPath ? path.dirname(configPath) : cwd,
+            projectIndex,
+            // we wanna skip the warning if this is the "main" project
+            projectIsCwd,
+          );
+        }),
+    );
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);

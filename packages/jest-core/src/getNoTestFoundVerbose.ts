@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import pluralize from './pluralize';
-import {Stats, TestRunData} from './types';
+import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,
@@ -40,10 +40,10 @@ export default function getNoTestFoundVerbose(
           `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
           statsMessage
       : `No files found in ${config.rootDir}.\n` +
-          `Make sure Jest's configuration does not exclude this directory.` +
-          `\nTo set up Jest, make sure a package.json file exists.\n` +
-          `Jest Documentation: ` +
-          `facebook.github.io/jest/docs/configuration.html`;
+          "Make sure Jest's configuration does not exclude this directory." +
+          '\nTo set up Jest, make sure a package.json file exists.\n' +
+          'Jest Documentation: ' +
+          'https://jestjs.io/docs/configuration';
   });
   let dataMessage;
 

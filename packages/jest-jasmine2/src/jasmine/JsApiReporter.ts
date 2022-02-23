@@ -29,10 +29,10 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
-import {Reporter, RunDetails} from '../types';
-import {SpecResult} from './Spec';
-import {SuiteResult} from './Suite';
-import Timer from './Timer';
+import type {Reporter, RunDetails} from '../types';
+import type {SpecResult} from './Spec';
+import type {SuiteResult} from './Suite';
+import type Timer from './Timer';
 
 const noopTimer = {
   start() {},
@@ -82,7 +82,7 @@ export default class JsApiReporter implements Reporter {
       }
     }
 
-    this.jasmineDone = function(runDetails) {
+    this.jasmineDone = function (runDetails) {
       validateAfterAllExceptions(runDetails);
       this.finished = true;
       this.runDetails = runDetails;
@@ -90,24 +90,24 @@ export default class JsApiReporter implements Reporter {
       status = 'done';
     };
 
-    this.status = function() {
+    this.status = function () {
       return status;
     };
 
     const suites: Array<SuiteResult> = [];
     const suites_hash: Record<string, SuiteResult> = {};
 
-    this.specStarted = function() {};
+    this.specStarted = function () {};
 
-    this.suiteStarted = function(result: SuiteResult) {
+    this.suiteStarted = function (result: SuiteResult) {
       suites_hash[result.id] = result;
     };
 
-    this.suiteDone = function(result: SuiteResult) {
+    this.suiteDone = function (result: SuiteResult) {
       storeSuite(result);
     };
 
-    this.suiteResults = function(index, length) {
+    this.suiteResults = function (index, length) {
       return suites.slice(index, index + length);
     };
 
@@ -116,25 +116,25 @@ export default class JsApiReporter implements Reporter {
       suites_hash[result.id] = result;
     }
 
-    this.suites = function() {
+    this.suites = function () {
       return suites_hash;
     };
 
     const specs: Array<SpecResult> = [];
 
-    this.specDone = function(result) {
+    this.specDone = function (result) {
       specs.push(result);
     };
 
-    this.specResults = function(index, length) {
+    this.specResults = function (index, length) {
       return specs.slice(index, index + length);
     };
 
-    this.specs = function() {
+    this.specs = function () {
       return specs;
     };
 
-    this.executionTime = function() {
+    this.executionTime = function () {
       return executionTime;
     };
   }

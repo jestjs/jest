@@ -6,13 +6,13 @@
  */
 const crypto = require('crypto');
 const fs = require('fs');
-const {createDirectory} = require('jest-util');
 const os = require('os');
 const path = require('path');
+const {createDirectory} = require('jest-util');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
-module.exports = function() {
+module.exports = function () {
   // This uses a flow annotation to show it can be transpiled
   return new Promise((resolve, reject: any) => {
     createDirectory(DIR);

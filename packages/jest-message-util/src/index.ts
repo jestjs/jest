@@ -5,20 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AssertionResult, SerializableError} from '@jest/test-result';
-import chalk from 'chalk';
+import {fileURLToPath} from 'url';
+import {codeFrameColumns} from '@babel/code-frame';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 import slash = require('slash');
-import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
-import {Frame} from './types';
+import type {Config, TestResult} from '@jest/types';
+import {format as prettyFormat} from 'pretty-format';
+import type {Frame} from './types';
 
-export {Frame} from './types';
-
-type Path = Config.Path;
+export type {Frame} from './types';
 
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
@@ -27,7 +26,7 @@ let nodeInternals: Array<RegExp> = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals();
-} catch (e) {
+} catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
 }
@@ -39,14 +38,17 @@ export type StackTraceConfig = Pick<
 
 export type StackTraceOptions = {
   noStackTrace: boolean;
+  noCodeFrame?: boolean;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JASMINE_IGNORE =
+  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JEST_INTERNALS_IGNORE =
+  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
@@ -92,16 +94,40 @@ const getRenderedCallsite = (
 
 const blankStringRegexp = /^\s*$/;
 
+function checkForCommonEnvironmentErrors(error: string) {
+  if (
+    error.includes('ReferenceError: document is not defined') ||
+    error.includes('ReferenceError: window is not defined') ||
+    error.includes('ReferenceError: navigator is not defined')
+  ) {
+    return warnAboutWrongTestEnvironment(error, 'jsdom');
+  } else if (error.includes('.unref is not a function')) {
+    return warnAboutWrongTestEnvironment(error, 'node');
+  }
+
+  return error;
+}
+
+function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
+  return (
+    chalk.bold.red(
+      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
+        'https://jestjs.io/docs/configuration#testenvironment-string',
+      )}.\nConsider using the "${env}" test environment.\n\n`,
+    ) + error
+  );
+}
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
   reuseMessage?: boolean,
-) => {
+): string => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
     error.stack = '';
@@ -115,7 +141,10 @@ export const formatExecError = (
     stack = error;
   } else {
     message = error.message;
-    stack = error.stack;
+    stack =
+      typeof error.stack === 'string'
+        ? error.stack
+        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -126,6 +155,8 @@ export const formatExecError = (
     message = separated.message;
   }
 
+  message = checkForCommonEnvironmentErrors(message);
+
   message = indentAllLines(message, MESSAGE_INDENT);
 
   stack =
@@ -133,9 +164,12 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
+  if (
+    typeof stack !== 'string' ||
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
+  ) {
     // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
+    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   let messageToUse;
@@ -202,7 +236,7 @@ const removeInternalStackEntries = (
 
 const formatPaths = (
   config: StackTraceConfig,
-  relativeTestPath: Path | null,
+  relativeTestPath: string | null,
   line: string,
 ) => {
   // Extract the file path from the trace line.
@@ -226,8 +260,8 @@ const formatPaths = (
 
 export const getStackTraceLines = (
   stack: string,
-  options: StackTraceOptions = {noStackTrace: false},
-) => removeInternalStackEntries(stack.split(/\n/), options);
+  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
+): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
   for (const line of lines) {
@@ -238,6 +272,9 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
+      if (parsedFrame.file.startsWith('file://')) {
+        parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
+      }
       return parsedFrame as Frame;
     }
   }
@@ -249,27 +286,29 @@ export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
-) => {
+  testPath?: string,
+): string => {
   const lines = getStackTraceLines(stack, options);
-  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame) {
-    const {column, file: filename, line} = topFrame;
+  if (!options.noStackTrace && !options.noCodeFrame) {
+    const topFrame = getTopFrame(lines);
+    if (topFrame) {
+      const {column, file: filename, line} = topFrame;
 
-    if (line && filename && path.isAbsolute(filename)) {
-      let fileContent;
-      try {
-        // TODO: check & read HasteFS instead of reading the filesystem:
-        // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
-        fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, line, column);
-      } catch (e) {
-        // the file does not exist or is inaccessible, we ignore
+      if (line && filename && path.isAbsolute(filename)) {
+        let fileContent;
+        try {
+          // TODO: check & read HasteFS instead of reading the filesystem:
+          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          fileContent = fs.readFileSync(filename, 'utf8');
+          renderedCallsite = getRenderedCallsite(fileContent, line, column);
+        } catch {
+          // the file does not exist or is inaccessible, we ignore
+        }
       }
     }
   }
@@ -282,26 +321,30 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return `${renderedCallsite}\n${stacktrace}`;
+  return renderedCallsite
+    ? `${renderedCallsite}\n${stacktrace}`
+    : `\n${stacktrace}`;
 };
 
+type FailedResults = Array<{
+  content: string;
+  result: TestResult.AssertionResult;
+}>;
+
 export const formatResultsErrors = (
-  testResults: Array<AssertionResult>,
+  testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string | null => {
-  type FailedResults = Array<{
-    content: string;
-    result: AssertionResult;
-  }>;
-
-  const failedResults: FailedResults = testResults.reduce(
+  const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
+      result.failureMessages.forEach(item => {
+        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      });
       return errors;
     },
-    [] as FailedResults,
+    [],
   );
 
   if (!failedResults.length) {
@@ -346,7 +389,9 @@ const removeBlankErrorLine = (str: string) =>
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
-export const separateMessageFromStack = (content: string) => {
+export const separateMessageFromStack = (
+  content: string,
+): {message: string; stack: string} => {
   if (!content) {
     return {message: '', stack: ''};
   }

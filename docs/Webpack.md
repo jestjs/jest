@@ -9,8 +9,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 Let's start with a common sort of webpack config file and translate it to a Jest setup.
 
-```js
-// webpack.config.js
+```js title="webpack.config.js"
 module.exports = {
   module: {
     loaders: [
@@ -36,14 +35,13 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-object-string-string) config option.
+If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option.
 
 ### Handling Static Assets
 
 Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "moduleNameMapper": {
@@ -56,15 +54,11 @@ Next, let's configure Jest to gracefully handle asset files such as stylesheets 
 
 And the mock files themselves:
 
-```js
-// __mocks__/styleMock.js
-
+```js title="__mocks__/styleMock.js"
 module.exports = {};
 ```
 
-```js
-// __mocks__/fileMock.js
-
+```js title="__mocks__/fileMock.js"
 module.exports = 'test-file-stub';
 ```
 
@@ -72,14 +66,13 @@ module.exports = 'test-file-stub';
 
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```bash
-yarn add --dev identity-obj-proxy
+```bash npm2yarn
+npm install --save-dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
-```json
-// package.json (for CSS Modules)
+```json title="package.json (for CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
@@ -92,10 +85,9 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 
 > Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
-If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-object-string-string) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
+If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
 
-```js
-// fileTransformer.js
+```js title="fileTransformer.js"
 const path = require('path');
 
 module.exports = {
@@ -105,8 +97,7 @@ module.exports = {
 };
 ```
 
-```json
-// package.json (for custom transformers and CSS Modules)
+```json title="package.json (for custom transformers and CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
@@ -125,8 +116,8 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 ```json
 "transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 ```
@@ -135,8 +126,7 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "moduleFileExtensions": ["js", "jsx"],
@@ -152,10 +142,9 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 > Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],
@@ -169,10 +158,9 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally we just have the webpack `alias` left to handle. For that we can make use of the `moduleNameMapper` option again.
+And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],

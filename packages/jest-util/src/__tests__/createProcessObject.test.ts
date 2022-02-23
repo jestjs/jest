@@ -26,9 +26,9 @@ it('creates a process object that looks like the original one', () => {
   // "_events" property is checked to ensure event emitter properties are
   // properly copied.
   ['argv', 'env', '_events'].forEach(key => {
-    // @ts-ignore
+    // @ts-expect-error
     expect(fakeProcess[key]).toEqual(process[key]);
-    // @ts-ignore
+    // @ts-expect-error
     expect(fakeProcess[key]).not.toBe(process[key]);
   });
 
@@ -47,7 +47,7 @@ it('checks that process.env works as expected on Linux platforms', () => {
 
   // Existing properties inside process.env are copied to the fake environment.
   process.env.PROP_STRING = 'foo';
-  // @ts-ignore
+  // @ts-expect-error
   process.env.PROP_NUMBER = 3;
   process.env.PROP_UNDEFINED = undefined;
 
@@ -102,6 +102,6 @@ it('checks that process.env works as expected in Windows platforms', () => {
   // You can delete through case-insensitiveness too.
   delete fake.prop_string;
 
-  expect(fake.hasOwnProperty('PROP_STRING')).toBe(false);
-  expect(fake.hasOwnProperty('PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
 });

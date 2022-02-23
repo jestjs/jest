@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
+import type {CompareKeys} from 'pretty-format';
+import type {DiffOptions, DiffOptionsNormalized} from './types';
 
-import {DiffOptions, DiffOptionsNormalized} from './types';
+export const noColor = (string: string): string => string;
 
 const DIFF_CONTEXT_DEFAULT = 5;
 
@@ -19,14 +21,23 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   bColor: chalk.red,
   bIndicator: '+',
   changeColor: chalk.inverse,
+  changeLineTrailingSpaceColor: noColor,
   commonColor: chalk.dim,
   commonIndicator: ' ',
+  commonLineTrailingSpaceColor: noColor,
+  compareKeys: undefined,
   contextLines: DIFF_CONTEXT_DEFAULT,
+  emptyFirstOrLastLinePlaceholder: '',
   expand: true,
   includeChangeCounts: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
 };
+
+const getCompareKeys = (compareKeys?: CompareKeys): CompareKeys =>
+  compareKeys && typeof compareKeys === 'function'
+    ? compareKeys
+    : OPTIONS_DEFAULT.compareKeys;
 
 const getContextLines = (contextLines?: number): number =>
   typeof contextLines === 'number' &&
@@ -41,5 +52,6 @@ export const normalizeDiffOptions = (
 ): DiffOptionsNormalized => ({
   ...OPTIONS_DEFAULT,
   ...options,
+  compareKeys: getCompareKeys(options.compareKeys),
   contextLines: getContextLines(options.contextLines),
 });

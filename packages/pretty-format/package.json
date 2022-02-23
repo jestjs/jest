@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "24.9.0",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -8,32 +8,37 @@
   },
   "license": "MIT",
   "description": "Stringify any JavaScript value.",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "browser": "build-es5/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./ConvertAnsi": "./build/plugins/ConvertAnsi.js"
+  },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^24.9.0",
-    "ansi-regex": "^4.0.0",
-    "ansi-styles": "^4.0.0",
-    "react-is": "^16.8.4"
+    "@jest/schemas": "^28.0.0-alpha.3",
+    "ansi-regex": "^5.0.1",
+    "ansi-styles": "^5.0.0",
+    "react-is": "^17.0.1"
   },
   "devDependencies": {
-    "@types/ansi-regex": "^4.0.0",
-    "@types/ansi-styles": "^3.2.1",
     "@types/react": "*",
-    "@types/react-is": "^16.7.1",
+    "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "*",
-    "immutable": "4.0.0-rc.9",
+    "immutable": "^4.0.0",
+    "jest-util": "^28.0.0-alpha.4",
     "react": "*",
     "react-dom": "*",
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 8"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  }
 }

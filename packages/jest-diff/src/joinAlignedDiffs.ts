@@ -6,13 +6,99 @@
  */
 
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
-import {
-  createPatchMark,
-  printCommonLine,
-  printDeleteLine,
-  printInsertLine,
-} from './printDiffs';
-import {DiffOptionsNormalized} from './types';
+import type {DiffOptionsColor, DiffOptionsNormalized} from './types';
+
+const formatTrailingSpaces = (
+  line: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
+
+const printDiffLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  color: DiffOptionsColor,
+  indicator: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+  emptyFirstOrLastLinePlaceholder: string,
+): string =>
+  line.length !== 0
+    ? color(
+        indicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter),
+      )
+    : indicator !== ' '
+    ? color(indicator)
+    : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
+    ? color(indicator + ' ' + emptyFirstOrLastLinePlaceholder)
+    : '';
+
+const printDeleteLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    aColor,
+    aIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    aColor,
+    aIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
+
+const printInsertLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    bColor,
+    bIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    bColor,
+    bIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
+
+const printCommonLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    commonColor,
+    commonIndicator,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    commonColor,
+    commonIndicator,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
+
+// In GNU diff format, indexes are one-based instead of zero-based.
+const createPatchMark = (
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+  {patchColor}: DiffOptionsNormalized,
+): string =>
+  patchColor(
+    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
+  );
 
 // jest --no-expand
 //
@@ -95,12 +181,14 @@ export const joinAlignedDiffsNoExpand = (
   };
 
   const pushDeleteLine = (line: string): void => {
-    lines.push(printDeleteLine(line, options));
+    const j = lines.length;
+    lines.push(printDeleteLine(line, j === 0 || j === jLast, options));
     aEnd += 1;
   };
 
   const pushInsertLine = (line: string): void => {
-    lines.push(printInsertLine(line, options));
+    const j = lines.length;
+    lines.push(printInsertLine(line, j === 0 || j === jLast, options));
     bEnd += 1;
   };
 
@@ -196,24 +284,21 @@ export const joinAlignedDiffsNoExpand = (
 export const joinAlignedDiffsExpand = (
   diffs: Array<Diff>,
   options: DiffOptionsNormalized,
-) =>
+): string =>
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
       const line = diff[1];
+      const isFirstOrLast = i === 0 || i === diffs.length - 1;
 
       switch (diff[0]) {
         case DIFF_DELETE:
-          return printDeleteLine(line, options);
+          return printDeleteLine(line, isFirstOrLast, options);
 
         case DIFF_INSERT:
-          return printInsertLine(line, options);
+          return printInsertLine(line, isFirstOrLast, options);
 
         default:
-          return printCommonLine(
-            line,
-            i === 0 || i === diffs.length - 1,
-            options,
-          );
+          return printCommonLine(line, isFirstOrLast, options);
       }
     })
     .join('\n');

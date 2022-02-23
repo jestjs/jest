@@ -6,25 +6,30 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap = require('jest-haste-map');
 import exit = require('exit');
+import type {
+  SerializableError,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
-import Runtime = require('jest-runtime');
-import Resolver = require('jest-resolve');
-import {ErrorWithCode, TestRunnerSerializedContext} from './types';
+import type Resolver from 'jest-resolve';
+import Runtime from 'jest-runtime';
+import {messageParent} from 'jest-worker';
 import runTest from './runTest';
+import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;
-  serializableModuleMap: HasteMap.SerializableModuleMap;
+  serializableModuleMap: SerializableModuleMap;
 };
 
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  path: Config.Path;
+  path: string;
   context?: TestRunnerSerializedContext;
 };
 
@@ -63,16 +68,22 @@ const getResolver = (config: Config.ProjectConfig) => {
 
 export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
-}) {
+}): void {
   // Module maps that will be needed for the test runs are passed.
   for (const {
     config,
     serializableModuleMap,
   } of setupData.serializableResolvers) {
-    const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+    const moduleMap = HasteMap.getStatic(config).getModuleMapFromJSON(
+      serializableModuleMap,
+    );
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
+
+const sendMessageToJest: TestFileEvent = (eventName, args) => {
+  messageParent([eventName, args]);
+};
 
 export async function worker({
   config,
@@ -89,9 +100,13 @@ export async function worker({
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
+        sourcesRelatedToTestsInChangedFiles:
+          context.sourcesRelatedToTestsInChangedFiles &&
+          new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
+      sendMessageToJest,
     );
-  } catch (error) {
+  } catch (error: any) {
     throw formatError(error);
   }
 }

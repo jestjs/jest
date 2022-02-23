@@ -7,16 +7,16 @@
 
 import {readConfig} from '../index';
 
-test('readConfig() throws when an object is passed without a file path', () => {
-  expect(() => {
+test('readConfig() throws when an object is passed without a file path', async () => {
+  await expect(
     readConfig(
-      // @ts-ignore
+      // @ts-expect-error
       null /* argv */,
       {} /* packageRootOrConfig */,
       false /* skipArgvConfigOption */,
       null /* parentConfigPath */,
-    );
-  }).toThrowError(
+    ),
+  ).rejects.toThrowError(
     'Jest: Cannot use configuration as an object without a file path',
   );
 });

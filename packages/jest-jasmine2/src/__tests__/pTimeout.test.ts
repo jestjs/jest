@@ -12,8 +12,8 @@ import pTimeout from '../pTimeout';
 
 describe('pTimeout', () => {
   beforeEach(() => {
-    jest.spyOn(global, 'setTimeout');
-    jest.spyOn(global, 'clearTimeout');
+    jest.spyOn(globalThis, 'setTimeout');
+    jest.spyOn(globalThis, 'clearTimeout');
   });
 
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {
@@ -30,7 +30,7 @@ describe('pTimeout', () => {
     const promise = Promise.reject();
     try {
       await pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
-    } catch (e) {}
+    } catch {}
     expect(setTimeout).toHaveBeenCalled();
     expect(clearTimeout).toHaveBeenCalled();
     expect(onTimeout).not.toHaveBeenCalled();
@@ -39,7 +39,7 @@ describe('pTimeout', () => {
   it('calls `onTimeout` on timeout.', async () => {
     const onTimeout = jest.fn();
     // A Promise that never resolves or rejects.
-    const promise = new Promise(() => {});
+    const promise = new Promise<void>(() => {});
     const timeoutPromise = pTimeout(
       promise,
       1000,

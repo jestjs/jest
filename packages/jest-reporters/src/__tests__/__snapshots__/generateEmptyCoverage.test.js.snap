@@ -38,8 +38,8 @@ Object {
             "line": 9,
           },
           "start": Object {
-            "column": 6,
-            "line": 5,
+            "column": 13,
+            "line": 7,
           },
         },
       ],
@@ -75,7 +75,6 @@ Object {
       "name": "(anonymous_0)",
     },
   },
-  "hash": Any<String>,
   "path": Any<String>,
   "s": Object {
     "0": 0,

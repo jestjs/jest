@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
 import {
   AssertionResult,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
-import {SpecResult} from './jasmine/Spec';
-import {SuiteResult} from './jasmine/Suite';
-import {Reporter, RunDetails} from './types';
+import type {SpecResult} from './jasmine/Spec';
+import type {SuiteResult} from './jasmine/Suite';
+import type {Reporter, RunDetails} from './types';
 
 type Microseconds = number;
 
@@ -26,12 +26,12 @@ export default class Jasmine2Reporter implements Reporter {
   private _resolve: any;
   private _resultsPromise: Promise<TestResult>;
   private _startTimes: Map<string, Microseconds>;
-  private _testPath: Config.Path;
+  private _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
-    testPath: Config.Path,
+    testPath: string,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -43,9 +43,9 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
-  jasmineStarted(_runDetails: RunDetails) {}
+  jasmineStarted(_runDetails: RunDetails): void {}
 
-  specStarted(spec: SpecResult) {
+  specStarted(spec: SpecResult): void {
     this._startTimes.set(spec.id, Date.now());
   }
 
@@ -141,6 +141,7 @@ export default class Jasmine2Reporter implements Reporter {
     const results: AssertionResult = {
       ancestorTitles,
       duration,
+      failureDetails: [],
       failureMessages: [],
       fullName: specResult.fullName,
       location,
@@ -151,10 +152,11 @@ export default class Jasmine2Reporter implements Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message =
-        !failed.matcherName && failed.stack
+        !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
+      results.failureDetails.push(failed);
     });
 
     return results;

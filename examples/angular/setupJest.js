@@ -14,5 +14,5 @@ const testingModule = require('@angular/platform-browser-dynamic/testing');
 
 getTestBed().initTestEnvironment(
   testingModule.BrowserDynamicTestingModule,
-  testingModule.platformBrowserDynamicTesting()
+  testingModule.platformBrowserDynamicTesting(),
 );

@@ -27,7 +27,7 @@ jest
   });
 
 jest.doMock('chalk', () =>
-  Object.assign(new chalk.constructor({enabled: false}), {
+  Object.assign(new chalk.Instance({level: 0}), {
     stripColor: str => str,
   }),
 );

@@ -25,11 +25,16 @@ function workerReply(i, error, result) {
   workerReplyEnd(i, error, result);
 }
 
+function workerReplyCustomMessage(i, message) {
+  mockWorkerCalls[i].onCustomMessage(message);
+}
+
 describe('Farm', () => {
   beforeEach(() => {
     mockWorkerCalls = [];
     callback = jest.fn((...args) => {
       mockWorkerCalls.push({
+        onCustomMessage: args[4],
         onEnd: args[3],
         onStart: args[2],
         passed: args[1],
@@ -47,6 +52,7 @@ describe('Farm', () => {
     expect(callback).toHaveBeenCalledWith(
       0,
       [1, true, 'foo', [42]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -67,6 +73,7 @@ describe('Farm', () => {
       [1, true, 'foo', [42]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
@@ -74,11 +81,14 @@ describe('Farm', () => {
       [1, true, 'foo1', [43]],
       expect.any(Function),
       expect.any(Function),
+
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       3,
       2, // third worker
       [1, true, 'foo2', [44]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -88,13 +98,14 @@ describe('Farm', () => {
       [1, true, 'foo3', [45]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
   });
 
   it('handles null computeWorkerKey, sending to first worker', async () => {
     const computeWorkerKey = jest.fn(() => null);
 
-    const farm = new Farm(4, callback, computeWorkerKey);
+    const farm = new Farm(4, callback, {computeWorkerKey});
 
     const p0 = farm.doWork('foo', 42);
     workerReply(0);
@@ -110,6 +121,7 @@ describe('Farm', () => {
       [1, true, 'foo', [42]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
   });
 
@@ -120,7 +132,7 @@ describe('Farm', () => {
       .mockReturnValueOnce('two')
       .mockReturnValueOnce('one');
 
-    const farm = new Farm(4, callback, computeWorkerKey);
+    const farm = new Farm(4, callback, {computeWorkerKey});
 
     const p0 = farm.doWork('foo', 42);
     workerReply(0);
@@ -146,6 +158,7 @@ describe('Farm', () => {
       [1, true, 'foo', [42]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
@@ -153,11 +166,13 @@ describe('Farm', () => {
       [1, true, 'foo1', [43]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       3,
       0, // first worker again
       [1, true, 'foo2', [44]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -193,7 +208,9 @@ describe('Farm', () => {
   });
 
   it('checks that once a sticked task finishes, next time is sent to that worker', async () => {
-    const farm = new Farm(4, callback, () => '1234567890abcdef');
+    const farm = new Farm(4, callback, {
+      computeWorkerKey: () => '1234567890abcdef',
+    });
 
     // Worker 1 successfully replies with "17" as a result.
     const p0 = farm.doWork('car', 'plane');
@@ -220,6 +237,7 @@ describe('Farm', () => {
       [1, true, 'car', ['plane']],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
@@ -227,11 +245,14 @@ describe('Farm', () => {
       [1, true, 'foo', ['bar']],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
   });
 
   it('checks that even before a sticked task finishes, next time is sent to that worker', async () => {
-    const farm = new Farm(4, callback, () => '1234567890abcdef');
+    const farm = new Farm(4, callback, {
+      computeWorkerKey: () => '1234567890abcdef',
+    });
 
     // Note that the worker is sending a start response synchronously.
     const p0 = farm.doWork('car', 'plane');
@@ -261,11 +282,13 @@ describe('Farm', () => {
       [1, true, 'car', ['plane']],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
       0, // first worker
       [1, true, 'foo', ['bar']],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -291,7 +314,7 @@ describe('Farm', () => {
       // Push onto the second queue; potentially wiping the earlier job.
       .mockReturnValueOnce(1);
 
-    const farm = new Farm(2, callback, hash);
+    const farm = new Farm(2, callback, {computeWorkerKey: hash});
 
     // First and second jobs get resolved, so that their hash is sticked to
     // the right worker: worker assignment is performed when workers reply, not
@@ -332,5 +355,36 @@ describe('Farm', () => {
     await expect(p5).resolves.toBe('response-5');
     await expect(p6).resolves.toBe('response-6');
     await expect(p7).resolves.toBe('response-7');
+  });
+
+  it('can receive custom messages from workers', async () => {
+    expect.assertions(2);
+    const farm = new Farm(2, callback);
+
+    const p0 = farm.doWork('work-0');
+    const p1 = farm.doWork('work-1');
+
+    const unsubscribe = p0.UNSTABLE_onCustomMessage(message => {
+      expect(message).toEqual({key: 0, message: 'foo'});
+    });
+
+    p1.UNSTABLE_onCustomMessage(message => {
+      expect(message).toEqual({key: 1, message: 'bar'});
+    });
+
+    workerReplyStart(0);
+    workerReplyStart(1);
+    workerReplyCustomMessage(0, {key: 0, message: 'foo'});
+    workerReplyCustomMessage(1, {key: 1, message: 'bar'});
+
+    unsubscribe();
+    // This message will not received because the listener already
+    // unsubscribed.
+    workerReplyCustomMessage(0, {key: 0, message: 'baz'});
+
+    workerReply(0, null, 17);
+    workerReply(1, null, 17);
+    await p0;
+    await p1;
   });
 });

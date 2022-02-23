@@ -12,6 +12,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "lodash": "^4.17.5"
+    "lodash": "^4.17.19"
   }
 }

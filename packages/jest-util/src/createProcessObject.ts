@@ -9,7 +9,7 @@ import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
 const isWin32 = process.platform === 'win32';
-const proto: Record<string, any> = Object.getPrototypeOf(process.env);
+const proto: Record<string, unknown> = Object.getPrototypeOf(process.env);
 
 // The "process.env" object has a bunch of particularities: first, it does not
 // directly extend from Object; second, it converts any assigned value to a
@@ -20,9 +20,9 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   const real = Object.create(proto);
   const lookup: typeof process.env = {};
 
-  function deletePropertyWin32(_target: any, key: any) {
+  function deletePropertyWin32(_target: unknown, key: unknown) {
     for (const name in real) {
-      if (real.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(real, name)) {
         if (typeof key === 'string') {
           if (name.toLowerCase() === key.toLowerCase()) {
             delete real[name];
@@ -40,18 +40,18 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     return true;
   }
 
-  function deleteProperty(_target: any, key: any) {
+  function deleteProperty(_target: unknown, key: any) {
     delete real[key];
     delete lookup[key];
 
     return true;
   }
 
-  function getProperty(_target: any, key: any) {
+  function getProperty(_target: unknown, key: any) {
     return real[key];
   }
 
-  function getPropertyWin32(_target: any, key: any) {
+  function getPropertyWin32(_target: unknown, key: any) {
     if (typeof key === 'string') {
       return lookup[key in proto ? key : key.toLowerCase()];
     } else {
@@ -79,7 +79,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function() {
+export default function createProcessObject(): NodeJS.Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
@@ -89,7 +89,7 @@ export default function() {
   try {
     // This fails on Node 12, but it's already set to 'process'
     newProcess[Symbol.toStringTag] = 'process';
-  } catch (e) {
+  } catch (e: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
       e.message =
@@ -110,7 +110,13 @@ export default function() {
   }
 
   newProcess.env = createProcessEnv();
-  newProcess.send = () => {};
+  newProcess.send = () => true;
+
+  Object.defineProperty(newProcess, 'domain', {
+    get() {
+      return process.domain;
+    },
+  });
 
   return newProcess;
 }

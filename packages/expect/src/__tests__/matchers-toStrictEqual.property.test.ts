@@ -6,13 +6,31 @@
  *
  */
 
+import assert from 'assert';
 import fc from 'fast-check';
+import expect from '..';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
 
 describe('toStrictEqual', () => {
+  const safeExpectStrictEqual = (a, b) => {
+    try {
+      expect(a).toStrictEqual(b);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const safeAssertDeepStrictEqual = (a, b) => {
+    try {
+      assert.deepStrictEqual(a, b);
+      return true;
+    } catch {
+      return false;
+    }
+  };
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
@@ -24,14 +42,6 @@ describe('toStrictEqual', () => {
   });
 
   it('should be symmetric', () => {
-    const safeExpectStrictEqual = (a, b) => {
-      try {
-        expect(a).toStrictEqual(b);
-        return true;
-      } catch (err) {
-        return false;
-      }
-    };
     fc.assert(
       fc.property(
         fc.anything(anythingSettings),
@@ -41,6 +51,21 @@ describe('toStrictEqual', () => {
           // Assert: We expect `expect(a).toStrictEqual(b)`
           //         to be equivalent to `expect(b).toStrictEqual(a)`
           expect(safeExpectStrictEqual(a, b)).toBe(safeExpectStrictEqual(b, a));
+        },
+      ),
+      assertSettings,
+    );
+  });
+
+  it('should be equivalent to Node deepStrictEqual', () => {
+    fc.assert(
+      fc.property(
+        fc.anything(anythingSettings),
+        fc.anything(anythingSettings),
+        (a, b) => {
+          expect(safeExpectStrictEqual(a, b)).toBe(
+            safeAssertDeepStrictEqual(a, b),
+          );
         },
       ),
       assertSettings,

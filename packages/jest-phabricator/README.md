@@ -16,6 +16,15 @@ You need to add the jest unit engine to your .arcconfig:
 ...
 ```
 
+Or use the `ArcanistConfigurationDrivenUnitTestEngine` and add an entry to your .arcunit
+
+```json
+"jest": {
+  "type": "jest",
+  "include": "(\\.js$)"
+}
+```
+
 In `JestUnitTestEngine` there are a couple of constants you probably need to modify:
 
 - `PROCESSOR` points to the path or the processor
@@ -26,11 +35,15 @@ If you need to pass to Jest a custom configuration you can either use `JEST_PATH
 ## Reference implementation
 
 ```php
-class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
+final class JestUnitTestEngine extends ArcanistUnitTestEngine {
   const PROCESSOR = 'jest/packages/jest-phabricator/build/index.js';
   const JEST_PATH = 'jest/packages/jest/bin/jest.js';
   const TOO_MANY_FILES_TO_COVER = 100;
   const GIGANTIC_DIFF_THRESHOLD = 200;
+
+  public function getEngineConfigurationName() {
+    return 'jest';
+  }
 
   private function getRoot() {
     return $this->getWorkingCopy()->getProjectRoot();
@@ -129,6 +142,9 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
       $results[] = $this->getFutureResults($future);
     }
 
+    if (empty($results)) {
+      return array();
+    }
     return call_user_func_array('array_merge', $results);
   }
 
@@ -177,6 +193,7 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
     }
 
     $console->writeOut("Finished tests.\n");
+    // $console->writeErr(implode(', ', $result_arrays));
     return call_user_func_array('array_merge', $result_arrays);
   }
 
@@ -184,8 +201,8 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
     $output_JSON = $this->getOutputJSON();
     $options = array(
       '--colors',
-      '--findRelatedTests',
       '--json',
+      '--passWithNoTests true',
       '--outputFile=' . $output_JSON,
       '--testResultsProcessor=' . self::PROCESSOR
     );
@@ -194,6 +211,7 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
     // A better solution would involve knowing what's the machine buffer size limit
     // for exec and check if the command can stay within it.
     if (count($paths) < self::TOO_MANY_FILES_TO_COVER) {
+      $options[] = '--findRelatedTests ' . join(' ', $paths);
       $options[] = '--coverage';
       $options[] = '--collectCoverageOnlyFrom '. join(' ', $paths);
     }

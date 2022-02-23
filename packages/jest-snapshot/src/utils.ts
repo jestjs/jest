@@ -5,23 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {sync as mkdirp} from 'mkdirp';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
-import chalk from 'chalk';
-import {Config} from '@jest/types';
-import prettyFormat = require('pretty-format');
+import type {Config} from '@jest/types';
+import {
+  OptionsReceived as PrettyFormatOptions,
+  format as prettyFormat,
+} from 'pretty-format';
 import {getSerializers} from './plugins';
-import {SnapshotData} from './types';
+import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
-    `we recommend that you revert any local changes to tests or other code, ` +
-    `to ensure that you do not store invalid state.`,
+    'we recommend that you revert any local changes to tests or other code, ' +
+    'to ensure that you do not store invalid state.',
 );
 
 const writeSnapshotVersion = () =>
@@ -35,9 +37,9 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
-          `Jest 19 introduced versioned snapshots to ensure all developers ` +
-          `on a project are using the same version of Jest. ` +
-          `Please update all snapshots during this upgrade of Jest.\n\n`,
+          'Jest 19 introduced versioned snapshots to ensure all developers ' +
+          'on a project are using the same version of Jest. ' +
+          'Please update all snapshots during this upgrade of Jest.\n\n',
       ) + SNAPSHOT_VERSION_WARNING,
     );
   }
@@ -46,10 +48,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
-          `file associated with this test is outdated. The snapshot file ` +
-          `version ensures that all developers on a project are using ` +
-          `the same version of Jest. ` +
-          `Please update all snapshots during this upgrade of Jest.\n\n`,
+          'file associated with this test is outdated. The snapshot file ' +
+          'version ensures that all developers on a project are using ' +
+          'the same version of Jest. ' +
+          'Please update all snapshots during this upgrade of Jest.\n\n',
       ) +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}\n\n` +
@@ -61,10 +63,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
-          `snapshot file indicates that this project is meant to be used ` +
-          `with a newer version of Jest. The snapshot file version ensures ` +
-          `that all developers on a project are using the same version of ` +
-          `Jest. Please update your version of Jest and re-run the tests.\n\n`,
+          'snapshot file indicates that this project is meant to be used ' +
+          'with a newer version of Jest. The snapshot file version ensures ' +
+          'that all developers on a project are using the same version of ' +
+          'Jest. Please update your version of Jest and re-run the tests.\n\n',
       ) +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}`,
@@ -75,10 +77,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 };
 
 function isObject(item: unknown): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return item != null && typeof item === 'object' && !Array.isArray(item);
 }
 
-export const testNameToKey = (testName: Config.Path, count: number): string =>
+export const testNameToKey = (testName: string, count: number): string =>
   testName + ' ' + count;
 
 export const keyToTestName = (key: string): string => {
@@ -90,7 +92,7 @@ export const keyToTestName = (key: string): string => {
 };
 
 export const getSnapshotData = (
-  snapshotPath: Config.Path,
+  snapshotPath: string,
   update: Config.SnapshotUpdateState,
 ): {
   data: SnapshotData;
@@ -106,7 +108,7 @@ export const getSnapshotData = (
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
       populate(data);
-    } catch (e) {}
+    } catch {}
   }
 
   const validationResult = validateSnapshotVersion(snapshotContents);
@@ -136,19 +138,49 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const serialize = (data: string): string =>
-  addExtraLineBreaks(
-    normalizeNewlines(
-      prettyFormat(data, {
-        escapeRegex: true,
-        plugins: getSerializers(),
-        printFunctionName: false,
-      }),
-    ),
+export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
+  const lines = stack.split('\n');
+
+  for (let i = 0; i < lines.length; i += 1) {
+    // It's a function name specified in `packages/expect/src/index.ts`
+    // for external custom matchers.
+    if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
+      return lines.slice(i + 1).join('\n');
+    }
+  }
+
+  return stack;
+};
+
+const escapeRegex = true;
+const printFunctionName = false;
+
+export const serialize = (
+  val: unknown,
+  indent = 2,
+  formatOverrides: PrettyFormatOptions = {},
+): string =>
+  normalizeNewlines(
+    prettyFormat(val, {
+      escapeRegex,
+      indent,
+      plugins: getSerializers(),
+      printFunctionName,
+      ...formatOverrides,
+    }),
   );
 
-// unescape double quotes
-export const unescape = (data: string): string => data.replace(/\\(")/g, '$1');
+export const minify = (val: unknown): string =>
+  prettyFormat(val, {
+    escapeRegex,
+    min: true,
+    plugins: getSerializers(),
+    printFunctionName,
+  });
+
+// Remove double quote marks and unescape double quotes and backslashes.
+export const deserializeString = (stringified: string): string =>
+  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');
@@ -156,18 +188,18 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: string): void => {
   try {
-    mkdirp(path.join(path.dirname(filePath)), '777');
-  } catch (e) {}
+    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
+  } catch {}
 };
 
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
-  snapshotPath: Config.Path,
-) => {
+  snapshotPath: string,
+): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
     .map(
@@ -205,9 +237,11 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   return mergedOutput;
 };
 
-export const deepMerge = (target: any, source: any) => {
-  const mergedOutput = {...target};
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (target: any, source: any): any => {
   if (isObject(target) && isObject(source)) {
+    const mergedOutput = {...target};
+
     Object.keys(source).forEach(key => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
@@ -218,6 +252,11 @@ export const deepMerge = (target: any, source: any) => {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
     });
+
+    return mergedOutput;
+  } else if (Array.isArray(target) && Array.isArray(source)) {
+    return deepMergeArray(target, source);
   }
-  return mergedOutput;
+
+  return target;
 };

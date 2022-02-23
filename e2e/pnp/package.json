@@ -1,8 +1,6 @@
 {
   "dependencies": {
-    "foo": "link:./lib"
-  },
-  "installConfig": {
-    "pnp": true
+    "foo": "portal:./lib",
+    "undeclared": "portal:./undeclared-dependency"
   }
 }

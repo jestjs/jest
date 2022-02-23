@@ -1,5 +1,5 @@
 ---
-title: Jest 24: 💅 Refreshing, Polished, TypeScript-friendly
+title: 'Jest 24: 💅 Refreshing, Polished, TypeScript-friendly'
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
@@ -7,7 +7,7 @@ authorFBID: 100003004880942
 
 Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long-standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨
 
-For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
+For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md).
 
 <!--truncate-->
 
@@ -24,6 +24,8 @@ We've upgraded to Babel 7 internally for Jest 24, which comes with support for T
 While Jest has supported Babel 7 since version 22 released in December 2017, it required usage of a bridge module in order to fit in with Jest's support of Babel 6. In Jest 24 we have migrated entirely over to Babel 7, with great help from community member [@milesj](https://github.com/milesj). This means that setup is now easier and we can take advantage of other Babel 7 features, such as config loading and automatic `modules` transpilation. Make sure to remove the `babel-core@^7.0.0-bridge.0` as it's not needed now.
 
 If you want to run typechecks while you test, you should use [`ts-jest`](https://github.com/kulshekhar/ts-jest). You will need to configure the transformer, as Jest by default applies Babel to `.ts` (and `.tsx`) files. Alternatively, you can run `tsc` or even use a Jest runner to simultaneously transpile your TypeScript whilst running your tests! See [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc) for more information.
+
+See [the docs](/docs/getting-started#using-typescript) for more details.
 
 _Note that if you for whatever reason cannot upgrade to Babel 7, you can still use Jest 24 with `babel@6` as long as you keep `babel-jest` at version 23._
 
@@ -75,12 +77,12 @@ The second one is an issue where Jest runs out of memory if the difference in se
 - You can [configure](https://github.com/facebook/jest/pull/6143) Jest's snapshot location, this is mainly useful if you are building tools which use Jest in a larger build process.
 - A quirk of Jest's CLI has been that while some flags and options have been camel cased (such as `runInBand`), others have not been (such as `no-cache`). In Jest 24, both are recognized, meaning you can write your CLI arguments however you want.
 - We've renamed `setupTestFrameworkScriptFile` to `setupFilesAfterEnv`, and made it into an array. We hope this will make it more obvious what the options is for. We have plans to further overhaul the configuration in the next major, see the paragraph in the section below.
-- To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime`, which is sometimes used in compiled async code. Including `regenerator-runtime` is not always necessary and we believe it's the user's responsibility to include it if it's needed. If you use `@babel/preset-env` with `targets` set to a modern Node version (e.g. Node 6+) you will not need to include it. Please see our [Using Babel docs](/docs/en/getting-started#using-babel) for more information.
-- Node.js 10 came with an experimental module [called `worker_threads`](https://nodejs.org/api/worker_threads.html), which is similar to Worker threads in the browser. `jest-worker`, part of the [Jest platform](/docs/en/jest-platform), will be able to use `worker_threads` if available instead of `child_process`, which makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Due to its experimental nature, it's not enabled when using Jest as a test runner, but you can use it in your own projects today! We plan to enable it by default when it's promoted from experimantal status in Node.js.
+- To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime`, which is sometimes used in compiled async code. Including `regenerator-runtime` is not always necessary and we believe it's the user's responsibility to include it if it's needed. If you use `@babel/preset-env` with `targets` set to a modern Node version (e.g. Node 6+) you will not need to include it. Please see our [Using Babel docs](/docs/getting-started#using-babel) for more information.
+- Node.js 10 came with an experimental module [called `worker_threads`](https://nodejs.org/api/worker_threads.html), which is similar to Worker threads in the browser. `jest-worker`, part of the [Jest platform](/docs/jest-platform), will be able to use `worker_threads` if available instead of `child_process`, which makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Due to its experimental nature, it's not enabled when using Jest as a test runner, but you can use it in your own projects today! We plan to enable it by default when it's promoted from experimental status in Node.js.
 
 ## Breaking Changes
 
-While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md), there's a few of them that are worth highlighting:
+While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md), there's a few of them that are worth highlighting:
 
 - We've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
 - We've removed code remnants that was needed for Node 4. It was previously technically possible to run Jest 23 on Node 4 - that is no longer possible without polyfilling and transpiling.
@@ -99,6 +101,6 @@ We have already started to make plans for the next release of Jest 25, with the 
 
 You might also have heard that we are planning to migrate the code base from Flow to TypeScript. We are hopeful that this migration will enable even more contributors to jump in and help make 2019 even better for JavaScript testing. 🚀 The plan is to land this in a minor release in the not too distant future. Feedback on this choice can be added to [the RFC](https://github.com/facebook/jest/pull/7554).
 
-Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](https://jestjs.io/docs/en/next/architecture).
+Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](/docs/architecture).
 
 Happy Jesting! 🃏

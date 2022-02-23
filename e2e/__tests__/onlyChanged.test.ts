@@ -7,12 +7,38 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import semver = require('semver');
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {cleanup, run, writeFiles} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
+
+const gitVersionSupportsInitialBranch = (() => {
+  const {stdout} = run(`${GIT} --version`);
+  const gitVersion = stdout.trim();
+
+  const match = gitVersion.match(/^git version (?<version>\d+\.\d+\.\d+)/);
+
+  if (match?.groups?.version == null) {
+    throw new Error(`Unable to parse git version from string "${gitVersion}"`);
+  }
+
+  const {version} = match.groups;
+
+  return semver.gte(version, '2.28.0');
+})();
+
+const mainBranchName = gitVersionSupportsInitialBranch ? 'main' : 'master';
+
+function gitInit(dir: string) {
+  const initCommand = gitVersionSupportsInitialBranch
+    ? `${GIT} init --initial-branch=${mainBranchName}`
+    : `${GIT} init`;
+
+  run(initCommand, dir);
+}
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -20,12 +46,12 @@ afterEach(() => cleanup(DIR));
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -34,16 +60,16 @@ test('run for "onlyChanged" and "changedSince"', () => {
     /No tests found related to files changed since last commit./,
   );
 
-  stdout = runJest(DIR, ['--changedSince=master']).stdout;
+  stdout = runJest(DIR, [`--changedSince=${mainBranchName}`]).stdout;
   expect(stdout).toMatch(
-    /No tests found related to files changed since "master"./,
+    `No tests found related to files changed since "${mainBranchName}".`,
   );
 });
 
 test('run only changed files', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -53,7 +79,7 @@ test('run only changed files', () => {
   ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch(/Jest can only find uncommitted changed files/);
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -64,10 +90,10 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR, ['-o']));
@@ -114,7 +140,7 @@ test('report test coverage for only changed files', () => {
     }),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -137,6 +163,39 @@ test('report test coverage for only changed files', () => {
   expect(stdout).not.toMatch('b.js');
 });
 
+test('report test coverage of source on test file change under only changed files', () => {
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+  `,
+    'a.js': 'module.exports = {}',
+    'package.json': JSON.stringify({
+      jest: {
+        collectCoverage: true,
+        coverageReporters: ['text'],
+        testEnvironment: 'node',
+      },
+    }),
+  });
+
+  gitInit(DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+    test('a2', () => expect(2).toBe(2));
+  `,
+  });
+
+  const {stdout} = runJest(DIR, ['--only-changed']);
+
+  expect(stdout).toMatch('a.js');
+});
+
 test('do not pickup non-tested files when reporting coverage on only changed files', () => {
   writeFiles(DIR, {
     'a.js': 'module.exports = {}',
@@ -144,7 +203,7 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'original name'}),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -171,7 +230,7 @@ test('collect test coverage when using onlyChanged', () => {
     }),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
   run(`${GIT} checkout -b new-branch`, DIR);
@@ -190,7 +249,7 @@ test('collect test coverage when using onlyChanged', () => {
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {onlyChanged: true}}),
   });
@@ -200,7 +259,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   ({stdout} = runJest(DIR));
   expect(stdout).toMatch(/Jest can only find uncommitted changed files/);
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -214,10 +273,10 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR));
@@ -252,7 +311,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
-test('gets changed files for hg', async () => {
+testIfHg('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
@@ -262,7 +321,7 @@ test('gets changed files for hg', async () => {
   }
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -278,9 +337,9 @@ test('gets changed files for hg', async () => {
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stdout, stderr} = runJest(DIR, ['-o']));
@@ -290,7 +349,7 @@ test('gets changed files for hg', async () => {
   run(`${HG} commit -m "test2"`, DIR);
 
   writeFiles(DIR, {
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
   ({stdout, stderr} = runJest(DIR, ['-o']));
@@ -313,12 +372,12 @@ test('path on Windows is case-insensitive', () => {
 
   writeFiles(modifiedDIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, modifiedDIR);
+  gitInit(modifiedDIR);
   run(`${GIT} add .`, modifiedDIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, modifiedDIR);
 
@@ -326,10 +385,10 @@ test('path on Windows is case-insensitive', () => {
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   const {stderr} = runJest(incorrectModifiedDIR, ['-o']);

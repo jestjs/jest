@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -23,8 +23,8 @@ test('understands dependencies using jest.requireMock', () => {
 
       test('a', () => {});
     `,
-    '__tests__/b.test.js': `test('b', () => {});`,
-    'a.js': `module.exports = {}`,
+    '__tests__/b.test.js': "test('b', () => {});",
+    'a.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {}}),
   });
 

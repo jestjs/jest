@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
@@ -13,6 +12,9 @@ test('console printing', () => {
   const {stderr, exitCode} = runJest('console-after-teardown');
   const {rest} = extractSummary(stderr);
 
-  expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
+
+  const withoutTrace = rest.split('\n').slice(0, -3).join('\n');
+
+  expect(withoutTrace).toMatchSnapshot();
 });

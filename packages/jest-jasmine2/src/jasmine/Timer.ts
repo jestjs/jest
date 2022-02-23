@@ -29,8 +29,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-const defaultNow = (function(Date) {
-  return function() {
+const defaultNow = (function (Date) {
+  return function () {
     return new Date().getTime();
   };
 })(Date);
@@ -45,11 +45,11 @@ export default class Timer {
     const now = options.now || defaultNow;
     let startTime: number;
 
-    this.start = function() {
+    this.start = function () {
       startTime = now();
     };
 
-    this.elapsed = function() {
+    this.elapsed = function () {
       return now() - startTime;
     };
   }

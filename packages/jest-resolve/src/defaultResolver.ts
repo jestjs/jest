@@ -5,194 +5,156 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import {sync as browserResolve} from 'browser-resolve';
+import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {Config} from '@jest/types';
-import isBuiltinModule from './isBuiltinModule';
-import nodeModulesPaths from './nodeModulesPaths';
+import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
+import {
+  PkgJson,
+  isDirectory,
+  isFile,
+  readPackageCached,
+  realpathSync,
+} from './fileWalkers';
 
-type ResolverOptions = {
-  basedir: Config.Path;
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+interface ResolverOptions {
+  basedir: string;
   browser?: boolean;
+  conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
-};
+  paths?: Array<string>;
+  rootDir?: string;
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
+}
 
-export default function defaultResolver(
-  path: Config.Path,
+type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
+  Pick<ResolverOptions, 'conditions'>;
+
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
+  path: string,
   options: ResolverOptions,
-): Config.Path {
-  // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
-  if (process.versions.pnp) {
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
+
+// https://github.com/facebook/jest/pull/10617
+declare global {
+  namespace NodeJS {
+    export interface ProcessVersions {
+      pnp?: any;
+    }
+  }
+}
+
+const defaultResolver: SyncResolver = (path, options) => {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
-  const resolve = options.browser ? browserResolve : resolveSync;
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
+    ...options,
+    isDirectory,
+    isFile,
+    preserveSymlinks: false,
+    readPackageSync,
+    realpathSync,
+  };
 
-  return resolve(path, {
-    basedir: options.basedir,
-    defaultResolver,
-    extensions: options.extensions,
-    moduleDirectory: options.moduleDirectory,
-    paths: options.paths,
-    rootDir: options.rootDir,
-  });
-}
+  const pathToResolve = getPathInModule(path, resolveOptions);
 
-export const clearDefaultResolverCache = () => {
-  checkedPaths.clear();
+  const result =
+    // if `getPathInModule` doesn't change the path, attempt to resolve it
+    pathToResolve === path
+      ? resolveSync(pathToResolve, resolveOptions)
+      : pathToResolve;
+
+  // Dereference symlinks to ensure we don't create a separate
+  // module instance depending on how it was referenced.
+  return realpathSync(result);
 };
 
-const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
-
-function resolveSync(
-  target: Config.Path,
-  options: ResolverOptions,
-): Config.Path {
-  const basedir = options.basedir;
-  const extensions = options.extensions || ['.js'];
-  const paths = options.paths || [];
-
-  if (REGEX_RELATIVE_IMPORT.test(target)) {
-    // resolve relative import
-    const resolveTarget = path.resolve(basedir, target);
-    const result = tryResolve(resolveTarget);
-    if (result) {
-      return result;
-    }
-  } else {
-    // otherwise search for node_modules
-    const dirs = nodeModulesPaths(basedir, {
-      moduleDirectory: options.moduleDirectory,
-      paths,
-    });
-    for (let i = 0; i < dirs.length; i++) {
-      const resolveTarget = path.join(dirs[i], target);
-      const result = tryResolve(resolveTarget);
-      if (result) {
-        return result;
-      }
-    }
-  }
-
-  if (isBuiltinModule(target)) {
-    return target;
-  }
-
-  const err: Error & {code?: string} = new Error(
-    "Cannot find module '" + target + "' from '" + basedir + "'",
-  );
-  err.code = 'MODULE_NOT_FOUND';
-  throw err;
-
-  /*
-   * contextual helper functions
-   */
-  function tryResolve(name: Config.Path): Config.Path | undefined {
-    const dir = path.dirname(name);
-    let result;
-    if (isDirectory(dir)) {
-      result = resolveAsFile(name) || resolveAsDirectory(name);
-    }
-    if (result) {
-      // Dereference symlinks to ensure we don't create a separate
-      // module instance depending on how it was referenced.
-      result = fs.realpathSync(result);
-    }
-    return result;
-  }
-
-  function resolveAsFile(name: Config.Path): Config.Path | undefined {
-    if (isFile(name)) {
-      return name;
-    }
-
-    for (let i = 0; i < extensions.length; i++) {
-      const file = name + extensions[i];
-      if (isFile(file)) {
-        return file;
-      }
-    }
-
-    return undefined;
-  }
-
-  function resolveAsDirectory(name: Config.Path): Config.Path | undefined {
-    if (!isDirectory(name)) {
-      return undefined;
-    }
-
-    const pkgfile = path.join(name, 'package.json');
-    let pkgmain;
-    try {
-      const body = fs.readFileSync(pkgfile, 'utf8');
-      pkgmain = JSON.parse(body).main;
-    } catch (e) {}
-
-    if (pkgmain && !isCurrentDirectory(pkgmain)) {
-      const resolveTarget = path.resolve(name, pkgmain);
-      const result = tryResolve(resolveTarget);
-      if (result) {
-        return result;
-      }
-    }
-
-    return resolveAsFile(path.join(name, 'index'));
-  }
-}
-
-enum IPathType {
-  FILE = 1,
-  DIRECTORY = 2,
-  OTHER = 3,
-}
-const checkedPaths = new Map<string, IPathType>();
-function statSyncCached(path: string): number {
-  const result = checkedPaths.get(path);
-  if (result !== undefined) {
-    return result;
-  }
-
-  let stat;
-  try {
-    stat = fs.statSync(path);
-  } catch (e) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
-    }
-  }
-
-  if (stat) {
-    if (stat.isFile() || stat.isFIFO()) {
-      checkedPaths.set(path, IPathType.FILE);
-      return IPathType.FILE;
-    } else if (stat.isDirectory()) {
-      checkedPaths.set(path, IPathType.DIRECTORY);
-      return IPathType.DIRECTORY;
-    }
-  }
-
-  checkedPaths.set(path, IPathType.OTHER);
-  return IPathType.OTHER;
-}
+export default defaultResolver;
 
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
-  return statSyncCached(file) === IPathType.FILE;
+
+function readPackageSync(_: unknown, file: string): PkgJson {
+  return readPackageCached(file);
 }
 
-function isDirectory(dir: Config.Path): boolean {
-  return statSyncCached(dir) === IPathType.DIRECTORY;
+function getPathInModule(
+  path: string,
+  options: UpstreamResolveOptionsWithConditions,
+): string {
+  if (shouldIgnoreRequestForExports(path)) {
+    return path;
+  }
+
+  const segments = path.split('/');
+
+  let moduleName = segments.shift();
+
+  if (moduleName) {
+    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
+    if (moduleName.startsWith('@')) {
+      moduleName = `${moduleName}/${segments.shift()}`;
+    }
+
+    let packageJsonPath = '';
+
+    try {
+      packageJsonPath = resolveSync(`${moduleName}/package.json`, options);
+    } catch {
+      // ignore if package.json cannot be found
+    }
+
+    if (packageJsonPath && isFile(packageJsonPath)) {
+      const pkg = readPackageCached(packageJsonPath);
+
+      if (pkg.exports) {
+        // we need to make sure resolve ignores `main`
+        delete pkg.main;
+
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        // TODO: should we throw if not?
+        if (resolved) {
+          return pathResolve(dirname(packageJsonPath), resolved);
+        }
+      }
+    }
+  }
+
+  return path;
 }
 
-const CURRENT_DIRECTORY = path.resolve('.');
-function isCurrentDirectory(testPath: Config.Path): boolean {
-  return CURRENT_DIRECTORY === path.resolve(testPath);
+function createResolveOptions(
+  conditions: Array<string> | undefined,
+): ResolveExportsOptions {
+  return conditions
+    ? {conditions, unsafe: true}
+    : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+      {browser: false, require: true};
 }
+
+// if it's a relative import or an absolute path, exports are ignored
+const shouldIgnoreRequestForExports = (path: string) =>
+  path.startsWith('.') || isAbsolute(path);

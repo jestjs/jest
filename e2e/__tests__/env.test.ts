@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import runJest from '../runJest';
+import runJest, {RunJestResult} from '../runJest';
 
-const getLog = result => result.stdout.split('\n')[1].trim();
+const getLog = (result: RunJestResult) => result.stdout.split('\n')[1].trim();
 
 describe('Environment override', () => {
   it('uses jsdom when specified', () => {

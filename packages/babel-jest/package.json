@@ -1,35 +1,43 @@
 {
   "name": "babel-jest",
   "description": "Jest plugin to use babel for transformation.",
-  "version": "24.9.0",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/babel-jest"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
-    "@types/babel__core": "^7.1.0",
-    "babel-plugin-istanbul": "^5.1.0",
-    "babel-preset-jest": "^24.9.0",
-    "chalk": "^2.4.2",
+    "@jest/transform": "^28.0.0-alpha.4",
+    "@types/babel__core": "^7.1.14",
+    "babel-plugin-istanbul": "^6.1.1",
+    "babel-preset-jest": "^28.0.0-alpha.4",
+    "chalk": "^4.0.0",
+    "graceful-fs": "^4.2.9",
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0"
+    "@babel/core": "^7.8.0",
+    "@jest/test-utils": "^28.0.0-alpha.4",
+    "@types/graceful-fs": "^4.1.3"
   },
   "peerDependencies": {
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.8.0"
   },
   "engines": {
-    "node": ">= 8"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  }
 }

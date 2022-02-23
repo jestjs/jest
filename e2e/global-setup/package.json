@@ -7,6 +7,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-flow": "^7.0.0"
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
+    "jest-util": "*"
   }
 }

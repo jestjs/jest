@@ -1,25 +1,31 @@
 {
   "name": "@jest/environment",
-  "version": "24.9.0",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-environment"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/fake-timers": "^24.9.0",
-    "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
-    "jest-mock": "^24.9.0"
+    "@jest/fake-timers": "^28.0.0-alpha.4",
+    "@jest/types": "^28.0.0-alpha.4",
+    "@types/node": "*",
+    "jest-mock": "^28.0.0-alpha.4"
   },
   "engines": {
-    "node": ">= 8"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  }
 }

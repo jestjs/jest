@@ -79,3 +79,11 @@ test('assert.throws', () => {
 test('async', async () => {
   assert.equal('hello\ngoodbye', 'hello', 'hmmm');
 });
+
+test('assert.fail', () => {
+  assert.fail();
+});
+
+test('assert.fail with a message', () => {
+  assert.fail('error!');
+});

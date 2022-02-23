@@ -7,5 +7,5 @@
 
 'use strict';
 
-/* eslint-disable no-throw-literal */
+// eslint-disable-next-line no-throw-literal
 throw {};

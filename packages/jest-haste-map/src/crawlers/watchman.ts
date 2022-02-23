@@ -7,11 +7,10 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import {Config} from '@jest/types';
+import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
-import H from '../constants';
-import {
+import type {
   CrawlerOptions,
   FileData,
   FileMetaData,
@@ -20,8 +19,42 @@ import {
 
 type WatchmanRoots = Map<string, Array<string>>;
 
-const watchmanURL =
-  'https://facebook.github.io/watchman/docs/troubleshooting.html';
+type WatchmanListCapabilitiesResponse = {
+  capabilities: Array<string>;
+};
+
+type WatchmanCapabilityCheckResponse = {
+  // { 'suffix-set': true }
+  capabilities: Record<string, boolean>;
+  // '2021.06.07.00'
+  version: string;
+};
+
+type WatchmanWatchProjectResponse = {
+  watch: string;
+  relative_path: string;
+};
+
+type WatchmanQueryResponse = {
+  warning?: string;
+  is_fresh_instance: boolean;
+  version: string;
+  clock:
+    | string
+    | {
+        scm: {'mergebase-with': string; mergebase: string};
+        clock: string;
+      };
+  files: Array<{
+    name: string;
+    exists: boolean;
+    mtime_ms: number | {toNumber: () => number};
+    size: number;
+    'content.sha1hex'?: string;
+  }>;
+};
+
+const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting';
 
 function WatchmanError(error: Error): Error {
   error.message =
@@ -30,28 +63,67 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-export = async function watchmanCrawl(
-  options: CrawlerOptions,
-): Promise<{
+/**
+ * Wrap watchman capabilityCheck method as a promise.
+ *
+ * @param client watchman client
+ * @param caps capabilities to verify
+ * @returns a promise resolving to a list of verified capabilities
+ */
+async function capabilityCheck(
+  client: watchman.Client,
+  caps: Partial<watchman.Capabilities>,
+): Promise<WatchmanCapabilityCheckResponse> {
+  return new Promise((resolve, reject) => {
+    client.capabilityCheck(
+      // @ts-expect-error: incorrectly typed
+      caps,
+      (error, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      },
+    );
+  });
+}
+
+export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
-  const defaultWatchExpression = [
-    'allof',
-    ['type', 'f'],
-    ['anyof', ...extensions.map(extension => ['suffix', extension])],
-  ];
+  const defaultWatchExpression: Array<any> = ['allof', ['type', 'f']];
   const clocks = data.clocks;
   const client = new watchman.Client();
+
+  // https://facebook.github.io/watchman/docs/capabilities.html
+  // Check adds about ~28ms
+  const capabilities = await capabilityCheck(client, {
+    // If a required capability is missing then an error will be thrown,
+    // we don't need this assertion, so using optional instead.
+    optional: ['suffix-set'],
+  });
+
+  if (capabilities?.capabilities['suffix-set']) {
+    // If available, use the optimized `suffix-set` operation:
+    // https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
+    defaultWatchExpression.push(['suffix', extensions]);
+  } else {
+    // Otherwise use the older and less optimal suffix tuple array
+    defaultWatchExpression.push([
+      'anyof',
+      ...extensions.map(extension => ['suffix', extension]),
+    ]);
+  }
 
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
 
-  // TODO: type better than `any`
-  const cmd = (...args: Array<any>): Promise<any> =>
+  const cmd = <T>(...args: Array<any>): Promise<T> =>
     new Promise((resolve, reject) =>
       client.command(args, (error, result) =>
         error ? reject(WatchmanError(error)) : resolve(result),
@@ -59,7 +131,9 @@ export = async function watchmanCrawl(
     );
 
   if (options.computeSha1) {
-    const {capabilities} = await cmd('list-capabilities');
+    const {capabilities} = await cmd<WatchmanListCapabilitiesResponse>(
+      'list-capabilities',
+    );
 
     if (capabilities.indexOf('field-content.sha1hex') !== -1) {
       fields.push('content.sha1hex');
@@ -67,12 +141,15 @@ export = async function watchmanCrawl(
   }
 
   async function getWatchmanRoots(
-    roots: Array<Config.Path>,
+    roots: Array<string>,
   ): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(
       roots.map(async root => {
-        const response = await cmd('watch-project', root);
+        const response = await cmd<WatchmanWatchProjectResponse>(
+          'watch-project',
+          root,
+        );
         const existing = watchmanRoots.get(response.watch);
         // A root can only be filtered if it was never seen with a
         // relative_path before.
@@ -97,7 +174,7 @@ export = async function watchmanCrawl(
   }
 
   async function queryWatchmanForDirs(rootProjectDirMappings: WatchmanRoots) {
-    const files = new Map();
+    const results = new Map<string, WatchmanQueryResponse>();
     let isFresh = false;
     await Promise.all(
       Array.from(rootProjectDirMappings).map(
@@ -122,35 +199,58 @@ export = async function watchmanCrawl(
             }
           }
 
-          const relativeRoot = fastPath.relative(rootDir, root);
-          const query = clocks.has(relativeRoot)
-            ? // Use the `since` generator if we have a clock available
-              {expression, fields, since: clocks.get(relativeRoot)}
-            : // Otherwise use the `glob` filter
-              {expression, fields, glob};
+          // Jest is only going to store one type of clock; a string that
+          // represents a local clock. However, the Watchman crawler supports
+          // a second type of clock that can be written by automation outside of
+          // Jest, called an "scm query", which fetches changed files based on
+          // source control mergebases. The reason this is necessary is because
+          // local clocks are not portable across systems, but scm queries are.
+          // By using scm queries, we can create the haste map on a different
+          // system and import it, transforming the clock into a local clock.
+          const since = clocks.get(fastPath.relative(rootDir, root));
 
-          const response = await cmd('query', root, query);
+          const query =
+            since !== undefined
+              ? // Use the `since` generator if we have a clock available
+                {expression, fields, since}
+              : // Otherwise use the `glob` filter
+                {expression, fields, glob, glob_includedotfiles: true};
+
+          const response = await cmd<WatchmanQueryResponse>(
+            'query',
+            root,
+            query,
+          );
 
           if ('warning' in response) {
             console.warn('watchman warning: ', response.warning);
           }
 
-          isFresh = isFresh || response.is_fresh_instance;
-          files.set(root, response);
+          // When a source-control query is used, we ignore the "is fresh"
+          // response from Watchman because it will be true despite the query
+          // being incremental.
+          const isSourceControlQuery =
+            typeof since !== 'string' &&
+            since?.scm?.['mergebase-with'] !== undefined;
+          if (!isSourceControlQuery) {
+            isFresh = isFresh || response.is_fresh_instance;
+          }
+
+          results.set(root, response);
         },
       ),
     );
 
     return {
-      files,
       isFresh,
+      results,
     };
   }
 
   let files = data.files;
   let removedFiles = new Map();
   const changedFiles = new Map();
-  let watchmanFiles: Map<string, any>;
+  let results: Map<string, WatchmanQueryResponse>;
   let isFresh = false;
   try {
     const watchmanRoots = await getWatchmanRoots(roots);
@@ -164,7 +264,7 @@ export = async function watchmanCrawl(
       isFresh = true;
     }
 
-    watchmanFiles = watchmanFileResults.files;
+    results = watchmanFileResults.results;
   } finally {
     client.end();
   }
@@ -173,11 +273,16 @@ export = async function watchmanCrawl(
     throw clientError;
   }
 
-  // TODO: remove non-null
-  for (const [watchRoot, response] of watchmanFiles!) {
+  for (const [watchRoot, response] of results) {
     const fsRoot = normalizePathSep(watchRoot);
     const relativeFsRoot = fastPath.relative(rootDir, fsRoot);
-    clocks.set(relativeFsRoot, response.clock);
+    clocks.set(
+      relativeFsRoot,
+      // Ensure we persist only the local clock.
+      typeof response.clock === 'string'
+        ? response.clock
+        : response.clock.clock,
+    );
 
     for (const fileData of response.files) {
       const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
@@ -210,7 +315,7 @@ export = async function watchmanCrawl(
 
         let sha1hex = fileData['content.sha1hex'];
         if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
-          sha1hex = null;
+          sha1hex = undefined;
         }
 
         let nextData: FileMetaData;
@@ -232,26 +337,11 @@ export = async function watchmanCrawl(
           ];
         } else {
           // See ../constants.ts
-          nextData = ['', mtime, size, 0, '', sha1hex];
+          nextData = ['', mtime, size, 0, '', sha1hex ?? null];
         }
 
-        const mappings = options.mapper ? options.mapper(filePath) : null;
-
-        if (mappings) {
-          for (const absoluteVirtualFilePath of mappings) {
-            if (!ignore(absoluteVirtualFilePath)) {
-              const relativeVirtualFilePath = fastPath.relative(
-                rootDir,
-                absoluteVirtualFilePath,
-              );
-              files.set(relativeVirtualFilePath, nextData);
-              changedFiles.set(relativeVirtualFilePath, nextData);
-            }
-          }
-        } else {
-          files.set(relativeFilePath, nextData);
-          changedFiles.set(relativeFilePath, nextData);
-        }
+        files.set(relativeFilePath, nextData);
+        changedFiles.set(relativeFilePath, nextData);
       }
     }
   }
@@ -262,4 +352,4 @@ export = async function watchmanCrawl(
     hasteMap: data,
     removedFiles,
   };
-};
+}

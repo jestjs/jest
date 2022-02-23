@@ -8,7 +8,6 @@
   },
   "devDependencies": {
     "@babel/core": "*",
-    "@babel/plugin-proposal-class-properties": "*",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
     "@testing-library/react": "*",
@@ -17,5 +16,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
   }
 }

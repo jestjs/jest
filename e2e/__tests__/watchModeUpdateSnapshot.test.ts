@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import * as path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -18,11 +17,11 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => val.replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replace(/\[s\[u/g, '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
-const setupFiles = input => {
+const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
     '__tests__/__snapshots__/bar.spec.js.snap': `// Jest Snapshot v1, https://goo.gl/fbAQLP
 
@@ -48,8 +47,8 @@ test('can press "u" to update snapshots', () => {
   const results = extractSummaries(stderr);
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(exitCode).toBe(0);
 });

@@ -184,46 +184,6 @@ describe('dependencyExtractor', () => {
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
   });
 
-  it('should extract dependencies from `require.requireActual` calls', () => {
-    const code = `
-      // Good
-      require.requireActual('dep1');
-      const dep2 = require.requireActual(
-        "dep2",
-      );
-      if (require.requireActual(\`dep3\`).cond) {}
-      require
-        .requireActual('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireActual('inv1')
-      xrequire.requireActual('inv2');
-      require.requireActualx('inv3');
-      require.requireActual('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
-  it('should extract dependencies from `require.requireMock` calls', () => {
-    const code = `
-      // Good
-      require.requireMock('dep1');
-      const dep2 = require.requireMock(
-        "dep2",
-      );
-      if (require.requireMock(\`dep3\`).cond) {}
-      require
-        .requireMock('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireMock('inv1')
-      xrequire.requireMock('inv2');
-      require.requireMockx('inv3');
-      require.requireMock('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
   it('should extract dependencies from `jest.requireActual` calls', () => {
     const code = `
       // Good
@@ -232,7 +192,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireActual(\`dep3\`).cond) {}
-      require
+      jest
         .requireActual('dep4');
 
       // Bad
@@ -252,7 +212,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireMock(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -272,7 +232,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.genMockFromModule(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -280,6 +240,26 @@ describe('dependencyExtractor', () => {
       xjest.genMockFromModule('inv2');
       jest.genMockFromModulex('inv3');
       jest.genMockFromModule('inv4', 'inv5');
+    `;
+    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+  });
+
+  it('should extract dependencies from `jest.createMockFromModule` calls', () => {
+    const code = `
+      // Good
+      jest.createMockFromModule('dep1');
+      const dep2 = jest.createMockFromModule(
+        "dep2",
+      );
+      if (jest.createMockFromModule(\`dep3\`).cond) {}
+      jest
+        .requireMock('dep4');
+
+      // Bad
+      ${COMMENT_NO_NEG_LB} foo . jest.createMockFromModule('inv1')
+      xjest.createMockFromModule('inv2');
+      jest.createMockFromModulex('inv3');
+      jest.createMockFromModule('inv4', 'inv5');
     `;
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
   });

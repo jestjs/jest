@@ -5,12 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, Script, createContext, runInContext} from 'vm';
-import {Config, Global} from '@jest/types';
+import {Context, createContext, runInContext} from 'vm';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment} from '@jest/environment';
 
 type Timer = {
   id: number;
@@ -18,38 +22,73 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment {
+export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
-  fakeTimers: FakeTimers<Timer> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
+  fakeTimersModern: ModernFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig) {
+  // while `context` is unused, it should always be passed
+  constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
+    const {projectConfig} = config;
     this.context = createContext();
     const global = (this.global = runInContext(
       'this',
-      Object.assign(this.context, config.testEnvironmentOptions),
+      Object.assign(this.context, projectConfig.testEnvironmentOptions),
     ));
     global.global = global;
     global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
+    global.Buffer = Buffer;
+    global.setImmediate = setImmediate;
+    global.clearImmediate = clearImmediate;
     global.ArrayBuffer = ArrayBuffer;
+    // TextEncoder (global or via 'util') references a Uint8Array constructor
+    // different than the global one used by users in tests. This makes sure the
+    // same constructor is referenced by both.
+    global.Uint8Array = Uint8Array;
+
     // URL and URLSearchParams are global in Node >= 10
-    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      global.URL = URL;
-      global.URLSearchParams = URLSearchParams;
-    }
+    global.URL = URL;
+    global.URLSearchParams = URLSearchParams;
+
     // TextDecoder and TextDecoder are global in Node >= 11
-    if (
-      typeof TextEncoder !== 'undefined' &&
-      typeof TextDecoder !== 'undefined'
-    ) {
-      global.TextEncoder = TextEncoder;
-      global.TextDecoder = TextDecoder;
+    global.TextEncoder = TextEncoder;
+    global.TextDecoder = TextDecoder;
+
+    // queueMicrotask is global in Node >= 11
+    global.queueMicrotask = queueMicrotask;
+
+    // AbortController is global in Node >= 15
+    if (typeof AbortController !== 'undefined') {
+      global.AbortController = AbortController;
     }
-    installCommonGlobals(global, config.globals);
+    // AbortSignal is global in Node >= 15
+    if (typeof AbortSignal !== 'undefined') {
+      global.AbortSignal = AbortSignal;
+    }
+    // Event is global in Node >= 15.4
+    if (typeof Event !== 'undefined') {
+      global.Event = Event;
+    }
+    // EventTarget is global in Node >= 15.4
+    if (typeof EventTarget !== 'undefined') {
+      global.EventTarget = EventTarget;
+    }
+    // performance is global in Node >= 16
+    if (typeof performance !== 'undefined') {
+      global.performance = performance;
+    }
+    // atob and btoa are global in Node >= 16
+    if (typeof atob !== 'undefined' && typeof btoa !== 'undefined') {
+      global.atob = atob;
+      global.btoa = btoa;
+    }
+    installCommonGlobals(global, projectConfig.globals);
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
@@ -70,35 +109,40 @@ class NodeEnvironment implements JestEnvironment {
       refToId: timerRefToId,
     };
 
-    this.fakeTimers = new FakeTimers({
-      config,
+    this.fakeTimers = new LegacyFakeTimers({
+      config: projectConfig,
       global,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
+
+    this.fakeTimersModern = new ModernFakeTimers({
+      config: projectConfig,
+      global,
+    });
   }
 
-  setup() {
-    return Promise.resolve();
-  }
+  async setup(): Promise<void> {}
 
-  teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
+    if (this.fakeTimersModern) {
+      this.fakeTimersModern.dispose();
+    }
     this.context = null;
     this.fakeTimers = null;
-    return Promise.resolve();
+    this.fakeTimersModern = null;
   }
 
-  // TS infers the return type to be `any`, since that's what `runInContext`
-  // returns.
-  runScript(script: Script) {
-    if (this.context) {
-      return script.runInContext(this.context);
-    }
-    return null;
+  exportConditions(): Array<string> {
+    return ['node', 'node-addons'];
+  }
+
+  getVmContext(): Context | null {
+    return this.context;
   }
 }
 
-export = NodeEnvironment;
+export const TestEnvironment = NodeEnvironment;

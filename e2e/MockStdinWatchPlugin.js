@@ -12,7 +12,7 @@ class MockStdinWatchPlugin {
   constructor({stdin, config}) {
     this._stdin = stdin;
     if (typeof this._stdin.setRawMode !== 'function') {
-      this._stdin.setRawMode = function() {};
+      this._stdin.setRawMode = function () {};
     }
     this._config = config;
   }

@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function pluralize(word: string, count: number, ending: string) {
+export default function pluralize(
+  word: string,
+  count: number,
+  ending: string,
+): string {
   return `${count} ${word}${count === 1 ? '' : ending}`;
 }

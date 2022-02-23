@@ -6,7 +6,9 @@
  *
  */
 
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+/* eslint-disable local/ban-types-eventually */
+
+import {isError} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
   MatcherHintOptions,
@@ -18,6 +20,7 @@ import {
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
@@ -26,13 +29,13 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
+import type {
+  ExpectationResult,
   MatcherState,
   MatchersObject,
   RawMatcherFn,
   SyncExpectationResult,
 } from './types';
-import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
 
@@ -75,7 +78,11 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  function(this: MatcherState, received: Function, expected: any) {
+  function (
+    this: MatcherState,
+    received: Function,
+    expected: any,
+  ): ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -217,7 +224,7 @@ const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: any,
+  expected: Error,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 
