@@ -56,6 +56,9 @@ export const setMatchers = (
 ): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
+
+    if (!matcher) return;
+
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
       value: isInternal,
     });

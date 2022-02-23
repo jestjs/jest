@@ -184,3 +184,11 @@ it('allows overriding existing extension', () => {
 
   jestExpect('foo').toAllowOverridingExistingMatcher();
 });
+
+it('does not explode if matcher is undefined', () => {
+  expect(() =>
+    jestExpect.extend({
+      default: undefined,
+    }),
+  ).not.toThrow();
+});
