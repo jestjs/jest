@@ -35,6 +35,7 @@
 - `[jest-config]` Pass `moduleTypes` to `ts-node` to enforce CJS when transpiling ([#12397](https://github.com/facebook/jest/pull/12397))
 - `[jest-config, jest-haste-map]` Allow searching for tests in `node_modules` by exposing `retainAllFiles` ([#11084](https://github.com/facebook/jest/pull/11084))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
+- `[@jest/expect-utils]` [**BREAKING**] Fix false positives when looking for `undefined` prop ([#8923](https://github.com/facebook/jest/pull/8923))
 - `[jest-haste-map]` Don't use partial results if file crawl errors ([#12420](https://github.com/facebook/jest/pull/12420))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 - `[jest-matcher-utils]` Pass maxWidth to `pretty-format` to avoid printing every element in arrays by default ([#12402](https://github.com/facebook/jest/pull/12402))
