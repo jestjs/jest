@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {makeProjectConfig} from '@jest/test-utils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import JSDomEnvironment from '../';
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {
-    const env = new JSDomEnvironment(makeProjectConfig());
+    const env = new JSDomEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     env.fakeTimers!.useFakeTimers();
 
@@ -23,19 +26,23 @@ describe('JSDomEnvironment', () => {
   });
 
   it('has modern fake timers implementation', () => {
-    const env = new JSDomEnvironment(makeProjectConfig());
+    const env = new JSDomEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     expect(env.fakeTimersModern).toBeDefined();
   });
 
   it('should respect userAgent option', () => {
-    const env = new JSDomEnvironment(
-      makeProjectConfig({
+    const env = new JSDomEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig({
         testEnvironmentOptions: {
           userAgent: 'foo',
         },
       }),
-    );
+    });
 
     expect(env.dom.window.navigator.userAgent).toEqual('foo');
   });
@@ -53,7 +60,10 @@ describe('JSDomEnvironment', () => {
    * will be called, so please make sure the global.document is still available at this point.
    */
   it('should not set the global.document to null too early', () => {
-    const env = new JSDomEnvironment(makeProjectConfig());
+    const env = new JSDomEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     const originalCloseFn = env.global.close.bind(env.global);
     env.global.close = () => {
