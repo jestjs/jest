@@ -29,7 +29,7 @@ export type SerializableResolver = {
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  path: Config.Path;
+  path: string;
   context?: TestRunnerSerializedContext;
 };
 
@@ -106,7 +106,7 @@ export async function worker({
       },
       sendMessageToJest,
     );
-  } catch (error) {
+  } catch (error: any) {
     throw formatError(error);
   }
 }

@@ -16,9 +16,9 @@ import {
   validateTemplateTableArguments,
 } from './validation';
 
-export type EachTests = Array<{
+export type EachTests = ReadonlyArray<{
   title: string;
-  arguments: Array<unknown>;
+  arguments: ReadonlyArray<unknown>;
 }>;
 
 // type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
@@ -28,11 +28,14 @@ type GlobalCallback = (
   timeout?: number,
 ) => void;
 
-export default <EachCallback extends Global.TestCallback>(
-    cb: GlobalCallback,
-    supportsDone: boolean = true,
+export default function bind<EachCallback extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone: boolean = true,
+) {
+  return (
+    table: Global.EachTable,
+    ...taggedTemplateData: Global.TemplateData
   ) =>
-  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
     function eachBind(
       title: string,
       test: Global.EachTestFn<EachCallback>,
@@ -50,13 +53,14 @@ export default <EachCallback extends Global.TestCallback>(
             timeout,
           ),
         );
-      } catch (e) {
+      } catch (e: any) {
         const error = new ErrorWithStack(e.message, eachBind);
         return cb(title, () => {
           throw error;
         });
       }
     };
+}
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 
@@ -80,7 +84,7 @@ const getHeadingKeys = (headings: string): Array<string> =>
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
-  params: Array<unknown>,
+  params: ReadonlyArray<unknown>,
   test: Global.EachTestFn<EachCallback>,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length

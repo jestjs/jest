@@ -9,7 +9,10 @@ import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
-  if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
+  if (
+    argv.runInBand &&
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
+  ) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
         'options do not make sense together. Which is it?',
@@ -33,7 +36,7 @@ export function check(argv: Config.Argv): true {
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      `Both --onlyFailures and --watchAll were specified, but these two ` +
+      'Both --onlyFailures and --watchAll were specified, but these two ' +
         'options do not make sense together.',
     );
   }
@@ -46,7 +49,10 @@ export function check(argv: Config.Argv): true {
     );
   }
 
-  if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
+  if (
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers') &&
+    argv.maxWorkers === undefined
+  ) {
     throw new Error(
       'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
@@ -107,13 +113,6 @@ export const options = {
       'Exit the test suite immediately after `n` number of failing tests.',
     type: 'boolean',
   },
-  browser: {
-    description:
-      'Respect the "browser" field in package.json ' +
-      'when resolving modules. Some packages export different versions ' +
-      'based on whether they are operating in node.js or a browser.',
-    type: 'boolean',
-  },
   cache: {
     description:
       'Whether to use the transform cache. Disable the cache ' +
@@ -155,8 +154,8 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls and instances between every ' +
-      'test. Equivalent to calling jest.clearAllMocks() between each test.',
+      'Automatically clear mock calls, instances and results before every test. ' +
+      'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
   collectCoverage: {
@@ -447,8 +446,8 @@ export const options = {
   },
   resetMocks: {
     description:
-      'Automatically reset mock state between every test. ' +
-      'Equivalent to calling jest.resetAllMocks() between each test.',
+      'Automatically reset mock state before every test. ' +
+      'Equivalent to calling jest.resetAllMocks() before each test.',
     type: 'boolean',
   },
   resetModules: {
@@ -463,8 +462,8 @@ export const options = {
   },
   restoreMocks: {
     description:
-      'Automatically restore mock state and implementation between every test. ' +
-      'Equivalent to calling jest.restoreAllMocks() between each test.',
+      'Automatically restore mock state and implementation before every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() before each test.',
     type: 'boolean',
   },
   rootDir: {
@@ -549,9 +548,9 @@ export const options = {
   },
   testEnvironmentOptions: {
     description:
-      'Test environment options that will be passed to the testEnvironment. ' +
+      'A JSON string with options that will be passed to the `testEnvironment`. ' +
       'The relevant options depend on the environment.',
-    type: 'string', // Object
+    type: 'string',
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
@@ -664,11 +663,6 @@ export const options = {
   verbose: {
     description:
       'Display individual test results with the test suite hierarchy.',
-    type: 'boolean',
-  },
-  version: {
-    alias: 'v',
-    description: 'Print the version and exit',
     type: 'boolean',
   },
   watch: {

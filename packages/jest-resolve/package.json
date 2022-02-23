@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "27.0.6",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,19 +10,21 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.0.6",
     "chalk": "^4.0.0",
-    "escalade": "^3.1.1",
-    "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.0.6",
+    "graceful-fs": "^4.2.9",
+    "jest-haste-map": "^28.0.0-alpha.4",
     "jest-pnp-resolver": "^1.2.2",
-    "jest-util": "^27.0.6",
-    "jest-validate": "^27.0.6",
+    "jest-util": "^28.0.0-alpha.4",
+    "jest-validate": "^28.0.0-alpha.4",
     "resolve": "^1.20.0",
+    "resolve.exports": "^1.1.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {
@@ -30,7 +32,7 @@
     "@types/resolve": "^1.20.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

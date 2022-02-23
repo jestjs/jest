@@ -29,9 +29,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually, sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
-import type {Config} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
@@ -43,7 +42,7 @@ export type SuiteResult = {
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: string;
   status?: string;
 };
 
@@ -52,7 +51,7 @@ export type Attributes = {
   parentSuite?: Suite;
   description: string;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
 };
 
 export default class Suite {

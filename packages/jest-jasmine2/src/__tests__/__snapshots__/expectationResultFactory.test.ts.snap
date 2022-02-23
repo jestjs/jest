@@ -2,7 +2,7 @@
 
 exports[`expectationResultFactory returns the result if failed (with \`error.stack\` not as a string). 1`] = `
 "thrown: Object {
-  \\"stack\\": 42,
+  "stack": 42,
 }"
 `;
 

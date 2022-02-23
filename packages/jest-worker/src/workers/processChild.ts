@@ -11,6 +11,7 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
+  FunctionLike,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
@@ -34,7 +35,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-const messageListener: NodeJS.MessageListener = request => {
+const messageListener: NodeJS.MessageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -113,7 +114,7 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: (...args: Array<unknown>) => unknown;
+  let fn: FunctionLike;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -142,17 +143,17 @@ const isPromise = (obj: any): obj is PromiseLike<unknown> =>
   typeof obj.then === 'function';
 
 function execFunction(
-  fn: (...args: Array<unknown>) => unknown | Promise<unknown>,
+  fn: FunctionLike,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,
   onError: (error: Error) => void,
 ): void {
-  let result;
+  let result: unknown;
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err) {
+  } catch (err: any) {
     onError(err);
 
     return;

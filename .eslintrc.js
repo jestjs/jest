@@ -5,27 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {sync: readPkg} = require('read-pkg');
 const {getPackages} = require('./scripts/buildUtils');
 
 const internalPackages = getPackages()
-  .map(packageDir => {
-    const pkg = readPkg({cwd: packageDir});
-
-    return pkg.name;
-  })
+  .map(({pkg}) => pkg.name)
   .sort();
 
 module.exports = {
   env: {
+    es2020: true,
     'jest/globals': true,
-    node: true,
   },
   extends: [
+    'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
     'plugin:prettier/recommended',
   ],
+  globals: {
+    console: 'readonly',
+  },
   overrides: [
     {
       extends: [
@@ -42,8 +41,8 @@ module.exports = {
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
-        // Since we do `export =`. Remove for Jest 27
-        'import/default': 'off',
+        // TS verifies these
+        'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
       },
@@ -91,8 +90,7 @@ module.exports = {
         'packages/expect/src/matchers.ts',
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
-        'packages/expect/src/types.ts',
-        'packages/expect/src/utils.ts',
+        'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
@@ -110,8 +108,6 @@ module.exports = {
         'packages/jest-snapshot/src/printSnapshot.ts',
         'packages/jest-snapshot/src/types.ts',
         'packages/jest-util/src/convertDescriptorToString.ts',
-        'packages/jest-worker/src/Farm.ts',
-        'packages/jest-worker/src/index.ts',
         'packages/pretty-format/src/index.ts',
         'packages/pretty-format/src/plugins/DOMCollection.ts',
       ],
@@ -139,10 +135,12 @@ module.exports = {
 
     // to make it more suitable for running on code examples in docs/ folder
     {
-      files: ['*.md'],
+      files: ['**/*.md/**'],
       rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
         'arrow-body-style': 'off',
         'consistent-return': 'off',
+        'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
@@ -152,11 +150,23 @@ module.exports = {
         'sort-keys': 'off',
       },
     },
+    // snapshots in examples plus inline snapshots need to keep backtick
+    {
+      files: ['**/*.md/**', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
+      rules: {
+        quotes: [
+          'error',
+          'single',
+          {allowTemplateLiterals: true, avoidEscape: true},
+        ],
+      },
+    },
     {
       files: ['website/**/*'],
       rules: {
         'import/order': 'off',
         'import/sort-keys': 'off',
+        'no-restricted-globals': ['off'],
         'sort-keys': 'off',
       },
     },
@@ -177,6 +187,18 @@ module.exports = {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        'import/no-anonymous-default-export': [
+          'error',
+          {
+            allowAnonymousClass: false,
+            allowAnonymousFunction: false,
+            allowArray: false,
+            allowArrowFunction: false,
+            allowCallExpression: false,
+            allowLiteral: false,
+            allowObject: true,
+          },
+        ],
       },
     },
     {
@@ -194,8 +216,7 @@ module.exports = {
     {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
-        'packages/expect/src/jasmineUtils.ts',
-        '**/vendor/**/*',
+        'packages/expect-utils/src/jasmineUtils.ts',
       ],
       rules: {
         'eslint-comments/disable-enable-pair': 'off',
@@ -208,9 +229,9 @@ module.exports = {
         'e2e/jasmine-async/__tests__/*',
       ],
       globals: {
-        fail: true,
-        jasmine: true,
-        pending: true,
+        fail: 'readonly',
+        jasmine: 'readonly',
+        pending: 'readonly',
       },
     },
     {
@@ -225,12 +246,16 @@ module.exports = {
       },
     },
     {
-      files: ['test-types/*.test.ts', '*.md'],
+      files: ['**/__typetests__/**', '**/*.md/**'],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',
         'jest/valid-expect': 'off',
       },
+    },
+    {
+      env: {node: true},
+      files: ['*.js', '*.jsx'],
     },
     {
       files: [
@@ -250,11 +275,13 @@ module.exports = {
         'website/**',
         '**/__mocks__/**',
         '**/__tests__/**',
+        '**/__typetests__/**',
         '**/__performance_tests__/**',
         'packages/diff-sequences/perf/index.js',
         'packages/pretty-format/perf/test.js',
       ],
       rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
         'import/no-unresolved': 'off',
         'no-console': 'off',
         'no-unused-vars': 'off',
@@ -265,7 +292,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['markdown', 'import', 'jest'],
+  plugins: ['import', 'jest'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -292,9 +319,9 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          '/test-types/**',
-          '**/__tests__/**',
           '**/__mocks__/**',
+          '**/__tests__/**',
+          '**/__typetests__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
           'babel.config.js',
@@ -406,8 +433,16 @@ module.exports = {
     'no-process-env': 'off',
     'no-process-exit': 'off',
     'no-proto': 'error',
+    'no-prototype-builtins': 'error',
     'no-redeclare': 'warn',
     'no-regex-spaces': 'warn',
+    'no-restricted-globals': [
+      'error',
+      {
+        message: 'Use `globalThis` instead.',
+        name: 'global',
+      },
+    ],
     'no-restricted-imports': [
       'error',
       {message: 'Please use graceful-fs instead.', name: 'fs'},
@@ -452,7 +487,7 @@ module.exports = {
     quotes: [
       'error',
       'single',
-      {allowTemplateLiterals: true, avoidEscape: true},
+      {allowTemplateLiterals: false, avoidEscape: true},
     ],
     radix: 'warn',
     'require-jsdoc': 'off',
@@ -476,5 +511,8 @@ module.exports = {
     'import/internal-regex': new RegExp(
       internalPackages.map(pkg => `^${pkg}$`).join('|'),
     ).source,
+    'import/resolver': {
+      typescript: {},
+    },
   },
 };

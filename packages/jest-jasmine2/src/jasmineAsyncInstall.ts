@@ -215,6 +215,9 @@ function makeConcurrent(
     } catch (error) {
       promise = Promise.reject(error);
     }
+    // Avoid triggering the uncaught promise rejection handler in case the test errors before
+    // being awaited on.
+    promise.catch(() => {});
 
     return spec;
   };
@@ -227,7 +230,7 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
@@ -20,5 +19,5 @@ it('defining tests and hooks asynchronously throws', () => {
   expect(result.exitCode).toBe(1);
 
   const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });

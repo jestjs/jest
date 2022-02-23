@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
   createEmptyPackage,
@@ -47,8 +46,8 @@ test('basic test constructs', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -85,8 +84,8 @@ test('interleaved describe and test children order', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -116,8 +115,8 @@ test('skips', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -146,8 +145,8 @@ test('only', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -163,8 +162,8 @@ test('cannot have describe with no implementation', () => {
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
 
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -180,8 +179,8 @@ test('cannot test with no implementation', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary} = extractSummary(stderr);
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -211,8 +210,8 @@ test('skips with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -241,8 +240,8 @@ test('only with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -258,8 +257,8 @@ test('cannot test with no implementation with expand arg', () => {
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
 
   const {summary} = extractSummary(stderr);
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -276,7 +275,7 @@ test('function as descriptor', () => {
   const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

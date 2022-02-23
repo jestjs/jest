@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
@@ -42,7 +41,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -53,7 +52,7 @@ describe('babel-jest ignored', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {exitCode, stderr} = runJest(dir, ['--no-cache']);
     expect(exitCode).toBe(1);
-    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
+    expect(extractSummary(stderr).rest).toMatchSnapshot();
   });
 });
 
@@ -101,7 +100,7 @@ describe('no babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -112,10 +111,12 @@ describe('custom transformer', () => {
     'transform/custom-instrumenting-preprocessor',
   );
 
-  it('proprocesses files', () => {
+  it('preprocesses files', () => {
     const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
-    expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
+    expect(stderr).toMatch(
+      /instruments by setting.*globalThis\.__INSTRUMENTED__/,
+    );
     expect(json.numTotalTests).toBe(2);
     expect(json.numPassedTests).toBe(1);
     expect(json.numFailedTests).toBe(1);
@@ -126,7 +127,7 @@ describe('custom transformer', () => {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(exitCode).toBe(0);
   });
 });
@@ -184,7 +185,7 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -277,7 +278,7 @@ describe('transform-testrunner', () => {
   });
 });
 
-onNodeVersions('^12.17.0 || >=13.2.0', () => {
+onNodeVersions('>=12.17.0', () => {
   describe('esm-transformer', () => {
     const dir = path.resolve(__dirname, '../transform/esm-transformer');
 
@@ -294,7 +295,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
 
     it('should transform with transformer with only async transforms', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
@@ -311,7 +312,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
 
     it("should use babel-jest's async transforms", () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
@@ -323,7 +324,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
     test('runs test with native ESM', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
 
       expect(stderr).toMatch(/PASS/);
@@ -339,7 +340,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     );
     test('runs test with native ESM', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
 
       expect(stderr).toMatch(/PASS/);

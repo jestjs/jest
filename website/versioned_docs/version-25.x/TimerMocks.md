@@ -5,8 +5,7 @@ title: Timer Mocks
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
 
-```javascript
-// timerGame.js
+```javascript title="timerGame.js"
 'use strict';
 
 function timerGame(callback) {
@@ -20,11 +19,10 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
-// __tests__/timerGame-test.js
+```javascript title="__tests__/timerGame-test.js"
 'use strict';
 
-jest.useFakeTimers();
+jest.useFakeTimers(); // or you can set "timers": "fake" globally in configuration file
 
 test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');
@@ -37,11 +35,14 @@ test('waits 1 second before ending the game', () => {
 
 Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
 
+All of the following functions need fake timers to be set, either by `jest.useFakeTimers()` or via `"timers": "fake"` in the config file.
+
 ## Run All Timers
 
 Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
+jest.useFakeTimers();
 test('calls the callback after 1 second', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
@@ -62,10 +63,15 @@ test('calls the callback after 1 second', () => {
 
 ## Run Pending Timers
 
-There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop, throwing the following error:
 
-```javascript
-// infiniteTimerGame.js
+```
+Ran 100000 timers, and there are still more! Assuming we've hit an infinite recursion and bailing out...
+```
+
+So something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+
+```javascript title="infiniteTimerGame.js"
 'use strict';
 
 function infiniteTimerGame(callback) {
@@ -85,8 +91,7 @@ function infiniteTimerGame(callback) {
 module.exports = infiniteTimerGame;
 ```
 
-```javascript
-// __tests__/infiniteTimerGame-test.js
+```javascript title="__tests__/infiniteTimerGame-test.js"
 'use strict';
 
 jest.useFakeTimers();
@@ -107,7 +112,7 @@ describe('infiniteTimerGame', () => {
     // (but not any new timers that get created during that process)
     jest.runOnlyPendingTimers();
 
-    // At this point, our 1-second timer should have fired it's callback
+    // At this point, our 1-second timer should have fired its callback
     expect(callback).toBeCalled();
 
     // And it should have created a new timer to start the game over in
@@ -124,8 +129,7 @@ describe('infiniteTimerGame', () => {
 
 Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 
-```javascript
-// timerGame.js
+```javascript title="timerGame.js"
 'use strict';
 
 function timerGame(callback) {
@@ -139,7 +143,8 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
+```javascript title="__tests__/timerGame-test.js"
+jest.useFakeTimers();
 it('calls the callback after 1 second via advanceTimersByTime', () => {
   const timerGame = require('../timerGame');
   const callback = jest.fn();
@@ -160,4 +165,4 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
 Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
 
-The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).
+The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/main/examples/timer).

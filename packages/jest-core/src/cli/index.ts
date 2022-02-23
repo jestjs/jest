@@ -36,7 +36,7 @@ type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
-  projects: Array<Config.Path>,
+  projects: Array<string>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
@@ -168,7 +168,7 @@ const _run10000 = async (
   let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const rawFilter = require(globalConfig.filter);
-    let filterSetupPromise: Promise<Error | undefined> | undefined;
+    let filterSetupPromise: Promise<unknown | undefined> | undefined;
     if (rawFilter.setup) {
       // Wrap filter setup Promise to avoid "uncaught Promise" error.
       // If an error is returned, we surface it in the return value.

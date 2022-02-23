@@ -124,11 +124,7 @@ More information on Node debugging can be found [here](https://nodejs.org/api/de
 
 ## Debugging in WebStorm
 
-The easiest way to debug Jest tests in [WebStorm](https://www.jetbrains.com/webstorm/) is using `Jest run/debug configuration`. It will launch tests and automatically attach debugger.
-
-In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and select `Jest`. Optionally specify the Jest configuration file, additional options, and environment variables. Save the configuration, put the breakpoints in the code, then click the green debug icon to start debugging.
-
-If you are using Facebook's [`create-react-app`](https://github.com/facebookincubator/create-react-app), in the Jest run/debug configuration specify the path to the `react-scripts` package in the Jest package field and add `--env=jsdom` to the Jest options field.
+[WebStorm](https://www.jetbrains.com/webstorm/) has built-in support for Jest. Read [Testing With Jest in WebStorm](https://blog.jetbrains.com/webstorm/2018/10/testing-with-jest-in-webstorm/) to learn more.
 
 ## Caching Issues
 
@@ -144,7 +140,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `globalThis.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 

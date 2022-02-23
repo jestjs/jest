@@ -13,12 +13,14 @@ import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
   Test,
+  TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -95,7 +97,10 @@ const processResults = async (
   }
 
   if (testResultsProcessor) {
-    runResults = require(testResultsProcessor)(runResults);
+    const processor = await requireOrImportModule<TestResultsProcessor>(
+      testResultsProcessor,
+    );
+    runResults = processor(runResults);
   }
   if (isJSON) {
     if (outputFile) {
@@ -142,6 +147,10 @@ export default async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }): Promise<void> {
+  // Clear cache for required modules - there might be different resolutions
+  // from Jest's config loading to running the tests
+  Resolver.clearDefaultResolverCache();
+
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
@@ -276,7 +285,7 @@ export default async function runJest({
 
   const results = await scheduler.scheduleTests(allTests, testWatcher);
 
-  await sequencer.cacheResults(allTests, results);
+  sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});

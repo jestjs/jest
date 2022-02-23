@@ -965,9 +965,12 @@ describe('Immutable.Seq lazy values', () => {
             ? {done: false, value: values[i++]}
             : {done: true};
         },
+        [Symbol.iterator]() {
+          return this;
+        },
       };
     }
-    const val = Immutable.Seq(returnIterator(array));
+    const val = Immutable.Seq(returnIterator(array)).filter(filterer);
     expect(val.size).toBeUndefined();
     expect(val).toPrettyPrintTo(expected);
   });

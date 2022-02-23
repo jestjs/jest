@@ -32,7 +32,7 @@ export const printDisplayName = (config: Config.ProjectConfig): string => {
 export const trimAndFormatPath = (
   pad: number,
   config: Config.ProjectConfig | Config.GlobalConfig,
-  testPath: Config.Path,
+  testPath: string,
   columns: number,
 ): string => {
   const maxLength = columns - pad;
@@ -68,7 +68,7 @@ export const trimAndFormatPath = (
 
 export const formatTestPath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  testPath: string,
 ): string => {
   const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
@@ -76,7 +76,7 @@ export const formatTestPath = (
 
 export const relativePath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  testPath: string,
 ): {basename: string; dirname: string} => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
@@ -174,7 +174,7 @@ export const getSummary = (
     (suitesRun !== suitesTotal
       ? suitesRun + ' of ' + suitesTotal
       : suitesTotal) +
-    ` total`;
+    ' total';
 
   const updatedTestsFailed =
     testsFailed + valuesForCurrentTestCases.numFailingTests;
@@ -244,7 +244,7 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
     estimatedTime && runTime >= estimatedTime + 1
       ? chalk.bold.yellow(formatTime(runTime, 0))
       : formatTime(runTime, 0);
-  let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
+  let time = chalk.bold('Time:') + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
     time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
@@ -278,7 +278,7 @@ export const wrapAnsiString = (
     return string;
   }
 
-  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/g;
+  const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/gu;
   const tokens = [];
   let lastIndex = 0;
   let match;

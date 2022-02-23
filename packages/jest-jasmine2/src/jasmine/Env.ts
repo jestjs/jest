@@ -49,7 +49,7 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -104,8 +104,8 @@ export default function (j$: Jasmine) {
 
       let catchExceptions = true;
 
-      const realSetTimeout = global.setTimeout;
-      const realClearTimeout = global.clearTimeout;
+      const realSetTimeout = globalThis.setTimeout;
+      const realClearTimeout = globalThis.clearTimeout;
 
       const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
@@ -382,7 +382,7 @@ export default function (j$: Jasmine) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {
@@ -436,7 +436,7 @@ export default function (j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e) {
+        } catch (e: any) {
           declarationError = e;
         }
 

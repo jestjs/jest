@@ -16,7 +16,6 @@ import type {
   default as HasteMap,
 } from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
-import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
 import {
   isInteractive,
@@ -200,7 +199,7 @@ export default async function watch(
           stdin,
           stdout: outputStream,
         });
-      } catch (error) {
+      } catch (error: any) {
         const errorWithContext = new Error(
           `Failed to initialize watch plugin "${chalk.bold(
             slash(path.relative(process.cwd(), pluginWithConfig.path)),
@@ -294,8 +293,6 @@ export default async function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-    // Clear cache for required modules
-    Resolver.clearDefaultResolverCache();
 
     return runJest({
       changedFilesPromise,

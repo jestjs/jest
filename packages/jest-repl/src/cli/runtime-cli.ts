@@ -63,32 +63,37 @@ export async function run(
   const options = await readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config: Config.ProjectConfig = {
+  const projectConfig: Config.ProjectConfig = {
     ...options.projectConfig,
     automock: false,
   };
 
   try {
-    const hasteMap = await Runtime.createContext(config, {
+    const hasteMap = await Runtime.createContext(projectConfig, {
       maxWorkers: Math.max(cpus().length - 1, 1),
       watchman: globalConfig.watchman,
     });
 
-    const transformer = await createScriptTransformer(config);
+    const transformer = await createScriptTransformer(projectConfig);
     const Environment: typeof JestEnvironment =
-      await transformer.requireAndTranspileModule(config.testEnvironment);
+      await transformer.requireAndTranspileModule(
+        projectConfig.testEnvironment,
+      );
 
-    const environment = new Environment(config);
-    setGlobal(
-      environment.global,
-      'console',
-      new CustomConsole(process.stdout, process.stderr),
+    const customConsole = new CustomConsole(process.stdout, process.stderr);
+    const environment = new Environment(
+      {
+        globalConfig,
+        projectConfig,
+      },
+      {console: customConsole, docblockPragmas: {}, testPath: filePath},
     );
-    setGlobal(environment.global, 'jestProjectConfig', config);
+    setGlobal(environment.global, 'console', customConsole);
+    setGlobal(environment.global, 'jestProjectConfig', projectConfig);
     setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
     const runtime = new Runtime(
-      config,
+      projectConfig,
       environment,
       hasteMap.resolver,
       transformer,
@@ -104,7 +109,7 @@ export async function run(
       filePath,
     );
 
-    for (const path of config.setupFiles) {
+    for (const path of projectConfig.setupFiles) {
       const esm = runtime.unstable_shouldLoadAsEsm(path);
 
       if (esm) {
@@ -120,7 +125,7 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));
   }

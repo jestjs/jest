@@ -11,12 +11,13 @@ import {getCallsite} from '@jest/source-map';
 import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import JasmineReporter from './reporter';
+
 export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
@@ -138,7 +139,7 @@ export default async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotStateType = await runtime
+  const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       path.resolve(__dirname, './setup_jest_globals.js'),
     )
@@ -178,10 +179,7 @@ export default async function jasmine2(
   return addSnapshotData(results, snapshotState);
 }
 
-const addSnapshotData = (
-  results: TestResult,
-  snapshotState: SnapshotStateType,
-) => {
+const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.testResults.forEach(({fullName, status}: AssertionResult) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
