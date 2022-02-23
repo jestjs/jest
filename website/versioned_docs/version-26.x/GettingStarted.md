@@ -132,7 +132,7 @@ Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to
 
 ### Using TypeScript
 
-### Using TypeScript via Babel
+#### Via `babel`
 
 Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
 
@@ -142,7 +142,7 @@ yarn add --dev @babel/preset-typescript
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
 
-```js title="babel.config.js"
+```javascript title="babel.config.js"
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
@@ -154,7 +154,7 @@ module.exports = {
 
 However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
 
-### Using TypeScript via ts-jest
+#### Via `ts-jest`
 
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
 
