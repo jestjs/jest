@@ -7,7 +7,7 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import {expect} from '@jest/globals';
+import {expect, jest} from '@jest/globals';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 // asymmetric matchers

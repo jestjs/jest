@@ -61,7 +61,8 @@ export default class LeakDetector {
   }
 
   private _runGarbageCollector() {
-    const isGarbageCollectorHidden = !global.gc;
+    // @ts-expect-error
+    const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.
     setFlagsFromString('--expose-gc');

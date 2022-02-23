@@ -318,9 +318,9 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      if (global.gc) {
-        global.gc();
-      }
+      // @ts-expect-error
+      globalThis.gc?.();
+
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 

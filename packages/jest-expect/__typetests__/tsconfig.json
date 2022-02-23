@@ -3,7 +3,9 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "types": []
   },
   "include": ["./**/*"]
 }

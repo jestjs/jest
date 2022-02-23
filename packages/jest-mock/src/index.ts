@@ -192,6 +192,10 @@ type FunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends (...args: Array<any>) => any ? K : never;
 }[keyof T] &
   string;
+type ConstructorPropertyNames<T> = {
+  [K in keyof T]: T[K] extends new (...args: Array<any>) => any ? K : never;
+}[keyof T] &
+  string;
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
@@ -988,6 +992,10 @@ export class ModuleMocker {
     return metadata;
   }
 
+  isMockFunction<T, Y extends Array<unknown> = Array<unknown>>(
+    fn: (...args: Y) => T,
+  ): fn is Mock<T, Y>;
+  isMockFunction(fn: unknown): fn is Mock<unknown>;
   isMockFunction<T>(fn: unknown): fn is Mock<T> {
     return !!fn && (fn as any)._isMockFunction === true;
   }
@@ -1003,19 +1011,26 @@ export class ModuleMocker {
     return fn;
   }
 
-  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType: 'get',
   ): SpyInstance<T[M], []>;
 
-  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType: 'set',
   ): SpyInstance<void, [T[M]]>;
 
-  spyOn<T extends {}, M extends FunctionPropertyNames<T>>(
+  spyOn<T extends object, M extends ConstructorPropertyNames<Required<T>>>(
+    object: T,
+    methodName: M,
+  ): T[M] extends new (...args: Array<any>) => any
+    ? SpyInstance<InstanceType<T[M]>, ConstructorParameters<T[M]>>
+    : never;
+
+  spyOn<T extends object, M extends FunctionPropertyNames<T>>(
     object: T,
     methodName: M,
   ): T[M] extends (...args: Array<any>) => any
@@ -1023,7 +1038,7 @@ export class ModuleMocker {
     : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
+  spyOn<T extends object, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType?: 'get' | 'set',
@@ -1094,11 +1109,10 @@ export class ModuleMocker {
     return object[methodName];
   }
 
-  private _spyOnProperty<T extends {}, M extends NonFunctionPropertyNames<T>>(
-    obj: T,
-    propertyName: M,
-    accessType: 'get' | 'set' = 'get',
-  ): Mock<T> {
+  private _spyOnProperty<
+    T extends object,
+    M extends NonFunctionPropertyNames<T>,
+  >(obj: T, propertyName: M, accessType: 'get' | 'set' = 'get'): Mock<T> {
     if (typeof obj !== 'object' && typeof obj !== 'function') {
       throw new Error(
         'Cannot spyOn on a primitive value; ' + this._typeOf(obj) + ' given',
@@ -1197,7 +1211,7 @@ export class ModuleMocker {
   }
 }
 
-const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
+const JestMock = new ModuleMocker(globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);
