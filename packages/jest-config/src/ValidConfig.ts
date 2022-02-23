@@ -64,6 +64,7 @@ const initialOptions: Config.InitialOptions = {
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     hasteMapModulePath: '',
     platforms: ['ios', 'android'],
+    retainAllFiles: false,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
@@ -114,7 +115,10 @@ const initialOptions: Config.InitialOptions = {
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-node',
-  testEnvironmentOptions: {userAgent: 'Agent/007'},
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+    userAgent: 'Agent/007',
+  },
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
@@ -128,7 +132,6 @@ const initialOptions: Config.InitialOptions = {
   testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
-  testURL: 'http://localhost',
   timers: 'real',
   transform: {
     '\\.js$': '<rootDir>/preprocessor.js',

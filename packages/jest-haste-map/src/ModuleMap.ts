@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import H from './constants';
 import * as fastPath from './lib/fast_path';
 import type {
@@ -58,7 +57,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     platform?: string | null,
     supportsNativePlatform?: boolean | null,
     type?: HTypeValue | null,
-  ): Config.Path | null {
+  ): string | null {
     if (type == null) {
       type = H.MODULE;
     }
@@ -78,11 +77,11 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     name: string,
     platform: string | null | undefined,
     _supportsNativePlatform: boolean | null,
-  ): Config.Path | null {
+  ): string | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }
 
-  getMockModule(name: string): Config.Path | undefined {
+  getMockModule(name: string): string | undefined {
     const mockPath =
       this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
@@ -197,7 +196,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     );
   }
 
-  static create(rootDir: Config.Path): ModuleMap {
+  static create(rootDir: string): ModuleMap {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),

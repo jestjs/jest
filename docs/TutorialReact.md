@@ -13,8 +13,8 @@ If you are new to React, we recommend using [Create React App](https://create-re
 
 Run
 
-```bash
-yarn add --dev react-test-renderer
+```bash npm2yarn
+npm install --save-dev react-test-renderer
 ```
 
 ### Setup without Create React App
@@ -23,13 +23,14 @@ If you have an existing application you'll need to install a few packages to mak
 
 Run
 
-```bash
-yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
+```bash npm2yarn
+npm install --save-dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
 ```json
+{
   "dependencies": {
     "react": "<current-version>",
     "react-dom": "<current-version>"
@@ -44,6 +45,7 @@ Your `package.json` should look something like this (where `<current-version>` i
   "scripts": {
     "test": "jest"
   }
+}
 ```
 
 ```js title="babel.config.js"
@@ -207,7 +209,9 @@ If you'd like to assert, and manipulate your rendered components you can use [re
 
 #### react-testing-library
 
-You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
+```bash npm2yarn
+npm install --save-dev @testing-library/react
+```
 
 Let's implement a checkbox which swaps between two labels:
 
@@ -255,7 +259,11 @@ The code for this example is available at [examples/react-testing-library](https
 
 #### Enzyme
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+```bash npm2yarn
+npm install --save-dev enzyme
+```
+
+If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 

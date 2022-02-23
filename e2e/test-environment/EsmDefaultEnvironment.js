@@ -14,6 +14,8 @@ class Env extends NodeEnvironment {
   constructor(config, options) {
     super(config, options);
     this.global.property = 'value';
+    this.global.var1 = config.globalConfig.watch;
+    this.global.var2 = config.projectConfig.cache;
   }
 }
 

@@ -31,7 +31,7 @@ export type TestSelectionConfig = {
   input?: string;
   findRelatedTests?: boolean;
   onlyChanged?: boolean;
-  paths?: Array<Config.Path>;
+  paths?: Array<string>;
   shouldTreatInputAsPattern?: boolean;
   testPathPattern?: string;
   watch?: boolean;
@@ -40,7 +40,7 @@ export type TestSelectionConfig = {
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
-  return (path: Config.Path) =>
+  return (path: string) =>
     regexes.some(regex => {
       const result = regex.test(path);
 
@@ -51,7 +51,7 @@ const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
     });
 };
 
-const toTests = (context: Context, tests: Array<Config.Path>) =>
+const toTests = (context: Context, tests: Array<string>) =>
   tests.map(path => ({
     context,
     duration: undefined,
@@ -142,7 +142,7 @@ export default class SearchSource {
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
       testCases.push({
-        isMatch: (path: Config.Path) => regex.test(path),
+        isMatch: (path: string) => regex.test(path),
         stat: 'testPathPattern',
       });
       data.stats.testPathPattern = 0;
@@ -170,7 +170,7 @@ export default class SearchSource {
     );
   }
 
-  isTestFilePath(path: Config.Path): boolean {
+  isTestFilePath(path: string): boolean {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
@@ -179,7 +179,7 @@ export default class SearchSource {
   }
 
   async findRelatedTests(
-    allPaths: Set<Config.Path>,
+    allPaths: Set<string>,
     collectCoverage: boolean,
   ): Promise<SearchResult> {
     const dependencyResolver = await this._getOrBuildDependencyResolver();
@@ -235,7 +235,7 @@ export default class SearchSource {
     };
   }
 
-  findTestsByPaths(paths: Array<Config.Path>): SearchResult {
+  findTestsByPaths(paths: Array<string>): SearchResult {
     return {
       tests: toTests(
         this._context,
@@ -247,7 +247,7 @@ export default class SearchSource {
   }
 
   async findRelatedTestsFromPattern(
-    paths: Array<Config.Path>,
+    paths: Array<string>,
     collectCoverage: boolean,
   ): Promise<SearchResult> {
     if (Array.isArray(paths) && paths.length) {

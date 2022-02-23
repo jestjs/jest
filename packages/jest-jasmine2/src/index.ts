@@ -17,6 +17,7 @@ import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import JasmineReporter from './reporter';
+
 export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');

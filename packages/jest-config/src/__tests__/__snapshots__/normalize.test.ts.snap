@@ -229,6 +229,30 @@ exports[`testTimeout should throw an error if timeout is a negative number 1`] =
 <red></>"
 `;
 
+exports[`testURL logs a deprecation warning when \`testURL\` is used 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"testURL"</> was replaced by passing the URL via <bold>"testEnvironmentOptions.url"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>

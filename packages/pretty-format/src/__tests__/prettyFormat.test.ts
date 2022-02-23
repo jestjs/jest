@@ -562,6 +562,59 @@ describe('prettyFormat()', () => {
     );
   });
 
+  describe('maxWidth option', () => {
+    it('applies to arrays', () => {
+      const val = Array(1_000_000).fill('x');
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Array [',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  …',
+          ']',
+        ].join('\n'),
+      );
+    });
+
+    it('applies to sets', () => {
+      const val = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  …', '}'].join(
+          '\n',
+        ),
+      );
+    });
+
+    it('applies to maps', () => {
+      const val = new Map();
+      val.set('a', 1);
+      val.set('b', 2);
+      val.set('c', 3);
+      val.set('d', 4);
+      val.set('e', 5);
+      val.set('f', 6);
+      val.set('g', 7);
+      val.set('h', 8);
+      val.set('i', 9);
+      val.set('j', 10);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Map {',
+          '  "a" => 1,',
+          '  "b" => 2,',
+          '  "c" => 3,',
+          '  "d" => 4,',
+          '  "e" => 5,',
+          '  …',
+          '}',
+        ].join('\n'),
+      );
+    });
+  });
+
   it('can customize the max depth', () => {
     const val = [
       {

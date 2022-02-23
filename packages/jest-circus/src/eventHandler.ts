@@ -214,8 +214,10 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'run_start': {
       state.hasStarted = true;
+      /* eslint-disable no-restricted-globals */
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      /* eslint-enable */
       break;
     }
     case 'run_finish': {

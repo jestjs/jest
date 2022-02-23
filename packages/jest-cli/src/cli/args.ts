@@ -9,7 +9,10 @@ import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
-  if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
+  if (
+    argv.runInBand &&
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
+  ) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
         'options do not make sense together. Which is it?',
@@ -46,7 +49,10 @@ export function check(argv: Config.Argv): true {
     );
   }
 
-  if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
+  if (
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers') &&
+    argv.maxWorkers === undefined
+  ) {
     throw new Error(
       'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
@@ -609,10 +615,6 @@ export const options = {
   testTimeout: {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
-  },
-  testURL: {
-    description: 'This option sets the URL for the jsdom environment.',
-    type: 'string',
   },
   timers: {
     description:

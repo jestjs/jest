@@ -80,7 +80,7 @@ function isObject(item: unknown): boolean {
   return item != null && typeof item === 'object' && !Array.isArray(item);
 }
 
-export const testNameToKey = (testName: Config.Path, count: number): string =>
+export const testNameToKey = (testName: string, count: number): string =>
   testName + ' ' + count;
 
 export const keyToTestName = (key: string): string => {
@@ -92,7 +92,7 @@ export const keyToTestName = (key: string): string => {
 };
 
 export const getSnapshotData = (
-  snapshotPath: Config.Path,
+  snapshotPath: string,
   update: Config.SnapshotUpdateState,
 ): {
   data: SnapshotData;
@@ -188,7 +188,7 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path): void => {
+export const ensureDirectoryExists = (filePath: string): void => {
   try {
     fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
   } catch {}
@@ -198,7 +198,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
-  snapshotPath: Config.Path,
+  snapshotPath: string,
 ): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)

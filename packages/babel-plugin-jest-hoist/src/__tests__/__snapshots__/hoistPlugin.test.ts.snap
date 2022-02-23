@@ -6,15 +6,15 @@ jest.mock('./App', () => () => <div>Hello world</div>);
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-var _jsxFileName = "/root/project/src/file.js";
+var _jsxFileName = '/root/project/src/file.js';
 
 _getJestObj().mock(
-  "./App",
+  './App',
   () => () =>
     /*#__PURE__*/ _jsxDEV(
-      "div",
+      'div',
       {
-        children: "Hello world",
+        children: 'Hello world',
       },
       void 0,
       false,
@@ -23,19 +23,38 @@ _getJestObj().mock(
         lineNumber: 1,
         columnNumber: 32,
       },
-      this
-    )
+      this,
+    ),
 );
 
-import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
+import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
 
 function _getJestObj() {
-  const { jest } = require("@jest/globals");
+  const {jest} = require('@jest/globals');
 
   _getJestObj = () => jest;
 
   return jest;
 }
+
+
+`;
+
+exports[`babel-plugin-jest-hoist required \`jest\` within \`jest\`: required \`jest\` within \`jest\` 1`] = `
+
+const {jest} = require('@jest/globals');
+
+jest.mock('some-module', () => {
+  jest.requireActual('some-module');
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const {jest} = require('@jest/globals');
+
+jest.mock('some-module', () => {
+  jest.requireActual('some-module');
+});
 
 
 `;
@@ -54,14 +73,14 @@ _getJestObj().enableAutomock();
 _getJestObj().disableAutomock();
 
 function _getJestObj() {
-  const { jest } = require("@jest/globals");
+  const {jest} = require('@jest/globals');
 
   _getJestObj = () => jest;
 
   return jest;
 }
 
-require("x");
+require('x');
 
 
 `;
@@ -69,13 +88,13 @@ require("x");
 exports[`babel-plugin-jest-hoist within a block with no siblings: within a block with no siblings 1`] = `
 
 beforeEach(() => {
-  jest.mock('someNode')
-})
+  jest.mock('someNode');
+});
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 function _getJestObj() {
-  const { jest } = require("@jest/globals");
+  const {jest} = require('@jest/globals');
 
   _getJestObj = () => jest;
 
@@ -83,7 +102,7 @@ function _getJestObj() {
 }
 
 beforeEach(() => {
-  _getJestObj().mock("someNode");
+  _getJestObj().mock('someNode');
 });
 
 
@@ -92,14 +111,14 @@ beforeEach(() => {
 exports[`babel-plugin-jest-hoist within a block: within a block 1`] = `
 
 beforeEach(() => {
-  require('x')
-  jest.mock('someNode')
-})
+  require('x');
+  jest.mock('someNode');
+});
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 function _getJestObj() {
-  const { jest } = require("@jest/globals");
+  const {jest} = require('@jest/globals');
 
   _getJestObj = () => jest;
 
@@ -107,9 +126,9 @@ function _getJestObj() {
 }
 
 beforeEach(() => {
-  _getJestObj().mock("someNode");
+  _getJestObj().mock('someNode');
 
-  require("x");
+  require('x');
 });
 
 

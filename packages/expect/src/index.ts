@@ -51,10 +51,12 @@ import type {
 
 export type {
   AsymmetricMatchers,
+  BaseExpect,
   Expect,
+  MatcherFunction,
+  MatcherFunctionWithState,
   MatcherState,
   Matchers,
-  RawMatcherFn,
 } from './types';
 
 export class JestAssertionError extends Error {
@@ -78,7 +80,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   };
 };
 
-const getPromiseMatcher = (name: string, matcher: any) => {
+const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher(name, true);
   } else if (
@@ -362,9 +364,8 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = <T extends MatcherState = MatcherState>(
-  matchers: MatchersObject<T>,
-) => setMatchers(matchers, false, expect);
+expect.extend = (matchers: MatchersObject) =>
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -430,7 +431,6 @@ setMatchers(matchers, true, expect);
 setMatchers(spyMatchers, true, expect);
 setMatchers(toThrowMatchers, true, expect);
 
-expect.addSnapshotSerializer = () => void 0;
 expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;

@@ -942,7 +942,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 Default: `undefined`
 
-Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 
 ```json
 {
@@ -1016,7 +1016,7 @@ module.exports = {
   },
 
   test(val) {
-    return val && val.hasOwnProperty('foo');
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
   },
 };
 ```

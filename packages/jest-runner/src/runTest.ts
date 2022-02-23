@@ -75,9 +75,9 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  projectConfig: Config.ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
@@ -86,7 +86,7 @@ async function runTestInternal(
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
   const customEnvironment = docblockPragmas['jest-environment'];
 
-  let testEnvironment = config.testEnvironment;
+  let testEnvironment = projectConfig.testEnvironment;
 
   if (customEnvironment) {
     if (Array.isArray(customEnvironment)) {
@@ -97,14 +97,14 @@ async function runTestInternal(
       );
     }
     testEnvironment = resolveTestEnvironment({
-      ...config,
+      ...projectConfig,
       requireResolveFunction: require.resolve,
       testEnvironment: customEnvironment,
     });
   }
 
   const cacheFS = new Map([[path, testSource]]);
-  const transformer = await createScriptTransformer(config, cacheFS);
+  const transformer = await createScriptTransformer(projectConfig, cacheFS);
 
   const TestEnvironment: typeof JestEnvironment =
     await transformer.requireAndTranspileModule(testEnvironment);
@@ -112,11 +112,11 @@ async function runTestInternal(
     await transformer.requireAndTranspileModule(
       process.env.JEST_JASMINE === '1'
         ? require.resolve('jest-jasmine2')
-        : config.testRunner,
+        : projectConfig.testRunner,
     );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
-    config.moduleLoader
-      ? require(config.moduleLoader)
+    projectConfig.moduleLoader
+      ? require(projectConfig.moduleLoader)
       : require('jest-runtime'),
   ).default;
 
@@ -125,7 +125,7 @@ async function runTestInternal(
     getConsoleOutput(
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
-      config,
+      projectConfig,
       globalConfig,
     );
 
@@ -139,11 +139,34 @@ async function runTestInternal(
     testConsole = new BufferedConsole();
   }
 
-  const environment = new TestEnvironment(config, {
-    console: testConsole,
-    docblockPragmas,
-    testPath: path,
-  });
+  let extraTestEnvironmentOptions;
+
+  const docblockEnvironmentOptions =
+    docblockPragmas['jest-environment-options'];
+
+  if (typeof docblockEnvironmentOptions === 'string') {
+    extraTestEnvironmentOptions = JSON.parse(docblockEnvironmentOptions);
+  }
+
+  const environment = new TestEnvironment(
+    {
+      globalConfig,
+      projectConfig: extraTestEnvironmentOptions
+        ? {
+            ...projectConfig,
+            testEnvironmentOptions: {
+              ...projectConfig.testEnvironmentOptions,
+              ...extraTestEnvironmentOptions,
+            },
+          }
+        : projectConfig,
+    },
+    {
+      console: testConsole,
+      docblockPragmas,
+      testPath: path,
+    },
+  );
 
   if (typeof environment.getVmContext !== 'function') {
     console.error(
@@ -152,18 +175,14 @@ async function runTestInternal(
     process.exit(1);
   }
 
-  const leakDetector = config.detectLeaks
+  const leakDetector = projectConfig.detectLeaks
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(
-    environment.global as unknown as typeof globalThis,
-    'console',
-    testConsole,
-  );
+  setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(
-    config,
+    projectConfig,
     environment,
     resolver,
     transformer,
@@ -182,7 +201,7 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  for (const path of config.setupFiles) {
+  for (const path of projectConfig.setupFiles) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
@@ -236,7 +255,7 @@ async function runTestInternal(
 
       const formattedError = formatExecError(
         error,
-        config,
+        projectConfig,
         {noStackTrace: false},
         undefined,
         true,
@@ -264,7 +283,7 @@ async function runTestInternal(
       }
       result = await testFramework(
         globalConfig,
-        config,
+        projectConfig,
         environment,
         runtime,
         path,
@@ -281,7 +300,7 @@ async function runTestInternal(
       }
     }
 
-    freezeConsole(testConsole, config);
+    freezeConsole(testConsole, projectConfig);
 
     const testCount =
       result.numPassingTests +
@@ -294,13 +313,13 @@ async function runTestInternal(
     result.perfStats = {
       end,
       runtime: testRuntime,
-      slow: testRuntime / 1000 > config.slowTestThreshold,
+      slow: testRuntime / 1000 > projectConfig.slowTestThreshold,
       start,
     };
     result.testFilePath = path;
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
-    result.displayName = config.displayName;
+    result.displayName = projectConfig.displayName;
 
     const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
@@ -318,9 +337,9 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      if (global.gc) {
-        global.gc();
-      }
+      // @ts-expect-error
+      globalThis.gc?.();
+
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
@@ -337,7 +356,7 @@ async function runTestInternal(
 }
 
 export default async function runTest(
-  path: Config.Path,
+  path: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,

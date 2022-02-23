@@ -12,10 +12,10 @@ import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import type {Stats} from 'graceful-fs';
+import {deserialize, serialize} from 'v8';
+import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import serializer from 'jest-serializer';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -216,7 +216,7 @@ function invariant(condition: unknown, message?: string): asserts condition {
  */
 export default class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
-  private _cachePath: Config.Path;
+  private _cachePath: string;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _options: InternalOptions;
@@ -267,7 +267,7 @@ export default class HasteMap extends EventEmitter {
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
-    this._console = options.console || global.console;
+    this._console = options.console || globalThis.console;
 
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
@@ -333,7 +333,7 @@ export default class HasteMap extends EventEmitter {
   }
 
   static getCacheFilePath(
-    tmpdir: Config.Path,
+    tmpdir: string,
     name: string,
     ...extra: Array<string>
   ): string {
@@ -402,7 +402,7 @@ export default class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath) as any;
+      hasteMap = deserialize(readFileSync(this._cachePath));
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -445,7 +445,7 @@ export default class HasteMap extends EventEmitter {
     hasteMap: InternalHasteMap,
     map: ModuleMapData,
     mocks: MockData,
-    filePath: Config.Path,
+    filePath: string,
     workerOptions?: {forceInBand: boolean},
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
@@ -729,7 +729,7 @@ export default class HasteMap extends EventEmitter {
    * 4. serialize the new `HasteMap` in a cache file.
    */
   private _persist(hasteMap: InternalHasteMap) {
-    serializer.writeFileSync(this._cachePath, hasteMap);
+    writeFileSync(this._cachePath, serialize(hasteMap));
   }
 
   /**
@@ -828,7 +828,7 @@ export default class HasteMap extends EventEmitter {
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
-    const createWatcher = (root: Config.Path): Promise<Watcher> => {
+    const createWatcher = (root: string): Promise<Watcher> => {
       const watcher = new Watcher(root, {
         dot: true,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -869,8 +869,8 @@ export default class HasteMap extends EventEmitter {
 
     const onChange = (
       type: string,
-      filePath: Config.Path,
-      root: Config.Path,
+      filePath: string,
+      root: string,
       stat?: Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
@@ -1087,7 +1087,7 @@ export default class HasteMap extends EventEmitter {
   /**
    * Helpers
    */
-  private _ignore(filePath: Config.Path): boolean {
+  private _ignore(filePath: string): boolean {
     const ignorePattern = this._options.ignorePattern;
     const ignoreMatched =
       ignorePattern instanceof RegExp

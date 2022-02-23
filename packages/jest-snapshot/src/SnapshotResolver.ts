@@ -13,8 +13,8 @@ import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
   testPathForConsistencyCheck: string;
-  resolveSnapshotPath(testPath: Config.Path, extension?: string): Config.Path;
-  resolveTestPath(snapshotPath: Config.Path, extension?: string): Config.Path;
+  resolveSnapshotPath(testPath: string, extension?: string): string;
+  resolveTestPath(snapshotPath: string, extension?: string): string;
 };
 
 export const EXTENSION = 'snap';
@@ -23,7 +23,7 @@ export const DOT_EXTENSION = '.' + EXTENSION;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-const cache = new Map<Config.Path, SnapshotResolver>();
+const cache = new Map<string, SnapshotResolver>();
 
 type LocalRequire = (module: string) => unknown;
 
@@ -46,7 +46,7 @@ export const buildSnapshotResolver = async (
 
 async function createSnapshotResolver(
   localRequire: LocalRequire,
-  snapshotResolverPath?: Config.Path | null,
+  snapshotResolverPath?: string | null,
 ): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
     ? await createCustomSnapshotResolver(snapshotResolverPath, localRequire)
@@ -55,13 +55,13 @@ async function createSnapshotResolver(
 
 function createDefaultSnapshotResolver(): SnapshotResolver {
   return {
-    resolveSnapshotPath: (testPath: Config.Path) =>
+    resolveSnapshotPath: (testPath: string) =>
       path.join(
         path.join(path.dirname(testPath), '__snapshots__'),
         path.basename(testPath) + DOT_EXTENSION,
       ),
 
-    resolveTestPath: (snapshotPath: Config.Path) =>
+    resolveTestPath: (snapshotPath: string) =>
       path.resolve(
         path.dirname(snapshotPath),
         '..',
@@ -77,7 +77,7 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 }
 
 async function createCustomSnapshotResolver(
-  snapshotResolverPath: Config.Path,
+  snapshotResolverPath: string,
   localRequire: LocalRequire,
 ): Promise<SnapshotResolver> {
   const custom: SnapshotResolver = interopRequireDefault(
@@ -96,9 +96,9 @@ async function createCustomSnapshotResolver(
   });
 
   const customResolver = {
-    resolveSnapshotPath: (testPath: Config.Path) =>
+    resolveSnapshotPath: (testPath: string) =>
       custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
-    resolveTestPath: (snapshotPath: Config.Path) =>
+    resolveTestPath: (snapshotPath: string) =>
       custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
     testPathForConsistencyCheck: custom.testPathForConsistencyCheck,
   };
