@@ -34,7 +34,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: JestEnvironmentConfig, options?: EnvironmentContext) {
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
     this.dom = new JSDOM(
       typeof projectConfig.testEnvironmentOptions.html === 'string'
@@ -50,9 +50,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
             : undefined,
         runScripts: 'dangerously',
         url: projectConfig.testURL,
-        virtualConsole: new VirtualConsole().sendTo(
-          options?.console || console,
-        ),
+        virtualConsole: new VirtualConsole().sendTo(context.console ?? console),
         ...projectConfig.testEnvironmentOptions,
       },
     );
