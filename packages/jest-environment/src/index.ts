@@ -164,9 +164,9 @@ export interface Jest {
   /**
    * Mocks a module with the provided module factory when it is being imported.
    */
-  unstable_mockModule(
+  unstable_mockModule<T = unknown>(
     moduleName: string,
-    moduleFactory: () => Promise<unknown> | unknown,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
