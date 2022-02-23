@@ -52,7 +52,7 @@ export type PropertyLikeKeys<T> = {
     : K;
 }[keyof T];
 
-// TODO Replace this with TS ConstructorParameters utility type
+// TODO Figure out how to replace this with TS ConstructorParameters utility type
 // https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
 type ConstructorParameters<T> = T extends new (...args: infer P) => any
   ? P
@@ -123,6 +123,8 @@ export interface Mock<T, Y extends Array<unknown> = Array<unknown>>
   (...args: Y): T;
 }
 
+// TODO Replace with Awaited utility type when minimum supported TS version will be 4.5 or above
+//https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#the-awaited-type-and-promise-improvements
 type Unpromisify<T> = T extends Promise<infer R> ? R : never;
 
 export interface MockInstance<T, Y extends Array<unknown>> {
