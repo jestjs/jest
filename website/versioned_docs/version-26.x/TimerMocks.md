@@ -97,6 +97,7 @@ module.exports = infiniteTimerGame;
 'use strict';
 
 jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
 
 describe('infiniteTimerGame', () => {
   test('schedules a 10-second timer after 1 second', () => {
