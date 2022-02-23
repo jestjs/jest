@@ -34,7 +34,7 @@ export interface JestEnvironmentConfig {
 }
 
 export declare class JestEnvironment<Timer = unknown> {
-  constructor(config: JestEnvironmentConfig, context?: EnvironmentContext);
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext);
   global: Global.Global;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;

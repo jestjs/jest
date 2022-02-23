@@ -6,7 +6,11 @@
  */
 
 import {Context, createContext, runInContext} from 'vm';
-import type {JestEnvironment, JestEnvironmentConfig} from '@jest/environment';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
@@ -25,7 +29,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: JestEnvironmentConfig) {
+  // while `context` is unused, it should always be passed
+  constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
     const global = (this.global = runInContext(
