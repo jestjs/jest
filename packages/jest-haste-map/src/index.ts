@@ -30,6 +30,7 @@ import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
+  DependencyExtractor,
   EventsQueue,
   FileData,
   FileMetaData,
@@ -316,10 +317,11 @@ export default class HasteMap extends EventEmitter {
     }
 
     if (options.dependencyExtractor) {
-      const dependencyExtractor = await requireOrImportModule<any>(
-        options.dependencyExtractor,
-        false,
-      );
+      const dependencyExtractor =
+        await requireOrImportModule<DependencyExtractor>(
+          options.dependencyExtractor,
+          false,
+        );
       if (dependencyExtractor.getCacheKey) {
         dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
       }

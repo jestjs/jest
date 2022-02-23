@@ -12,7 +12,12 @@ import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import type {
+  DependencyExtractor,
+  HasteImpl,
+  WorkerMessage,
+  WorkerMetadata,
+} from './types';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -75,7 +80,10 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       dependencies = Array.from(
         data.dependencyExtractor
           ? (
-              await requireOrImportModule<any>(data.dependencyExtractor, false)
+              await requireOrImportModule<DependencyExtractor>(
+                data.dependencyExtractor,
+                false,
+              )
             ).extract(content, filePath, dependencyExtractor.extract)
           : dependencyExtractor.extract(content),
       );

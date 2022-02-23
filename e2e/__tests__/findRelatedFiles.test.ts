@@ -162,8 +162,7 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch('PASS __tests__/test.test.js');
     expect(stderr).not.toMatch('PASS __tests__/test-skip-deps.test.js');
 
-    const summaryMsg =
-      'Ran all test suites related to files matching /a.js/i.';
+    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
     expect(stderr).toMatch(summaryMsg);
   });
 

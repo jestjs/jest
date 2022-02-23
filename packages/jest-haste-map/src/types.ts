@@ -154,3 +154,12 @@ export type ChangeEvent = {
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
 };
+
+export type DependencyExtractor = {
+  extract: (
+    code: string,
+    filePath: string,
+    defaultExtract: DependencyExtractor['extract'],
+  ) => Iterable<string>;
+  getCacheKey?: () => string;
+};
