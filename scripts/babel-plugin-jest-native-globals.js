@@ -12,22 +12,22 @@
 
 module.exports = ({template}) => {
   const promiseDeclaration = template(`
-    var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+    var Promise = globalThis[Symbol.for('jest-native-promise')] || globalThis.Promise;
   `);
   const symbolDeclaration = template(`
-    var Symbol = global['jest-symbol-do-not-touch'] || global.Symbol;
+    var Symbol = globalThis['jest-symbol-do-not-touch'] || globalThis.Symbol;
   `);
   const nowDeclaration = template(`
-    var jestNow = global[Symbol.for('jest-native-now')] || global.Date.now;
+    var jestNow = globalThis[Symbol.for('jest-native-now')] || globalThis.Date.now;
   `);
   const fsReadFileDeclaration = template(`
-    var jestReadFile = global[Symbol.for('jest-native-read-file')] || fs.readFileSync;
+    var jestReadFile = globalThis[Symbol.for('jest-native-read-file')] || fs.readFileSync;
   `);
   const fsWriteFileDeclaration = template(`
-    var jestWriteFile = global[Symbol.for('jest-native-write-file')] || fs.writeFileSync;
+    var jestWriteFile = globalThis[Symbol.for('jest-native-write-file')] || fs.writeFileSync;
   `);
   const fsExistsFileDeclaration = template(`
-    var jestExistsFile = global[Symbol.for('jest-native-exists-file')] || fs.existsSync;
+    var jestExistsFile = globalThis[Symbol.for('jest-native-exists-file')] || fs.existsSync;
   `);
 
   return {

@@ -6,23 +6,20 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-declare namespace DependencyResolver {
-  export type ResolvedModule = {
-    file: Config.Path;
-    dependencies: Array<Config.Path>;
-  };
-}
+export type ResolvedModule = {
+  file: string;
+  dependencies: Array<string>;
+};
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-class DependencyResolver {
+export class DependencyResolver {
   private _hasteFS: HasteFS;
   private _resolver: Resolver;
   private _snapshotResolver: SnapshotResolver;
@@ -37,16 +34,13 @@ class DependencyResolver {
     this._snapshotResolver = snapshotResolver;
   }
 
-  resolve(
-    file: Config.Path,
-    options?: ResolveModuleConfig,
-  ): Array<Config.Path> {
+  resolve(file: string, options?: ResolveModuleConfig): Array<string> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
       return [];
     }
 
-    return dependencies.reduce<Array<Config.Path>>((acc, dependency) => {
+    return dependencies.reduce<Array<string>>((acc, dependency) => {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
@@ -103,24 +97,24 @@ class DependencyResolver {
   }
 
   resolveInverseModuleMap(
-    paths: Set<Config.Path>,
-    filter: (file: Config.Path) => boolean,
+    paths: Set<string>,
+    filter: (file: string) => boolean,
     options?: ResolveModuleConfig,
-  ): Array<DependencyResolver.ResolvedModule> {
+  ): Array<ResolvedModule> {
     if (!paths.size) {
       return [];
     }
 
     const collectModules = (
-      related: Set<Config.Path>,
-      moduleMap: Array<DependencyResolver.ResolvedModule>,
-      changed: Set<Config.Path>,
+      related: Set<string>,
+      moduleMap: Array<ResolvedModule>,
+      changed: Set<string>,
     ) => {
       const visitedModules = new Set();
-      const result: Array<DependencyResolver.ResolvedModule> = [];
+      const result: Array<ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
-          moduleMap.reduce<Array<Config.Path>>((acc, module) => {
+          moduleMap.reduce<Array<string>>((acc, module) => {
             if (
               visitedModules.has(module.file) ||
               !module.dependencies.some(dep => changed.has(dep))
@@ -144,8 +138,8 @@ class DependencyResolver {
       );
     };
 
-    const relatedPaths = new Set<Config.Path>();
-    const changed: Set<Config.Path> = new Set();
+    const relatedPaths = new Set<string>();
+    const changed: Set<string> = new Set();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)
@@ -157,7 +151,7 @@ class DependencyResolver {
         }
       }
     }
-    const modules: Array<DependencyResolver.ResolvedModule> = [];
+    const modules: Array<ResolvedModule> = [];
     for (const file of this._hasteFS.getAbsoluteFileIterator()) {
       modules.push({
         dependencies: this.resolve(file, options),
@@ -168,14 +162,12 @@ class DependencyResolver {
   }
 
   resolveInverse(
-    paths: Set<Config.Path>,
-    filter: (file: Config.Path) => boolean,
+    paths: Set<string>,
+    filter: (file: string) => boolean,
     options?: ResolveModuleConfig,
-  ): Array<Config.Path> {
+  ): Array<string> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,
     );
   }
 }
-
-export = DependencyResolver;

@@ -7,9 +7,8 @@
 
 import {plugins} from 'pretty-format';
 
-const builtInObject = [
+const builtInObject: Array<unknown> = [
   Array,
-  Buffer,
   Date,
   Float32Array,
   Float64Array,
@@ -24,6 +23,10 @@ const builtInObject = [
   Uint8Array,
   Uint8ClampedArray,
 ];
+
+if (typeof Buffer !== 'undefined') {
+  builtInObject.push(Buffer);
+}
 
 const isBuiltInObject = (object: any) =>
   builtInObject.includes(object.constructor);
@@ -46,7 +49,7 @@ export default function deepCyclicCopyReplaceable<T>(
   } else if (isBuiltInObject(value)) {
     return value;
   } else if (plugins.DOMElement.test(value)) {
-    return (((value as unknown) as Element).cloneNode(true) as unknown) as T;
+    return (value as unknown as Element).cloneNode(true) as unknown as T;
   } else {
     return deepCyclicCopyObject(value, cycles);
   }

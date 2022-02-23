@@ -24,7 +24,7 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import Worker from 'jest-worker';
+import {Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
 import type {
@@ -37,7 +37,7 @@ import type {
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
   version: number;
-  file: string;
+  file?: string;
 }
 
 const FAIL_COLOR = chalk.bold.red;
@@ -49,6 +49,8 @@ export default class CoverageReporter extends BaseReporter {
   private _sourceMapStore: libSourceMaps.MapStore;
   private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
+
+  static readonly filename = __filename;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -96,11 +98,10 @@ export default class CoverageReporter extends BaseReporter {
             maxCols: process.stdout.columns || Infinity,
             ...additionalOptions,
           })
-          // @ts-expect-error
           .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
-    } catch (e) {
+    } catch (e: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
@@ -196,7 +197,7 @@ export default class CoverageReporter extends BaseReporter {
               this._coverageMap.addFileCoverage(result.coverage);
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(
             chalk.red(
               [
@@ -234,9 +235,11 @@ export default class CoverageReporter extends BaseReporter {
         thresholds: Config.CoverageThresholdValue,
         actuals: istanbulCoverage.CoverageSummaryData,
       ) {
-        return (['statements', 'branches', 'lines', 'functions'] as Array<
-          keyof istanbulCoverage.CoverageSummaryData
-        >).reduce<Array<string>>((errors, key) => {
+        return (
+          ['statements', 'branches', 'lines', 'functions'] as Array<
+            keyof istanbulCoverage.CoverageSummaryData
+          >
+        ).reduce<Array<string>>((errors, key) => {
           const actual = actuals[key].pct;
           const actualUncovered = actuals[key].total - actuals[key].covered;
           const threshold = thresholds[key];
@@ -442,8 +445,7 @@ export default class CoverageReporter extends BaseReporter {
           let sourcemapContent: FixedRawSourceMap | undefined = undefined;
 
           if (
-            fileTransform &&
-            fileTransform.sourceMapPath &&
+            fileTransform?.sourceMapPath &&
             fs.existsSync(fileTransform.sourceMapPath)
           ) {
             sourcemapContent = JSON.parse(
@@ -458,7 +460,9 @@ export default class CoverageReporter extends BaseReporter {
               ? {
                   originalSource: fileTransform.originalCode,
                   source: fileTransform.code,
-                  sourceMap: {sourcemap: sourcemapContent},
+                  sourceMap: {
+                    sourcemap: {file: res.url, ...sourcemapContent},
+                  },
                 }
               : {source: fs.readFileSync(res.url, 'utf8')},
           );
@@ -467,7 +471,11 @@ export default class CoverageReporter extends BaseReporter {
 
           converter.applyCoverage(res.functions);
 
-          return converter.toIstanbul();
+          const istanbulData = converter.toIstanbul();
+
+          converter.destroy();
+
+          return istanbulData;
         }),
       );
 

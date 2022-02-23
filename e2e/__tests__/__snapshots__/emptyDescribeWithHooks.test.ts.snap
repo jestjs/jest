@@ -20,12 +20,12 @@ Object {
 
     Invalid: beforeEach() may not be used in a describe block containing no tests.
 
-       7 | 
+       7 |
        8 | describe('a block', () => {
     >  9 |   beforeEach(() => {});
          |   ^
       10 | });
-      11 | 
+      11 |
       12 | describe('another block with tests', () => {
 
       at beforeEach (__tests__/hookInEmptyDescribe.test.js:9:3)
@@ -47,13 +47,13 @@ Object {
 
     Invalid: beforeEach() may not be used in a describe block containing no tests.
 
-       7 | 
+       7 |
        8 | describe('a block', () => {
     >  9 |   beforeEach(() => {});
          |   ^
       10 |   describe('another block', () => {});
       11 | });
-      12 | 
+      12 |
 
       at beforeEach (__tests__/hookInEmptyNestedDescribe.test.js:9:3)
       at Object.describe (__tests__/hookInEmptyNestedDescribe.test.js:8:1)",
@@ -74,7 +74,7 @@ Object {
 
     Invalid: beforeEach() may not be used in a describe block containing no tests.
 
-       7 | 
+       7 |
        8 | describe('a block', () => {
     >  9 |   beforeEach(() => {});
          |   ^
@@ -110,7 +110,7 @@ Object {
          |   ^
       12 |   beforeAll(() => {});
       13 | });
-      14 | 
+      14 |
 
       at afterAll (__tests__/multipleHooksInEmptyDescribe.test.js:11:3)
       at Object.describe (__tests__/multipleHooksInEmptyDescribe.test.js:8:1)
@@ -124,7 +124,7 @@ Object {
     > 12 |   beforeAll(() => {});
          |   ^
       13 | });
-      14 | 
+      14 |
       15 | describe('another block with tests', () => {
 
       at beforeAll (__tests__/multipleHooksInEmptyDescribe.test.js:12:3)

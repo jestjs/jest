@@ -22,12 +22,12 @@ const aliasCircusIt = () => {
 aliasCircusIt();
 
 describe('test/it error throwing', () => {
-  it(`it doesn't throw an error with valid arguments`, () => {
+  it("it doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusIt('test1', () => {});
     }).not.toThrowError();
   });
-  it(`it throws error with missing callback function`, () => {
+  it('it throws error with missing callback function', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt('test2');
@@ -35,7 +35,7 @@ describe('test/it error throwing', () => {
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
-  it(`it throws an error when first argument isn't a string`, () => {
+  it("it throws an error when first argument isn't a string", () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt(() => {});
@@ -49,12 +49,12 @@ describe('test/it error throwing', () => {
       'Invalid second argument, test4b. It must be a callback function.',
     );
   });
-  it(`test doesn't throw an error with valid arguments`, () => {
+  it("test doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusTest('test5', () => {});
     }).not.toThrowError();
   });
-  it(`test throws error with missing callback function`, () => {
+  it('test throws error with missing callback function', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest('test6');
@@ -62,7 +62,7 @@ describe('test/it error throwing', () => {
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
-  it(`test throws an error when first argument isn't a string`, () => {
+  it("test throws an error when first argument isn't a string", () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest(() => {});

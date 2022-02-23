@@ -28,22 +28,32 @@ module.exports.getPackages = function getPackages() {
 
   const nodeEngineRequirement = rootPackage.engines.node;
 
-  packages.forEach(packageDir => {
+  return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
 
-    assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
+    assert.ok(pkg.engines, `Engine requirement in "${pkg.name}" should exist`);
 
     assert.strictEqual(
       pkg.engines.node,
       nodeEngineRequirement,
-      `Engine requirement in ${pkg.name} should match root`,
+      `Engine requirement in "${pkg.name}" should match root`,
     );
 
-    assert.ok(pkg.exports, `Package ${pkg.name} is missing \`exports\` field`);
+    assert.ok(
+      pkg.exports,
+      `Package "${pkg.name}" is missing \`exports\` field`,
+    );
     assert.deepStrictEqual(
       pkg.exports,
       {
-        '.': pkg.main,
+        '.':
+          pkg.types == null
+            ? pkg.main
+            : {
+                types: pkg.types,
+                // eslint-disable-next-line sort-keys
+                default: pkg.main,
+              },
         './package.json': './package.json',
         ...Object.values(pkg.bin || {}).reduce(
           (mem, curr) =>
@@ -51,13 +61,49 @@ module.exports.getPackages = function getPackages() {
           {},
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
-        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+        ...(pkg.name === 'expect'
+          ? {'./build/matchers': './build/matchers.js'}
+          : {}),
+        ...(pkg.name === 'pretty-format'
+          ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
+          : {}),
       },
-      `Package ${pkg.name} does not export correct files`,
+      `Package "${pkg.name}" does not export correct files`,
     );
-  });
 
-  return packages;
+    if (pkg.types) {
+      assert.strictEqual(
+        pkg.main,
+        './build/index.js',
+        `Package "${pkg.name}" should have "./build/index.js" as main`,
+      );
+      assert.strictEqual(
+        pkg.types,
+        './build/index.d.ts',
+        `Package "${pkg.name}" should have "./build/index.d.ts" as types`,
+      );
+    } else {
+      assert.strictEqual(
+        pkg.main,
+        './index.js',
+        `Package "${pkg.name}" should have "./index.js" as main`,
+      );
+    }
+
+    if (pkg.bin) {
+      Object.entries(pkg.bin).forEach(([binName, binPath]) => {
+        const fullBinPath = path.resolve(packageDir, binPath);
+
+        if (!fs.existsSync(fullBinPath)) {
+          throw new Error(
+            `Binary in package "${pkg.name}" with name "${binName}" at ${binPath} does not exist`,
+          );
+        }
+      });
+    }
+
+    return {packageDir, pkg};
+  });
 };
 
 module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {

@@ -7,7 +7,7 @@
 
 import assert = require('assert');
 import {Console} from 'console';
-import {format} from 'util';
+import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {ErrorWithStack, formatTime} from 'jest-util';
 import type {
@@ -24,7 +24,7 @@ export default class BufferedConsole extends Console {
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
-  Console: NodeJS.ConsoleConstructor = Console;
+  Console: typeof Console = Console;
 
   constructor() {
     super({
@@ -74,7 +74,7 @@ export default class BufferedConsole extends Console {
   assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._log('assert', error.toString());
     }
   }
@@ -95,8 +95,9 @@ export default class BufferedConsole extends Console {
     this._log('debug', format(firstArg, ...rest));
   }
 
-  dir(firstArg: unknown, ...rest: Array<unknown>): void {
-    this._log('dir', format(firstArg, ...rest));
+  dir(firstArg: unknown, options: InspectOptions = {}): void {
+    const representation = inspect(firstArg, options);
+    this._log('dir', formatWithOptions(options, representation));
   }
 
   dirxml(firstArg: unknown, ...rest: Array<unknown>): void {

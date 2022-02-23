@@ -9,9 +9,9 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import Resolver from 'jest-resolve';
+import type Resolver from 'jest-resolve';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import DependencyResolver from '../index';
+import {DependencyResolver} from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
@@ -22,10 +22,10 @@ const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
-const filter = (path: Config.Path) =>
+const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
 
-beforeEach(() => {
+beforeEach(async () => {
   Runtime = require('jest-runtime').default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
@@ -34,15 +34,16 @@ beforeEach(() => {
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
   });
-  return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-    runtimeContext => {
-      runtimeContextResolver = runtimeContext.resolver;
-      dependencyResolver = new DependencyResolver(
-        runtimeContext.resolver,
-        runtimeContext.hasteFS,
-        buildSnapshotResolver(config),
-      );
-    },
+  const runtimeContext = await Runtime.createContext(config, {
+    maxWorkers,
+    watchman: false,
+  });
+
+  runtimeContextResolver = runtimeContext.resolver;
+  dependencyResolver = new DependencyResolver(
+    runtimeContext.resolver,
+    runtimeContext.hasteFS,
+    await buildSnapshotResolver(config),
   );
 });
 

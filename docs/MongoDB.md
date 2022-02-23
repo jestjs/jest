@@ -33,10 +33,10 @@ describe('insert', () => {
   let db;
 
   beforeAll(async () => {
-    connection = await MongoClient.connect(global.__MONGO_URI__, {
+    connection = await MongoClient.connect(globalThis.__MONGO_URI__, {
       useNewUrlParser: true,
     });
-    db = await connection.db(global.__MONGO_DB_NAME__);
+    db = await connection.db(globalThis.__MONGO_DB_NAME__);
   });
 
   afterAll(async () => {

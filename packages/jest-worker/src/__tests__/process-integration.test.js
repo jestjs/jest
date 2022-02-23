@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import EventEmitter from 'events';
 import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
@@ -37,10 +35,6 @@ function assertCallsToChild(childNum, ...calls) {
   });
 }
 
-jest.mock('worker_threads', () => {
-  throw Error('Unsupported');
-});
-
 describe('Jest Worker Integration', () => {
   beforeEach(() => {
     mockForkedProcesses = [];
@@ -55,7 +49,7 @@ describe('Jest Worker Integration', () => {
       },
     }));
 
-    Farm = require('../index').default;
+    Farm = require('../index').Worker;
   });
 
   afterEach(() => {
@@ -83,17 +77,45 @@ describe('Jest Worker Integration', () => {
 
     // The first call will go to the first child process.
     const promise0 = farm.foo('param-0');
-
     assertCallsToChild(0, ['foo', 'param-0']);
     replySuccess(0, 'worker-0');
     expect(await promise0).toBe('worker-0');
 
     // The second call will go to the second child process.
     const promise1 = farm.foo(1);
-
     assertCallsToChild(1, ['foo', 1]);
     replySuccess(1, 'worker-1');
     expect(await promise1).toBe('worker-1');
+  });
+
+  it('schedules the task on the first available child processes if the scheduling policy is in-order', async () => {
+    const farm = new Farm('/tmp/baz.js', {
+      exposedMethods: ['foo', 'bar'],
+      numWorkers: 4,
+      workerSchedulingPolicy: 'in-order',
+    });
+
+    // The first call will go to the first child process.
+    const promise0 = farm.foo('param-0');
+    assertCallsToChild(0, ['foo', 'param-0']);
+
+    // The second call will go to the second child process.
+    const promise1 = farm.foo(1);
+
+    // The first task on worker 0 completes
+    replySuccess(0, 'worker-0');
+    expect(await promise0).toBe('worker-0');
+
+    // The second task on worker 1 completes
+    assertCallsToChild(1, ['foo', 1]);
+    replySuccess(1, 'worker-1');
+    expect(await promise1).toBe('worker-1');
+
+    // The third call will go to the first child process
+    const promise2 = farm.foo('param-2');
+    assertCallsToChild(0, ['foo', 'param-0'], ['foo', 'param-2']);
+    replySuccess(0, 'worker-0');
+    expect(await promise2).toBe('worker-0');
   });
 
   it('distributes concurrent calls across child processes', async () => {

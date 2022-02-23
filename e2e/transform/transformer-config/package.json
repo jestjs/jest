@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@babel/preset-flow": "7.0.0"
+    "@babel/core": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0"
   },
   "jest": {
     "collectCoverageOnlyFrom": {

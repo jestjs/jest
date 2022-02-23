@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
-import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
+
+export {setState, getState, resetState} from './state';
+export {default as run} from './run';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
 type DescribeFn = (
@@ -45,7 +46,8 @@ const _dispatchDescribe = (
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
-    asyncError.message = `Missing second argument. It must be a callback function.`;
+    asyncError.message =
+      'Missing second argument. It must be a callback function.';
     throw asyncError;
   }
   if (typeof blockFn !== 'function') {
@@ -60,34 +62,15 @@ const _dispatchDescribe = (
   });
   const describeReturn = blockFn();
 
-  // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+      describeFn,
     );
   } else if (describeReturn !== undefined) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'A "describe" callback must not return a value.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'A "describe" callback must not return a value.',
+      describeFn,
     );
   }
 

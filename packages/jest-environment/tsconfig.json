@@ -6,9 +6,10 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
   "references": [
     {"path": "../jest-fake-timers"},
-    {"path": "../jest-types"},
-    {"path": "../jest-util"}
+    {"path": "../jest-mock"},
+    {"path": "../jest-types"}
   ]
 }

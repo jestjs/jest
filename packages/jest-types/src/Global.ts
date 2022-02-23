@@ -7,44 +7,56 @@
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
+export type ValidTestReturnValues = void | undefined;
+type TestReturnValuePromise = Promise<unknown>;
+type TestReturnValueGenerator = Generator<void, unknown, void>;
+export type TestReturnValue = ValidTestReturnValues | TestReturnValuePromise;
+
+export type TestContext = Record<string, unknown>;
+
 export type DoneFn = (reason?: string | Error) => void;
+// these should not be undefined
+export type DoneTakingTestFn = (
+  this: TestContext | undefined,
+  done: DoneFn,
+) => ValidTestReturnValues;
+export type PromiseReturningTestFn = (
+  this: TestContext | undefined,
+) => TestReturnValue;
+export type GeneratorReturningTestFn = (
+  this: TestContext | undefined,
+) => TestReturnValueGenerator;
+
 export type TestName = string;
-export type TestFn = (
-  done?: DoneFn,
-) => Promise<void | undefined | unknown> | void | undefined;
-export type ConcurrentTestFn = (
-  done?: DoneFn,
-) => Promise<void | undefined | unknown>;
+export type TestFn =
+  | PromiseReturningTestFn
+  | GeneratorReturningTestFn
+  | DoneTakingTestFn;
+export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
 export type BlockName = string;
 export type HookFn = TestFn;
 
 export type Col = unknown;
-export type Row = Array<Col>;
-export type Table = Array<Row>;
+export type Row = ReadonlyArray<Col>;
+export type Table = ReadonlyArray<Row>;
 export type ArrayTable = Table | Row;
 export type TemplateTable = TemplateStringsArray;
-export type TemplateData = Array<unknown>;
+export type TemplateData = ReadonlyArray<unknown>;
 export type EachTable = ArrayTable | TemplateTable;
 
 export type TestCallback = BlockFn | TestFn | ConcurrentTestFn;
 
 export type EachTestFn<EachCallback extends TestCallback> = (
-  ...args: Array<any>
+  ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
-
-// TODO: Get rid of this at some point
-type Jasmine = {
-  _DEFAULT_TIMEOUT_INTERVAL?: number;
-  addMatchers: (matchers: Record<string, unknown>) => void;
-};
 
 type Each<EachCallback extends TestCallback> =
   | ((
       table: EachTable,
-      ...taggedTemplateData: Array<unknown>
+      ...taggedTemplateData: TemplateData
     ) => (
-      title: string,
+      name: BlockName | TestName,
       test: EachTestFn<EachCallback>,
       timeout?: number,
     ) => void)
@@ -66,7 +78,7 @@ export interface It extends ItBase {
 }
 
 export interface ItConcurrentBase {
-  (testName: string, testFn: ConcurrentTestFn, timeout?: number): void;
+  (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
 }
 
@@ -106,16 +118,10 @@ export interface TestFrameworkGlobals {
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
-  jasmine: Jasmine;
-  fail: () => void;
-  pending: () => void;
-  spyOn: () => void;
-  spyOnProperty: () => void;
 }
 
 export interface Global
   extends GlobalAdditions,
-    // TODO: Maybe add `| Window` in the future?
-    Omit<NodeJS.Global, keyof GlobalAdditions> {
+    Omit<typeof globalThis, keyof GlobalAdditions> {
   [extras: string]: unknown;
 }

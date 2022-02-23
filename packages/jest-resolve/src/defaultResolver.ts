@@ -5,23 +5,46 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
+import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
-import type {Config} from '@jest/types';
-import {tryRealpath} from 'jest-util';
+import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
+import {
+  PkgJson,
+  isDirectory,
+  isFile,
+  readPackageCached,
+  realpathSync,
+} from './fileWalkers';
 
-type ResolverOptions = {
-  allowPnp?: boolean;
-  basedir: Config.Path;
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+interface ResolverOptions {
+  basedir: string;
   browser?: boolean;
+  conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
-  packageFilter?: ResolveOpts['packageFilter'];
-};
+  paths?: Array<string>;
+  rootDir?: string;
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
+}
+
+type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
+  Pick<ResolverOptions, 'conditions'>;
+
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
+  path: string,
+  options: ResolverOptions,
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -32,102 +55,106 @@ declare global {
   }
 }
 
-export default function defaultResolver(
-  path: Config.Path,
-  options: ResolverOptions,
-): Config.Path {
-  if (process.versions.pnp && options.allowPnp !== false) {
+const defaultResolver: SyncResolver = (path, options) => {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
-  const result = resolveSync(path, {
-    basedir: options.basedir,
-    extensions: options.extensions,
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
+    ...options,
     isDirectory,
     isFile,
-    moduleDirectory: options.moduleDirectory,
-    packageFilter: options.packageFilter,
-    paths: options.paths,
     preserveSymlinks: false,
+    readPackageSync,
     realpathSync,
-  });
+  };
+
+  const pathToResolve = getPathInModule(path, resolveOptions);
+
+  const result =
+    // if `getPathInModule` doesn't change the path, attempt to resolve it
+    pathToResolve === path
+      ? resolveSync(pathToResolve, resolveOptions)
+      : pathToResolve;
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
-}
+};
 
-export function clearDefaultResolverCache(): void {
-  checkedPaths.clear();
-  checkedRealpathPaths.clear();
-}
-
-enum IPathType {
-  FILE = 1,
-  DIRECTORY = 2,
-  OTHER = 3,
-}
-const checkedPaths = new Map<string, IPathType>();
-function statSyncCached(path: string): IPathType {
-  const result = checkedPaths.get(path);
-  if (result !== undefined) {
-    return result;
-  }
-
-  let stat;
-  try {
-    stat = fs.statSync(path);
-  } catch (e) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
-    }
-  }
-
-  if (stat) {
-    if (stat.isFile() || stat.isFIFO()) {
-      checkedPaths.set(path, IPathType.FILE);
-      return IPathType.FILE;
-    } else if (stat.isDirectory()) {
-      checkedPaths.set(path, IPathType.DIRECTORY);
-      return IPathType.DIRECTORY;
-    }
-  }
-
-  checkedPaths.set(path, IPathType.OTHER);
-  return IPathType.OTHER;
-}
-
-const checkedRealpathPaths = new Map<string, string>();
-function realpathCached(path: Config.Path): Config.Path {
-  let result = checkedRealpathPaths.get(path);
-
-  if (result !== undefined) {
-    return result;
-  }
-
-  result = tryRealpath(path);
-
-  checkedRealpathPaths.set(path, result);
-
-  if (path !== result) {
-    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
-    checkedRealpathPaths.set(result, result);
-  }
-
-  return result;
-}
+export default defaultResolver;
 
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
-  return statSyncCached(file) === IPathType.FILE;
+
+function readPackageSync(_: unknown, file: string): PkgJson {
+  return readPackageCached(file);
 }
 
-function isDirectory(dir: Config.Path): boolean {
-  return statSyncCached(dir) === IPathType.DIRECTORY;
+function getPathInModule(
+  path: string,
+  options: UpstreamResolveOptionsWithConditions,
+): string {
+  if (shouldIgnoreRequestForExports(path)) {
+    return path;
+  }
+
+  const segments = path.split('/');
+
+  let moduleName = segments.shift();
+
+  if (moduleName) {
+    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
+    if (moduleName.startsWith('@')) {
+      moduleName = `${moduleName}/${segments.shift()}`;
+    }
+
+    let packageJsonPath = '';
+
+    try {
+      packageJsonPath = resolveSync(`${moduleName}/package.json`, options);
+    } catch {
+      // ignore if package.json cannot be found
+    }
+
+    if (packageJsonPath && isFile(packageJsonPath)) {
+      const pkg = readPackageCached(packageJsonPath);
+
+      if (pkg.exports) {
+        // we need to make sure resolve ignores `main`
+        delete pkg.main;
+
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        // TODO: should we throw if not?
+        if (resolved) {
+          return pathResolve(dirname(packageJsonPath), resolved);
+        }
+      }
+    }
+  }
+
+  return path;
 }
 
-function realpathSync(file: Config.Path): Config.Path {
-  return realpathCached(file);
+function createResolveOptions(
+  conditions: Array<string> | undefined,
+): ResolveExportsOptions {
+  return conditions
+    ? {conditions, unsafe: true}
+    : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+      {browser: false, require: true};
 }
+
+// if it's a relative import or an absolute path, exports are ignored
+const shouldIgnoreRequestForExports = (path: string) =>
+  path.startsWith('.') || isAbsolute(path);

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isJestCircusRun} from '@jest/test-utils';
+import {isJestJasmineRun} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
 
 it('defaults to null for location', () => {
@@ -45,39 +45,39 @@ it('adds correct location info when provided with flag', () => {
   });
 
   expect(assertions[3].location).toEqual({
-    column: isJestCircusRun() ? 1 : 22,
+    column: isJestJasmineRun() ? 22 : 1,
     line: 24,
   });
 
   expect(assertions[4].location).toEqual({
-    column: isJestCircusRun() ? 1 : 22,
+    column: isJestJasmineRun() ? 22 : 1,
     line: 24,
   });
 
   // Technically the column should be 3, but callsites is not correct.
   // jest-circus uses stack-utils + asyncErrors which resolves this.
   expect(assertions[5].location).toEqual({
-    column: isJestCircusRun() ? 3 : 2,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 29,
   });
 
   expect(assertions[6].location).toEqual({
-    column: isJestCircusRun() ? 3 : 2,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 33,
   });
 
   expect(assertions[7].location).toEqual({
-    column: isJestCircusRun() ? 3 : 2,
+    column: isJestJasmineRun() ? 2 : 3,
     line: 37,
   });
 
   expect(assertions[8].location).toEqual({
-    column: isJestCircusRun() ? 3 : 24,
+    column: isJestJasmineRun() ? 24 : 3,
     line: 41,
   });
 
   expect(assertions[9].location).toEqual({
-    column: isJestCircusRun() ? 3 : 24,
+    column: isJestJasmineRun() ? 24 : 3,
     line: 41,
   });
 });

@@ -6,6 +6,7 @@
  */
 
 import {sep} from 'path';
+import {isCI} from 'ci-info';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
@@ -19,29 +20,37 @@ const defaultOptions: Config.DefaultOptions = {
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
+  ci: isCI,
   clearMocks: false,
   collectCoverage: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'babel',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  detectLeaks: false,
+  detectOpenHandles: false,
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   forceCoverageMatch: [],
   globals: {},
   haste: {
     computeSha1: false,
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: true,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
+  listTests: false,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
+  passWithNoTests: false,
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
@@ -61,7 +70,7 @@ const defaultOptions: Config.DefaultOptions = {
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
-  testRunner: 'jasmine2',
+  testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],

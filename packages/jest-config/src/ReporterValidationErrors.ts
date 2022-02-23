@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import getType = require('jest-get-type');
+import {getType} from 'jest-get-type';
 import {ValidationError} from 'jest-validate';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
@@ -29,7 +29,7 @@ export function createReporterError(
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
     `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
-    `  but instead received:\n` +
+    '  but instead received:\n' +
     `    ${chalk.bold.red(getType(reporterValue))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
@@ -50,7 +50,7 @@ export function createArrayReporterError(
     `    ${chalk.bold.red(expectedType)}\n` +
     '  Got:\n' +
     `    ${chalk.bold.green(getType(value))}\n` +
-    `  Reporter configuration:\n` +
+    '  Reporter configuration:\n' +
     `    ${chalk.bold.green(
       JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
     )}`;

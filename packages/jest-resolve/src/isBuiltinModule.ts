@@ -7,20 +7,7 @@
 
 import module = require('module');
 
-// "private" api
-declare const process: NodeJS.Process & {
-  binding(type: string): Record<string, unknown>;
-};
-
-const EXPERIMENTAL_MODULES = ['worker_threads'];
-
-const BUILTIN_MODULES = new Set(
-  module.builtinModules
-    ? module.builtinModules.concat(EXPERIMENTAL_MODULES)
-    : Object.keys(process.binding('natives'))
-        .filter((module: string) => !/^internal\//.test(module))
-        .concat(EXPERIMENTAL_MODULES),
-);
+const BUILTIN_MODULES = new Set(module.builtinModules);
 
 export default function isBuiltinModule(module: string): boolean {
   return BUILTIN_MODULES.has(module);

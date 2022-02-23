@@ -31,6 +31,7 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'hook_start': {
+      event.hook.seenDone = false;
       break;
     }
     case 'start_describe_definition': {
@@ -53,7 +54,7 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
-      invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
+      invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
@@ -79,6 +80,7 @@ const eventHandler: Circus.EventHandler = (
       }
       if (
         !state.hasFocusedTests &&
+        currentDescribeBlock.mode !== 'skip' &&
         currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
@@ -112,7 +114,14 @@ const eventHandler: Circus.EventHandler = (
       }
       const parent = currentDescribeBlock;
 
-      currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
+      currentDescribeBlock.hooks.push({
+        asyncError,
+        fn,
+        parent,
+        seenDone: false,
+        timeout,
+        type,
+      });
       break;
     }
     case 'add_test': {
@@ -143,7 +152,7 @@ const eventHandler: Circus.EventHandler = (
         timeout,
         asyncError,
       );
-      if (test.mode === 'only') {
+      if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);
@@ -187,6 +196,10 @@ const eventHandler: Circus.EventHandler = (
       event.test.invocations += 1;
       break;
     }
+    case 'test_fn_start': {
+      event.test.seenDone = false;
+      break;
+    }
     case 'test_fn_failure': {
       const {
         error,
@@ -201,8 +214,10 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'run_start': {
       state.hasStarted = true;
+      /* eslint-disable no-restricted-globals */
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      /* eslint-enable */
       break;
     }
     case 'run_finish': {

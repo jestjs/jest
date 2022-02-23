@@ -51,7 +51,7 @@ test.each([
   ).toThrowErrorMatchingSnapshot();
 });
 
-test(`pretty prints valid config for Function`, () => {
+test('pretty prints valid config for Function', () => {
   const config = {fn: 'test'};
   const validConfig = {fn: (_config, _option, _deprecatedOptions) => true};
   expect(() =>
@@ -99,40 +99,6 @@ test.each([
     ).toEqual({hasDeprecationWarnings: false, isValid: true});
   },
 );
-
-test('respects recursiveBlacklist', () => {
-  const warn = console.warn;
-  console.warn = jest.fn();
-  const config = {
-    something: {
-      nested: {
-        some_random_key: 'value',
-        some_random_key2: 'value2',
-      },
-    },
-  };
-  const exampleConfig = {
-    something: {
-      nested: {
-        test: true,
-      },
-    },
-  };
-
-  validate(config, {exampleConfig});
-
-  expect(console.warn).toBeCalled();
-
-  console.warn.mockReset();
-
-  validate(config, {
-    exampleConfig,
-    recursiveBlacklist: ['something.nested'],
-  });
-
-  expect(console.warn).not.toBeCalled();
-  console.warn = warn;
-});
 
 test('respects recursiveDenylist', () => {
   const warn = console.warn;

@@ -6,7 +6,7 @@
  */
 'use strict';
 
-global.testObject = new Proxy(
+globalThis.testObject = new Proxy(
   {},
   {
     get: function getter(target, key) {

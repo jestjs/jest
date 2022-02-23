@@ -17,7 +17,6 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-replace-ts-export-assignment',
         require.resolve(
           './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
@@ -35,33 +34,18 @@ module.exports = {
       ],
       test: /\.tsx?$/,
     },
-    // we want this file to keep `import()`, so exclude the transform for it
-    {
-      plugins: ['@babel/plugin-syntax-dynamic-import'],
-      presets: [
-        '@babel/preset-typescript',
-        [
-          '@babel/preset-env',
-          {
-            exclude: ['@babel/plugin-proposal-dynamic-import'],
-            shippedProposals: true,
-            targets: {node: supportedNodeVersion},
-          },
-        ],
-      ],
-      test: 'packages/jest-config/src/readConfigFileAndSetRootDir.ts',
-    },
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    '@babel/plugin-transform-strict-mode',
-    '@babel/plugin-proposal-class-properties',
+    require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [
     [
       '@babel/preset-env',
       {
         bugfixes: true,
+        // we manually include the CJS plugin above, so let's make preset-env do less work
+        modules: false,
         shippedProposals: true,
         targets: {node: supportedNodeVersion},
       },

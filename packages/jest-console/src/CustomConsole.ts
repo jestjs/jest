@@ -7,7 +7,7 @@
 
 import assert = require('assert');
 import {Console} from 'console';
-import {format} from 'util';
+import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
@@ -22,7 +22,7 @@ export default class CustomConsole extends Console {
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
-  Console: NodeJS.ConsoleConstructor = Console;
+  Console: typeof Console = Console;
 
   constructor(
     stdout: NodeJS.WriteStream,
@@ -52,7 +52,7 @@ export default class CustomConsole extends Console {
   assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._logError('assert', error.toString());
     }
   }
@@ -73,8 +73,9 @@ export default class CustomConsole extends Console {
     this._log('debug', format(firstArg, ...args));
   }
 
-  dir(firstArg: unknown, ...args: Array<unknown>): void {
-    this._log('dir', format(firstArg, ...args));
+  dir(firstArg: unknown, options: InspectOptions = {}): void {
+    const representation = inspect(firstArg, options);
+    this._log('dir', formatWithOptions(options, representation));
   }
 
   dirxml(firstArg: unknown, ...args: Array<unknown>): void {

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {AggregatedResult, SerializableError, TestResult} from './types';
 
 export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
@@ -44,7 +43,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
 });
 
 export const buildFailureTestResult = (
-  testPath: Config.Path,
+  testPath: string,
   err: SerializableError,
 ): TestResult => ({
   console: undefined,
@@ -72,7 +71,6 @@ export const buildFailureTestResult = (
     unmatched: 0,
     updated: 0,
   },
-  sourceMaps: {},
   testExecError: err,
   testFilePath: testPath,
   testResults: [],

@@ -8,8 +8,9 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
+import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
 import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {BabelTraverse, Prettier, SnapshotData} from './types';
+import type {SnapshotData} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,
@@ -23,9 +24,9 @@ import {
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  getPrettier: () => null | Prettier;
-  getBabelTraverse: () => BabelTraverse;
+  prettierPath: string;
   expand?: boolean;
+  snapshotFormat: PrettyFormatOptions;
 };
 
 export type SnapshotMatchOptions = {
@@ -58,11 +59,11 @@ export default class SnapshotState {
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
   private _initialData: SnapshotData;
-  private _snapshotPath: Config.Path;
+  private _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _getBabelTraverse: SnapshotStateOptions['getBabelTraverse'];
-  private _getPrettier: SnapshotStateOptions['getPrettier'];
+  private _prettierPath: string;
+  private _snapshotFormat: PrettyFormatOptions;
 
   added: number;
   expand: boolean;
@@ -70,7 +71,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: string, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
@@ -79,8 +80,7 @@ export default class SnapshotState {
     this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
-    this._getBabelTraverse = options.getBabelTraverse;
-    this._getPrettier = options.getPrettier;
+    this._prettierPath = options.prettierPath;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
@@ -91,6 +91,7 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
+    this._snapshotFormat = options.snapshotFormat;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -153,9 +154,7 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        const prettier = this._getPrettier(); // Load lazily
-        const babelTraverse = this._getBabelTraverse(); // Load lazily
-        saveInlineSnapshots(this._inlineSnapshots, prettier, babelTraverse);
+        saveInlineSnapshots(this._inlineSnapshots, this._prettierPath);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
@@ -206,7 +205,9 @@ export default class SnapshotState {
       this._uncheckedKeys.delete(key);
     }
 
-    const receivedSerialized = addExtraLineBreaks(serialize(received));
+    const receivedSerialized = addExtraLineBreaks(
+      serialize(received, undefined, this._snapshotFormat),
+    );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
     const hasSnapshot = expected !== undefined;
