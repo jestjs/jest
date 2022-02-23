@@ -7,10 +7,11 @@
 
 import {expectAssignable, expectNotAssignable, expectType} from 'tsd-lite';
 import type {
-  ClassLike,
-  FunctionLike,
-  MethodKeys,
-  PropertyKeys,
+  ConstructorLike,
+  ConstructorLikeKeys,
+  MethodLike,
+  MethodLikeKeys,
+  PropertyLikeKeys,
 } from 'jest-mock';
 
 class SomeClass {
@@ -36,49 +37,67 @@ class SomeClass {
   }
 }
 
-interface SomeObject {
-  methodA(): void;
-  methodB(a: string): number;
-  propertyA: number;
-  propertyB: string;
-}
+const someObject = {
+  SomeClass,
+
+  methodA() {
+    return;
+  },
+  methodB(b: string) {
+    return true;
+  },
+  methodC: (c: number) => true,
+
+  propertyA: 123,
+  propertyB: 'value',
+
+  someClassInstance: new SomeClass('value'),
+};
+
+type SomeObject = typeof someObject;
 
 // ClassLike
 
-expectAssignable<ClassLike>(SomeClass);
-expectNotAssignable<ClassLike>(() => {});
-expectNotAssignable<ClassLike>(function abc() {
+expectAssignable<ConstructorLike>(SomeClass);
+expectNotAssignable<ConstructorLike>(() => {});
+expectNotAssignable<ConstructorLike>(function abc() {
   return;
 });
-expectNotAssignable<ClassLike>({} as SomeObject);
-expectNotAssignable<ClassLike>('abc');
-expectNotAssignable<ClassLike>(123);
-expectNotAssignable<ClassLike>(false);
+expectNotAssignable<ConstructorLike>('abc');
+expectNotAssignable<ConstructorLike>(123);
+expectNotAssignable<ConstructorLike>(false);
+expectNotAssignable<ConstructorLike>(someObject);
 
 // FunctionLike
 
-expectAssignable<FunctionLike>(() => {});
-expectAssignable<FunctionLike>(function abc() {
+expectAssignable<MethodLike>(() => {});
+expectAssignable<MethodLike>(function abc() {
   return;
 });
-expectNotAssignable<FunctionLike>({} as SomeObject);
-expectNotAssignable<FunctionLike>(SomeClass);
-expectNotAssignable<FunctionLike>('abc');
-expectNotAssignable<FunctionLike>(123);
-expectNotAssignable<FunctionLike>(false);
+expectNotAssignable<MethodLike>('abc');
+expectNotAssignable<MethodLike>(123);
+expectNotAssignable<MethodLike>(false);
+expectNotAssignable<MethodLike>(SomeClass);
+expectNotAssignable<MethodLike>(someObject);
+
+// ConstructorKeys
+
+declare const constructorKeys: ConstructorLikeKeys<SomeObject>;
+
+expectType<'SomeClass'>(constructorKeys);
 
 // MethodKeys
 
-declare const classMethods: MethodKeys<SomeClass>;
-declare const objectMethods: MethodKeys<SomeObject>;
+declare const classMethods: MethodLikeKeys<SomeClass>;
+declare const objectMethods: MethodLikeKeys<SomeObject>;
 
 expectType<'methodA' | 'methodB'>(classMethods);
-expectType<'methodA' | 'methodB'>(objectMethods);
+expectType<'methodA' | 'methodB' | 'methodC'>(objectMethods);
 
 // PropertyKeys
 
-declare const classProperties: PropertyKeys<SomeClass>;
-declare const objectProperties: PropertyKeys<SomeObject>;
+declare const classProperties: PropertyLikeKeys<SomeClass>;
+declare const objectProperties: PropertyLikeKeys<SomeObject>;
 
 expectType<'propertyA' | 'propertyB' | 'propertyC'>(classProperties);
-expectType<'propertyA' | 'propertyB'>(objectProperties);
+expectType<'propertyA' | 'propertyB' | 'someClassInstance'>(objectProperties);

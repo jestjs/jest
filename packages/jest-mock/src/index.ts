@@ -32,20 +32,24 @@ export type MockFunctionMetadata<
   length?: number;
 };
 
-export type ClassLike = {new (...args: Array<any>): any};
+export type ConstructorLike = {new (...args: Array<any>): any};
 
-export type FunctionLike = (...args: Array<any>) => any;
+export type MethodLike = (...args: Array<any>) => any;
 
-type ConstructorKeys<T> = {
-  [K in keyof T]: T[K] extends ClassLike ? K : never;
+export type ConstructorLikeKeys<T> = {
+  [K in keyof T]: T[K] extends ConstructorLike ? K : never;
 }[keyof T];
 
-export type MethodKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? K : never;
+export type MethodLikeKeys<T> = {
+  [K in keyof T]: T[K] extends MethodLike ? K : never;
 }[keyof T];
 
-export type PropertyKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? never : K;
+export type PropertyLikeKeys<T> = {
+  [K in keyof T]: T[K] extends MethodLike
+    ? never
+    : T[K] extends ConstructorLike
+    ? never
+    : K;
 }[keyof T];
 
 // TODO Replace this with TS ConstructorParameters utility type
@@ -60,50 +64,52 @@ export type MaybeMockedConstructor<T> = T extends new (
   ? MockInstance<R, ConstructorParameters<T>>
   : T;
 
-export interface MockWithArgs<T extends FunctionLike>
+export interface MockWithArgs<T extends MethodLike>
   extends MockInstance<ReturnType<T>, Parameters<T>> {
   new (...args: ConstructorParameters<T>): T;
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> & {
+export type MockedFunction<T extends MethodLike> = MockWithArgs<T> & {
   [K in keyof T]: T[K];
 };
 
-export type MockedFunctionDeep<T extends FunctionLike> = MockWithArgs<T> &
+export type MockedFunctionDeep<T extends MethodLike> = MockWithArgs<T> &
   MockedObjectDeep<T>;
 
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeys<T>]: T[K] extends FunctionLike ? MockedFunction<T[K]> : T[K];
-} & {[K in PropertyKeys<T>]: T[K]};
+  [K in MethodLikeKeys<T>]: T[K] extends MethodLike
+    ? MockedFunction<T[K]>
+    : T[K];
+} & {[K in PropertyLikeKeys<T>]: T[K]};
 
 export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeys<T>]: T[K] extends FunctionLike
+  [K in MethodLikeKeys<T>]: T[K] extends MethodLike
     ? MockedFunctionDeep<T[K]>
     : T[K];
-} & {[K in PropertyKeys<T>]: MaybeMockedDeep<T[K]>};
+} & {[K in PropertyLikeKeys<T>]: MaybeMockedDeep<T[K]>};
 
-export type MaybeMocked<T> = T extends FunctionLike
+export type MaybeMocked<T> = T extends MethodLike
   ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
   : T;
 
-export type MaybeMockedDeep<T> = T extends FunctionLike
+export type MaybeMockedDeep<T> = T extends MethodLike
   ? MockedFunctionDeep<T>
   : T extends object
   ? MockedObjectDeep<T>
   : T;
 
 export type Mocked<T> = {
-  [P in keyof T]: T[P] extends FunctionLike
+  [P in keyof T]: T[P] extends MethodLike
     ? MockInstance<ReturnType<T[P]>, Parameters<T[P]>>
-    : T[P] extends ClassLike
+    : T[P] extends ConstructorLike
     ? MockedClass<T[P]>
     : T[P];
 } & T;
 
-export type MockedClass<T extends ClassLike> = MockInstance<
+export type MockedClass<T extends ConstructorLike> = MockInstance<
   InstanceType<T>,
   T extends new (...args: infer P) => any ? P : never
 > & {
@@ -1028,34 +1034,34 @@ export class ModuleMocker {
     return fn;
   }
 
-  spyOn<T extends object, M extends PropertyKeys<T>>(
+  spyOn<T extends object, M extends PropertyLikeKeys<T>>(
     object: T,
     methodName: M,
     accessType: 'get',
   ): SpyInstance<T[M], []>;
 
-  spyOn<T extends object, M extends PropertyKeys<T>>(
+  spyOn<T extends object, M extends PropertyLikeKeys<T>>(
     object: T,
     methodName: M,
     accessType: 'set',
   ): SpyInstance<void, [T[M]]>;
 
-  spyOn<T extends object, M extends ConstructorKeys<T>>(
+  spyOn<T extends object, M extends ConstructorLikeKeys<T>>(
     object: T,
     methodName: M,
-  ): T[M] extends new (...args: Array<any>) => any
+  ): T[M] extends ConstructorLike
     ? SpyInstance<InstanceType<T[M]>, ConstructorParameters<T[M]>>
     : never;
 
-  spyOn<T extends object, M extends MethodKeys<T>>(
+  spyOn<T extends object, M extends MethodLikeKeys<T>>(
     object: T,
     methodName: M,
-  ): T[M] extends FunctionLike
+  ): T[M] extends MethodLike
     ? SpyInstance<ReturnType<T[M]>, Parameters<T[M]>>
     : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T extends object, M extends PropertyKeys<T>>(
+  spyOn<T extends object, M extends PropertyLikeKeys<T>>(
     object: T,
     methodName: M,
     accessType?: 'get' | 'set',
@@ -1126,7 +1132,7 @@ export class ModuleMocker {
     return object[methodName];
   }
 
-  private _spyOnProperty<T extends object, M extends PropertyKeys<T>>(
+  private _spyOnProperty<T extends object, M extends PropertyLikeKeys<T>>(
     obj: T,
     propertyName: M,
     accessType: 'get' | 'set' = 'get',
