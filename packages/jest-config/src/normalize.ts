@@ -1221,11 +1221,6 @@ export default async function normalize(
     newOptions.logHeapUsage = false;
   }
 
-  if (newOptions.testEnvironment.includes('jsdom')) {
-    newOptions.testEnvironmentOptions.url =
-      newOptions.testEnvironmentOptions.url || 'http://localhost';
-  }
-
   return {
     hasDeprecationWarnings,
     options: newOptions,
