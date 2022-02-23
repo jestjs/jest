@@ -80,14 +80,18 @@ export async function run(
         projectConfig.testEnvironment,
       );
 
-    const environment = new Environment({
-      globalConfig,
-      projectConfig,
-    });
+    const customConsole = new CustomConsole(process.stdout, process.stderr);
+    const environment = new Environment(
+      {
+        globalConfig,
+        projectConfig,
+      },
+      {console: customConsole, docblockPragmas: {}, testPath: filePath},
+    );
     setGlobal(
       environment.global as unknown as typeof globalThis,
       'console',
-      new CustomConsole(process.stdout, process.stderr),
+      customConsole,
     );
     setGlobal(
       environment.global as unknown as typeof globalThis,
