@@ -1918,3 +1918,21 @@ describe('updateSnapshot', () => {
     Defaults.ci = defaultCiConfig;
   });
 });
+
+describe('testURL', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `testURL` is used', async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        testURL: 'https://jestjs.io/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});

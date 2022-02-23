@@ -139,10 +139,27 @@ async function runTestInternal(
     testConsole = new BufferedConsole();
   }
 
+  let extraTestEnvironmentOptions;
+
+  const docblockEnvironmentOptions =
+    docblockPragmas['jest-environment-options'];
+
+  if (typeof docblockEnvironmentOptions === 'string') {
+    extraTestEnvironmentOptions = JSON.parse(docblockEnvironmentOptions);
+  }
+
   const environment = new TestEnvironment(
     {
       globalConfig,
-      projectConfig,
+      projectConfig: extraTestEnvironmentOptions
+        ? {
+            ...projectConfig,
+            testEnvironmentOptions: {
+              ...projectConfig.testEnvironmentOptions,
+              ...extraTestEnvironmentOptions,
+            },
+          }
+        : projectConfig,
     },
     {
       console: testConsole,
@@ -162,11 +179,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(
-    environment.global as unknown as typeof globalThis,
-    'console',
-    testConsole,
-  );
+  setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(
     projectConfig,

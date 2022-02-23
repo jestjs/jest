@@ -1168,7 +1168,20 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [`jsdom`](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", url: 'https://jestjs.io/', userAgent: "Agent/007"}`.
+
+These options can also be passed in a docblock, similar to `testEnvironment`. Note that it must be parseable by `JSON.parse`. Example:
+
+```js
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options {"url": "https://jestjs.io/"}
+ */
+
+test('use jsdom and set the URL in this test file', () => {
+  expect(window.location.href).toBe('https://jestjs.io/');
+});
+```
 
 ### `testFailureExitCode` \[number]
 
@@ -1331,12 +1344,6 @@ Use it in your Jest config file like this:
 Default: `5000`
 
 Default timeout of a test in milliseconds.
-
-### `testURL` \[string]
-
-Default: `http://localhost`
-
-This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
 ### `timers` \[string]
 
