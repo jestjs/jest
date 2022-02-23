@@ -123,6 +123,8 @@ export interface Mock<T, Y extends Array<unknown> = Array<unknown>>
   (...args: Y): T;
 }
 
+type Unpromisify<T> = T extends Promise<infer R> ? R : never;
+
 export interface MockInstance<T, Y extends Array<unknown>> {
   _isMockFunction: true;
   _protoImpl: Function;
@@ -142,8 +144,8 @@ export interface MockInstance<T, Y extends Array<unknown>> {
   mockReturnThis(): this;
   mockReturnValue(value: T): this;
   mockReturnValueOnce(value: T): this;
-  mockResolvedValue(value: Awaited<T>): this;
-  mockResolvedValueOnce(value: Awaited<T>): this;
+  mockResolvedValue(value: Unpromisify<T>): this;
+  mockResolvedValueOnce(value: Unpromisify<T>): this;
   mockRejectedValue(value: unknown): this;
   mockRejectedValueOnce(value: unknown): this;
 }
@@ -751,7 +753,7 @@ export class ModuleMocker {
         // next function call will return this value or default return value
         f.mockImplementationOnce(() => value);
 
-      f.mockResolvedValueOnce = (value: Awaited<T>) =>
+      f.mockResolvedValueOnce = (value: Unpromisify<T>) =>
         f.mockImplementationOnce(() => Promise.resolve(value as T));
 
       f.mockRejectedValueOnce = (value: unknown) =>
@@ -761,7 +763,7 @@ export class ModuleMocker {
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
-      f.mockResolvedValue = (value: Awaited<T>) =>
+      f.mockResolvedValue = (value: Unpromisify<T>) =>
         f.mockImplementation(() => Promise.resolve(value as T));
 
       f.mockRejectedValue = (value: unknown) =>
