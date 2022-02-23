@@ -88,21 +88,9 @@ export async function run(
       },
       {console: customConsole, docblockPragmas: {}, testPath: filePath},
     );
-    setGlobal(
-      environment.global as unknown as typeof globalThis,
-      'console',
-      customConsole,
-    );
-    setGlobal(
-      environment.global as unknown as typeof globalThis,
-      'jestProjectConfig',
-      projectConfig,
-    );
-    setGlobal(
-      environment.global as unknown as typeof globalThis,
-      'jestGlobalConfig',
-      globalConfig,
-    );
+    setGlobal(environment.global, 'console', customConsole);
+    setGlobal(environment.global, 'jestProjectConfig', projectConfig);
+    setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
     const runtime = new Runtime(
       projectConfig,
