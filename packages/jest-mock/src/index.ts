@@ -115,15 +115,17 @@ export interface SpyInstance<T, Y extends Array<unknown>>
 export interface MockInstance<T, Y extends Array<unknown>> {
   _isMockFunction: true;
   _protoImpl: Function;
+  getMockImplementation(): ((...args: Y) => T) | undefined;
   getMockName(): string;
-  getMockImplementation(): Function | undefined;
   mock: MockFunctionState<T, Y>;
   mockClear(): this;
   mockReset(): this;
   mockRestore(): void;
   mockImplementation(fn: (...args: Y) => T): this;
+  /** @internal */
   mockImplementation(fn: () => Promise<T>): this;
   mockImplementationOnce(fn: (...args: Y) => T): this;
+  /** @internal */
   mockImplementationOnce(fn: () => Promise<T>): this;
   mockName(name: string): this;
   mockReturnThis(): this;
@@ -137,43 +139,58 @@ export interface MockInstance<T, Y extends Array<unknown>> {
 
 type Unpromisify<T> = T extends Promise<infer R> ? R : never;
 
-/**
- * Possible types of a MockFunctionResult.
- * 'return': The call completed by returning normally.
- * 'throw': The call completed by throwing a value.
- * 'incomplete': The call has not completed yet. This is possible if you read
- *               the  mock function result from within the mock function itself
- *               (or a function called by the mock function).
- */
-type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
-
-/**
- * Represents the result of a single call to a mock function.
- */
-type MockFunctionResult = {
+type MockFunctionResultIncomplete = {
+  type: 'incomplete';
   /**
-   * Indicates how the call completed.
+   * Result of a single call to a mock function that has not yet completed.
+   * This occurs if you test the result from within the mock function itself,
+   * or from within a function that was called by the mock.
    */
-  type: MockFunctionResultType;
+  value: undefined;
+};
+type MockFunctionResultReturn<T> = {
+  type: 'return';
   /**
-   * The value that was either thrown or returned by the function.
-   * Undefined when type === 'incomplete'.
+   * Result of a single call to a mock function that returned.
+   */
+  value: T;
+};
+type MockFunctionResultThrow = {
+  type: 'throw';
+  /**
+   * Result of a single call to a mock function that threw.
    */
   value: unknown;
 };
 
+type MockFunctionResult<T> =
+  | MockFunctionResultIncomplete
+  | MockFunctionResultReturn<T>
+  | MockFunctionResultThrow;
+
 type MockFunctionState<T, Y extends Array<unknown>> = {
+  /**
+   * List of the call arguments of all calls that have been made to the mock.
+   */
   calls: Array<Y>;
+  /**
+   * List of all the object instances that have been instantiated from the mock.
+   */
   instances: Array<T>;
+  /**
+   * List of the call order indexes of the mock. Jest is indexing the order of
+   * invocations of all mocks in a test file. The index is starting with `1`.
+   */
   invocationCallOrder: Array<number>;
   /**
-   * Getter for retrieving the last call arguments
+   * List of the call arguments of the last call that was made to the mock.
+   * If the function was not called, it will return `undefined`.
    */
   lastCall?: Y;
   /**
-   * List of results of calls to the mock function.
+   * List of the results of all calls that have been made to the mock.
    */
-  results: Array<MockFunctionResult>;
+  results: Array<MockFunctionResult<T>>;
 };
 
 type MockFunctionConfig = {
@@ -615,7 +632,7 @@ export class ModuleMocker {
         // calling rather than waiting for the mock to return. This avoids
         // issues caused by recursion where results can be recorded in the
         // wrong order.
-        const mockResult: MockFunctionResult = {
+        const mockResult: MockFunctionResult<unknown> = {
           type: 'incomplete',
           value: undefined,
         };
@@ -686,6 +703,7 @@ export class ModuleMocker {
           // NOTE: Intentionally NOT pushing/indexing into the array of mock
           //       results here to avoid corrupting results data if mockClear()
           //       is called during the execution of the mock.
+          // @ts-expect-error reassigning 'incomplete'
           mockResult.type = callDidThrowError ? 'throw' : 'return';
           mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
@@ -698,7 +716,8 @@ export class ModuleMocker {
         mockConstructor,
       ) as unknown as Mock<T, Y>;
       f._isMockFunction = true;
-      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl;
+      f.getMockImplementation = () =>
+        this._ensureMockConfig(f).mockImpl as unknown as (...args: Y) => T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -993,11 +1012,17 @@ export class ModuleMocker {
   }
 
   isMockFunction<T, Y extends Array<unknown> = Array<unknown>>(
+    fn: Mock<T, Y>,
+  ): fn is Mock<T, Y>;
+  isMockFunction<T, Y extends Array<unknown> = Array<unknown>>(
+    fn: SpyInstance<T, Y>,
+  ): fn is SpyInstance<T, Y>;
+  isMockFunction<T, Y extends Array<unknown> = Array<unknown>>(
     fn: (...args: Y) => T,
   ): fn is Mock<T, Y>;
   isMockFunction(fn: unknown): fn is Mock<unknown>;
   isMockFunction<T>(fn: unknown): fn is Mock<T> {
-    return !!fn && (fn as any)._isMockFunction === true;
+    return !!fn && (fn as Mock<unknown>)._isMockFunction === true;
   }
 
   fn<T, Y extends Array<unknown>>(
@@ -1023,7 +1048,7 @@ export class ModuleMocker {
     accessType: 'set',
   ): SpyInstance<void, [T[M]]>;
 
-  spyOn<T extends object, M extends ConstructorPropertyNames<Required<T>>>(
+  spyOn<T extends object, M extends ConstructorPropertyNames<T>>(
     object: T,
     methodName: M,
   ): T[M] extends new (...args: Array<any>) => any
