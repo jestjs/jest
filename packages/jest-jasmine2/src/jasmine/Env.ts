@@ -32,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {AssertionError} from 'assert';
 import type {Circus} from '@jest/types';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
 import queueRunner, {
@@ -550,11 +550,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.it = function (description, fn, timeout) {
-        if (typeof description !== 'string') {
-          throw new Error(
-            `Invalid first argument, ${description}. It must be a string.`,
-          );
-        }
+        description = convertDescriptorToString(description);
         if (fn === undefined) {
           throw new Error(
             'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',

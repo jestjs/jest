@@ -22,5 +22,7 @@ export default function convertDescriptorToString(
       return descriptor;
   }
 
-  throw new Error('describe expects a class, function, number, or string.');
+  throw new Error(
+    `Invalid first argument, ${descriptor}. It must be a class, function, number, or string.`,
+  );
 }

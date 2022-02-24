@@ -146,11 +146,13 @@ const test: Global.It = (() => {
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
 
-    if (typeof testName !== 'string') {
-      asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
-
+    try {
+      testName = convertDescriptorToString(testName);
+    } catch (error) {
+      asyncError.message = (error as Error).message;
       throw asyncError;
     }
+
     if (fn === undefined) {
       asyncError.message =
         'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
