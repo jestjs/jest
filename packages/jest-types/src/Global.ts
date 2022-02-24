@@ -27,11 +27,8 @@ export type GeneratorReturningTestFn = (
   this: TestContext | undefined,
 ) => TestReturnValueGenerator;
 
-export interface FunctionLike {
-  readonly name: string;
-}
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type NameLike = number | Function | FunctionLike;
+export type NameLike = number | Function;
 
 export type TestName = string;
 export type TestFn =

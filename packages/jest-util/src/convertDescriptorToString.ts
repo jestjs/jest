@@ -7,33 +7,19 @@
 
 import type {Global} from '@jest/types';
 
-// See: https://github.com/facebook/jest/pull/5154
 export default function convertDescriptorToString(
   descriptor: Global.BlockNameLike | undefined,
 ): string {
-  if (
-    typeof descriptor === 'string' ||
-    typeof descriptor === 'number' ||
-    descriptor === undefined
-  ) {
-    return `${descriptor}`;
+  switch (typeof descriptor) {
+    case 'function':
+      return descriptor.name;
+
+    case 'number':
+      return `${descriptor}`;
+
+    case 'string':
+      return descriptor;
   }
 
-  if (typeof descriptor !== 'function') {
-    throw new Error('describe expects a class, function, number, or string.');
-  }
-
-  if (descriptor.name !== undefined) {
-    return descriptor.name;
-  }
-
-  // Fallback for old browsers, pardon Flow
-  const stringified = descriptor.toString();
-  const typeDescriptorMatch = stringified.match(/class|function/);
-  const indexOfNameSpace =
-    // @ts-expect-error: typeDescriptorMatch exists
-    typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  const indexOfNameAfterSpace = stringified.search(/\(|\{/);
-  const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
-  return name.trim();
+  throw new Error('describe expects a class, function, number, or string.');
 }
