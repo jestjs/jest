@@ -220,17 +220,12 @@ export default async function runJest({
   const hasTests = allTests.length > 0;
 
   if (!hasTests) {
-    const noTestsFoundMessage = getNoTestsFoundMessage(
+    const {exitWith0, message: noTestsFoundMessage} = getNoTestsFoundMessage(
       testRunData,
       globalConfig,
     );
 
-    if (
-      globalConfig.passWithNoTests ||
-      globalConfig.findRelatedTests ||
-      globalConfig.lastCommit ||
-      globalConfig.onlyChanged
-    ) {
+    if (exitWith0) {
       new CustomConsole(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
       new CustomConsole(outputStream, outputStream).error(noTestsFoundMessage);

@@ -13,6 +13,7 @@ import type {TestRunData} from './types';
 export default function getNoTestFound(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
+  willExitWith0: boolean,
 ): string {
   const testFiles = testRunData.reduce(
     (current, testRun) => current + (testRun.matches.total || 0),
@@ -28,6 +29,22 @@ export default function getNoTestFound(
     dataMessage = `Pattern: ${chalk.yellow(
       globalConfig.testPathPattern,
     )} - 0 matches`;
+  }
+
+  if (willExitWith0) {
+    return (
+      chalk.bold('No tests found, exiting with code 0') +
+      '\n' +
+      `In ${chalk.bold(globalConfig.rootDir)}` +
+      '\n' +
+      `  ${pluralize('file', testFiles, 's')} checked across ${pluralize(
+        'project',
+        testRunData.length,
+        's',
+      )}. Run with \`--verbose\` for more details.` +
+      '\n' +
+      dataMessage
+    );
   }
 
   return (

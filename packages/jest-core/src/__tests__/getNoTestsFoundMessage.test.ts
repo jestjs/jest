@@ -5,15 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeGlobalConfig} from '@jest/test-utils';
+import type {Config} from '@jest/types';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 describe('getNoTestsFoundMessage', () => {
-  function createGlobalConfig(options) {
-    return {
+  function createGlobalConfig(options?: Partial<Config.GlobalConfig>) {
+    return makeGlobalConfig({
       rootDir: '/root/dir',
       testPathPattern: '/path/pattern',
       ...options,
-    };
+    });
   }
 
   test('returns correct message when monitoring only failures', () => {
