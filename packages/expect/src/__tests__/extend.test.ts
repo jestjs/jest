@@ -191,20 +191,20 @@ it('throws descriptive errors for invalid matchers', () => {
       default: undefined,
     }),
   ).toThrow(
-    'expect.extend: `default` is not a valid matcher. Must be function, is "undefined"',
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "undefined"',
   );
   expect(() =>
     jestExpect.extend({
       default: 42,
     }),
   ).toThrow(
-    'expect.extend: `default` is not a valid matcher. Must be function, is "number"',
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "number"',
   );
   expect(() =>
     jestExpect.extend({
       default: 'foobar',
     }),
   ).toThrow(
-    'expect.extend: `default` is not a valid matcher. Must be function, is "string"',
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "string"',
   );
 });

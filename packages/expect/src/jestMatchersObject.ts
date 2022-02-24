@@ -60,7 +60,7 @@ export const setMatchers = (
 
     if (typeof matcher !== 'function') {
       throw new TypeError(
-        `expect.extend: \`${key}\` is not a valid matcher. Must be function, is "${getType(
+        `expect.extend: \`${key}\` is not a valid matcher. Must be a function, is "${getType(
           matcher,
         )}"`,
       );
