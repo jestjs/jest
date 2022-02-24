@@ -5,17 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {
   AggregatedResult,
   SerializableError,
+  TestCaseResult,
   TestResult,
 } from '@jest/test-result';
-import {JestEnvironment as Environment} from '@jest/environment';
-import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
-import HasteResolver from 'jest-resolve';
-import Runtime from 'jest-runtime';
-import {worker} from './coverage_worker';
+import type {Config} from '@jest/types';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
+import type {worker} from './CoverageWorker';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
@@ -26,43 +25,58 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: HasteResolver;
+  resolver: Resolver;
 };
 
 export type Test = {
   context: Context;
   duration?: number;
-  path: Config.Path;
+  path: string;
 };
 
 export type CoverageWorker = {worker: typeof worker};
 
 export type CoverageReporterOptions = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export type CoverageReporterSerializedOptions = {
-  changedFiles?: Array<Config.Path>;
+  changedFiles?: Array<string>;
+  sourcesRelatedToTestsInChangedFiles?: Array<string>;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,
   error: SerializableError,
-) => Promise<any>;
-export type OnTestSuccess = (test: Test, result: TestResult) => Promise<any>;
+) => Promise<unknown>;
+export type OnTestSuccess = (
+  test: Test,
+  result: TestResult,
+) => Promise<unknown>;
 
 export interface Reporter {
-  readonly onTestResult: (
+  readonly onTestResult?: (
     test: Test,
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
+  ) => Promise<void> | void;
+  readonly onTestFileResult?: (
+    test: Test,
+    testResult: TestResult,
+    aggregatedResult: AggregatedResult,
+  ) => Promise<void> | void;
+  readonly onTestCaseResult?: (
+    test: Test,
+    testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
   readonly onRunStart: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
-  readonly onTestStart: (test: Test) => Promise<void> | void;
+  readonly onTestStart?: (test: Test) => Promise<void> | void;
+  readonly onTestFileStart?: (test: Test) => Promise<void> | void;
   readonly onRunComplete: (
     contexts: Set<Context>,
     results: AggregatedResult,
@@ -71,25 +85,14 @@ export interface Reporter {
 }
 
 export type SummaryOptions = {
+  currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;
 };
 
-export type TestFramework = (
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
-  environment: Environment,
-  runtime: Runtime,
-  testPath: string,
-) => Promise<TestResult>;
-
 export type TestRunnerOptions = {
   serial: boolean;
-};
-
-export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
 };
 
 export type TestRunData = Array<{
@@ -100,5 +103,5 @@ export type TestRunData = Array<{
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
 };

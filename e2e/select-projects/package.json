@@ -1,0 +1,24 @@
+{
+  "description": "Testing the behaviour of --selectProjects",
+  "jest": {
+    "projects": [
+      {
+        "displayName": "first-project",
+        "testMatch": [
+          "<rootDir>/__tests__/first-project.test.js"
+        ],
+        "testEnvironment": "node"
+      },
+      {
+        "displayName": {
+          "name": "second-project",
+          "color": "blue"
+        },
+        "testMatch": [
+          "<rootDir>/__tests__/second-project.test.js"
+        ],
+        "testEnvironment": "node"
+      }
+    ]
+  }
+}

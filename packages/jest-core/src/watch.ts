@@ -5,41 +5,52 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes from 'ansi-escapes';
-import chalk from 'chalk';
-import exit from 'exit';
-import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
+import * as path from 'path';
+import ansiEscapes = require('ansi-escapes');
+import chalk = require('chalk');
+import exit = require('exit');
+import slash = require('slash');
+import type {Config} from '@jest/types';
+import type {
+  ChangeEvent as HasteChangeEvent,
+  default as HasteMap,
+} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
-import {isInteractive, preRunMessage, specialChars} from 'jest-util';
+import type {Context} from 'jest-runtime';
+import {
+  isInteractive,
+  preRunMessage,
+  requireOrImportModule,
+  specialChars,
+} from 'jest-util';
 import {ValidationError} from 'jest-validate';
-import {Context} from 'jest-runtime';
-import {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
-  KEYS,
   JestHook,
+  KEYS,
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
-import getChangedFilesPromise from './getChangedFilesPromise';
-import isValidPath from './lib/is_valid_path';
-import createContext from './lib/create_context';
-import runJest from './runJest';
-import updateGlobalConfig from './lib/update_global_config';
+import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
-import FailedTestsCache from './FailedTestsCache';
-import TestPathPatternPlugin from './plugins/test_path_pattern';
-import TestNamePatternPlugin from './plugins/test_name_pattern';
-import UpdateSnapshotsPlugin from './plugins/update_snapshots';
-import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
-import QuitPlugin from './plugins/quit';
+import getChangedFilesPromise from './getChangedFilesPromise';
+import activeFilters from './lib/activeFiltersMessage';
+import createContext from './lib/createContext';
+import isValidPath from './lib/isValidPath';
+import updateGlobalConfig from './lib/updateGlobalConfig';
 import {
-  getSortedUsageRows,
   filterInteractivePlugins,
-} from './lib/watch_plugins_helpers';
-import activeFilters from './lib/active_filters_message';
-import {Filter} from './types';
+  getSortedUsageRows,
+} from './lib/watchPluginsHelpers';
+import FailedTestsInteractivePlugin from './plugins/FailedTestsInteractive';
+import QuitPlugin from './plugins/Quit';
+import TestNamePatternPlugin from './plugins/TestNamePattern';
+import TestPathPatternPlugin from './plugins/TestPathPattern';
+import UpdateSnapshotsPlugin from './plugins/UpdateSnapshots';
+import UpdateSnapshotsInteractivePlugin from './plugins/UpdateSnapshotsInteractive';
+import runJest from './runJest';
+import type {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;
@@ -55,6 +66,7 @@ const {print: preRunMessagePrint} = preRunMessage;
 let hasExitListener = false;
 
 const INTERNAL_PLUGINS = [
+  FailedTestsInteractivePlugin,
   TestPathPatternPlugin,
   TestNamePatternPlugin,
   UpdateSnapshotsPlugin,
@@ -77,7 +89,7 @@ const RESERVED_KEY_PLUGINS = new Map<
   [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
-export default function watch(
+export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
@@ -104,7 +116,9 @@ export default function watch(
     collectCoverageOnlyFrom,
     coverageDirectory,
     coverageReporters,
+    findRelatedTests,
     mode,
+    nonFlagArgs,
     notify,
     notifyMode,
     onlyFailures,
@@ -123,7 +137,9 @@ export default function watch(
       collectCoverageOnlyFrom,
       coverageDirectory,
       coverageReporters,
+      findRelatedTests,
       mode,
+      nonFlagArgs,
       notify,
       notifyMode,
       onlyFailures,
@@ -155,9 +171,11 @@ export default function watch(
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
-      const reservedInfo =
-        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) ||
-        ({} as ReservedInfo);
+      const reservedInfo: Pick<
+        ReservedInfo,
+        'forbiddenOverwriteMessage' | 'key'
+      > =
+        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) || {};
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;
@@ -171,12 +189,27 @@ export default function watch(
     }
 
     for (const pluginWithConfig of globalConfig.watchPlugins) {
-      const ThirdPartyPlugin = require(pluginWithConfig.path);
-      const plugin: WatchPlugin = new ThirdPartyPlugin({
-        config: pluginWithConfig.config,
-        stdin,
-        stdout: outputStream,
-      });
+      let plugin: WatchPlugin;
+      try {
+        const ThirdPartyPlugin = await requireOrImportModule<WatchPluginClass>(
+          pluginWithConfig.path,
+        );
+        plugin = new ThirdPartyPlugin({
+          config: pluginWithConfig.config,
+          stdin,
+          stdout: outputStream,
+        });
+      } catch (error: any) {
+        const errorWithContext = new Error(
+          `Failed to initialize watch plugin "${chalk.bold(
+            slash(path.relative(process.cwd(), pluginWithConfig.path)),
+          )}":\n\n${formatExecError(error, contexts[0].config, {
+            noStackTrace: false,
+          })}`,
+        );
+        delete errorWithContext.stack;
+        return Promise.reject(errorWithContext);
+      }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
 
       const hookSubscriber = hooks.getSubscriber();
@@ -260,6 +293,7 @@ export default function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+
     return runJest({
       changedFilesPromise,
       contexts,
@@ -482,7 +516,7 @@ const getPluginIdentifier = (plugin: WatchPlugin) =>
   // WatchPlugin is an interface, and it is my understanding interface
   // static fields are not definable anymore, no idea how to circumvent
   // this :-(
-  // @ts-ignore: leave `displayName` be.
+  // @ts-expect-error: leave `displayName` be.
   plugin.constructor.displayName || plugin.constructor.name;
 
 const getPluginKey = (

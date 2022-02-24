@@ -5,17 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 test('testNamePattern', () => {
-  const {stderr, status} = runWithJson('test-name-pattern', [
+  const {stderr, exitCode} = runWithJson('test-name-pattern', [
     '--testNamePattern',
     'should match',
   ]);
   const {summary} = extractSummary(stderr);
 
-  expect(status).toBe(0);
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+  expect(summary).toMatchSnapshot();
 });

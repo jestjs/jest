@@ -9,10 +9,10 @@ import runJest from '../runJest';
 
 test('suite with auto-restore', () => {
   const result = runJest('auto-restore-mocks/with-auto-restore');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('suite without auto-restore', () => {
   const result = runJest('auto-restore-mocks/without-auto-restore');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

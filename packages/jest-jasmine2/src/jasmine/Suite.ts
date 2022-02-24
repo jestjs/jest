@@ -28,21 +28,21 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {convertDescriptorToString} from 'jest-util';
-import {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
-import {QueueableFn} from '../queueRunner';
-import Spec from './Spec';
+import type {QueueableFn} from '../queueRunner';
+import type Spec from './Spec';
 
 export type SuiteResult = {
   id: string;
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: string;
   status?: string;
 };
 
@@ -51,7 +51,7 @@ export type Attributes = {
   parentSuite?: Suite;
   description: string;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
 };
 
 export default class Suite {
@@ -207,7 +207,7 @@ export default class Suite {
         const child = this.children[i];
         try {
           child.addExpectationResult.apply(child, args);
-        } catch (e) {
+        } catch {
           // keep going
         }
       }

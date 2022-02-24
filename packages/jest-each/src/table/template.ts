@@ -6,27 +6,23 @@
  *
  */
 
-import pretty from 'pretty-format';
-import {isPrimitive} from 'jest-get-type';
-import {Global} from '@jest/types';
-import {EachTests} from '../bind';
+import type {Global} from '@jest/types';
+import type {EachTests} from '../bind';
+import type {Headings, Template, Templates} from './interpolation';
+import {interpolateVariables} from './interpolation';
 
-type Template = {[key: string]: unknown};
-type Templates = Array<Template>;
-type Headings = Array<string>;
-
-export default (
+export default function template(
   title: string,
   headings: Headings,
   row: Global.Row,
-): EachTests => {
+): EachTests {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
-  return templates.map(template => ({
+  return templates.map((template, index) => ({
     arguments: [template],
-    title: interpolate(title, template),
+    title: interpolateVariables(title, template, index),
   }));
-};
+}
 
 const convertRowToTable = (row: Global.Row, headings: Headings): Global.Table =>
   Array.from({length: row.length / headings.length}).map((_, index) =>
@@ -46,35 +42,3 @@ const convertTableToTemplates = (
       {},
     ),
   );
-
-const interpolate = (title: string, template: Template) =>
-  Object.keys(template)
-    .reduce(getMatchingKeyPaths(title), []) // aka flatMap
-    .reduce(replaceKeyPathWithValue(template), title);
-
-const getMatchingKeyPaths = (title: string) => (
-  matches: Headings,
-  key: string,
-) => matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
-
-const replaceKeyPathWithValue = (template: Template) => (
-  title: string,
-  match: string,
-) => {
-  const keyPath = match.replace('$', '').split('.');
-  const value = getPath(template, keyPath);
-
-  if (isPrimitive(value)) {
-    return title.replace(match, String(value));
-  }
-  return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
-};
-
-const getPath = (
-  template: Template | any,
-  [head, ...tail]: Array<string>,
-): any => {
-  if (!head || !template.hasOwnProperty || !template.hasOwnProperty(head))
-    return template;
-  return getPath(template[head], tail);
-};

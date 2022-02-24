@@ -2,10 +2,17 @@
   "jest": {
     "rootDir": "./",
     "transform": {
-      "^.+\\.(js)$": "<rootDir>/preprocessor.js"
+      "\\.(js)$": "<rootDir>/preprocessor.js"
     },
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
+    ],
     "moduleFileExtensions": [
       "js"
     ]
@@ -18,6 +25,6 @@
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "babel-plugin-istanbul": "^5.1.0"
+    "babel-plugin-istanbul": "^6.0.0"
   }
 }

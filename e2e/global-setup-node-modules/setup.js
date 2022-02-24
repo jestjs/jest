@@ -7,13 +7,13 @@
 import example from './node_modules/example';
 const crypto = require('crypto');
 const fs = require('fs');
-const {createDirectory} = require('jest-util');
 const os = require('os');
 const path = require('path');
+const {createDirectory} = require('jest-util');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup-node-modules');
 
-module.exports = function() {
+module.exports = function () {
   return new Promise(resolve => {
     createDirectory(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');

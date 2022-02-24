@@ -1,9 +1,8 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 import {runTest} from '../__mocks__/testUtils';
@@ -57,6 +56,39 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
       describe('child describe', () => {
         test('my test', () => console.log('> my test'));
       })
+    })
+  `);
+  expect(result.stdout).toMatchSnapshot();
+});
+
+test('describe block hooks must not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test('my test', () => console.log('> my test'));
+    })
+  `);
+  expect(result.stdout).toMatchSnapshot();
+});
+
+test('child tests marked with todo should not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test.todo('my test');
+    })
+  `);
+  expect(result.stdout).toMatchSnapshot();
+});
+
+test('child tests marked with only should not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test.only('my test', () => console.log('> my test'));
     })
   `);
   expect(result.stdout).toMatchSnapshot();

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'custom-reporters-test-dir');
+const DIR = path.resolve(tmpdir(), 'custom-reporters-test-dir');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -22,13 +22,13 @@ describe('Custom Reporters Integration', () => {
       reporters: ['<rootDir>/reporters/TestReporter.js'],
     };
 
-    const {status} = runJest('custom-reporters', [
+    const {exitCode} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
     ]);
 
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 
   test('valid array format for adding reporters', () => {
@@ -38,14 +38,14 @@ describe('Custom Reporters Integration', () => {
       ],
     };
 
-    const {status, stdout} = runJest('custom-reporters', [
+    const {exitCode, stdout} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
     ]);
 
-    expect(wrap(stdout)).toMatchSnapshot();
-    expect(status).toBe(0);
+    expect(stdout).toMatchSnapshot();
+    expect(exitCode).toBe(0);
   });
 
   test('invalid format for adding reporters', () => {
@@ -53,18 +53,18 @@ describe('Custom Reporters Integration', () => {
       reporters: [[3243242]],
     };
 
-    const {status, stderr} = runJest('custom-reporters', [
+    const {exitCode, stderr} = runJest('custom-reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add.test.js',
     ]);
 
-    expect(status).toBe(1);
-    expect(wrap(stderr)).toMatchSnapshot();
+    expect(exitCode).toBe(1);
+    expect(stderr).toMatchSnapshot();
   });
 
   test('default reporters enabled', () => {
-    const {stderr, stdout, status} = runJest('custom-reporters', [
+    const {stderr, stdout, exitCode} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
         reporters: ['default', '<rootDir>/reporters/TestReporter.js'],
@@ -75,38 +75,38 @@ describe('Custom Reporters Integration', () => {
     const {summary, rest} = extractSummary(stderr);
     const parsedJSON = JSON.parse(stdout);
 
-    expect(status).toBe(0);
-    expect(wrap(rest)).toMatchSnapshot();
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(exitCode).toBe(0);
+    expect(rest).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(parsedJSON).toMatchSnapshot();
   });
 
   test('TestReporter with all tests passing', () => {
-    const {stdout, status, stderr} = runJest('custom-reporters', [
+    const {stdout, exitCode, stderr} = runJest('custom-reporters', [
       'add.test.js',
     ]);
 
     const parsedJSON = JSON.parse(stdout);
 
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(stderr).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
   test('TestReporter with all tests failing', () => {
-    const {stdout, status, stderr} = runJest('custom-reporters', [
+    const {stdout, exitCode, stderr} = runJest('custom-reporters', [
       'addFail.test.js',
     ]);
 
     const parsedJSON = JSON.parse(stdout);
 
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
     expect(stderr).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
   test('IncompleteReporter for flexibility', () => {
-    const {stderr, stdout, status} = runJest('custom-reporters', [
+    const {stderr, stdout, exitCode} = runJest('custom-reporters', [
       '--no-cache',
       '--config',
       JSON.stringify({
@@ -115,15 +115,30 @@ describe('Custom Reporters Integration', () => {
       'add.test.js',
     ]);
 
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(stderr).toBe('');
 
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test('reporters can be default exports', () => {
+    const {stderr, stdout, exitCode} = runJest('custom-reporters', [
+      '--no-cache',
+      '--config',
+      JSON.stringify({
+        reporters: ['<rootDir>/reporters/DefaultExportReporter.js'],
+      }),
+      'add.test.js',
+    ]);
+
+    expect(stderr).toBe('');
+    expect(exitCode).toBe(0);
+    expect(stdout).toMatchSnapshot();
   });
 
   test('prints reporter errors', () => {
     writeFiles(DIR, {
-      '__tests__/test.test.js': `test('test', () => {});`,
+      '__tests__/test.test.js': "test('test', () => {});",
       'package.json': JSON.stringify({
         jest: {
           reporters: ['default', '<rootDir>/reporter.js'],
@@ -140,8 +155,33 @@ describe('Custom Reporters Integration', () => {
       `,
     });
 
-    const {stderr, status} = runJest(DIR);
+    const {stderr, exitCode} = runJest(DIR);
     expect(stderr).toMatch(/ON_RUN_START_ERROR/);
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
+  });
+
+  onNodeVersions('>=12.17.0', () => {
+    test('supports reporter written in ESM', () => {
+      writeFiles(DIR, {
+        '__tests__/test.test.js': "test('test', () => {});",
+        'package.json': JSON.stringify({
+          jest: {
+            reporters: ['default', '<rootDir>/reporter.mjs'],
+            testEnvironment: 'node',
+          },
+        }),
+        'reporter.mjs': `
+        export default class Reporter {
+          onRunStart() {
+            throw new Error('ON_RUN_START_ERROR');
+          }
+        };
+      `,
+      });
+
+      const {stderr, exitCode} = runJest(DIR);
+      expect(stderr).toMatch(/ON_RUN_START_ERROR/);
+      expect(exitCode).toBe(1);
+    });
   });
 });

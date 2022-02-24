@@ -1,29 +1,36 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "24.7.1",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-resolve-dependencies"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/types": "^24.7.0",
-    "jest-regex-util": "^24.3.0",
-    "jest-snapshot": "^24.7.1"
+    "jest-regex-util": "^28.0.0-alpha.3",
+    "jest-snapshot": "^28.0.0-alpha.4"
   },
   "devDependencies": {
-    "jest-haste-map": "^24.7.1",
-    "jest-resolve": "^24.7.1",
-    "jest-runtime": "^24.7.1"
+    "@jest/test-utils": "^28.0.0-alpha.4",
+    "@jest/types": "^28.0.0-alpha.4",
+    "jest-haste-map": "^28.0.0-alpha.4",
+    "jest-resolve": "^28.0.0-alpha.4",
+    "jest-runtime": "^28.0.0-alpha.4"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

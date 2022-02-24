@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 
 const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
 
-const getMockName = (filePath: string) => {
+const getMockName = (filePath: string): string => {
   const mockPath = filePath.split(MOCKS_PATTERN)[1];
   return mockPath
     .substring(0, mockPath.lastIndexOf(path.extname(mockPath)))

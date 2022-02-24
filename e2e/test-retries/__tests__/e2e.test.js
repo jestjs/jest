@@ -6,8 +6,8 @@
  */
 'use strict';
 
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 const countPath = path.join(__dirname, '.tries');
 

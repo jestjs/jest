@@ -1,39 +1,38 @@
 {
   "name": "jest-util",
-  "version": "24.7.1",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-util"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/console": "^24.7.1",
-    "@jest/fake-timers": "^24.7.1",
-    "@jest/source-map": "^24.3.0",
-    "@jest/test-result": "^24.7.1",
-    "@jest/types": "^24.7.0",
-    "callsites": "^3.0.0",
-    "chalk": "^2.0.1",
-    "graceful-fs": "^4.1.15",
-    "is-ci": "^2.0.0",
-    "mkdirp": "^0.5.1",
-    "slash": "^2.0.0",
-    "source-map": "^0.6.0"
+    "@jest/types": "^28.0.0-alpha.4",
+    "@types/node": "*",
+    "chalk": "^4.0.0",
+    "ci-info": "^3.2.0",
+    "graceful-fs": "^4.2.9",
+    "picomatch": "^2.2.3"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/is-ci": "^1.0.10",
-    "@types/mkdirp": "^0.5.2",
-    "@types/slash": "^2.0.0"
+    "@types/micromatch": "^4.0.1",
+    "@types/picomatch": "^2.2.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

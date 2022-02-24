@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
+import {isJSONString} from './utils';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-import {isJSONString} from './utils';
 
 export default function setFromArgv(
   options: Config.InitialOptions,
@@ -16,7 +16,7 @@ export default function setFromArgv(
 ): Config.InitialOptions {
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((options: {[key: string]: unknown}, key) => {
+    .reduce((options: Record<string, unknown>, key) => {
       switch (key) {
         case 'coverage':
           options.collectCoverage = argv[key];
@@ -35,9 +35,10 @@ export default function setFromArgv(
           break;
         case 'coverageThreshold':
         case 'globals':
-        case 'moduleNameMapper':
-        case 'transform':
         case 'haste':
+        case 'moduleNameMapper':
+        case 'testEnvironmentOptions':
+        case 'transform':
           const str = argv[key];
           if (isJSONString(str)) {
             options[key] = JSON.parse(str);

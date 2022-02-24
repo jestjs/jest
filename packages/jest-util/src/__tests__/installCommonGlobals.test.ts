@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm from 'vm';
+import {createContext, runInContext} from 'vm';
 
-let installCommonGlobals: any;
+let installCommonGlobals: typeof import('../installCommonGlobals').default;
 let fake: jest.Mock;
 
-function getGlobal(): NodeJS.Global {
-  return vm.runInContext('this', vm.createContext());
+function getGlobal(): typeof globalThis {
+  return runInContext('this', createContext());
 }
 
 beforeEach(() => {
   fake = jest.fn();
-  // @ts-ignore
-  global.DTRACE_NET_SERVER_CONNECTION = fake;
+  // @ts-expect-error
+  globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
 
   installCommonGlobals = require('../installCommonGlobals').default;
 });

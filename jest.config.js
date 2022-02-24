@@ -1,7 +1,13 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
+/** @type import('@jest/types').Config.InitialOptions */
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
@@ -11,6 +17,7 @@ module.exports = {
     '!**/perf/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
+    '!**/__typetests__/**',
     '!**/build/**',
     '!**/vendor/**',
     '!e2e/**',
@@ -18,20 +25,20 @@ module.exports = {
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
-    'packages/.*/build-es5',
+    'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
-  snapshotSerializers: [
-    '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
-    require.resolve('jest-snapshot-serializer-raw'),
-  ],
-  testEnvironment: './packages/jest-environment-node',
+  snapshotFormat: {
+    escapeString: false,
+  },
+  snapshotSerializers: [require.resolve('pretty-format/ConvertAnsi')],
   testPathIgnorePatterns: [
     '/__arbitraries__/',
+    '/__typetests__/',
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',
@@ -39,13 +46,14 @@ module.exports = {
     '/e2e/global-teardown',
     '\\.snap$',
     '/packages/.*/build',
-    '/packages/.*/build-es5',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
     '/packages/jest-core/src/__tests__/test_root',
     '/packages/jest-core/src/__tests__/__fixtures__/',
     '/packages/jest-cli/src/init/__tests__/fixtures/',
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
     '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
+    '/packages/jest-haste-map/src/__tests__/test_dotfiles_root/',
+    '/packages/jest-repl/src/__tests__/test_root',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',
@@ -58,8 +66,9 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
   transform: {
-    '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
+  watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',

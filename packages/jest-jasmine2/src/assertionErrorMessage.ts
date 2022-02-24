@@ -5,23 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
 import {
-  diff,
-  printReceived,
-  printExpected,
   DiffOptions,
+  diff,
+  printExpected,
+  printReceived,
 } from 'jest-matcher-utils';
-import chalk from 'chalk';
-import {AssertionErrorWithStack} from './types';
+import type {AssertionErrorWithStack} from './types';
 
-const assertOperatorsMap: {[key: string]: string} = {
+const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
   '===': 'strictEqual',
 };
 
-const humanReadableOperators: {[key: string]: string} = {
+const humanReadableOperators: Record<string, string> = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
   equal: 'to be equal',
@@ -42,6 +42,10 @@ const getOperatorName = (operator: string | null, stack: string) => {
   if (stack.match('.throws')) {
     return 'throws';
   }
+  // this fallback is only needed for versions older than node 10
+  if (stack.match('.fail')) {
+    return 'fail';
+  }
   return '';
 };
 
@@ -55,27 +59,34 @@ const operatorMessage = (operator: string | null) => {
 };
 
 const assertThrowingMatcherHint = (operatorName: string) =>
-  chalk.dim('assert') +
-  chalk.dim('.' + operatorName + '(') +
-  chalk.red('function') +
-  chalk.dim(')');
+  operatorName
+    ? chalk.dim('assert') +
+      chalk.dim('.' + operatorName + '(') +
+      chalk.red('function') +
+      chalk.dim(')')
+    : '';
 
-const assertMatcherHint = (operator: string | null, operatorName: string) => {
-  let message =
-    chalk.dim('assert') +
-    chalk.dim('.' + operatorName + '(') +
-    chalk.red('received') +
-    chalk.dim(', ') +
-    chalk.green('expected') +
-    chalk.dim(')');
+const assertMatcherHint = (
+  operator: string | null,
+  operatorName: string,
+  expected: unknown,
+) => {
+  let message = '';
 
-  if (operator === '==') {
-    message +=
-      ' or ' +
+  if (operator === '==' && expected === true) {
+    message =
       chalk.dim('assert') +
       chalk.dim('(') +
       chalk.red('received') +
-      chalk.dim(') ');
+      chalk.dim(')');
+  } else if (operatorName) {
+    message =
+      chalk.dim('assert') +
+      chalk.dim('.' + operatorName + '(') +
+      chalk.red('received') +
+      chalk.dim(', ') +
+      chalk.green('expected') +
+      chalk.dim(')');
   }
 
   return message;
@@ -84,7 +95,7 @@ const assertMatcherHint = (operator: string | null, operatorName: string) => {
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
   options: DiffOptions,
-) {
+): string {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;
@@ -95,10 +106,9 @@ function assertionErrorMessage(
 
   if (operatorName === 'doesNotThrow') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
-      chalk.reset(`Expected the function not to throw an error.\n`) +
-      chalk.reset(`Instead, it threw:\n`) +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
+      chalk.reset('Expected the function not to throw an error.\n') +
+      chalk.reset('Instead, it threw:\n') +
       `  ${printReceived(actual)}` +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
@@ -107,26 +117,36 @@ function assertionErrorMessage(
 
   if (operatorName === 'throws') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
-      chalk.reset(`Expected the function to throw an error.\n`) +
-      chalk.reset(`But it didn't throw anything.`) +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
+      chalk.reset('Expected the function to throw an error.\n') +
+      chalk.reset("But it didn't throw anything.") +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
       trimmedStack
     );
   }
 
+  if (operatorName === 'fail') {
+    return (
+      buildHintString(assertMatcherHint(operator, operatorName, expected)) +
+      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
+      trimmedStack
+    );
+  }
+
   return (
-    assertMatcherHint(operator, operatorName) +
-    '\n\n' +
+    buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
-    chalk.reset(`Received:\n`) +
+    chalk.reset('Received:\n') +
     `  ${printReceived(actual)}` +
     chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
     trimmedStack
   );
+}
+
+function buildHintString(hint: string) {
+  return hint ? hint + '\n\n' : '';
 }
 
 export default assertionErrorMessage;

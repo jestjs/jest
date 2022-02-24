@@ -36,6 +36,7 @@ exports.jest = jest;
 exports.lazyRequire = lazyRequire;
 exports.object = {};
 exports.parent = module.parent;
+exports.path = module.path;
 exports.paths = module.paths;
 exports.setModuleStateValue = setModuleStateValue;
 exports.module = module;

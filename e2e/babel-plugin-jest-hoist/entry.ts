@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Color} from './types';
+import type {Color} from './types';
 
 export const color: Color = 'red';

@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import {AggregatedResult} from '@jest/test-result';
-import {getCacheFilePath} from 'jest-haste-map';
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
+import * as fs from 'graceful-fs';
+import type {AggregatedResult, Test} from '@jest/test-result';
+import HasteMap from 'jest-haste-map';
+import type {Context} from 'jest-runtime';
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -34,12 +33,16 @@ type Cache = {
 export default class TestSequencer {
   private _cache: Map<Context, Cache> = new Map();
 
-  _getCachePath(context: Context) {
+  _getCachePath(context: Context): string {
     const {config} = context;
-    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
+    const HasteMapClass = HasteMap.getStatic(config);
+    return HasteMapClass.getCacheFilePath(
+      config.cacheDirectory,
+      'perf-cache-' + config.name,
+    );
   }
 
-  _getCache(test: Test) {
+  _getCache(test: Test): Cache {
     const {context} = test;
     if (!this._cache.has(context) && context.config.cache) {
       const cachePath = this._getCachePath(context);
@@ -49,7 +52,7 @@ export default class TestSequencer {
             context,
             JSON.parse(fs.readFileSync(cachePath, 'utf8')),
           );
-        } catch (e) {}
+        } catch {}
       }
     }
 
@@ -109,7 +112,15 @@ export default class TestSequencer {
     });
   }
 
-  cacheResults(tests: Array<Test>, results: AggregatedResult) {
+  allFailedTests(tests: Array<Test>): Array<Test> {
+    const hasFailed = (cache: Cache, test: Test) =>
+      cache[test.path]?.[0] === FAIL;
+    return this.sort(
+      tests.filter(test => hasFailed(this._getCache(test), test)),
+    );
+  }
+
+  cacheResults(tests: Array<Test>, results: AggregatedResult): void {
     const map = Object.create(null);
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {
@@ -118,7 +129,7 @@ export default class TestSequencer {
         const perf = testResult.perfStats;
         cache[testResult.testFilePath] = [
           testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.end - perf.start || 0,
+          perf.runtime || 0,
         ];
       }
     });

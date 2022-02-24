@@ -6,30 +6,36 @@
  *
  */
 
-import path from 'path';
-import execa from 'execa';
-import {Config} from '@jest/types';
-
-import {SCMAdapter} from './types';
+import * as path from 'path';
+import execa = require('execa');
+import type {SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const includePaths: Array<Config.Path> =
-      (options && options.includePaths) || [];
+    const includePaths = options.includePaths ?? [];
 
     const args = ['status', '-amnu'];
-    if (options && options.withAncestor) {
-      args.push('--rev', `min((!public() & ::.)+.)^`);
-    } else if (options && options.changedSince) {
+    if (options.withAncestor) {
+      args.push('--rev', 'min((!public() & ::.)+.)^');
+    } else if (options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
-    } else if (options && options.lastCommit === true) {
+    } else if (options.lastCommit === true) {
       args.push('--change', '.');
     }
     args.push(...includePaths);
 
-    const result = await execa('hg', args, {cwd, env});
+    let result: execa.ExecaReturnValue;
+
+    try {
+      result = await execa('hg', args, {cwd, env});
+    } catch (e: any) {
+      // TODO: Should we keep the original `message`?
+      e.message = e.stderr;
+
+      throw e;
+    }
 
     return result.stdout
       .split('\n')
@@ -42,7 +48,7 @@ const adapter: SCMAdapter = {
       const result = await execa('hg', ['root'], {cwd, env});
 
       return result.stdout;
-    } catch (e) {
+    } catch {
       return null;
     }
   },

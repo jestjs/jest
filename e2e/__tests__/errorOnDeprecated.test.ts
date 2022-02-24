@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
 
@@ -38,9 +37,10 @@ testFiles.forEach(testFile => {
       testFile,
       '--errorOnDeprecated',
     ]);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     const {rest} = extractSummary(result.stderr);
-    expect(wrap(rest)).toMatchSnapshot();
+
+    expect(rest).toMatchSnapshot();
   });
 });
 
@@ -52,6 +52,6 @@ testFiles.forEach(testFile => {
 
   test(testName, () => {
     const result = runJest('error-on-deprecated', [testFile]);
-    expect(result.status).toBe(shouldPass ? 1 : 0);
+    expect(result.exitCode).toBe(shouldPass ? 1 : 0);
   });
 });

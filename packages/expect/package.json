@@ -1,32 +1,40 @@
 {
   "name": "expect",
-  "version": "24.7.1",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/expect"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "browser": "build-es5/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./build/matchers": "./build/matchers.js"
+  },
   "dependencies": {
-    "@jest/types": "^24.7.0",
-    "ansi-styles": "^3.2.0",
-    "jest-get-type": "^24.3.0",
-    "jest-matcher-utils": "^24.7.0",
-    "jest-message-util": "^24.7.1",
-    "jest-regex-util": "^24.3.0"
+    "@jest/expect-utils": "^28.0.0-alpha.4",
+    "jest-get-type": "^28.0.0-alpha.3",
+    "jest-matcher-utils": "^28.0.0-alpha.4",
+    "jest-message-util": "^28.0.0-alpha.4"
   },
   "devDependencies": {
-    "@types/ansi-styles": "^3.2.1",
-    "immutable": "^4.0.0-rc.12"
+    "@jest/test-utils": "^28.0.0-alpha.4",
+    "@tsd/typescript": "~4.5.5",
+    "chalk": "^4.0.0",
+    "fast-check": "^2.0.0",
+    "immutable": "^4.0.0",
+    "tsd-lite": "^0.5.1"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

@@ -9,7 +9,10 @@ const toString = Object.prototype.toString;
 
 const MULTIPLE_VALID_OPTIONS_SYMBOL = Symbol('JEST_MULTIPLE_VALID_OPTIONS');
 
-function validationConditionSingle(option: any, validOption: any): boolean {
+function validationConditionSingle(
+  option: unknown,
+  validOption: unknown,
+): boolean {
   return (
     option === null ||
     option === undefined ||
@@ -18,10 +21,10 @@ function validationConditionSingle(option: any, validOption: any): boolean {
   );
 }
 
-export function getValues(validOption: any) {
+export function getValues<T = unknown>(validOption: T): Array<T> {
   if (
     Array.isArray(validOption) &&
-    // @ts-ignore
+    // @ts-expect-error
     validOption[MULTIPLE_VALID_OPTIONS_SYMBOL]
   ) {
     return validOption;
@@ -29,15 +32,19 @@ export function getValues(validOption: any) {
   return [validOption];
 }
 
-export function validationCondition(option: any, validOption: any): boolean {
+export function validationCondition(
+  option: unknown,
+  validOption: unknown,
+): boolean {
   return getValues(validOption).some(e => validationConditionSingle(option, e));
 }
 
-// TODO: This should infer the types of its arguments, and return a union type of the types
-// See https://github.com/Microsoft/TypeScript/issues/5453
-export function multipleValidOptions(...args: Array<any>) {
-  const options = [...args];
-  // @ts-ignore
+export function multipleValidOptions<T extends Array<unknown>>(
+  ...args: T
+): T[number] {
+  const options = <T>[...args];
+  // @ts-expect-error
   options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
+
   return options;
 }

@@ -4,14 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use strict';
 
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import TestSequencer from '../index';
 
-jest.mock('fs');
-
-const fs = require('fs');
-const path = require('path');
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule('fs'),
+  existsSync: jest.fn(() => true),
+  readFileSync: jest.fn(() => '{}'),
+}));
 const FAIL = 0;
 const SUCCESS = 1;
 
@@ -21,6 +23,7 @@ const context = {
   config: {
     cache: true,
     cacheDirectory: '/cache',
+    haste: {},
     name: 'test',
   },
   hasteFS: {
@@ -32,6 +35,7 @@ const secondContext = {
   config: {
     cache: true,
     cacheDirectory: '/cache2',
+    haste: {},
     name: 'test2',
   },
   hasteFS: {
@@ -47,11 +51,8 @@ const toTests = paths =>
   }));
 
 beforeEach(() => {
+  jest.clearAllMocks();
   sequencer = new TestSequencer();
-
-  fs.readFileSync = jest.fn(() => '{}');
-  fs.existsSync = () => true;
-  fs.writeFileSync = jest.fn();
 });
 
 test('sorts by file size if there is no timing information', () => {
@@ -62,7 +63,7 @@ test('sorts by file size if there is no timing information', () => {
 });
 
 test('sorts based on timing information', () => {
-  fs.readFileSync = jest.fn(() =>
+  fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [SUCCESS, 3],
@@ -75,7 +76,7 @@ test('sorts based on timing information', () => {
 });
 
 test('sorts based on failures and timing information', () => {
-  fs.readFileSync = jest.fn(() =>
+  fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [FAIL, 0],
@@ -96,7 +97,7 @@ test('sorts based on failures and timing information', () => {
 });
 
 test('sorts based on failures, timing information and file size', () => {
-  fs.readFileSync = jest.fn(() =>
+  fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [FAIL, 1],
@@ -125,7 +126,7 @@ test('sorts based on failures, timing information and file size', () => {
 });
 
 test('writes the cache based on results without existing cache', () => {
-  fs.readFileSync = jest.fn(() => {
+  fs.readFileSync.mockImplementationOnce(() => {
     throw new Error('File does not exist.');
   });
 
@@ -135,23 +136,23 @@ test('writes the cache based on results without existing cache', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -163,8 +164,23 @@ test('writes the cache based on results without existing cache', () => {
   });
 });
 
+test('returns failed tests in sorted order', () => {
+  fs.readFileSync.mockImplementationOnce(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+    }),
+  );
+  const testPaths = ['/test-a.js', '/test-ab.js', '/test-c.js'];
+  expect(sequencer.allFailedTests(toTests(testPaths))).toEqual([
+    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: 1, path: '/test-ab.js'},
+  ]);
+});
+
 test('writes the cache based on the results', () => {
-  fs.readFileSync = jest.fn(() =>
+  fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-b.js': [FAIL, 1],
@@ -178,23 +194,23 @@ test('writes the cache based on the results', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -208,7 +224,7 @@ test('writes the cache based on the results', () => {
 });
 
 test('works with multiple contexts', () => {
-  fs.readFileSync = jest.fn(cacheName =>
+  fs.readFileSync.mockImplementationOnce(cacheName =>
     cacheName.startsWith(path.sep + 'cache' + path.sep)
       ? JSON.stringify({
           '/test-a.js': [SUCCESS, 5],
@@ -229,23 +245,23 @@ test('works with multiple contexts', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 1, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],

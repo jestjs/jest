@@ -1,12 +1,17 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import fs from 'fs';
+import * as fs from 'graceful-fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   ReadStream: jest.requireActual('fs').ReadStream,
   WriteStream: jest.requireActual('fs').WriteStream,
 }));
@@ -26,7 +31,7 @@ describe('getCallsite', () => {
       throw new Error('Mock error');
     });
 
-    const site = getCallsite(0, {[__filename]: 'mockedSourceMapFile'});
+    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(expect.any(Number));
@@ -39,9 +44,9 @@ describe('getCallsite', () => {
 
     const sourceMapColumn = 1;
     const sourceMapLine = 2;
-    // @ts-ignore
+
     SourceMap.SourceMapConsumer = class {
-      originalPositionFor(params: Record<string, any>) {
+      originalPositionFor(params: Record<string, number>) {
         expect(params).toMatchObject({
           column: expect.any(Number),
           line: expect.any(Number),
@@ -54,7 +59,7 @@ describe('getCallsite', () => {
       }
     };
 
-    const site = getCallsite(0, {[__filename]: 'mockedSourceMapFile'});
+    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(sourceMapColumn);

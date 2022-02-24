@@ -5,12 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
-import chalk from 'chalk';
-import getType from 'jest-get-type';
-import diffStrings from './diffStrings';
+import chalk = require('chalk');
+import {getType} from 'jest-get-type';
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
+import type {PrettyFormatOptions} from 'pretty-format';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as JestDiffOptions} from './types';
+import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
+import type {DiffOptions} from './types';
+
+export type {DiffOptions, DiffOptionsColor} from './types';
+
+export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
+export {diffStringsRaw, diffStringsUnified};
+export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
+
+const getCommonMessage = (message: string, options?: DiffOptions) => {
+  const {commonColor} = normalizeDiffOptions(options);
+  return commonColor(message);
+};
 
 const {
   AsymmetricMatcher,
@@ -19,7 +37,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,
@@ -32,19 +50,18 @@ const PLUGINS = [
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };
-const FORMAT_OPTIONS_0 = {...FORMAT_OPTIONS, indent: 0};
 const FALLBACK_FORMAT_OPTIONS = {
   callToJSON: false,
   maxDepth: 10,
   plugins: PLUGINS,
 };
-const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options?: JestDiffOptions): string | null {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
-    return NO_DIFF_MESSAGE;
+    return getCommonMessage(NO_DIFF_MESSAGE, options);
   }
 
   const aType = getType(a);
@@ -79,7 +96,7 @@ function diff(a: any, b: any, options?: JestDiffOptions): string | null {
 
   switch (aType) {
     case 'string':
-      return diffStrings(a, b, options);
+      return diffLinesUnified(a.split('\n'), b.split('\n'), options);
     case 'boolean':
     case 'number':
       return comparePrimitive(a, b, options);
@@ -95,13 +112,13 @@ function diff(a: any, b: any, options?: JestDiffOptions): string | null {
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options?: JestDiffOptions,
+  options?: DiffOptions,
 ) {
-  return diffStrings(
-    prettyFormat(a, FORMAT_OPTIONS),
-    prettyFormat(b, FORMAT_OPTIONS),
-    options,
-  );
+  const aFormat = prettyFormat(a, FORMAT_OPTIONS);
+  const bFormat = prettyFormat(b, FORMAT_OPTIONS);
+  return aFormat === bFormat
+    ? getCommonMessage(NO_DIFF_MESSAGE, options)
+    : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
 function sortMap(map: Map<unknown, unknown>) {
@@ -115,48 +132,68 @@ function sortSet(set: Set<unknown>) {
 function compareObjects(
   a: Record<string, any>,
   b: Record<string, any>,
-  options?: JestDiffOptions,
+  options?: DiffOptions,
 ) {
-  let diffMessage;
+  let difference;
   let hasThrown = false;
 
   try {
-    diffMessage = diffStrings(
-      prettyFormat(a, FORMAT_OPTIONS_0),
-      prettyFormat(b, FORMAT_OPTIONS_0),
-      options,
-      {
-        a: prettyFormat(a, FORMAT_OPTIONS),
-        b: prettyFormat(b, FORMAT_OPTIONS),
-      },
-    );
-  } catch (e) {
+    const formatOptions = getFormatOptions(FORMAT_OPTIONS, options);
+    difference = getObjectsDifference(a, b, formatOptions, options);
+  } catch {
     hasThrown = true;
   }
 
+  const noDiffMessage = getCommonMessage(NO_DIFF_MESSAGE, options);
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
-  if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-    diffMessage = diffStrings(
-      prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0),
-      prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0),
-      options,
-      {
-        a: prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
-        b: prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
-      },
-    );
-    if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
-      diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
+  if (difference === undefined || difference === noDiffMessage) {
+    const formatOptions = getFormatOptions(FALLBACK_FORMAT_OPTIONS, options);
+    difference = getObjectsDifference(a, b, formatOptions, options);
+
+    if (difference !== noDiffMessage && !hasThrown) {
+      difference =
+        getCommonMessage(SIMILAR_MESSAGE, options) + '\n\n' + difference;
     }
   }
 
-  return diffMessage;
+  return difference;
 }
 
-// eslint-disable-next-line no-redeclare
-namespace diff {
-  export type DiffOptions = JestDiffOptions;
+function getFormatOptions(
+  formatOptions: PrettyFormatOptions,
+  options?: DiffOptions,
+): PrettyFormatOptions {
+  const {compareKeys} = normalizeDiffOptions(options);
+
+  return {
+    ...formatOptions,
+    compareKeys,
+  };
 }
 
-export = diff;
+function getObjectsDifference(
+  a: Record<string, any>,
+  b: Record<string, any>,
+  formatOptions: PrettyFormatOptions,
+  options?: DiffOptions,
+): string {
+  const formatOptionsZeroIndent = {...formatOptions, indent: 0};
+  const aCompare = prettyFormat(a, formatOptionsZeroIndent);
+  const bCompare = prettyFormat(b, formatOptionsZeroIndent);
+
+  if (aCompare === bCompare) {
+    return getCommonMessage(NO_DIFF_MESSAGE, options);
+  } else {
+    const aDisplay = prettyFormat(a, formatOptions);
+    const bDisplay = prettyFormat(b, formatOptions);
+
+    return diffLinesUnified2(
+      aDisplay.split('\n'),
+      bDisplay.split('\n'),
+      aCompare.split('\n'),
+      bCompare.split('\n'),
+      options,
+    );
+  }
+}

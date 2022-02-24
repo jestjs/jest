@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default (
-  globalToMutate: NodeJS.Global | Window,
+import type {Global} from '@jest/types';
+
+export default function setGlobal(
+  globalToMutate: typeof globalThis | Global.Global,
   key: string,
   value: unknown,
-) => {
-  // @ts-ignore: no index
+): void {
+  // @ts-expect-error: no index
   globalToMutate[key] = value;
-};
+}

@@ -1,18 +1,33 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "24.7.1",
-  "main": "build/jest.js",
-  "types": "build/jest.d.ts",
+  "version": "28.0.0-alpha.4",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/jest": "./bin/jest.js"
+  },
   "dependencies": {
-    "import-local": "^2.0.0",
-    "jest-cli": "^24.7.1"
+    "@jest/core": "^28.0.0-alpha.4",
+    "import-local": "^3.0.2",
+    "jest-cli": "^28.0.0-alpha.4"
   },
-  "bin": {
-    "jest": "./bin/jest.js"
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
   },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
+  },
+  "bin": "./bin/jest.js",
   "engines": {
-    "node": ">= 6"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "repository": {
     "type": "git",
@@ -48,6 +63,5 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

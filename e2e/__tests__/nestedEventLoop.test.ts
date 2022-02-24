@@ -9,5 +9,5 @@ import runJest from '../runJest';
 
 test('works with nested event loops', () => {
   const result = runJest('nested-event-loop');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

@@ -7,15 +7,13 @@
  */
 
 import throat from 'throat';
-import {Config} from '@jest/types';
-
-import {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 import git from './git';
 import hg from './hg';
+import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
 
-export {ChangedFiles, ChangedFilesPromise} from './types';
+export type {ChangedFiles, ChangedFilesPromise} from './types';
 
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value != null;
@@ -29,7 +27,7 @@ const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
-  roots: Array<Config.Path>,
+  roots: Array<string>,
   options: Options,
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
@@ -44,20 +42,20 @@ export const getChangedFilesForRoots = async (
     hg.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const changedFiles = (await Promise.all(
-    gitPromises.concat(hgPromises),
-  )).reduce((allFiles, changedFilesInTheRepo) => {
+  const changedFiles = (
+    await Promise.all(gitPromises.concat(hgPromises))
+  ).reduce((allFiles, changedFilesInTheRepo) => {
     for (const file of changedFilesInTheRepo) {
       allFiles.add(file);
     }
 
     return allFiles;
-  }, new Set());
+  }, new Set<string>());
 
   return {changedFiles, repos};
 };
 
-export const findRepos = async (roots: Array<Config.Path>): Promise<Repos> => {
+export const findRepos = async (roots: Array<string>): Promise<Repos> => {
   const gitRepos = await Promise.all(
     roots.reduce<Array<RootPromise>>(
       (promises, root) => promises.concat(findGitRoot(root)),

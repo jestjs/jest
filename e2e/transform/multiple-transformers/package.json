@@ -1,11 +1,17 @@
 {
   "jest": {
     "transform": {
-      "^.+\\.css$": "<rootDir>/cssPreprocessor.js",
-      "^.+\\.js$": "<rootDir>/jsPreprocessor.js",
-      "^.+\\.svg$": "<rootDir>/filePreprocessor.js"
+      "\\.css$": "<rootDir>/cssPreprocessor.js",
+      "\\.js$": "<rootDir>/jsPreprocessor.js",
+      "\\.svg$": "<rootDir>/filePreprocessor.js"
     },
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.0.0",

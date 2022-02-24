@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`printDiffOrStringify asymmetricMatcher array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    1,</>
+<d>    Any<Number>,</>
+<g>-   3,</>
+<r>+   2,</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    1,</>
+<d>    Any<Number>,</>
+<g>-   3,</>
+<r>+   2,</>
+<d>    [Circular],</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular map 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<d>  Map {</>
+<d>    "a" => 1,</>
+<d>    "b" => Any<Number>,</>
+<g>-   "c" => 3,</>
+<r>+   "c" => 2,</>
+<d>    "circular" => Map {</>
+<d>      "a" => 1,</>
+<d>      "b" => Any<Number>,</>
+<g>-     "c" => 3,</>
+<r>+     "c" => 2,</>
+<d>      "circular" => [Circular],</>
+<d>    },</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular object 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "a": [Circular],</>
+<d>    "b": Any<Number>,</>
+<g>-   "c": 3,</>
+<r>+   "c": 2,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher custom asymmetricMatcher 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "a": equal5<>,</>
+<g>-   "b": false,</>
+<r>+   "b": true,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher jest asymmetricMatcher 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "a": Any<Number>,</>
+<d>    "b": Anything,</>
+<d>    "c": ArrayContaining [</>
+<d>      1,</>
+<d>      3,</>
+<d>    ],</>
+<d>    "d": StringContaining "jest",</>
+<d>    "e": StringMatching /^jest/,</>
+<d>    "f": ObjectContaining {</>
+<d>      "a": Any<Date>,</>
+<d>    },</>
+<g>-   "g": true,</>
+<r>+   "g": false,</>
+<d>    Symbol(h): Any<String>,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher map 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Map {</>
+<d>    "a" => 1,</>
+<d>    "b" => Any<Number>,</>
+<g>-   "c" => 3,</>
+<r>+   "c" => 2,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher minimal test 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "a": Any<Number>,</>
+<g>-   "b": 2,</>
+<r>+   "b": 1,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher nested object 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "a": Any<Number>,</>
+<d>    "b": Object {</>
+<d>      "a": 1,</>
+<d>      "b": Any<Number>,</>
+<d>    },</>
+<g>-   "c": 2,</>
+<r>+   "c": 1,</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher object in array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    1,</>
+<d>    Object {</>
+<d>      "a": 1,</>
+<d>      "b": Any<Number>,</>
+<d>    },</>
+<g>-   3,</>
+<r>+   2,</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher transitive circular 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": 3,</>
+<r>+   "a": 2,</>
+<d>    "nested": Object {</>
+<d>      "b": Any<Number>,</>
+<d>      "parent": [Circular],</>
+<d>    },</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify expected and received are multi line with trailing spaces 1`] = `
+<g>- Expected  - 3</>
+<r>+ Received  + 3</>
+
+<g>- <i>delete</i><Y> </></>
+<r>+ <i>insert</i><Y> </></>
+<g>- common <i>expect</i>ed common</>
+<r>+ common <i>receiv</i>ed common</>
+<g>- <i>prev</i><Y> </></>
+<r>+ <i>next</i><Y> </></>
+`;
+
+exports[`printDiffOrStringify expected and received are single line with multiple changes 1`] = `
+Expected: <g>"<i>delete</i> common <i>expect</i>ed common <i>prev</i>"</>
+Received: <r>"<i>insert</i> common <i>receiv</i>ed common <i>next</i>"</>
+`;
+
+exports[`printDiffOrStringify expected is empty and received is single line 1`] = `
+Expected: <g>""</>
+Received: <r>"single line"</>
+`;
+
+exports[`printDiffOrStringify expected is multi line and received is empty 1`] = `
+Expected: <g>"multi</>
+<g>line"</>
+Received: <r>""</>
+`;
+
+exports[`printDiffOrStringify has no common after clean up chaff multiline 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<g>- delete</>
+<g>- two</>
+<r>+ insert</>
+<r>+ 2</>
+`;
+
+exports[`printDiffOrStringify has no common after clean up chaff one-line 1`] = `
+Expected: <g>"delete"</>
+Received: <r>"insert"</>
+`;
+
+exports[`printDiffOrStringify object contain readonly symbol key object 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "b": 2,</>
+<r>+   "b": 1,</>
+<d>    Symbol(key): Object {</>
+<d>      "a": 1,</>
+<d>    },</>
+<d>  }</>
+`;

@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'graceful-fs';
-import callsites, {CallSite} from 'callsites';
+import callsites = require('callsites');
+import {readFileSync} from 'graceful-fs';
 import {SourceMapConsumer} from 'source-map';
-import {SourceMapRegistry} from './types';
+import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
-  callsite: CallSite,
+  callsite: callsites.CallSite,
   consumer: SourceMapConsumer,
 ) => {
   const getLineNumber = callsite.getLineNumber;
@@ -46,20 +46,23 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
+export default function getCallsite(
+  level: number,
+  sourceMaps?: SourceMapRegistry | null,
+): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
 
   if (sourceMapFileName) {
     try {
-      const sourceMap = fs.readFileSync(sourceMapFileName, 'utf8');
-      // @ts-ignore: Not allowed to pass string
+      const sourceMap = readFileSync(sourceMapFileName, 'utf8');
+      // @ts-expect-error: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
 
   return stack;
-};
+}

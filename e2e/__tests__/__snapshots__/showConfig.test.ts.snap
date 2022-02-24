@@ -1,11 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--showConfig outputs config info and exits 1`] = `
-{
+"{
   "configs": [
     {
       "automock": false,
-      "browser": false,
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
@@ -13,49 +12,49 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "cwd": "<<REPLACED_ROOT_DIR>>",
-      "dependencyExtractor": null,
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
-      "filter": null,
+      "extensionsToTreatAsEsm": [],
       "forceCoverageMatch": [],
-      "globalSetup": null,
-      "globalTeardown": null,
       "globals": {},
       "haste": {
         "computeSha1": false,
-        "providesModuleNodeModules": [],
+        "enableSymlinks": false,
+        "forceNodeFilesystemAPI": true,
         "throwOnModuleCollision": false
       },
+      "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
       "moduleFileExtensions": [
         "js",
-        "json",
         "jsx",
         "ts",
         "tsx",
+        "json",
         "node"
       ],
-      "moduleNameMapper": {},
+      "moduleNameMapper": [],
       "modulePathIgnorePatterns": [],
       "name": "[md5 hash]",
       "prettierPath": "prettier",
       "resetMocks": false,
       "resetModules": false,
-      "resolver": null,
       "restoreMocks": false,
       "rootDir": "<<REPLACED_ROOT_DIR>>",
       "roots": [
         "<<REPLACED_ROOT_DIR>>"
       ],
-      "runner": "jest-runner",
+      "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
+      "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],
       "skipFilter": false,
+      "slowTestThreshold": 5,
       "snapshotSerializers": [],
-      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js",
+      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
@@ -66,17 +65,18 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js",
-      "testURL": "http://localhost",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
       "timers": "real",
       "transform": [
         [
-          "^.+\\\\.[jt]sx?$",
-          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js"
+          "\\\\.[jt]sx?$",
+          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
+          {}
         ]
       ],
       "transformIgnorePatterns": [
-        "/node_modules/"
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
       ],
       "watchPathIgnorePatterns": []
     }
@@ -84,46 +84,49 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "globalConfig": {
     "bail": 0,
     "changedFilesWithAncestor": false,
+    "ci": true,
     "collectCoverage": false,
-    "collectCoverageFrom": null,
+    "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
+    "coverageProvider": "babel",
     "coverageReporters": [
       "json",
       "text",
       "lcov",
       "clover"
     ],
-    "coverageThreshold": null,
     "detectLeaks": false,
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "expand": false,
-    "filter": null,
-    "globalSetup": null,
-    "globalTeardown": null,
+    "findRelatedTests": false,
+    "forceExit": false,
     "json": false,
+    "lastCommit": false,
     "listTests": false,
+    "logHeapUsage": false,
     "maxConcurrency": 5,
     "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
     "nonFlagArgs": [],
     "notify": false,
     "notifyMode": "failure-change",
+    "onlyChanged": false,
+    "onlyFailures": false,
     "passWithNoTests": false,
-    "projects": null,
+    "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
     "skipFilter": false,
     "testFailureExitCode": 1,
     "testPathPattern": "",
-    "testResultsProcessor": null,
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
-    "updateSnapshot": "all",
+    "updateSnapshot": "none",
     "useStderr": false,
-    "verbose": null,
     "watch": false,
+    "watchAll": false,
     "watchman": true
   },
   "version": "[version]"
-}
+}"
 `;

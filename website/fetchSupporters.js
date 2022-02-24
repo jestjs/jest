@@ -1,40 +1,55 @@
 #!/usr/bin/env node
 
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 const fs = require('fs');
-const request = require('request');
 const path = require('path');
+const {promisify} = require('util');
+const {gql, request} = require('graphql-request');
 
-const REQUIRED_KEYS = ['id'];
-
-request(
-  'https://opencollective.com/api/groups/jest/backers',
-  (err, response, body) => {
-    if (err) console.error('Failed to fetch backers: ', err);
-
-    // Basic validation
-    const content = JSON.parse(body);
-
-    if (!Array.isArray(content)) throw new Error('backer info is not an array');
-
-    for (const item of content) {
-      for (const key of REQUIRED_KEYS) {
-        if (!item || typeof item !== 'object')
-          throw new Error(
-            `backer info item (${JSON.stringify(item)} is not an object`
-          );
-        if (!(key in item))
-          throw new Error(
-            `backer info item (${JSON.stringify(item)} doesn't include ${key}`
-          );
+const graphqlQuery = gql`
+  {
+    account(slug: "jest") {
+      orders(status: ACTIVE, limit: 1000) {
+        nodes {
+          tier {
+            slug
+          }
+          fromAccount {
+            name
+            slug
+            website
+            imageUrl
+          }
+          totalDonations {
+            value
+          }
+        }
       }
     }
-
-    fs.writeFile(path.resolve(__dirname, 'backers.json'), body, err => {
-      if (err) {
-        console.error('Failed to write backers file: ', err);
-      } else console.log('Fetched 1 file: backers.json');
-    });
   }
-);
+`;
+
+const writeFile = promisify(fs.writeFile);
+
+request('https://api.opencollective.com/graphql/v2', graphqlQuery)
+  .then(data => {
+    const backers = data.account.orders.nodes;
+
+    return writeFile(
+      path.resolve(__dirname, 'backers.json'),
+      JSON.stringify(backers)
+    );
+  })
+  .then(() => {
+    console.log('Fetched 1 file: backers.json');
+  })
+  .catch(e => {
+    console.error('Failed to write backers file: ', e);
+    process.exitCode = 1;
+  });

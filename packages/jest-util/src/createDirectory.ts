@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import mkdirp from 'mkdirp';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
 
-export default function createDirectory(path: Config.Path) {
+export default function createDirectory(path: string): void {
   try {
-    mkdirp.sync(path, '777');
-  } catch (e) {
+    fs.mkdirSync(path, {recursive: true});
+  } catch (e: any) {
     if (e.code !== 'EEXIST') {
       throw e;
     }

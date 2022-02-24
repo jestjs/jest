@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {run} from '../Utils';
+import * as path from 'path';
+import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 const dir = path.resolve(__dirname, '../async-regenerator');
 
 beforeEach(() => {
-  run('yarn', dir);
+  runYarnInstall(dir);
 });
 
 test('successfully transpiles async', () => {

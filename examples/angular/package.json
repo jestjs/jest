@@ -1,0 +1,32 @@
+{
+  "name": "angular",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "jest"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^12.0.0",
+    "@angular/compiler": "^12.0.0",
+    "@angular/core": "^12.0.0",
+    "@angular/forms": "^12.0.0",
+    "@angular/platform-browser": "^12.0.0",
+    "@angular/platform-browser-dynamic": "^12.0.0",
+    "core-js": "^3.2.1",
+    "rxjs": "^7.3.0",
+    "tslib": "^2.0.0",
+    "typescript": "*",
+    "zone.js": "~0.11.3"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/plugin-proposal-decorators": "*",
+    "@babel/preset-env": "*",
+    "@babel/preset-typescript": "*",
+    "@types/jest": "*",
+    "babel-jest": "*",
+    "babel-plugin-transform-typescript-metadata": "*",
+    "jest": "*",
+    "jest-zone-patch": "*"
+  }
+}

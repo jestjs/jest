@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-import path from 'path';
+import * as path from 'path';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../empty-suite-error');

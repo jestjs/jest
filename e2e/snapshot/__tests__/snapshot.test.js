@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -24,14 +23,14 @@ describe('snapshot', () => {
     const test = {
       a: 43,
       b: '43',
-      c: 'fourtythree',
+      c: 'fortythree',
     };
     expect(test).toMatchSnapshot();
   });
 
   it('cannot be used with .not', () => {
     expect(() => expect('').not.toMatchSnapshot()).toThrow(
-      '.not cannot be used with snapshot matchers'
+      'Snapshot matchers cannot be used with not',
     );
   });
 

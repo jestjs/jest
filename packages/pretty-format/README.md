@@ -1,18 +1,9 @@
 # pretty-format
 
-> Stringify any JavaScript value.
+Stringify any JavaScript value.
 
-- Supports all built-in JavaScript types
-  - primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`, `undefined`
-  - other non-collection types: `Date`, `Error`, `Function`, `RegExp`
-  - collection types:
-    - `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
-    - `Map`, `Set`, `WeakMap`, `WeakSet`
-    - `Object`
-- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
-  - similar performance to `JSON.stringify` in v8
-  - significantly faster than `util.format` in Node.js
-- Serialize application-specific data types with built-in or user-defined plugins
+- Serialize built-in JavaScript types.
+- Serialize application-specific data types with built-in or user-defined plugins.
 
 ## Installation
 
@@ -23,11 +14,11 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const prettyFormat = require('pretty-format'); // CommonJS
+const {format: prettyFormat} = require('pretty-format'); // CommonJS
 ```
 
 ```js
-import prettyFormat from 'pretty-format'; // ES2015 modules
+import {format as prettyFormat} from 'pretty-format'; // ES2015 modules
 ```
 
 ```js
@@ -74,18 +65,22 @@ console.log(prettyFormat(onClick, options));
 */
 ```
 
-| key                 | type      | default    | description                                             |
-| :------------------ | :-------- | :--------- | :------------------------------------------------------ |
-| `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
-| `escapeRegex`       | `boolean` | `false`    | escape special characters in regular expressions        |
-| `escapeString`      | `boolean` | `true`     | escape special characters in strings                    |
-| `highlight`         | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
-| `indent`            | `number`  | `2`        | spaces in each level of indentation                     |
-| `maxDepth`          | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
-| `min`               | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
-| `plugins`           | `array`   | `[]`       | plugins to serialize application-specific data types    |
-| `printFunctionName` | `boolean` | `true`     | include or omit the name of a function                  |
-| `theme`             | `object`  |            | colors to highlight syntax in terminal                  |
+<!-- prettier-ignore -->
+| key                   | type      | default    | description                                             |
+| :-------------------- | :-------- | :--------- | :------------------------------------------------------ |
+| `callToJSON`          | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
+| `compareKeys`         | `function`| `undefined`| compare function used when sorting object keys          |
+| `escapeRegex`         | `boolean` | `false`    | escape special characters in regular expressions        |
+| `escapeString`        | `boolean` | `true`     | escape special characters in strings                    |
+| `highlight`           | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
+| `indent`              | `number`  | `2`        | spaces in each level of indentation                     |
+| `maxDepth`            | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
+| `maxWidth`            | `number`  | `Infinity` | number of elements to print in arrays, sets, and so on  |
+| `min`                 | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
+| `plugins`             | `array`   | `[]`       | plugins to serialize application-specific data types    |
+| `printBasicPrototype` | `boolean` | `false`    | print the prototype for plain objects and arrays        |
+| `printFunctionName`   | `boolean` | `true`     | include or omit the name of a function                  |
+| `theme`               | `object`  |            | colors to highlight syntax in terminal                  |
 
 Property values of `theme` are from [ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
 
@@ -108,21 +103,20 @@ The `pretty-format` package provides some built-in plugins, including:
 
 ```js
 // CommonJS
-const prettyFormat = require('pretty-format');
-const ReactElement = prettyFormat.plugins.ReactElement;
-const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
-
 const React = require('react');
 const renderer = require('react-test-renderer');
+const {format: prettyFormat, plugins} = require('pretty-format');
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
 // ES2015 modules and destructuring assignment
-import prettyFormat from 'pretty-format';
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
-
 import React from 'react';
 import renderer from 'react-test-renderer';
+import {plugins, format as prettyFormat} from 'pretty-format';
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
@@ -211,9 +205,11 @@ Write `serialize` to return a string, given the arguments:
 
 ### config
 
+<!-- prettier-ignore -->
 | key                 | type      | description                                             |
 | :------------------ | :-------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |
+| `compareKeys`       | `function`| compare function used when sorting object keys          |
 | `colors`            | `Object`  | escape codes for colors to highlight syntax             |
 | `escapeRegex`       | `boolean` | escape special characters in regular expressions        |
 | `escapeString`      | `boolean` | escape special characters in strings                    |
@@ -222,8 +218,8 @@ Write `serialize` to return a string, given the arguments:
 | `min`               | `boolean` | minimize added space: no indentation nor line breaks    |
 | `plugins`           | `array`   | plugins to serialize application-specific data types    |
 | `printFunctionName` | `boolean` | include or omit the name of a function                  |
-| `spacingInner`      | `strong`  | spacing to separate items in a list                     |
-| `spacingOuter`      | `strong`  | spacing to enclose a list of items                      |
+| `spacingInner`      | `string`  | spacing to separate items in a list                     |
+| `spacingOuter`      | `string`  | spacing to enclose a list of items                      |
 
 Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
 
@@ -237,7 +233,7 @@ Some properties in `config` are derived from `min` in `options`:
 
 ### Example of serialize and test
 
-This plugin is a pattern you can apply to serialize composite data types. Of course, `pretty-format` does not need a plugin to serialize arrays :)
+This plugin is a pattern you can apply to serialize composite data types. Side note: `pretty-format` does not need a plugin to serialize arrays.
 
 ```js
 // We reused more code when we factored out a function for child items

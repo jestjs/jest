@@ -5,15 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import * as path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
-
-skipSuiteOnWindows();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -28,12 +24,14 @@ test('CLI accepts exact file names if matchers matched', () => {
 
   const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.spec.js']);
 
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 
-  const {rest, summary} = extractSummary(result.stderr);
+  const {rest, summary} = extractSummary(
+    result.stderr.replace('\\\\foo\\\\bar', '\\/foo\\/bar'),
+  );
 
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(result.stdout).toBe('');
 });
 
@@ -47,7 +45,7 @@ test('CLI skips exact file names if no matchers matched', () => {
 
   const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.js']);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
   expect(result.stdout).toMatch(/No tests found([\S\s]*)2 files checked./);
   expect(result.stderr).toEqual('');
 });

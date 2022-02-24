@@ -8,7 +8,7 @@
 import runJest from '../runJest';
 
 test('mock works with generator', () => {
-  const {status} = runJest('generator-mock');
+  const {exitCode} = runJest('generator-mock');
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

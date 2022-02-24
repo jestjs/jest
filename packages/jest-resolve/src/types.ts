@@ -5,22 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-
 export type ResolverConfig = {
-  browser?: boolean;
   defaultPlatform?: string | null;
   extensions: Array<string>;
   hasCoreModules: boolean;
   moduleDirectories: Array<string>;
   moduleNameMapper?: Array<ModuleNameMapperConfig> | null;
-  modulePaths: Array<Config.Path>;
+  modulePaths?: Array<string>;
   platforms?: Array<string>;
-  resolver?: Config.Path | null;
-  rootDir: Config.Path;
+  resolver?: string | null;
+  rootDir: string;
 };
 
 type ModuleNameMapperConfig = {
   regex: RegExp;
-  moduleName: string;
+  moduleName: string | Array<string>;
 };

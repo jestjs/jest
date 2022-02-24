@@ -44,9 +44,20 @@ Watch Usage
  › Press f to run only failed tests.
  › Press t to filter by a test name regex pattern.
  › Press q to quit watch mode.
- › Press p to custom \\"P\\" plugin.
+ › Press p to custom "P" plugin.
  › Press Enter to trigger a test run.
 ",
+]
+`;
+
+exports[`Watch mode flows makes watch plugin initialization errors look nice 1`] = `
+[Error: Failed to initialize watch plugin "packages/jest-core/src/__tests__/__fixtures__/watchPluginThrows":
+
+  ● Test suite failed to run
+
+    initialization error
+
+      at Object.<anonymous> (__fixtures__/watchPluginThrows.js:8:7)
 ]
 `;
 

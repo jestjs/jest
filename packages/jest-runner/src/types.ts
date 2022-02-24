@@ -5,27 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
-import HasteResolver from 'jest-resolve';
-import Runtime from 'jest-runtime';
+import type Emittery = require('emittery');
+import type {JestEnvironment} from '@jest/environment';
+import type {
+  SerializableError,
+  Test,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type RuntimeType from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
-export type Test = {
-  context: Context;
-  duration?: number;
-  path: Config.Path;
-};
-
-export type Context = {
-  config: Config.ProjectConfig;
-  hasteFS: HasteFS;
-  moduleMap: ModuleMap;
-  resolver: HasteResolver;
-};
 
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
@@ -41,29 +32,30 @@ export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
-  runtime: Runtime,
+  runtime: RuntimeType,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
   serial: boolean;
 };
 
+// make sure all props here are present in the type below it as well
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export type TestRunnerSerializedContext = {
-  changedFiles?: Array<Config.Path>;
+  changedFiles?: Array<string>;
+  sourcesRelatedToTestsInChangedFiles?: Array<string>;
 };
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
-export type WatcherState = {
-  interrupted: boolean;
-};
-export interface TestWatcher extends EventEmitter {
+type WatcherState = {interrupted: boolean};
+export interface TestWatcher extends Emittery<{change: WatcherState}> {
   state: WatcherState;
-  new ({isWatchMode}: {isWatchMode: boolean}): TestWatcher;
   setState(state: WatcherState): void;
   isInterrupted(): boolean;
   isWatchMode(): boolean;

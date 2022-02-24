@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 
 // rootDir and filename must be absolute paths (resolved)
 export function relative(rootDir: string, filename: string): string {
   return filename.indexOf(rootDir + path.sep) === 0
-    ? filename.substr(rootDir.length + 1)
+    ? filename.substring(rootDir.length + 1)
     : path.relative(rootDir, filename);
 }
 

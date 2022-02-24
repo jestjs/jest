@@ -5,24 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch-mode-patterns');
+const DIR = path.resolve(tmpdir(), 'watch-mode-patterns');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => val.replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replace(/\[s\[u/g, '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
-const setupFiles = input => {
+const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
     '__tests__/bar.spec.js': `
       test('bar 1', () => { expect('bar').toBe('bar'); });
@@ -45,38 +44,36 @@ test('can press "p" to filter by file name', () => {
   const input = [{keys: ['p', 'b', 'a', 'r', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stdout, stderr} = runJest(DIR, [
+  const {exitCode, stdout, stderr} = runJest(DIR, [
     '--no-watchman',
     '--watchAll',
   ]);
   const results = extractSummaries(stderr);
 
-  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('can press "t" to filter by test name', () => {
   const input = [{keys: ['t', '2', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stdout, stderr} = runJest(DIR, [
+  const {exitCode, stdout, stderr} = runJest(DIR, [
     '--no-watchman',
     '--watchAll',
   ]);
   const results = extractSummaries(stderr);
 
-  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

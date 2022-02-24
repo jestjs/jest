@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {StackData} from 'stack-utils';
+import type {StackData} from 'stack-utils';
 
 export interface Frame extends StackData {
   file: string;

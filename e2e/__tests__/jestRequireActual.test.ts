@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'jest-require-actual-test');
+const DIR = path.resolve(tmpdir(), 'jest-require-actual-test');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -23,8 +23,8 @@ test('understands dependencies using jest.requireActual', () => {
 
       test('a', () => {});
     `,
-    '__tests__/b.test.js': `test('b', () => {});`,
-    'a.js': `module.exports = {}`,
+    '__tests__/b.test.js': "test('b', () => {});",
+    'a.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {}}),
   });
 

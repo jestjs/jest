@@ -1,37 +1,38 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import crypto from 'crypto';
-import {sync as spawnSync, ExecaReturns} from 'execa';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import {createHash} from 'crypto';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
 
-const CIRCUS_PATH = require.resolve('../../build');
-const CIRCUS_RUN_PATH = require.resolve('../../build/run');
-const CIRCUS_STATE_PATH = require.resolve('../../build/state');
-const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
-const BABEL_REGISTER_PATH = require.resolve('@babel/register');
+const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
+const CIRCUS_RUN_PATH = require
+  .resolve('../../build/run')
+  .replace(/\\/g, '\\\\');
+const CIRCUS_STATE_PATH = require
+  .resolve('../../build/state')
+  .replace(/\\/g, '\\\\');
+const TEST_EVENT_HANDLER_PATH = require
+  .resolve('./testEventHandler')
+  .replace(/\\/g, '\\\\');
+const BABEL_REGISTER_PATH = require
+  .resolve('@babel/register')
+  .replace(/\\/g, '\\\\');
 
-skipSuiteOnWindows();
-
-interface Result extends ExecaReturns {
+interface Result extends ExecaSyncReturnValue {
   status: number;
   error: string;
 }
 
 export const runTest = (source: string) => {
-  const filename = crypto
-    .createHash('md5')
-    .update(source)
-    .digest('hex');
-  const tmpFilename = path.join(os.tmpdir(), filename);
+  const filename = createHash('md5').update(source).digest('hex');
+  const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});
@@ -60,7 +61,7 @@ export const runTest = (source: string) => {
   }) as Result;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `

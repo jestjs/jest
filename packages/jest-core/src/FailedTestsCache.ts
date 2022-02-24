@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
+import type {Test, TestResult} from '@jest/test-result';
 
-type TestMap = {[key: string]: {[key: string]: boolean}};
+type TestMap = Record<string, Record<string, boolean>>;
 
 export default class FailedTestsCache {
   private _enabledTestsMap?: TestMap;
@@ -23,31 +21,19 @@ export default class FailedTestsCache {
     return tests.filter(testResult => enabledTestsMap[testResult.path]);
   }
 
-  setTestResults(testResults: Array<TestResult>) {
+  setTestResults(testResults: Array<TestResult>): void {
     this._enabledTestsMap = (testResults || [])
       .filter(testResult => testResult.numFailingTests)
       .reduce<TestMap>((suiteMap, testResult) => {
         suiteMap[testResult.testFilePath] = testResult.testResults
           .filter(test => test.status === 'failed')
-          .reduce(
-            (testMap, test) => {
-              testMap[test.fullName] = true;
-              return testMap;
-            },
-            {} as {[name: string]: true},
-          );
+          .reduce<{[name: string]: true}>((testMap, test) => {
+            testMap[test.fullName] = true;
+            return testMap;
+          }, {});
         return suiteMap;
       }, {});
 
     this._enabledTestsMap = Object.freeze(this._enabledTestsMap);
-  }
-
-  updateConfig(globalConfig: Config.GlobalConfig): Config.GlobalConfig {
-    if (!this._enabledTestsMap) {
-      return globalConfig;
-    }
-    const newConfig: Config.GlobalConfig = {...globalConfig};
-    newConfig.enabledTestsMap = this._enabledTestsMap;
-    return Object.freeze(newConfig);
   }
 }

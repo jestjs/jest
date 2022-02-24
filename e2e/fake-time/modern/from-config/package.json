@@ -1,0 +1,6 @@
+{
+  "jest": {
+    "timers": "fake",
+    "testEnvironment": "node"
+  }
+}

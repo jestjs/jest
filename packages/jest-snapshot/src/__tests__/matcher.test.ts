@@ -5,16 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestSnapshot from '../';
+import {toMatchSnapshot} from '../';
 
-const {toMatchSnapshot} = jestSnapshot;
-
-it(`matcher returns matcher name, expected and actual values`, () => {
+it('matcher returns matcher name, expected and actual values', () => {
   const actual = 'a';
   const expected = 'b';
   const matcher = toMatchSnapshot.bind({
     snapshotState: {
-      match: (_testName: string, _received: any) => ({actual, expected}),
+      match: (_testName: string, _received: unknown) => ({actual, expected}),
     },
   });
 

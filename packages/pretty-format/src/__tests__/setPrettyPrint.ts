@@ -6,19 +6,23 @@
  */
 
 import prettyFormat from '../';
-import {OptionsReceived, Plugins} from '../types';
+import type {OptionsReceived, Plugins} from '../types';
 
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toPrettyPrintTo(expected: any, options?: OptionsReceived): R;
+      toPrettyPrintTo(expected: unknown, options?: OptionsReceived): R;
     }
   }
 }
 
 const setPrettyPrint = (plugins: Plugins) => {
   expect.extend({
-    toPrettyPrintTo(received: any, expected: any, options?: OptionsReceived) {
+    toPrettyPrintTo(
+      received: unknown,
+      expected: unknown,
+      options?: OptionsReceived,
+    ) {
       const prettyFormatted = prettyFormat(received, {plugins, ...options});
       const pass = prettyFormatted === expected;
 
@@ -26,9 +30,9 @@ const setPrettyPrint = (plugins: Plugins) => {
         ? () =>
             this.utils.matcherHint('.not.toBe') +
             '\n\n' +
-            `Expected value to not be:\n` +
+            'Expected value to not be:\n' +
             `  ${this.utils.printExpected(expected)}\n` +
-            `Received:\n` +
+            'Received:\n' +
             `  ${this.utils.printReceived(prettyFormatted)}`
         : () => {
             const diffString = this.utils.diff(expected, prettyFormatted, {
@@ -37,9 +41,9 @@ const setPrettyPrint = (plugins: Plugins) => {
             return (
               this.utils.matcherHint('.toBe') +
               '\n\n' +
-              `Expected value to be:\n` +
+              'Expected value to be:\n' +
               `  ${this.utils.printExpected(expected)}\n` +
-              `Received:\n` +
+              'Received:\n' +
               `  ${this.utils.printReceived(prettyFormatted)}` +
               (diffString ? `\n\nDifference:\n\n${diffString}` : '')
             );
