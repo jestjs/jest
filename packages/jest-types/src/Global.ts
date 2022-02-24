@@ -31,6 +31,7 @@ export type GeneratorReturningTestFn = (
 export type NameLike = number | Function;
 
 export type TestName = string;
+export type TestNameLike = TestName | NameLike;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
@@ -68,19 +69,19 @@ export interface HookBase {
 }
 
 export interface ItBase {
-  (testName: TestName, fn: TestFn, timeout?: number): void;
-  each: Each<TestFn, TestName>;
+  (testName: TestNameLike, fn: TestFn, timeout?: number): void;
+  each: Each<TestFn, TestNameLike>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName) => void;
+  todo: (testName: TestNameLike) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
-  each: Each<ConcurrentTestFn, TestName>;
+  (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
+  each: Each<ConcurrentTestFn, TestNameLike>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
@@ -94,7 +95,7 @@ export interface ItConcurrent extends It {
 
 export interface DescribeBase {
   (blockName: BlockNameLike, blockFn: BlockFn): void;
-  each: Each<BlockFn, BlockNameLike | TestName>;
+  each: Each<BlockFn, BlockNameLike | TestNameLike>;
 }
 
 export interface Describe extends DescribeBase {

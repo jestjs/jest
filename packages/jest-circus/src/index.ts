@@ -108,22 +108,22 @@ const afterAll: THook = (fn, timeout) =>
 
 const test: Global.It = (() => {
   const test = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
   ): void => _addTest(testName, undefined, fn, test, timeout);
   const skip = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn?: Circus.TestFn,
     timeout?: number,
   ): void => _addTest(testName, 'skip', fn, skip, timeout);
   const only = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
   ): void => _addTest(testName, 'only', fn, test.only, timeout);
 
-  test.todo = (testName: Circus.TestName, ...rest: Array<any>): void => {
+  test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
       throw new ErrorWithStack(
         'Todo must be called with only a description.',
@@ -134,11 +134,11 @@ const test: Global.It = (() => {
   };
 
   const _addTest = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     mode: Circus.TestMode,
     fn: Circus.TestFn | undefined,
     testFn: (
-      testName: Circus.TestName,
+      testName: Circus.TestNameLike,
       fn: Circus.TestFn,
       timeout?: number,
     ) => void,

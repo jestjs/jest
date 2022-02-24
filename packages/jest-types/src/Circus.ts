@@ -16,6 +16,7 @@ export type BlockNameLike = Global.BlockNameLike;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
+export type TestNameLike = Global.TestNameLike;
 export type TestFn = Global.TestFn;
 export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;

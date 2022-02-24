@@ -100,7 +100,7 @@ function promisifyLifeCycleFunction(
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -108,7 +108,7 @@ function promisifyIt(
   jasmine: Jasmine,
 ) {
   return function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn?: (done: DoneFn) => void | PromiseLike<void>,
     timeout?: number,
   ): Spec {
@@ -183,7 +183,7 @@ function promisifyIt(
 
 function makeConcurrent(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -191,7 +191,7 @@ function makeConcurrent(
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
