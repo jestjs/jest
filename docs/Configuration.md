@@ -375,23 +375,6 @@ Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field 
 }
 ```
 
-### `extraGlobals` \[array&lt;string&gt;]
-
-Default: `undefined`
-
-Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
-
-For example, if your tests call `Math` often, you can pass it by setting `extraGlobals`.
-
-```json
-{
-  ...
-  "jest": {
-    "extraGlobals": ["Math"]
-  }
-}
-```
-
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 
 Default: `['']`
@@ -906,6 +889,35 @@ async function runTests(
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
+
+### `sandboxInjectedGlobals` \[array&lt;string&gt;]
+
+:::tip
+
+Renamed from `extraGlobals` in Jest 28.
+
+:::
+
+Default: `undefined`
+
+Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
+
+For example, if your tests call `Math` often, you can pass it by setting `sandboxInjectedGlobals`.
+
+```json
+{
+  ...
+  "jest": {
+    "sandboxInjectedGlobals": ["Math"]
+  }
+}
+```
+
+:::note
+
+This option has no effect if you use [native ESM](ECMAScriptModules.md).
+
+:::
 
 ### `setupFiles` \[array]
 

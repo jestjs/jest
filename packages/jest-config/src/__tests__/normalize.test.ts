@@ -1936,3 +1936,39 @@ describe('testURL', () => {
     expect(console.warn).toMatchSnapshot();
   });
 });
+
+describe('extraGlobals', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `extraGlobals` is used', async () => {
+    await normalize(
+      {
+        extraGlobals: ['Math'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('moduleLoader', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `moduleLoader` is used', async () => {
+    await normalize(
+      {
+        moduleLoader: '<rootDir>/runtime.js',
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
