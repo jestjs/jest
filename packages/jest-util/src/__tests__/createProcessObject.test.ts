@@ -102,6 +102,6 @@ it('checks that process.env works as expected in Windows platforms', () => {
   // You can delete through case-insensitiveness too.
   delete fake.prop_string;
 
-  expect(fake.hasOwnProperty('PROP_STRING')).toBe(false);
-  expect(fake.hasOwnProperty('PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
 });

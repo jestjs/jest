@@ -5,14 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock(require.resolve('prettier'), () => require('../__mocks__/prettier'));
-
 import {tmpdir} from 'os';
 import * as path from 'path';
-const prettier = require(require.resolve('prettier'));
 import * as fs from 'graceful-fs';
-import {Frame} from 'jest-message-util';
+import prettier = require('prettier');
+import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
+
+jest.mock('prettier', () => {
+  const realPrettier: typeof import('prettier') =
+    jest.requireActual('prettier');
+  const mockPrettier: typeof import('prettier') = {
+    format: (text, opts) =>
+      realPrettier.format(text, {
+        pluginSearchDirs: [
+          require('path').dirname(require.resolve('prettier')),
+        ],
+        ...opts,
+      }),
+    getFileInfo: {sync: () => ({inferredParser: 'babel'})},
+    resolveConfig: {sync: jest.fn()},
+    version: realPrettier.version,
+  };
+  return mockPrettier;
+});
 
 let dir;
 beforeEach(() => {

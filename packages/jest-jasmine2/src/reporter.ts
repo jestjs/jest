@@ -26,12 +26,12 @@ export default class Jasmine2Reporter implements Reporter {
   private _resolve: any;
   private _resultsPromise: Promise<TestResult>;
   private _startTimes: Map<string, Microseconds>;
-  private _testPath: Config.Path;
+  private _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
-    testPath: Config.Path,
+    testPath: string,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;

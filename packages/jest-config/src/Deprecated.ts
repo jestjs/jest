@@ -92,6 +92,14 @@ const deprecatedOptions: DeprecatedOptions = {
 
   Please update your configuration.
   `,
+
+  testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(
+    '"testURL"',
+  )} was replaced by passing the URL via ${chalk.bold(
+    '"testEnvironmentOptions.url"',
+  )}.
+
+  Please update your configuration.`,
 };
 
 export default deprecatedOptions;

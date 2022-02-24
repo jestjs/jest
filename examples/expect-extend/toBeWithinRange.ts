@@ -48,9 +48,9 @@ expect.extend({
 
 declare module 'expect' {
   interface AsymmetricMatchers {
-    toBeWithinRange(a: number, b: number): void;
+    toBeWithinRange(floor: number, ceiling: number): void;
   }
   interface Matchers<R> {
-    toBeWithinRange(a: number, b: number): R;
+    toBeWithinRange(floor: number, ceiling: number): R;
   }
 }

@@ -38,6 +38,9 @@ module.exports = {
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+          ],
         },
         blog: {
           path: 'blog',
@@ -54,6 +57,11 @@ module.exports = {
         },
         gtag: {
           trackingID: 'UA-44373548-17',
+        },
+        pages: {
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+          ],
         },
       },
     ],

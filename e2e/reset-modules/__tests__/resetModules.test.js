@@ -6,8 +6,7 @@
  */
 'use strict';
 
-// eslint-disable-next-line no-undef
-global.testObject = new Proxy(
+globalThis.testObject = new Proxy(
   {},
   {
     get: function getter(target, key) {

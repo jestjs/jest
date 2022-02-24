@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Global} from '@jest/types';
+
 export default function setGlobal(
-  globalToMutate: typeof globalThis,
+  globalToMutate: typeof globalThis | Global.Global,
   key: string,
   value: unknown,
 ): void {

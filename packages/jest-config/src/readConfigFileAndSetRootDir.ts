@@ -24,7 +24,7 @@ import {
 // 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
-  configPath: Config.Path,
+  configPath: string,
 ): Promise<Config.InitialOptions> {
   const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
@@ -81,7 +81,7 @@ let registerer: Service;
 
 // Load the TypeScript configuration
 const loadTSConfigFile = async (
-  configPath: Config.Path,
+  configPath: string,
 ): Promise<Config.InitialOptions> => {
   // Register TypeScript compiler instance
   await registerTsNode();

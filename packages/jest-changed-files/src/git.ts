@@ -8,13 +8,12 @@
 
 import * as path from 'path';
 import execa = require('execa');
-import type {Config} from '@jest/types';
 import type {SCMAdapter} from './types';
 
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
-  cwd: Config.Path,
-): Promise<Array<Config.Path>> => {
+  cwd: string,
+): Promise<Array<string>> => {
   let result: execa.ExecaReturnValue;
 
   try {

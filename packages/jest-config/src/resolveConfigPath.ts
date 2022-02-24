@@ -9,23 +9,22 @@ import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
-import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } from './constants';
 
-const isFile = (filePath: Config.Path) =>
+const isFile = (filePath: string) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
 export default function resolveConfigPath(
-  pathToResolve: Config.Path,
-  cwd: Config.Path,
+  pathToResolve: string,
+  cwd: string,
   skipMultipleConfigWarning = false,
-): Config.Path {
+): string {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -64,11 +63,11 @@ export default function resolveConfigPath(
 }
 
 const resolveConfigPathByTraversing = (
-  pathToResolve: Config.Path,
-  initialPath: Config.Path,
-  cwd: Config.Path,
+  pathToResolve: string,
+  initialPath: string,
+  cwd: string,
   skipMultipleConfigWarning: boolean,
-): Config.Path => {
+): string => {
   const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
   ).filter(isFile);
@@ -101,7 +100,7 @@ const resolveConfigPathByTraversing = (
   );
 };
 
-const findPackageJson = (pathToResolve: Config.Path) => {
+const findPackageJson = (pathToResolve: string) => {
   const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
   if (isFile(packagePath)) {
     return packagePath;
@@ -110,7 +109,7 @@ const findPackageJson = (pathToResolve: Config.Path) => {
   return undefined;
 };
 
-const hasPackageJsonJestKey = (packagePath: Config.Path) => {
+const hasPackageJsonJestKey = (packagePath: string) => {
   const content = fs.readFileSync(packagePath, 'utf8');
   try {
     return 'jest' in JSON.parse(content);
@@ -120,10 +119,7 @@ const hasPackageJsonJestKey = (packagePath: Config.Path) => {
   }
 };
 
-const makeResolutionErrorMessage = (
-  initialPath: Config.Path,
-  cwd: Config.Path,
-) =>
+const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>
   'Could not find a config file based on provided values:\n' +
   `path: "${initialPath}"\n` +
   `cwd: "${cwd}"\n` +
@@ -133,7 +129,7 @@ const makeResolutionErrorMessage = (
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
 
-function extraIfPackageJson(configPath: Config.Path) {
+function extraIfPackageJson(configPath: string) {
   if (configPath.endsWith(PACKAGE_JSON)) {
     return '`jest` key in ';
   }
@@ -141,7 +137,7 @@ function extraIfPackageJson(configPath: Config.Path) {
   return '';
 }
 
-const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
+const makeMultipleConfigsWarning = (configPaths: Array<string>) =>
   chalk.yellow(
     [
       chalk.bold('\u25cf Multiple configurations found:'),

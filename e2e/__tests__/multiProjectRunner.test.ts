@@ -353,10 +353,10 @@ test('resolves projects and their <rootDir> properly', () => {
       testEnvironment: 'node',
     }),
     'project1/__tests__/test.test.js':
-      "test('project1', () => expect(global.project1).toBe(true))",
+      "test('project1', () => expect(globalThis.project1).toBe(true))",
     'project1/project1_setup.js': 'global.project1 = true;',
     'project2/__tests__/test.test.js':
-      "test('project2', () => expect(global.project2).toBe(true))",
+      "test('project2', () => expect(globalThis.project2).toBe(true))",
     'project2/project2.conf.json': JSON.stringify({
       name: 'project2',
       rootDir: '../', // root dir is set to the top level

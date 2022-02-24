@@ -480,7 +480,7 @@ describe('FakeTimers', () => {
       const mock4 = jest.fn(() => runOrder.push('mock4'));
       const mock5 = jest.fn(() => runOrder.push('mock5'));
       const mock6 = jest.fn(() => runOrder.push('mock6'));
-      const mockAnimatioNFrame = jest.fn(() => runOrder.push('animationFrame'));
+      const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, NaN);
@@ -491,7 +491,7 @@ describe('FakeTimers', () => {
       }, 200);
       global.setTimeout(mock5, Infinity);
       global.setTimeout(mock6, -Infinity);
-      global.requestAnimationFrame(mockAnimatioNFrame);
+      global.requestAnimationFrame(mockAnimationFrame);
 
       timers.runAllTimers();
       expect(runOrder).toEqual([
@@ -514,7 +514,7 @@ describe('FakeTimers', () => {
           rootDir: __dirname,
           testMatch: [],
         },
-        global,
+        global: globalThis,
         moduleMocker,
         timerConfig,
       });
@@ -1511,16 +1511,16 @@ describe('FakeTimers', () => {
     it('returns the correct count', () => {
       const timers = new FakeTimers({
         config,
-        global,
+        global: globalThis,
         moduleMocker,
         timerConfig,
       });
 
       timers.useFakeTimers();
 
-      global.setTimeout(() => {}, 0);
-      global.setTimeout(() => {}, 0);
-      global.setTimeout(() => {}, 10);
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setTimeout(() => {}, 10);
 
       expect(timers.getTimerCount()).toEqual(3);
 
@@ -1536,15 +1536,15 @@ describe('FakeTimers', () => {
     it('includes immediates and ticks', () => {
       const timers = new FakeTimers({
         config,
-        global,
+        global: globalThis,
         moduleMocker,
         timerConfig,
       });
 
       timers.useFakeTimers();
 
-      global.setTimeout(() => {}, 0);
-      global.setImmediate(() => {});
+      globalThis.setTimeout(() => {}, 0);
+      globalThis.setImmediate(() => {});
       process.nextTick(() => {});
 
       expect(timers.getTimerCount()).toEqual(3);
@@ -1553,14 +1553,14 @@ describe('FakeTimers', () => {
     it('not includes cancelled immediates', () => {
       const timers = new FakeTimers({
         config,
-        global,
+        global: globalThis,
         moduleMocker,
         timerConfig,
       });
 
       timers.useFakeTimers();
 
-      global.setImmediate(() => {});
+      globalThis.setImmediate(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();
 

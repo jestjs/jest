@@ -19,8 +19,6 @@ import type {Frame} from './types';
 
 export type {Frame} from './types';
 
-type Path = Config.Path;
-
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 
@@ -127,7 +125,7 @@ export const formatExecError = (
   error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
   reuseMessage?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
@@ -238,7 +236,7 @@ const removeInternalStackEntries = (
 
 const formatPaths = (
   config: StackTraceConfig,
-  relativeTestPath: Path | null,
+  relativeTestPath: string | null,
   line: string,
 ) => {
   // Extract the file path from the trace line.
@@ -288,7 +286,7 @@ export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string => {
   const lines = getStackTraceLines(stack, options);
   let renderedCallsite = '';
@@ -337,7 +335,7 @@ export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {

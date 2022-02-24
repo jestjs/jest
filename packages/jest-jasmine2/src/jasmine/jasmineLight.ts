@@ -42,6 +42,14 @@ import SpyRegistry from './spyRegistry';
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
+declare global {
+  namespace NodeJS {
+    interface Global {
+      [testTimeoutSymbol]: number;
+    }
+  }
+}
+
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
@@ -49,12 +57,12 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
     configurable: true,
     enumerable: true,
     get() {
-      return (
-        (global as any)[testTimeoutSymbol] || createOptions.testTimeout || 5000
-      );
+      // eslint-disable-next-line no-restricted-globals
+      return global[testTimeoutSymbol] || createOptions.testTimeout || 5000;
     },
     set(value) {
-      (global as any)[testTimeoutSymbol] = value;
+      // eslint-disable-next-line no-restricted-globals
+      global[testTimeoutSymbol] = value;
     },
   });
 

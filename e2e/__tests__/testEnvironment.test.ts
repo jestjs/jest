@@ -23,7 +23,7 @@ it('respects testEnvironment docblock', () => {
   const {json: result} = runWithJson('test-environment');
 
   expect(result.success).toBe(true);
-  expect(result.numTotalTests).toBe(3);
+  expect(result.numTotalTests).toBe(4);
 });
 
 it('handles missing `mocked` property', () => {
@@ -50,7 +50,7 @@ it('handles missing `mocked` property', () => {
       jest.mocked();
 
       test('halla', () => {
-        expect(global.thing).toBe('nope');
+        expect(globalThis.thing).toBe('nope');
       });
     `,
   });

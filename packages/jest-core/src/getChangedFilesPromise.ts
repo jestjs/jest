@@ -15,7 +15,7 @@ export default function getChangedFilesPromise(
   configs: Array<Config.ProjectConfig>,
 ): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
+    const allRootsForAllProjects = configs.reduce<Array<string>>(
       (roots, config) => {
         if (config.roots) {
           roots.push(...config.roots);

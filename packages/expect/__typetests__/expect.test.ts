@@ -8,16 +8,15 @@
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
-  type MatcherFunction,
-  type MatcherFunctionWithState,
-  type MatcherState,
-  type Matchers,
+  MatcherFunction,
+  MatcherFunctionWithState,
+  MatcherState,
+  Matchers,
   expect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
-type M = Matchers<void, unknown>;
-type N = Matchers<void>;
+type M = Matchers<void>;
 
 expectError(() => {
   type E = Matchers;
@@ -211,3 +210,7 @@ const customStateAndExpected: MatcherFunctionWithState<
 };
 
 expectAssignable<CustomStateAndExpected>(customStateAndExpected);
+
+expectError(() => {
+  expect({}).toMatchSnapshot();
+});

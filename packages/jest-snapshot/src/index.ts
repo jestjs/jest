@@ -42,6 +42,7 @@ export {
 } from './SnapshotResolver';
 export type {SnapshotResolver} from './SnapshotResolver';
 export {default as SnapshotState} from './State';
+export type {SnapshotMatchers} from './types';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(
@@ -113,7 +114,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
+const fileExists = (filePath: string, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 export const cleanup = (
@@ -158,8 +159,8 @@ export const cleanup = (
 
 export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
   received: unknown,
-  propertiesOrHint?: object | Config.Path,
-  hint?: Config.Path,
+  propertiesOrHint?: object | string,
+  hint?: string,
 ) {
   const matcherName = 'toMatchSnapshot';
   let properties;

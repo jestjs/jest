@@ -16,8 +16,8 @@ export interface ShouldInstrumentOptions
     | 'collectCoverageOnlyFrom'
     | 'coverageProvider'
   > {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 }
 
 export interface Options
@@ -80,25 +80,25 @@ export interface SyncTransformer<OptionType = unknown> {
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
@@ -115,25 +115,25 @@ export interface AsyncTransformer<OptionType = unknown> {
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }

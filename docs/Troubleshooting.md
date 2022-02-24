@@ -140,7 +140,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `globalThis.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
@@ -161,6 +161,8 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
+
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
 
 ```bash
 # Using Jest CLI

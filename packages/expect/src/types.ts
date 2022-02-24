@@ -7,7 +7,6 @@
  */
 
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
@@ -35,8 +34,8 @@ export type RawMatcherFn<State extends MatcherState = MatcherState> = {
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
-export type MatchersObject<T extends MatcherState = MatcherState> = {
-  [name: string]: RawMatcherFn<T>;
+export type MatchersObject = {
+  [name: string]: RawMatcherFn;
 };
 
 export type ThrowingMatcherFn = (actual: any) => void;
@@ -56,19 +55,19 @@ export interface MatcherState {
   isNot: boolean;
   promise: string;
   suppressedErrors: Array<Error>;
-  testPath?: Config.Path;
+  testPath?: string;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
 }
 
-export interface AsymmetricMatcher {
+export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
   toString(): string;
   getExpectedType?(): string;
   toAsymmetricMatcher?(): string;
-}
+};
 
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
@@ -76,27 +75,28 @@ export type ExpectedAssertionsErrors = Array<{
   expected: string;
 }>;
 
-export type Expect<State extends MatcherState = MatcherState> = {
-  <T = unknown>(actual: T): Matchers<void, T> &
-    InverseMatchers<void, T> &
-    PromiseMatchers<T>;
-  // TODO: this is added by test runners, not `expect` itself
-  addSnapshotSerializer(serializer: unknown): void;
+export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
-  // TODO: remove this `T extends` - should get from some interface merging
-  extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
+  extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
-  getState(): State;
+  getState(): MatcherState;
   hasAssertions(): void;
-  setState(state: Partial<State>): void;
-} & AsymmetricMatchers &
-  InverseAsymmetricMatchers;
+  setState(state: Partial<MatcherState>): void;
+}
 
-type InverseAsymmetricMatchers = {
+export type Expect = {
+  <T = unknown>(actual: T): Matchers<void> &
+    Inverse<Matchers<void>> &
+    PromiseMatchers;
+} & BaseExpect &
+  AsymmetricMatchers &
+  Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
+
+type Inverse<Matchers> = {
   /**
    * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
    */
-  not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
+  not: Matchers;
 };
 
 export interface AsymmetricMatchers {
@@ -109,28 +109,21 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type PromiseMatchers<T = unknown> = {
+type PromiseMatchers = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>, T> & InverseMatchers<Promise<void>, T>;
+  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>, T> & InverseMatchers<Promise<void>, T>;
-};
-
-type InverseMatchers<R extends void | Promise<void>, T = unknown> = {
-  /**
-   * Inverse next matcher. If you know how to test something, `.not` lets you test its opposite.
-   */
-  not: Matchers<R, T>;
+  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
 // This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
-export interface Matchers<R extends void | Promise<void>, T = unknown> {
+export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -340,44 +333,4 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * If you want to test that a specific error is thrown inside a function.
    */
   toThrowError(expected?: unknown): R;
-
-  /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
-  /**
-   * This ensures that a value matches the most recent snapshot with property matchers.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchSnapshot(hint?: string): R;
-  /**
-   * This ensures that a value matches the most recent snapshot.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchSnapshot<U extends Record<keyof T, unknown>>(
-    propertyMatchers: Partial<U>,
-    hint?: string,
-  ): R;
-  /**
-   * This ensures that a value matches the most recent snapshot with property matchers.
-   * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchInlineSnapshot(snapshot?: string): R;
-  /**
-   * This ensures that a value matches the most recent snapshot with property matchers.
-   * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchInlineSnapshot<U extends Record<keyof T, unknown>>(
-    propertyMatchers: Partial<U>,
-    snapshot?: string,
-  ): R;
-  /**
-   * Used to test that a function throws a error matching the most recent snapshot when it is called.
-   */
-  toThrowErrorMatchingSnapshot(hint?: string): R;
-  /**
-   * Used to test that a function throws a error matching the most recent snapshot when it is called.
-   * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   */
-  toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
-  /* TODO: END snapshot matchers are not from `expect`, the types should not be here */
 }
