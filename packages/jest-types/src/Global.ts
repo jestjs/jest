@@ -27,7 +27,11 @@ export type GeneratorReturningTestFn = (
   this: TestContext | undefined,
 ) => TestReturnValueGenerator;
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NameLike = number | Function;
+
 export type TestName = string;
+export type TestNameLike = TestName | NameLike;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
@@ -35,6 +39,8 @@ export type TestFn =
 export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
 export type BlockName = string;
+export type BlockNameLike = BlockName | NameLike;
+
 export type HookFn = TestFn;
 
 export type Col = unknown;
@@ -51,15 +57,11 @@ export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
-type Each<EachCallback extends TestCallback> =
+type Each<EachCallback extends TestCallback, Name> =
   | ((
       table: EachTable,
       ...taggedTemplateData: TemplateData
-    ) => (
-      name: BlockName | TestName,
-      test: EachTestFn<EachCallback>,
-      timeout?: number,
-    ) => void)
+    ) => (name: Name, test: EachTestFn<EachCallback>, timeout?: number) => void)
   | (() => () => void);
 
 export interface HookBase {
@@ -67,19 +69,19 @@ export interface HookBase {
 }
 
 export interface ItBase {
-  (testName: TestName, fn: TestFn, timeout?: number): void;
-  each: Each<TestFn>;
+  (testName: TestNameLike, fn: TestFn, timeout?: number): void;
+  each: Each<TestFn, TestNameLike>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName) => void;
+  todo: (testName: TestNameLike) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
-  each: Each<ConcurrentTestFn>;
+  (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
+  each: Each<ConcurrentTestFn, TestNameLike>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
@@ -92,8 +94,8 @@ export interface ItConcurrent extends It {
 }
 
 export interface DescribeBase {
-  (blockName: BlockName, blockFn: BlockFn): void;
-  each: Each<BlockFn>;
+  (blockName: BlockNameLike, blockFn: BlockFn): void;
+  each: Each<BlockFn, BlockNameLike | TestNameLike>;
 }
 
 export interface Describe extends DescribeBase {

@@ -78,7 +78,7 @@ export const initialize = async ({
 
   globalsObject.test.concurrent = (test => {
     const concurrent = (
-      testName: string,
+      testName: Global.TestNameLike,
       testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
@@ -96,7 +96,7 @@ export const initialize = async ({
     };
 
     const only = (
-      testName: string,
+      testName: Global.TestNameLike,
       testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
