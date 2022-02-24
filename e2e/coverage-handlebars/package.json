@@ -6,7 +6,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "handlebars": "^4.7.3",
-    "@cspotcode/source-map": "0.8.0"
+    "@cspotcode/source-map": "0.8.0",
+    "handlebars": "^4.7.3"
   }
 }

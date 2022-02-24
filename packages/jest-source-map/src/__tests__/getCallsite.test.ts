@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import SourceMap from 'source-map';
+import SourceMap from '@cspotcode/source-map-consumer';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility

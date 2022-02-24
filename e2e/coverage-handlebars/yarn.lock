@@ -5,6 +5,13 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@cspotcode/source-map@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@cspotcode/source-map@npm:0.8.0"
+  checksum: 2d6fa1f0fe0080e0466febf26d38b80f37bfe5641e089a8c8d78cafbd4d33424377abb48768fc1afd3f19fb941e1dbec8afd9e85a1f3ea9aca5ba44e721dbac4
+  languageName: node
+  linkType: hard
+
 "handlebars@npm:^4.7.3":
   version: 4.7.7
   resolution: "handlebars@npm:4.7.7"
@@ -41,17 +48,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@cspotcode/source-map": 0.8.0
     handlebars: ^4.7.3
-    source-map: "npm:@cspotcode/source-map@0.8.0"
   languageName: unknown
   linkType: soft
-
-"source-map@npm:@cspotcode/source-map@0.8.0":
-  version: 0.8.0
-  resolution: "@cspotcode/source-map@npm:0.8.0"
-  checksum: 2d6fa1f0fe0080e0466febf26d38b80f37bfe5641e089a8c8d78cafbd4d33424377abb48768fc1afd3f19fb941e1dbec8afd9e85a1f3ea9aca5ba44e721dbac4
-  languageName: node
-  linkType: hard
 
 "source-map@npm:^0.6.1":
   version: 0.6.1

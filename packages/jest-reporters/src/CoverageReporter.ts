@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
+import type {RawSourceMap} from '@cspotcode/source-map-consumer';
 import chalk = require('chalk');
 import glob = require('glob');
 import * as fs from 'graceful-fs';
@@ -14,7 +15,6 @@ import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
-import type {RawSourceMap} from 'source-map';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
