@@ -19,15 +19,13 @@ const deprecatedOptions: DeprecatedOptions = {
 
   extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
     '"extraGlobals"',
-  )} was replaced by passing the URL via ${chalk.bold(
-    '"sandboxInjectedGlobals"',
-  )}.
+  )} was replaced by ${chalk.bold('"sandboxInjectedGlobals"')}.
 
   Please update your configuration.`,
 
   moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
     '"moduleLoader"',
-  )} was replaced by passing the URL via ${chalk.bold('"runtime"')}.
+  )} was replaced by ${chalk.bold('"runtime"')}.
 
   Please update your configuration.`,
 
