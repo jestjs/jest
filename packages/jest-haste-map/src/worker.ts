@@ -11,7 +11,7 @@ import * as fs from 'graceful-fs';
 import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
-import * as dependencyExtractor from './lib/dependencyExtractor';
+import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
 import type {
   DependencyExtractor,
   HasteImpl,
@@ -82,9 +82,13 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
             data.dependencyExtractor,
             false,
           )
-        : dependencyExtractor;
+        : defaultDependencyExtractor;
       dependencies = Array.from(
-        extractor.extract(content, filePath, dependencyExtractor.extract),
+        extractor.extract(
+          content,
+          filePath,
+          defaultDependencyExtractor.extract,
+        ),
       );
     }
 
