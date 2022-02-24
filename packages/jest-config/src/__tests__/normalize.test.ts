@@ -1963,8 +1963,8 @@ describe('moduleLoader', () => {
   it('logs a deprecation warning when `moduleLoader` is used', async () => {
     await normalize(
       {
-        rootDir: '/root/',
         moduleLoader: '<rootDir>/runtime.js',
+        rootDir: '/root/',
       },
       {} as Config.Argv,
     );

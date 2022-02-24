@@ -115,7 +115,9 @@ async function runTestInternal(
         : projectConfig.testRunner,
     );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
-    projectConfig.runtime ? require(projectConfig.runtime) : require('jest-runtime'),
+    projectConfig.runtime
+      ? require(projectConfig.runtime)
+      : require('jest-runtime'),
   ).default;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
