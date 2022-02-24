@@ -17,21 +17,17 @@ const deprecatedOptions: DeprecatedOptions = {
       '"browser"',
     )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
-  extraGlobals: () => `  Option ${chalk.bold(
+  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
     '"extraGlobals"',
-  )} has been renamed, to sandboxInjectedGlobals.
+  )} was replaced by passing the URL via ${chalk.bold(
+    '"sandboxInjectedGlobals"',
+  )}.
 
   Please update your configuration.`,
 
-  mapCoverage: () => `  Option ${chalk.bold(
-    '"mapCoverage"',
-  )} has been removed, as it's no longer necessary.
-
-  Please update your configuration.`,
-
-  moduleLoader: () => `  Option ${chalk.bold(
+  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
     '"moduleLoader"',
-  )} has been renamed, to runtime.
+  )} was replaced by passing the URL via ${chalk.bold('"runtime"')}.
 
   Please update your configuration.`,
 
