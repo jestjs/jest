@@ -77,15 +77,14 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
     if (computeDependencies) {
       const content = getContent();
+      const extractor = data.dependencyExtractor
+        ? await requireOrImportModule<DependencyExtractor>(
+            data.dependencyExtractor,
+            false,
+          )
+        : dependencyExtractor;
       dependencies = Array.from(
-        data.dependencyExtractor
-          ? (
-              await requireOrImportModule<DependencyExtractor>(
-                data.dependencyExtractor,
-                false,
-              )
-            ).extract(content, filePath, dependencyExtractor.extract)
-          : dependencyExtractor.extract(content),
+        extractor.extract(content, filePath, dependencyExtractor.extract),
       );
     }
 
