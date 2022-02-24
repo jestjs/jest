@@ -31,16 +31,18 @@ export interface FunctionLike {
   readonly name: string;
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type FunctionLikeOrName = number | string | Function | FunctionLike;
+export type NameLike = number | Function | FunctionLike;
 
-export type TestName = FunctionLikeOrName;
+export type TestName = string;
+export type TestNameLike = TestName | NameLike;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
   | DoneTakingTestFn;
 export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
-export type BlockName = FunctionLikeOrName;
+export type BlockName = string;
+export type BlockNameLike = BlockName | NameLike;
 
 export type HookFn = TestFn;
 
@@ -63,7 +65,7 @@ type Each<EachCallback extends TestCallback> =
       table: EachTable,
       ...taggedTemplateData: TemplateData
     ) => (
-      name: BlockName | TestName,
+      name: BlockNameLike | TestNameLike,
       test: EachTestFn<EachCallback>,
       timeout?: number,
     ) => void)
@@ -74,18 +76,18 @@ export interface HookBase {
 }
 
 export interface ItBase {
-  (testName: TestName, fn: TestFn, timeout?: number): void;
+  (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName) => void;
+  todo: (testName: TestNameLike) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
+  (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
 }
 
@@ -99,7 +101,7 @@ export interface ItConcurrent extends It {
 }
 
 export interface DescribeBase {
-  (blockName: BlockName, blockFn: BlockFn): void;
+  (blockName: BlockNameLike, blockFn: BlockFn): void;
   each: Each<BlockFn>;
 }
 
