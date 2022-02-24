@@ -892,7 +892,11 @@ If you need to restrict your test-runner to only run in serial rather than being
 
 ### `sandboxInjectedGlobals` \[array&lt;string&gt;]
 
-_Note: renamed from `extraGlobals` in Jest 28._
+:::tip
+
+Renamed from `extraGlobals` in Jest 28.
+
+:::
 
 Default: `undefined`
 
@@ -908,6 +912,12 @@ For example, if your tests call `Math` often, you can pass it by setting `sandbo
   }
 }
 ```
+
+:::note
+
+This option has no effect if you use [native ESM](ECMAScriptModules.md).
+
+:::
 
 ### `setupFiles` \[array]
 
