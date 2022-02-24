@@ -1128,6 +1128,8 @@ test('the flavor list contains lime', () => {
 });
 ```
 
+This matcher also accepts others iterables such as `string`s, `Set`s, `NodeList`s and `HTMLCollection`s.
+
 This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
 
 ### `.toContainEqual(item)`
