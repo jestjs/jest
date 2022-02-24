@@ -16,6 +16,24 @@ Object {
 }
 `;
 
+exports[`getNoTestsFoundMessage returns correct message with findRelatedTests 1`] = `
+Object {
+  "exitWith0": false,
+  "message": "<bold>No tests found, exiting with code 1</>
+Run with \`--passWithNoTests\` to exit with code 0
+In <bold>/root/dir</>
+  0 files checked across 0 projects. Run with \`--verbose\` for more details.
+Pattern: <yellow>/path/pattern</> - 0 matches",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message with findRelatedTests 2`] = `
+Object {
+  "exitWith0": true,
+  "message": "<bold>No tests found, exiting with code 0</>",
+}
+`;
+
 exports[`getNoTestsFoundMessage returns correct message with passWithNoTests 1`] = `
 Object {
   "exitWith0": true,

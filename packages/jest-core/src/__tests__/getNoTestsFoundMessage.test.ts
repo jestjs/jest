@@ -42,4 +42,12 @@ describe('getNoTestsFoundMessage', () => {
     const config = createGlobalConfig({passWithNoTests: true});
     expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
   });
+
+  test('returns correct message with findRelatedTests', () => {
+    const config = createGlobalConfig({findRelatedTests: true});
+    expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
+    expect(
+      getNoTestsFoundMessage([], {...config, passWithNoTests: true}),
+    ).toMatchSnapshot();
+  });
 });
