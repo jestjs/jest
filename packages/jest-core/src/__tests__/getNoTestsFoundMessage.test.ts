@@ -5,15 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeGlobalConfig} from '@jest/test-utils';
+import type {Config} from '@jest/types';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
+jest.mock('jest-util', () => ({
+  ...jest.requireActual('jest-util'),
+  isInteractive: true,
+}));
+
 describe('getNoTestsFoundMessage', () => {
-  function createGlobalConfig(options) {
-    return {
+  function createGlobalConfig(options?: Partial<Config.GlobalConfig>) {
+    return makeGlobalConfig({
       rootDir: '/root/dir',
       testPathPattern: '/path/pattern',
       ...options,
-    };
+    });
   }
 
   test('returns correct message when monitoring only failures', () => {
@@ -39,5 +46,13 @@ describe('getNoTestsFoundMessage', () => {
   test('returns correct message with passWithNoTests', () => {
     const config = createGlobalConfig({passWithNoTests: true});
     expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
+  });
+
+  test('returns correct message with findRelatedTests', () => {
+    const config = createGlobalConfig({findRelatedTests: true});
+    expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
+    expect(
+      getNoTestsFoundMessage([], {...config, passWithNoTests: true}),
+    ).toMatchSnapshot();
   });
 });
