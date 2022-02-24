@@ -59,6 +59,7 @@ expectType<void>(beforeEach(asyncFn, timeout));
 expectType<void>(beforeEach(genFn, timeout));
 
 expectType<void>(test(testName, fn));
+expectType<void>(test(testName, fn));
 expectType<void>(test(testName, asyncFn));
 expectType<void>(test(testName, doneFn));
 expectType<void>(test(testName, genFn));
@@ -246,6 +247,12 @@ expectType<void>(
   ${2} | ${1} | ${3}
 `(testName, asyncFn, timeout),
 );
+
+expectType<void>(describe(testName, fn));
+expectType<void>(describe(123, fn));
+expectType<void>(describe(() => {}, fn));
+expectType<void>(describe(function named() {}, fn));
+expectType<void>(describe(class {}, fn));
 
 expectType<void>(describe.each(list)(testName, fn));
 expectType<void>(describe.each(list)(testName, fn, timeout));
