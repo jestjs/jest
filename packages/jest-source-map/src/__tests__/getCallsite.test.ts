@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
 import SourceMap from '@cspotcode/source-map-consumer';
+import * as fs from 'graceful-fs';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility

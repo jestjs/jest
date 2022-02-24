@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {SourceMapConsumer} from '@cspotcode/source-map-consumer';
 import callsites = require('callsites');
 import {readFileSync} from 'graceful-fs';
-import {SourceMapConsumer} from '@cspotcode/source-map-consumer';
 import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
