@@ -15,6 +15,7 @@ export default function convertDescriptorToString(
       return descriptor.name;
 
     case 'number':
+    case 'undefined':
       return `${descriptor}`;
 
     case 'string':
