@@ -193,10 +193,7 @@ export default class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
   private readonly _mockFactories: Map<string, () => unknown>;
-  private readonly _mockMetaDataCache: Map<
-    string,
-    MockFunctionMetadata<unknown, Array<unknown>>
-  >;
+  private readonly _mockMetaDataCache: Map<string, MockFunctionMetadata>;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
   private _moduleMockRegistry: Map<string, VMModule>;
