@@ -11,19 +11,19 @@ import {getCallsite} from '@jest/source-map';
 import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import JasmineReporter from './reporter';
-import type {Jasmine as JestJasmine} from './types';
+export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
-async function jasmine2(
+export default async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
@@ -31,9 +31,10 @@ async function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
-  const jasmineFactory = runtime.requireInternalModule<
-    typeof import('./jasmine/jasmineLight')
-  >(JASMINE);
+  const jasmineFactory =
+    runtime.requireInternalModule<typeof import('./jasmine/jasmineLight')>(
+      JASMINE,
+    );
   const jasmine = jasmineFactory.create({
     process,
     testPath,
@@ -66,7 +67,7 @@ async function jasmine2(
 
         return it;
       };
-      return (wrapped as any) as T;
+      return wrapped as any as T;
     }
 
     environment.global.it = wrapIt(environment.global.it);
@@ -86,10 +87,10 @@ async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake' || config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
-  } else if (config.timers === 'modern') {
+  if (config.timers === 'fake' || config.timers === 'modern') {
     environment.fakeTimersModern!.useFakeTimers();
+  } else if (config.timers === 'legacy') {
+    environment.fakeTimers!.useFakeTimers();
   }
 
   env.beforeEach(() => {
@@ -104,7 +105,7 @@ async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake' || config.timers === 'legacy') {
+      if (config.timers === 'legacy') {
         environment.fakeTimers!.useFakeTimers();
       }
     }
@@ -137,7 +138,7 @@ async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotStateType = runtime
+  const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       path.resolve(__dirname, './setup_jest_globals.js'),
     )
@@ -149,8 +150,7 @@ async function jasmine2(
     });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -163,9 +163,7 @@ async function jasmine2(
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
@@ -180,10 +178,7 @@ async function jasmine2(
   return addSnapshotData(results, snapshotState);
 }
 
-const addSnapshotData = (
-  results: TestResult,
-  snapshotState: SnapshotStateType,
-) => {
+const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.testResults.forEach(({fullName, status}: AssertionResult) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -211,9 +206,3 @@ const addSnapshotData = (
 
   return results;
 };
-
-declare namespace jasmine2 {
-  export type Jasmine = JestJasmine;
-}
-
-export = jasmine2;

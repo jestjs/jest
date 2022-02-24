@@ -5,14 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import chalk = require('chalk');
-// Temporary hack because getObjectSubset has known limitations,
-// is not in the public interface of the expect package,
-// and the long-term goal is to use a non-serialization diff.
-// Make sure to remove file from `exports` in `expect/package.json`.
-import {getObjectSubset} from 'expect/build/utils';
+import {getObjectSubset} from '@jest/expect-utils';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -24,7 +18,7 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -34,7 +28,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat = require('pretty-format');
+import {format as prettyFormat} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -171,7 +165,7 @@ const joinDiffs = (
 const isLineDiffable = (received: unknown): boolean => {
   const receivedType = getType(received);
 
-  if (getType.isPrimitive(received)) {
+  if (isPrimitive(received)) {
     return typeof received === 'string';
   }
 

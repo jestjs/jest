@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`show error message when no js moduleFileExtensions 1`] = `
-● Validation Error:
+"● Validation Error:
 
   moduleFileExtensions must include 'js':
   but instead received:
@@ -9,12 +9,12 @@ exports[`show error message when no js moduleFileExtensions 1`] = `
   Please change your configuration to include 'js'.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
-
+  https://jestjs.io/docs/configuration
+"
 `;
 
 exports[`show error message with matching files 1`] = `
-FAIL __tests__/test.js
+"FAIL __tests__/test.js
   ● Test suite failed to run
 
     Cannot find module './some-json-file' from 'index.js'
@@ -29,14 +29,14 @@ FAIL __tests__/test.js
 
     You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
 
-    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
 
       6 |  */
-      7 | 
+      7 |
     > 8 | module.exports = require('./some-json-file');
         |                  ^
-      9 | 
+      9 |
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:311:11)
-      at Object.require (index.js:8:18)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/resolver.js:317:11)
+      at Object.require (index.js:8:18)"
 `;

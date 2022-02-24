@@ -9,6 +9,5 @@
 export type TransformResult = {
   code: string;
   originalCode: string;
-  mapCoverage?: boolean; // TODO - Remove in Jest 27
   sourceMapPath: string | null;
 };

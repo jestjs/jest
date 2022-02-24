@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test} from 'jest-runner';
+import type {Test} from '@jest/test-result';
 import type {Context} from 'jest-runtime';
 import {
   PatternPrompt,

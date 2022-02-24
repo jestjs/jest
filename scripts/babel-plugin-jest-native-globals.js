@@ -12,21 +12,99 @@
 
 module.exports = ({template}) => {
   const promiseDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
   const symbolDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var Symbol = global['jest-symbol-do-not-touch'] || global.Symbol;
   `);
   const nowDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var jestNow = global[Symbol.for('jest-native-now')] || global.Date.now;
   `);
   const fsReadFileDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var jestReadFile = global[Symbol.for('jest-native-read-file')] || fs.readFileSync;
   `);
   const fsWriteFileDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var jestWriteFile = global[Symbol.for('jest-native-write-file')] || fs.writeFileSync;
   `);
   const fsExistsFileDeclaration = template(`
+    var global = (function() {
+      if (typeof globalThis !== 'undefined') {
+        return globalThis;
+      } else if (typeof global !== 'undefined') {
+        return global;
+      } else if (typeof self !== 'undefined') {
+        return self;
+      } else if (typeof window !== 'undefined') {
+        return window;
+      } else {
+        return Function('return this')();
+      }
+    }())
     var jestExistsFile = global[Symbol.for('jest-native-exists-file')] || fs.existsSync;
   `);
 

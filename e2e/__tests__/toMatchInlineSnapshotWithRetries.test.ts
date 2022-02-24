@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -14,6 +15,8 @@ const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));
 afterAll(() => cleanup(TESTS_DIR));
+
+skipSuiteOnJasmine();
 
 test('works with a single snapshot', () => {
   const filename = 'basic-support.test.js';
@@ -39,12 +42,7 @@ test('works with a single snapshot', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['index', '2' /* retries */]),
     });
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      '--testRunner=jest-circus/runner',
-      filename,
-    ]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received: 2');
     expect(stderr).toMatch('1 snapshot failed from 1 test suite.');
     expect(exitCode).toBe(1);
@@ -54,12 +52,7 @@ test('works with a single snapshot', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['index', '4' /* retries */]),
     });
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      '--testRunner=jest-circus/runner',
-      filename,
-    ]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
@@ -113,12 +106,7 @@ test('works when multiple tests have snapshots but only one of them failed multi
     writeFiles(TESTS_DIR, {
       [filename]: template(['index', '2' /* retries */]),
     });
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      '--testRunner=jest-circus/runner',
-      filename,
-    ]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshot name: `with retries snapshots 1`');
     expect(stderr).toMatch('Received: 2');
     expect(stderr).toMatch('1 snapshot failed from 1 test suite.');
@@ -129,12 +117,7 @@ test('works when multiple tests have snapshots but only one of them failed multi
     writeFiles(TESTS_DIR, {
       [filename]: template(['index', '4' /* retries */]),
     });
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      '--testRunner=jest-circus/runner',
-      filename,
-    ]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }

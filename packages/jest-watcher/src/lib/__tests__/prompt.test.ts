@@ -62,3 +62,20 @@ it('calls handler on cancel prompt', () => {
 
   expect(onCancel).toHaveBeenCalled();
 });
+
+it('clears the line when CONTROL_U is pressed', () => {
+  const prompt = new Prompt();
+  const onChange = jest.fn();
+  const options = {max: 10, offset: -1};
+
+  prompt.enter(onChange, jest.fn(), jest.fn());
+
+  prompt.put('t');
+  prompt.put('e');
+  prompt.put('s');
+  prompt.put('t');
+  expect(onChange).toHaveBeenLastCalledWith('test', options);
+
+  prompt.put(KEYS.CONTROL_U);
+  expect(onChange).toHaveBeenLastCalledWith('', options);
+});

@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -15,8 +14,8 @@ test('console printing', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('console printing with --verbose', () => {
@@ -27,9 +26,9 @@ test('console printing with --verbose', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('does not print to console with --silent', () => {
@@ -45,9 +44,9 @@ test('does not print to console with --silent', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('respects --noStackTrace', () => {
@@ -63,9 +62,9 @@ test('respects --noStackTrace', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('respects noStackTrace in config', () => {
@@ -81,9 +80,9 @@ test('respects noStackTrace in config', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 // issue: https://github.com/facebook/jest/issues/5223
@@ -92,9 +91,9 @@ test('the jsdom console is the same as the test console', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('does not error out when using winston', () => {
@@ -104,7 +103,7 @@ test('does not error out when using winston', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

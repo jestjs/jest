@@ -31,8 +31,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import chalk = require('chalk');
-import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
@@ -51,7 +49,7 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -101,13 +99,15 @@ export default function (j$: Jasmine) {
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
 
-    constructor(_options?: Record<string, unknown>) {
+    constructor() {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
 
-      const realSetTimeout = global.setTimeout;
-      const realClearTimeout = global.clearTimeout;
+      const realSetTimeout =
+        global.setTimeout as typeof globalThis['setTimeout'];
+      const realClearTimeout =
+        global.clearTimeout as typeof globalThis['clearTimeout'];
 
       const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
@@ -384,7 +384,7 @@ export default function (j$: Jasmine) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {
@@ -438,36 +438,17 @@ export default function (j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e) {
+        } catch (e: any) {
           declarationError = e;
         }
 
-        // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
           );
         } else if (describeReturnValue !== undefined) {
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'A "describe" callback must not return a value.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'A "describe" callback must not return a value.',
           );
         }
 
@@ -611,7 +592,11 @@ export default function (j$: Jasmine) {
           () => {},
           currentDeclarationSuite,
         );
-        spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
@@ -624,7 +609,11 @@ export default function (j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };

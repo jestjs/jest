@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, Script, createContext, runInContext} from 'vm';
+import {Context, createContext, runInContext} from 'vm';
 import type {JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
@@ -18,7 +18,7 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment {
+export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -36,6 +36,9 @@ class NodeEnvironment implements JestEnvironment {
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
+    global.Buffer = Buffer;
+    global.setImmediate = setImmediate;
+    global.clearImmediate = clearImmediate;
     global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
     // different than the global one used by users in tests. This makes sure the
@@ -43,23 +46,43 @@ class NodeEnvironment implements JestEnvironment {
     global.Uint8Array = Uint8Array;
 
     // URL and URLSearchParams are global in Node >= 10
-    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      global.URL = URL;
-      global.URLSearchParams = URLSearchParams;
-    }
+    global.URL = URL;
+    global.URLSearchParams = URLSearchParams;
+
     // TextDecoder and TextDecoder are global in Node >= 11
-    if (
-      typeof TextEncoder !== 'undefined' &&
-      typeof TextDecoder !== 'undefined'
-    ) {
-      global.TextEncoder = TextEncoder;
-      global.TextDecoder = TextDecoder;
-    }
+    global.TextEncoder = TextEncoder;
+    global.TextDecoder = TextDecoder;
+
     // queueMicrotask is global in Node >= 11
-    if (typeof queueMicrotask !== 'undefined') {
-      global.queueMicrotask = queueMicrotask;
+    global.queueMicrotask = queueMicrotask;
+
+    // AbortController is global in Node >= 15
+    if (typeof AbortController !== 'undefined') {
+      global.AbortController = AbortController;
+    }
+    // AbortSignal is global in Node >= 15
+    if (typeof AbortSignal !== 'undefined') {
+      global.AbortSignal = AbortSignal;
+    }
+    // Event is global in Node >= 15.4
+    if (typeof Event !== 'undefined') {
+      global.Event = Event;
+    }
+    // EventTarget is global in Node >= 15.4
+    if (typeof EventTarget !== 'undefined') {
+      global.EventTarget = EventTarget;
+    }
+    // performance is global in Node >= 16
+    if (typeof performance !== 'undefined') {
+      global.performance = performance;
+    }
+    // atob and btoa are global in Node >= 16
+    if (typeof atob !== 'undefined' && typeof btoa !== 'undefined') {
+      global.atob = atob;
+      global.btoa = btoa;
     }
     installCommonGlobals(global, config.globals);
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
@@ -104,13 +127,8 @@ class NodeEnvironment implements JestEnvironment {
     this.fakeTimersModern = null;
   }
 
-  // TS infers the return type to be `any`, since that's what `runInContext`
-  // returns.
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.context) {
-      return script.runInContext(this.context);
-    }
-    return null;
+  exportConditions(): Array<string> {
+    return ['node', 'node-addons'];
   }
 
   getVmContext(): Context | null {
@@ -118,4 +136,4 @@ class NodeEnvironment implements JestEnvironment {
   }
 }
 
-export = NodeEnvironment;
+export const TestEnvironment = NodeEnvironment;

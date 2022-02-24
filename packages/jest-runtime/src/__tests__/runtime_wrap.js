@@ -6,7 +6,6 @@
  *
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 let createRuntime;
 
 describe('Runtime', () => {
@@ -19,7 +18,7 @@ describe('Runtime', () => {
       const runtime = await createRuntime(__filename);
 
       expect(
-        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
+        runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"'),
       ).toMatchSnapshot();
     });
 
@@ -29,7 +28,7 @@ describe('Runtime', () => {
       });
 
       expect(
-        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
+        runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"'),
       ).toMatchSnapshot();
     });
   });

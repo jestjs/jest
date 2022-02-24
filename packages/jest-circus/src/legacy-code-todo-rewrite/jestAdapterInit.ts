@@ -5,23 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type BabelTraverse from '@babel/traverse';
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
   Status,
+  TestFileEvent,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import {Expect, expect} from 'expect';
 import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
-import type {TestFileEvent} from 'jest-runner';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -35,7 +33,7 @@ import {
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
 import {getTestID} from '../utils';
-import createExpect, {Expect} from './jestExpect';
+import createExpect from './jestExpect';
 
 type Process = NodeJS.Process;
 
@@ -46,8 +44,6 @@ interface JestGlobals extends Global.TestFrameworkGlobals {
 export const initialize = async ({
   config,
   environment,
-  getPrettier,
-  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
@@ -57,17 +53,15 @@ export const initialize = async ({
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  getPrettier: () => null | any;
-  getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
-  setGlobalsForRuntime?: (globals: JestGlobals) => void;
+  setGlobalsForRuntime: (globals: JestGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
-  snapshotState: SnapshotStateType;
+  snapshotState: SnapshotState;
 }> => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
@@ -88,7 +82,7 @@ export const initialize = async ({
   globalsObject.test.concurrent = (test => {
     const concurrent = (
       testName: string,
-      testFn: () => Promise<unknown>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       // For concurrent tests we first run the function that returns promise, and then register a
@@ -98,12 +92,15 @@ export const initialize = async ({
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
       // even if it ends up being skipped.
       const promise = mutex(() => testFn());
+      // Avoid triggering the uncaught promise rejection handler in case the test errors before
+      // being awaited on.
+      promise.catch(() => {});
       globalsObject.test(testName, () => promise, timeout);
     };
 
     const only = (
       testName: string,
-      testFn: () => Promise<unknown>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       const promise = mutex(() => testFn());
@@ -131,11 +128,9 @@ export const initialize = async ({
     ...globalsObject,
     expect: createExpect(globalConfig),
   };
-  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
-  setGlobalsForRuntime?.(runtimeGlobals);
+  setGlobalsForRuntime(runtimeGlobals);
 
-  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
-  if (config.injectGlobals ?? true) {
+  if (config.injectGlobals) {
     Object.assign(environment.global, runtimeGlobals);
   }
 
@@ -158,16 +153,16 @@ export const initialize = async ({
     .forEach(path => addSerializer(localRequire(path)));
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse,
-    getPrettier,
+    prettierPath: config.prettierPath,
+    snapshotFormat: config.snapshotFormat,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`
-  setState({snapshotState, testPath});
+  expect.setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
   if (sendMessageToJest) {
@@ -265,28 +260,26 @@ export const runAndTransformResultsToJestFormat = async ({
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    sourceMaps: {},
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
   };
 };
 
-const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
-  event: Circus.Event,
-) => {
-  switch (event.name) {
-    case 'test_retry': {
-      // Clear any snapshot data that occurred in previous test run
-      snapshotState.clear();
+const handleSnapshotStateAfterRetry =
+  (snapshotState: SnapshotState) => (event: Circus.Event) => {
+    switch (event.name) {
+      case 'test_retry': {
+        // Clear any snapshot data that occurred in previous test run
+        snapshotState.clear();
+      }
     }
-  }
-};
+  };
 
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
-      setState({currentTestName: getTestID(event.test)});
+      expect.setState({currentTestName: getTestID(event.test)});
       break;
     }
     case 'test_done': {
@@ -298,7 +291,7 @@ const eventHandler = async (event: Circus.Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
-  const failures = extractExpectedAssertionsErrors();
+  const failures = expect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
@@ -307,8 +300,8 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = expect.getState();
+  expect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     test.errors = test.errors.concat(suppressedErrors);
   }

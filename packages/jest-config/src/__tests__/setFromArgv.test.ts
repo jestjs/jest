@@ -47,12 +47,16 @@ test('works with string objects', () => {
   const argv = {
     moduleNameMapper:
       '{"types/(.*)": "<rootDir>/src/types/$1", "types2/(.*)": ["<rootDir>/src/types2/$1", "<rootDir>/src/types3/$1"]}',
+    testEnvironmentOptions: '{"userAgent": "Agent/007"}',
     transform: '{"*.js": "<rootDir>/transformer"}',
   } as Config.Argv;
   expect(setFromArgv(options, argv)).toMatchObject({
     moduleNameMapper: {
       'types/(.*)': '<rootDir>/src/types/$1',
       'types2/(.*)': ['<rootDir>/src/types2/$1', '<rootDir>/src/types3/$1'],
+    },
+    testEnvironmentOptions: {
+      userAgent: 'Agent/007',
     },
     transform: {
       '*.js': '<rootDir>/transformer',

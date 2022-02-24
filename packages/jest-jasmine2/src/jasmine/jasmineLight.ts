@@ -40,13 +40,26 @@ import Timer from './Timer';
 import createSpy from './createSpy';
 import SpyRegistry from './spyRegistry';
 
+const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
+
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
-  j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
+  Object.defineProperty(j$, '_DEFAULT_TIMEOUT_INTERVAL', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return (
+        (global as any)[testTimeoutSymbol] || createOptions.testTimeout || 5000
+      );
+    },
+    set(value) {
+      (global as any)[testTimeoutSymbol] = value;
+    },
+  });
 
-  j$.getEnv = function (options?: Record<string, unknown>) {
-    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
+  j$.getEnv = function () {
+    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env());
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };

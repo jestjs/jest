@@ -15,29 +15,28 @@ describe('Runtime', () => {
   });
 
   describe('requireModule', () => {
-    it('installs source maps if available', () => {
+    it('installs source maps if available', async () => {
       expect.assertions(1);
 
-      return createRuntime(__filename).then(runtime => {
-        const sum = runtime.requireModule(
-          runtime.__mockRootPath,
-          './sourcemaps/out/throwing-mapped-fn.js',
-        ).sum;
+      const runtime = await createRuntime(__filename);
+      const sum = runtime.requireModule(
+        runtime.__mockRootPath,
+        './sourcemaps/out/throwing-mapped-fn.js',
+      ).sum;
 
-        try {
-          sum();
-        } catch (err) {
-          if (process.platform === 'win32') {
-            expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\(out\\)?throwing-mapped-fn.js:\d+:\d+/,
-            );
-          } else {
-            expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/(out\/)?throwing-mapped-fn.js:\d+:\d+/,
-            );
-          }
+      try {
+        sum();
+      } catch (err) {
+        if (process.platform === 'win32') {
+          expect(err.stack).toMatch(
+            /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\sourcemaps\\(out\\)?throwing-mapped-fn.js:\d+:\d+/,
+          );
+        } else {
+          expect(err.stack).toMatch(
+            /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/sourcemaps\/(out\/)?throwing-mapped-fn.js:\d+:\d+/,
+          );
         }
-      });
+      }
     });
   });
 });

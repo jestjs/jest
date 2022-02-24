@@ -10,7 +10,10 @@ import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
 import type {Config} from '@jest/types';
-import prettyFormat = require('pretty-format');
+import {
+  OptionsReceived as PrettyFormatOptions,
+  format as prettyFormat,
+} from 'pretty-format';
 import {getSerializers} from './plugins';
 import type {SnapshotData} from './types';
 
@@ -19,8 +22,8 @@ const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
 export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
   `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
-    `we recommend that you revert any local changes to tests or other code, ` +
-    `to ensure that you do not store invalid state.`,
+    'we recommend that you revert any local changes to tests or other code, ' +
+    'to ensure that you do not store invalid state.',
 );
 
 const writeSnapshotVersion = () =>
@@ -34,9 +37,9 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
-          `Jest 19 introduced versioned snapshots to ensure all developers ` +
-          `on a project are using the same version of Jest. ` +
-          `Please update all snapshots during this upgrade of Jest.\n\n`,
+          'Jest 19 introduced versioned snapshots to ensure all developers ' +
+          'on a project are using the same version of Jest. ' +
+          'Please update all snapshots during this upgrade of Jest.\n\n',
       ) + SNAPSHOT_VERSION_WARNING,
     );
   }
@@ -45,10 +48,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
-          `file associated with this test is outdated. The snapshot file ` +
-          `version ensures that all developers on a project are using ` +
-          `the same version of Jest. ` +
-          `Please update all snapshots during this upgrade of Jest.\n\n`,
+          'file associated with this test is outdated. The snapshot file ' +
+          'version ensures that all developers on a project are using ' +
+          'the same version of Jest. ' +
+          'Please update all snapshots during this upgrade of Jest.\n\n',
       ) +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}\n\n` +
@@ -60,10 +63,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
-          `snapshot file indicates that this project is meant to be used ` +
-          `with a newer version of Jest. The snapshot file version ensures ` +
-          `that all developers on a project are using the same version of ` +
-          `Jest. Please update your version of Jest and re-run the tests.\n\n`,
+          'snapshot file indicates that this project is meant to be used ' +
+          'with a newer version of Jest. The snapshot file version ensures ' +
+          'that all developers on a project are using the same version of ' +
+          'Jest. Please update your version of Jest and re-run the tests.\n\n',
       ) +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}`,
@@ -74,7 +77,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 };
 
 function isObject(item: unknown): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return item != null && typeof item === 'object' && !Array.isArray(item);
 }
 
 export const testNameToKey = (testName: Config.Path, count: number): string =>
@@ -152,13 +155,18 @@ export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
 const escapeRegex = true;
 const printFunctionName = false;
 
-export const serialize = (val: unknown, indent = 2): string =>
+export const serialize = (
+  val: unknown,
+  indent = 2,
+  formatOverrides: PrettyFormatOptions = {},
+): string =>
   normalizeNewlines(
     prettyFormat(val, {
       escapeRegex,
       indent,
       plugins: getSerializers(),
       printFunctionName,
+      ...formatOverrides,
     }),
   );
 

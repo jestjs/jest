@@ -5,23 +5,37 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
+import {isAbsolute} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import {sync as resolveSync} from 'resolve';
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
+import slash = require('slash');
 import type {Config} from '@jest/types';
-import {tryRealpath} from 'jest-util';
+import {
+  PkgJson,
+  isDirectory,
+  isFile,
+  readPackageCached,
+  realpathSync,
+} from './fileWalkers';
 
-type ResolverOptions = {
-  allowPnp?: boolean;
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+interface ResolverOptions {
   basedir: Config.Path;
   browser?: boolean;
+  conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: ResolveOpts['packageFilter'];
-};
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
+}
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -36,19 +50,20 @@ export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  if (process.versions.pnp && options.allowPnp !== false) {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
   const result = resolveSync(path, {
-    basedir: options.basedir,
-    extensions: options.extensions,
+    ...options,
     isDirectory,
     isFile,
-    moduleDirectory: options.moduleDirectory,
-    packageFilter: options.packageFilter,
-    paths: options.paths,
+    packageFilter: createPackageFilter(path, options.packageFilter),
+    pathFilter: createPathFilter(path, options.conditions, options.pathFilter),
     preserveSymlinks: false,
+    readPackageSync,
     realpathSync,
   });
 
@@ -57,77 +72,77 @@ export default function defaultResolver(
   return realpathSync(result);
 }
 
-export function clearDefaultResolverCache(): void {
-  checkedPaths.clear();
-  checkedRealpathPaths.clear();
-}
-
-enum IPathType {
-  FILE = 1,
-  DIRECTORY = 2,
-  OTHER = 3,
-}
-const checkedPaths = new Map<string, IPathType>();
-function statSyncCached(path: string): IPathType {
-  const result = checkedPaths.get(path);
-  if (result !== undefined) {
-    return result;
-  }
-
-  let stat;
-  try {
-    stat = fs.statSync(path);
-  } catch (e) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
-    }
-  }
-
-  if (stat) {
-    if (stat.isFile() || stat.isFIFO()) {
-      checkedPaths.set(path, IPathType.FILE);
-      return IPathType.FILE;
-    } else if (stat.isDirectory()) {
-      checkedPaths.set(path, IPathType.DIRECTORY);
-      return IPathType.DIRECTORY;
-    }
-  }
-
-  checkedPaths.set(path, IPathType.OTHER);
-  return IPathType.OTHER;
-}
-
-const checkedRealpathPaths = new Map<string, string>();
-function realpathCached(path: Config.Path): Config.Path {
-  let result = checkedRealpathPaths.get(path);
-
-  if (result !== undefined) {
-    return result;
-  }
-
-  result = tryRealpath(path);
-
-  checkedRealpathPaths.set(path, result);
-
-  if (path !== result) {
-    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
-    checkedRealpathPaths.set(result, result);
-  }
-
-  return result;
-}
-
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
-  return statSyncCached(file) === IPathType.FILE;
+
+function readPackageSync(_: unknown, file: Config.Path): PkgJson {
+  return readPackageCached(file);
 }
 
-function isDirectory(dir: Config.Path): boolean {
-  return statSyncCached(dir) === IPathType.DIRECTORY;
+function createPackageFilter(
+  originalPath: Config.Path,
+  userFilter?: ResolverOptions['packageFilter'],
+): ResolverOptions['packageFilter'] {
+  if (shouldIgnoreRequestForExports(originalPath)) {
+    return userFilter;
+  }
+
+  return function packageFilter(pkg, ...rest) {
+    let filteredPkg = pkg;
+
+    if (userFilter) {
+      filteredPkg = userFilter(filteredPkg, ...rest);
+    }
+
+    if (filteredPkg.exports == null) {
+      return filteredPkg;
+    }
+
+    return {
+      ...filteredPkg,
+      // remove `main` so `resolve` doesn't look at it and confuse the `.`
+      // loading in `pathFilter`
+      main: undefined,
+    };
+  };
 }
 
-function realpathSync(file: Config.Path): Config.Path {
-  return realpathCached(file);
+function createPathFilter(
+  originalPath: Config.Path,
+  conditions?: Array<string>,
+  userFilter?: ResolverOptions['pathFilter'],
+): ResolverOptions['pathFilter'] {
+  if (shouldIgnoreRequestForExports(originalPath)) {
+    return userFilter;
+  }
+
+  const options: ResolveExportsOptions = conditions
+    ? {conditions, unsafe: true}
+    : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+      {browser: false, require: true};
+
+  return function pathFilter(pkg, path, relativePath, ...rest) {
+    let pathToUse = relativePath;
+
+    if (userFilter) {
+      pathToUse = userFilter(pkg, path, relativePath, ...rest);
+    }
+
+    if (pkg.exports == null) {
+      return pathToUse;
+    }
+
+    // this `index` thing can backfire, but `resolve` adds it: https://github.com/browserify/resolve/blob/f1b51848ecb7f56f77bfb823511d032489a13eab/lib/sync.js#L192
+    const isRootRequire =
+      pathToUse === 'index' && !originalPath.endsWith('/index');
+
+    const newPath = isRootRequire ? '.' : slash(pathToUse);
+
+    return resolveExports(pkg, newPath, options) || pathToUse;
+  };
 }
+
+// if it's a relative import or an absolute path, exports are ignored
+const shouldIgnoreRequestForExports = (path: Config.Path) =>
+  path.startsWith('.') || isAbsolute(path);

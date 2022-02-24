@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--showConfig outputs config info and exits 1`] = `
-{
+"{
   "configs": [
     {
       "automock": false,
@@ -15,10 +15,13 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
         "computeSha1": false,
+        "enableSymlinks": false,
+        "forceNodeFilesystemAPI": true,
         "throwOnModuleCollision": false
       },
       "injectGlobals": true,
@@ -27,10 +30,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleFileExtensions": [
         "js",
-        "json",
         "jsx",
         "ts",
         "tsx",
+        "json",
         "node"
       ],
       "moduleNameMapper": [],
@@ -44,7 +47,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "roots": [
         "<<REPLACED_ROOT_DIR>>"
       ],
-      "runner": "jest-runner",
+      "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
       "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],
@@ -62,7 +65,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
       "testURL": "http://localhost",
       "timers": "real",
       "transform": [
@@ -82,6 +85,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "globalConfig": {
     "bail": 0,
     "changedFilesWithAncestor": false,
+    "ci": true,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
@@ -118,12 +122,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testFailureExitCode": 1,
     "testPathPattern": "",
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
-    "updateSnapshot": "all",
+    "updateSnapshot": "none",
     "useStderr": false,
     "watch": false,
     "watchAll": false,
     "watchman": true
   },
   "version": "[version]"
-}
+}"
 `;

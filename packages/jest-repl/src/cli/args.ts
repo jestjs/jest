@@ -7,12 +7,40 @@
  */
 
 import type {Options} from 'yargs';
-import Runtime from 'jest-runtime';
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 
+const runtimeCLIOptions: Record<
+  'cache' | 'config' | 'debug' | 'watchman',
+  Options
+> = {
+  cache: {
+    default: true,
+    description:
+      'Whether to use the preprocessor cache. Disable ' +
+      'the cache using --no-cache.',
+    type: 'boolean',
+  },
+  config: {
+    alias: 'c',
+    description: 'The path to a Jest config file.',
+    type: 'string',
+  },
+  debug: {
+    description: 'Print debugging info about your jest config.',
+    type: 'boolean',
+  },
+  watchman: {
+    default: true,
+    description:
+      'Whether to use watchman for file crawling. Disable using ' +
+      '--no-watchman.',
+    type: 'boolean',
+  },
+};
+
 export const options: Record<string, Options> = {
-  ...Runtime.getCLIOptions(),
+  ...runtimeCLIOptions,
   replname: {
     alias: 'r',
     description:

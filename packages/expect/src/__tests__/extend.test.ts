@@ -6,11 +6,10 @@
  *
  */
 
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import jestExpect from '../';
-import {equals} from '../jasmineUtils';
-import {iterableEquality, subsetEquality} from '../utils';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -18,8 +17,14 @@ jestExpect.extend({
   toBeDivisibleBy(actual: number, expected: number) {
     const pass = actual % expected === 0;
     const message = pass
-      ? () => `expected ${actual} not to be divisible by ${expected}`
-      : () => `expected ${actual} to be divisible by ${expected}`;
+      ? () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be divisible by ${expected}`
+      : () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be divisible by ${expected}`;
 
     return {message, pass};
   },
@@ -33,8 +38,14 @@ jestExpect.extend({
   toBeWithinRange(actual: number, floor: number, ceiling: number) {
     const pass = actual >= floor && actual <= ceiling;
     const message = pass
-      ? () => `expected ${actual} not to be within range ${floor} - ${ceiling}`
-      : () => `expected ${actual} to be within range ${floor} - ${ceiling}`;
+      ? () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${floor} - ${ceiling}`
+      : () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${floor} - ${ceiling}`;
 
     return {message, pass};
   },
@@ -70,8 +81,8 @@ it('exposes matcherUtils in context', () => {
         }),
       );
       const message = pass
-        ? () => `expected this.utils to be defined in an extend call`
-        : () => `expected this.utils not to be defined in an extend call`;
+        ? () => 'expected this.utils to be defined in an extend call'
+        : () => 'expected this.utils not to be defined in an extend call';
 
       return {message, pass};
     },
@@ -154,4 +165,22 @@ it('prints the Symbol into the error message', () => {
       a: jestExpect.toBeSymbol(bar),
     }),
   ).toThrowErrorMatchingSnapshot();
+});
+
+it('allows overriding existing extension', () => {
+  jestExpect.extend({
+    toAllowOverridingExistingMatcher(_expected: unknown) {
+      return {pass: _expected === 'bar'};
+    },
+  });
+
+  jestExpect('foo').not.toAllowOverridingExistingMatcher();
+
+  jestExpect.extend({
+    toAllowOverridingExistingMatcher(_expected: unknown) {
+      return {pass: _expected === 'foo'};
+    },
+  });
+
+  jestExpect('foo').toAllowOverridingExistingMatcher();
 });

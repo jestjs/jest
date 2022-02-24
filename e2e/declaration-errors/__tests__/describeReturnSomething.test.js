@@ -8,7 +8,7 @@
 
 'use strict';
 
-describe('describe return warns', () => {
+describe('describe return errors', () => {
   it('t', () => {});
   return 42;
 });

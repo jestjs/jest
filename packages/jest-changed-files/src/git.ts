@@ -19,7 +19,7 @@ const findChangedFilesUsingCommand = async (
 
   try {
     result = await execa('git', args, {cwd});
-  } catch (e) {
+  } catch (e: any) {
     // TODO: Should we keep the original `message`?
     e.message = e.stderr;
 
@@ -34,17 +34,15 @@ const findChangedFilesUsingCommand = async (
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const changedSince: string | undefined =
-      options && (options.withAncestor ? 'HEAD^' : options.changedSince);
+    const changedSince = options.withAncestor ? 'HEAD^' : options.changedSince;
 
-    const includePaths: Array<Config.Path> = (
-      (options && options.includePaths) ||
-      []
-    ).map(absoluteRoot => path.normalize(path.relative(cwd, absoluteRoot)));
+    const includePaths = (options.includePaths ?? []).map(absoluteRoot =>
+      path.normalize(path.relative(cwd, absoluteRoot)),
+    );
 
-    if (options && options.lastCommit) {
+    if (options.lastCommit) {
       return findChangedFilesUsingCommand(
-        ['show', '--name-only', '--pretty=format:', 'HEAD'].concat(
+        ['show', '--name-only', '--pretty=format:', 'HEAD', '--'].concat(
           includePaths,
         ),
         cwd,
@@ -53,19 +51,23 @@ const adapter: SCMAdapter = {
     if (changedSince) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
-          ['diff', '--name-only', `${changedSince}...HEAD`].concat(
+          ['diff', '--name-only', `${changedSince}...HEAD`, '--'].concat(
             includePaths,
           ),
           cwd,
         ),
         findChangedFilesUsingCommand(
-          ['diff', '--cached', '--name-only'].concat(includePaths),
+          ['diff', '--cached', '--name-only', '--'].concat(includePaths),
           cwd,
         ),
         findChangedFilesUsingCommand(
-          ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
-            includePaths,
-          ),
+          [
+            'ls-files',
+            '--other',
+            '--modified',
+            '--exclude-standard',
+            '--',
+          ].concat(includePaths),
           cwd,
         ),
       ]);
@@ -73,13 +75,17 @@ const adapter: SCMAdapter = {
     }
     const [staged, unstaged] = await Promise.all([
       findChangedFilesUsingCommand(
-        ['diff', '--cached', '--name-only'].concat(includePaths),
+        ['diff', '--cached', '--name-only', '--'].concat(includePaths),
         cwd,
       ),
       findChangedFilesUsingCommand(
-        ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
-          includePaths,
-        ),
+        [
+          'ls-files',
+          '--other',
+          '--modified',
+          '--exclude-standard',
+          '--',
+        ].concat(includePaths),
         cwd,
       ),
     ]);

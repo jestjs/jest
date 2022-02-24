@@ -46,13 +46,13 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (
+export default function getCallsite(
   level: number,
   sourceMaps?: SourceMapRegistry | null,
-): callsites.CallSite => {
+): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
 
   if (sourceMapFileName) {
     try {
@@ -65,4 +65,4 @@ export default (
   }
 
   return stack;
-};
+}

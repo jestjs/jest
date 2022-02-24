@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import isCI = require('is-ci');
+import {isCI} from 'ci-info';
 
 export default !!process.stdout.isTTY && process.env.TERM !== 'dumb' && !isCI;

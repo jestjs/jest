@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prints the config object 1`] = `
-{
+"{
   "configs": {
     "automock": false,
     "cache": false,
@@ -12,6 +12,7 @@ exports[`prints the config object 1`] = `
     "detectLeaks": false,
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
+    "extensionsToTreatAsEsm": [],
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
@@ -40,6 +41,7 @@ exports[`prints the config object 1`] = `
     "skipFilter": false,
     "skipNodeResolution": false,
     "slowTestThreshold": 5,
+    "snapshotFormat": {},
     "snapshotSerializers": [],
     "testEnvironment": "node",
     "testEnvironmentOptions": {},
@@ -60,6 +62,7 @@ exports[`prints the config object 1`] = `
     "bail": 0,
     "changedFilesWithAncestor": false,
     "changedSince": "",
+    "ci": false,
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "coverage",
@@ -93,6 +96,7 @@ exports[`prints the config object 1`] = `
     "runTestsByPath": false,
     "silent": false,
     "skipFilter": false,
+    "snapshotFormat": {},
     "testFailureExitCode": 1,
     "testNamePattern": "",
     "testPathPattern": "",
@@ -108,5 +112,5 @@ exports[`prints the config object 1`] = `
   },
   "version": 123
 }
-
+"
 `;

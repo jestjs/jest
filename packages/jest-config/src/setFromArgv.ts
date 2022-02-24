@@ -35,9 +35,10 @@ export default function setFromArgv(
           break;
         case 'coverageThreshold':
         case 'globals':
-        case 'moduleNameMapper':
-        case 'transform':
         case 'haste':
+        case 'moduleNameMapper':
+        case 'testEnvironmentOptions':
+        case 'transform':
           const str = argv[key];
           if (isJSONString(str)) {
             options[key] = JSON.parse(str);

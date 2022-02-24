@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`errors when a test both returns a promise and takes a callback 1`] = `
-FAIL __tests__/promise-and-callback.test.js
+"FAIL __tests__/promise-and-callback.test.js
   ✕ promise-returning test with callback
   ✕ async test with callback
   ✕ test done before return value
@@ -12,11 +12,11 @@ FAIL __tests__/promise-and-callback.test.js
     Returned value: Promise {}
 
        8 | 'use strict';
-       9 | 
+       9 |
     > 10 | it('promise-returning test with callback', done => {
          | ^
       11 |   done();
-      12 | 
+      12 |
       13 |   return Promise.resolve();
 
       at Object.it (__tests__/promise-and-callback.test.js:10:1)
@@ -27,12 +27,12 @@ FAIL __tests__/promise-and-callback.test.js
     Returned value: Promise {}
 
       14 | });
-      15 | 
+      15 |
     > 16 | it('async test with callback', async done => {
          | ^
       17 |   done();
       18 | });
-      19 | 
+      19 |
 
       at Object.it (__tests__/promise-and-callback.test.js:16:1)
 
@@ -42,12 +42,12 @@ FAIL __tests__/promise-and-callback.test.js
     Returned value: "foobar"
 
       18 | });
-      19 | 
+      19 |
     > 20 | it('test done before return value', done => {
          | ^
       21 |   done();
-      22 | 
+      22 |
       23 |   return 'foobar';
 
-      at Object.it (__tests__/promise-and-callback.test.js:20:1)
+      at Object.it (__tests__/promise-and-callback.test.js:20:1)"
 `;

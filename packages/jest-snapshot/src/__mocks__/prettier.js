@@ -13,7 +13,7 @@ module.exports = {
       pluginSearchDirs: [require('path').dirname(require.resolve('prettier'))],
       ...opts,
     }),
-  getFileInfo: {sync: () => ({inferredParser: 'babylon'})},
+  getFileInfo: {sync: () => ({inferredParser: 'babel'})},
   resolveConfig: {sync: jest.fn()},
   version: prettier.version,
 };

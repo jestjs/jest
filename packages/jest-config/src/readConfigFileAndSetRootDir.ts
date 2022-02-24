@@ -6,18 +6,17 @@
  */
 
 import * as path from 'path';
-import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
-import type {Register} from 'ts-node';
+import parseJson = require('parse-json');
+import stripJsonComments = require('strip-json-comments');
+import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
-import {interopRequireDefault} from 'jest-util';
+import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
-// @ts-expect-error: vendored
-import jsonlint from './vendor/jsonlint';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
@@ -34,52 +33,31 @@ export default async function readConfigFileAndSetRootDir(
   try {
     if (isTS) {
       configObject = await loadTSConfigFile(configPath);
+    } else if (isJSON) {
+      const fileContent = fs.readFileSync(configPath, 'utf8');
+      configObject = parseJson(stripJsonComments(fileContent), configPath);
     } else {
-      configObject = require(configPath);
+      configObject = await requireOrImportModule<any>(configPath);
     }
   } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      try {
-        const configUrl = pathToFileURL(configPath);
-
-        // node `import()` supports URL, but TypeScript doesn't know that
-        const importedConfig = await import(configUrl.href);
-
-        if (!importedConfig.default) {
-          throw new Error(
-            `Jest: Failed to load mjs config file ${configPath} - did you use a default export?`,
-          );
-        }
-
-        configObject = importedConfig.default;
-      } catch (innerError) {
-        if (innerError.message === 'Not supported') {
-          throw new Error(
-            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${configPath}`,
-          );
-        }
-
-        throw innerError;
-      }
-    } else if (isJSON) {
-      throw new Error(
-        `Jest: Failed to parse config file ${configPath}\n` +
-          `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
-      );
-    } else if (isTS) {
+    if (isTS) {
       throw new Error(
         `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
           `  ${error}`,
       );
-    } else {
-      throw error;
     }
+
+    throw error;
   }
 
   if (configPath.endsWith(PACKAGE_JSON)) {
     // Event if there's no "jest" property in package.json we will still use
     // an empty object.
     configObject = configObject.jest || {};
+  }
+
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
   }
 
   if (configObject.rootDir) {
@@ -99,28 +77,14 @@ export default async function readConfigFileAndSetRootDir(
   return configObject;
 }
 
+let registerer: Service;
+
 // Load the TypeScript configuration
 const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
-  let registerer: Register;
-
   // Register TypeScript compiler instance
-  try {
-    registerer = require('ts-node').register({
-      compilerOptions: {
-        module: 'CommonJS',
-      },
-    });
-  } catch (e) {
-    if (e.code === 'MODULE_NOT_FOUND') {
-      throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
-      );
-    }
-
-    throw e;
-  }
+  await registerTsNode();
 
   registerer.enabled(true);
 
@@ -135,3 +99,30 @@ const loadTSConfigFile = async (
 
   return configObject;
 };
+
+async function registerTsNode(): Promise<Service> {
+  if (registerer) {
+    return registerer;
+  }
+
+  try {
+    const tsNode = await import('ts-node');
+    registerer = tsNode.register({
+      compilerOptions: {
+        module: 'CommonJS',
+      },
+      moduleTypes: {
+        '**': 'cjs',
+      },
+    });
+    return registerer;
+  } catch (e: any) {
+    if (e.code === 'ERR_MODULE_NOT_FOUND') {
+      throw new Error(
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+      );
+    }
+
+    throw e;
+  }
+}

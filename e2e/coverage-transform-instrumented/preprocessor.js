@@ -18,16 +18,16 @@ const options = {
 
 module.exports = {
   canInstrument: true,
-  process(src, filename, config, transformOptions) {
+  process(src, filename, transformOptions) {
     options.filename = filename;
 
-    if (transformOptions && transformOptions.instrument) {
+    if (transformOptions.instrument) {
       options.auxiliaryCommentBefore = ' istanbul ignore next ';
       options.plugins = [
         [
           babelIstanbulPlugin,
           {
-            cwd: config.rootDir,
+            cwd: transformOptions.config.rootDir,
             exclude: [],
           },
         ],

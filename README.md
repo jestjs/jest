@@ -1,9 +1,13 @@
 <p align="center">
-  <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
-  <a href="https://github.com/facebook/jest/blob/master/LICENSE">
+  <a href="https://badge.fury.io/js/jest">
+    <img src="https://badge.fury.io/js/jest.svg" alt="npm version">
+  </a>
+  <a href="https://github.com/facebook/jest/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
   </a>
-  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="center" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
+  <a href="https://twitter.com/intent/follow?screen_name=fbjest">
+    <img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter" />
+  </a>
 </p>
 
 <!-- A spacer -->
@@ -89,7 +93,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+Finally, run `yarn test` or `npm test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -110,7 +114,7 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/en/cli) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/cli) page.
 
 ## Additional Configuration
 
@@ -172,11 +176,11 @@ module.exports = {
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/webpack) to get started.
 
 ### Using parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
 ### Using TypeScript
 
@@ -206,10 +210,10 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 
 Learn more about using [Jest on the official site!](https://jestjs.io)
 
-- [Getting Started](https://jestjs.io/docs/en/getting-started)
-- [Guides](https://jestjs.io/docs/en/snapshot-testing)
-- [API Reference](https://jestjs.io/docs/en/api)
-- [Configuring Jest](https://jestjs.io/docs/en/configuration)
+- [Getting Started](https://jestjs.io/docs/getting-started)
+- [Guides](https://jestjs.io/docs/snapshot-testing)
+- [API Reference](https://jestjs.io/docs/api)
+- [Configuring Jest](https://jestjs.io/docs/configuration)
 
 ## Badge
 

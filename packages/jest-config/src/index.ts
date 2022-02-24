@@ -15,7 +15,8 @@ import normalize from './normalize';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
-export {getTestEnvironment, isJSONString} from './utils';
+
+export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
@@ -38,17 +39,15 @@ export async function readConfig(
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: Config.Path | null,
-  projectIndex: number = Infinity,
+  parentConfigDirname?: Config.Path | null,
+  projectIndex = Infinity,
+  skipMultipleConfigWarning = false,
 ): Promise<ReadConfig> {
-  let rawOptions:
-    | Config.InitialOptions
-    | (() => Config.InitialOptions | Promise<Config.InitialOptions>);
+  let rawOptions: Config.InitialOptions;
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigPath) {
-      const parentConfigDirname = path.dirname(parentConfigPath);
+    if (parentConfigDirname) {
       rawOptions = packageRootOrConfig;
       rawOptions.rootDir = rawOptions.rootDir
         ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
@@ -76,19 +75,23 @@ export async function readConfig(
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(argv.config, process.cwd());
+    configPath = resolveConfigPath(
+      argv.config,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
     // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
+    configPath = resolveConfigPath(
+      packageRootOrConfig,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
 
-  if (typeof rawOptions === 'function') {
-    rawOptions = await rawOptions();
-  }
-
-  const {options, hasDeprecationWarnings} = normalize(
+  const {options, hasDeprecationWarnings} = await normalize(
     rawOptions,
     argv,
     configPath,
@@ -114,6 +117,7 @@ const groupOptions = (
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
+    ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
@@ -152,6 +156,7 @@ const groupOptions = (
     runTestsByPath: options.runTestsByPath,
     silent: options.silent,
     skipFilter: options.skipFilter,
+    snapshotFormat: options.snapshotFormat,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
     testPathPattern: options.testPathPattern,
@@ -178,6 +183,7 @@ const groupOptions = (
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
+    extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
     globalSetup: options.globalSetup,
@@ -206,6 +212,7 @@ const groupOptions = (
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
     slowTestThreshold: options.slowTestThreshold,
+    snapshotFormat: options.snapshotFormat,
     snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,
@@ -300,10 +307,9 @@ export async function readConfigs(
   }
 
   if (projects.length > 0) {
-    const projectIsCwd =
-      process.platform === 'win32'
-        ? projects[0] === tryRealpath(process.cwd())
-        : projects[0] === process.cwd();
+    const cwd =
+      process.platform === 'win32' ? tryRealpath(process.cwd()) : process.cwd();
+    const projectIsCwd = projects[0] === cwd;
 
     const parsedConfigs = await Promise.all(
       projects
@@ -331,8 +337,10 @@ export async function readConfigs(
             argv,
             root,
             skipArgvConfigOption,
-            configPath,
+            configPath ? path.dirname(configPath) : cwd,
             projectIndex,
+            // we wanna skip the warning if this is the "main" project
+            projectIsCwd,
           );
         }),
     );

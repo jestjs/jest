@@ -44,7 +44,7 @@ const defaultConfig = {
   restoreMocks: false,
   roots: ['<rootDir>'],
   snapshotSerializers: [],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: null,
@@ -106,12 +106,12 @@ const validConfig = {
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testURL: 'http://localhost',
   timers: 'real',
   transform: {
@@ -127,7 +127,8 @@ const validConfig = {
   watchman: true,
 };
 
-const format = (value: string) => require('pretty-format')(value, {min: true});
+const format = (value: string) =>
+  require('pretty-format').format(value, {min: true});
 
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Record<string, any>) =>

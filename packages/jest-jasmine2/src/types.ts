@@ -7,7 +7,7 @@
 
 import type {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
-import expect = require('expect');
+import type {Expect} from 'expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -24,25 +24,6 @@ export type SpecDefinitionsFn = () => void;
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
-
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: unknown,
-  actual: unknown,
-  options?: unknown,
-) => ExpectationResult;
-// -------END-------
 
 export type RunDetails = {
   totalSpecsDefined?: number;
@@ -67,8 +48,8 @@ export interface Spy extends Record<string, any> {
 
 type JasmineMatcher = {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
+  compare(...args: Array<unknown>): unknown;
+  negativeCompare(...args: Array<unknown>): unknown;
 };
 
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
@@ -77,9 +58,7 @@ export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (
-    options?: Record<string, unknown>,
-  ) => ReturnType<typeof Env>['prototype'];
+  getEnv: () => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
   Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;
@@ -91,13 +70,26 @@ export type Jasmine = {
   version: string;
   testPath: Config.Path;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & typeof expect &
-  NodeJS.Global;
+} & Expect &
+  typeof globalThis;
 
 declare global {
-  module NodeJS {
+  namespace NodeJS {
     interface Global {
-      expect: typeof expect;
+      expect: Expect;
+      jasmine: Jasmine;
+    }
+  }
+}
+
+declare module '@jest/types' {
+  namespace Global {
+    interface GlobalAdditions {
+      jasmine: Jasmine;
+      fail: () => void;
+      pending: () => void;
+      spyOn: () => void;
+      spyOnProperty: () => void;
     }
   }
 }
