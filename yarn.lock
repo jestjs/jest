@@ -2727,6 +2727,7 @@ __metadata:
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
   dependencies:
     "@bcoe/v8-coverage": ^0.2.3
+    "@cspotcode/source-map-consumer": 0.8.0
     "@jest/console": ^28.0.0-alpha.4
     "@jest/test-result": ^28.0.0-alpha.4
     "@jest/test-utils": ^28.0.0-alpha.4
@@ -2758,7 +2759,6 @@ __metadata:
     jest-worker: ^28.0.0-alpha.4
     mock-fs: ^5.1.2
     slash: ^3.0.0
-    source-map: ^0.6.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
@@ -2783,10 +2783,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
   dependencies:
+    "@cspotcode/source-map-consumer": 0.8.0
     "@types/graceful-fs": ^4.1.2
     callsites: ^3.0.0
     graceful-fs: ^4.2.9
-    source-map: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -2844,6 +2844,7 @@ __metadata:
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
     "@babel/core": ^7.1.0
+    "@cspotcode/source-map-consumer": 0.8.0
     "@jest/test-utils": ^28.0.0-alpha.4
     "@jest/types": ^28.0.0-alpha.4
     "@types/babel__core": ^7.1.0
@@ -2864,7 +2865,6 @@ __metadata:
     micromatch: ^4.0.4
     pirates: ^4.0.4
     slash: ^3.0.0
-    source-map: ^0.6.1
     write-file-atomic: ^4.0.1
   languageName: unknown
   linkType: soft

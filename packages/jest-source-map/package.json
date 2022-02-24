@@ -17,9 +17,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@cspotcode/source-map-consumer": "0.8.0",
     "callsites": "^3.0.0",
-    "graceful-fs": "^4.2.9",
-    "source-map": "^0.6.0"
+    "graceful-fs": "^4.2.9"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2"

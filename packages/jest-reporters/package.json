@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
+    "@cspotcode/source-map-consumer": "0.8.0",
     "@jest/console": "^28.0.0-alpha.4",
     "@jest/test-result": "^28.0.0-alpha.4",
     "@jest/transform": "^28.0.0-alpha.4",
@@ -33,7 +34,6 @@
     "jest-util": "^28.0.0-alpha.4",
     "jest-worker": "^28.0.0-alpha.4",
     "slash": "^3.0.0",
-    "source-map": "^0.6.0",
     "string-length": "^4.0.1",
     "terminal-link": "^2.0.0",
     "v8-to-istanbul": "^8.1.0"

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.1.0",
+    "@cspotcode/source-map-consumer": "0.8.0",
     "@jest/types": "^28.0.0-alpha.4",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^4.0.0",
@@ -30,7 +31,6 @@
     "micromatch": "^4.0.4",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
-    "source-map": "^0.6.1",
     "write-file-atomic": "^4.0.1"
   },
   "devDependencies": {

@@ -34,12 +34,6 @@ import type {
   Test,
 } from './types';
 
-// This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
-  version: number;
-  file?: string;
-}
-
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
@@ -442,7 +436,7 @@ export default class CoverageReporter extends BaseReporter {
         mergedCoverages.result.map(async res => {
           const fileTransform = fileTransforms.get(res.url);
 
-          let sourcemapContent: FixedRawSourceMap | undefined = undefined;
+          let sourcemapContent: RawSourceMap | undefined = undefined;
 
           if (
             fileTransform?.sourceMapPath &&
@@ -461,6 +455,7 @@ export default class CoverageReporter extends BaseReporter {
                   originalSource: fileTransform.originalCode,
                   source: fileTransform.code,
                   sourceMap: {
+                    // @ts-expect-error sourcemapContent has non-optional `file` property; TS thinks we are always overwriting `file: res.url`
                     sourcemap: {file: res.url, ...sourcemapContent},
                   },
                 }
