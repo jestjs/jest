@@ -379,7 +379,7 @@ export type ProjectConfig = {
   roots: Array<string>;
   runner: string;
   runtime?: string;
-  sandboxInjectedGlobals: Array<keyof NodeJS.Global>;
+  sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
   skipFilter: boolean;
