@@ -31,6 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
+import type {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
@@ -49,7 +50,7 @@ export type SuiteResult = {
 export type Attributes = {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure?: boolean;
   getTestPath: () => string;
 };
@@ -57,7 +58,7 @@ export type Attributes = {
 export default class Suite {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure: boolean;
   beforeFns: Array<QueueableFn>;
   afterFns: Array<QueueableFn>;
