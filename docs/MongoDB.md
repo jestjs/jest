@@ -40,9 +40,9 @@ describe('insert', () => {
     db = await connection.db(globalThis.__MONGO_DB_NAME__);
   });
 
-afterAll(async () => {
-  await connection.close();
-});
+  afterAll(async () => {
+    await connection.close();
+  });
 
   it('should insert a doc into collection', async () => {
     const users = db.collection('users');
