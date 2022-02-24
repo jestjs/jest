@@ -8,6 +8,6 @@
 
 describe('setupFile', () => {
   it('patches jasmine in setup file', () => {
-    expect(global.describeDefined).toBe(true);
+    expect(globalThis.describeDefined).toBe(true);
   });
 });

@@ -53,7 +53,7 @@ beforeEach(() => {
         },
 
         fooPromiseWorks() {
-          return new Promise((resolve, reject) => {
+          return new Promise(resolve => {
             setTimeout(() => resolve(1989), 5);
           });
         },
@@ -126,6 +126,18 @@ afterEach(() => {
   jest.resetModules();
 
   thread.removeAllListeners('message');
+});
+
+it('sets env.JEST_WORKER_ID', () => {
+  thread.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true, // Not really used here, but for flow type purity.
+    './my-fancy-worker',
+    [],
+    '3',
+  ]);
+
+  expect(process.env.JEST_WORKER_ID).toBe('3');
 });
 
 it('lazily requires the file', () => {

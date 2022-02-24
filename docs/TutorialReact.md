@@ -3,18 +3,18 @@ id: tutorial-react
 title: Testing React Apps
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications.
+At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
 ### Setup with Create React App
 
-If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
-```bash
-yarn add --dev react-test-renderer
+```bash npm2yarn
+npm install --save-dev react-test-renderer
 ```
 
 ### Setup without Create React App
@@ -23,14 +23,14 @@ If you have an existing application you'll need to install a few packages to mak
 
 Run
 
-```bash
-yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
+```bash npm2yarn
+npm install --save-dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
 ```json
-// package.json
+{
   "dependencies": {
     "react": "<current-version>",
     "react-dom": "<current-version>"
@@ -45,12 +45,15 @@ Your `package.json` should look something like this (where `<current-version>` i
   "scripts": {
     "test": "jest"
   }
+}
 ```
 
-```js
-// babel.config.js
+```js title="babel.config.js"
 module.exports = {
-  presets: ['@babel/preset-env', '@babel/preset-react'],
+  presets: [
+    '@babel/preset-env',
+    ['@babel/preset-react', {runtime: 'automatic'}],
+  ],
 };
 ```
 
@@ -60,59 +63,47 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```javascript
-// Link.react.js
-import React from 'react';
+```tsx title="Link.js"
+import {useState} from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-export default class Link extends React.Component {
-  constructor(props) {
-    super(props);
+export default function Link({page, children}) {
+  const [status, setStatus] = useState(STATUS.NORMAL);
 
-    this._onMouseEnter = this._onMouseEnter.bind(this);
-    this._onMouseLeave = this._onMouseLeave.bind(this);
+  const onMouseEnter = () => {
+    setStatus(STATUS.HOVERED);
+  };
 
-    this.state = {
-      class: STATUS.NORMAL,
-    };
-  }
+  const onMouseLeave = () => {
+    setStatus(STATUS.NORMAL);
+  };
 
-  _onMouseEnter() {
-    this.setState({class: STATUS.HOVERED});
-  }
-
-  _onMouseLeave() {
-    this.setState({class: STATUS.NORMAL});
-  }
-
-  render() {
-    return (
-      <a
-        className={this.state.class}
-        href={this.props.page || '#'}
-        onMouseEnter={this._onMouseEnter}
-        onMouseLeave={this._onMouseLeave}
-      >
-        {this.props.children}
-      </a>
-    );
-  }
+  return (
+    <a
+      className={status}
+      href={page || '#'}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {children}
+    </a>
+  );
 }
 ```
 
+> Note: Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
+
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```javascript
-// Link.react.test.js
-import React from 'react';
-import Link from '../Link.react';
+```tsx title="Link.test.js"
 import renderer from 'react-test-renderer';
+import Link from '../Link';
 
-test('Link changes the class when hovered', () => {
+it('changes the class when hovered', () => {
   const component = renderer.create(
     <Link page="http://www.facebook.com">Facebook</Link>,
   );
@@ -120,13 +111,17 @@ test('Link changes the class when hovered', () => {
   expect(tree).toMatchSnapshot();
 
   // manually trigger the callback
-  tree.props.onMouseEnter();
+  renderer.act(() => {
+    tree.props.onMouseEnter();
+  });
   // re-rendering
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 
   // manually trigger the callback
-  tree.props.onMouseLeave();
+  renderer.act(() => {
+    tree.props.onMouseLeave();
+  });
   // re-rendering
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
@@ -135,44 +130,46 @@ test('Link changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript
-// __tests__/__snapshots__/Link.react.test.js.snap
-exports[`Link changes the class when hovered 1`] = `
+```javascript title="__tests__/__snapshots__/Link.test.js.snap"
+exports[`changes the class when hovered 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 2`] = `
+exports[`changes the class when hovered 2`] = `
 <a
   className="hovered"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 3`] = `
+exports[`changes the class when hovered 3`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
-The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
+The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/main/examples/snapshot).
 
-#### Snapshot Testing with Mocks, Enzyme and React 16
+#### Snapshot Testing with Mocks, Enzyme and React 16+
 
 There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:
 
@@ -196,7 +193,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     jest.mock('./SomeComponent', () => () => 'SomeComponent');
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-    ```js
+    ```tsx
     jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
@@ -208,51 +205,36 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
-You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
+```bash npm2yarn
+npm install --save-dev @testing-library/react
+```
 
 Let's implement a checkbox which swaps between two labels:
 
-```javascript
-// CheckboxWithLabel.js
+```tsx title="CheckboxWithLabel.js"
+import {useState} from 'react';
 
-import React from 'react';
+export default function CheckboxWithLabel({labelOn, labelOff}) {
+  const [isChecked, setIsChecked] = useState(false);
 
-export default class CheckboxWithLabel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {isChecked: false};
+  const onChange = () => {
+    setIsChecked(!isChecked);
+  };
 
-    // bind manually because React class components don't auto-bind
-    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange() {
-    this.setState({isChecked: !this.state.isChecked});
-  }
-
-  render() {
-    return (
-      <label>
-        <input
-          type="checkbox"
-          checked={this.state.isChecked}
-          onChange={this.onChange}
-        />
-        {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-      </label>
-    );
-  }
+  return (
+    <label>
+      <input type="checkbox" checked={isChecked} onChange={onChange} />
+      {isChecked ? labelOn : labelOff}
+    </label>
+  );
 }
 ```
 
-```javascript
-// __tests__/CheckboxWithLabel-test.js
-import React from 'react';
+```tsx title="__tests__/CheckboxWithLabel-test.js"
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
@@ -273,22 +255,26 @@ it('CheckboxWithLabel changes the text after click', () => {
 });
 ```
 
-The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/main/examples/react-testing-library).
 
 #### Enzyme
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+```bash npm2yarn
+npm install --save-dev enzyme
+```
+
+If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
-```javascript
-// __tests__/CheckboxWithLabel-test.js
-
-import React from 'react';
-import {shallow} from 'enzyme';
+```tsx title="__tests__/CheckboxWithLabel-test.js"
+import Enzyme, {shallow} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-test('CheckboxWithLabel changes the text after click', () => {
+Enzyme.configure({adapter: new Adapter()});
+
+it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
 
@@ -300,14 +286,13 @@ test('CheckboxWithLabel changes the text after click', () => {
 });
 ```
 
-The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
+The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/main/examples/enzyme).
 
 ### Custom transformers
 
-If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:
+If you need more advanced functionality, you can also build your own transformer. Instead of using `babel-jest`, here is an example of using `@babel/core`:
 
-```javascript
-// custom-transformer.js
+```javascript title="custom-transformer.js"
 'use strict';
 
 const {transform} = require('@babel/core');
@@ -320,7 +305,7 @@ module.exports = {
       presets: [jestPreset],
     });
 
-    return result ? result.code : src;
+    return result || src;
   },
 };
 ```
@@ -329,7 +314,7 @@ Don't forget to install the `@babel/core` and `babel-preset-jest` packages for t
 
 To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
-If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+If you'd like to build a transformer with babel support, you can also use `babel-jest` to compose one and pass in your custom configuration options:
 
 ```javascript
 const babelJest = require('babel-jest');
@@ -338,3 +323,5 @@ module.exports = babelJest.createTransformer({
   presets: ['my-custom-preset'],
 });
 ```
+
+See [dedicated docs](CodeTransformation.md#writing-custom-transformers) for more details.

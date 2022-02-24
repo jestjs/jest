@@ -7,7 +7,7 @@
 
 'use strict';
 
-module.exports = function() {
+module.exports = function () {
   const points = 10000;
   let inside = 0;
 

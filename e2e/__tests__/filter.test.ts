@@ -24,7 +24,7 @@ describe('Dynamic test filtering', () => {
     expect(result.stderr).toContain('1 total');
   });
 
-  it('ingores the filter if requested to do so', () => {
+  it('ignores the filter if requested to do so', () => {
     const result = runJest('filter', [
       '--filter=<rootDir>/my-secondary-filter.js',
       '--skipFilter',

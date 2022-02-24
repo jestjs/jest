@@ -16,7 +16,6 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 
 const Benchmark = require('benchmark');
-
 const diffBaseline = require('diff').diffLines;
 const diffImproved = require('../build/index.js').default;
 
@@ -27,10 +26,10 @@ const testBaseline = (a, b) => {
     },
     name: 'baseline',
     onCycle() {
-      global.gc(); // after run cycle
+      globalThis.gc(); // after run cycle
     },
     onStart() {
-      global.gc(); // when benchmark starts
+      globalThis.gc(); // when benchmark starts
     },
   });
 
@@ -39,7 +38,7 @@ const testBaseline = (a, b) => {
   return benchmark.stats;
 };
 
-const testImproved = function(a, b) {
+const testImproved = function (a, b) {
   const benchmark = new Benchmark({
     fn() {
       // Split string arguments to make fair comparison with baseline.
@@ -57,10 +56,10 @@ const testImproved = function(a, b) {
     },
     name: 'improved',
     onCycle() {
-      global.gc(); // after run cycle
+      globalThis.gc(); // after run cycle
     },
     onStart() {
-      global.gc(); // when benchmark starts
+      globalThis.gc(); // when benchmark starts
     },
   });
 

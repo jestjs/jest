@@ -7,11 +7,13 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa = require('execa');
-import {FormattedTestResults} from '@jest/test-result';
+import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
+import type {FormattedTestResults} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {ErrorWithStack} from 'jest-util';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -22,6 +24,7 @@ type RunJestOptions = {
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
   stripAnsi?: boolean; // remove colors from stdout and stderr,
   timeout?: number; // kill the Jest process after X milliseconds
+  env?: NodeJS.ProcessEnv;
 };
 
 // return the result of the spawned process:
@@ -31,8 +34,11 @@ export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
-) {
-  return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
+): RunJestResult {
+  return normalizeStdoutAndStderrOnResult(
+    spawnJest(dir, args, options),
+    options,
+  );
 }
 
 function spawnJest(
@@ -40,7 +46,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): execa.ExecaReturnValue;
+): RunJestResult;
 function spawnJest(
   dir: string,
   args?: Array<string>,
@@ -51,9 +57,9 @@ function spawnJest(
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> = [],
   options: RunJestOptions = {},
-  spawnAsync: boolean = false,
+  spawnAsync = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
@@ -72,13 +78,17 @@ function spawnJest(
     `,
     );
   }
-  const env = Object.assign({}, process.env, {FORCE_COLOR: '0'});
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    FORCE_COLOR: '0',
+    ...options.env,
+  };
 
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
-  const spawnArgs = [JEST_PATH, ...(args || [])];
-  const spawnOptions = {
+  const spawnArgs = [JEST_PATH, ...args];
+  const spawnOptions: execa.CommonOptions<string> = {
     cwd: dir,
     env,
     reject: false,
@@ -92,29 +102,39 @@ function spawnJest(
   );
 }
 
-interface RunJestJsonResult extends execa.ExecaReturnValue {
+export type RunJestResult = execa.ExecaReturnValue;
+
+export interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
-function normalizeStdoutAndStderr(
-  result: execa.ExecaReturnValue,
+function normalizeStreamString(
+  stream: string,
   options: RunJestOptions,
-) {
-  result.stdout = normalizeIcons(result.stdout);
-  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(result.stderr);
-  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
+): string {
+  if (options.stripAnsi) stream = stripAnsi(stream);
+  stream = normalizeIcons(stream);
 
-  return result;
+  return stream;
+}
+
+function normalizeStdoutAndStderrOnResult(
+  result: RunJestResult,
+  options: RunJestOptions,
+): RunJestResult {
+  const stdout = normalizeStreamString(result.stdout, options);
+  const stderr = normalizeStreamString(result.stderr, options);
+
+  return {...result, stderr, stdout};
 }
 
 // Runs `jest` with `--json` option and adds `json` property to the result obj.
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-export const json = function(
+export const json = function (
   dir: string,
-  args: Array<string> | undefined,
+  args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestJsonResult {
   args = [...(args || []), '--json'];
@@ -124,7 +144,7 @@ export const json = function(
       ...result,
       json: JSON.parse(result.stdout || ''),
     };
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(
       `
       Can't parse JSON.
@@ -138,10 +158,11 @@ export const json = function(
 
 type StdErrAndOutString = {stderr: string; stdout: string};
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
+type CheckerFunction = (arg: StdErrAndOutString) => void;
 
 // Runs `jest` continously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
-export const runContinuous = function(
+export const runContinuous = function (
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
@@ -150,7 +171,21 @@ export const runContinuous = function(
 
   let stderr = '';
   let stdout = '';
-  const pending = new Set<(arg: StdErrAndOutString) => void>();
+  const pending = new Set<CheckerFunction>();
+  const pendingRejection = new WeakMap<CheckerFunction, () => void>();
+
+  jestPromise.addListener('exit', () => {
+    for (const fn of pending) {
+      const reject = pendingRejection.get(fn);
+
+      if (reject) {
+        console.log('stdout', normalizeStreamString(stdout, options));
+        console.log('stderr', normalizeStreamString(stderr, options));
+
+        reject();
+      }
+    }
+  });
 
   const dispatch = () => {
     for (const fn of pending) {
@@ -178,7 +213,7 @@ export const runContinuous = function(
     }),
   );
 
-  return {
+  const continuousRun = {
     async end() {
       jestPromise.kill();
 
@@ -188,7 +223,7 @@ export const runContinuous = function(
       result.stdout = stdout;
       result.stderr = stderr;
 
-      return normalizeStdoutAndStderr(result, options);
+      return normalizeStdoutAndStderrOnResult(result, options);
     },
 
     getCurrentOutput(): StdErrAndOutString {
@@ -200,15 +235,49 @@ export const runContinuous = function(
     },
 
     async waitUntil(fn: ConditionFunction) {
-      await new Promise(resolve => {
-        const check = (state: StdErrAndOutString) => {
+      await new Promise<void>((resolve, reject) => {
+        const check: CheckerFunction = state => {
           if (fn(state)) {
             pending.delete(check);
+            pendingRejection.delete(check);
             resolve();
           }
         };
+        const error = new ErrorWithStack(
+          'Process exited',
+          continuousRun.waitUntil,
+        );
+        pendingRejection.set(check, () => reject(error));
         pending.add(check);
       });
     },
   };
+
+  return continuousRun;
 };
+
+// return type matches output of logDebugMessages
+export function getConfig(
+  dir: string,
+  args: Array<string> = [],
+  options?: RunJestOptions,
+): {
+  globalConfig: Config.GlobalConfig;
+  configs: Array<Config.ProjectConfig>;
+  version: string;
+} {
+  const {exitCode, stdout, stderr} = runJest(
+    dir,
+    args.concat('--show-config'),
+    options,
+  );
+
+  try {
+    expect(exitCode).toBe(0);
+  } catch (error) {
+    console.error('Exit code is not 0', {stderr, stdout});
+    throw error;
+  }
+
+  return JSON.parse(stdout);
+}

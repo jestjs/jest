@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
 
@@ -50,7 +50,7 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
@@ -81,7 +81,7 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
@@ -112,7 +112,7 @@ describe('Test Retries', () => {
 
     try {
       jsonResult = JSON.parse(testOutput);
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );

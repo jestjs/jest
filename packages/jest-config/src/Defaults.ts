@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {sep} from 'path';
+import {isCI} from 'ci-info';
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
 import getCacheDirectory from './getCacheDirectory';
@@ -15,32 +17,40 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const defaultOptions: Config.DefaultOptions = {
   automock: false,
   bail: 0,
-  browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
+  ci: isCI,
   clearMocks: false,
   collectCoverage: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageProvider: 'babel',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  detectLeaks: false,
+  detectOpenHandles: false,
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   forceCoverageMatch: [],
   globals: {},
   haste: {
     computeSha1: false,
-    providesModuleNodeModules: [],
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: true,
     throwOnModuleCollision: false,
   },
+  injectGlobals: true,
+  listTests: false,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
+  passWithNoTests: false,
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
@@ -51,19 +61,19 @@ const defaultOptions: Config.DefaultOptions = {
   setupFiles: [],
   setupFilesAfterEnv: [],
   skipFilter: false,
+  slowTestThreshold: 5,
   snapshotSerializers: [],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
-  testRunner: 'jasmine2',
+  testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
-  testURL: 'http://localhost',
   timers: 'real',
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
   watch: false,
   watchPathIgnorePatterns: [],

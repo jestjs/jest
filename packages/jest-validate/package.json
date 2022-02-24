@@ -1,27 +1,36 @@
 {
   "name": "jest-validate",
-  "version": "24.9.0",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-validate"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/types": "^24.9.0",
-    "camelcase": "^5.3.1",
-    "chalk": "^3.0.0",
-    "jest-get-type": "^24.9.0",
+    "@jest/types": "^28.0.0-alpha.4",
+    "camelcase": "^6.2.0",
+    "chalk": "^4.0.0",
+    "jest-get-type": "^28.0.0-alpha.3",
     "leven": "^3.1.0",
-    "pretty-format": "^24.9.0"
+    "pretty-format": "^28.0.0-alpha.4"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.8"
   },
   "engines": {
-    "node": ">= 8"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  }
 }

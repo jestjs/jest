@@ -8,10 +8,10 @@
  */
 /* eslint-env browser*/
 
-import prettyFormat from '../';
+import prettyFormat, {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {DOMElement} = prettyFormat.plugins;
+const {DOMElement} = plugins;
 
 setPrettyPrint([DOMElement]);
 
@@ -344,6 +344,37 @@ Testing.`;
     );
   });
 
+  it('supports custom elements', () => {
+    class CustomElement extends HTMLElement {}
+    class CustomParagraphElement extends HTMLParagraphElement {}
+    class CustomExtendedElement extends CustomElement {}
+
+    customElements.define('custom-element', CustomElement);
+    customElements.define('custom-extended-element', CustomExtendedElement);
+    customElements.define('custom-paragraph', CustomParagraphElement, {
+      extends: 'p',
+    });
+
+    const parent = document.createElement('div');
+    parent.innerHTML = [
+      '<custom-element></custom-element>',
+      '<custom-extended-element></custom-extended-element>',
+      '<p is="custom-paragraph"></p>',
+    ].join('');
+
+    expect(parent).toPrettyPrintTo(
+      [
+        '<div>',
+        '  <custom-element />',
+        '  <custom-extended-element />',
+        '  <p',
+        '    is="custom-paragraph"',
+        '  />',
+        '</div>',
+      ].join('\n'),
+    );
+  });
+
   describe('matches constructor name of SVG elements', () => {
     // Too bad, so sad, element.constructor.name of SVG elements
     // is HTMLUnknownElement in jsdom v9 and v10
@@ -532,5 +563,28 @@ Testing.`;
       ].join('\n'),
       {maxDepth: 2},
     );
+  });
+
+  it('handles `tagName` not being a string', () => {
+    expect({
+      name: 'value',
+      tagName: {text: 'param'},
+      type: 'string',
+    }).toPrettyPrintTo(
+      [
+        'Object {',
+        '  "name": "value",',
+        '  "tagName": Object {',
+        '    "text": "param",',
+        '  },',
+        '  "type": "string",',
+        '}',
+      ].join('\n'),
+    );
+  });
+
+  it('handles jsdom attributes properly', () => {
+    const attributes = require('jsdom/lib/jsdom/living/attributes');
+    expect(DOMElement.test(attributes)).toBe(false);
   });
 });

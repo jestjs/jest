@@ -26,7 +26,7 @@ test('exits the process after test are done but before timers complete', async (
     'node_modules/bar/index.js': '"node modules bar"',
   });
 
-  const haste = new JestHasteMap({
+  const haste = await JestHasteMap.create({
     computeSha1: true,
     extensions: ['js', 'json', 'png'],
     forceNodeFilesystemAPI: true,

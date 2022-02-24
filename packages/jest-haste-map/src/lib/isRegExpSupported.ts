@@ -10,7 +10,7 @@ export default function isRegExpSupported(value: string): boolean {
     // eslint-disable-next-line no-new
     new RegExp(value);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

@@ -7,8 +7,8 @@
  */
 
 import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import {format as prettyFormat} from 'pretty-format';
 import {
   MatcherHintOptions,
   diff,
@@ -19,9 +19,6 @@ import {
   pluralize,
   stringify,
 } from '../';
-
-/* global BigInt */
-const isBigIntDefined = typeof BigInt === 'function';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -40,8 +37,8 @@ describe('stringify()', () => {
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
-    isBigIntDefined ? [BigInt(1), '1n'] : [12, '12'],
-    isBigIntDefined ? [BigInt(0), '0n'] : [123, '123'],
+    [BigInt(1), '1n'],
+    [BigInt(0), '0n'],
   ].forEach(([v, s]) => {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
@@ -100,39 +97,50 @@ describe('stringify()', () => {
     expect(stringify(big)).toBe(prettyFormat(big, {maxDepth: 1, min: true}));
     expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
   });
+
+  test('reduces maxWidth if stringifying very large arrays', () => {
+    const big: any = [];
+    const small: any = [];
+    const testString = Array(1000).join('x');
+
+    for (let i = 0; i < 100; i += 1) {
+      big[i] = testString;
+    }
+
+    for (let i = 0; i < 3; i += 1) {
+      small[i] = testString;
+    }
+
+    expect(stringify(big)).toBe(prettyFormat(big, {maxWidth: 5, min: true}));
+    expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
+  });
 });
 
 describe('ensureNumbers()', () => {
+  const matcherName = 'toBeCloseTo';
+
   test('dont throw error when variables are numbers', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers(1, 2);
+      ensureNumbers(1, 2, matcherName);
     }).not.toThrow();
-    if (isBigIntDefined) {
-      expect(() => {
-        // @ts-ignore
-        ensureNumbers(BigInt(1), BigInt(2));
-      }).not.toThrow();
-    }
+    expect(() => {
+      ensureNumbers(BigInt(1), BigInt(2), matcherName);
+    }).not.toThrow();
   });
 
   test('throws error when expected is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers(1, 'not_a_number', '.toBeCloseTo');
+      ensureNumbers(1, 'not_a_number', `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when received is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers('not_a_number', 3, '.toBeCloseTo');
+      ensureNumbers('not_a_number', 3, `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   describe('with options', () => {
-    const matcherName = 'toBeCloseTo';
-
     test('promise empty isNot false received', () => {
       const options: MatcherHintOptions = {
         isNot: false,
@@ -140,7 +148,6 @@ describe('ensureNumbers()', () => {
         secondArgument: 'precision',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers('', 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -151,7 +158,6 @@ describe('ensureNumbers()', () => {
         // promise undefined is equivalent to empty string
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.1, undefined, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -162,7 +168,6 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.01, '0', matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -173,7 +178,6 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(Symbol('0.1'), 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -184,7 +188,6 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(false, 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -195,7 +198,6 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.1, null, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -203,27 +205,30 @@ describe('ensureNumbers()', () => {
 });
 
 describe('ensureNoExpected()', () => {
+  const matcherName = 'toBeDefined';
+
   test('dont throw error when undefined', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNoExpected(undefined);
+      ensureNoExpected(undefined, matcherName);
     }).not.toThrow();
   });
 
   test('throws error when expected is not undefined with matcherName', () => {
     expect(() => {
-      ensureNoExpected({a: 1}, '.toBeDefined');
+      ensureNoExpected({a: 1}, `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when expected is not undefined with matcherName and options', () => {
     expect(() => {
-      ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
+      ensureNoExpected({a: 1}, matcherName, {isNot: true});
     }).toThrowErrorMatchingSnapshot();
   });
 });
 
-jest.mock('jest-diff', () => () => 'diff output');
+jest.mock('jest-diff', () => ({
+  diff: () => 'diff output',
+}));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
     [
@@ -234,7 +239,7 @@ describe('diff', () => {
       ['a', 1],
       ['a', true],
       [1, true],
-      [isBigIntDefined ? BigInt(1) : 1, true],
+      [BigInt(1), true],
     ].forEach(([actual, expected]) =>
       expect(diff(actual, expected)).toBe('diff output'),
     );
@@ -248,11 +253,9 @@ describe('diff', () => {
     expect(diff(1, 2)).toBe(null);
   });
 
-  if (isBigIntDefined) {
-    test('two bigints', () => {
-      expect(diff(BigInt(1), BigInt(2))).toBe(null);
-    });
-  }
+  test('two bigints', () => {
+    expect(diff(BigInt(1), BigInt(2))).toBe(null);
+  });
 });
 
 describe('pluralize()', () => {
@@ -354,5 +357,39 @@ describe('matcherHint', () => {
 
     expect(received).not.toMatch(substringNegative);
     expect(received).toMatch(substringPositive);
+  });
+});
+
+describe('printDiffOrStringify', () => {
+  test('expected asymmetric matchers should be diffable', () => {
+    jest.dontMock('jest-diff');
+    jest.resetModules();
+    const {printDiffOrStringify} = require('../');
+
+    const expected = expect.objectContaining({
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 2,
+        },
+      ],
+      foo: 'bar',
+    });
+    const received = {
+      array: [
+        {
+          3: 'three',
+          four: '4',
+          one: 1,
+          two: 1,
+        },
+      ],
+      foo: 'bar',
+    };
+    expect(
+      printDiffOrStringify(expected, received, 'Expected', 'Received', false),
+    ).toMatchSnapshot();
   });
 });

@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'jest-path-pattern-reporter-message');
 
@@ -18,8 +18,8 @@ afterEach(() => cleanup(DIR));
 test('prints a message with path pattern at the end', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/a.test.js': `test('a', () => {});`,
-    '__tests__/b.test.js': `test('b', () => {});`,
+    '__tests__/a.test.js': "test('a', () => {});",
+    '__tests__/b.test.js': "test('b', () => {});",
     'package.json': '{}',
   });
   let stderr;

@@ -37,4 +37,11 @@ test('can mock console.error calls from jsdom', () => {
   window.removeEventListener('error', onError);
 
   expect(console.error).toHaveBeenCalledTimes(1);
+  expect(console.error).toHaveBeenCalledWith(
+    expect.objectContaining({
+      detail: expect.objectContaining({
+        message: 'this is an error in an event callback',
+      }),
+    }),
+  );
 });

@@ -7,6 +7,12 @@
   },
   "jest": {
     "automock": true,
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
+    ]
   }
 }

@@ -7,15 +7,12 @@
 
 'use strict';
 
-/* eslint-disable no-new */
-
-// eslint-disable-next-line import/default
 import getStream from 'get-stream';
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
 } from '../../types';
 
@@ -54,54 +51,44 @@ afterEach(() => {
   process.execArgv = originalExecArgv;
 });
 
-it('passes fork options down to child_process.fork, adding the defaults', () => {
+it('passes fork options down to worker_threads.Worker, adding the defaults', () => {
   const thread = require.resolve('../threadChild');
 
-  process.execArgv = ['--inspect', '-p'];
-
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
-      cwd: '/tmp',
+      execArgv: ['--inspect', '-p'],
       execPath: 'hello',
     },
     maxRetries: 3,
+    workerData: {
+      foo: 'bar',
+    },
     workerId: process.env.JEST_WORKER_ID - 1,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(workerThreads.mock.calls[0][0]).toBe(thread.replace(/\.ts$/, '.js'));
+  expect(workerThreads.mock.calls[0][0]).toBe(thread);
   expect(workerThreads.mock.calls[0][1]).toEqual({
     eval: false,
+    execArgv: ['--inspect', '-p'],
+    execPath: 'hello', // Added option.
+    resourceLimits: undefined,
     stderr: true,
     stdout: true,
     workerData: {
-      cwd: '/tmp', // Overridden default option.
-      env: process.env, // Default option.
-      execArgv: ['-p'], // Filtered option.
-      execPath: 'hello', // Added option.
-      silent: true, // Default option.
+      // Added option.
+      foo: 'bar',
     },
   });
 });
 
-it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
-  new Worker({
-    forkOptions: {},
-    maxRetries: 3,
-    workerId: 2,
-    workerPath: '/tmp/foo',
-  });
-
-  expect(workerThreads.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
-    '3',
-  );
-});
-
-it('initializes the thread with the given workerPath', () => {
+it('initializes the thread with the given workerPath and workerId', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
+    workerId: 2,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -110,6 +97,7 @@ it('initializes the thread with the given workerPath', () => {
     false,
     '/tmp/foo/bar/baz.js',
     ['foo', 'bar'],
+    '3',
   ]);
 });
 
@@ -150,11 +138,11 @@ it('provides stdout and stderr from the threads', async () => {
   const stdout = worker.getStdout();
   const stderr = worker.getStderr();
 
-  worker._worker.stdout.end('Hello ', {encoding: 'utf8'});
-  worker._worker.stderr.end('Jest ', {encoding: 'utf8'});
+  worker._worker.stdout.end('Hello ', 'utf8');
+  worker._worker.stderr.end('Jest ', 'utf8');
   worker._worker.emit('exit');
-  worker._worker.stdout.end('World!', {encoding: 'utf8'});
-  worker._worker.stderr.end('Workers!', {encoding: 'utf8'});
+  worker._worker.stdout.end('World!', 'utf8');
+  worker._worker.stderr.end('Workers!', 'utf8');
   worker._worker.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');
@@ -231,6 +219,43 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
   worker._worker.emit('message', [PARENT_MESSAGE_OK]);
 
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
+});
+
+it('can send multiple messages to parent', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'foo', []],
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  // Only onProcessStart has been called
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  // then first call replies...
+  worker._worker.emit('message', [
+    PARENT_MESSAGE_CUSTOM,
+    {message: 'foo bar', otherKey: 1},
+  ]);
+
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).toHaveBeenCalledTimes(1);
+  expect(onCustomMessage).toHaveBeenCalledWith({
+    message: 'foo bar',
+    otherKey: 1,
+  });
 });
 
 it('creates error instances for known errors', () => {

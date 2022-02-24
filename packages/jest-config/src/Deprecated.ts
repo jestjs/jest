@@ -6,19 +6,31 @@
  */
 
 import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
+import type {DeprecatedOptions} from 'jest-validate';
+import {format as prettyFormat} from 'pretty-format';
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 
-export default {
-  mapCoverage: () => `  Option ${chalk.bold(
-    '"mapCoverage"',
-  )} has been removed, as it's no longer necessary.
+const deprecatedOptions: DeprecatedOptions = {
+  browser: () =>
+    `  Option ${chalk.bold(
+      '"browser"',
+    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
+
+  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
+    '"extraGlobals"',
+  )} was replaced by ${chalk.bold('"sandboxInjectedGlobals"')}.
+
+  Please update your configuration.`,
+
+  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
+    '"moduleLoader"',
+  )} was replaced by ${chalk.bold('"runtime"')}.
 
   Please update your configuration.`,
 
   preprocessorIgnorePatterns: (options: {
-    preprocessorIgnorePatterns: Array<string>;
+    preprocessorIgnorePatterns?: Array<string>;
   }) => `  Option ${chalk.bold(
     '"preprocessorIgnorePatterns"',
   )} was replaced by ${chalk.bold(
@@ -35,7 +47,7 @@ export default {
   Please update your configuration.`,
 
   scriptPreprocessor: (options: {
-    scriptPreprocessor: string;
+    scriptPreprocessor?: string;
   }) => `  Option ${chalk.bold(
     '"scriptPreprocessor"',
   )} was replaced by ${chalk.bold(
@@ -52,7 +64,7 @@ export default {
   Please update your configuration.`,
 
   setupTestFrameworkScriptFile: (_options: {
-    setupTestFrameworkScriptFile: Array<string>;
+    setupTestFrameworkScriptFile?: string;
   }) => `  Option ${chalk.bold(
     '"setupTestFrameworkScriptFile"',
   )} was replaced by configuration ${chalk.bold(
@@ -62,7 +74,7 @@ export default {
   Please update your configuration.`,
 
   testPathDirs: (options: {
-    testPathDirs: Array<string>;
+    testPathDirs?: Array<string>;
   }) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold(
     '"roots"',
   )}.
@@ -74,4 +86,14 @@ export default {
 
   Please update your configuration.
   `,
-} as Record<string, Function>;
+
+  testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(
+    '"testURL"',
+  )} was replaced by passing the URL via ${chalk.bold(
+    '"testEnvironmentOptions.url"',
+  )}.
+
+  Please update your configuration.`,
+};
+
+export default deprecatedOptions;

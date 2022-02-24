@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import pEachSeries = require('p-each-series');
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
-import {ScriptTransformer} from '@jest/transform';
-import {interopRequireDefault} from 'jest-util';
+import * as util from 'util';
+import type {Test} from '@jest/test-result';
+import {createScriptTransformer} from '@jest/transform';
+import type {Config} from '@jest/types';
+import prettyFormat from 'pretty-format';
 
-export default async ({
+export default async function runGlobalHook({
   allTests,
   globalConfig,
   moduleName,
@@ -19,7 +19,7 @@ export default async ({
   allTests: Array<Test>;
   globalConfig: Config.GlobalConfig;
   moduleName: 'globalSetup' | 'globalTeardown';
-}): Promise<void> => {
+}): Promise<void> {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
   );
@@ -29,9 +29,9 @@ export default async ({
   }
 
   if (globalModulePaths.size > 0) {
-    await pEachSeries(Array.from(globalModulePaths), async modulePath => {
+    for (const modulePath of globalModulePaths) {
       if (!modulePath) {
-        return;
+        continue;
       }
 
       const correctConfig = allTests.find(
@@ -43,21 +43,35 @@ export default async ({
         : // Fallback to first config
           allTests[0].context.config;
 
-      const transformer = new ScriptTransformer(projectConfig);
+      const transformer = await createScriptTransformer(projectConfig);
 
-      await transformer.requireAndTranspileModule(modulePath, async m => {
-        const globalModule = interopRequireDefault(m).default;
+      try {
+        await transformer.requireAndTranspileModule(
+          modulePath,
+          async globalModule => {
+            if (typeof globalModule !== 'function') {
+              throw new TypeError(
+                `${moduleName} file must export a function at ${modulePath}`,
+              );
+            }
 
-        if (typeof globalModule !== 'function') {
-          throw new TypeError(
-            `${moduleName} file must export a function at ${modulePath}`,
-          );
+            await globalModule(globalConfig, projectConfig);
+          },
+        );
+      } catch (error) {
+        if (util.types.isNativeError(error)) {
+          error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
+
+          throw error;
         }
 
-        await globalModule(globalConfig);
-      });
-    });
+        throw new Error(
+          `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
+            error,
+            {maxDepth: 3},
+          )}`,
+        );
+      }
+    }
   }
-
-  return Promise.resolve();
-};
+}

@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-/* eslint-disable no-throw-literal */
 'use strict';
 
 describe('error stack trace', () => {
@@ -13,6 +12,7 @@ describe('error stack trace', () => {
   });
 
   it('fails strings', () => {
+    // eslint-disable-next-line no-throw-literal
     throw 'this is a string.';
   });
 

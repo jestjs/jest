@@ -115,6 +115,37 @@ describe('async jasmine', () => {
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
   });
 
+  it('works with concurrent within a describe block when invoked with testNamePattern', () => {
+    const {json} = runWithJson('jasmine-async', [
+      '--testNamePattern',
+      'one concurrent test fails',
+      'concurrentWithinDescribe.test.js',
+    ]);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(0);
+    expect(json.numFailedTests).toBe(1);
+    expect(json.numPendingTests).toBe(1);
+    expect(json.testResults[0].message).toMatch(/concurrent test fails/);
+  });
+
+  it('works with concurrent.each', () => {
+    const {json} = runWithJson('jasmine-async', ['concurrent-each.test.js']);
+    expect(json.numTotalTests).toBe(4);
+    expect(json.numPassedTests).toBe(2);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(2);
+  });
+
+  it('works with concurrent.only.each', () => {
+    const {json} = runWithJson('jasmine-async', [
+      'concurrent-only-each.test.js',
+    ]);
+    expect(json.numTotalTests).toBe(4);
+    expect(json.numPassedTests).toBe(2);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(2);
+  });
+
   it("doesn't execute more than 5 tests simultaneously", () => {
     const {json} = runWithJson('jasmine-async', ['concurrent-many.test.js']);
     expect(json.numTotalTests).toBe(10);
@@ -136,5 +167,14 @@ describe('async jasmine', () => {
     const result = runJest('jasmine-async', ['generator.test.js']);
 
     expect(result.exitCode).toBe(0);
+  });
+
+  it('works when another test fails while one is running', () => {
+    const {json} = runWithJson('jasmine-async', [
+      'concurrent-parallel-failure.test.js',
+    ]);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(1);
   });
 });

@@ -9,7 +9,7 @@ import runJest from '../runJest';
 
 test('supports NODE_PATH', () => {
   const result = runJest('node-path', [], {
-    nodePath: ['../node-path/src'],
+    nodePath: '../node-path/src',
   });
   expect(result.exitCode).toBe(0);
 });

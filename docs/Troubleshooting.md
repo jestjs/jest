@@ -23,11 +23,11 @@ To debug in Google Chrome (or any Chromium-based browser), open your browser and
 
 The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-> Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+> Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
 
 ## Debugging in VS Code
 
-There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built-in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 To attach the built-in debugger, run your tests as aforementioned:
 
@@ -124,17 +124,13 @@ More information on Node debugging can be found [here](https://nodejs.org/api/de
 
 ## Debugging in WebStorm
 
-The easiest way to debug Jest tests in [WebStorm](https://www.jetbrains.com/webstorm/) is using `Jest run/debug configuration`. It will launch tests and automatically attach debugger.
-
-In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and select `Jest`. Optionally specify the Jest configuration file, additional options, and environment variables. Save the configuration, put the breakpoints in the code, then click the green debug icon to start debugging.
-
-If you are using Facebook's [`create-react-app`](https://github.com/facebookincubator/create-react-app), in the Jest run/debug configuration specify the path to the `react-scripts` package in the Jest package field and add `--env=jsdom` to the Jest options field.
+[WebStorm](https://www.jetbrains.com/webstorm/) has built-in support for Jest. Read [Testing With Jest in WebStorm](https://blog.jetbrains.com/webstorm/2018/10/testing-with-jest-in-webstorm/) to learn more.
 
 ## Caching Issues
 
 The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
-Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ## Unresolved Promises
 
@@ -144,7 +140,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `globalThis.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
@@ -154,9 +150,9 @@ jest.setTimeout(10000); // 10 second timeout
 
 ## Watchman Issues
 
-Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option to `false`.
+Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
-Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting).
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
@@ -164,7 +160,9 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
+
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
 
 ```bash
 # Using Jest CLI
@@ -183,10 +181,6 @@ jest --maxWorkers=4
 # Using yarn test (e.g. with create-react-app)
 yarn test --maxWorkers=4
 ```
-
-## Compatibility issues
-
-Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 4. However, if you need to run Jest on Node 4, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 4, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
@@ -211,4 +205,4 @@ _Note:_ This means when you are using `test.each` you cannot set the table async
 
 ## Still unresolved?
 
-See [Help](/help.html).
+See [Help](/help).

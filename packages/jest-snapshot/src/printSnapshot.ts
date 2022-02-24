@@ -6,10 +6,7 @@
  */
 
 import chalk = require('chalk');
-// Temporary hack because getObjectSubset has known limitations,
-// is not in the public interface of the expect package,
-// and the long-term goal is to use a non-serialization diff.
-import {getObjectSubset} from 'expect/build/utils';
+import {getObjectSubset} from '@jest/expect-utils';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -21,7 +18,7 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -31,8 +28,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat = require('pretty-format');
-
+import {format as prettyFormat} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -44,7 +40,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
@@ -88,7 +84,7 @@ export const getReceivedColorForChalkInstance = (
 export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
 export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
-export const noColor = (string: string) => string;
+export const noColor = (string: string): string => string;
 
 export const HINT_ARG = 'hint';
 export const SNAPSHOT_ARG = 'snapshot';
@@ -166,10 +162,10 @@ const joinDiffs = (
     '',
   );
 
-const isLineDiffable = (received: any): boolean => {
+const isLineDiffable = (received: unknown): boolean => {
   const receivedType = getType(received);
 
-  if (getType.isPrimitive(received)) {
+  if (isPrimitive(received)) {
     return typeof received === 'string';
   }
 
@@ -195,8 +191,10 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
-export const printExpected = (val: unknown) => EXPECTED_COLOR(minify(val));
-export const printReceived = (val: unknown) => RECEIVED_COLOR(minify(val));
+export const printExpected = (val: unknown): string =>
+  EXPECTED_COLOR(minify(val));
+export const printReceived = (val: unknown): string =>
+  RECEIVED_COLOR(minify(val));
 
 export const printPropertiesAndReceived = (
   properties: object,
@@ -311,12 +309,18 @@ export const printSnapshotAndReceived = (
     const aLines2 = a.split('\n');
     const bLines2 = b.split('\n');
 
-    const aLines0 = dedentLines(aLines2);
+    // Fall through to fix a regression for custom serializers
+    // like jest-snapshot-serializer-raw that ignore the indent option.
+    const b0 = serialize(received, 0);
+    if (b0 !== b) {
+      const aLines0 = dedentLines(aLines2);
 
-    if (aLines0 !== null) {
-      // Compare lines without indentation.
-      const bLines0 = serialize(received, 0).split('\n');
-      return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      if (aLines0 !== null) {
+        // Compare lines without indentation.
+        const bLines0 = b0.split('\n');
+
+        return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      }
     }
 
     // Fall back because:

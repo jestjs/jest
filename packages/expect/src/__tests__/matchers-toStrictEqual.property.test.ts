@@ -7,20 +7,19 @@
  */
 
 import assert from 'assert';
-import {onNodeVersions} from '@jest/test-utils';
 import fc from 'fast-check';
+import expect from '..';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
-import expect from '..';
 
 describe('toStrictEqual', () => {
   const safeExpectStrictEqual = (a, b) => {
     try {
       expect(a).toStrictEqual(b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -28,7 +27,7 @@ describe('toStrictEqual', () => {
     try {
       assert.deepStrictEqual(a, b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -58,20 +57,18 @@ describe('toStrictEqual', () => {
     );
   });
 
-  onNodeVersions('>=9', () => {
-    it('should be equivalent to Node deepStrictEqual', () => {
-      fc.assert(
-        fc.property(
-          fc.anything(anythingSettings),
-          fc.anything(anythingSettings),
-          (a, b) => {
-            expect(safeExpectStrictEqual(a, b)).toBe(
-              safeAssertDeepStrictEqual(a, b),
-            );
-          },
-        ),
-        assertSettings,
-      );
-    });
+  it('should be equivalent to Node deepStrictEqual', () => {
+    fc.assert(
+      fc.property(
+        fc.anything(anythingSettings),
+        fc.anything(anythingSettings),
+        (a, b) => {
+          expect(safeExpectStrictEqual(a, b)).toBe(
+            safeAssertDeepStrictEqual(a, b),
+          );
+        },
+      ),
+      assertSettings,
+    );
   });
 });

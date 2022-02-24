@@ -20,6 +20,21 @@ describe('array', () => {
   });
 });
 
+describe('concurrent', () => {
+  describe('.add', () => {
+    each([
+      [0, 0, 0],
+      [0, 1, 1],
+      [1, 1, 2],
+    ]).test.concurrent(
+      'returns the result of adding %s to %s',
+      async (a, b, expected) => {
+        expect(a + b).toBe(expected);
+      },
+    );
+  });
+});
+
 describe('template', () => {
   describe('.add', () => {
     each`
@@ -31,4 +46,18 @@ describe('template', () => {
       expect(a + b).toBe(expected);
     });
   });
+});
+
+test('throws an error when not called with the right number of arguments', () => {
+  expect(() =>
+    each(
+      [
+        [1, 1, 2],
+        [1, 2, 3],
+        [2, 1, 3],
+      ],
+      'seems like a title but should not be here',
+      () => {},
+    ),
+  ).toThrowErrorMatchingSnapshot();
 });

@@ -8,10 +8,16 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
-import * as dependencyExtractor from './lib/dependencyExtractor';
+import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
+import type {
+  DependencyExtractor,
+  HasteImpl,
+  WorkerMessage,
+  WorkerMetadata,
+} from './types';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -19,9 +25,7 @@ let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
-  return createHash('sha1')
-    .update(content)
-    .digest('hex');
+  return createHash('sha1').update(content).digest('hex');
 }
 
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
@@ -62,10 +66,10 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
         id = fileData.name;
         module = [relativeFilePath, H.PACKAGE];
       }
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
     }
-  } else if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+  } else if (!blacklist.has(filePath.substring(filePath.lastIndexOf('.')))) {
     // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
@@ -73,14 +77,18 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
     if (computeDependencies) {
       const content = getContent();
+      const extractor = data.dependencyExtractor
+        ? await requireOrImportModule<DependencyExtractor>(
+            data.dependencyExtractor,
+            false,
+          )
+        : defaultDependencyExtractor;
       dependencies = Array.from(
-        data.dependencyExtractor
-          ? require(data.dependencyExtractor).extract(
-              content,
-              filePath,
-              dependencyExtractor.extract,
-            )
-          : dependencyExtractor.extract(content),
+        extractor.extract(
+          content,
+          filePath,
+          defaultDependencyExtractor.extract,
+        ),
       );
     }
 

@@ -1,6 +1,8 @@
-**/__tests__/**
 **/__mocks__/**
+**/__tests__/**
+__typetests__
 src
 assets
 tsconfig.json
 tsconfig.tsbuildinfo
+api-extractor.json

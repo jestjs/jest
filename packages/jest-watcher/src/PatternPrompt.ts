@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
+import chalk = require('chalk');
 import {specialChars} from 'jest-util';
-import Prompt from './lib/Prompt';
-import {ScrollOptions} from './types';
+import type Prompt from './lib/Prompt';
+import type {ScrollOptions} from './types';
 
 const {CLEAR} = specialChars;
 
@@ -18,7 +18,7 @@ const usage = (entity: string) =>
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim(`to filter by a ${entity} regex pattern.`)}\n` +
-  `\n`;
+  '\n';
 
 const usageRows = usage('').split('\n').length;
 
@@ -40,7 +40,7 @@ export default class PatternPrompt {
     onSuccess: (value: string) => void,
     onCancel: () => void,
     options?: {header: string},
-  ) {
+  ): void {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
@@ -57,7 +57,7 @@ export default class PatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  protected _onChange(_pattern: string, _options: ScrollOptions) {
+  protected _onChange(_pattern: string, _options: ScrollOptions): void {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }

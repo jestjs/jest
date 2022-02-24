@@ -6,8 +6,7 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import * as fs from 'graceful-fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -17,7 +16,7 @@ const DIR = path.resolve(
 );
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
-const readFile = filename =>
+const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
@@ -39,7 +38,7 @@ test('works fine when function throws error', () => {
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+    expect(fileAfter).toMatchSnapshot('initial write');
     expect(exitCode).toBe(0);
   }
 });
@@ -65,7 +64,7 @@ test('updates existing snapshot', () => {
     ]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(wrap(fileAfter)).toMatchSnapshot('updated snapshot');
+    expect(fileAfter).toMatchSnapshot('updated snapshot');
     expect(exitCode).toBe(0);
   }
 });
@@ -101,6 +100,6 @@ test('should support rejecting promises', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(wrap(fileAfter)).toMatchSnapshot();
+  expect(fileAfter).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

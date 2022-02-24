@@ -37,11 +37,11 @@ test('should not warn when a mock file changes', async () => {
   writeFiles(DIR, {
     '__mocks__/fs.js': '"foo fs"',
   });
-  await new JestHasteMap(hasteConfig).build();
+  await (await JestHasteMap.create(hasteConfig)).build();
 
   // This will throw if the mock file being updated triggers a warning.
   writeFiles(DIR, {
     '__mocks__/fs.js': '"foo fs!"',
   });
-  await new JestHasteMap(hasteConfig).build();
+  await (await JestHasteMap.create(hasteConfig)).build();
 });

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {extract} from '../dependencyExtractor';
+import {extractor} from '../dependencyExtractor';
 import isRegExpSupported from '../isRegExpSupported';
 
 const COMMENT_NO_NEG_LB = isRegExpSupported('(?<!\\.\\s*)') ? '' : '//';
@@ -24,7 +24,7 @@ describe('dependencyExtractor', () => {
        * require('ignore-block-comment');
        */
     `;
-    expect(extract(code)).toEqual(new Set());
+    expect(extractor.extract(code)).toEqual(new Set());
   });
 
   it('should not extract dependencies inside comments (windows line endings)', () => {
@@ -35,7 +35,7 @@ describe('dependencyExtractor', () => {
       ' */',
     ].join('\r\n');
 
-    expect(extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set([]));
   });
 
   it('should not extract dependencies inside comments (unicode line endings)', () => {
@@ -47,7 +47,7 @@ describe('dependencyExtractor', () => {
       ' */',
     ].join('');
 
-    expect(extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set([]));
   });
 
   it('should extract dependencies from `import` statements', () => {
@@ -68,7 +68,9 @@ describe('dependencyExtractor', () => {
       ${COMMENT_NO_NEG_LB} foo . import ('inv1');
       ${COMMENT_NO_NEG_LB} foo . export ('inv2');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 
   // https://github.com/facebook/jest/issues/8547
@@ -83,7 +85,7 @@ describe('dependencyExtractor', () => {
         import ./inv1;
         import inv2
       `;
-    expect(extract(code)).toEqual(
+    expect(extractor.extract(code)).toEqual(
       new Set(['./side-effect-dep1', 'side-effect-dep2']),
     );
   });
@@ -94,7 +96,7 @@ describe('dependencyExtractor', () => {
       import typeof {foo} from 'inv1';
       import type {foo} from 'inv2';
     `;
-    expect(extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set([]));
   });
 
   it('should extract dependencies from `export` statements', () => {
@@ -115,7 +117,9 @@ describe('dependencyExtractor', () => {
       ${COMMENT_NO_NEG_LB} foo . export ('inv1');
       ${COMMENT_NO_NEG_LB} foo . export ('inv2');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 
   it('should extract dependencies from `export-from` statements', () => {
@@ -136,7 +140,9 @@ describe('dependencyExtractor', () => {
       ${COMMENT_NO_NEG_LB} foo . export ('inv1');
       ${COMMENT_NO_NEG_LB} foo . export ('inv2');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 
   it('should not extract dependencies from `export type/typeof` statements', () => {
@@ -145,7 +151,7 @@ describe('dependencyExtractor', () => {
       export typeof {foo} from 'inv1';
       export type {foo} from 'inv2';
     `;
-    expect(extract(code)).toEqual(new Set([]));
+    expect(extractor.extract(code)).toEqual(new Set([]));
   });
 
   it('should extract dependencies from dynamic `import` calls', () => {
@@ -163,7 +169,7 @@ describe('dependencyExtractor', () => {
       importx('inv3');
       import('inv4', 'inv5');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
+    expect(extractor.extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
   });
 
   it('should extract dependencies from `require` calls', () => {
@@ -181,47 +187,7 @@ describe('dependencyExtractor', () => {
       requirex('inv3');
       require('inv4', 'inv5');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
-  });
-
-  it('should extract dependencies from `require.requireActual` calls', () => {
-    const code = `
-      // Good
-      require.requireActual('dep1');
-      const dep2 = require.requireActual(
-        "dep2",
-      );
-      if (require.requireActual(\`dep3\`).cond) {}
-      require
-        .requireActual('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireActual('inv1')
-      xrequire.requireActual('inv2');
-      require.requireActualx('inv3');
-      require.requireActual('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
-  it('should extract dependencies from `require.requireMock` calls', () => {
-    const code = `
-      // Good
-      require.requireMock('dep1');
-      const dep2 = require.requireMock(
-        "dep2",
-      );
-      if (require.requireMock(\`dep3\`).cond) {}
-      require
-        .requireMock('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireMock('inv1')
-      xrequire.requireMock('inv2');
-      require.requireMockx('inv3');
-      require.requireMock('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
   });
 
   it('should extract dependencies from `jest.requireActual` calls', () => {
@@ -232,7 +198,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireActual(\`dep3\`).cond) {}
-      require
+      jest
         .requireActual('dep4');
 
       // Bad
@@ -241,7 +207,9 @@ describe('dependencyExtractor', () => {
       jest.requireActualx('inv3');
       jest.requireActual('inv4', 'inv5');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 
   it('should extract dependencies from `jest.requireMock` calls', () => {
@@ -252,7 +220,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireMock(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -261,7 +229,9 @@ describe('dependencyExtractor', () => {
       jest.requireMockx('inv3');
       jest.requireMock('inv4', 'inv5');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 
   it('should extract dependencies from `jest.genMockFromModule` calls', () => {
@@ -272,7 +242,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.genMockFromModule(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -281,6 +251,30 @@ describe('dependencyExtractor', () => {
       jest.genMockFromModulex('inv3');
       jest.genMockFromModule('inv4', 'inv5');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
+  });
+
+  it('should extract dependencies from `jest.createMockFromModule` calls', () => {
+    const code = `
+      // Good
+      jest.createMockFromModule('dep1');
+      const dep2 = jest.createMockFromModule(
+        "dep2",
+      );
+      if (jest.createMockFromModule(\`dep3\`).cond) {}
+      jest
+        .requireMock('dep4');
+
+      // Bad
+      ${COMMENT_NO_NEG_LB} foo . jest.createMockFromModule('inv1')
+      xjest.createMockFromModule('inv2');
+      jest.createMockFromModulex('inv3');
+      jest.createMockFromModule('inv4', 'inv5');
+    `;
+    expect(extractor.extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4']),
+    );
   });
 });

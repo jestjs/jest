@@ -5,12 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+/* eslint-disable local/ban-types-eventually */
+
+import * as asyncHooks from 'async_hooks';
+import {promisify} from 'util';
+import stripAnsi = require('strip-ansi');
+import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
-import stripAnsi = require('strip-ansi');
 
-type AsyncHook = import('async_hooks').AsyncHook;
+export type HandleCollectionResult = () => Promise<Array<Error>>;
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -36,67 +40,95 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
+// @ts-expect-error: doesn't exist in v12 typings
+const hasWeakRef = typeof WeakRef === 'function';
+
+const asyncSleep = promisify(setTimeout);
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
-export default function collectHandles(): () => Array<Error> {
-  const activeHandles: Map<
+export default function collectHandles(): HandleCollectionResult {
+  const activeHandles = new Map<
     number,
     {error: Error; isActive: () => boolean}
-  > = new Map();
-
-  let hook: AsyncHook;
-
-  try {
-    const asyncHooks: typeof import('async_hooks') = require('async_hooks');
-    hook = asyncHooks.createHook({
-      destroy(asyncId) {
-        activeHandles.delete(asyncId);
-      },
-      init: function initHook(
-        asyncId,
-        type,
-        _triggerAsyncId,
-        resource: {} | NodeJS.Timeout,
+  >();
+  const hook = asyncHooks.createHook({
+    destroy(asyncId) {
+      activeHandles.delete(asyncId);
+    },
+    init: function initHook(
+      asyncId,
+      type,
+      triggerAsyncId,
+      resource: {} | NodeJS.Timeout,
+    ) {
+      // Skip resources that should not generally prevent the process from
+      // exiting, not last a meaningfully long time, or otherwise shouldn't be
+      // tracked.
+      if (
+        type === 'PROMISE' ||
+        type === 'TIMERWRAP' ||
+        type === 'ELDHISTOGRAM' ||
+        type === 'PerformanceObserver' ||
+        type === 'RANDOMBYTESREQUEST' ||
+        type === 'DNSCHANNEL' ||
+        type === 'ZLIB'
       ) {
-        if (type === 'PROMISE' || type === 'TIMERWRAP') {
-          return;
+        return;
+      }
+      const error = new ErrorWithStack(type, initHook, 100);
+      let fromUser = stackIsFromUser(error.stack || '');
+
+      // If the async resource was not directly created by user code, but was
+      // triggered by another async resource from user code, track it and use
+      // the original triggering resource's stack.
+      if (!fromUser) {
+        const triggeringHandle = activeHandles.get(triggerAsyncId);
+        if (triggeringHandle) {
+          fromUser = true;
+          error.stack = triggeringHandle.error.stack;
         }
-        const error = new ErrorWithStack(type, initHook);
+      }
 
-        if (stackIsFromUser(error.stack || '')) {
-          let isActive: () => boolean;
+      if (fromUser) {
+        let isActive: () => boolean;
 
-          if (type === 'Timeout' || type === 'Immediate') {
-            if ('hasRef' in resource) {
-              // Timer that supports hasRef (Node v11+)
-              isActive = resource.hasRef.bind(resource);
+        if (type === 'Timeout' || type === 'Immediate') {
+          // Timer that supports hasRef (Node v11+)
+          if ('hasRef' in resource) {
+            if (hasWeakRef) {
+              // @ts-expect-error: doesn't exist in v12 typings
+              const ref = new WeakRef(resource);
+              isActive = () => {
+                return ref.deref()?.hasRef() ?? false;
+              };
             } else {
-              // Timer that doesn't support hasRef
-              isActive = alwaysActive;
+              isActive = resource.hasRef.bind(resource);
             }
           } else {
-            // Any other async resource
+            // Timer that doesn't support hasRef
             isActive = alwaysActive;
           }
-
-          activeHandles.set(asyncId, {error, isActive});
+        } else {
+          // Any other async resource
+          isActive = alwaysActive;
         }
-      },
-    });
 
-    hook.enable();
-  } catch (e) {
-    const nodeMajor = Number(process.versions.node.split('.')[0]);
-    if (e.code === 'MODULE_NOT_FOUND' && nodeMajor < 8) {
-      throw new Error(
-        'You can only use --detectOpenHandles on Node 8 and newer.',
-      );
-    } else {
-      throw e;
-    }
-  }
+        activeHandles.set(asyncId, {error, isActive});
+      }
+    },
+  });
 
-  return () => {
+  hook.enable();
+
+  return async () => {
+    // Wait briefly for any async resources that have been queued for
+    // destruction to actually be destroyed.
+    // For example, Node.js TCP Servers are not destroyed until *after* their
+    // `close` callback runs. If someone finishes a test from the `close`
+    // callback, we will not yet have seen the resource be destroyed here.
+    await asyncSleep(100);
+
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment

@@ -9,40 +9,38 @@
 
 import semver = require('semver');
 
-export function isJestCircusRun() {
-  return process.env.JEST_CIRCUS === '1';
+export function isJestJasmineRun(): boolean {
+  return process.env.JEST_JASMINE === '1';
 }
 
-export function skipSuiteOnJasmine() {
-  if (!isJestCircusRun()) {
+export function skipSuiteOnJasmine(): void {
+  if (isJestJasmineRun()) {
     test.only('does not work on Jasmine', () => {
       console.warn('[SKIP] Does not work on Jasmine');
     });
   }
 }
 
-export function skipSuiteOnJestCircus() {
-  if (isJestCircusRun()) {
+export function skipSuiteOnJestCircus(): void {
+  if (!isJestJasmineRun()) {
     test.only('does not work on jest-circus', () => {
       console.warn('[SKIP] Does not work on jest-circus');
     });
   }
 }
 
-export function skipSuiteOnWindows() {
-  if (process.platform === 'win32') {
-    test.only('does not work on Windows', () => {
-      console.warn('[SKIP] Does not work on Windows');
-    });
-  }
-}
-
-export function onNodeVersions(versionRange: string, testBody: () => void) {
-  if (!semver.satisfies(process.versions.node, versionRange)) {
-    describe.skip(`[SKIP] tests that require node ${versionRange}`, () => {
+export function onNodeVersions(
+  versionRange: string,
+  testBody: () => void,
+): void {
+  const description = `on node ${versionRange}`;
+  if (semver.satisfies(process.versions.node, versionRange)) {
+    describe(description, () => {
       testBody();
     });
   } else {
-    testBody();
+    describe.skip(description, () => {
+      testBody();
+    });
   }
 }

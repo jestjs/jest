@@ -6,6 +6,8 @@
  */
 'use strict';
 
+const dedent = require('dedent');
+
 let platform;
 
 function testRequire(filename) {
@@ -64,7 +66,7 @@ test('should resolve filename.json', () => {
 
 test('should preserve identity for symlinks', () => {
   expect(require('../../../packages/jest-resolve')).toBe(
-    require('jest-resolve')
+    require('jest-resolve'),
   );
 });
 
@@ -99,11 +101,27 @@ test('should require resolve haste mocks correctly', () => {
   expect(require('Test6').key).toBe('mock');
 });
 
-test('should throw module not found error if the module cannot be found', () => {
+test('should throw module not found error if the module has dependencies that cannot be found', () => {
   expect(() => require('Test7')).toThrow(
     expect.objectContaining({
       code: 'MODULE_NOT_FOUND',
-      message: "Cannot find module 'Test7' from 'resolve.test.js'",
-    })
+      message: dedent`
+        Cannot find module 'nope' from 'requiresUnexistingModule.js'
+
+        Require stack:
+          requiresUnexistingModule.js
+          Test7.js
+          __tests__/resolve.test.js\n
+        `,
+    }),
+  );
+});
+
+test('should throw module not found error if the module cannot be found', () => {
+  expect(() => require('Test8')).toThrow(
+    expect.objectContaining({
+      code: 'MODULE_NOT_FOUND',
+      message: "Cannot find module 'Test8' from '__tests__/resolve.test.js'",
+    }),
   );
 });

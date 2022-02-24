@@ -5,33 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// See: https://github.com/facebook/jest/pull/5154
-export default function convertDescriptorToString<
-  T extends number | string | Function | undefined
->(descriptor: T): T | string {
-  if (
-    typeof descriptor === 'string' ||
-    typeof descriptor === 'number' ||
-    descriptor === undefined
-  ) {
-    return descriptor;
+import type {Global} from '@jest/types';
+
+export default function convertDescriptorToString(
+  descriptor: Global.BlockNameLike | undefined,
+): string {
+  switch (typeof descriptor) {
+    case 'function':
+      if (descriptor.name) {
+        return descriptor.name;
+      }
+      break;
+
+    case 'number':
+    case 'undefined':
+      return `${descriptor}`;
+
+    case 'string':
+      return descriptor;
   }
 
-  if (typeof descriptor !== 'function') {
-    throw new Error('describe expects a class, function, number, or string.');
-  }
-
-  if (descriptor.name !== undefined) {
-    return descriptor.name;
-  }
-
-  // Fallback for old browsers, pardon Flow
-  const stringified = descriptor.toString();
-  const typeDescriptorMatch = stringified.match(/class|function/);
-  const indexOfNameSpace =
-    // @ts-ignore: typeDescriptorMatch exists
-    typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  const indexOfNameAfterSpace = stringified.search(/\(|\{/);
-  const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
-  return name.trim();
+  throw new Error(
+    `Invalid first argument, ${descriptor}. It must be a named class, named function, number, or string.`,
+  );
 }

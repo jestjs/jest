@@ -7,15 +7,15 @@
  */
 
 import chalk = require('chalk');
-import pretty = require('pretty-format');
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
+import {format as pretty} from 'pretty-format';
 
 type TemplateData = Global.TemplateData;
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 
-export const validateArrayTable = (table: any) => {
+export const validateArrayTable = (table: unknown): void => {
   if (!Array.isArray(table)) {
     throw new Error(
       '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
@@ -46,14 +46,14 @@ export const validateArrayTable = (table: any) => {
 };
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
-const isEmptyTable = (table: Array<any>) => table.length === 0;
+const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
-export const validateTemplateTableHeadings = (
+export const validateTemplateTableArguments = (
   headings: Array<string>,
   data: TemplateData,
-) => {
+): void => {
   const missingData = data.length % headings.length;
 
   if (missingData > 0) {
@@ -74,3 +74,28 @@ export const validateTemplateTableHeadings = (
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
+
+const START_OF_LINE = '^';
+const NEWLINE = '\\n';
+const HEADING = '\\s*[^\\s]+\\s*';
+const PIPE = '\\|';
+const REPEATABLE_HEADING = `(${PIPE}${HEADING})*`;
+const HEADINGS_FORMAT = new RegExp(
+  START_OF_LINE + NEWLINE + HEADING + REPEATABLE_HEADING + NEWLINE,
+  'g',
+);
+
+export const extractValidTemplateHeadings = (headings: string): string => {
+  const matches = headings.match(HEADINGS_FORMAT);
+  if (matches === null) {
+    throw new Error(
+      'Table headings do not conform to expected format:\n\n' +
+        EXPECTED_COLOR('heading1 | headingN') +
+        '\n\n' +
+        'Received:\n\n' +
+        RECEIVED_COLOR(pretty(headings)),
+    );
+  }
+
+  return matches[0];
+};

@@ -12,16 +12,23 @@ export {
   createEmptyTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
-export {
+export type {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,
   FailedAssertion,
   FormattedTestResults,
   Milliseconds,
+  RuntimeTransformResult,
   SerializableError,
   SnapshotSummary,
   Status,
   Suite,
+  Test,
+  TestEvents,
+  TestFileEvent,
   TestResult,
+  TestResultsProcessor,
+  TestCaseResult,
+  V8CoverageResult,
 } from './types';

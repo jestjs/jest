@@ -7,11 +7,11 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import HasteMap = require('jest-haste-map');
-import {sync as realpath} from 'realpath-native';
+import {realpathSync} from 'graceful-fs';
+import HasteMap from 'jest-haste-map';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(realpath(tmpdir()), 'haste_map_size');
+const DIR = path.resolve(realpathSync.native(tmpdir()), 'haste_map_size');
 
 beforeEach(() => {
   cleanup(DIR);
@@ -37,13 +37,13 @@ const options = {
 };
 
 test('reports the correct file size', async () => {
-  const hasteMap = new HasteMap(options);
+  const hasteMap = await HasteMap.create(options);
   const hasteFS = (await hasteMap.build()).hasteFS;
   expect(hasteFS.getSize(path.join(DIR, 'file.js'))).toBe(5);
 });
 
 test('updates the file size when a file changes', async () => {
-  const hasteMap = new HasteMap({...options, watch: true});
+  const hasteMap = await HasteMap.create({...options, watch: true});
   await hasteMap.build();
 
   writeFiles(DIR, {

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {DependencyExtractor} from '../types';
 import isRegExpSupported from './isRegExpSupported';
 
 // Negative look behind is only supported in Node 9+
@@ -63,8 +64,7 @@ const IMPORT_OR_EXPORT_RE = createRegExp(
 const JEST_EXTENSIONS_RE = createRegExp(
   [
     ...functionCallStart(
-      'require\\s*\\.\\s*(?:requireActual|requireMock)',
-      'jest\\s*\\.\\s*(?:requireActual|requireMock|genMockFromModule)',
+      'jest\\s*\\.\\s*(?:requireActual|requireMock|genMockFromModule|createMockFromModule)',
     ),
     CAPTURE_STRING_LITERAL(1),
     WHITESPACE,
@@ -74,20 +74,22 @@ const JEST_EXTENSIONS_RE = createRegExp(
   'g',
 );
 
-export function extract(code: string): Set<string> {
-  const dependencies = new Set<string>();
+export const extractor: DependencyExtractor = {
+  extract(code) {
+    const dependencies = new Set<string>();
 
-  const addDependency = (match: string, _: string, dep: string) => {
-    dependencies.add(dep);
-    return match;
-  };
+    const addDependency = (match: string, _: string, dep: string) => {
+      dependencies.add(dep);
+      return match;
+    };
 
-  code
-    .replace(BLOCK_COMMENT_RE, '')
-    .replace(LINE_COMMENT_RE, '')
-    .replace(IMPORT_OR_EXPORT_RE, addDependency)
-    .replace(REQUIRE_OR_DYNAMIC_IMPORT_RE, addDependency)
-    .replace(JEST_EXTENSIONS_RE, addDependency);
+    code
+      .replace(BLOCK_COMMENT_RE, '')
+      .replace(LINE_COMMENT_RE, '')
+      .replace(IMPORT_OR_EXPORT_RE, addDependency)
+      .replace(REQUIRE_OR_DYNAMIC_IMPORT_RE, addDependency)
+      .replace(JEST_EXTENSIONS_RE, addDependency);
 
-  return dependencies;
-}
+    return dependencies;
+  },
+};

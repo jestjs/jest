@@ -4,13 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-// TODO: Remove this
-/// <reference path="../v8.d.ts" />
 
-import * as fs from 'fs';
 import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
-
-type Path = string;
+import * as fs from 'graceful-fs';
 
 // JSON and V8 serializers are both stable when it comes to compatibility. The
 // current JSON specification is well defined in RFC 8259, and V8 ensures that
@@ -19,7 +15,7 @@ type Path = string;
 
 // In memory functions.
 
-export function deserialize(buffer: Buffer): any {
+export function deserialize(buffer: Buffer): unknown {
   return v8Deserialize(buffer);
 }
 
@@ -29,11 +25,11 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): any {
+export function readFileSync(filePath: string): unknown {
   return v8Deserialize(fs.readFileSync(filePath));
 }
 
-export function writeFileSync(filePath: Path, content: any) {
+export function writeFileSync(filePath: string, content: unknown): void {
   return fs.writeFileSync(filePath, v8Serialize(content));
 }
 

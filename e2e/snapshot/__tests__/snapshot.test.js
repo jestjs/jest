@@ -23,14 +23,14 @@ describe('snapshot', () => {
     const test = {
       a: 43,
       b: '43',
-      c: 'fourtythree',
+      c: 'fortythree',
     };
     expect(test).toMatchSnapshot();
   });
 
   it('cannot be used with .not', () => {
     expect(() => expect('').not.toMatchSnapshot()).toThrow(
-      'Snapshot matchers cannot be used with not'
+      'Snapshot matchers cannot be used with not',
     );
   });
 

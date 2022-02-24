@@ -1,48 +1,65 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "24.9.0",
-  "main": "build/jest.js",
-  "types": "build/jest.d.ts",
+  "version": "28.0.0-alpha.4",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/console": "^24.7.1",
-    "@jest/reporters": "^24.9.0",
-    "@jest/test-result": "^24.9.0",
-    "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
+    "@jest/console": "^28.0.0-alpha.4",
+    "@jest/reporters": "^28.0.0-alpha.4",
+    "@jest/test-result": "^28.0.0-alpha.4",
+    "@jest/transform": "^28.0.0-alpha.4",
+    "@jest/types": "^28.0.0-alpha.4",
+    "@types/node": "*",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
+    "emittery": "^0.8.1",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.2.3",
-    "jest-changed-files": "^24.9.0",
-    "jest-config": "^24.9.0",
-    "jest-haste-map": "^24.9.0",
-    "jest-message-util": "^24.9.0",
-    "jest-regex-util": "^24.3.0",
-    "jest-resolve": "^24.9.0",
-    "jest-resolve-dependencies": "^24.9.0",
-    "jest-runner": "^24.9.0",
-    "jest-runtime": "^24.9.0",
-    "jest-snapshot": "^24.9.0",
-    "jest-util": "^24.9.0",
-    "jest-validate": "^24.9.0",
-    "jest-watcher": "^24.9.0",
-    "micromatch": "^4.0.2",
-    "p-each-series": "^2.1.0",
-    "realpath-native": "^1.1.0",
+    "graceful-fs": "^4.2.9",
+    "jest-changed-files": "^28.0.0-alpha.3",
+    "jest-config": "^28.0.0-alpha.4",
+    "jest-haste-map": "^28.0.0-alpha.4",
+    "jest-message-util": "^28.0.0-alpha.4",
+    "jest-regex-util": "^28.0.0-alpha.3",
+    "jest-resolve": "^28.0.0-alpha.4",
+    "jest-resolve-dependencies": "^28.0.0-alpha.4",
+    "jest-runner": "^28.0.0-alpha.4",
+    "jest-runtime": "^28.0.0-alpha.4",
+    "jest-snapshot": "^28.0.0-alpha.4",
+    "jest-util": "^28.0.0-alpha.4",
+    "jest-validate": "^28.0.0-alpha.4",
+    "jest-watcher": "^28.0.0-alpha.4",
+    "micromatch": "^4.0.4",
+    "pretty-format": "^28.0.0-alpha.4",
     "rimraf": "^3.0.0",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"
   },
   "devDependencies": {
-    "@jest/test-sequencer": "^24.9.0",
+    "@jest/test-sequencer": "^28.0.0-alpha.4",
+    "@jest/test-utils": "^28.0.0-alpha.4",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^3.1.0",
-    "@types/rimraf": "^2.0.2"
+    "@types/micromatch": "^4.0.1",
+    "@types/rimraf": "^3.0.0"
+  },
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
   },
   "engines": {
-    "node": ">= 8"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "repository": {
     "type": "git",
@@ -82,6 +99,5 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  }
 }

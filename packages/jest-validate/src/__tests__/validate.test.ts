@@ -6,11 +6,10 @@
  *
  */
 
-import validate from '../validate';
 import {multipleValidOptions} from '../condition';
-import jestValidateExampleConfig from '../exampleConfig';
 import jestValidateDefaultConfig from '../defaultConfig';
-
+import jestValidateExampleConfig from '../exampleConfig';
+import validate from '../validate';
 const {
   defaultConfig,
   validConfig,
@@ -52,7 +51,7 @@ test.each([
   ).toThrowErrorMatchingSnapshot();
 });
 
-test(`pretty prints valid config for Function`, () => {
+test('pretty prints valid config for Function', () => {
   const config = {fn: 'test'};
   const validConfig = {fn: (_config, _option, _deprecatedOptions) => true};
   expect(() =>
@@ -75,8 +74,8 @@ test('omits null and undefined config values', () => {
 
 test('recursively omits null and undefined config values', () => {
   const config = {
-    haste: {
-      providesModuleNodeModules: null,
+    coverageThreshold: {
+      global: null,
     },
   };
   expect(
@@ -88,10 +87,10 @@ test('recursively omits null and undefined config values', () => {
 });
 
 test.each([
-  [function() {}, function() {}],
-  [async function() {}, function() {}],
-  [function() {}, async function() {}],
-  [async function() {}, async function() {}],
+  [function () {}, function () {}],
+  [async function () {}, function () {}],
+  [function () {}, async function () {}],
+  [async function () {}, async function () {}],
 ])(
   'treat async and non-async functions as equivalent',
   (value, exampleValue) => {
@@ -101,7 +100,7 @@ test.each([
   },
 );
 
-test('respects blacklist', () => {
+test('respects recursiveDenylist', () => {
   const warn = console.warn;
   console.warn = jest.fn();
   const config = {
@@ -128,7 +127,7 @@ test('respects blacklist', () => {
 
   validate(config, {
     exampleConfig,
-    recursiveBlacklist: ['something.nested'],
+    recursiveDenylist: ['something.nested'],
   });
 
   expect(console.warn).not.toBeCalled();
@@ -292,7 +291,7 @@ test('Comments in config JSON using "//" key are not warned', () => {
 
   validate(config, {
     exampleConfig: validConfig,
-    recursiveBlacklist: ['myCustomKey' as "don't validate this"],
+    recursiveDenylist: ['myCustomKey' as "don't validate this"],
   });
   expect(console.warn).not.toBeCalled();
 

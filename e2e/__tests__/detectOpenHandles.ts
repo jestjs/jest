@@ -5,13 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
 try {
   require('async_hooks');
-} catch (e) {
+} catch (e: any) {
   if (e.code === 'MODULE_NOT_FOUND') {
     // eslint-disable-next-line jest/no-focused-tests
     fit('skip test for unsupported nodes', () => {
@@ -36,7 +34,7 @@ it('prints message about flag on slow tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints message about flag on forceExit', async () => {
@@ -45,7 +43,7 @@ it('prints message about flag on forceExit', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers', async () => {
@@ -57,7 +55,7 @@ it('prints out info about open handlers', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
@@ -71,17 +69,52 @@ it('does not report promises', () => {
   expect(textAfterTest).toBe('');
 });
 
-onNodeVersions('>=11', () => {
-  it('does not report timeouts using unref', () => {
+it('does not report crypto random data', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'crypto',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+it('does not report ELD histograms', () => {
+  const {stderr} = runJest('detect-open-handles', [
+    'histogram',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+describe('notify', () => {
+  it('does not report --notify flag', () => {
+    if (process.platform === 'win32') {
+      console.warn('[SKIP] Does not work on Windows');
+
+      return;
+    }
+
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-    const {stderr} = runJest('detect-open-handles', [
-      'unref',
-      '--detectOpenHandles',
-    ]);
+    const {stderr} = runJest('detect-open-handles', ['notify', '--notify']);
     const textAfterTest = getTextAfterTest(stderr);
 
     expect(textAfterTest).toBe('');
   });
+});
+
+it('does not report timeouts using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'unref',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
 });
 
 it('prints out info about open handlers from inside tests', async () => {
@@ -93,5 +126,49 @@ it('prints out info about open handlers from inside tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
+});
+
+it('prints out info about open handlers from tests with a `done` callback', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'in-done-function',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toMatchSnapshot();
+});
+
+it('prints out info about open handlers from lifecycle functions with a `done` callback', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'in-done-lifecycle',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  let textAfterTest = getTextAfterTest(stderr);
+
+  // Circus and Jasmine have different contexts, leading to slightly different
+  // names for call stack functions. The difference shouldn't be problematic
+  // for users, so this normalizes them so the test works in both environments.
+  textAfterTest = textAfterTest.replace(
+    'at Object.setTimeout',
+    'at setTimeout',
+  );
+
+  expect(textAfterTest).toMatchSnapshot();
+});
+
+it('does not print info about open handlers for a server that is already closed', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'recently-closed',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Ran all test suites'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toMatchSnapshot();
 });

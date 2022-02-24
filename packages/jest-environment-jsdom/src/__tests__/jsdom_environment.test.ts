@@ -5,12 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import JSDomEnvironment = require('../');
-import {makeProjectConfig} from '../../../../TestUtils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import JSDomEnvironment from '../';
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {
-    const env = new JSDomEnvironment(makeProjectConfig());
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
 
     env.fakeTimers!.useFakeTimers();
 
@@ -22,9 +28,87 @@ describe('JSDomEnvironment', () => {
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
-    const env = new JSDomEnvironment(makeProjectConfig());
+  it('has modern fake timers implementation', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
+  });
+
+  it('should respect userAgent option', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig({
+          testEnvironmentOptions: {
+            userAgent: 'foo',
+          },
+        }),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    expect(env.dom.window.navigator.userAgent).toEqual('foo');
+  });
+
+  it('should respect url option', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    expect(env.dom.window.location.href).toEqual('http://localhost/');
+
+    const envWithUrl = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig({
+          testEnvironmentOptions: {
+            url: 'https://jestjs.io',
+          },
+        }),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    expect(envWithUrl.dom.window.location.href).toEqual('https://jestjs.io/');
+  });
+
+  /**
+   * When used in conjunction with Custom Elements (part of the WebComponents standard)
+   * setting the global.document to null too early is problematic because:
+   *
+   * CustomElement's disconnectedCallback method is called when a custom element
+   * is removed from the DOM. The disconnectedCallback could need the document
+   * in order to remove some listener for example.
+   *
+   * global.close calls jsdom's Window.js.close which does this._document.body.innerHTML = "".
+   * The custom element will be removed from the DOM at this point, therefore disconnectedCallback
+   * will be called, so please make sure the global.document is still available at this point.
+   */
+  it('should not set the global.document to null too early', () => {
+    const env = new JSDomEnvironment(
+      {
+        globalConfig: makeGlobalConfig(),
+        projectConfig: makeProjectConfig(),
+      },
+      {console, docblockPragmas: {}, testPath: __filename},
+    );
+
+    const originalCloseFn = env.global.close.bind(env.global);
+    env.global.close = () => {
+      originalCloseFn();
+      expect(env.global.document).not.toBeNull();
+    };
+
+    return env.teardown();
   });
 });

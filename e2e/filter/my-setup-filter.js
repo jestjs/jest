@@ -11,7 +11,7 @@ const setupData = {
   filterText: 'this will return no tests',
 };
 
-module.exports = function(tests) {
+module.exports = function (tests) {
   return {
     filtered: tests
       .filter(t => t.indexOf(setupData.filterText) !== -1)
@@ -19,7 +19,7 @@ module.exports = function(tests) {
   };
 };
 
-module.exports.setup = function() {
+module.exports.setup = function () {
   return new Promise(resolve => {
     setTimeout(() => {
       setupData.filterText = 'foo';

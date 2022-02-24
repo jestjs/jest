@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
-
+import type {Test} from '@jest/test-result';
+import type {Context} from 'jest-runtime';
 import {
   PatternPrompt,
   Prompt,
@@ -15,7 +14,7 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import SearchSource from './SearchSource';
+import type SearchSource from './SearchSource';
 
 type SearchSources = Array<{
   context: Context;
@@ -31,12 +30,12 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     this._entityName = 'filenames';
   }
 
-  _onChange(pattern: string, options: ScrollOptions) {
+  _onChange(pattern: string, options: ScrollOptions): void {
     super._onChange(pattern, options);
     this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string) {
+  _printPrompt(pattern: string): void {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
@@ -47,7 +46,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
     try {
       regex = new RegExp(pattern, 'i');
-    } catch (e) {}
+    } catch {}
 
     let tests: Array<Test> = [];
     if (regex && this._searchSources) {
@@ -59,7 +58,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     return tests;
   }
 
-  updateSearchSources(searchSources: SearchSources) {
+  updateSearchSources(searchSources: SearchSources): void {
     this._searchSources = searchSources;
   }
 }

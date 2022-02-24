@@ -6,7 +6,8 @@
  */
 
 test('Symbol deletion', () => {
-  global.Symbol = undefined;
+  // @ts-expect-error
+  globalThis.Symbol = undefined;
 
   expect({}).toEqual({});
 });

@@ -7,7 +7,7 @@
 
 'use strict';
 
-module.exports = function(tests) {
+module.exports = function (tests) {
   return new Promise((resolve, reject) => {
     reject(new Error('My broken filter error.'));
   });
