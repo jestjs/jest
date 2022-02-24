@@ -27,14 +27,21 @@ export type GeneratorReturningTestFn = (
   this: TestContext | undefined,
 ) => TestReturnValueGenerator;
 
-export type TestName = string;
+export interface FunctionLike {
+  readonly name: string;
+}
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type FunctionLikeOrName = number | string | Function | FunctionLike;
+
+export type TestName = FunctionLikeOrName;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
   | DoneTakingTestFn;
 export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
-export type BlockName = string;
+export type BlockName = FunctionLikeOrName;
+
 export type HookFn = TestFn;
 
 export type Col = unknown;
