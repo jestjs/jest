@@ -59,15 +59,11 @@ export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
-type Each<EachCallback extends TestCallback> =
+type Each<EachCallback extends TestCallback, Name> =
   | ((
       table: EachTable,
       ...taggedTemplateData: TemplateData
-    ) => (
-      name: BlockNameLike | TestName,
-      test: EachTestFn<EachCallback>,
-      timeout?: number,
-    ) => void)
+    ) => (name: Name, test: EachTestFn<EachCallback>, timeout?: number) => void)
   | (() => () => void);
 
 export interface HookBase {
@@ -76,7 +72,7 @@ export interface HookBase {
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
-  each: Each<TestFn>;
+  each: Each<TestFn, TestName>;
 }
 
 export interface It extends ItBase {
@@ -87,7 +83,7 @@ export interface It extends ItBase {
 
 export interface ItConcurrentBase {
   (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
-  each: Each<ConcurrentTestFn>;
+  each: Each<ConcurrentTestFn, TestName>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
@@ -101,7 +97,7 @@ export interface ItConcurrent extends It {
 
 export interface DescribeBase {
   (blockName: BlockNameLike, blockFn: BlockFn): void;
-  each: Each<BlockFn>;
+  each: Each<BlockFn, BlockNameLike | TestName>;
 }
 
 export interface Describe extends DescribeBase {
