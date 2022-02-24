@@ -151,8 +151,6 @@
   "resolutions": {
     "@jest/create-cache-key-function": "workspace:*",
     "@testing-library/dom/pretty-format": "26.6.1",
-    "@types/jest/jest-diff": "^26.0.0",
-    "@types/jest/pretty-format": "^26.0.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",

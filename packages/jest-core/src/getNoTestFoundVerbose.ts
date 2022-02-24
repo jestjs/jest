@@ -13,6 +13,7 @@ import type {Stats, TestRunData} from './types';
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
+  willExitWith0: boolean,
 ): string {
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || ({} as Stats);
@@ -55,6 +56,16 @@ export default function getNoTestFoundVerbose(
     dataMessage = `Pattern: ${chalk.yellow(
       globalConfig.testPathPattern,
     )} - 0 matches`;
+  }
+
+  if (willExitWith0) {
+    return (
+      chalk.bold('No tests found, exiting with code 0') +
+      '\n' +
+      individualResults.join('\n') +
+      '\n' +
+      dataMessage
+    );
   }
 
   return (

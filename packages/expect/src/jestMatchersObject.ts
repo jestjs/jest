@@ -6,6 +6,7 @@
  *
  */
 
+import {getType} from 'jest-get-type';
 import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
   Expect,
@@ -56,6 +57,15 @@ export const setMatchers = (
 ): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
+
+    if (typeof matcher !== 'function') {
+      throw new TypeError(
+        `expect.extend: \`${key}\` is not a valid matcher. Must be a function, is "${getType(
+          matcher,
+        )}"`,
+      );
+    }
+
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
       value: isInternal,
     });
