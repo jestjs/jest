@@ -54,7 +54,13 @@ const _dispatchDescribe = (
     asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
-  blockName = convertDescriptorToString(blockName);
+  try {
+    blockName = convertDescriptorToString(blockName);
+  } catch (error) {
+    asyncError.message = (error as Error).message;
+    throw asyncError;
+  }
+
   dispatchSync({
     asyncError,
     blockName,
