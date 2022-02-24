@@ -64,11 +64,26 @@ describe('No tests are found', () => {
     expect(exitCode).toBe(0);
   });
 
-  test("doesn't fail the test suite if using --findRelatedTests", () => {
+  test('fails the test suite if using --findRelatedTests', () => {
     // Since there are no files in DIR no tests will be found
     const {exitCode, stdout} = runJest(DIR, [
       '--findRelatedTests',
       '/non/existing/path',
+    ]);
+
+    expect(stdout).toContain('No tests found, exiting with code 1');
+    expect(stdout).toContain(
+      'Run with `--passWithNoTests` to exit with code 0',
+    );
+    expect(exitCode).toBe(1);
+  });
+
+  test("doesn't fail the test suite if using --findRelatedTests and --passWithNoTests", () => {
+    // Since there are no files in DIR no tests will be found
+    const {exitCode, stdout} = runJest(DIR, [
+      '--findRelatedTests',
+      '/non/existing/path',
+      '--passWithNoTests',
     ]);
 
     expect(stdout).toContain('No tests found, exiting with code 0');

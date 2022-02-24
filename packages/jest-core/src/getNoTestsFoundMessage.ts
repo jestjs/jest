@@ -19,7 +19,6 @@ export default function getNoTestsFoundMessage(
 ): {exitWith0: boolean; message: string} {
   const exitWith0 =
     globalConfig.passWithNoTests ||
-    globalConfig.findRelatedTests ||
     globalConfig.lastCommit ||
     globalConfig.onlyChanged;
 
