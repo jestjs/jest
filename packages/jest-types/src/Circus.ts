@@ -12,6 +12,7 @@ type Process = NodeJS.Process;
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
 export type BlockName = Global.BlockName;
+export type BlockNameLike = Global.BlockNameLike;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;

@@ -34,7 +34,6 @@ export interface FunctionLike {
 export type NameLike = number | Function | FunctionLike;
 
 export type TestName = string;
-export type TestNameLike = TestName | NameLike;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
@@ -65,7 +64,7 @@ type Each<EachCallback extends TestCallback> =
       table: EachTable,
       ...taggedTemplateData: TemplateData
     ) => (
-      name: BlockNameLike | TestNameLike,
+      name: BlockNameLike | TestName,
       test: EachTestFn<EachCallback>,
       timeout?: number,
     ) => void)
@@ -76,18 +75,18 @@ export interface HookBase {
 }
 
 export interface ItBase {
-  (testName: TestNameLike, fn: TestFn, timeout?: number): void;
+  (testName: TestName, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestNameLike) => void;
+  todo: (testName: TestName) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
+  (testName: TestName, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
 }
 

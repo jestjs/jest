@@ -7,7 +7,7 @@
 
 import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
 
 export {setState, getState, resetState} from './state';
@@ -15,16 +15,16 @@ export {default as run} from './run';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
 type DescribeFn = (
-  blockName: Circus.BlockName,
+  blockName: Circus.BlockNameLike,
   blockFn: Circus.BlockFn,
 ) => void;
 
 const describe = (() => {
-  const describe = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const describe = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, describe);
-  const only = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const only = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, only, 'only');
-  const skip = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const skip = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, skip, 'skip');
 
   describe.each = bindEach(describe, false);
@@ -40,7 +40,7 @@ const describe = (() => {
 
 const _dispatchDescribe = (
   blockFn: Circus.BlockFn,
-  blockName: Circus.BlockName,
+  blockName: Circus.BlockNameLike,
   describeFn: DescribeFn,
   mode?: Circus.BlockMode,
 ) => {
@@ -54,6 +54,7 @@ const _dispatchDescribe = (
     asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
+  blockName = convertDescriptorToString(blockName);
   dispatchSync({
     asyncError,
     blockName,

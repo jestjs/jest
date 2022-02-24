@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
+import type {Global} from '@jest/types';
 
 // See: https://github.com/facebook/jest/pull/5154
-export default function convertDescriptorToString<
-  T extends number | string | Function | undefined,
->(descriptor: T): T | string {
+export default function convertDescriptorToString(
+  descriptor: Global.BlockNameLike | undefined,
+): string {
   if (
     typeof descriptor === 'string' ||
     typeof descriptor === 'number' ||
     descriptor === undefined
   ) {
-    return descriptor;
+    return `${descriptor}`;
   }
 
   if (typeof descriptor !== 'function') {
