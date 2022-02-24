@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {fileURLToPath} from 'url';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
@@ -13,12 +14,10 @@ import micromatch = require('micromatch');
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
-
-type Path = Config.Path;
 
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
@@ -46,8 +45,10 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JASMINE_IGNORE =
+  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JEST_INTERNALS_IGNORE =
+  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
@@ -111,7 +112,7 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   return (
     chalk.bold.red(
       `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+        'https://jestjs.io/docs/configuration#testenvironment-string',
       )}.\nConsider using the "${env}" test environment.\n\n`,
     ) + error
   );
@@ -124,7 +125,7 @@ export const formatExecError = (
   error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
   reuseMessage?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
@@ -235,7 +236,7 @@ const removeInternalStackEntries = (
 
 const formatPaths = (
   config: StackTraceConfig,
-  relativeTestPath: Path | null,
+  relativeTestPath: string | null,
   line: string,
 ) => {
   // Extract the file path from the trace line.
@@ -271,6 +272,9 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
+      if (parsedFrame.file.startsWith('file://')) {
+        parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
+      }
       return parsedFrame as Frame;
     }
   }
@@ -282,7 +286,7 @@ export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string => {
   const lines = getStackTraceLines(stack, options);
   let renderedCallsite = '';
@@ -331,13 +335,13 @@ export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages
-        .map(checkForCommonEnvironmentErrors)
-        .forEach(content => errors.push({content, result}));
+      result.failureMessages.forEach(item => {
+        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      });
       return errors;
     },
     [],

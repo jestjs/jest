@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
@@ -18,29 +16,24 @@ import {
   PromiseWithCustomMessage,
   QueueChildMessage,
   TaskQueue,
+  WorkerCallback,
   WorkerInterface,
+  WorkerSchedulingPolicy,
 } from './types';
 
 export default class Farm {
   private readonly _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private readonly _workerSchedulingPolicy: NonNullable<
-    FarmOptions['workerSchedulingPolicy']
-  >;
-  private readonly _cacheKeys: Record<string, WorkerInterface> = Object.create(
-    null,
-  );
+  private readonly _workerSchedulingPolicy: WorkerSchedulingPolicy;
+  private readonly _cacheKeys: Record<string, WorkerInterface> =
+    Object.create(null);
   private readonly _locks: Array<boolean> = [];
   private _offset = 0;
   private readonly _taskQueue: TaskQueue;
 
   constructor(
     private _numOfWorkers: number,
-    private _callback: Function,
-    options: {
-      computeWorkerKey?: FarmOptions['computeWorkerKey'];
-      workerSchedulingPolicy?: FarmOptions['workerSchedulingPolicy'];
-      taskQueue?: TaskQueue;
-    } = {},
+    private _callback: WorkerCallback,
+    options: FarmOptions = {},
   ) {
     this._computeWorkerKey = options.computeWorkerKey;
     this._workerSchedulingPolicy =
@@ -66,7 +59,14 @@ export default class Farm {
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(
-      (resolve, reject) => {
+      // Bind args to this function so it won't reference to the parent scope.
+      // This prevents a memory leak in v8, because otherwise the function will
+      // retain args for the closure.
+      ((
+        args: Array<unknown>,
+        resolve: (value: unknown) => void,
+        reject: (reason?: any) => void,
+      ) => {
         const computeWorkerKey = this._computeWorkerKey;
         const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
 
@@ -101,7 +101,7 @@ export default class Farm {
         } else {
           this._push(task);
         }
-      },
+      }).bind(null, args),
     );
 
     promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
@@ -124,8 +124,12 @@ export default class Farm {
       throw new Error('Queue implementation returned processed task');
     }
 
-    const onEnd = (error: Error | null, result: unknown) => {
-      task.onEnd(error, result);
+    // Reference the task object outside so it won't be retained by onEnd,
+    // and other properties of the task object, such as task.request can be
+    // garbage collected.
+    const taskOnEnd = task.onEnd;
+    const onEnd: OnEnd = (error, result) => {
+      taskOnEnd(error, result);
 
       this._unlock(workerId);
       this._process(workerId);
@@ -160,9 +164,6 @@ export default class Farm {
     return this;
   }
 
-  // Typescript ensures that the switch statement is exhaustive.
-  // Adding an explicit return at the end would disable the exhaustive check void.
-  // eslint-disable-next-line consistent-return
   private _getNextWorkerOffset(): number {
     switch (this._workerSchedulingPolicy) {
       case 'in-order':

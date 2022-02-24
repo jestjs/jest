@@ -24,7 +24,11 @@ export type {
   SnapshotSummary,
   Status,
   Suite,
+  Test,
+  TestEvents,
+  TestFileEvent,
   TestResult,
+  TestResultsProcessor,
   TestCaseResult,
   V8CoverageResult,
 } from './types';

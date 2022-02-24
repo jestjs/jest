@@ -2,7 +2,9 @@
   "name": "native-esm-typescript",
   "version": "1.0.0",
   "jest": {
-    "extensionsToTreatAsEsm": [".ts"],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "testEnvironment": "node"
   }
 }

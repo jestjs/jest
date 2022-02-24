@@ -168,4 +168,13 @@ describe('async jasmine', () => {
 
     expect(result.exitCode).toBe(0);
   });
+
+  it('works when another test fails while one is running', () => {
+    const {json} = runWithJson('jasmine-async', [
+      'concurrent-parallel-failure.test.js',
+    ]);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(1);
+  });
 });

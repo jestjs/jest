@@ -14,8 +14,18 @@ import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import Resolver from 'jest-resolve';
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import Resolver, {
+  resolveRunner,
+  resolveSequencer,
+  resolveTestEnvironment,
+  resolveWatchPlugin,
+} from 'jest-resolve';
+import {
+  clearLine,
+  replacePathSepForGlob,
+  requireOrImportModule,
+  tryRealpath,
+} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
@@ -30,16 +40,13 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getRunner,
-  getSequencer,
-  getTestEnvironment,
-  getWatchPlugin,
   replaceRootDirInPath,
   resolve,
 } from './utils';
 import validatePattern from './validatePattern';
+
 const ERROR = `${BULLET}Validation Error`;
-const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
@@ -47,7 +54,7 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-function verifyDirectoryExists(path: Config.Path, key: string) {
+function verifyDirectoryExists(path: string, key: string) {
   try {
     const rootStat = statSync(path);
 
@@ -58,7 +65,7 @@ function verifyDirectoryExists(path: Config.Path, key: string) {
         )} option is not a directory.`,
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof ValidationError) {
       throw err;
     }
@@ -116,10 +123,10 @@ const mergeGlobalsWithPreset = (
   }
 };
 
-const setupPreset = (
+const setupPreset = async (
   options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptionsWithRootDir => {
+): Promise<Config.InitialOptionsWithRootDir> => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -142,8 +149,8 @@ const setupPreset = (
       delete require.cache[require.resolve(presetModule)];
     } catch {}
 
-    preset = require(presetModule);
-  } catch (error) {
+    preset = await requireOrImportModule(presetModule);
+  } catch (error: any) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
         `  Preset ${chalk.bold(presetPath)} is invalid:\n\n  ${
@@ -250,7 +257,7 @@ const normalizeCollectCoverageOnlyFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
+  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
     initialCollectCoverageFrom,
   )
     ? initialCollectCoverageFrom // passed from argv
@@ -271,7 +278,7 @@ const normalizeCollectCoverageFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  let value: Array<Config.Glob> | undefined;
+  let value: Array<string> | undefined;
   if (!initialCollectCoverageFrom) {
     value = [];
   }
@@ -359,7 +366,7 @@ const normalizePreprocessor = (
 
 const normalizeMissingOptions = (
   options: Config.InitialOptionsWithRootDir,
-  configPath: Config.Path | null | undefined,
+  configPath: string | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.name) {
@@ -431,7 +438,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
-          `Could not resolve a module for a custom reporter.\n` +
+          'Could not resolve a module for a custom reporter.\n' +
             `  Module name: ${reporterPath}`,
         );
       }
@@ -478,7 +485,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
-        `Running all tests instead.`,
+        'Running all tests instead.',
     ),
   );
 };
@@ -540,15 +547,15 @@ function validateExtensionsToTreatAsEsm(
   }
 }
 
-export default function normalize(
+export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
-  configPath?: Config.Path | null,
-  projectIndex: number = Infinity,
-): {
+  configPath?: string | null,
+  projectIndex = Infinity,
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
-} {
+}> {
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -576,7 +583,7 @@ export default function normalize(
   );
 
   if (options.preset) {
-    options = setupPreset(options, options.preset);
+    options = await setupPreset(options, options.preset);
   }
 
   if (!options.setupFilesAfterEnv) {
@@ -599,9 +606,12 @@ export default function normalize(
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
   }
 
-  options.testEnvironment = getTestEnvironment({
+  options.testEnvironment = resolveTestEnvironment({
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+    testEnvironment:
+      options.testEnvironment ||
+      require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
 
   if (!options.roots && options.testPathDirs) {
@@ -616,11 +626,22 @@ export default function normalize(
   if (
     !options.testRunner ||
     options.testRunner === 'circus' ||
-    options.testRunner === 'jest-circus'
+    options.testRunner === 'jest-circus' ||
+    options.testRunner === 'jest-circus/runner'
   ) {
     options.testRunner = require.resolve('jest-circus/runner');
   } else if (options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
+    try {
+      options.testRunner = require.resolve('jest-jasmine2');
+    } catch (error: any) {
+      if (error.code === 'MODULE_NOT_FOUND') {
+        createConfigError(
+          'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
+        );
+      }
+
+      throw error;
+    }
   }
 
   if (!options.coverageDirectory) {
@@ -629,9 +650,9 @@ export default function normalize(
 
   setupBabelJest(options);
   // TODO: Type this properly
-  const newOptions = ({
+  const newOptions = {
     ...DEFAULT_CONFIG,
-  } as unknown) as AllOptions;
+  } as unknown as AllOptions;
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -642,6 +663,10 @@ export default function normalize(
   }
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
+
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
+  }
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -709,7 +734,7 @@ export default function normalize(
       case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
-      case 'moduleLoader':
+      case 'runtime':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -730,8 +755,9 @@ export default function normalize(
           const option = oldOptions[key];
           value =
             option &&
-            getRunner(newOptions.resolver, {
+            resolveRunner(newOptions.resolver, {
               filePath: option,
+              requireResolveFunction: require.resolve,
               rootDir: options.rootDir,
             });
         }
@@ -812,14 +838,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce<Array<string>>((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce<Array<string | Config.InitialProjectOptions>>(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [],
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -858,8 +889,8 @@ export default function normalize(
           !value.includes('js')
         ) {
           const errorMessage =
-            `  moduleFileExtensions must include 'js':\n` +
-            `  but instead received:\n` +
+            "  moduleFileExtensions must include 'js':\n" +
+            '  but instead received:\n' +
             `    ${chalk.bold.red(JSON.stringify(value))}`;
 
           // If `js` is not included, any dependency Jest itself injects into
@@ -948,7 +979,6 @@ export default function normalize(
       case 'errorOnDeprecated':
       case 'expand':
       case 'extensionsToTreatAsEsm':
-      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
@@ -973,16 +1003,17 @@ export default function normalize(
       case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
+      case 'sandboxInjectedGlobals':
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
+      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testURL':
       case 'timers':
       case 'useStderr':
       case 'verbose':
@@ -996,16 +1027,18 @@ export default function normalize(
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -1018,6 +1051,14 @@ export default function normalize(
     return newOptions;
   }, newOptions);
 
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
+
   newOptions.roots.forEach((root, i) => {
     verifyDirectoryExists(root, `roots[${i}]`);
   });
@@ -1029,17 +1070,23 @@ export default function normalize(
     // ignored
   }
 
-  newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+  newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
+    filePath:
+      options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
   });
+
+  if (newOptions.runner === DEFAULT_CONFIG.runner) {
+    newOptions.runner = require.resolve(newOptions.runner);
+  }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
-    (newOptions.testFailureExitCode as unknown) as string,
+    newOptions.testFailureExitCode as unknown as string,
     10,
   );
 
@@ -1083,15 +1130,19 @@ export default function normalize(
     newOptions.moduleNameMapper = [];
   }
 
+  if (argv.ci != null) {
+    newOptions.ci = argv.ci;
+  }
+
   newOptions.updateSnapshot =
-    argv.ci && !argv.updateSnapshot
+    newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
       ? 'all'
       : 'new';
 
   newOptions.maxConcurrency = parseInt(
-    (newOptions.maxConcurrency as unknown) as string,
+    newOptions.maxConcurrency as unknown as string,
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
@@ -1158,8 +1209,8 @@ export default function normalize(
     newOptions.projects = [];
   }
 
-  if (!newOptions.extraGlobals) {
-    newOptions.extraGlobals = [];
+  if (!newOptions.sandboxInjectedGlobals) {
+    newOptions.sandboxInjectedGlobals = [];
   }
 
   if (!newOptions.forceExit) {

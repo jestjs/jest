@@ -43,6 +43,7 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
+  // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
@@ -168,7 +169,7 @@ const _callCircusTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
-  invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
+  invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
   if (test.errors.length) {
     return; // We don't run the test if there's already an error in before hooks.

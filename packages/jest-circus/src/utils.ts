@@ -14,7 +14,7 @@ import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -131,9 +131,7 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
 
   do {
     const beforeEachForCurrentBlock = [];
-    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
-    let hook: Circus.Hook;
-    for (hook of block.hooks) {
+    for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -164,7 +162,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setTimeout, clearTimeout} = global;
+const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
@@ -180,7 +178,7 @@ export const callAsyncCircusFn = (
 
   const {fn, asyncError} = testOrHook;
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
       () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
@@ -266,7 +264,7 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      returnedValue.then(resolve, reject);
+      returnedValue.then(() => resolve(), reject);
       return;
     }
 

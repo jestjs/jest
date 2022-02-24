@@ -1,6 +1,0 @@
-let foo;
-var bar;
-
-test('declaration without assignments should not throw', () => {
-  expect(true).toBe(true);
-});

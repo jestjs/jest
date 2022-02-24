@@ -31,19 +31,19 @@ export type Context = {
 export type Test = {
   context: Context;
   duration?: number;
-  path: Config.Path;
+  path: string;
 };
 
 export type CoverageWorker = {worker: typeof worker};
 
 export type CoverageReporterOptions = {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export type CoverageReporterSerializedOptions = {
-  changedFiles?: Array<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Array<Config.Path>;
+  changedFiles?: Array<string>;
+  sourcesRelatedToTestsInChangedFiles?: Array<string>;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -103,5 +103,5 @@ export type TestRunData = Array<{
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
 };

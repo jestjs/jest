@@ -4,9 +4,10 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-haste-map"},
-    {"path": "../jest-runner"},
     {"path": "../jest-runtime"},
     {"path": "../jest-test-result"}
   ]

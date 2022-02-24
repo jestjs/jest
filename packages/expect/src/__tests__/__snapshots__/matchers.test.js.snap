@@ -2071,6 +2071,21 @@ Expected: <g>/abc/g</>
 Received: <r>/abc/gsy</>
 `;
 
+exports[`.toEqual() {pass: false} expect([, , 1, ]).toEqual([, , 2, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    undefined,</>
+<d>    undefined,</>
+<g>-   2,</>
+<r>+   1,</>
+<d>    undefined,</>
+<d>  ]</>
+`;
+
 exports[`.toEqual() {pass: false} expect([]).toEqual([]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2160,8 +2175,15 @@ Received: <r>{"0": "a", "1": "b", "2": "c"}</>
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-Expected: <g>ObjectContaining {"a": 2}</>
-Received: <r>{"a": 1, "b": 2}</>
+<g>- Expected  - 2</>
+<r>+ Received  + 3</>
+
+<g>- ObjectContaining {</>
+<g>-   "a": 2,</>
+<r>+ Object {</>
+<r>+   "a": 1,</>
+<r>+   "b": 2,</>
+<d>  }</>
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
@@ -2729,6 +2751,20 @@ exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringMatching /bc/)
 
 Expected: not <g>StringMatching /bc/</>
 Received:     <r>"abcd"</>
+`;
+
+exports[`.toEqual() {pass: true} expect([, , 1, , ]).not.toEqual([, , 1, undefined, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[, , 1, undefined, ]</>
+Received:     <r>[, , 1, , ]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([, , 1, ]).not.toEqual([, , 1, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[, , 1, ]</>
+
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
@@ -3305,6 +3341,15 @@ Expected value: <g>1</>
 Received value: <r>{"c": {"d": 1}}</>
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('.a.b.c') 1`] = `
+<d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
+
+Expected path: <g>".a.b.c"</>
+Received path: <r>[]</>
+
+Received value: <r>{"a": {"b": {"c": {}}}}</>
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d') 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
 
@@ -3345,6 +3390,16 @@ Expected path: <g>"a.b"</>
 
 Expected value: <g>undefined</>
 Received value: <r>3</>
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({"a": {}}).toHaveProperty('a.b', undefined) 1`] = `
+<d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b"</>
+Received path: <r>"a"</>
+
+Expected value: <g>undefined</>
+Received value: <r>{}</>
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d') 1`] = `
@@ -3522,6 +3577,38 @@ Expected path: <g>"memo"</>
 Expected value: not <g>[]</>
 `;
 
+exports[`.toHaveProperty() {pass: true} expect({"": 1}).toHaveProperty('', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>""</>
+
+Expected value: not <g>1</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [[{"c": [{"d": 1}]}]]}}).toHaveProperty('a.b[0][0].c[0].d', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0][0].c[0].d"</>
+
+Expected value: not <g>1</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": [{"d": 1}]}]}}).toHaveProperty('a.b[0].c[0].d', 1) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0].c[0].d"</>
+
+Expected value: not <g>1</>
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [{"c": {"d": [{"e": 1}, {"f": 2}]}}]}}).toHaveProperty('a.b[0].c.d[1].f', 2) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
+
+Expected path: <g>"a.b[0].c.d[1].f"</>
+
+Expected value: not <g>2</>
+`;
+
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>)</>
 
@@ -3601,18 +3688,6 @@ exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHavePr
 Expected path: <g>"a.b"</>
 
 Expected value: not <g>undefined</>
-`;
-
-exports[`.toHaveProperty() {pass: true} expect({"a": {}}).toHaveProperty('a.b', undefined) 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toHaveProperty<d>(</><g>path</><d>, </><g>value</><d>)</>
-
-Expected path: <g>"a.b"</>
-Received path: <r>"a"</>
-
-Expected value: not <g>undefined</>
-Received value:     <r>{}</>
-
-<d>Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value</>
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `

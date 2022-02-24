@@ -17,7 +17,7 @@ type TestSuiteInfo = {
 export type JestHookExposedFS = {
   projects: Array<{
     config: Config.ProjectConfig;
-    testPaths: Array<Config.Path>;
+    testPaths: Array<string>;
   }>;
 };
 
@@ -83,6 +83,7 @@ export interface WatchPlugin {
 }
 export interface WatchPluginClass {
   new (options: {
+    config: Record<string, unknown>;
     stdin: NodeJS.ReadStream;
     stdout: NodeJS.WriteStream;
   }): WatchPlugin;

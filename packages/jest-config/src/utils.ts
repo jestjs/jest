@@ -7,14 +7,13 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
 type ResolveOptions = {
-  rootDir: Config.Path;
+  rootDir: string;
   key: string;
-  filePath: Config.Path;
+  filePath: string;
   optional?: boolean;
 };
 
@@ -22,7 +21,7 @@ export const BULLET: string = chalk.bold('\u25cf ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Configuration Documentation:',
 )}
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 const createValidationError = (message: string) =>
@@ -52,12 +51,12 @@ export const resolve = (
   return module as string;
 };
 
-export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
+export const escapeGlobCharacters = (path: string): string =>
   path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 
 export const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
+  rootDir: string,
+  filePath: string,
 ): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
@@ -65,12 +64,12 @@ export const replaceRootDirInPath = (
 
   return path.resolve(
     rootDir,
-    path.normalize('./' + filePath.substr('<rootDir>'.length)),
+    path.normalize('./' + filePath.substring('<rootDir>'.length)),
   );
 };
 
 const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   const newConfig = {} as T;
@@ -84,14 +83,14 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
 };
 
 type OrArray<T> = T | Array<T>;
-type ReplaceRootDirConfigObj = Record<string, Config.Path>;
+type ReplaceRootDirConfigObj = Record<string, string>;
 type ReplaceRootDirConfigValues =
   | OrArray<ReplaceRootDirConfigObj>
   | OrArray<RegExp>
-  | OrArray<Config.Path>;
+  | OrArray<string>;
 
 export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   if (config == null) {
@@ -117,134 +116,9 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
   return config;
 };
 
-export const resolveWithPrefix = (
-  resolver: string | undefined | null,
-  {
-    filePath,
-    humanOptionName,
-    optionName,
-    prefix,
-    rootDir,
-  }: {
-    filePath: string;
-    humanOptionName: string;
-    optionName: string;
-    prefix: string;
-    rootDir: Config.Path;
-  },
-): string => {
-  const fileName = replaceRootDirInPath(rootDir, filePath);
-  let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
-  }
-
-  try {
-    return require.resolve(`${prefix}${fileName}`);
-  } catch {}
-
-  module = Resolver.findNodeModule(fileName, {
-    basedir: rootDir,
-    resolver: resolver || undefined,
-  });
-  if (module) {
-    return module;
-  }
-
-  try {
-    return require.resolve(fileName);
-  } catch {}
-
-  throw createValidationError(
-    `  ${humanOptionName} ${chalk.bold(
-      fileName,
-    )} cannot be found. Make sure the ${chalk.bold(
-      optionName,
-    )} configuration option points to an existing node module.`,
-  );
-};
-
-/**
- * Finds the test environment to use:
- *
- * 1. looks for jest-environment-<name> relative to project.
- * 1. looks for jest-environment-<name> relative to Jest.
- * 1. looks for <name> relative to project.
- * 1. looks for <name> relative to Jest.
- */
-export const getTestEnvironment = ({
-  rootDir,
-  testEnvironment: filePath,
-}: {
-  rootDir: Config.Path;
-  testEnvironment: string;
-}): string =>
-  resolveWithPrefix(undefined, {
-    filePath,
-    humanOptionName: 'Test environment',
-    optionName: 'testEnvironment',
-    prefix: 'jest-environment-',
-    rootDir,
-  });
-
-/**
- * Finds the watch plugins to use:
- *
- * 1. looks for jest-watch-<name> relative to project.
- * 1. looks for jest-watch-<name> relative to Jest.
- * 1. looks for <name> relative to project.
- * 1. looks for <name> relative to Jest.
- */
-export const getWatchPlugin = (
-  resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-): string =>
-  resolveWithPrefix(resolver, {
-    filePath,
-    humanOptionName: 'Watch plugin',
-    optionName: 'watchPlugins',
-    prefix: 'jest-watch-',
-    rootDir,
-  });
-
-/**
- * Finds the runner to use:
- *
- * 1. looks for jest-runner-<name> relative to project.
- * 1. looks for jest-runner-<name> relative to Jest.
- * 1. looks for <name> relative to project.
- * 1. looks for <name> relative to Jest.
- */
-export const getRunner = (
-  resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-): string =>
-  resolveWithPrefix(resolver, {
-    filePath,
-    humanOptionName: 'Jest Runner',
-    optionName: 'runner',
-    prefix: 'jest-runner-',
-    rootDir,
-  });
-
 type JSONString = string & {readonly $$type: never}; // newtype
 export const isJSONString = (text?: JSONString | string): text is JSONString =>
   text != null &&
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');
-
-export const getSequencer = (
-  resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-): string =>
-  resolveWithPrefix(resolver, {
-    filePath,
-    humanOptionName: 'Jest Sequencer',
-    optionName: 'testSequencer',
-    prefix: 'jest-sequencer-',
-    rootDir,
-  });

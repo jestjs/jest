@@ -31,7 +31,7 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  */
 class CurrentTestList {
   private _array: Array<{
-    testPath: Config.Path;
+    testPath: string;
     config: Config.ProjectConfig;
   } | null>;
 
@@ -39,7 +39,7 @@ class CurrentTestList {
     this._array = [];
   }
 
-  add(testPath: Config.Path, config: Config.ProjectConfig) {
+  add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
     if (index !== -1) {
@@ -49,7 +49,7 @@ class CurrentTestList {
     }
   }
 
-  delete(testPath: Config.Path) {
+  delete(testPath: string) {
     const record = this._array.find(
       record => record !== null && record.testPath === testPath,
     );
@@ -126,7 +126,7 @@ export default class Status {
     }
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
+  testStarted(testPath: string, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();

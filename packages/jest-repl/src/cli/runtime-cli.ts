@@ -11,11 +11,11 @@ import chalk = require('chalk');
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import {ScriptTransformer} from '@jest/transform';
+import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
 import Runtime from 'jest-runtime';
-import {interopRequireDefault, setGlobal, tryRealpath} from 'jest-util';
+import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
 import {VERSION} from './version';
@@ -63,34 +63,40 @@ export async function run(
   const options = await readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config: Config.ProjectConfig = {
+  const projectConfig: Config.ProjectConfig = {
     ...options.projectConfig,
     automock: false,
   };
 
   try {
-    const hasteMap = await Runtime.createContext(config, {
+    const hasteMap = await Runtime.createContext(projectConfig, {
       maxWorkers: Math.max(cpus().length - 1, 1),
       watchman: globalConfig.watchman,
     });
 
-    const transformer = new ScriptTransformer(config);
-    const Environment: typeof JestEnvironment = interopRequireDefault(
-      transformer.requireAndTranspileModule(config.testEnvironment),
-    ).default;
-    const environment = new Environment(config);
-    setGlobal(
-      environment.global,
-      'console',
-      new CustomConsole(process.stdout, process.stderr),
+    const transformer = await createScriptTransformer(projectConfig);
+    const Environment: typeof JestEnvironment =
+      await transformer.requireAndTranspileModule(
+        projectConfig.testEnvironment,
+      );
+
+    const customConsole = new CustomConsole(process.stdout, process.stderr);
+    const environment = new Environment(
+      {
+        globalConfig,
+        projectConfig,
+      },
+      {console: customConsole, docblockPragmas: {}, testPath: filePath},
     );
-    setGlobal(environment.global, 'jestProjectConfig', config);
+    setGlobal(environment.global, 'console', customConsole);
+    setGlobal(environment.global, 'jestProjectConfig', projectConfig);
     setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
     const runtime = new Runtime(
-      config,
+      projectConfig,
       environment,
       hasteMap.resolver,
+      transformer,
       new Map(),
       {
         changedFiles: undefined,
@@ -103,7 +109,7 @@ export async function run(
       filePath,
     );
 
-    for (const path of config.setupFiles) {
+    for (const path of projectConfig.setupFiles) {
       const esm = runtime.unstable_shouldLoadAsEsm(path);
 
       if (esm) {
@@ -119,7 +125,7 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));
   }

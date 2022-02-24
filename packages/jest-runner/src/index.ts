@@ -7,9 +7,13 @@
 
 import chalk = require('chalk');
 import Emittery = require('emittery');
-import exit = require('exit');
 import throat from 'throat';
-import type {SerializableError, TestResult} from '@jest/test-result';
+import type {
+  Test,
+  TestEvents,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -19,9 +23,6 @@ import type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  Test,
-  TestEvents,
-  TestFileEvent,
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
@@ -34,14 +35,12 @@ interface WorkerInterface extends Worker {
 }
 
 export type {
-  Test,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
   TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
-  TestFileEvent,
 } from './types';
 
 export default class TestRunner {
@@ -93,11 +92,10 @@ export default class TestRunner {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
-              let sendMessageToJest: TestFileEvent;
-
               // Remove `if(onStart)` in Jest 27
               if (onStart) {
                 await onStart(test);
+
                 return runTest(
                   test.path,
                   this._globalConfig,
@@ -106,41 +104,42 @@ export default class TestRunner {
                   this._context,
                   undefined,
                 );
-              } else {
-                // `deepCyclicCopy` used here to avoid mem-leak
-                sendMessageToJest = (eventName, args) =>
-                  this.eventEmitter.emit(
-                    eventName,
-                    deepCyclicCopy(args, {keepPrototype: false}),
-                  );
-
-                await this.eventEmitter.emit('test-file-start', [test]);
-                return runTest(
-                  test.path,
-                  this._globalConfig,
-                  test.context.config,
-                  test.context.resolver,
-                  this._context,
-                  sendMessageToJest,
-                );
               }
+
+              // `deepCyclicCopy` used here to avoid mem-leak
+              const sendMessageToJest: TestFileEvent = (eventName, args) =>
+                this.eventEmitter.emit(
+                  eventName,
+                  deepCyclicCopy(args, {keepPrototype: false}),
+                );
+
+              await this.eventEmitter.emit('test-file-start', [test]);
+
+              return runTest(
+                test.path,
+                this._globalConfig,
+                test.context.config,
+                test.context.resolver,
+                this._context,
+                sendMessageToJest,
+              );
             })
             .then(result => {
               if (onResult) {
                 return onResult(test, result);
-              } else {
-                return this.eventEmitter.emit('test-file-success', [
-                  test,
-                  result,
-                ]);
               }
+
+              return this.eventEmitter.emit('test-file-success', [
+                test,
+                result,
+              ]);
             })
             .catch(err => {
               if (onFailure) {
                 return onFailure(test, err);
-              } else {
-                return this.eventEmitter.emit('test-file-failure', [test, err]);
               }
+
+              return this.eventEmitter.emit('test-file-failure', [test, err]);
             }),
         ),
       Promise.resolve(),
@@ -166,12 +165,7 @@ export default class TestRunner {
 
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      forkOptions: {
-        // use advanced serialization in order to transfer objects with circular references
-        // @ts-expect-error: option does not exist on the node 10 types
-        serialization: 'advanced',
-        stdio: 'pipe',
-      },
+      forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [
@@ -226,22 +220,6 @@ export default class TestRunner {
         return promise;
       });
 
-    const onError = async (err: SerializableError, test: Test) => {
-      // Remove `if(onFailure)` in Jest 27
-      if (onFailure) {
-        await onFailure(test, err);
-      } else {
-        await this.eventEmitter.emit('test-file-failure', [test, err]);
-      }
-      if (err.type === 'ProcessTerminatedError') {
-        console.error(
-          'A worker process has quit unexpectedly! ' +
-            'Most likely this is an initialization error.',
-        );
-        exit(1);
-      }
-    };
-
     const onInterrupt = new Promise((_, reject) => {
       watcher.on('change', state => {
         if (state.interrupted) {
@@ -256,14 +234,17 @@ export default class TestRunner {
           .then(result => {
             if (onResult) {
               return onResult(test, result);
-            } else {
-              return this.eventEmitter.emit('test-file-success', [
-                test,
-                result,
-              ]);
             }
+
+            return this.eventEmitter.emit('test-file-success', [test, result]);
           })
-          .catch(error => onError(error, test)),
+          .catch(error => {
+            if (onFailure) {
+              return onFailure(test, error);
+            }
+
+            return this.eventEmitter.emit('test-file-failure', [test, error]);
+          }),
       ),
     );
 
@@ -274,15 +255,22 @@ export default class TestRunner {
           chalk.yellow(
             'A worker process has failed to exit gracefully and has been force exited. ' +
               'This is likely caused by tests leaking due to improper teardown. ' +
-              'Try running with --detectOpenHandles to find leaks.',
+              'Try running with --detectOpenHandles to find leaks. ' +
+              'Active timers can also cause this, ensure that .unref() was called on them.',
           ),
         );
       }
     };
+
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
-  on = this.eventEmitter.on.bind(this.eventEmitter);
+  on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): Emittery.UnsubscribeFn {
+    return this.eventEmitter.on(eventName, listener);
+  }
 }
 
 class CancelRun extends Error {

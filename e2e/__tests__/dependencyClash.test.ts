@@ -18,7 +18,7 @@ const hasteImplModulePath = path
 
 beforeEach(() => {
   cleanup(tempDir);
-  createEmptyPackage(tempDir);
+  createEmptyPackage(tempDir, {});
 });
 
 // This test case is checking that when having both

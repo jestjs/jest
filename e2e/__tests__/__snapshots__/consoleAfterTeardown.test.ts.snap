@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`console printing 1`] = `
-PASS __tests__/console.test.js
+"PASS __tests__/console.test.js
 
 
   ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
@@ -13,5 +13,5 @@ PASS __tests__/console.test.js
          |             ^
       13 |   });
       14 | });
-      15 |
+      15 |"
 `;

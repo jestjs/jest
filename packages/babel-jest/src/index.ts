@@ -11,24 +11,144 @@ import {
   PartialConfig,
   TransformOptions,
   transformSync as babelTransform,
+  transformAsync as babelTransformAsync,
 } from '@babel/core';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
-  Transformer,
+  SyncTransformer,
 } from '@jest/transform';
-import type {Config} from '@jest/types';
-import {loadPartialConfig} from './loadBabelConfig';
+import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-type CreateTransformer = Transformer<TransformOptions>['createTransformer'];
+type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
 
-const createTransformer: CreateTransformer = userOptions => {
+function assertLoadedBabelConfig(
+  babelConfig: Readonly<PartialConfig> | null,
+  cwd: string,
+  filename: string,
+): asserts babelConfig {
+  if (!babelConfig) {
+    throw new Error(
+      `babel-jest: Babel ignores ${chalk.bold(
+        slash(path.relative(cwd, filename)),
+      )} - make sure to include the file in Jest's ${chalk.bold(
+        'transformIgnorePatterns',
+      )} as well.`,
+    );
+  }
+}
+
+function addIstanbulInstrumentation(
+  babelOptions: TransformOptions,
+  transformOptions: JestTransformOptions,
+): TransformOptions {
+  if (transformOptions.instrument) {
+    const copiedBabelOptions: TransformOptions = {...babelOptions};
+    copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+    // Copied from jest-runtime transform.js
+    copiedBabelOptions.plugins = (copiedBabelOptions.plugins || []).concat([
+      [
+        babelIstanbulPlugin,
+        {
+          // files outside `cwd` will not be instrumented
+          cwd: transformOptions.config.cwd,
+          exclude: [],
+        },
+      ],
+    ]);
+
+    return copiedBabelOptions;
+  }
+
+  return babelOptions;
+}
+
+function getCacheKeyFromConfig(
+  sourceText: string,
+  sourcePath: string,
+  babelOptions: PartialConfig,
+  transformOptions: JestTransformOptions,
+): string {
+  const {config, configString, instrument} = transformOptions;
+
+  const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
+
+  return createHash('md5')
+    .update(THIS_FILE)
+    .update('\0', 'utf8')
+    .update(JSON.stringify(babelOptions.options))
+    .update('\0', 'utf8')
+    .update(sourceText)
+    .update('\0', 'utf8')
+    .update(path.relative(config.rootDir, sourcePath))
+    .update('\0', 'utf8')
+    .update(configString)
+    .update('\0', 'utf8')
+    .update(configPath.join(''))
+    .update('\0', 'utf8')
+    .update(instrument ? 'instrument' : '')
+    .update('\0', 'utf8')
+    .update(process.env.NODE_ENV || '')
+    .update('\0', 'utf8')
+    .update(process.env.BABEL_ENV || '')
+    .update('\0', 'utf8')
+    .update(process.version)
+    .digest('hex');
+}
+
+function loadBabelConfig(
+  cwd: string,
+  filename: string,
+  transformOptions: TransformOptions,
+): PartialConfig {
+  const babelConfig = loadPartialConfig(transformOptions);
+
+  assertLoadedBabelConfig(babelConfig, cwd, filename);
+
+  return babelConfig;
+}
+
+async function loadBabelConfigAsync(
+  cwd: string,
+  filename: string,
+  transformOptions: TransformOptions,
+): Promise<PartialConfig> {
+  const babelConfig = await loadPartialConfigAsync(transformOptions);
+
+  assertLoadedBabelConfig(babelConfig, cwd, filename);
+
+  return babelConfig;
+}
+
+function loadBabelOptions(
+  cwd: string,
+  filename: string,
+  transformOptions: TransformOptions,
+  jestTransformOptions: JestTransformOptions,
+): TransformOptions {
+  const {options} = loadBabelConfig(cwd, filename, transformOptions);
+
+  return addIstanbulInstrumentation(options, jestTransformOptions);
+}
+
+async function loadBabelOptionsAsync(
+  cwd: string,
+  filename: string,
+  transformOptions: TransformOptions,
+  jestTransformOptions: JestTransformOptions,
+): Promise<TransformOptions> {
+  const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
+
+  return addIstanbulInstrumentation(options, jestTransformOptions);
+}
+
+export const createTransformer: CreateTransformer = userOptions => {
   const inputOptions = userOptions ?? {};
 
   const options = {
@@ -47,13 +167,13 @@ const createTransformer: CreateTransformer = userOptions => {
     sourceMaps: 'both',
   } as const;
 
-  function loadBabelConfig(
-    cwd: Config.Path,
-    filename: Config.Path,
+  function mergeBabelTransformOptions(
+    filename: string,
     transformOptions: JestTransformOptions,
-  ): PartialConfig {
+  ): TransformOptions {
+    const {cwd} = transformOptions.config;
     // `cwd` first to allow incoming options to override it
-    const babelConfig = loadPartialConfig({
+    return {
       cwd,
       ...options,
       caller: {
@@ -72,81 +192,70 @@ const createTransformer: CreateTransformer = userOptions => {
           options.caller.supportsTopLevelAwait,
       },
       filename,
-    });
-
-    if (!babelConfig) {
-      throw new Error(
-        `babel-jest: Babel ignores ${chalk.bold(
-          slash(path.relative(cwd, filename)),
-        )} - make sure to include the file in Jest's ${chalk.bold(
-          'transformIgnorePatterns',
-        )} as well.`,
-      );
-    }
-
-    return babelConfig;
+    };
   }
 
   return {
     canInstrument: true,
     getCacheKey(sourceText, sourcePath, transformOptions) {
-      const {config, configString, instrument} = transformOptions;
-
       const babelOptions = loadBabelConfig(
-        config.cwd,
+        transformOptions.config.cwd,
         sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+      );
+
+      return getCacheKeyFromConfig(
+        sourceText,
+        sourcePath,
+        babelOptions,
         transformOptions,
       );
-      const configPath = [
-        babelOptions.config || '',
-        babelOptions.babelrc || '',
-      ];
+    },
+    async getCacheKeyAsync(sourceText, sourcePath, transformOptions) {
+      const babelOptions = await loadBabelConfigAsync(
+        transformOptions.config.cwd,
+        sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+      );
 
-      return createHash('md5')
-        .update(THIS_FILE)
-        .update('\0', 'utf8')
-        .update(JSON.stringify(babelOptions.options))
-        .update('\0', 'utf8')
-        .update(sourceText)
-        .update('\0', 'utf8')
-        .update(path.relative(config.rootDir, sourcePath))
-        .update('\0', 'utf8')
-        .update(configString)
-        .update('\0', 'utf8')
-        .update(configPath.join(''))
-        .update('\0', 'utf8')
-        .update(instrument ? 'instrument' : '')
-        .update('\0', 'utf8')
-        .update(process.env.NODE_ENV || '')
-        .update('\0', 'utf8')
-        .update(process.env.BABEL_ENV || '')
-        .digest('hex');
+      return getCacheKeyFromConfig(
+        sourceText,
+        sourcePath,
+        babelOptions,
+        transformOptions,
+      );
     },
     process(sourceText, sourcePath, transformOptions) {
-      const babelOptions = {
-        ...loadBabelConfig(
-          transformOptions.config.cwd,
-          sourcePath,
-          transformOptions,
-        ).options,
-      };
-
-      if (transformOptions?.instrument) {
-        babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
-        // Copied from jest-runtime transform.js
-        babelOptions.plugins = (babelOptions.plugins || []).concat([
-          [
-            babelIstanbulPlugin,
-            {
-              // files outside `cwd` will not be instrumented
-              cwd: transformOptions.config.rootDir,
-              exclude: [],
-            },
-          ],
-        ]);
-      }
+      const babelOptions = loadBabelOptions(
+        transformOptions.config.cwd,
+        sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+        transformOptions,
+      );
 
       const transformResult = babelTransform(sourceText, babelOptions);
+
+      if (transformResult) {
+        const {code, map} = transformResult;
+        if (typeof code === 'string') {
+          return {code, map};
+        }
+      }
+
+      return sourceText;
+    },
+    async processAsync(sourceText, sourcePath, transformOptions) {
+      const babelOptions = await loadBabelOptionsAsync(
+        transformOptions.config.cwd,
+        sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+        transformOptions,
+      );
+
+      const transformResult = await babelTransformAsync(
+        sourceText,
+        babelOptions,
+      );
 
       if (transformResult) {
         const {code, map} = transformResult;
@@ -160,11 +269,11 @@ const createTransformer: CreateTransformer = userOptions => {
   };
 };
 
-const transformer: Transformer<TransformOptions> = {
+const transformer: SyncTransformer<TransformOptions> = {
   ...createTransformer(),
   // Assigned here so only the exported transformer has `createTransformer`,
   // instead of all created transformers by the function
   createTransformer,
 };
 
-export = transformer;
+export default transformer;

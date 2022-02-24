@@ -6,6 +6,7 @@
  */
 
 import {sep} from 'path';
+import {isCI} from 'ci-info';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
@@ -19,11 +20,14 @@ const defaultOptions: Config.DefaultOptions = {
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
+  ci: isCI,
   clearMocks: false,
   collectCoverage: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'babel',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  detectLeaks: false,
+  detectOpenHandles: false,
   errorOnDeprecated: false,
   expand: false,
   extensionsToTreatAsEsm: [],
@@ -31,9 +35,12 @@ const defaultOptions: Config.DefaultOptions = {
   globals: {},
   haste: {
     computeSha1: false,
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: true,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
+  listTests: false,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
@@ -43,6 +50,7 @@ const defaultOptions: Config.DefaultOptions = {
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
+  passWithNoTests: false,
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
@@ -64,7 +72,6 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
-  testURL: 'http://localhost',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,

@@ -89,7 +89,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         ...process.env,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         ...forceColor,
-      } as NodeJS.ProcessEnv,
+      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       silent: true,
@@ -134,7 +134,9 @@ export default class ChildProcessWorker implements WorkerInterface {
     // coming from the child. This avoids code duplication related with cleaning
     // the queue, and scheduling the next call.
     if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
+      const error = new Error(
+        `Jest worker encountered ${this._retries} child process exceptions, exceeding retry limit`,
+      );
 
       this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
@@ -171,7 +173,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
@@ -202,9 +204,10 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _onExit(exitCode: number) {
+  private _onExit(exitCode: number | null) {
     if (
       exitCode !== 0 &&
+      exitCode !== null &&
       exitCode !== SIGTERM_EXIT_CODE &&
       exitCode !== SIGKILL_EXIT_CODE
     ) {
@@ -236,7 +239,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._request = request;
     this._retries = 0;
-    this._child.send(request);
+    this._child.send(request, () => {});
   }
 
   waitForExit(): Promise<void> {

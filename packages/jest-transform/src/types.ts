@@ -8,23 +8,23 @@
 import type {RawSourceMap} from 'source-map';
 import type {Config, TransformTypes} from '@jest/types';
 
-export type ShouldInstrumentOptions = Pick<
-  Config.GlobalConfig,
-  | 'collectCoverage'
-  | 'collectCoverageFrom'
-  | 'collectCoverageOnlyFrom'
-  | 'coverageProvider'
-> & {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
-};
+export interface ShouldInstrumentOptions
+  extends Pick<
+    Config.GlobalConfig,
+    | 'collectCoverage'
+    | 'collectCoverageFrom'
+    | 'collectCoverageOnlyFrom'
+    | 'coverageProvider'
+  > {
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
+}
 
-export type Options = ShouldInstrumentOptions &
-  Partial<{
-    isCoreModule: boolean;
-    isInternalModule: boolean;
-  }> &
-  CallerTransformOptions;
+export interface Options
+  extends ShouldInstrumentOptions,
+    CallerTransformOptions {
+  isInternalModule?: boolean;
+}
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -50,6 +50,11 @@ export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
+export interface RequireAndTranspileModuleOptions
+  extends ReducedTransformOptions {
+  applyInteropRequireDefault: boolean;
+}
+
 export type StringMap = Map<string, string>;
 
 export interface TransformOptions<OptionType = unknown>
@@ -63,19 +68,76 @@ export interface TransformOptions<OptionType = unknown>
   transformerConfig: OptionType;
 }
 
-export interface Transformer<OptionType = unknown> {
+export interface SyncTransformer<OptionType = unknown> {
+  /**
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => Transformer;
+  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
 }
+
+export interface AsyncTransformer<OptionType = unknown> {
+  /**
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
+  canInstrument?: boolean;
+  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
+}
+
+export type Transformer<OptionType = unknown> =
+  | SyncTransformer<OptionType>
+  | AsyncTransformer<OptionType>;

@@ -7,19 +7,19 @@
  */
 
 import exit = require('exit');
-import type {SerializableError, TestResult} from '@jest/test-result';
+import type {
+  SerializableError,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {ModuleMap, SerializableModuleMap} from 'jest-haste-map';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
 import runTest from './runTest';
-import type {
-  ErrorWithCode,
-  TestFileEvent,
-  TestRunnerSerializedContext,
-} from './types';
+import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;
@@ -29,7 +29,7 @@ export type SerializableResolver = {
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  path: Config.Path;
+  path: string;
   context?: TestRunnerSerializedContext;
 };
 
@@ -74,7 +74,9 @@ export function setup(setupData: {
     config,
     serializableModuleMap,
   } of setupData.serializableResolvers) {
-    const moduleMap = ModuleMap.fromJSON(serializableModuleMap);
+    const moduleMap = HasteMap.getStatic(config).getModuleMapFromJSON(
+      serializableModuleMap,
+    );
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
@@ -104,7 +106,7 @@ export async function worker({
       },
       sendMessageToJest,
     );
-  } catch (error) {
+  } catch (error: any) {
     throw formatError(error);
   }
 }

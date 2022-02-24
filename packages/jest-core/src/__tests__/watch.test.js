@@ -205,7 +205,7 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -377,7 +377,7 @@ describe('Watch mode flows', () => {
       ${'i'} | ${'UpdateSnapshotsInteractive'}
     `(
       'forbids WatchPlugins overriding reserved internal plugins',
-      ({key, plugin}) => {
+      async ({key}) => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${key}`;
         jest.doMock(
@@ -397,7 +397,7 @@ describe('Watch mode flows', () => {
           {virtual: true},
         );
 
-        expect(() => {
+        await expect(
           watch(
             {
               ...globalConfig,
@@ -408,8 +408,8 @@ describe('Watch mode flows', () => {
             pipe,
             hasteMapInstances,
             stdin,
-          );
-        }).toThrowError(
+          ),
+        ).rejects.toThrowError(
           new RegExp(
             `Watch plugin OffendingWatchPlugin attempted to register key <${key}>,\\s+that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
             'm',
@@ -426,7 +426,7 @@ describe('Watch mode flows', () => {
       ${'p'} | ${'TestPathPattern'}
     `(
       'allows WatchPlugins to override non-reserved internal plugins',
-      ({key, plugin}) => {
+      ({key}) => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_valid_override_${key}`;
         jest.doMock(
@@ -460,7 +460,7 @@ describe('Watch mode flows', () => {
       },
     );
 
-    it('forbids third-party WatchPlugins overriding each other', () => {
+    it('forbids third-party WatchPlugins overriding each other', async () => {
       const pluginPaths = ['Foo', 'Bar'].map(ident => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${ident.toLowerCase()}`;
@@ -486,7 +486,7 @@ describe('Watch mode flows', () => {
         return pluginPath;
       });
 
-      expect(() => {
+      await expect(
         watch(
           {
             ...globalConfig,
@@ -497,8 +497,8 @@ describe('Watch mode flows', () => {
           pipe,
           hasteMapInstances,
           stdin,
-        );
-      }).toThrowError(
+        ),
+      ).rejects.toThrowError(
         /Watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
       );
     });
@@ -526,7 +526,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -560,7 +560,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -717,7 +717,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -778,7 +778,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
