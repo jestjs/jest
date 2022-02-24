@@ -12,7 +12,10 @@ export default function convertDescriptorToString(
 ): string {
   switch (typeof descriptor) {
     case 'function':
-      return descriptor.name;
+      if (descriptor.name) {
+        return descriptor.name;
+      }
+      break;
 
     case 'number':
     case 'undefined':
@@ -23,6 +26,6 @@ export default function convertDescriptorToString(
   }
 
   throw new Error(
-    `Invalid first argument, ${descriptor}. It must be a class, function, number, or string.`,
+    `Invalid first argument, ${descriptor}. It must be a named class, named function, number, or string.`,
   );
 }
