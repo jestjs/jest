@@ -9,12 +9,10 @@ import {makeGlobalConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
-jest.mock('jest-util', () => {
-  return {
-    ...jest.requireActual('jest-util'),
-    isInteractive: true,
-  };
-});
+jest.mock('jest-util', () => ({
+  ...jest.requireActual('jest-util'),
+  isInteractive: true,
+}));
 
 describe('getNoTestsFoundMessage', () => {
   function createGlobalConfig(options?: Partial<Config.GlobalConfig>) {
