@@ -9,12 +9,12 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {writeFileSync} from 'graceful-fs';
 import LeakDetector from 'jest-leak-detector';
-import {Worker} from '../..';
+import {Worker} from '../../build/index';
 
 let workerFile!: string;
 beforeAll(() => {
   workerFile = join(tmpdir(), 'baz.js');
-  writeFileSync(workerFile, `module.exports.fn = () => {};`);
+  writeFileSync(workerFile, 'module.exports.fn = () => {};');
 });
 
 let worker!: Worker;
@@ -30,10 +30,10 @@ afterEach(async () => {
 
 it('does not retain arguments after a task finished', async () => {
   let leakDetector!: LeakDetector;
-  await new Promise(resolve => {
+  await new Promise((resolve, reject) => {
     const obj = {};
     leakDetector = new LeakDetector(obj);
-    (worker as any).fn(obj).then(resolve);
+    (worker as any).fn(obj).then(resolve, reject);
   });
 
   expect(await leakDetector.isLeaking()).toBe(false);

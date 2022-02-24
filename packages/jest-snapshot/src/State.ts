@@ -24,7 +24,7 @@ import {
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath: Config.Path;
+  prettierPath: string;
   expand?: boolean;
   snapshotFormat: PrettyFormatOptions;
 };
@@ -59,10 +59,10 @@ export default class SnapshotState {
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
   private _initialData: SnapshotData;
-  private _snapshotPath: Config.Path;
+  private _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _prettierPath: Config.Path;
+  private _prettierPath: string;
   private _snapshotFormat: PrettyFormatOptions;
 
   added: number;
@@ -71,7 +71,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: string, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,

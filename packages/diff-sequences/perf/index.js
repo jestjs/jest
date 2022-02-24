@@ -26,10 +26,10 @@ const testBaseline = (a, b) => {
     },
     name: 'baseline',
     onCycle() {
-      global.gc(); // after run cycle
+      globalThis.gc(); // after run cycle
     },
     onStart() {
-      global.gc(); // when benchmark starts
+      globalThis.gc(); // when benchmark starts
     },
   });
 
@@ -56,10 +56,10 @@ const testImproved = function (a, b) {
     },
     name: 'improved',
     onCycle() {
-      global.gc(); // after run cycle
+      globalThis.gc(); // after run cycle
     },
     onStart() {
-      global.gc(); // when benchmark starts
+      globalThis.gc(); // when benchmark starts
     },
   });
 

@@ -21,7 +21,7 @@ onNodeVersions('>=12.16.0', () => {
       });
       try {
         expect(exitCode).toBe(0);
-      } catch (error: unknown) {
+      } catch (error) {
         console.log(`Test failed on iteration ${i + 1}`);
         throw error;
       }

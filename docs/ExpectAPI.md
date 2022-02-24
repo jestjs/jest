@@ -70,11 +70,15 @@ test('numeric ranges', () => {
 _Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
   }
 }
 ```
@@ -348,9 +352,20 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
+}
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
 }
@@ -420,6 +435,26 @@ test('doAsync calls both callbacks', () => {
 ```
 
 The `expect.assertions(2)` call ensures that both callbacks actually get called.
+
+### `expect.closeTo(number, numDigits?)`
+
+`expect.closeTo(number, numDigits?)` is useful when comparing floating point numbers in object properties or array item. If you need to compare a number, please use `.toBeCloseTo` instead.
+
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005 (that is, 10 ** -2 / 2)`.
+
+For example, this test passes with a precision of 5 digits:
+
+```js
+test('compare float in object properties', () => {
+  expect({
+    title: '0.1 + 0.2',
+    sum: 0.1 + 0.2,
+  }).toEqual({
+    title: '0.1 + 0.2',
+    sum: expect.closeTo(0.3, 5),
+  });
+});
+```
 
 ### `expect.hasAssertions()`
 
@@ -720,7 +755,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -895,6 +930,16 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
+  livingroom: {
+    amenities: [
+      {
+        couch: [
+          ['large', {dimensions: [20, 20]}],
+          ['small', {dimensions: [10, 10]}],
+        ],
+      },
+    ],
+  },
   'ceiling.height': 2,
 };
 
@@ -922,6 +967,10 @@ test('this house has my desired features', () => {
     ['oven', 'stove', 'washer'],
   );
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+  expect(houseForSale).toHaveProperty(
+    'livingroom.amenities[0].couch[0][1].dimensions[0]',
+    20,
+  );
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 
@@ -1112,6 +1161,8 @@ test('the flavor list contains lime', () => {
   expect(getAllFlavors()).toContain('lime');
 });
 ```
+
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
 
 ### `.toContainEqual(item)`
 

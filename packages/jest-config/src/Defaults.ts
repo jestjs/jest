@@ -36,7 +36,7 @@ const defaultOptions: Config.DefaultOptions = {
   haste: {
     computeSha1: false,
     enableSymlinks: false,
-    forceNodeFilesystemAPI: false,
+    forceNodeFilesystemAPI: true,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
@@ -72,7 +72,6 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
-  testURL: 'http://localhost',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,

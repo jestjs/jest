@@ -9,12 +9,14 @@ import type {Config} from '@jest/types';
 import type {HasteMapObject} from 'jest-haste-map';
 import Runtime, {Context} from 'jest-runtime';
 
-export default (
+export default function createContext(
   config: Config.ProjectConfig,
   {hasteFS, moduleMap}: HasteMapObject,
-): Context => ({
-  config,
-  hasteFS,
-  moduleMap,
-  resolver: Runtime.createResolver(config, moduleMap),
-});
+): Context {
+  return {
+    config,
+    hasteFS,
+    moduleMap,
+    resolver: Runtime.createResolver(config, moduleMap),
+  };
+}

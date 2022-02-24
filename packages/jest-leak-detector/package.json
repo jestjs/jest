@@ -1,6 +1,6 @@
 {
   "name": "jest-leak-detector",
-  "version": "27.3.1",
+  "version": "28.0.0-alpha.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,19 +10,22 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "jest-get-type": "^27.3.1",
-    "pretty-format": "^27.3.1"
+    "jest-get-type": "^28.0.0-alpha.3",
+    "pretty-format": "^28.0.0-alpha.4"
   },
   "devDependencies": {
     "@types/weak-napi": "^2.0.0",
     "weak-napi": "^2.0.1"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

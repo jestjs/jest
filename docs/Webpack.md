@@ -66,8 +66,8 @@ module.exports = 'test-file-stub';
 
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```bash
-yarn add --dev identity-obj-proxy
+```bash npm2yarn
+npm install --save-dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).

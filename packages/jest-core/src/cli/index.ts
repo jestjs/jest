@@ -36,7 +36,7 @@ type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
-  projects: Array<Config.Path>,
+  projects: Array<string>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
@@ -134,7 +134,7 @@ const buildContextsAndHasteMaps = async (
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
+      const hasteMapInstance = await Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
         maxWorkers: Math.max(
           1,
@@ -175,7 +175,7 @@ const _run10000 = async (
       filterSetupPromise = (async () => {
         try {
           await rawFilter.setup();
-        } catch (err: unknown) {
+        } catch (err) {
           return err;
         }
         return undefined;

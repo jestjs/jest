@@ -8,9 +8,7 @@
 
 import {createHash} from 'crypto';
 import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import semver = require('semver');
-import stripAnsi from 'strip-ansi';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
@@ -1118,7 +1116,7 @@ describe('preset', () => {
         {} as Config.Argv,
       ),
     ).rejects.toThrowError(
-      /Unexpected token } in JSON at position 104[\s\S]* at /,
+      /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
     );
   });
 
@@ -1812,13 +1810,7 @@ describe('extensionsToTreatAsEsm', () => {
     }>;
     (): any;
   }) {
-    expect.assertions(1);
-
-    try {
-      await callback();
-    } catch (error: any) {
-      expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
-    }
+    await expect(callback()).rejects.toThrowErrorMatchingSnapshot();
   }
 
   it('should pass valid config through', async () => {
@@ -1852,19 +1844,22 @@ describe('extensionsToTreatAsEsm', () => {
 describe('haste.enableSymlinks', () => {
   it('should throw if watchman is not disabled', async () => {
     await expect(
-      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/'},
+        {} as Config.Argv,
+      ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     await expect(
       normalize(
         {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
-        {},
+        {} as Config.Argv,
       ),
     ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
 
     const {options} = await normalize(
       {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.enableSymlinks).toBe(true);
@@ -1876,10 +1871,104 @@ describe('haste.forceNodeFilesystemAPI', () => {
   it('should pass option through', async () => {
     const {options} = await normalize(
       {haste: {forceNodeFilesystemAPI: true}, rootDir: '/root/'},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste.forceNodeFilesystemAPI).toBe(true);
     expect(console.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateSnapshot', () => {
+  it('should be all if updateSnapshot is true', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      updateSnapshot: true,
+    } as Config.Argv);
+    expect(options.updateSnapshot).toBe('all');
+  });
+  it('should be new if updateSnapshot is falsy', async () => {
+    {
+      const {options} = await normalize(
+        {ci: false, rootDir: '/root/'},
+        {} as Config.Argv,
+      );
+      expect(options.updateSnapshot).toBe('new');
+    }
+    {
+      const {options} = await normalize({ci: false, rootDir: '/root/'}, {
+        updateSnapshot: false,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('new');
+    }
+  });
+  it('should be none if updateSnapshot is falsy and ci mode is true', async () => {
+    const defaultCiConfig = Defaults.ci;
+    {
+      Defaults.ci = false;
+      const {options} = await normalize({rootDir: '/root/'}, {
+        ci: true,
+      } as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+    }
+    {
+      Defaults.ci = true;
+      const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+      expect(options.updateSnapshot).toBe('none');
+    }
+    Defaults.ci = defaultCiConfig;
+  });
+});
+
+describe('testURL', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `testURL` is used', async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        testURL: 'https://jestjs.io/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('extraGlobals', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `extraGlobals` is used', async () => {
+    await normalize(
+      {
+        extraGlobals: ['Math'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('moduleLoader', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `moduleLoader` is used', async () => {
+    await normalize(
+      {
+        moduleLoader: '<rootDir>/runtime.js',
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
   });
 });

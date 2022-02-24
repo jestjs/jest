@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import vm, {Context} from 'vm';
-import {ModuleMocker, fn, spyOn} from '../';
+import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
@@ -553,7 +553,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
 
-      expect(child.hasOwnProperty('func')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(true);
       expect(child.func()).toEqual('efgh');
       expect(parent.func()).toEqual('abcd');
     });
@@ -569,7 +569,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(parent, 'func').mockReturnValue('jklm');
 
-      expect(child.hasOwnProperty('func')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(false);
       expect(child.func()).toEqual('jklm');
     });
 
@@ -759,7 +759,7 @@ describe('moduleMocker', () => {
       ]);
     });
 
-    it(`a call that throws undefined is tracked properly`, () => {
+    it('a call that throws undefined is tracked properly', () => {
       const fn = moduleMocker.fn(() => {
         // eslint-disable-next-line no-throw-literal
         throw undefined;
@@ -1062,6 +1062,32 @@ describe('moduleMocker', () => {
     const fn = jest.fn();
     fn.mockName('myMockFn');
     expect(fn.getMockName()).toBe('myMockFn');
+  });
+
+  test('jest.fn should provide the correct lastCall', () => {
+    const mock = jest.fn();
+
+    expect(mock.mock).not.toHaveProperty('lastCall');
+
+    mock('first');
+    mock('second');
+    mock('last', 'call');
+
+    expect(mock).toHaveBeenLastCalledWith('last', 'call');
+    expect(mock.mock.lastCall).toEqual(['last', 'call']);
+  });
+
+  test('lastCall gets reset by mockReset', () => {
+    const mock = jest.fn();
+
+    mock('first');
+    mock('last', 'call');
+
+    expect(mock.mock.lastCall).toEqual(['last', 'call']);
+
+    mock.mockReset();
+
+    expect(mock.mock).not.toHaveProperty('lastCall');
   });
 
   test('mockName gets reset by mockReset', () => {
@@ -1449,6 +1475,13 @@ describe('moduleMocker', () => {
       expect(spy1.mock.calls.length).toBe(1);
       expect(spy2.mock.calls.length).toBe(1);
     });
+  });
+});
+
+describe('mocked', () => {
+  it('should return unmodified input', () => {
+    const subject = {};
+    expect(mocked(subject)).toBe(subject);
   });
 });
 

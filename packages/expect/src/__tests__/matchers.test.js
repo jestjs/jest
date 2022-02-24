@@ -9,7 +9,7 @@ const chalk = require('chalk');
 const Immutable = require('immutable');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {stringify} = require('jest-matcher-utils');
-const jestExpect = require('../');
+const {expect: jestExpect} = require('../');
 const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -1717,7 +1717,7 @@ describe('.toMatch()', () => {
     ['foo', undefined],
   ].forEach(([n1, n2]) => {
     it(
-      `throws if non String/RegExp expected value passed:` +
+      'throws if non String/RegExp expected value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
@@ -1883,8 +1883,10 @@ describe('.toHaveProperty()', () => {
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
-    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+    [{a: {b: [{c: [{d: 1}]}]}}, 'a.b[0].c[0].d', 1],
+    [{a: {b: [{c: {d: [{e: 1}, {f: 2}]}}]}}, 'a.b[0].c.d[1].f', 2],
+    [{a: {b: [[{c: [{d: 1}]}]]}}, 'a.b[0][0].c[0].d', 1],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
     [new Foo(), 'b', 'b'],
@@ -1895,6 +1897,7 @@ describe('.toHaveProperty()', () => {
     [new E('div'), 'nodeType', 1],
     ['', 'length', 0],
     [memoized, 'memo', []],
+    [{'': 1}, '', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,
@@ -1923,7 +1926,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
+    [{a: {}}, 'a.b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
@@ -1955,6 +1958,7 @@ describe('.toHaveProperty()', () => {
 
   [
     [{a: {b: {c: {}}}}, 'a.b.c.d'],
+    [{a: {b: {c: {}}}}, '.a.b.c'],
     [{a: 1}, 'a.b.c.d'],
     [{}, 'a'],
     [1, 'a.b.c'],

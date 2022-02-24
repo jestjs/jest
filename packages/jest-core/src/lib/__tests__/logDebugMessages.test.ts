@@ -6,7 +6,6 @@
  *
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import logDebugMessages from '../logDebugMessages';
 
@@ -61,5 +60,5 @@ it('prints the config object', async () => {
   const message = await new Promise<string>(resolve => {
     logDebugMessages(globalConfig, config, getOutputStream(resolve));
   });
-  expect(wrap(message)).toMatchSnapshot();
+  expect(message).toMatchSnapshot();
 });

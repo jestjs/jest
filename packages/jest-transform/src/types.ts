@@ -16,8 +16,8 @@ export interface ShouldInstrumentOptions
     | 'collectCoverageOnlyFrom'
     | 'coverageProvider'
   > {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 }
 
 export interface Options
@@ -70,7 +70,7 @@ export interface TransformOptions<OptionType = unknown>
 
 export interface SyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -80,32 +80,32 @@ export interface SyncTransformer<OptionType = unknown> {
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
 
 export interface AsyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -115,25 +115,25 @@ export interface AsyncTransformer<OptionType = unknown> {
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
-    sourcePath: Config.Path,
+    sourcePath: string,
     options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }

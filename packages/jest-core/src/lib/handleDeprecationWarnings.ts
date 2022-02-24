@@ -8,11 +8,11 @@
 import chalk = require('chalk');
 import {KEYS} from 'jest-watcher';
 
-export default (
+export default function handleDeprecationWarnings(
   pipe: NodeJS.WriteStream,
   stdin: NodeJS.ReadStream = process.stdin,
-): Promise<void> =>
-  new Promise((resolve, reject) => {
+): Promise<void> {
+  return new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
         chalk.red('There are deprecation warnings.\n'),
@@ -39,3 +39,4 @@ export default (
       resolve();
     }
   });
+}

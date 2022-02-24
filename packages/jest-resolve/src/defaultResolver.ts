@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
+import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {sync as resolveSync} from 'resolve';
+import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
-import type {Config} from '@jest/types';
 import {
   PkgJson,
   isDirectory,
@@ -24,17 +23,28 @@ import {
 // copy from `resolve`'s types so we don't have their types in our definition
 // files
 interface ResolverOptions {
-  basedir: Config.Path;
+  basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
+  paths?: Array<string>;
+  rootDir?: string;
   packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
   pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
+
+type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
+  Pick<ResolverOptions, 'conditions'>;
+
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
+  path: string,
+  options: ResolverOptions,
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -45,82 +55,106 @@ declare global {
   }
 }
 
-export default function defaultResolver(
-  path: Config.Path,
-  options: ResolverOptions,
-): Config.Path {
+const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
-  const result = resolveSync(path, {
+  const resolveOptions: UpstreamResolveOptionsWithConditions = {
     ...options,
     isDirectory,
     isFile,
-    packageFilter: createPackageFilter(
-      options.conditions,
-      options.packageFilter,
-    ),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
-  });
+  };
+
+  const pathToResolve = getPathInModule(path, resolveOptions);
+
+  const result =
+    // if `getPathInModule` doesn't change the path, attempt to resolve it
+    pathToResolve === path
+      ? resolveSync(pathToResolve, resolveOptions)
+      : pathToResolve;
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
-}
+};
+
+export default defaultResolver;
 
 /*
  * helper functions
  */
 
-function readPackageSync(_: unknown, file: Config.Path): PkgJson {
+function readPackageSync(_: unknown, file: string): PkgJson {
   return readPackageCached(file);
 }
 
-function createPackageFilter(
-  conditions?: Array<string>,
-  userFilter?: ResolverOptions['packageFilter'],
-): ResolverOptions['packageFilter'] {
-  function attemptExportsFallback(pkg: PkgJson) {
-    const options: ResolveExportsOptions = conditions
-      ? {conditions, unsafe: true}
-      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
-        {browser: false, require: true};
+function getPathInModule(
+  path: string,
+  options: UpstreamResolveOptionsWithConditions,
+): string {
+  if (shouldIgnoreRequestForExports(path)) {
+    return path;
+  }
+
+  const segments = path.split('/');
+
+  let moduleName = segments.shift();
+
+  if (moduleName) {
+    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
+    if (moduleName.startsWith('@')) {
+      moduleName = `${moduleName}/${segments.shift()}`;
+    }
+
+    let packageJsonPath = '';
 
     try {
-      return resolveExports(pkg, '.', options);
+      packageJsonPath = resolveSync(`${moduleName}/package.json`, options);
     } catch {
-      return undefined;
+      // ignore if package.json cannot be found
+    }
+
+    if (packageJsonPath && isFile(packageJsonPath)) {
+      const pkg = readPackageCached(packageJsonPath);
+
+      if (pkg.exports) {
+        // we need to make sure resolve ignores `main`
+        delete pkg.main;
+
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        // TODO: should we throw if not?
+        if (resolved) {
+          return pathResolve(dirname(packageJsonPath), resolved);
+        }
+      }
     }
   }
 
-  return function packageFilter(pkg, packageDir) {
-    let filteredPkg = pkg;
-
-    if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, packageDir);
-    }
-
-    if (filteredPkg.main != null) {
-      return filteredPkg;
-    }
-
-    const indexInRoot = resolve(packageDir, './index.js');
-
-    // if the module contains an `index.js` file in root, `resolve` will request
-    // that if there is no `main`. Since we don't wanna break that, add this
-    // check
-    if (isFile(indexInRoot)) {
-      return filteredPkg;
-    }
-
-    return {
-      ...filteredPkg,
-      main: attemptExportsFallback(filteredPkg),
-    };
-  };
+  return path;
 }
+
+function createResolveOptions(
+  conditions: Array<string> | undefined,
+): ResolveExportsOptions {
+  return conditions
+    ? {conditions, unsafe: true}
+    : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+      {browser: false, require: true};
+}
+
+// if it's a relative import or an absolute path, exports are ignored
+const shouldIgnoreRequestForExports = (path: string) =>
+  path.startsWith('.') || isAbsolute(path);

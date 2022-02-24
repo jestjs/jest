@@ -26,7 +26,7 @@ type NewCacheKeyOptions = {
 
 type OldGetCacheKeyFunction = (
   fileData: string,
-  filePath: Config.Path,
+  filePath: string,
   configStr: string,
   options: OldCacheKeyOptions,
 ) => string;
@@ -34,7 +34,7 @@ type OldGetCacheKeyFunction = (
 // Should mirror `import('@jest/transform').Transformer['getCacheKey']`
 type NewGetCacheKeyFunction = (
   sourceText: string,
-  sourcePath: Config.Path,
+  sourcePath: string,
   options: NewCacheKeyOptions,
 ) => string;
 
@@ -73,7 +73,9 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
   };
 }
 
-export default (
+export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
-): GetCacheKeyFunction => getCacheKeyFunction(getGlobalCacheKey(files, values));
+): GetCacheKeyFunction {
+  return getCacheKeyFunction(getGlobalCacheKey(files, values));
+}

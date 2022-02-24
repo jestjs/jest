@@ -8,13 +8,21 @@
 
 import * as path from 'path';
 import pluginTester from 'babel-plugin-tester';
-import {format as formatCode} from 'prettier';
+import {format as formatCode, resolveConfig} from 'prettier';
 import babelPluginJestHoist from '..';
+
+const prettierOptions = {
+  ...resolveConfig.sync(__filename),
+  filepath: __filename,
+};
+
+const formatResult = (code: string) => formatCode(code, prettierOptions);
 
 pluginTester({
   plugin: babelPluginJestHoist,
   pluginName: 'babel-plugin-jest-hoist',
   tests: {
+    /* eslint-disable sort-keys */
     'automatic react runtime': {
       babelOptions: {
         babelrc: false,
@@ -27,9 +35,9 @@ pluginTester({
           ],
         ],
       },
-      code: `
+      code: formatResult(`
         jest.mock('./App', () => () => <div>Hello world</div>);
-      `,
+      `),
       formatResult(code) {
         // replace the filename with something that will be the same across OSes and machine
         const codeWithoutSystemPath = code.replace(
@@ -37,35 +45,51 @@ pluginTester({
           'var _jsxFileName = "/root/project/src/file.js";',
         );
 
-        return formatCode(codeWithoutSystemPath, {parser: 'babel'});
+        return formatResult(codeWithoutSystemPath);
       },
       snapshot: true,
     },
     'top level mocking': {
-      code: `
+      code: formatResult(`
         require('x');
 
         jest.enableAutomock();
         jest.disableAutomock();
-      `,
+      `),
+      formatResult,
       snapshot: true,
     },
     'within a block': {
-      code: `
+      code: formatResult(`
         beforeEach(() => {
           require('x')
           jest.mock('someNode')
         })
-      `,
+      `),
+      formatResult,
       snapshot: true,
     },
     'within a block with no siblings': {
-      code: `
+      code: formatResult(`
         beforeEach(() => {
           jest.mock('someNode')
         })
-      `,
+      `),
+      formatResult,
+      snapshot: true,
+    },
+
+    'required `jest` within `jest`': {
+      code: formatResult(`
+        const {jest} = require('@jest/globals');
+
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+      `),
+      formatResult,
       snapshot: true,
     },
   },
+  /* eslint-enable */
 });

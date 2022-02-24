@@ -59,7 +59,7 @@ function spawnJest(
   dir: string,
   args: Array<string> = [],
   options: RunJestOptions = {},
-  spawnAsync: boolean = false,
+  spawnAsync = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
@@ -266,13 +266,18 @@ export function getConfig(
   configs: Array<Config.ProjectConfig>;
   version: string;
 } {
-  const {exitCode, stdout} = runJest(
+  const {exitCode, stdout, stderr} = runJest(
     dir,
     args.concat('--show-config'),
     options,
   );
 
-  expect(exitCode).toBe(0);
+  try {
+    expect(exitCode).toBe(0);
+  } catch (error) {
+    console.error('Exit code is not 0', {stderr, stdout});
+    throw error;
+  }
 
   return JSON.parse(stdout);
 }

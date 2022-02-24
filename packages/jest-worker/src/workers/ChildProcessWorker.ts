@@ -89,7 +89,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         ...process.env,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         ...forceColor,
-      } as NodeJS.ProcessEnv,
+      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       silent: true,
@@ -173,7 +173,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
