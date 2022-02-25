@@ -26,23 +26,14 @@ You can write your own transformer. The API of a transformer is as follows:
 // For the full definition, see `packages/jest-transform/src/types.ts` in https://github.com/facebook/jest 
 // (taking care in choosing the right tag/commit for your version of Jest)
 
-export interface CallerTransformOptions {
+interface TransformOptions<OptionType = unknown> {
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
-}
-
-export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
-}
-
-export type StringMap = Map<string, string>;
-
-export interface TransformOptions<OptionType = unknown>
-  extends ReducedTransformOptions {
   /** a cached file system which is used in jest-runtime - useful to improve performance */
-  cacheFS: StringMap;
+  cacheFS:  Map<string, string>;
   config: Config.ProjectConfig;
   /** A stringified version of the configuration - useful in cache busting */
   configString: string;
@@ -50,7 +41,7 @@ export interface TransformOptions<OptionType = unknown>
   transformerConfig: OptionType;
 }
 
-export interface SyncTransformer<OptionType = unknown> {
+interface SyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
 
   getCacheKey?: (
@@ -78,7 +69,7 @@ export interface SyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
-export interface AsyncTransformer<OptionType = unknown> {
+interface AsyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
 
   getCacheKey?: (
@@ -106,22 +97,22 @@ export interface AsyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
-export type Transformer<OptionType = unknown> =
+type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
-export type TransformerCreator<
+type TransformerCreator<
   X extends Transformer<OptionType>,
   OptionType = unknown,
 > = (options?: OptionType) => X;
 
-export type TransformerFactory<X extends Transformer> = {
+type TransformerFactory<X extends Transformer> = {
   createTransformer: TransformerCreator<X>;
 };
 ```
 
 There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). 
-This process, also known as "transpilation", might happen _synchronously_ (in the case of require), or  _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
+This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or  _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
 
 So if your code base is ESM only  implementing the async variants is sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous variant. Be aware that `node_modules` is not transpiled with default config.
 
@@ -129,7 +120,7 @@ Semi-related to this are the supports flags we pass (see `CallerTransformOptions
 
 Though not required, we _highly recommend_ implementing `getCacheKey` as well, so we do not waste resources transpiling when we could have read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
 
-Instead of having your custom transformer implement the Transformer interface directly, you can choose to export a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
+Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
 Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
 
