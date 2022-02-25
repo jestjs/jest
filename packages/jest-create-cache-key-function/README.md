@@ -21,25 +21,22 @@ Get a function that can generate cache keys using source code, provided files an
 
 **Note:**
 
-The source code for your test is already taken into account when generating the cache key. 
-The `files` array should be used to provide files that are not directly related to your code such as external configuration files.
+The source code for your test is already taken into account when generating the cache key. The `files` array should be used to provide files that are not directly related to your code such as external configuration files.
 
 ## Usage
 
 Here is some sample usage code while creating a new transformer for Jest
 
 ```javascript
-const createCacheKeyFunction = require('@jest/create-cache-key-function').default;
+const createCacheKeyFunction =
+  require('@jest/create-cache-key-function').default;
 
 const filesToAccountFor = [
   __filename,
   require.resolve('some-package-name/package.json'),
 ];
 
-const valuesToAccountFor = [
-  process.env.SOME_LOCAL_ENV,
-  "Some_Other_Value"
-]
+const valuesToAccountFor = [process.env.SOME_LOCAL_ENV, 'Some_Other_Value'];
 
 module.exports = {
   process(src, filename, config, options) {},
