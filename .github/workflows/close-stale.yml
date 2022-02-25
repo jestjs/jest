@@ -40,6 +40,5 @@ jobs:
           days-before-pr-close: 30
           exempt-all-milestones: true
           exempt-issue-labels: Pinned
-          exempt-draft-pr: true
           operations-per-run: 10
           debug-only: true
