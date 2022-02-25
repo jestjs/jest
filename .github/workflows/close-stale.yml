@@ -1,7 +1,7 @@
 name: 'Close stale issues and PRs'
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '10 * * * *'
 
 jobs:
   stale:
@@ -20,5 +20,5 @@ jobs:
           days-before-pr-close: 14
           exempt-all-milestones: true
           exempt-draft-pr: true
-          any-of-issue-labels: 'Needs Triage'
+          operations-per-run: 10
           debug-only: true
