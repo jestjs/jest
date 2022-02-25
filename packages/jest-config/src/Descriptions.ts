@@ -12,7 +12,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   bail: 'Stop running tests after `n` failures',
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
-  clearMocks: 'Automatically clear mock calls and instances between every test',
+  clearMocks:
+    'Automatically clear mock calls, instances and results before every test',
   collectCoverage:
     'Indicates whether the coverage information should be collected while executing the test',
   collectCoverageFrom:
@@ -53,10 +54,11 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   preset: "A preset that is used as a base for Jest's configuration",
   projects: 'Run tests from one or more projects',
   reporters: 'Use this configuration option to add custom reporters to Jest',
-  resetMocks: 'Automatically reset mock state between every test',
+  resetMocks: 'Automatically reset mock state before every test',
   resetModules: 'Reset the module registry before running each individual test',
   resolver: 'A path to a custom resolver',
-  restoreMocks: 'Automatically restore mock state between every test',
+  restoreMocks:
+    'Automatically restore mock state and implementation before every test',
   rootDir:
     'The root directory that Jest should scan for tests and modules within',
   roots:
@@ -82,8 +84,6 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   testResultsProcessor:
     'This option allows the use of a custom results processor',
   testRunner: 'This option allows use of a custom test runner',
-  testURL:
-    'This option sets the URL for the jsdom environment. It is reflected in properties such as location.href',
   timers:
     'Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"',
   transform: 'A map from regular expressions to paths to transformers',

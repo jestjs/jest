@@ -78,7 +78,7 @@ As with every major release, we are making a number of breaking changes to make 
 - **Translations:** We are now asking for your help to [translate the Jest documentation](https://crowdin.com/project/jest-v2) to make it easier for people to learn how to use Jest.
 - **Custom Reporters:** Jest now supports custom test reporters through the `reporters` configuration option. You can finally customize the output of Jest as well as integrate it with other tools by generating reports in formats such as XML. [See documentation](/docs/configuration#reporters-array-modulename-modulename-options).
 - **Codebase Health:** It was only possible iterate so quickly in Jest because we spent a significant amount of time on the health of the codebase. We were one of the early adopters of [prettier](https://github.com/prettier/prettier), we notably increased flow coverage, forked Jasmine to improve our test runner library and we rewrote and refactored significant portions of Jest itself to set up Jest for success in the future.
-- **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/master/CHANGELOG.md#jest-2000).
+- **Bugfixes:** As always, we made plenty of bugfixes in Jest. The full changelog can be found in the [Jest repository](https://github.com/facebook/jest/blob/main/CHANGELOG.md#jest-2000).
 
 ## Talks about Jest
 

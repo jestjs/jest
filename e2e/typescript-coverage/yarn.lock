@@ -2,8 +2,8 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
-  cacheKey: 7
+  version: 6
+  cacheKey: 8
 
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local
@@ -13,22 +13,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-typescript@^3.3.1:
-  version: 3.9.9
-  resolution: "typescript@npm:3.9.9"
+"typescript@npm:^3.3.1":
+  version: 3.9.10
+  resolution: "typescript@npm:3.9.10"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 22bbe953faa34903587f3bd8fb6c343d754745d4177e49da523a2a3b814fe5eaf60d9b23c2d401d038a08a5ac2d8094b268ba75adee840cc2358fb5a866624ab
+  checksum: 46c842e2cd4797b88b66ef06c9c41dd21da48b95787072ccf39d5f2aa3124361bc4c966aa1c7f709fae0509614d76751455b5231b12dbb72eb97a31369e1ff92
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^3.3.1#builtin<compat/typescript>":
-  version: 3.9.9
-  resolution: "typescript@patch:typescript@npm%3A3.9.9#builtin<compat/typescript>::version=3.9.9&hash=ddfc1b"
+"typescript@patch:typescript@^3.3.1#~builtin<compat/typescript>":
+  version: 3.9.10
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 05a113f2ec0d0fc3263335c230d2eb7b94d851e51b5766f63b88b611127d08782ce41132eb32b9d3d434de8340f698f7ec2f72ebb4d33c3b2976b27de1f47ace
+  checksum: dc7141ab555b23a8650a6787f98845fc11692063d02b75ff49433091b3af2fe3d773650dea18389d7c21f47d620fb3b110ea363dab4ab039417a6ccbbaf96fc2
   languageName: node
   linkType: hard

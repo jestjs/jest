@@ -8,6 +8,7 @@
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
+import {DEFAULT_OPTIONS as PRETTY_FORMAT_DEFAULTS} from 'pretty-format';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
@@ -48,7 +49,6 @@ const initialOptions: Config.InitialOptions = {
   errorOnDeprecated: false,
   expand: false,
   extensionsToTreatAsEsm: [],
-  extraGlobals: [],
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
@@ -59,10 +59,11 @@ const initialOptions: Config.InitialOptions = {
     computeSha1: true,
     defaultPlatform: 'ios',
     enableSymlinks: false,
-    forceNodeFilesystemAPI: false,
+    forceNodeFilesystemAPI: true,
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     hasteMapModulePath: '',
     platforms: ['ios', 'android'],
+    retainAllFiles: false,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
@@ -74,7 +75,6 @@ const initialOptions: Config.InitialOptions = {
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
-  moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
   },
@@ -103,16 +103,22 @@ const initialOptions: Config.InitialOptions = {
   roots: ['<rootDir>'],
   runTestsByPath: false,
   runner: 'jest-runner',
+  runtime: '<rootDir>',
+  sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
+  snapshotFormat: PRETTY_FORMAT_DEFAULTS,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
-  testEnvironment: 'jest-environment-jsdom',
-  testEnvironmentOptions: {userAgent: 'Agent/007'},
+  testEnvironment: 'jest-environment-node',
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+    userAgent: 'Agent/007',
+  },
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
@@ -126,7 +132,6 @@ const initialOptions: Config.InitialOptions = {
   testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
-  testURL: 'http://localhost',
   timers: 'real',
   transform: {
     '\\.js$': '<rootDir>/preprocessor.js',

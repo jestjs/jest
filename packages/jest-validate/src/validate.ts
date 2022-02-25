@@ -57,7 +57,7 @@ const _validate = (
           throw new ValidationError(
             'Validation Error',
             `${key} has to be of type string or number`,
-            `maxWorkers=50% or\nmaxWorkers=3`,
+            'maxWorkers=50% or\nmaxWorkers=3',
           );
         }
       }

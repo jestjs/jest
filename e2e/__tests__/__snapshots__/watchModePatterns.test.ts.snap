@@ -16,30 +16,30 @@ Pattern Mode Usage
 `;
 
 exports[`can press "p" to filter by file name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "p" to filter by file name: test results 2`] = `
-PASS __tests__/bar.spec.js
+"PASS __tests__/bar.spec.js
   ✓ bar 1
-  ✓ bar 2
+  ✓ bar 2"
 `;
 
 exports[`can press "p" to filter by file name: test summary 1`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`can press "p" to filter by file name: test summary 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /bar/i.
+Ran all test suites matching /bar/i."
 `;
 
 exports[`can press "t" to filter by test name 1`] = `
@@ -56,27 +56,27 @@ Pattern Mode Usage
 `;
 
 exports[`can press "t" to filter by test name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "t" to filter by test name: test results 2`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "t" to filter by test name: test summary 1`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`can press "t" to filter by test name: test summary 2`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       2 skipped, 2 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites with tests matching "2".
+Ran all test suites with tests matching "2"."
 `;

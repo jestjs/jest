@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
@@ -13,7 +12,7 @@ describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
     const {exitCode, stderr} = runJest('stack-trace', ['runtimeError.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
 
     expect(exitCode).toBe(1);
     expect(stderr).toMatch(
@@ -31,7 +30,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).toMatch(
@@ -45,7 +44,7 @@ describe('Stack Trace', () => {
   it('prints a stack trace for matching errors', () => {
     const {exitCode, stderr} = runJest('stack-trace', ['stackTrace.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stackTrace.test\.js/);
@@ -57,7 +56,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).not.toMatch(
@@ -68,7 +67,7 @@ describe('Stack Trace', () => {
   it('prints a stack trace for errors', () => {
     const {exitCode, stderr} = runJest('stack-trace', ['testError.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).toMatch(/this is unexpected\./);
@@ -91,7 +90,7 @@ describe('Stack Trace', () => {
       'stackTraceWithoutMessage.test.js',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).toMatch(/important message/);
@@ -106,7 +105,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
     expect(stderr).not.toMatch(

@@ -19,8 +19,7 @@ test.each(['js', 'cjs'])('supports %s preset', presetDir => {
   expect(result.exitCode).toBe(0);
 });
 
-onNodeVersions('^12.17.0 || >=13.2.0', () => {
-  // eslint-disable-next-line jest/no-identical-title
+onNodeVersions('>=12.17.0', () => {
   test.each(['mjs', 'js-type-module'])('supports %s preset', presetDir => {
     const result = runJest(`presets/${presetDir}`);
 

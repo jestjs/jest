@@ -54,8 +54,8 @@ export default class FifoQueue implements TaskQueue {
 
     // Process the top task from the shared queue if
     // - there's no task in the worker specific queue or
-    // - if the non-worker-specific task after which this worker specifif task
-    //   hasn been queued wasn't processed yet
+    // - if the non-worker-specific task after which this worker specific task
+    //   has been queued wasn't processed yet
     if (workerTop != null && sharedTaskIsProcessed) {
       return this._workerQueues[workerId]?.dequeue()?.task ?? null;
     }

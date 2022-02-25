@@ -30,7 +30,7 @@ const rebuild = filename => filesToBuild.set(filename, true);
 
 chokidar
   .watch(
-    getPackages().map(p => path.resolve(p, 'src')),
+    getPackages().map(p => path.resolve(p.packageDir, 'src')),
     {
       ignoreInitial: true,
       ignored: /(^|[\/\\])\../, // ignore dotfiles

@@ -22,7 +22,7 @@ const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
-const filter = (path: Config.Path) =>
+const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(async () => {

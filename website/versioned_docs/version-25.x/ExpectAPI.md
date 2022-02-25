@@ -70,11 +70,15 @@ test('numeric ranges', () => {
 _Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
 
 ```ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
   }
 }
 ```
@@ -151,7 +155,7 @@ A boolean to let you know this matcher was called with an `expand` option. When 
 
 #### `this.utils`
 
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/main/packages/jest-matcher-utils).
 
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
@@ -313,9 +317,20 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
+}
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
 }
@@ -685,7 +700,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -1077,6 +1092,8 @@ test('the flavor list contains lime', () => {
   expect(getAllFlavors()).toContain('lime');
 });
 ```
+
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
 
 ### `.toContainEqual(item)`
 

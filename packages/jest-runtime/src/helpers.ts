@@ -31,7 +31,7 @@ export const decodePossibleOutsideJestVmPath = (
 
 export const findSiblingsWithFileExtension = (
   moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
-  from: Config.Path,
+  from: string,
   moduleName: string,
 ): string => {
   if (!path.isAbsolute(moduleName) && path.extname(moduleName) === '') {

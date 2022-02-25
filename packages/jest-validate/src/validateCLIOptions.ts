@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://jestjs.io/docs/cli\n`;
+    '  https://jestjs.io/docs/cli\n';
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -41,7 +41,7 @@ const createCLIValidationError = (
   } else {
     title += 's';
     message =
-      `  Following options were not recognized:\n` +
+      '  Following options were not recognized:\n' +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 

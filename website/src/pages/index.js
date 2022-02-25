@@ -545,6 +545,39 @@ class Index extends React.Component {
           </Container>
           <Container
             padding={['bottom', 'top']}
+            className="section-container bottom-margin docs"
+          >
+            <div className="blockElement imageAlignSide gridBlock video-block">
+              <div className="blockContent ">
+                <div className="video">
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/SyHzgcFefBk"
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="blockElement red bottom-margin">
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <Translate>
+                    The Meta Open Source team has put together a short overview
+                    of Jest, where they explained the project in beginner's
+                    terms. You can also find other content about [Meta Open
+                    Source projects](https://opensource.fb.com/) on their
+                    [YouTube
+                    Channel](https://www.youtube.com/channel/UCCQY962PmHabTjaHv2wJzfQ).
+                  </Translate>
+                </MarkdownBlock>
+              </div>
+            </div>
+          </Container>
+          <Container
+            padding={['bottom', 'top']}
             background="light"
             className="section-container community imageAlignSide twoByGridBlock"
           >
@@ -569,9 +602,9 @@ class Index extends React.Component {
                 <MarkdownBlock>
                   <Translate>
                     A lot of people! With
-                    [20m](https://www.npmjs.com/package/jest) downloads in the
+                    [50m](https://www.npmjs.com/package/jest) downloads in the
                     last month, and used on over
-                    [1,293,000](https://github.com/facebook/jest/network/dependents)
+                    [3,898,000](https://github.com/facebook/jest/network/dependents)
                     public repos on GitHub. Jest is used extensively at these
                     companies:
                   </Translate>

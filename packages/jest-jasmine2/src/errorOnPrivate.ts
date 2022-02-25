@@ -7,7 +7,6 @@
 
 import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import type {Jasmine} from './types';
 
 type DisabledGlobalKeys = 'fail' | 'pending' | 'spyOn' | 'spyOnProperty';
 
@@ -40,7 +39,7 @@ const disabledJasmineMethods: Record<DisabledJasmineMethodsKeys, string> = {
 };
 
 export function installErrorOnPrivate(global: Global.Global): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
 
   (Object.keys(disabledGlobals) as Array<DisabledGlobalKeys>).forEach(
     functionName => {

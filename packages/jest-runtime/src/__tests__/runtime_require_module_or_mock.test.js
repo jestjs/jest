@@ -36,7 +36,7 @@ it('mocks modules by default when using automocking', async () => {
   expect(exports.setModuleStateValue._isMockFunction).toBe(true);
 });
 
-it(`doesn't mock modules when explicitly unmocked when using automocking`, async () => {
+it("doesn't mock modules when explicitly unmocked when using automocking", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
@@ -50,7 +50,7 @@ it(`doesn't mock modules when explicitly unmocked when using automocking`, async
   expect(exports.isRealModule).toBe(true);
 });
 
-it(`doesn't mock modules when explicitly unmocked via a different name`, async () => {
+it("doesn't mock modules when explicitly unmocked via a different name", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
@@ -64,7 +64,7 @@ it(`doesn't mock modules when explicitly unmocked via a different name`, async (
   expect(exports.isRealModule).toBe(true);
 });
 
-it(`doesn't mock modules when disableAutomock() has been called`, async () => {
+it("doesn't mock modules when disableAutomock() has been called", async () => {
   const runtime = await createRuntime(__filename, {moduleNameMapper});
   const root = runtime.requireModule(runtime.__mockRootPath);
   root.jest.disableAutomock();

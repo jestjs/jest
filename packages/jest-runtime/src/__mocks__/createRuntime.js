@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import path from 'path';
-import {makeProjectConfig} from '@jest/test-utils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createScriptTransformer} from '@jest/transform';
 import NodeEnvironment from 'jest-environment-node';
 import {tryRealpath} from 'jest-util';
@@ -48,13 +48,13 @@ const setupTransform = (config, rootDir) => {
   return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
 };
 
-module.exports = async function createRuntime(filename, config) {
+module.exports = async function createRuntime(filename, projectConfig) {
   const rootDir = path.resolve(path.dirname(filename), 'test_root');
 
-  const moduleNameMapper = setupModuleNameMapper(config, rootDir);
-  const transform = setupTransform(config, rootDir);
+  const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
+  const transform = setupTransform(projectConfig, rootDir);
 
-  config = makeProjectConfig({
+  projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
     cwd: path.resolve(__dirname, '..', '..', '..', '..'),
     haste: {
@@ -73,30 +73,38 @@ module.exports = async function createRuntime(filename, config) {
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
     name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
     rootDir,
-    ...config,
+    ...projectConfig,
     moduleNameMapper,
     transform,
   });
 
-  if (!config.roots.length) {
-    config.roots = [config.rootDir];
+  if (!projectConfig.roots.length) {
+    projectConfig.roots = [projectConfig.rootDir];
   }
 
-  const environment = new NodeEnvironment(config);
+  const environment = new NodeEnvironment({
+    globalConfig: makeGlobalConfig(),
+    projectConfig,
+  });
   environment.global.console = console;
 
-  const hasteMap = await Runtime.createHasteMap(config, {
-    maxWorkers: 1,
-    resetCache: false,
-  }).build();
+  const hasteMap = await (
+    await Runtime.createHasteMap(projectConfig, {
+      maxWorkers: 1,
+      resetCache: false,
+    })
+  ).build();
 
   const cacheFS = new Map();
-  const scriptTransformer = await createScriptTransformer(config, cacheFS);
+  const scriptTransformer = await createScriptTransformer(
+    projectConfig,
+    cacheFS,
+  );
 
   const runtime = new Runtime(
-    config,
+    projectConfig,
     environment,
-    Runtime.createResolver(config, hasteMap.moduleMap),
+    Runtime.createResolver(projectConfig, hasteMap.moduleMap),
     scriptTransformer,
     cacheFS,
     {
@@ -110,7 +118,7 @@ module.exports = async function createRuntime(filename, config) {
     filename,
   );
 
-  for (const path of config.setupFiles) {
+  for (const path of projectConfig.setupFiles) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
@@ -120,9 +128,9 @@ module.exports = async function createRuntime(filename, config) {
     }
   }
 
-  runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
+  runtime.__mockRootPath = path.join(projectConfig.rootDir, 'root.js');
   runtime.__mockSubdirPath = path.join(
-    config.rootDir,
+    projectConfig.rootDir,
     'subdir2',
     'module_dir',
     'module_dir_module.js',

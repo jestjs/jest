@@ -8,6 +8,6 @@
 
 describe('test', () => {
   it('has predefined global variable', () => {
-    expect(global.definedInSetupFile).toEqual(true);
+    expect(globalThis.definedInSetupFile).toEqual(true);
   });
 });
