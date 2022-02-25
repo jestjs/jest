@@ -200,13 +200,13 @@ console.log('Calls to method: ', mockMethod.mock.calls);
 
 <TabItem value="ts" label="TypeScript">
 
-```js title="SomeClass.ts"
+```ts title="SomeClass.ts"
 export class SomeClass {
   method(a: string, b: string): void {}
 }
 ```
 
-```js title="SomeClass.test.ts"
+```ts title="SomeClass.test.ts"
 import {SomeClass} from './SomeClass';
 
 jest.mock('./SomeClass'); // this happens automatically with automocking
