@@ -125,6 +125,7 @@ export default class NotifyReporter extends BaseReporter {
       } else {
         this._notifier.notify(
           {
+            // @ts-expect-error - not all options are supported by all systems (specifically `actions` and `hint`)
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
             hint: 'int:transient:1',
