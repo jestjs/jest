@@ -8,7 +8,6 @@
 
 let GithubActionsReporter;
 
-const env = {...process.env};
 const write = process.stderr.write;
 const globalConfig = {
   rootDir: 'root',
@@ -29,7 +28,6 @@ beforeEach(() => {
 
 afterEach(() => {
   results = [];
-  process.env = env;
   process.stderr.write = write;
 });
 
@@ -120,7 +118,7 @@ test("reporter returns empty string if GITHUB_ACTIONS isn't set", () => {
 });
 
 test('reporter extracts the correct filename, line, and column', () => {
-  process.env.GITHUB_ACTIONS = true;
+  jest.doMock('ci-info', () => ({GITHUB_ACTIONS: true}));
 
   requireReporter();
   const testReporter = new GithubActionsReporter(globalConfig);

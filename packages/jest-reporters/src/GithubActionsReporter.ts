@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {GITHUB_ACTIONS} from 'ci-info';
 import type {AggregatedResult, TestResult} from '@jest/test-result';
 import BaseReporter from './BaseReporter';
 import type {Context} from './types';
@@ -18,7 +19,7 @@ export default class GithubActionsReporter extends BaseReporter {
     _contexts?: Set<Context>,
     aggregatedResults?: AggregatedResult,
   ): void {
-    if (!process.env.GITHUB_ACTIONS) {
+    if (!GITHUB_ACTIONS) {
       return;
     }
 
