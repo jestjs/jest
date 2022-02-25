@@ -86,7 +86,7 @@ export default class NotifyReporter extends BaseReporter {
         icon,
         message,
         timeout: false,
-        title
+        title,
       });
     } else if (
       testsHaveRun &&
@@ -120,7 +120,7 @@ export default class NotifyReporter extends BaseReporter {
           icon,
           message,
           timeout: false,
-          title
+          title,
         });
       } else {
         this._notifier.notify(
