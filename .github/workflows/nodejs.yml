@@ -116,7 +116,7 @@ jobs:
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
       - name: Use Node.js LTS
-        uses: actions/setup-node@v3.0.0
+        uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
