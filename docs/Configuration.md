@@ -925,6 +925,12 @@ Default: `[]`
 
 A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment before executing [`setupFilesAfterEnv`](#setupfilesafterenv-array) and before the test code itself.
 
+:::tip
+
+If your setup script is a CJS module, it may export an async function. Jest will call the function and await its result. This might be useful to fetch some data asynchronously. If the file is an ESM module, simply use top-level await to achieve the same result.
+
+:::
+
 ### `setupFilesAfterEnv` \[array]
 
 Default: `[]`

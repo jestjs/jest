@@ -207,7 +207,10 @@ async function runTestInternal(
     if (esm) {
       await runtime.unstable_importModule(path);
     } else {
-      runtime.requireModule(path);
+      const setupFile = runtime.requireModule(path);
+      if (typeof setupFile === 'function') {
+        await setupFile();
+      }
     }
   }
 

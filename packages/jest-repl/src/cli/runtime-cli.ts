@@ -115,9 +115,13 @@ export async function run(
       if (esm) {
         await runtime.unstable_importModule(path);
       } else {
-        runtime.requireModule(path);
+        const setupFile = runtime.requireModule(path);
+        if (typeof setupFile === 'function') {
+          await setupFile();
+        }
       }
     }
+
     const esm = runtime.unstable_shouldLoadAsEsm(filePath);
 
     if (esm) {
