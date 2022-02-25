@@ -105,7 +105,6 @@ test('run only changed files', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(DIR, {
@@ -288,7 +287,6 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
 
   ({stderr, stdout} = runJest(DIR, ['file2.test.js']));
@@ -333,7 +331,6 @@ testIfHg('gets changed files for hg', async () => {
   let stdout;
   let stderr;
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
@@ -342,7 +339,6 @@ testIfHg('gets changed files for hg', async () => {
     'file3.js': "require('./file2')",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
   run(`${HG} add .`, DIR);
@@ -352,11 +348,9 @@ testIfHg('gets changed files for hg', async () => {
     '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
-  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
