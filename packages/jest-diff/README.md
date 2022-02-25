@@ -394,6 +394,7 @@ For other applications, you can provide an options object as a third argument:
 | `commonColor`                     | `chalk.dim`        |
 | `commonIndicator`                 | `' '`              |
 | `commonLineTrailingSpaceColor`    | `string => string` |
+| `compareKeys`                     | `undefined`        |
 | `contextLines`                    | `5`                |
 | `emptyFirstOrLastLinePlaceholder` | `''`               |
 | `expand`                          | `true`             |
@@ -612,3 +613,59 @@ If a content line is empty, then the corresponding comparison line is automatica
 |      `aIndicator` | `'-·'`    | `'-'`   |
 |      `bIndicator` | `'+·'`    | `'+'`   |
 | `commonIndicator` | `' ·'`    | `''`    |
+
+### Example of option for sorting object keys
+
+When two objects are compared their keys are printed in alphabetical order by default. If this was not the original order of the keys the diff becomes harder to read as the keys are not in their original position.
+
+Use `compareKeys` to pass a function which will be used when sorting the object keys.
+
+```js
+const a = {c: 'c', b: 'b1', a: 'a'};
+const b = {c: 'c', b: 'b2', a: 'a'};
+
+const options = {
+  // The keys will be in their original order
+  compareKeys: () => 0,
+};
+
+const difference = diff(a, b, options);
+```
+
+```diff
+- Expected
++ Received
+
+  Object {
+    "c": "c",
+-   "b": "b1",
++   "b": "b2",
+    "a": "a",
+  }
+```
+
+Depending on the implementation of `compareKeys` any sort order can be used.
+
+```js
+const a = {c: 'c', b: 'b1', a: 'a'};
+const b = {c: 'c', b: 'b2', a: 'a'};
+
+const options = {
+  // The keys will be in reverse order
+  compareKeys: (a, b) => (a > b ? -1 : 1),
+};
+
+const difference = diff(a, b, options);
+```
+
+```diff
+- Expected
++ Received
+
+  Object {
+    "a": "a",
+-   "b": "b1",
++   "b": "b2",
+    "c": "c",
+  }
+```

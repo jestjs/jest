@@ -49,7 +49,7 @@ const evalCommand: repl.REPLEval = (
           : transformResult.code;
     }
     result = runInThisContext(cmd);
-  } catch (e) {
+  } catch (e: any) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);

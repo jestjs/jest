@@ -12,6 +12,7 @@ const path = require('path');
 const chalk = require('chalk');
 const dedent = require('dedent');
 const execa = require('execa');
+const yaml = require('js-yaml');
 const rimraf = require('rimraf');
 const tempy = require('tempy');
 
@@ -20,12 +21,17 @@ const rootDirectory = path.resolve(__dirname, '..');
 const cwd = tempy.directory();
 
 try {
+  const yarnRcPath = path.resolve(rootDirectory, '.yarnrc.yml');
+  const yarnConfig = yaml.load(fs.readFileSync(yarnRcPath, 'utf8'), {
+    filename: yarnRcPath,
+  });
+
   fs.writeFileSync(
     path.join(cwd, '.yarnrc.yml'),
     dedent`
       enableGlobalCache: true
 
-      yarnPath: ${require.resolve('../.yarn/releases/yarn-2.4.2.cjs')}
+      yarnPath: ${path.resolve(rootDirectory, yarnConfig.yarnPath)}
     `,
   );
   fs.writeFileSync(
@@ -33,7 +39,8 @@ try {
     JSON.stringify(
       {
         dependencies: {
-          jest: `*`,
+          jest: '*',
+          'jest-environment-jsdom': '*',
         },
         name: 'test-pnp',
       },
@@ -42,7 +49,7 @@ try {
     ),
   );
   fs.writeFileSync(
-    path.join(cwd, 'test.js'),
+    path.join(cwd, 'jsdom.test.js'),
     dedent`
      /*
       * @jest-environment jsdom
@@ -53,13 +60,21 @@ try {
      });
     `,
   );
+  fs.writeFileSync(
+    path.join(cwd, 'node.test.js'),
+    dedent`
+     test('dummy', () => {
+       expect(typeof window).toBe('undefined');
+     });
+    `,
+  );
   execa.sync('yarn', ['link', '--private', '--all', rootDirectory], {
     cwd,
     stdio: 'inherit',
   });
   execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
-  console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
+  console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
 } finally {
   rimraf.sync(cwd);
 }

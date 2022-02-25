@@ -34,10 +34,13 @@ module.exports = {
             if (locale !== 'en') {
               return `https://crowdin.com/project/jest-v2/${locale}`;
             }
-            return `https://github.com/facebook/jest/edit/master/website/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/facebook/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+          ],
         },
         blog: {
           path: 'blog',
@@ -50,6 +53,14 @@ module.exports = {
             path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
+          ],
+        },
+        gtag: {
+          trackingID: 'UA-44373548-17',
+        },
+        pages: {
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
           ],
         },
       },
@@ -75,12 +86,12 @@ module.exports = {
           {
             tagName: 'link',
             rel: 'manifest',
-            href: `manifest.json`,
+            href: 'manifest.json',
           },
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: JestThemeColor,
+            content: '#FFF',
           },
           {
             tagName: 'meta',
@@ -252,9 +263,6 @@ module.exports = {
       indexName: 'jest-v2',
       apiKey: '833906d7486e4059359fa58823c4ef56',
       contextualSearch: true,
-    },
-    gtag: {
-      trackingID: 'UA-44373548-17',
     },
   },
 };

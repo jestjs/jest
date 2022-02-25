@@ -17,6 +17,18 @@ const deprecatedOptions: DeprecatedOptions = {
       '"browser"',
     )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
+  extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
+    '"extraGlobals"',
+  )} was replaced by ${chalk.bold('"sandboxInjectedGlobals"')}.
+
+  Please update your configuration.`,
+
+  moduleLoader: (_options: {moduleLoader?: string}) => `  Option ${chalk.bold(
+    '"moduleLoader"',
+  )} was replaced by ${chalk.bold('"runtime"')}.
+
+  Please update your configuration.`,
+
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;
   }) => `  Option ${chalk.bold(
@@ -74,6 +86,14 @@ const deprecatedOptions: DeprecatedOptions = {
 
   Please update your configuration.
   `,
+
+  testURL: (_options: {testURL?: string}) => `  Option ${chalk.bold(
+    '"testURL"',
+  )} was replaced by passing the URL via ${chalk.bold(
+    '"testEnvironmentOptions.url"',
+  )}.
+
+  Please update your configuration.`,
 };
 
 export default deprecatedOptions;

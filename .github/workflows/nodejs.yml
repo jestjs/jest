@@ -3,30 +3,31 @@ name: Node CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
       - '**'
 
-jobs:
-  cleanup-runs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: rokroskar/workflow-run-cleanup-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/master'"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
+jobs:
   prepare-yarn-cache:
     name: Prepare yarn cache
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # for some reason the Windows cache doesn't work
+        os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2.4.0
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: lts/*
           cache: yarn
 
       - name: Validate cache
@@ -43,10 +44,10 @@ jobs:
     needs: prepare-yarn-cache
 
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/setup-node@v2.4.0
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: 12.x
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -54,7 +55,7 @@ jobs:
         run: yarn build
       - name: test typings
         run: yarn test-types
-      - name: verify TypeScript@3.8 compatibility
+      - name: verify TypeScript@4.2 compatibility
         run: yarn verify-old-ts
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
@@ -69,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.x]
+        node-version: [12.x, 14.x, 16.x, 17.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
@@ -81,9 +82,9 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
@@ -113,11 +114,11 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2.3.4
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v2.4.0
+      - uses: actions/checkout@v2
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: lts/*
           cache: yarn
       - name: install
         run: yarn --immutable
@@ -128,3 +129,34 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+
+  test-coverage:
+    name: Node LTS on Ubuntu with coverage
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:js
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
+      - name: run tests with coverage
+        run: |
+          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }}
+          yarn test-leak
+      - name: map coverage
+        run: node ./scripts/mapCoverage.js
+        if: always()
+      - uses: codecov/codecov-action@v2
+        if: always()
+        with:
+          directory: ./coverage

@@ -131,9 +131,7 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
 
   do {
     const beforeEachForCurrentBlock = [];
-    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
-    let hook: Circus.Hook;
-    for (hook of block.hooks) {
+    for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -164,7 +162,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setTimeout, clearTimeout} = global;
+const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);

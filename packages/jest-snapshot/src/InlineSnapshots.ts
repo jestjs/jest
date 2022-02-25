@@ -14,7 +14,6 @@ import type {
   BuiltInParserName as PrettierParserName,
 } from 'prettier';
 import semver = require('semver');
-import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
@@ -47,7 +46,7 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: Config.Path,
+  prettierPath: string,
 ): void {
   let prettier: Prettier | null = null;
   if (prettierPath) {
@@ -72,7 +71,7 @@ export function saveInlineSnapshots(
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Config.Path,
+  sourceFilePath: string,
   prettier?: Prettier,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
@@ -252,7 +251,7 @@ const traverseAst = (
   });
 
   if (remainingSnapshots.size) {
-    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
+    throw new Error("Jest: Couldn't locate all inline snapshots.");
   }
 };
 
@@ -285,22 +284,19 @@ const runPrettier = (
   // Snapshots have now been inserted. Run prettier to make sure that the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
   // after the initial format because we don't know where the call expression
-  // will be placed (specifically its indentation).
-  let newSourceFile = prettier.format(sourceFileWithSnapshots, {
-    ...config,
-    filepath: sourceFilePath,
-  });
-
-  if (newSourceFile !== sourceFileWithSnapshots) {
-    // prettier moved things around, run it again to fix snapshot indentations.
-    newSourceFile = prettier.format(newSourceFile, {
+  // will be placed (specifically its indentation), so we have to do two
+  // prettier.format calls back-to-back.
+  return prettier.format(
+    prettier.format(sourceFileWithSnapshots, {
+      ...config,
+      filepath: sourceFilePath,
+    }),
+    {
       ...config,
       filepath: sourceFilePath,
       parser: createFormattingParser(snapshotMatcherNames, inferredParser),
-    });
-  }
-
-  return newSourceFile;
+    },
+  );
 };
 
 // This parser formats snapshots to the correct indentation.
@@ -365,7 +361,7 @@ const createFormattingParser =
     return ast;
   };
 
-const simpleDetectParser = (filePath: Config.Path): PrettierParserName => {
+const simpleDetectParser = (filePath: string): PrettierParserName => {
   const extname = path.extname(filePath);
   if (/\.tsx?$/.test(extname)) {
     return 'typescript';

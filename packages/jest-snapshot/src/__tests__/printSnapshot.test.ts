@@ -19,7 +19,12 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
-import jestSnapshot = require('../index');
+import {
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../index';
 import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
@@ -132,13 +137,6 @@ expect.addSnapshotSerializer({
   },
 });
 
-const {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} = jestSnapshot;
-
 describe('chalk', () => {
   // Because these tests give code coverage of get functions
   // and give confidence that the escape sequences are correct,
@@ -156,7 +154,7 @@ describe('chalk', () => {
     return [
       aColor(`- delete 1${changeLineTrailingSpaceColor(' ')}`),
       cColor(`  common 2${commonLineTrailingSpaceColor('  ')}`),
-      bColor(`+ insert 0`),
+      bColor('+ insert 0'),
     ].join('\n');
   };
 
@@ -1332,7 +1330,7 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
         '<img src="test.png" alt="John &quot;ShotGun&quot; Nelson" />',
@@ -1345,10 +1343,10 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson' />`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\' />',
         '',
         '================================================================================',
       ].join('\n');

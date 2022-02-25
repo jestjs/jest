@@ -20,6 +20,7 @@
 
 'use strict';
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const babel = require('@babel/core');
@@ -56,14 +57,19 @@ function getBuildPath(file, buildFolder) {
   return path.resolve(pkgBuildPath, relativeToSrcPath).replace(/\.ts$/, '.js');
 }
 
-function buildNodePackage(p) {
-  const srcDir = path.resolve(p, SRC_DIR);
+function buildNodePackage({packageDir, pkg}) {
+  const srcDir = path.resolve(packageDir, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
 
-  process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
+  process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
   files.forEach(file => buildFile(file, true));
+
+  assert.ok(
+    fs.existsSync(path.resolve(packageDir, pkg.main)),
+    `Main file "${pkg.main}" in ${pkg.name} should exist`,
+  );
 
   process.stdout.write(`${OK}\n`);
 }
@@ -112,14 +118,7 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [
-            plugin[0],
-            Object.assign({}, plugin[1], {
-              lazy: string =>
-                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
-                !string.startsWith('./') || string === './importEsm',
-            }),
-          ];
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
         }
 
         return plugin;

@@ -7,8 +7,7 @@ Jest allows you to mock out whole modules in your tests, which can be useful for
 
 Consider writing a test case for this `createUser` function:
 
-```javascript
-// createUser.js
+```javascript title="createUser.js"
 import fetch from 'node-fetch';
 
 export const createUser = async () => {

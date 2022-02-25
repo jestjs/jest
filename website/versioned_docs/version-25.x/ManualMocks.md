@@ -40,8 +40,7 @@ When a manual mock exists for a given module, Jest's module system will use that
 
 Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
-```javascript
-// FileSummarizer.js
+```javascript title="FileSummarizer.js"
 'use strict';
 
 const fs = require('fs');
@@ -58,8 +57,7 @@ exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 
 Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending an automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
 
-```javascript
-// __mocks__/fs.js
+```javascript title="__mocks__/fs.js"
 'use strict';
 
 const path = require('path');
@@ -96,8 +94,7 @@ module.exports = fs;
 
 Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
 
-```javascript
-// __tests__/FileSummarizer-test.js
+```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
 
 jest.mock('fs');
@@ -127,7 +124,7 @@ The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jes
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
+The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/main/examples/manual-mocks).
 
 ## Using with ES module imports
 

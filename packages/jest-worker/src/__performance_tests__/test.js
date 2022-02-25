@@ -126,7 +126,7 @@ function profileEnd(x) {
 }
 
 async function main() {
-  if (!global.gc) {
+  if (!globalThis.gc) {
     console.warn('GC not present, start with node --expose-gc');
   }
 
@@ -140,15 +140,13 @@ async function main() {
     const wF = await testWorkerFarm();
     profileEnd('worker farm');
     await sleep(3000);
-    // eslint-disable-next-line no-undef
-    global.gc && gc();
+    globalThis.gc?.();
 
     profile('jest worker');
     const jW = await testJestWorker();
     profileEnd('jest worker');
     await sleep(3000);
-    // eslint-disable-next-line no-undef
-    global.gc && gc();
+    globalThis.gc?.();
 
     wFResults.push(wF);
     jWResults.push(jW);

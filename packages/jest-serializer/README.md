@@ -1,6 +1,8 @@
 # jest-serializer
 
-Module for serializing and deserializing object into memory and disk. By default, the `v8` implementations are used, but if not present, it defaults to `JSON` implementation. Both serializers have the advantage of being able to serialize `Map`, `Set`, `undefined`, `NaN`, etc, although the JSON one does it through a replacer/reviver.
+> DEPRECATED: Use `v8` APIs directly: https://nodejs.org/api/v8.html#serialization-api
+
+Module for serializing and deserializing object into memory and disk. The Node core `v8` implementations are used. This seriializer have the advantage of being able to serialize `Map`, `Set`, `undefined`, `NaN`, etc..
 
 ## Install
 

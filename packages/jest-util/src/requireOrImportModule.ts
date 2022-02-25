@@ -7,11 +7,10 @@
 
 import {isAbsolute} from 'path';
 import {pathToFileURL} from 'url';
-import type {Config} from '@jest/types';
 import interopRequireDefault from './interopRequireDefault';
 
 export default async function requireOrImportModule<T>(
-  filePath: Config.Path,
+  filePath: string,
   applyInteropRequireDefault = true,
 ): Promise<T> {
   if (!isAbsolute(filePath) && filePath[0] === '.') {
@@ -25,7 +24,7 @@ export default async function requireOrImportModule<T>(
       return requiredModule;
     }
     return interopRequireDefault(requiredModule).default;
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
         const moduleUrl = pathToFileURL(filePath);
@@ -44,7 +43,7 @@ export default async function requireOrImportModule<T>(
         }
 
         return importedModule.default;
-      } catch (innerError) {
+      } catch (innerError: any) {
         if (innerError.message === 'Not supported') {
           throw new Error(
             `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${filePath}`,

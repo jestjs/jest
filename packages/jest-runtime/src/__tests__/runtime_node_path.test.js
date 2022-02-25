@@ -67,7 +67,7 @@ describe('Runtime', () => {
       );
     }).toThrow(
       new Error(
-        `Cannot find module 'regular_module_in_node_path' from 'root.js'`,
+        "Cannot find module 'regular_module_in_node_path' from 'root.js'",
       ),
     );
   });
