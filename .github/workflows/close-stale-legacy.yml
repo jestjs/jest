@@ -1,7 +1,7 @@
 name: 'Close stale issues and PRs older than 12 months'
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   stale:
@@ -9,16 +9,15 @@ jobs:
     steps:
       - uses: actions/stale@v4
         with:
-          stale-issue-message: 'This issue is stale because it has been open for 1 year with no activity. Remove stale label or comment or this will be closed in 5 days.'
-          stale-pr-message: 'This PR is stale because it has been open 1 year with no activity. Remove stale label or comment or this will be closed in 10 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          close-pr-message: 'This PR was closed because it has been stalled for 10 days with no activity.'
+          stale-issue-message: 'This issue is stale because it has been open for 1 year with no activity. Remove stale label or comment or this will be closed in 7 days.'
+          stale-pr-message: 'This PR is stale because it has been open 1 year with no activity. Remove stale label or comment or this will be closed in 14 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 7 days with no activity. Please open a new issue if the issue is still relevant, linking to this one.'
+          close-pr-message: 'This PR was closed because it has been stalled for 14 days with no activity. Please open a new PR if the issue is still relevant, linking to this one.'
           days-before-issue-stale: 365
           days-before-pr-stale: 365
-          days-before-issue-close: 5
+          days-before-issue-close: 7
           days-before-pr-close: 14
-          exempt-issue-labels: 'Confirmed,Discussion,Documentation :book:,good first issue,Help Wanted'
           exempt-all-milestones: true
-          exempt-all-assignees: true
+          exempt-draft-pr: true
           operations-per-run: 1000
           debug-only: true
