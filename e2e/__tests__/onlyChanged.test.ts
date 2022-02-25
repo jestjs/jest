@@ -352,6 +352,7 @@ testIfHg('gets changed files for hg', async () => {
     '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
+  ({stdout, stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
   expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
