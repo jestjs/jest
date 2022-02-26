@@ -989,7 +989,7 @@ export class ModuleMocker {
           return;
         }
         // @ts-expect-error no index signature
-        const slotMetadata = this.getMetadata(component[slot], refs);
+        const slotMetadata = this.getMetadata<T>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
             members = {};
