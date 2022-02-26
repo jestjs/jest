@@ -1219,9 +1219,11 @@ export class ModuleMocker {
 
   // the typings test helper
   mocked<T>(item: T, deep?: false): MaybeMocked<T>;
+
   mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
+
   mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
-    return item as MaybeMocked<T> | MaybeMockedDeep<T>;
+    return item as any;
   }
 }
 
