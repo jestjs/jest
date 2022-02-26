@@ -948,11 +948,11 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata<T extends FunctionLike = UnknownFunction>(
-    component: ReturnType<T>,
-    _refs?: Map<ReturnType<T>, number>,
-  ): MockFunctionMetadata<T> | null {
-    const refs = _refs || new Map<ReturnType<T>, number>();
+  getMetadata(
+    component: unknown,
+    _refs?: Map<unknown, number>,
+  ): MockFunctionMetadata | null {
+    const refs = _refs || new Map<unknown, number>();
     const ref = refs.get(component);
     if (ref != null) {
       return {ref};
@@ -963,7 +963,7 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockFunctionMetadata<T> = {type};
+    const metadata: MockFunctionMetadata = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
@@ -973,8 +973,9 @@ export class ModuleMocker {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
+      // @ts-expect-error component is a function so it has a name
       metadata.name = component.name;
-      if (component._isMockFunction === true) {
+      if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -983,19 +984,21 @@ export class ModuleMocker {
     refs.set(component, metadata.refID);
 
     let members: {
-      [key: string]: MockFunctionMetadata<T>;
+      [key: string]: MockFunctionMetadata;
     } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
+      // @ts-expect-error component is object
       this._getSlots(component).forEach(slot => {
         if (
           type === 'function' &&
-          component._isMockFunction === true &&
+          this.isMockFunction(component) &&
           slot.match(/^mock/)
         ) {
           return;
         }
-        const slotMetadata = this.getMetadata<T>(component[slot], refs);
+        // @ts-expect-error no index signature
+        const slotMetadata = this.getMetadata(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
             members = {};
