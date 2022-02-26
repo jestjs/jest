@@ -220,7 +220,7 @@ const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
 expect(stringWithConstantData).toMatchSnapshot();
 ```
 
-Another way is to [mock](https://jestjs.io/docs/mock-functions) a library responsible for generating the random part of the code you're snapshotting.
+Another way is to [mock](MockFunctions.md) a library responsible for generating the random part of the code you're snapshotting.
 
 ## Best Practices
 
