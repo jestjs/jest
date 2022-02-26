@@ -131,7 +131,11 @@ The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is
 
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-Both `jest.fn(fn)` and `jest.fn().mockImplementation(fn)` are equivalent. For instance, you can use `.mockImplementation()` to replace the implementation of a mock:
+:::tip
+
+`jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`.
+
+:::
 
 ```js
 const mockFn = jest.fn(scalar => 42 + scalar);
@@ -145,7 +149,7 @@ mockFn(2); // 38
 mockFn(3); // 39
 ```
 
-It also helps to mock class constructors:
+`mockImplementation` can also be used to mock class constructors:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
