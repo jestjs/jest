@@ -546,7 +546,9 @@ export class ModuleMocker {
     return config;
   }
 
-  private _ensureMockState(f: Mock): MockFunctionState {
+  private _ensureMockState<T extends FunctionLike = UnknownFunction>(
+    f: Mock<T>,
+  ): MockFunctionState<T> {
     let state = this._mockState.get(f);
     if (!state) {
       state = this._defaultMockState();
@@ -1191,7 +1193,7 @@ export class ModuleMocker {
         Object.defineProperty(obj, propertyName, descriptor!);
       });
 
-      (descriptor[accessType] as Mock).mockImplementation(function (
+      (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
         this: unknown,
       ) {
         // @ts-expect-error
@@ -1200,7 +1202,7 @@ export class ModuleMocker {
     }
 
     Object.defineProperty(obj, propertyName, descriptor);
-    return descriptor[accessType] as Mock;
+    return descriptor[accessType] as Mock<() => T>;
   }
 
   clearAllMocks(): void {
