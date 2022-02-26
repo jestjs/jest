@@ -54,7 +54,7 @@ Some sequences (for example, `a` and `b` in the example of usage) have more than
 This package finds the following common items:
 
 | comparisons of common items      | values     |            output arguments |
-| :------------------------------- | :--------- | --------------------------: |
+|:---------------------------------|:-----------|----------------------------:|
 | `a[2] === b[0]`                  | `'c'`      | `foundSubsequence(1, 2, 0)` |
 | `a[4] === b[1]`                  | `'b'`      | `foundSubsequence(1, 4, 1)` |
 | `a[5] === b[3] && a[6] === b[4]` | `'b', 'a'` | `foundSubsequence(2, 5, 3)` |
@@ -62,7 +62,7 @@ This package finds the following common items:
 The “edit graph” analogy in the Myers paper shows the following common items:
 
 | comparisons of common items      | values     |
-| :------------------------------- | :--------- |
+|:---------------------------------|:-----------|
 | `a[2] === b[0]`                  | `'c'`      |
 | `a[3] === b[2] && a[4] === b[3]` | `'a', 'b'` |
 | `a[6] === b[4]`                  | `'a'`      |
@@ -94,7 +94,7 @@ const commonLength = countCommonItems(
 ```
 
 | category of items  |                expression | value |
-| :----------------- | ------------------------: | ----: |
+|:-------------------|--------------------------:|------:|
 | in common          |            `commonLength` |   `4` |
 | to delete from `a` | `a.length - commonLength` |   `3` |
 | to insert from `b` | `b.length - commonLength` |   `2` |
@@ -310,7 +310,7 @@ const diffLines = formatDiffLines(expected, received);
 If N is the sum of lengths of sequences and L is length of a longest common subsequence, then N – L is length of an array of diff lines. In this example, N is 7 + 9, L is 5, and N – L is 11.
 
 |  `i` | `diffLines[i]`                     | `aIndex` | `bIndex` |
-| ---: | :--------------------------------- | -------: | -------: |
+|-----:|:-----------------------------------|---------:|---------:|
 |  `0` | `'··Object {'`                     |      `0` |      `0` |
 |  `1` | `'····"searching": "",'`           |      `1` |      `1` |
 |  `2` | `'-···"sorting": Object {'`        |      `2` |          |
@@ -388,7 +388,7 @@ const diffItems = findDiffItems(expectedDeleted, receivedInserted);
 The length difference `b.length - a.length` is equal to the sum of `diffItems[i][0]` values times `diffItems[i][1]` lengths. In this example, the difference `48 - 38` is equal to the sum `10`.
 
 | category of diff item | `[0]` |      `[1]` lengths | subtotal |
-| :-------------------- | ----: | -----------------: | -------: |
+|:----------------------|------:|-------------------:|---------:|
 | in common             |   `0` | `11 + 10 + 11 + 2` |      `0` |
 | to delete from `a`    |  `–1` |            `1 + 3` |     `-4` |
 | to insert from `b`    |   `1` |        `8 + 2 + 4` |     `14` |
