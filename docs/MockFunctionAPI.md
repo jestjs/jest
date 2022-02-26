@@ -5,6 +5,16 @@ title: Mock Functions
 
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
+:::info
+
+The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
+
+```ts
+import {jest} from '@jest/globals';
+```
+
+:::
+
 ## Methods
 
 import TOCInline from "@theme/TOCInline"
@@ -258,8 +268,10 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```bash
+```
 expect(mockedFunction).toHaveBeenCalled()
+
+Expected mock function "mockedFunction" to have been called, but it was not called.
 ```
 
 ### `mockFn.mockReturnThis()`
@@ -516,7 +528,7 @@ test('async test', async () => {
 </TabItem>
 </Tabs>
 
-## TypeScript
+## TypeScript Usage
 
 If you are using [Create React App](https://create-react-app.dev) then the [TypeScript template](https://create-react-app.dev/docs/adding-typescript/) has everything you need to start writing tests in TypeScript.
 
@@ -524,11 +536,41 @@ Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) 
 
 You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/main/examples/typescript).
 
+### `jest.fn(implementation?)`
+
+Correct mock typings will be inferred, if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases there the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+import type add from './add';
+import calculate from './calc';
+
+test('calculate calls add', () => {
+  // Create a new mock that can be used in place of `add`.
+  const mockAdd = jest.fn<typeof add>();
+
+  // `.mockImplementation()` now can infer that `a` and `b` are `number`
+  // and that the returned value is a `number`.
+  mockAdd.mockImplementation((a, b) => {
+    // Yes, this mock is still adding two numbers but imagine this
+    // was a complex function we are mocking.
+    return a + b;
+  });
+
+  // `mockAdd` is properly typed and therefore accepted by anything
+  // requiring `add`.
+  calculate(mockAdd, 1, 2);
+
+  expect(mockAdd).toBeCalledTimes(1);
+  expect(mockAdd).toBeCalledWith(1, 2);
+});
+```
+
 ### `jest.MockedFunction`
 
 > `jest.MockedFunction` is available in the `@types/jest` module from version `24.9.0`.
 
-The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](MockFunctions.md).
+The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](MockFunctions.md)
 
 You can use `jest.MockedFunction` to represent a function that has been replaced by a Jest mock.
 
@@ -546,37 +588,6 @@ const mockAdd = add as jest.MockedFunction<typeof add>;
 
 test('calculate calls add', () => {
   calculate('Add', 1, 2);
-
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
-});
-```
-
-Example using [`jest.fn`](JestObjectAPI.md#jestfnimplementation):
-
-```ts
-import type add from './add';
-import calculate from './calc';
-
-test('calculate calls add', () => {
-  // Create a new mock that can be used in place of `add`.
-  const mockAdd = jest.fn<typeof add>();
-
-  // Now we can easily set up mock implementations.
-  // All the `.mock*` API can now give you proper types for `add`.
-  // https://jestjs.io/docs/mock-function-api
-
-  // `.mockImplementation` can now infer that `a` and `b` are `number`
-  // and that the returned value is a `number`.
-  mockAdd.mockImplementation((a, b) => {
-    // Yes, this mock is still adding two numbers but imagine this
-    // was a complex function we are mocking.
-    return a + b;
-  });
-
-  // `mockAdd` is properly typed and therefore accepted by anything
-  // requiring `add`.
-  calculate(mockAdd, 1, 2);
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
