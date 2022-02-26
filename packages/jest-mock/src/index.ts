@@ -924,7 +924,7 @@ export class ModuleMocker {
       mock.prototype.constructor = mock;
     }
 
-    return mock as Mock;
+    return mock as Mock<T>;
   }
 
   /**
@@ -981,7 +981,7 @@ export class ModuleMocker {
     refs.set(component, metadata.refID);
 
     let members: {
-      [key: string]: MockFunctionMetadata;
+      [key: string]: MockFunctionMetadata<T>;
     } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
