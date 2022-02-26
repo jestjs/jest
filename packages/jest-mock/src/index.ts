@@ -115,6 +115,14 @@ export type MockedClass<T extends ClassLike> = MockInstance<
 
 type UnknownFunction = (...args: Array<unknown>) => unknown;
 
+/**
+ * All what the internal typings need is to be sure that we have any-function.
+ * `FunctionLike` type ensures that and helps to constrain the type as well.
+ * The default of `UnknownFunction` makes sure that `any`s do not leak to the
+ * user side. For instance, calling `fn()` without implementation will return
+ * a mock of `(...args: Array<unknown>) => unknown` type. If implementation
+ * is provided, its typings are inferred correctly.
+ */
 export interface Mock<T extends FunctionLike = UnknownFunction>
   extends Function,
     MockInstance<T> {
