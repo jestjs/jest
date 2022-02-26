@@ -7,6 +7,30 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+export type MockFunctionMetadataType =
+  | 'object'
+  | 'array'
+  | 'regexp'
+  | 'function'
+  | 'constant'
+  | 'collection'
+  | 'null'
+  | 'undefined';
+
+export type MockFunctionMetadata<
+  T extends FunctionLike = UnknownFunction,
+  MetadataType = MockFunctionMetadataType,
+> = {
+  ref?: number;
+  members?: Record<string, MockFunctionMetadata<T>>;
+  mockImpl?: FunctionType<T>;
+  name?: string;
+  refID?: number;
+  type?: MetadataType;
+  value?: ReturnType<T>;
+  length?: number;
+};
+
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
@@ -111,30 +135,6 @@ type ResolveType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<
 type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
   ? unknown
   : never;
-
-export type MockFunctionMetadataType =
-  | 'object'
-  | 'array'
-  | 'regexp'
-  | 'function'
-  | 'constant'
-  | 'collection'
-  | 'null'
-  | 'undefined';
-
-export type MockFunctionMetadata<
-  T extends FunctionLike = UnknownFunction,
-  MetadataType = MockFunctionMetadataType,
-> = {
-  ref?: number;
-  members?: Record<string, MockFunctionMetadata<T>>;
-  mockImpl?: FunctionType<T>;
-  name?: string;
-  refID?: number;
-  type?: MetadataType;
-  value?: ReturnType<T>;
-  length?: number;
-};
 
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
