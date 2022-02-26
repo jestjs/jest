@@ -530,11 +530,11 @@ test('async test', async () => {
 
 ## TypeScript Usage
 
-If you are using [Create React App](https://create-react-app.dev) then the [TypeScript template](https://create-react-app.dev/docs/adding-typescript/) has everything you need to start writing tests in TypeScript.
+:::tip
 
-Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) guide for to get setup with TypeScript.
+Please consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
 
-You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/main/examples/typescript).
+:::
 
 ### `jest.fn(implementation?)`
 
