@@ -7,8 +7,6 @@
 
 'use strict';
 
-import _unusedRequireOverridingPromise from '..';
-
 describe('parent', () => {
   beforeEach(() => {
     console.log('Promise is: ' + Promise.toString());
