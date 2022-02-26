@@ -19,17 +19,38 @@ expectType<Mock<() => Promise<string>>>(
   fn(async () => 'value')
     .mockClear()
     .mockReset()
-    .mockImplementation(async () => 'value')
-    .mockImplementationOnce(async () => 'value')
+    .mockImplementation(fn(async () => 'value'))
+    .mockImplementationOnce(fn(async () => 'value'))
     .mockName('mock')
-    .mockReturnThis()
-    .mockReturnValue(Promise.resolve('value'))
-    .mockReturnValueOnce(Promise.resolve('value'))
     .mockResolvedValue('value')
     .mockResolvedValueOnce('value')
     .mockRejectedValue('error')
-    .mockRejectedValue('error'),
+    .mockRejectedValueOnce('error')
+    .mockReturnThis()
+    .mockReturnValue(Promise.resolve('value'))
+    .mockReturnValueOnce(Promise.resolve('value')),
 );
+
+expectType<Mock<() => string>>(
+  fn(() => 'value')
+    .mockClear()
+    .mockReset()
+    .mockImplementation(() => 'value')
+    .mockImplementationOnce(() => 'value')
+    .mockName('mock')
+    .mockReturnThis()
+    .mockReturnValue('value')
+    .mockReturnValueOnce('value'),
+);
+
+expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
+expectError(fn(() => 'value').mockReturnValueOnce(Promise.resolve('value')));
+
+expectError(fn(() => 'value').mockResolvedValue('value'));
+expectError(fn(() => 'value').mockResolvedValueOnce('value'));
+
+expectError(fn(() => 'value').mockRejectedValue('error'));
+expectError(fn(() => 'value').mockRejectedValueOnce('error'));
 
 expectAssignable<Function>(fn()); // eslint-disable-line @typescript-eslint/ban-types
 
