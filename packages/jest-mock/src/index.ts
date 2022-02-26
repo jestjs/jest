@@ -1020,7 +1020,7 @@ export class ModuleMocker {
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction> {
-    return !!fn && (fn as any)._isMockFunction === true;
+    return fn != null && (fn as any)._isMockFunction === true;
   }
 
   fn<T extends FunctionLike = UnknownFunction>(implementation?: T): Mock<T> {
