@@ -121,53 +121,21 @@ The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is
 
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-:::note
-
-Both `jest.fn(fn)` and `jest.fn().mockImplementation(fn)` are equivalent. If your tests are written in TypeScript, mock types will be inferred from `jest.fn()`, but `.mockImplementation()` will need manual type hints. See example bellow.
-
-:::
-
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
+Both `jest.fn(fn)` and `jest.fn().mockImplementation(fn)` are equivalent. For instance, you can use `.mockImplementation()` to replace the implementation of a mock:
 
 ```js
-const mockFn = jest.fn().mockImplementation(scalar => 42 + scalar);
-// or: jest.fn(scalar => 42 + scalar);
+const mockFn = jest.fn(scalar => 42 + scalar);
 
-const a = mockFn(0);
-const b = mockFn(1);
+mockFn(0); // 42
+mockFn(1); // 43
 
-a === 42; // true
-b === 43; // true
+mockFn.mockImplementation(scalar => 36 + scalar);
 
-mockFn.mock.calls[0][0] === 0; // true
-mockFn.mock.calls[1][0] === 1; // true
+mockFn(2); // 38
+mockFn(3); // 39
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
-const mockFn = jest
-  .fn<(number) => number>()
-  .mockImplementation(scalar => 42 + scalar);
-// or: jest.fn(scalar => 42 + scalar);
-
-const a = mockFn(0);
-const b = mockFn(1);
-
-a === 42; // true
-b === 43; // true
-
-mockFn.mock.calls[0][0] === 0; // true
-mockFn.mock.calls[1][0] === 1; // true
-```
-
-</TabItem>
-</Tabs>
-
-It can also be used to mock class constructors:
+It also helps to mock class constructors:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
@@ -512,7 +480,7 @@ Syntactic sugar function for:
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
 ```
 
-Example usage:
+Useful together with `.mockResolvedValueOnce()` or to reject with different exceptions over multiple async calls:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
