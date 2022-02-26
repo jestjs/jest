@@ -944,10 +944,10 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata<T extends UnknownFunction>(
+  getMetadata<T extends FunctionLike = UnknownFunction>(
     component: ReturnType<T>,
     _refs?: Map<ReturnType<T>, number>,
-  ): MockFunctionMetadata | null {
+  ): MockFunctionMetadata<T> | null {
     const refs = _refs || new Map<ReturnType<T>, number>();
     const ref = refs.get(component);
     if (ref != null) {
@@ -969,11 +969,8 @@ export class ModuleMocker {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
-      // @ts-expect-error this is a function so it has a name
       metadata.name = component.name;
-      // @ts-expect-error may be a mock
       if (component._isMockFunction === true) {
-        // @ts-expect-error may be a mock
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -986,17 +983,14 @@ export class ModuleMocker {
     } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
-      // @ts-expect-error component is object
       this._getSlots(component).forEach(slot => {
         if (
           type === 'function' &&
-          // @ts-expect-error may be a mock
           component._isMockFunction === true &&
           slot.match(/^mock/)
         ) {
           return;
         }
-        // @ts-expect-error no index signature
         const slotMetadata = this.getMetadata<T>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
