@@ -948,10 +948,10 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata(
+  getMetadata<T extends FunctionLike = UnknownFunction>(
     component: unknown,
     _refs?: Map<unknown, number>,
-  ): MockFunctionMetadata | null {
+  ): MockFunctionMetadata<T> | null {
     const refs = _refs || new Map<unknown, number>();
     const ref = refs.get(component);
     if (ref != null) {
@@ -963,14 +963,14 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockFunctionMetadata = {type};
+    const metadata: MockFunctionMetadata<T> = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
       type === 'undefined' ||
       type === 'null'
     ) {
-      metadata.value = component;
+      metadata.value = component as ReturnType<T>;
       return metadata;
     } else if (type === 'function') {
       // @ts-expect-error component is a function so it has a name
@@ -998,7 +998,7 @@ export class ModuleMocker {
           return;
         }
         // @ts-expect-error no index signature
-        const slotMetadata = this.getMetadata(component[slot], refs);
+        const slotMetadata = this.getMetadata<T>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
             members = {};
