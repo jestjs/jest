@@ -20,6 +20,16 @@ test('simple test', () => {
   expect(stdout).toMatchSnapshot();
 });
 
+test('function descriptors', () => {
+  const {stdout} = runTest(`
+    describe(function describer() {}, () => {
+      test(class One {}, () => {});
+    })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
 test('failures', () => {
   const {stdout} = runTest(`
     describe('describe', () => {

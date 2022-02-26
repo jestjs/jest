@@ -8,10 +8,16 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
-import * as dependencyExtractor from './lib/dependencyExtractor';
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
+import type {
+  DependencyExtractor,
+  HasteImpl,
+  WorkerMessage,
+  WorkerMetadata,
+} from './types';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -71,14 +77,18 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
     if (computeDependencies) {
       const content = getContent();
+      const extractor = data.dependencyExtractor
+        ? await requireOrImportModule<DependencyExtractor>(
+            data.dependencyExtractor,
+            false,
+          )
+        : defaultDependencyExtractor;
       dependencies = Array.from(
-        data.dependencyExtractor
-          ? require(data.dependencyExtractor).extract(
-              content,
-              filePath,
-              dependencyExtractor.extract,
-            )
-          : dependencyExtractor.extract(content),
+        extractor.extract(
+          content,
+          filePath,
+          defaultDependencyExtractor.extract,
+        ),
       );
     }
 

@@ -88,10 +88,12 @@ module.exports = async function createRuntime(filename, projectConfig) {
   });
   environment.global.console = console;
 
-  const hasteMap = await Runtime.createHasteMap(projectConfig, {
-    maxWorkers: 1,
-    resetCache: false,
-  }).build();
+  const hasteMap = await (
+    await Runtime.createHasteMap(projectConfig, {
+      maxWorkers: 1,
+      resetCache: false,
+    })
+  ).build();
 
   const cacheFS = new Map();
   const scriptTransformer = await createScriptTransformer(

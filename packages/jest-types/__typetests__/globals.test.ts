@@ -67,10 +67,15 @@ expectType<void>(test(testName, asyncFn, timeout));
 expectType<void>(test(testName, doneFn, timeout));
 expectType<void>(test(testName, genFn, timeout));
 
+expectType<void>(test(123, fn));
+expectType<void>(test(() => {}, fn));
+expectType<void>(test(function named() {}, fn));
+expectType<void>(test(class {}, fn));
+expectType<void>(test(class Named {}, fn));
+
 // wrong arguments
 expectError(test(testName));
 expectError(test(testName, timeout));
-expectError(test(timeout, fn));
 
 // wrong return value
 expectError(test(testName, () => 42));
@@ -98,6 +103,12 @@ expectType<void>(test.each(table)(testName, fn, timeout));
 expectType<void>(test.each(readonlyTable)(testName, fn));
 expectType<void>(test.each(readonlyTable)(testName, fn, timeout));
 
+expectType<void>(test.each(list)(123, fn));
+expectType<void>(test.each(list)(() => {}, fn));
+expectType<void>(test.each(list)(function named() {}, fn));
+expectType<void>(test.each(list)(class {}, fn));
+expectType<void>(test.each(list)(class Named {}, fn));
+
 expectType<void>(test.only.each(list)(testName, fn));
 expectType<void>(test.only.each(list)(testName, fn, timeout));
 expectType<void>(test.only.each(table)(testName, fn));
@@ -111,6 +122,18 @@ expectType<void>(test.skip.each(table)(testName, fn));
 expectType<void>(test.skip.each(table)(testName, fn, timeout));
 expectType<void>(test.skip.each(readonlyTable)(testName, fn));
 expectType<void>(test.skip.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(test.skip(123, fn));
+expectType<void>(test.skip(() => {}, fn));
+expectType<void>(test.skip(function named() {}, fn));
+expectType<void>(test.skip(class {}, fn));
+expectType<void>(test.skip(class Named {}, fn));
+
+expectType<void>(test.skip.each(list)(123, fn));
+expectType<void>(test.skip.each(list)(() => {}, fn));
+expectType<void>(test.skip.each(list)(function named() {}, fn));
+expectType<void>(test.skip.each(list)(class {}, fn));
+expectType<void>(test.skip.each(list)(class Named {}, fn));
 
 expectType<void>(
   test.each`
@@ -247,12 +270,25 @@ expectType<void>(
 `(testName, asyncFn, timeout),
 );
 
+expectType<void>(describe(testName, fn));
+expectType<void>(describe(123, fn));
+expectType<void>(describe(() => {}, fn));
+expectType<void>(describe(function named() {}, fn));
+expectType<void>(describe(class {}, fn));
+expectType<void>(describe(class Named {}, fn));
+
 expectType<void>(describe.each(list)(testName, fn));
 expectType<void>(describe.each(list)(testName, fn, timeout));
 expectType<void>(describe.each(table)(testName, fn));
 expectType<void>(describe.each(table)(testName, fn, timeout));
 expectType<void>(describe.each(readonlyTable)(testName, fn));
 expectType<void>(describe.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(describe.each(list)(testName, fn));
+expectType<void>(describe.each(list)(123, fn));
+expectType<void>(describe.each(list)(() => {}, fn));
+expectType<void>(describe.each(list)(function named() {}, fn));
+expectType<void>(describe.each(list)(class Named {}, fn));
 
 expectType<void>(describe.only.each(list)(testName, fn));
 expectType<void>(describe.only.each(list)(testName, fn, timeout));
@@ -261,12 +297,24 @@ expectType<void>(describe.only.each(table)(testName, fn, timeout));
 expectType<void>(describe.only.each(readonlyTable)(testName, fn));
 expectType<void>(describe.only.each(readonlyTable)(testName, fn, timeout));
 
+expectType<void>(describe.only.each(list)(testName, fn));
+expectType<void>(describe.only.each(list)(123, fn));
+expectType<void>(describe.only.each(list)(() => {}, fn));
+expectType<void>(describe.only.each(list)(function named() {}, fn));
+expectType<void>(describe.only.each(list)(class Named {}, fn));
+
 expectType<void>(describe.skip.each(list)(testName, fn));
 expectType<void>(describe.skip.each(list)(testName, fn, timeout));
 expectType<void>(describe.skip.each(table)(testName, fn));
 expectType<void>(describe.skip.each(table)(testName, fn, timeout));
 expectType<void>(describe.skip.each(readonlyTable)(testName, fn));
 expectType<void>(describe.skip.each(readonlyTable)(testName, fn, timeout));
+
+expectType<void>(describe.skip.each(list)(testName, fn));
+expectType<void>(describe.skip.each(list)(123, fn));
+expectType<void>(describe.skip.each(list)(() => {}, fn));
+expectType<void>(describe.skip.each(list)(function named() {}, fn));
+expectType<void>(describe.skip.each(list)(class Named {}, fn));
 
 expectType<void>(
   describe.each`

@@ -5,13 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-function* generatorMethod() {
-  yield 42;
-}
+import runJest from '../runJest';
 
-async function* asyncGeneratorMethod() {
-  yield 42;
-}
-
-module.exports.generatorMethod = generatorMethod;
-module.exports.asyncGeneratorMethod = asyncGeneratorMethod;
+test('invokes async function exported from `setupFiles` module', () => {
+  const result = runJest('setup-files');
+  expect(result.exitCode).toBe(0);
+});

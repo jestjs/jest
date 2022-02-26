@@ -4,6 +4,7 @@
 
 - `[babel-jest]` Export `createTransformer` function ([#12399](https://github.com/facebook/jest/pull/12399))
 - `[expect]` Expose `AsymmetricMatchers`, `MatcherFunction` and `MatcherFunctionWithState` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
+- `[jest-circus, jest-jasmine2]` Allowed classes and functions as `describe` and `it`/`test` names ([#12484](https://github.com/facebook/jest/pull/12484))
 - `[jest-cli, jest-config]` [**BREAKING**] Remove `testURL` config, use `testEnvironmentOptions.url` instead ([#10797](https://github.com/facebook/jest/pull/10797))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-environment-jsdom` by default ([#12354](https://github.com/facebook/jest/pull/12354))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-jasmine2` by default ([#12355](https://github.com/facebook/jest/pull/12355))
@@ -20,13 +21,18 @@
 - `[jest-environment-node]` [**BREAKING**] Second argument `context` to constructor is mandatory ([#12469](https://github.com/facebook/jest/pull/12469))
 - `[@jest/expect]` New module which extends `expect` with `jest-snapshot` matchers ([#12404](https://github.com/facebook/jest/pull/12404), [#12410](https://github.com/facebook/jest/pull/12410), [#12418](https://github.com/facebook/jest/pull/12418))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
+- `[jest-haste-map]` [**BREAKING**] `HasteMap.create` now returns a promise ([#12008](https://github.com/facebook/jest/pull/12008))
+- `[jest-haste-map]` Add support for `dependencyExtractor` written in ESM ([#12008](https://github.com/facebook/jest/pull/12008))
 - `[jest-mock]` [**BREAKING**] Rename exported utility types `ClassLike`, `FunctionLike`, `ConstructorLikeKeys`, `MethodLikeKeys`, `PropertyLikeKeys`; remove exports of utility types `ArgumentsOf`, `ArgsType`, `ConstructorArgumentsOf` - TS builtin utility types `ConstructorParameters` and `Parameters` should be used instead ([#12435](https://github.com/facebook/jest/pull/12435), [#12489](https://github.com/facebook/jest/pull/12489))
 - `[jest-mock]` Improve `isMockFunction` to infer types of passed function ([#12442](https://github.com/facebook/jest/pull/12442))
 - `[jest-mock]` [**BREAKING**] Improve the usage of `jest.fn` generic type argument ([#12489](https://github.com/facebook/jest/pull/12489))
+- `[jest-mock]` Add support for auto-mocking async generator functions ([#11080](https://github.com/facebook/jest/pull/11080))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
+- `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
 - `[jest-runner]` Allow passing `testEnvironmentOptions` via docblocks ([#12470](https://github.com/facebook/jest/pull/12470))
+- `[jest-runtime]` [**BREAKING**] `Runtime.createHasteMap` now returns a promise ([#12008](https://github.com/facebook/jest/pull/12008))
 - `[@jest/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
@@ -35,6 +41,7 @@
 
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[expect]` Throw useful error if `expect.extend` is called with invalid matchers ([#12488](https://github.com/facebook/jest/pull/12488))
+- `[expect]` Fix `iterableEquality` ignores other properties ([#8359](https://github.com/facebook/jest/pull/8359))
 - `[jest-config]` Correctly detect CI environment and update snapshots accordingly ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-config]` Pass `moduleTypes` to `ts-node` to enforce CJS when transpiling ([#12397](https://github.com/facebook/jest/pull/12397))
 - `[jest-config, jest-haste-map]` Allow searching for tests in `node_modules` by exposing `retainAllFiles` ([#11084](https://github.com/facebook/jest/pull/11084))
@@ -46,6 +53,8 @@
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 - `[jest-matcher-utils]` Pass maxWidth to `pretty-format` to avoid printing every element in arrays by default ([#12402](https://github.com/facebook/jest/pull/12402))
 - `[jest-mock]` Fix function overloads for `spyOn` to allow more correct type inference in complex object ([#12442](https://github.com/facebook/jest/pull/12442))
+- `[jest-reporters]` Notifications generated by the `--notify` flag are no longer persistent in GNOME Shell. ([#11733](https://github.com/facebook/jest/pull/11733))
+- `[jest-worker]` Fix `Farm` execution results memory leak ([#12497](https://github.com/facebook/jest/pull/12497))
 
 ### Chore & Maintenance
 
@@ -61,6 +70,7 @@
 - `[expect]` [**BREAKING**] Snapshot matcher types are moved to `@jest/expect` ([#12404](https://github.com/facebook/jest/pull/12404))
 - `[jest-cli]` Update `yargs` to v17 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest-config]` [**BREAKING**] Remove `getTestEnvironment` export ([#12353](https://github.com/facebook/jest/pull/12353))
+- `[jest-create-cache-key-function]` Added README.md file with basic usage instructions ([#12492](https://github.com/facebook/jest/pull/12492))
 - `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 - `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[jest-environment-node]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))

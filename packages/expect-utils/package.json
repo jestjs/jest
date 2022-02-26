@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect-utils",
-  "version": "28.0.0-alpha.4",
+  "version": "28.0.0-alpha.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
     "jest-get-type": "^28.0.0-alpha.3"
   },
   "devDependencies": {
-    "jest-matcher-utils": "^28.0.0-alpha.4"
+    "jest-matcher-utils": "^28.0.0-alpha.5"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

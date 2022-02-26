@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "28.0.0-alpha.4",
+  "version": "28.0.0-alpha.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,24 +17,24 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/console": "^28.0.0-alpha.4",
-    "@jest/environment": "^28.0.0-alpha.4",
-    "@jest/test-result": "^28.0.0-alpha.4",
-    "@jest/transform": "^28.0.0-alpha.4",
-    "@jest/types": "^28.0.0-alpha.4",
+    "@jest/console": "^28.0.0-alpha.5",
+    "@jest/environment": "^28.0.0-alpha.5",
+    "@jest/test-result": "^28.0.0-alpha.5",
+    "@jest/transform": "^28.0.0-alpha.5",
+    "@jest/types": "^28.0.0-alpha.5",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "emittery": "^0.8.1",
     "graceful-fs": "^4.2.9",
     "jest-docblock": "^28.0.0-alpha.3",
-    "jest-environment-node": "^28.0.0-alpha.4",
-    "jest-haste-map": "^28.0.0-alpha.4",
-    "jest-leak-detector": "^28.0.0-alpha.4",
-    "jest-message-util": "^28.0.0-alpha.4",
-    "jest-resolve": "^28.0.0-alpha.4",
-    "jest-runtime": "^28.0.0-alpha.4",
-    "jest-util": "^28.0.0-alpha.4",
-    "jest-worker": "^28.0.0-alpha.4",
+    "jest-environment-node": "^28.0.0-alpha.5",
+    "jest-haste-map": "^28.0.0-alpha.5",
+    "jest-leak-detector": "^28.0.0-alpha.5",
+    "jest-message-util": "^28.0.0-alpha.5",
+    "jest-resolve": "^28.0.0-alpha.5",
+    "jest-runtime": "^28.0.0-alpha.5",
+    "jest-util": "^28.0.0-alpha.5",
+    "jest-worker": "^28.0.0-alpha.5",
     "source-map-support": "^0.5.6",
     "throat": "^6.0.1"
   },
@@ -42,7 +42,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.5.0",
-    "jest-jasmine2": "^28.0.0-alpha.4"
+    "jest-jasmine2": "^28.0.0-alpha.5"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

@@ -32,6 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {AssertionError} from 'assert';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
+import type {Circus} from '@jest/types';
+import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
@@ -43,7 +45,7 @@ import type {AssertionErrorWithStack} from '../types';
 export type Attributes = {
   id: string;
   resultCallback: (result: Spec['result']) => void;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure: unknown;
   getTestPath: () => string;
   queueableFn: QueueableFn;
@@ -108,7 +110,7 @@ export default class Spec {
   constructor(attrs: Attributes) {
     this.resultCallback = attrs.resultCallback || function () {};
     this.id = attrs.id;
-    this.description = attrs.description || '';
+    this.description = convertDescriptorToString(attrs.description);
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
       attrs.beforeAndAfterFns ||

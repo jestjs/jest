@@ -5,13 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-function* generatorMethod() {
-  yield 42;
-}
+const fetchedData = require('../fetched-data');
 
-async function* asyncGeneratorMethod() {
-  yield 42;
-}
-
-module.exports.generatorMethod = generatorMethod;
-module.exports.asyncGeneratorMethod = asyncGeneratorMethod;
+test('fetches mock data', () => {
+  expect(fetchedData.RESPONSE).toBe('mock-fetched-data');
+});

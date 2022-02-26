@@ -16,6 +16,7 @@ import {deserialize, serialize} from 'v8';
 import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
+import {requireOrImportModule} from 'jest-util';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -29,6 +30,7 @@ import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
+  DependencyExtractor,
   EventsQueue,
   FileData,
   FileMetaData,
@@ -230,12 +232,16 @@ export default class HasteMap extends EventEmitter {
     return HasteMap;
   }
 
-  static create(options: Options): HasteMap {
+  static async create(options: Options): Promise<HasteMap> {
     if (options.hasteMapModulePath) {
       const CustomHasteMap = require(options.hasteMapModulePath);
       return new CustomHasteMap(options);
     }
-    return new HasteMap(options);
+    const hasteMap = new HasteMap(options);
+
+    await hasteMap.setupCachePath(options);
+
+    return hasteMap;
   }
 
   private constructor(options: Options) {
@@ -292,6 +298,13 @@ export default class HasteMap extends EventEmitter {
       );
     }
 
+    this._cachePath = '';
+    this._buildPromise = null;
+    this._watchers = [];
+    this._worker = null;
+  }
+
+  private async setupCachePath(options: Options): Promise<void> {
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
@@ -304,7 +317,11 @@ export default class HasteMap extends EventEmitter {
     }
 
     if (options.dependencyExtractor) {
-      const dependencyExtractor = require(options.dependencyExtractor);
+      const dependencyExtractor =
+        await requireOrImportModule<DependencyExtractor>(
+          options.dependencyExtractor,
+          false,
+        );
       if (dependencyExtractor.getCacheKey) {
         dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
       }
@@ -327,9 +344,6 @@ export default class HasteMap extends EventEmitter {
       dependencyExtractorHash,
       this._options.computeDependencies.toString(),
     );
-    this._buildPromise = null;
-    this._watchers = [];
-    this._worker = null;
   }
 
   static getCacheFilePath(
