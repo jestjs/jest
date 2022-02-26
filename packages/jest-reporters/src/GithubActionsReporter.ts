@@ -10,9 +10,16 @@ import type {AggregatedResult, TestResult} from '@jest/test-result';
 import BaseReporter from './BaseReporter';
 import type {Context} from './types';
 
-const newLine = /\n/g;
-const encodedNewLine = '%0A';
 const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
+
+function replaceEntities(s: string): string {
+  const substitutions: Array<[RegExp, string]> = [
+    [/%/, '%25'],
+    [/\r/g, '%0D'],
+    [/\n/g, '%0A'],
+  ];
+  return substitutions.reduce((acc, sub) => acc.replace(...sub), s);
+}
 
 export default class GithubActionsReporter extends BaseReporter {
   onRunComplete(
@@ -42,7 +49,7 @@ function getMessages(results: Array<TestResult> | undefined) {
           flatMap(r => r.failureMessages),
           [],
         )
-        .map(m => m.replace(newLine, encodedNewLine))
+        .map(m => replaceEntities(m))
         .map(m => lineAndColumnInStackTrace.exec(m))
         .filter((m): m is RegExpExecArray => m !== null)
         .map(
