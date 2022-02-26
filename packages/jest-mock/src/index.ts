@@ -598,7 +598,7 @@ export class ModuleMocker {
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockFunctionMetadata<T, 'function'>,
     restore?: () => void,
-  ): Mock;
+  ): Mock<T>;
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockFunctionMetadata<T>,
     restore?: () => void,
@@ -608,7 +608,7 @@ export class ModuleMocker {
     | RegExp
     | ReturnType<T>
     | undefined
-    | Mock {
+    | Mock<T> {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -821,8 +821,8 @@ export class ModuleMocker {
     }
   }
 
-  private _createMockFunction(
-    metadata: MockFunctionMetadata,
+  private _createMockFunction<T extends FunctionLike = UnknownFunction>(
+    metadata: MockFunctionMetadata<T>,
     mockConstructor: Function,
   ): Function {
     let name = metadata.name;
@@ -881,8 +881,8 @@ export class ModuleMocker {
     return createConstructor(mockConstructor);
   }
 
-  private _generateMock(
-    metadata: MockFunctionMetadata,
+  private _generateMock<T extends FunctionLike = UnknownFunction>(
+    metadata: MockFunctionMetadata<T>,
     callbacks: Array<Function>,
     refs: {
       [key: string]:
@@ -891,9 +891,9 @@ export class ModuleMocker {
         | RegExp
         | UnknownFunction
         | undefined
-        | Mock;
+        | Mock<T>;
     },
-  ): Mock {
+  ): Mock<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
     // @ts-expect-error
@@ -932,7 +932,9 @@ export class ModuleMocker {
    * @param _metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
+  generateFromMetadata<T extends FunctionLike = UnknownFunction>(
+    _metadata: MockFunctionMetadata<T>,
+  ): Mock<T> {
     const callbacks: Array<Function> = [];
     const refs = {};
     const mock = this._generateMock(_metadata, callbacks, refs);
