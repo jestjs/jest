@@ -18,7 +18,7 @@ export type MockFunctionMetadataType =
   | 'undefined';
 
 export type MockFunctionMetadata<
-  T extends FunctionLike = UnknownFunction,
+  T extends UnknownFunction = UnknownFunction,
   MetadataType = MockFunctionMetadataType,
 > = {
   ref?: number;
@@ -546,7 +546,7 @@ export class ModuleMocker {
     return config;
   }
 
-  private _ensureMockState<T extends FunctionLike = UnknownFunction>(
+  private _ensureMockState<T extends UnknownFunction>(
     f: Mock<T>,
   ): MockFunctionState<T> {
     let state = this._mockState.get(f);
@@ -823,7 +823,7 @@ export class ModuleMocker {
     }
   }
 
-  private _createMockFunction<T extends FunctionLike = UnknownFunction>(
+  private _createMockFunction<T extends UnknownFunction>(
     metadata: MockFunctionMetadata<T>,
     mockConstructor: Function,
   ): Function {
@@ -883,7 +883,7 @@ export class ModuleMocker {
     return createConstructor(mockConstructor);
   }
 
-  private _generateMock<T extends FunctionLike = UnknownFunction>(
+  private _generateMock<T extends UnknownFunction>(
     metadata: MockFunctionMetadata<T>,
     callbacks: Array<Function>,
     refs: {
@@ -934,7 +934,7 @@ export class ModuleMocker {
    * @param _metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata<T extends FunctionLike = UnknownFunction>(
+  generateFromMetadata<T extends UnknownFunction>(
     _metadata: MockFunctionMetadata<T>,
   ): Mock<T> {
     const callbacks: Array<Function> = [];
@@ -948,11 +948,11 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata<T extends FunctionLike = UnknownFunction>(
-    component: unknown,
-    _refs?: Map<unknown, number>,
+  getMetadata<T extends UnknownFunction>(
+    component: ReturnType<T>,
+    _refs?: Map<ReturnType<T>, number>,
   ): MockFunctionMetadata<T> | null {
-    const refs = _refs || new Map<unknown, number>();
+    const refs = _refs || new Map<ReturnType<T>, number>();
     const ref = refs.get(component);
     if (ref != null) {
       return {ref};
@@ -970,7 +970,7 @@ export class ModuleMocker {
       type === 'undefined' ||
       type === 'null'
     ) {
-      metadata.value = component as ReturnType<T>;
+      metadata.value = component;
       return metadata;
     } else if (type === 'function') {
       // @ts-expect-error component is a function so it has a name
@@ -984,7 +984,7 @@ export class ModuleMocker {
     refs.set(component, metadata.refID);
 
     let members: {
-      [key: string]: MockFunctionMetadata;
+      [key: string]: MockFunctionMetadata<T>;
     } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
