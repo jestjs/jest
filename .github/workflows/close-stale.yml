@@ -22,7 +22,7 @@ jobs:
           exempt-all-milestones: true
           exempt-issue-labels: Pinned
           exempt-draft-pr: true
-          operations-per-run: 1000
+          operations-per-run: 1750
   stale-legacy:
     name: 'Close year old issues and PRs'
     runs-on: ubuntu-latest
@@ -39,4 +39,4 @@ jobs:
           days-before-pr-close: 30
           exempt-all-milestones: true
           exempt-issue-labels: Pinned
-          operations-per-run: 1000
+          operations-per-run: 1750
