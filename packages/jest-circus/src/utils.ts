@@ -170,7 +170,7 @@ function checkIsError(error: unknown): error is Error {
 
 export const callAsyncCircusFn = (
   testOrHook: Circus.TestEntry | Circus.Hook,
-  testContext: Circus.TestContext | undefined,
+  testContext: Circus.TestContext,
   {isHook, timeout}: {isHook: boolean; timeout: number},
 ): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
