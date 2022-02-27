@@ -23,7 +23,7 @@ export type MockFunctionMetadata<
 > = {
   ref?: number;
   members?: Record<string, MockFunctionMetadata<T>>;
-  mockImpl?: FunctionType<T>;
+  mockImpl?: T;
   name?: string;
   refID?: number;
   type?: MetadataType;
@@ -62,8 +62,7 @@ export type MaybeMockedConstructor<T> = T extends new (
   ? MockInstance<(...args: ConstructorParameters<T>) => R>
   : T;
 
-export interface MockWithArgs<T extends FunctionLike>
-  extends MockInstance<FunctionType<T>> {
+export interface MockWithArgs<T extends FunctionLike> extends MockInstance<T> {
   new (...args: ConstructorParameters<T>): T;
   (...args: Parameters<T>): ReturnType<T>;
 }
@@ -101,7 +100,7 @@ export type MaybeMockedDeep<T> = T extends FunctionLike
 
 export type Mocked<T> = {
   [P in keyof T]: T[P] extends FunctionLike
-    ? MockInstance<FunctionType<T[P]>>
+    ? MockInstance<T[P]>
     : T[P] extends ClassLike
     ? MockedClass<T[P]>
     : T[P];
@@ -130,10 +129,6 @@ export interface Mock<T extends FunctionLike = UnknownFunction>
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-type FunctionType<T extends FunctionLike> = (
-  ...args: Parameters<T>
-) => ReturnType<T>;
-
 type ResolveType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<
   infer U
 >
@@ -147,14 +142,14 @@ type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
   _protoImpl: Function;
-  getMockImplementation(): FunctionType<T> | undefined;
+  getMockImplementation(): T | undefined;
   getMockName(): string;
   mock: MockFunctionState<T>;
   mockClear(): this;
   mockReset(): this;
   mockRestore(): void;
-  mockImplementation(fn: FunctionType<T>): this;
-  mockImplementationOnce(fn: FunctionType<T>): this;
+  mockImplementation(fn: T): this;
+  mockImplementationOnce(fn: T): this;
   mockName(name: string): this;
   mockReturnThis(): this;
   mockReturnValue(value: ReturnType<T>): this;
@@ -933,15 +928,15 @@ export class ModuleMocker {
 
   /**
    * @see README.md
-   * @param _metadata Metadata for the mock in the schema returned by the
+   * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
   generateFromMetadata<T extends UnknownFunction>(
-    _metadata: MockFunctionMetadata<T>,
+    metadata: MockFunctionMetadata<T>,
   ): Mock<T> {
     const callbacks: Array<Function> = [];
     const refs = {};
-    const mock = this._generateMock(_metadata, callbacks, refs);
+    const mock = this._generateMock(metadata, callbacks, refs);
     callbacks.forEach(setter => setter());
     return mock;
   }
@@ -978,7 +973,7 @@ export class ModuleMocker {
       // @ts-expect-error component is a function so it has a name
       metadata.name = component.name;
       if (this.isMockFunction(component)) {
-        metadata.mockImpl = component.getMockImplementation();
+        metadata.mockImpl = component.getMockImplementation() as T;
       }
     }
 
@@ -1062,7 +1057,9 @@ export class ModuleMocker {
   spyOn<T extends object, M extends MethodLikeKeys<T>>(
     object: T,
     methodName: M,
-  ): T[M] extends FunctionLike ? SpyInstance<FunctionType<T[M]>> : never;
+  ): T[M] extends FunctionLike
+    ? SpyInstance<(...args: Parameters<T[M]>) => ReturnType<T[M]>>
+    : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   spyOn<T extends object, M extends PropertyLikeKeys<T>>(
