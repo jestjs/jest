@@ -18,7 +18,7 @@ const foo = {
   },
 };
 
-const mockedFoo = mocked(foo, true);
+const mockedFoo = mocked(foo);
 
 expectType<string>(mockedFoo.a.b.c.hello('me'));
 

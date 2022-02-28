@@ -606,7 +606,7 @@ export const foo = {
 import {foo} from './foo';
 jest.mock('./foo');
 
-const mockedFoo = jest.mocked(foo, true);
+const mockedFoo = jest.mocked(foo);
 
 test('deep', () => {
   // there will be no TS error here, and you'll have completion in modern IDEs
