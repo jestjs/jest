@@ -11,30 +11,19 @@ import type {Config} from '@jest/types';
 import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
-  .mock('graceful-fs', () =>
-    // Node 10.5.x compatibility
-    ({
-      ...jest.createMockFromModule('fs'),
-      ReadStream: jest.requireActual('fs').ReadStream,
-      WriteStream: jest.requireActual('fs').WriteStream,
-      readFileSync: jest.fn(path => {
-        if (mockFs[path]) {
-          return mockFs[path];
-        }
-
-        throw new Error(`Cannot read path '${path}'.`);
-      }),
-      statSync: path => ({
-        isFile: () => !!mockFs[path],
-        mtime: {getTime: () => 42, toString: () => '42'},
-      }),
-    }),
-  )
   .mock('graceful-fs', () => ({
-    ...jest.requireActual('graceful-fs'),
-    realPathSync: {
-      native: dirInput => dirInput,
-    },
+    ...jest.createMockFromModule('graceful-fs'),
+    readFileSync: jest.fn((path: string) => {
+      if (mockFs[path]) {
+        return mockFs[path];
+      }
+
+      throw new Error(`Cannot read path '${path}'.`);
+    }),
+    statSync: jest.fn((path: string) => ({
+      isFile: () => !!mockFs[path],
+      mtime: {getTime: () => 42, toString: () => '42'},
+    })),
   }))
   .mock('jest-haste-map', () => ({
     getStatic() {

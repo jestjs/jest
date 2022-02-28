@@ -79,10 +79,6 @@ const getOperatorName = (operator: string | undefined, stack: string) => {
   if (stack.match('.throws')) {
     return 'throws';
   }
-  // this fallback is only needed for versions older than node 10
-  if (stack.match('.fail')) {
-    return 'fail';
-  }
   return '';
 };
 
