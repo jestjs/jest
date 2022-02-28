@@ -11,20 +11,6 @@ import type {Config} from '@jest/types';
 import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
-  .mock('graceful-fs', () => ({
-    ...jest.createMockFromModule('graceful-fs'),
-    readFileSync: jest.fn((path: string) => {
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      throw new Error(`Cannot read path '${path}'.`);
-    }),
-    statSync: jest.fn((path: string) => ({
-      isFile: () => !!mockFs[path],
-      mtime: {getTime: () => 42, toString: () => '42'},
-    })),
-  }))
   .mock('jest-haste-map', () => ({
     getStatic() {
       return {
