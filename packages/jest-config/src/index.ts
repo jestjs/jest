@@ -348,7 +348,8 @@ export async function readConfigs(
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
-        ({hasDeprecationWarnings}) => hasDeprecationWarnings != null,
+        // eslint-disable-next-line no-implicit-coercion
+        ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
       );
     }
     // If no config was passed initially, use the one from the first project
@@ -364,6 +365,7 @@ export async function readConfigs(
   return {
     configs,
     globalConfig,
-    hasDeprecationWarnings: hasDeprecationWarnings != null,
+    // eslint-disable-next-line no-implicit-coercion
+    hasDeprecationWarnings: !!hasDeprecationWarnings,
   };
 }
