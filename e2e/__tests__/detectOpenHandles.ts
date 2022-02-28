@@ -7,19 +7,6 @@
 
 import runJest, {runContinuous} from '../runJest';
 
-try {
-  require('async_hooks');
-} catch (e: any) {
-  if (e.code === 'MODULE_NOT_FOUND') {
-    // eslint-disable-next-line jest/no-focused-tests
-    fit('skip test for unsupported nodes', () => {
-      console.warn('Skipping test for node ' + process.version);
-    });
-  } else {
-    throw e;
-  }
-}
-
 function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
