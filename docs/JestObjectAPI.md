@@ -584,16 +584,13 @@ Returns the `jest` object for chaining.
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
-### `jest.mocked<T>(item: T, deep = false)`
+### `jest.mocked<T>(mockedObject)`
 
-The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
+The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source.
 
 _Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
 
-Example:
-
-```ts
-// foo.ts
+```ts title="foo.ts"
 export const foo = {
   a: {
     b: {
@@ -602,16 +599,13 @@ export const foo = {
       },
     },
   },
-  name: () => 'foo',
 };
 ```
 
-```ts
-// foo.spec.ts
+```ts title="foo.test.ts"
 import {foo} from './foo';
 jest.mock('./foo');
 
-// here the whole foo var is mocked deeply
 const mockedFoo = jest.mocked(foo, true);
 
 test('deep', () => {
@@ -619,12 +613,6 @@ test('deep', () => {
   mockedFoo.a.b.c.hello('me');
   // same here
   expect(mockedFoo.a.b.c.hello.mock.calls).toHaveLength(1);
-});
-
-test('direct', () => {
-  foo.name();
-  // here only foo.name is mocked (or its methods if it's an object)
-  expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
 });
 ```
 

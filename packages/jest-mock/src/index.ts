@@ -67,35 +67,19 @@ export interface MockWithArgs<T extends FunctionLike> extends MockInstance<T> {
   (...args: Parameters<T>): ReturnType<T>;
 }
 
-export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> & {
-  [K in keyof T]: T[K];
-};
-
-export type MockedFunctionDeep<T extends FunctionLike> = MockWithArgs<T> &
-  MockedObjectDeep<T>;
+export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> &
+  MockedObject<T>;
 
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
   [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
     ? MockedFunction<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: T[K]};
-
-export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
-    ? MockedFunctionDeep<T[K]>
-    : T[K];
-} & {[K in PropertyLikeKeys<T>]: MaybeMockedDeep<T[K]>};
+} & {[K in PropertyLikeKeys<T>]: MaybeMocked<T[K]>};
 
 export type MaybeMocked<T> = T extends FunctionLike
   ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
-  : T;
-
-export type MaybeMockedDeep<T> = T extends FunctionLike
-  ? MockedFunctionDeep<T>
-  : T extends object
-  ? MockedObjectDeep<T>
   : T;
 
 export type Mocked<T> = {
@@ -1216,13 +1200,8 @@ export class ModuleMocker {
     return value == null ? `${value}` : typeof value;
   }
 
-  // the typings test helper
-  mocked<T>(item: T, deep?: false): MaybeMocked<T>;
-
-  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
-
-  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
-    return item as any;
+  mocked<T>(mockedObject: T): MaybeMocked<T> {
+    return mockedObject as MaybeMocked<T>;
   }
 }
 
