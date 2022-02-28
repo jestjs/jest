@@ -142,13 +142,15 @@ function assertionErrorMessage(
     .replace(/AssertionError(.*)/g, '');
 
   if (operatorName === 'doesNotThrow') {
-    return `${
+    return (
+      // eslint-disable-next-line prefer-template
       buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset('Expected the function not to throw an error.\n') +
-      chalk.reset('Instead, it threw:\n')
-    }  ${printReceived(actual)}${chalk.reset(
-      hasCustomMessage ? `\n\nMessage:\n  ${message}` : '',
-    )}${trimmedStack}`;
+      chalk.reset('Instead, it threw:\n') +
+      `  ${printReceived(actual)}` +
+      chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+      trimmedStack
+    );
   }
 
   if (operatorName === 'throws') {
@@ -169,14 +171,17 @@ function assertionErrorMessage(
     );
   }
 
-  return `${
+  return (
+    // eslint-disable-next-line prefer-template
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
-    chalk.reset(`Expected value ${operatorMessage(operator)}`)
-  }  ${printExpected(expected)}\n${chalk.reset('Received:\n')}  ${printReceived(
-    actual,
-  )}${chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '')}${
-    diffString ? `\n\nDifference:\n\n${diffString}` : ''
-  }${trimmedStack}`;
+    chalk.reset(`Expected value ${operatorMessage(operator)}`) +
+    `  ${printExpected(expected)}\n` +
+    chalk.reset('Received:\n') +
+    `  ${printReceived(actual)}` +
+    chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+    (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
+    trimmedStack
+  );
 }
 
 function isAssertionError(

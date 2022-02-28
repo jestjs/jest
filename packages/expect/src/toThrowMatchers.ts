@@ -156,35 +156,29 @@ const toThrowExpectedRegExp = (
 
   const message = pass
     ? () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected pattern: not ', expected)}${
-          thrown !== null && thrown.hasMessage
-            ? formatReceived(
-                'Received message:     ',
-                thrown,
-                'message',
-                expected,
-              ) + formatStack(thrown)
-            : formatReceived('Received value:       ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected pattern: not ', expected) +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived(
+              'Received message:     ',
+              thrown,
+              'message',
+              expected,
+            ) + formatStack(thrown)
+          : formatReceived('Received value:       ', thrown, 'value'))
     : () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected pattern: ', expected)}${
-          thrown === null
-            ? `\n${DID_NOT_THROW}`
-            : thrown.hasMessage
-            ? formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Received value:   ', thrown, 'value')
-        }`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected pattern: ', expected) +
+        (thrown === null
+          ? `\n${DID_NOT_THROW}`
+          : thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -203,36 +197,29 @@ const toThrowExpectedAsymmetric = (
 
   const message = pass
     ? () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected(
-          'Expected asymmetric matcher: not ',
-          expected,
-        )}\n${
-          thrown !== null && thrown.hasMessage
-            ? formatReceived('Received name:    ', thrown, 'name') +
-              formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Thrown value: ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected asymmetric matcher: not ', expected) +
+        '\n' +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received name:    ', thrown, 'name') +
+            formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'))
     : () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected asymmetric matcher: ', expected)}\n${
-          thrown === null
-            ? DID_NOT_THROW
-            : thrown.hasMessage
-            ? formatReceived('Received name:    ', thrown, 'name') +
-              formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Thrown value: ', thrown, 'value')
-        }`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected asymmetric matcher: ', expected) +
+        '\n' +
+        (thrown === null
+          ? DID_NOT_THROW
+          : thrown.hasMessage
+          ? formatReceived('Received name:    ', thrown, 'name') +
+            formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -247,34 +234,35 @@ const toThrowExpectedObject = (
 
   const message = pass
     ? () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected message: not ', expected.message)}${
-          thrown !== null && thrown.hasMessage
-            ? formatStack(thrown)
-            : formatReceived('Received value:       ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected message: not ', expected.message) +
+        (thrown !== null && thrown.hasMessage
+          ? formatStack(thrown)
+          : formatReceived('Received value:       ', thrown, 'value'))
     : () =>
-        `${matcherHint(matcherName, undefined, undefined, options)}\n\n${
-          thrown === null
-            ? `${formatExpected(
-                'Expected message: ',
-                expected.message,
-              )}\n${DID_NOT_THROW}`
-            : thrown.hasMessage
-            ? `${printDiffOrStringify(
-                expected.message,
-                thrown.message,
-                'Expected message',
-                'Received message',
-                true,
-              )}\n${formatStack(thrown)}`
-            : formatExpected('Expected message: ', expected.message) +
-              formatReceived('Received value:   ', thrown, 'value')
-        }`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        (thrown === null
+          ? // eslint-disable-next-line prefer-template
+            formatExpected('Expected message: ', expected.message) +
+            '\n' +
+            DID_NOT_THROW
+          : thrown.hasMessage
+          ? // eslint-disable-next-line prefer-template
+            printDiffOrStringify(
+              expected.message,
+              thrown.message,
+              'Expected message',
+              'Received message',
+              true,
+            ) +
+            '\n' +
+            formatStack(thrown)
+          : formatExpected('Expected message: ', expected.message) +
+            formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -289,58 +277,46 @@ const toThrowExpectedClass = (
 
   const message = pass
     ? () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${printExpectedConstructorNameNot(
-          'Expected constructor',
-          expected,
-        )}${
-          thrown !== null &&
-          thrown.value != null &&
-          typeof thrown.value.constructor === 'function' &&
-          thrown.value.constructor !== expected
-            ? printReceivedConstructorNameNot(
-                'Received constructor',
-                thrown.value.constructor,
-                expected,
-              )
-            : ''
-        }\n${
-          thrown !== null && thrown.hasMessage
-            ? formatReceived('Received message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Received value: ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        printExpectedConstructorNameNot('Expected constructor', expected) +
+        (thrown !== null &&
+        thrown.value != null &&
+        typeof thrown.value.constructor === 'function' &&
+        thrown.value.constructor !== expected
+          ? printReceivedConstructorNameNot(
+              'Received constructor',
+              thrown.value.constructor,
+              expected,
+            )
+          : '') +
+        '\n' +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value: ', thrown, 'value'))
     : () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${printExpectedConstructorName(
-          'Expected constructor',
-          expected,
-        )}${
-          thrown === null
-            ? `\n${DID_NOT_THROW}`
-            : `${
-                thrown.value != null &&
-                typeof thrown.value.constructor === 'function'
-                  ? printReceivedConstructorName(
-                      'Received constructor',
-                      thrown.value.constructor,
-                    )
-                  : ''
-              }\n${
-                thrown.hasMessage
-                  ? formatReceived('Received message: ', thrown, 'message') +
-                    formatStack(thrown)
-                  : formatReceived('Received value: ', thrown, 'value')
-              }`
-        }`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        printExpectedConstructorName('Expected constructor', expected) +
+        (thrown === null
+          ? `\n${DID_NOT_THROW}`
+          : `${
+              thrown.value != null &&
+              typeof thrown.value.constructor === 'function'
+                ? printReceivedConstructorName(
+                    'Received constructor',
+                    thrown.value.constructor,
+                  )
+                : ''
+            }\n${
+              thrown.hasMessage
+                ? formatReceived('Received message: ', thrown, 'message') +
+                  formatStack(thrown)
+                : formatReceived('Received value: ', thrown, 'value')
+            }`);
 
   return {message, pass};
 };
@@ -355,35 +331,29 @@ const toThrowExpectedString = (
 
   const message = pass
     ? () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected substring: not ', expected)}${
-          thrown !== null && thrown.hasMessage
-            ? formatReceived(
-                'Received message:       ',
-                thrown,
-                'message',
-                expected,
-              ) + formatStack(thrown)
-            : formatReceived('Received value:         ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected substring: not ', expected) +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived(
+              'Received message:       ',
+              thrown,
+              'message',
+              expected,
+            ) + formatStack(thrown)
+          : formatReceived('Received value:         ', thrown, 'value'))
     : () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          undefined,
-          options,
-        )}\n\n${formatExpected('Expected substring: ', expected)}${
-          thrown === null
-            ? `\n${DID_NOT_THROW}`
-            : thrown.hasMessage
-            ? formatReceived('Received message:   ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Received value:     ', thrown, 'value')
-        }`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected substring: ', expected) +
+        (thrown === null
+          ? `\n${DID_NOT_THROW}`
+          : thrown.hasMessage
+          ? formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:     ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -397,20 +367,19 @@ const toThrow = (
 
   const message = pass
     ? () =>
-        `${matcherHint(matcherName, undefined, '', options)}\n\n${
-          thrown !== null && thrown.hasMessage
-            ? formatReceived('Error name:    ', thrown, 'name') +
-              formatReceived('Error message: ', thrown, 'message') +
-              formatStack(thrown)
-            : formatReceived('Thrown value: ', thrown, 'value')
-        }`
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Error name:    ', thrown, 'name') +
+            formatReceived('Error message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'))
     : () =>
-        `${matcherHint(
-          matcherName,
-          undefined,
-          '',
-          options,
-        )}\n\n${DID_NOT_THROW}`;
+        // eslint-disable-next-line prefer-template
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        DID_NOT_THROW;
 
   return {message, pass};
 };

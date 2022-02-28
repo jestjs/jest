@@ -86,7 +86,9 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
           `Expected: not ${printExpected(expected)}`
       : () => {
           const expectedType = getType(expected);
@@ -175,23 +177,22 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
-          `Expected: not ${printExpected(expected)}\n${
-            receivedDiff === 0
-              ? ''
-              : `Received:     ${printReceived(received)}\n` +
-                `\n${printCloseTo(
-                  receivedDiff,
-                  expectedDiff,
-                  precision,
-                  isNot,
-                )}`
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}\n` +
+          (receivedDiff === 0
+            ? ''
+            : `Received:     ${printReceived(received)}\n` +
+              `\n${printCloseTo(receivedDiff, expectedDiff, precision, isNot)}`)
       : () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
-          `\n${printCloseTo(receivedDiff, expectedDiff, precision, isNot)}`;
+          '\n' +
+          printCloseTo(receivedDiff, expectedDiff, precision, isNot);
 
     return {message, pass};
   },
@@ -289,45 +290,33 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            undefined,
-            options,
-          )}\n\n${printExpectedConstructorNameNot(
-            'Expected constructor',
-            expected,
-          )}${
-            typeof received.constructor === 'function' &&
-            received.constructor !== expected
-              ? printReceivedConstructorNameNot(
-                  'Received constructor',
-                  received.constructor,
-                  expected,
-                )
-              : ''
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printExpectedConstructorNameNot('Expected constructor', expected) +
+          (typeof received.constructor === 'function' &&
+          received.constructor !== expected
+            ? printReceivedConstructorNameNot(
+                'Received constructor',
+                received.constructor,
+                expected,
+              )
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            undefined,
-            options,
-          )}\n\n${printExpectedConstructorName(
-            'Expected constructor',
-            expected,
-          )}${
-            isPrimitive(received) || Object.getPrototypeOf(received) === null
-              ? `\nReceived value has no prototype\nReceived value: ${printReceived(
-                  received,
-                )}`
-              : typeof received.constructor !== 'function'
-              ? `\nReceived value: ${printReceived(received)}`
-              : printReceivedConstructorName(
-                  'Received constructor',
-                  received.constructor,
-                )
-          }`;
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printExpectedConstructorName('Expected constructor', expected) +
+          (isPrimitive(received) || Object.getPrototypeOf(received) === null
+            ? `\nReceived value has no prototype\nReceived value: ${printReceived(
+                received,
+              )}`
+            : typeof received.constructor !== 'function'
+            ? `\nReceived value: ${printReceived(received)}`
+            : printReceivedConstructorName(
+                'Received constructor',
+                received.constructor,
+              ));
 
     return {message, pass};
   },
@@ -597,25 +586,24 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
-          `Expected: not ${printExpected(expected)}\n${
-            stringify(expected) !== stringify(received)
-              ? `Received:     ${printReceived(received)}`
-              : ''
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            undefined,
-            options,
-          )}\n\n${printDiffOrStringify(
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
             expected,
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          )}`;
+          );
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
@@ -740,48 +728,40 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            expectedArgument,
-            options,
-          )}\n\n${
-            hasValue
-              ? `Expected path: ${printExpected(expectedPath)}\n\n` +
-                `Expected value: not ${printExpected(expectedValue)}${
-                  stringify(expectedValue) !== stringify(receivedValue)
-                    ? `\nReceived value:     ${printReceived(receivedValue)}`
-                    : ''
-                }`
-              : `Expected path: not ${printExpected(expectedPath)}\n\n` +
-                `Received value: ${printReceived(receivedValue)}`
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, expectedArgument, options) +
+          '\n\n' +
+          (hasValue
+            ? `Expected path: ${printExpected(expectedPath)}\n\n` +
+              `Expected value: not ${printExpected(expectedValue)}${
+                stringify(expectedValue) !== stringify(receivedValue)
+                  ? `\nReceived value:     ${printReceived(receivedValue)}`
+                  : ''
+              }`
+            : `Expected path: not ${printExpected(expectedPath)}\n\n` +
+              `Received value: ${printReceived(receivedValue)}`)
       : () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            expectedArgument,
-            options,
-          )}\n\n` +
-          `Expected path: ${printExpected(expectedPath)}\n${
-            hasCompletePath
-              ? `\n${printDiffOrStringify(
-                  expectedValue,
-                  receivedValue,
-                  EXPECTED_VALUE_LABEL,
-                  RECEIVED_VALUE_LABEL,
-                  isExpand(this.expand),
-                )}`
-              : `Received path: ${printReceived(
-                  expectedPathType === 'array' || receivedPath.length === 0
-                    ? receivedPath
-                    : receivedPath.join('.'),
-                )}\n\n${
-                  hasValue
-                    ? `Expected value: ${printExpected(expectedValue)}\n`
-                    : ''
-                }Received value: ${printReceived(receivedValue)}`
-          }`;
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, expectedArgument, options) +
+          '\n\n' +
+          `Expected path: ${printExpected(expectedPath)}\n` +
+          (hasCompletePath
+            ? `\n${printDiffOrStringify(
+                expectedValue,
+                receivedValue,
+                EXPECTED_VALUE_LABEL,
+                RECEIVED_VALUE_LABEL,
+                isExpand(this.expand),
+              )}`
+            : `Received path: ${printReceived(
+                expectedPathType === 'array' || receivedPath.length === 0
+                  ? receivedPath
+                  : receivedPath.join('.'),
+              )}\n\n${
+                hasValue
+                  ? `Expected value: ${printExpected(expectedValue)}\n`
+                  : ''
+              }Received value: ${printReceived(receivedValue)}`);
 
     return {message, pass};
   },
@@ -889,25 +869,24 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
-          `Expected: not ${printExpected(expected)}${
-            stringify(expected) !== stringify(received)
-              ? `\nReceived:     ${printReceived(received)}`
-              : ''
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}` +
+          (stringify(expected) !== stringify(received)
+            ? `\nReceived:     ${printReceived(received)}`
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            undefined,
-            options,
-          )}\n\n${printDiffOrStringify(
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
             expected,
             getObjectSubset(received, expected),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          )}`;
+          );
 
     return {message, pass};
   },
@@ -924,25 +903,24 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
-          `Expected: not ${printExpected(expected)}\n${
-            stringify(expected) !== stringify(received)
-              ? `Received:     ${printReceived(received)}`
-              : ''
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            undefined,
-            undefined,
-            options,
-          )}\n\n${printDiffOrStringify(
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
             expected,
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          )}`;
+          );
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,

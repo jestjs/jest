@@ -194,8 +194,11 @@ const printExpectedReceivedCallsPositive = (
 
   const printAligned = getRightAlignedPrinter(label);
 
-  return `${expectedLine}Received\n${indexedCalls.reduce(
-    (printed: string, [i, received]: IndexedCall) => {
+  return (
+    // eslint-disable-next-line prefer-template
+    expectedLine +
+    'Received\n' +
+    indexedCalls.reduce((printed: string, [i, received]: IndexedCall) => {
       const aligned = printAligned(String(i + 1), i === iExpectedCall);
       return `${
         printed +
@@ -205,9 +208,8 @@ const printExpectedReceivedCallsPositive = (
             printDiffCall(expected, received, expand)
           : aligned + printReceivedArgs(received, expected))
       }\n`;
-    },
-    '',
-  )}`;
+    }, '')
+  );
 };
 
 const indentation = 'Received'.replace(/\w/g, ' ');
@@ -334,15 +336,20 @@ const printReceivedResults = (
 
   const printAligned = getRightAlignedPrinter(label);
 
-  return `${label.replace(':', '').trim()}\n${indexedResults.reduce(
-    (printed: string, [i, result]: IndexedResult) =>
-      `${
-        printed +
-        printAligned(String(i + 1), i === iExpectedCall) +
-        printResult(result, expected)
-      }\n`,
-    '',
-  )}`;
+  return (
+    // eslint-disable-next-line prefer-template
+    label.replace(':', '').trim() +
+    '\n' +
+    indexedResults.reduce(
+      (printed: string, [i, result]: IndexedResult) =>
+        `${
+          printed +
+          printAligned(String(i + 1), i === iExpectedCall) +
+          printResult(result, expected)
+        }\n`,
+      '',
+    )
+  );
 };
 
 const createToBeCalledMatcher = (matcherName: string) =>
@@ -370,14 +377,12 @@ const createToBeCalledMatcher = (matcherName: string) =>
     const pass = count > 0;
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of calls: ${printExpected(0)}\n` +
-          `Received number of calls: ${printReceived(count)}\n\n${calls
+          `Received number of calls: ${printReceived(count)}\n\n` +
+          calls
             .reduce((lines: Array<string>, args: any, i: number) => {
               if (lines.length < PRINT_LIMIT) {
                 lines.push(`${i + 1}: ${printReceivedArgs(args)}`);
@@ -385,14 +390,11 @@ const createToBeCalledMatcher = (matcherName: string) =>
 
               return lines;
             }, [])
-            .join('\n')}`
+            .join('\n')
       : () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of calls: >= ${printExpected(1)}\n` +
           `Received number of calls:    ${printReceived(count)}`;
 
@@ -425,16 +427,12 @@ const createToReturnMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of returns: ${printExpected(0)}\n` +
-          `Received number of returns: ${printReceived(
-            count,
-          )}\n\n${received.mock.results
+          `Received number of returns: ${printReceived(count)}\n\n` +
+          received.mock.results
             .reduce((lines: Array<string>, result: any, i: number) => {
               if (result.type === 'return' && lines.length < PRINT_LIMIT) {
                 lines.push(`${i + 1}: ${printReceived(result.value)}`);
@@ -442,28 +440,23 @@ const createToReturnMatcher = (matcherName: string) =>
 
               return lines;
             }, [])
-            .join('\n')}${
-            received.mock.calls.length !== count
-              ? `\n\nReceived number of calls:   ${printReceived(
-                  received.mock.calls.length,
-                )}`
-              : ''
-          }`
+            .join('\n') +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of returns: >= ${printExpected(1)}\n` +
-          `Received number of returns:    ${printReceived(count)}${
-            received.mock.calls.length !== count
-              ? `\nReceived number of calls:      ${printReceived(
-                  received.mock.calls.length,
-                )}`
-              : ''
-          }`;
+          `Received number of returns:    ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:      ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
@@ -492,19 +485,14 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\nExpected number of calls: not ${printExpected(expected)}`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
+          `Expected number of calls: not ${printExpected(expected)}`
       : () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of calls: ${printExpected(expected)}\n` +
           `Received number of calls: ${printReceived(count)}`;
 
@@ -537,34 +525,26 @@ const createToReturnTimesMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
-          `Expected number of returns: not ${printExpected(expected)}${
-            received.mock.calls.length !== count
-              ? `\n\nReceived number of calls:       ${printReceived(
-                  received.mock.calls.length,
-                )}`
-              : ''
-          }`
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
+          `Expected number of returns: not ${printExpected(expected)}` +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:       ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
-          `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
+          '\n\n' +
           `Expected number of returns: ${printExpected(expected)}\n` +
-          `Received number of returns: ${printReceived(count)}${
-            received.mock.calls.length !== count
-              ? `\nReceived number of calls:   ${printReceived(
-                  received.mock.calls.length,
-                )}`
-              : ''
-          }`;
+          `Received number of returns: ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
@@ -604,21 +584,18 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: not ${printExpectedArgs(expected)}\n${
-              calls.length === 1 && stringify(calls[0]) === stringify(expected)
-                ? ''
-                : printReceivedCallsNegative(
-                    expected,
-                    indexedCalls,
-                    calls.length === 1,
-                  )
-            }\nNumber of calls: ${printReceived(calls.length)}`
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCallsNegative(
+                  expected,
+                  indexedCalls,
+                  calls.length === 1,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
       : () => {
@@ -630,17 +607,18 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
             i += 1;
           }
 
-          return `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n${printExpectedReceivedCallsPositive(
-            expected,
-            indexedCalls,
-            isExpand(this.expand),
-            calls.length === 1,
-          )}\nNumber of calls: ${printReceived(calls.length)}`;
+          return (
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            printExpectedReceivedCallsPositive(
+              expected,
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
         };
 
     return {message, pass};
@@ -677,24 +655,21 @@ const createToReturnWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: not ${printExpected(expected)}\n${
-              results.length === 1 &&
-              results[0].type === 'return' &&
-              stringify(results[0].value) === stringify(expected)
-                ? ''
-                : printReceivedResults(
-                    'Received:     ',
-                    expected,
-                    indexedResults,
-                    results.length === 1,
-                  )
-            }${printNumberOfReturns(countReturns(results), calls.length)}`
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  expected,
+                  indexedResults,
+                  results.length === 1,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         }
       : () => {
@@ -707,18 +682,17 @@ const createToReturnWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: ${printExpected(expected)}\n${printReceivedResults(
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
               'Received: ',
               expected,
               indexedResults,
               results.length === 1,
-            )}${printNumberOfReturns(countReturns(results), calls.length)}`
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         };
 
@@ -758,22 +732,19 @@ const createLastCalledWithMatcher = (matcherName: string) =>
           indexedCalls.push([iLast, calls[iLast]]);
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: not ${printExpectedArgs(expected)}\n${
-              calls.length === 1 && stringify(calls[0]) === stringify(expected)
-                ? ''
-                : printReceivedCallsNegative(
-                    expected,
-                    indexedCalls,
-                    calls.length === 1,
-                    iLast,
-                  )
-            }\nNumber of calls: ${printReceived(calls.length)}`
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCallsNegative(
+                  expected,
+                  indexedCalls,
+                  calls.length === 1,
+                  iLast,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
       : () => {
@@ -795,18 +766,19 @@ const createLastCalledWithMatcher = (matcherName: string) =>
             indexedCalls.push([iLast, calls[iLast]]);
           }
 
-          return `${matcherHint(
-            matcherName,
-            receivedName,
-            expectedArgument,
-            options,
-          )}\n\n${printExpectedReceivedCallsPositive(
-            expected,
-            indexedCalls,
-            isExpand(this.expand),
-            calls.length === 1,
-            iLast,
-          )}\nNumber of calls: ${printReceived(calls.length)}`;
+          return (
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            printExpectedReceivedCallsPositive(
+              expected,
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+              iLast,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
         };
 
     return {message, pass};
@@ -842,25 +814,22 @@ const createLastReturnedMatcher = (matcherName: string) =>
           indexedResults.push([iLast, results[iLast]]);
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: not ${printExpected(expected)}\n${
-              results.length === 1 &&
-              results[0].type === 'return' &&
-              stringify(results[0].value) === stringify(expected)
-                ? ''
-                : printReceivedResults(
-                    'Received:     ',
-                    expected,
-                    indexedResults,
-                    results.length === 1,
-                    iLast,
-                  )
-            }${printNumberOfReturns(countReturns(results), calls.length)}`
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  expected,
+                  indexedResults,
+                  results.length === 1,
+                  iLast,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         }
       : () => {
@@ -883,19 +852,18 @@ const createLastReturnedMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `Expected: ${printExpected(expected)}\n${printReceivedResults(
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
               'Received: ',
               expected,
               indexedResults,
               results.length === 1,
               iLast,
-            )}${printNumberOfReturns(countReturns(results), calls.length)}`
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         };
 
@@ -953,23 +921,20 @@ const createNthCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
             `n: ${nth}\n` +
-            `Expected: not ${printExpectedArgs(expected)}\n${
-              calls.length === 1 && stringify(calls[0]) === stringify(expected)
-                ? ''
-                : printReceivedCallsNegative(
-                    expected,
-                    indexedCalls,
-                    calls.length === 1,
-                    iNth,
-                  )
-            }\nNumber of calls: ${printReceived(calls.length)}`
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCallsNegative(
+                  expected,
+                  indexedCalls,
+                  calls.length === 1,
+                  iNth,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
       : () => {
@@ -1019,19 +984,18 @@ const createNthCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
-            `n: ${nth}\n${printExpectedReceivedCallsPositive(
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            printExpectedReceivedCallsPositive(
               expected,
               indexedCalls,
               isExpand(this.expand),
               calls.length === 1,
               iNth,
-            )}\nNumber of calls: ${printReceived(calls.length)}`
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
           );
         };
 
@@ -1085,26 +1049,23 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
             `n: ${nth}\n` +
-            `Expected: not ${printExpected(expected)}\n${
-              results.length === 1 &&
-              results[0].type === 'return' &&
-              stringify(results[0].value) === stringify(expected)
-                ? ''
-                : printReceivedResults(
-                    'Received:     ',
-                    expected,
-                    indexedResults,
-                    results.length === 1,
-                    iNth,
-                  )
-            }${printNumberOfReturns(countReturns(results), calls.length)}`
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  expected,
+                  indexedResults,
+                  results.length === 1,
+                  iNth,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         }
       : () => {
@@ -1154,20 +1115,19 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
           }
 
           return (
-            `${matcherHint(
-              matcherName,
-              receivedName,
-              expectedArgument,
-              options,
-            )}\n\n` +
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
             `n: ${nth}\n` +
-            `Expected: ${printExpected(expected)}\n${printReceivedResults(
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
               'Received: ',
               expected,
               indexedResults,
               results.length === 1,
               iNth,
-            )}${printNumberOfReturns(countReturns(results), calls.length)}`
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
         };
 
