@@ -865,7 +865,7 @@ export class ModuleMocker {
 
     const body =
       `return function ${name}() {` +
-      `return ${MOCK_CONSTRUCTOR_NAME}.apply(this,arguments);` +
+      `  return ${MOCK_CONSTRUCTOR_NAME}.apply(this,arguments);` +
       `}${bindCall}`;
     const createConstructor = new this._environmentGlobal.Function(
       MOCK_CONSTRUCTOR_NAME,

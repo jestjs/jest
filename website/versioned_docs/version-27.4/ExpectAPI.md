@@ -173,29 +173,24 @@ expect.extend({
 
     const message = pass
       ? () =>
-          `${this.utils.matcherHint(
-            'toBe',
-            undefined,
-            undefined,
-            options,
-          )}\n\n` +
+          // eslint-disable-next-line prefer-template
+          this.utils.matcherHint('toBe', undefined, undefined, options) +
+          '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
-          return `${this.utils.matcherHint(
-            'toBe',
-            undefined,
-            undefined,
-            options,
-          )}\n\n${
-            diffString && diffString.includes('- Expect')
+          return (
+            // eslint-disable-next-line prefer-template
+            this.utils.matcherHint('toBe', undefined, undefined, options) +
+            '\n\n' +
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${this.utils.printExpected(expected)}\n` +
-                `Received: ${this.utils.printReceived(received)}`
-          }`;
+                `Received: ${this.utils.printReceived(received)}`)
+          );
         };
 
     return {actual: received, message, pass};
@@ -742,7 +737,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 

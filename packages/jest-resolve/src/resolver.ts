@@ -830,8 +830,10 @@ const createNoMappedModuleFoundError = (
     ? JSON.stringify(mappedModuleName.map(mapModuleName), null, 2)
     : mappedModuleName;
   const original = Array.isArray(mappedModuleName)
-    ? `${JSON.stringify(mappedModuleName, null, 6) // using 6 because of misalignment when nested below
-        .slice(0, -1)}    ]` /// align last bracket correctly as well
+    ? `${
+        JSON.stringify(mappedModuleName, null, 6) // using 6 because of misalignment when nested below
+          .slice(0, -1) + ' '.repeat(4)
+      }]` /// align last bracket correctly as well
     : mappedModuleName;
 
   const error = new Error(
