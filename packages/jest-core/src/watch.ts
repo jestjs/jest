@@ -581,6 +581,7 @@ const usage = (
 };
 
 const showToggleUsagePrompt = () =>
-  `\n${chalk.bold('Watch Usage: ')}${chalk.dim('Press ')}w${chalk.dim(
+  '\n' +
+  `${chalk.bold('Watch Usage: ')}${chalk.dim('Press ')}w${chalk.dim(
     ' to show more.',
   )}`;

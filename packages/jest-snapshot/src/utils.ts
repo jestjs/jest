@@ -46,26 +46,34 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 
   if (version < SNAPSHOT_VERSION) {
     return new Error(
-      `${chalk.red(
+      // eslint-disable-next-line prefer-template
+      chalk.red(
         `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
           'file associated with this test is outdated. The snapshot file ' +
           'version ensures that all developers on a project are using ' +
           'the same version of Jest. ' +
-          'Please update all snapshots during this upgrade of Jest.\n\n',
-      )}Expected: v${SNAPSHOT_VERSION}\n` +
-        `Received: v${version}\n\n${SNAPSHOT_VERSION_WARNING}`,
+          'Please update all snapshots during this upgrade of Jest.',
+      ) +
+        '\n\n' +
+        `Expected: v${SNAPSHOT_VERSION}\n` +
+        `Received: v${version}\n\n` +
+        SNAPSHOT_VERSION_WARNING,
     );
   }
 
   if (version > SNAPSHOT_VERSION) {
     return new Error(
-      `${chalk.red(
+      // eslint-disable-next-line prefer-template
+      chalk.red(
         `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
           'snapshot file indicates that this project is meant to be used ' +
           'with a newer version of Jest. The snapshot file version ensures ' +
           'that all developers on a project are using the same version of ' +
-          'Jest. Please update your version of Jest and re-run the tests.\n\n',
-      )}Expected: v${SNAPSHOT_VERSION}\nReceived: v${version}`,
+          'Jest. Please update your version of Jest and re-run the tests.',
+      ) +
+        '\n\n' +
+        `Expected: v${SNAPSHOT_VERSION}\n` +
+        `Received: v${version}`,
     );
   }
 
