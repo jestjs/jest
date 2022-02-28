@@ -148,9 +148,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' ticks, and there are still more! ' +
+        `Ran ${this._maxLoops} ticks, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -170,9 +168,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' immediates, and there are still more! Assuming ' +
+        `Ran ${this._maxLoops} immediates, and there are still more! Assuming ` +
           "we've hit an infinite recursion and bailing out...",
       );
     }
@@ -218,9 +214,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -287,9 +281,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -407,10 +399,9 @@ export default class FakeTimers<TimerRef> {
           'the configuration file. This warning is likely a result of a ' +
           'default configuration change in Jest 15.\n\n' +
           'Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n' +
-          'Stack Trace:\n' +
-          formatStackTrace(new Error().stack!, this._config, {
+          `Stack Trace:\n${formatStackTrace(new Error().stack!, this._config, {
             noStackTrace: false,
-          }),
+          })}`,
       );
     }
   }
@@ -596,7 +587,7 @@ export default class FakeTimers<TimerRef> {
         break;
 
       default:
-        throw new Error('Unexpected timer type: ' + timer.type);
+        throw new Error(`Unexpected timer type: ${timer.type}`);
     }
   }
 }

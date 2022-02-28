@@ -31,7 +31,7 @@ jest.mock('graceful-fs', () => {
 });
 
 const rootDir = path.resolve(__dirname, 'test_root');
-const testRegex = path.sep + '__testtests__' + path.sep;
+const testRegex = `${path.sep}__testtests__${path.sep}`;
 const testMatch = ['**/__testtests__/**/*'];
 const maxWorkers = 1;
 

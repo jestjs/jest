@@ -9,7 +9,7 @@ require('./sumDependency.js');
 require('./otherFile');
 require('./file');
 
-const uncoveredFunction = () => 1 + 'abc';
+const uncoveredFunction = () => `${1}abc`;
 
 const sum = (a, b) => a + b;
 

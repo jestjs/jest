@@ -13,7 +13,7 @@ try {
   if (e.code === 'MODULE_NOT_FOUND') {
     // eslint-disable-next-line jest/no-focused-tests
     fit('skip test for unsupported nodes', () => {
-      console.warn('Skipping test for node ' + process.version);
+      console.warn(`Skipping test for node ${process.version}`);
     });
   } else {
     throw e;

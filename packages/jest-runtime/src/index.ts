@@ -118,7 +118,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 
 const getModuleNameMapper = (config: Config.ProjectConfig) => {
   if (
@@ -379,7 +379,7 @@ export default class Runtime {
       hasteMapModulePath: config.haste.hasteMapModulePath,
       ignorePattern,
       maxWorkers: options?.maxWorkers || 1,
-      mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
+      mocksPattern: escapePathForRegex(`${path.sep}__mocks__${path.sep}`),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       resetCache: options?.resetCache,
@@ -398,7 +398,7 @@ export default class Runtime {
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
-      extensions: config.moduleFileExtensions.map(extension => '.' + extension),
+      extensions: config.moduleFileExtensions.map(extension => `.${extension}`),
       hasCoreModules: true,
       moduleDirectories: config.moduleDirectories,
       moduleNameMapper: getModuleNameMapper(config),
@@ -2197,19 +2197,20 @@ export default class Runtime {
     const {message, stack} = separateMessageFromStack(originalStack);
 
     console.error(
-      `\n${message}\n` +
-        formatStackTrace(stack, this._config, {noStackTrace: false}),
+      `\n${message}\n${formatStackTrace(stack, this._config, {
+        noStackTrace: false,
+      })}`,
     );
   }
 
   private wrapCodeInModuleWrapper(content: string) {
-    return this.constructModuleWrapperStart() + content + '\n}});';
+    return `${this.constructModuleWrapperStart() + content}\n}});`;
   }
 
   private constructModuleWrapperStart() {
     const args = this.constructInjectedModuleParameters();
 
-    return '({"' + EVAL_RESULT_VARIABLE + `":function(${args.join(',')}){`;
+    return `({"${EVAL_RESULT_VARIABLE}":function(${args.join(',')}){`;
   }
 
   private constructInjectedModuleParameters(): Array<string> {

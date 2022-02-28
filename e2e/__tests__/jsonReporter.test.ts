@@ -73,7 +73,7 @@ describe('JSON Reporter', () => {
       jsonResult = JSON.parse(result.stdout);
     } catch (err: any) {
       throw new Error(
-        "Can't parse the JSON result from stdout" + err.toString(),
+        `Can't parse the JSON result from stdout${err.toString()}`,
       );
     }
 

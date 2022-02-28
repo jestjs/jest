@@ -86,8 +86,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
           `Expected: not ${printExpected(expected)}`
       : () => {
           const expectedType = getType(expected);
@@ -103,22 +102,24 @@ const matchers: MatchersObject = {
             }
           }
 
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            '\n\n' +
-            (deepEqualityName !== null
-              ? DIM_COLOR(
+          return `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${
+            deepEqualityName !== null
+              ? `${DIM_COLOR(
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
-                ) + '\n\n'
-              : '') +
-            printDiffOrStringify(
-              expected,
-              received,
-              EXPECTED_LABEL,
-              RECEIVED_LABEL,
-              isExpand(this.expand),
-            )
-          );
+                )}\n\n`
+              : ''
+          }${printDiffOrStringify(
+            expected,
+            received,
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            isExpand(this.expand),
+          )}`;
         };
 
     // Passing the actual and expected objects so that a custom reporter
@@ -174,21 +175,23 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          `Expected: not ${printExpected(expected)}\n` +
-          (receivedDiff === 0
-            ? ''
-            : `Received:     ${printReceived(received)}\n` +
-              '\n' +
-              printCloseTo(receivedDiff, expectedDiff, precision, isNot))
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          `Expected: not ${printExpected(expected)}\n${
+            receivedDiff === 0
+              ? ''
+              : `Received:     ${printReceived(received)}\n` +
+                `\n${printCloseTo(
+                  receivedDiff,
+                  expectedDiff,
+                  precision,
+                  isNot,
+                )}`
+          }`
       : () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
-          '\n' +
-          printCloseTo(receivedDiff, expectedDiff, precision, isNot);
+          `\n${printCloseTo(receivedDiff, expectedDiff, precision, isNot)}`;
 
     return {message, pass};
   },
@@ -204,8 +207,7 @@ const matchers: MatchersObject = {
     const pass = received !== void 0;
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -222,8 +224,7 @@ const matchers: MatchersObject = {
     const pass = !received;
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -241,8 +242,7 @@ const matchers: MatchersObject = {
     const pass = received > expected;
 
     const message = () =>
-      matcherHint(matcherName, undefined, undefined, options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
       `Expected:${isNot ? ' not' : ''} > ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
 
@@ -261,8 +261,7 @@ const matchers: MatchersObject = {
     const pass = received >= expected;
 
     const message = () =>
-      matcherHint(matcherName, undefined, undefined, options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
       `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
 
@@ -290,31 +289,45 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          printExpectedConstructorNameNot('Expected constructor', expected) +
-          (typeof received.constructor === 'function' &&
-          received.constructor !== expected
-            ? printReceivedConstructorNameNot(
-                'Received constructor',
-                received.constructor,
-                expected,
-              )
-            : '')
+          `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${printExpectedConstructorNameNot(
+            'Expected constructor',
+            expected,
+          )}${
+            typeof received.constructor === 'function' &&
+            received.constructor !== expected
+              ? printReceivedConstructorNameNot(
+                  'Received constructor',
+                  received.constructor,
+                  expected,
+                )
+              : ''
+          }`
       : () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          printExpectedConstructorName('Expected constructor', expected) +
-          (isPrimitive(received) || Object.getPrototypeOf(received) === null
-            ? `\nReceived value has no prototype\nReceived value: ${printReceived(
-                received,
-              )}`
-            : typeof received.constructor !== 'function'
-            ? `\nReceived value: ${printReceived(received)}`
-            : printReceivedConstructorName(
-                'Received constructor',
-                received.constructor,
-              ));
+          `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${printExpectedConstructorName(
+            'Expected constructor',
+            expected,
+          )}${
+            isPrimitive(received) || Object.getPrototypeOf(received) === null
+              ? `\nReceived value has no prototype\nReceived value: ${printReceived(
+                  received,
+                )}`
+              : typeof received.constructor !== 'function'
+              ? `\nReceived value: ${printReceived(received)}`
+              : printReceivedConstructorName(
+                  'Received constructor',
+                  received.constructor,
+                )
+          }`;
 
     return {message, pass};
   },
@@ -331,8 +344,7 @@ const matchers: MatchersObject = {
     const pass = received < expected;
 
     const message = () =>
-      matcherHint(matcherName, undefined, undefined, options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
       `Expected:${isNot ? ' not' : ''} < ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
 
@@ -351,8 +363,7 @@ const matchers: MatchersObject = {
     const pass = received <= expected;
 
     const message = () =>
-      matcherHint(matcherName, undefined, undefined, options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
       `Expected:${isNot ? ' not' : ''} <= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
 
@@ -370,8 +381,7 @@ const matchers: MatchersObject = {
     const pass = Number.isNaN(received);
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -388,8 +398,7 @@ const matchers: MatchersObject = {
     const pass = received === null;
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -406,8 +415,7 @@ const matchers: MatchersObject = {
     const pass = !!received;
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -424,8 +432,7 @@ const matchers: MatchersObject = {
     const pass = received === void 0;
 
     const message = () =>
-      matcherHint(matcherName, undefined, '', options) +
-      '\n\n' +
+      `${matcherHint(matcherName, undefined, '', options)}\n\n` +
       `Received: ${printReceived(received)}`;
 
     return {message, pass};
@@ -462,9 +469,11 @@ const matchers: MatchersObject = {
           matcherErrorMessage(
             matcherHint(matcherName, received, String(expected), options),
             wrongTypeErrorMessage,
-            printWithType('Expected', expected, printExpected) +
-              '\n' +
-              printWithType('Received', received, printReceived),
+            `${printWithType(
+              'Expected',
+              expected,
+              printExpected,
+            )}\n${printWithType('Received', received, printReceived)}`,
           ),
         );
       }
@@ -480,8 +489,7 @@ const matchers: MatchersObject = {
         const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
         return (
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
           `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
             expected,
           )}\n` +
@@ -510,8 +518,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint(matcherName, undefined, undefined, options) +
-        '\n\n' +
+        `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
         )}\n` +
@@ -519,13 +526,14 @@ const matchers: MatchersObject = {
           isNot && Array.isArray(received)
             ? printReceivedArrayContainExpectedItem(received, index)
             : printReceived(received)
-        }` +
-        (!isNot &&
-        indexable.findIndex(item =>
-          equals(item, expected, [iterableEquality]),
-        ) !== -1
-          ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
-          : '')
+        }${
+          !isNot &&
+          indexable.findIndex(item =>
+            equals(item, expected, [iterableEquality]),
+          ) !== -1
+            ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
+            : ''
+        }`
       );
     };
 
@@ -562,8 +570,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint(matcherName, undefined, undefined, options) +
-        '\n\n' +
+        `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
         )}\n` +
@@ -590,22 +597,25 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          `Expected: not ${printExpected(expected)}\n${
+            stringify(expected) !== stringify(received)
+              ? `Received:     ${printReceived(received)}`
+              : ''
+          }`
       : () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          printDiffOrStringify(
+          `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${printDiffOrStringify(
             expected,
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          );
+          )}`;
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
@@ -648,17 +658,16 @@ const matchers: MatchersObject = {
       );
 
       return (
-        matcherHint(matcherName, undefined, undefined, options) +
-        '\n\n' +
+        `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
-        )}\n` +
-        (isNot
-          ? ''
-          : `${printLabel(labelReceivedLength)}${printReceived(
-              received.length,
-            )}\n`) +
-        `${printLabel(labelReceivedValue)}${isNot ? '    ' : ''}${printReceived(
+        )}\n${
+          isNot
+            ? ''
+            : `${printLabel(labelReceivedLength)}${printReceived(
+                received.length,
+              )}\n`
+        }${printLabel(labelReceivedValue)}${isNot ? '    ' : ''}${printReceived(
           received,
         )}`
       );
@@ -731,38 +740,48 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, expectedArgument, options) +
-          '\n\n' +
-          (hasValue
-            ? `Expected path: ${printExpected(expectedPath)}\n\n` +
-              `Expected value: not ${printExpected(expectedValue)}` +
-              (stringify(expectedValue) !== stringify(receivedValue)
-                ? `\nReceived value:     ${printReceived(receivedValue)}`
-                : '')
-            : `Expected path: not ${printExpected(expectedPath)}\n\n` +
-              `Received value: ${printReceived(receivedValue)}`)
+          `${matcherHint(
+            matcherName,
+            undefined,
+            expectedArgument,
+            options,
+          )}\n\n${
+            hasValue
+              ? `Expected path: ${printExpected(expectedPath)}\n\n` +
+                `Expected value: not ${printExpected(expectedValue)}${
+                  stringify(expectedValue) !== stringify(receivedValue)
+                    ? `\nReceived value:     ${printReceived(receivedValue)}`
+                    : ''
+                }`
+              : `Expected path: not ${printExpected(expectedPath)}\n\n` +
+                `Received value: ${printReceived(receivedValue)}`
+          }`
       : () =>
-          matcherHint(matcherName, undefined, expectedArgument, options) +
-          '\n\n' +
-          `Expected path: ${printExpected(expectedPath)}\n` +
-          (hasCompletePath
-            ? '\n' +
-              printDiffOrStringify(
-                expectedValue,
-                receivedValue,
-                EXPECTED_VALUE_LABEL,
-                RECEIVED_VALUE_LABEL,
-                isExpand(this.expand),
-              )
-            : `Received path: ${printReceived(
-                expectedPathType === 'array' || receivedPath.length === 0
-                  ? receivedPath
-                  : receivedPath.join('.'),
-              )}\n\n` +
-              (hasValue
-                ? `Expected value: ${printExpected(expectedValue)}\n`
-                : '') +
-              `Received value: ${printReceived(receivedValue)}`);
+          `${matcherHint(
+            matcherName,
+            undefined,
+            expectedArgument,
+            options,
+          )}\n\n` +
+          `Expected path: ${printExpected(expectedPath)}\n${
+            hasCompletePath
+              ? `\n${printDiffOrStringify(
+                  expectedValue,
+                  receivedValue,
+                  EXPECTED_VALUE_LABEL,
+                  RECEIVED_VALUE_LABEL,
+                  isExpand(this.expand),
+                )}`
+              : `Received path: ${printReceived(
+                  expectedPathType === 'array' || receivedPath.length === 0
+                    ? receivedPath
+                    : receivedPath.join('.'),
+                )}\n\n${
+                  hasValue
+                    ? `Expected value: ${printExpected(expectedValue)}\n`
+                    : ''
+                }Received value: ${printReceived(receivedValue)}`
+          }`;
 
     return {message, pass};
   },
@@ -807,16 +826,14 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           typeof expected === 'string'
-            ? matcherHint(matcherName, undefined, undefined, options) +
-              '\n\n' +
+            ? `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
               `Expected substring: not ${printExpected(expected)}\n` +
               `Received string:        ${printReceivedStringContainExpectedSubstring(
                 received,
                 received.indexOf(expected),
                 expected.length,
               )}`
-            : matcherHint(matcherName, undefined, undefined, options) +
-              '\n\n' +
+            : `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
               `Expected pattern: not ${printExpected(expected)}\n` +
               `Received string:      ${printReceivedStringContainExpectedResult(
                 received,
@@ -832,8 +849,7 @@ const matchers: MatchersObject = {
           const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
           return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            '\n\n' +
+            `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
             `${printLabel(labelExpected)}${printExpected(expected)}\n` +
             `${printLabel(labelReceived)}${printReceived(received)}`
           );
@@ -873,22 +889,25 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          `Expected: not ${printExpected(expected)}` +
-          (stringify(expected) !== stringify(received)
-            ? `\nReceived:     ${printReceived(received)}`
-            : '')
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          `Expected: not ${printExpected(expected)}${
+            stringify(expected) !== stringify(received)
+              ? `\nReceived:     ${printReceived(received)}`
+              : ''
+          }`
       : () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          printDiffOrStringify(
+          `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${printDiffOrStringify(
             expected,
             getObjectSubset(received, expected),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          );
+          )}`;
 
     return {message, pass};
   },
@@ -905,22 +924,25 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          `Expected: not ${printExpected(expected)}\n` +
-          (stringify(expected) !== stringify(received)
-            ? `Received:     ${printReceived(received)}`
-            : '')
+          `${matcherHint(matcherName, undefined, undefined, options)}\n\n` +
+          `Expected: not ${printExpected(expected)}\n${
+            stringify(expected) !== stringify(received)
+              ? `Received:     ${printReceived(received)}`
+              : ''
+          }`
       : () =>
-          matcherHint(matcherName, undefined, undefined, options) +
-          '\n\n' +
-          printDiffOrStringify(
+          `${matcherHint(
+            matcherName,
+            undefined,
+            undefined,
+            options,
+          )}\n\n${printDiffOrStringify(
             expected,
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
-          );
+          )}`;
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,

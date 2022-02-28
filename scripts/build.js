@@ -80,9 +80,9 @@ function buildFile(file, silent) {
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
     silent ||
       process.stdout.write(
-        chalk.dim('  \u2022 ') +
-          path.relative(PACKAGES_DIR, file) +
-          ' (ignore)\n',
+        `${
+          chalk.dim('  \u2022 ') + path.relative(PACKAGES_DIR, file)
+        } (ignore)\n`,
       );
     return;
   }
@@ -95,12 +95,12 @@ function buildFile(file, silent) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||
       process.stdout.write(
-        chalk.red('  \u2022 ') +
+        `${
+          chalk.red('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
           chalk.red(' \u21D2 ') +
-          path.relative(PACKAGES_DIR, destPath) +
-          ' (copy)' +
-          '\n',
+          path.relative(PACKAGES_DIR, destPath)
+        } (copy)\n`,
       );
   } else {
     const options = Object.assign({}, transformOptions);
@@ -132,11 +132,12 @@ function buildFile(file, silent) {
 
     silent ||
       process.stdout.write(
-        chalk.green('  \u2022 ') +
+        `${
+          chalk.green('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
           chalk.green(' \u21D2 ') +
-          path.relative(PACKAGES_DIR, destPath) +
-          '\n',
+          path.relative(PACKAGES_DIR, destPath)
+        }\n`,
       );
   }
 }

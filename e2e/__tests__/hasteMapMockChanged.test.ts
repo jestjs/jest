@@ -23,7 +23,7 @@ test('should not warn when a mock file changes', async () => {
     ignorePattern: / ^/,
     maxWorkers: 2,
     mocksPattern: '__mocks__',
-    name: 'tmp_' + Date.now(),
+    name: `tmp_${Date.now()}`,
     platforms: [],
     retainAllFiles: false,
     rootDir: DIR,

@@ -225,7 +225,7 @@ test('writes the cache based on the results', () => {
 
 test('works with multiple contexts', () => {
   fs.readFileSync.mockImplementationOnce(cacheName =>
-    cacheName.startsWith(path.sep + 'cache' + path.sep)
+    cacheName.startsWith(`${path.sep}cache${path.sep}`)
       ? JSON.stringify({
           '/test-a.js': [SUCCESS, 5],
           '/test-b.js': [FAIL, 1],

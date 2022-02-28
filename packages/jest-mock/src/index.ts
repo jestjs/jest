@@ -816,7 +816,7 @@ export class ModuleMocker {
       return f;
     } else {
       const unknownType = metadata.type || 'undefined type';
-      throw new Error('Unrecognized type ' + unknownType);
+      throw new Error(`Unrecognized type ${unknownType}`);
     }
   }
 
@@ -854,7 +854,7 @@ export class ModuleMocker {
       // It's also a syntax error to define functions with a name that starts with a number
       /^\d/.test(name)
     ) {
-      name = '$' + name;
+      name = `$${name}`;
     }
 
     // It's also a syntax error to define a function with a reserved character
@@ -864,14 +864,9 @@ export class ModuleMocker {
     }
 
     const body =
-      'return function ' +
-      name +
-      '() {' +
-      'return ' +
-      MOCK_CONSTRUCTOR_NAME +
-      '.apply(this,arguments);' +
-      '}' +
-      bindCall;
+      `return function ${name}() {` +
+      `return ${MOCK_CONSTRUCTOR_NAME}.apply(this,arguments);` +
+      `}${bindCall}`;
     const createConstructor = new this._environmentGlobal.Function(
       MOCK_CONSTRUCTOR_NAME,
       body,
@@ -1073,7 +1068,7 @@ export class ModuleMocker {
 
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
-        'Cannot spyOn on a primitive value; ' + this._typeOf(object) + ' given',
+        `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
       );
     }
 
@@ -1082,11 +1077,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          'Cannot spy the ' +
-            methodName +
-            ' property because it is not a function; ' +
-            this._typeOf(original) +
-            ' given instead',
+          `Cannot spy the ${methodName} property because it is not a function; ${this._typeOf(
+            original,
+          )} given instead`,
         );
       }
 
@@ -1140,13 +1133,13 @@ export class ModuleMocker {
   ): Mock<() => T> {
     if (typeof obj !== 'object' && typeof obj !== 'function') {
       throw new Error(
-        'Cannot spyOn on a primitive value; ' + this._typeOf(obj) + ' given',
+        `Cannot spyOn on a primitive value; ${this._typeOf(obj)} given`,
       );
     }
 
     if (!obj) {
       throw new Error(
-        'spyOn could not find an object to spy upon for ' + propertyName + '',
+        `spyOn could not find an object to spy upon for ${propertyName}`,
       );
     }
 
@@ -1163,16 +1156,16 @@ export class ModuleMocker {
     }
 
     if (!descriptor) {
-      throw new Error(propertyName + ' property does not exist');
+      throw new Error(`${propertyName} property does not exist`);
     }
 
     if (!descriptor.configurable) {
-      throw new Error(propertyName + ' is not declared configurable');
+      throw new Error(`${propertyName} is not declared configurable`);
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        'Property ' + propertyName + ' does not have access type ' + accessType,
+        `Property ${propertyName} does not have access type ${accessType}`,
       );
     }
 
@@ -1181,11 +1174,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          'Cannot spy the ' +
-            propertyName +
-            ' property because it is not a function; ' +
-            this._typeOf(original) +
-            ' given instead',
+          `Cannot spy the ${propertyName} property because it is not a function; ${this._typeOf(
+            original,
+          )} given instead`,
         );
       }
 
@@ -1222,7 +1213,7 @@ export class ModuleMocker {
   }
 
   private _typeOf(value: any): string {
-    return value == null ? '' + value : typeof value;
+    return value == null ? `${value}` : typeof value;
   }
 
   // the typings test helper

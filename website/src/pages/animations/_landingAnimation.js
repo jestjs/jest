@@ -18,13 +18,9 @@ export function setupLandingAnimation() {
   const cards = hand.querySelectorAll('.jest-card');
 
   function cardTransform(offset, handWidth) {
-    const transform =
-      'rotate(' +
-      offset * 4 +
-      'deg) translateX(' +
-      (offset - (Math.abs(offset) * offset) / 7) *
-        Math.min(140, handWidth / 8) +
-      'px)';
+    const transform = `rotate(${offset * 4}deg) translateX(${
+      (offset - (Math.abs(offset) * offset) / 7) * Math.min(140, handWidth / 8)
+    }px)`;
     return transform;
   }
 
