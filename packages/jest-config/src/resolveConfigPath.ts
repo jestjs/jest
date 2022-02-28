@@ -9,11 +9,13 @@ import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
+import {ValidationError} from 'jest-validate';
 import {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } from './constants';
+import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
 const isFile = (filePath: string) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -78,7 +80,7 @@ const resolveConfigPathByTraversing = (
   }
 
   if (!skipMultipleConfigError && configFiles.length > 1) {
-    throw new Error(makeMultipleConfigsErrorMessage(configFiles));
+    throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
   if (configFiles.length > 0 || packageJson) {
@@ -137,9 +139,11 @@ function extraIfPackageJson(configPath: string) {
   return '';
 }
 
-const makeMultipleConfigsErrorMessage = (configPaths: Array<string>) =>
+const makeMultipleConfigsErrorMessage = (
+  configPaths: Array<string>,
+): [string, string, string] => [
+  `${BULLET}${chalk.bold('Multiple configurations found')}`,
   [
-    chalk.bold('\u25cf Multiple configurations found:'),
     ...configPaths.map(
       configPath =>
         `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
@@ -147,8 +151,6 @@ const makeMultipleConfigsErrorMessage = (configPaths: Array<string>) =>
     '',
     '  Implicit config resolution does not allow multiple configuration files.',
     '  Either remove unused config files or select one explicitly with `--config`.',
-    '',
-    '  Configuration Documentation:',
-    '  https://jestjs.io/docs/configuration.html',
-    '',
-  ].join('\n');
+  ].join('\n'),
+  DOCUMENTATION_NOTE,
+];
