@@ -11,6 +11,7 @@
 - `[jest-config, @jest/types]` Add `ci` to `GlobalConfig` ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-config]` [**BREAKING**] Rename `moduleLoader` to `runtime` ([#10817](https://github.com/facebook/jest/pull/10817))
 - `[jest-config]` [**BREAKING**] Rename `extraGlobals` to `sandboxInjectedGlobals` ([#10817](https://github.com/facebook/jest/pull/10817))
+- `[jest-config]` [**BREAKING**] Throw an error instead of showing a warning if multiple configs are used ([#12510](https://github.com/facebook/jest/pull/12510))
 - `[jest-core]` Pass project config to `globalSetup`/`globalTeardown` function as second argument ([#12440](https://github.com/facebook/jest/pull/12440))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
