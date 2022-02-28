@@ -1083,7 +1083,8 @@ export default async function normalize(
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
-  newOptions.json = argv.json != null;
+  // eslint-disable-next-line no-implicit-coercion
+  newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
     newOptions.testFailureExitCode as unknown as string,
