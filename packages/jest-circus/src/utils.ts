@@ -198,8 +198,9 @@ export const callAsyncCircusFn = (
             'Expected done to be called once, but it was called multiple times.';
 
           if (reason) {
-            errorAtDone.message +=
-              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+            errorAtDone.message += ` Reason: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
           }
           reject(errorAtDone);
           throw errorAtDone;
@@ -229,9 +230,7 @@ export const callAsyncCircusFn = (
 
           // Consider always throwing, regardless if `reason` is set or not
           if (completed && reason) {
-            errorAsErrorObject.message =
-              'Caught error after test environment was torn down\n\n' +
-              errorAsErrorObject.message;
+            errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
             throw errorAsErrorObject;
           }

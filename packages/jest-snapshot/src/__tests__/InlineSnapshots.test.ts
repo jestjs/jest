@@ -63,13 +63,13 @@ test('saveInlineSnapshots() without prettier leaves formatting outside of snapsh
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -93,13 +93,13 @@ test('saveInlineSnapshots() with bad prettier path leaves formatting outside of 
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -123,13 +123,13 @@ test('saveInlineSnapshots() can handle typescript without prettier', () => {
   const filename = path.join(dir, 'my.test.ts');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -143,13 +143,13 @@ expect(a).toMatchInlineSnapshot();
   );
 
   expect(fs.readFileSync(filename, 'utf8')).toBe(
-    `
+    `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -157,13 +157,13 @@ test('saveInlineSnapshots() can handle tsx without prettier', () => {
   const filename = path.join(dir, 'my.test.tsx');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 it('foos', async () => {
   const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
   const a = await Foo({ foo: "hello" });
   expect(a).toMatchInlineSnapshot();
 })
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -177,13 +177,13 @@ it('foos', async () => {
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
-    `
+    `${`
 it('foos', async () => {
   const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
   const a = await Foo({ foo: "hello" });
   expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
 })
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -191,11 +191,11 @@ test('saveInlineSnapshots() can handle flow and jsx without prettier', () => {
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
 const a = Foo({ foo: "hello" });
 expect(a).toMatchInlineSnapshot();
-`.trim() + '\n',
+`.trim()}\n`,
   );
   fs.writeFileSync(
     path.join(dir, '.babelrc'),
@@ -218,11 +218,11 @@ expect(a).toMatchInlineSnapshot();
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
-    `
+    `${`
 const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
 const a = Foo({ foo: "hello" });
 expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -230,13 +230,13 @@ test('saveInlineSnapshots() can use prettier to fix formatting for whole file', 
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(

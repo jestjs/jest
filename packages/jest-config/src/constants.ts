@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 
-export const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+export const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 export const DEFAULT_JS_PATTERN = '\\.[jt]sx?$';
 export const DEFAULT_REPORTER_LABEL = 'default';
 export const PACKAGE_JSON = 'package.json';

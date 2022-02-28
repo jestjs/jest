@@ -41,7 +41,7 @@ export async function readConfig(
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: string | null,
   projectIndex = Infinity,
-  skipMultipleConfigWarning = false,
+  skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   let rawOptions: Config.InitialOptions;
   let configPath = null;
@@ -78,7 +78,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       argv.config,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
@@ -86,7 +86,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       packageRootOrConfig,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   }

@@ -34,10 +34,9 @@ test('console printing with --verbose', () => {
 test('does not print to console with --silent', () => {
   const {stderr, stdout, exitCode} = runJest('console', [
     // Need to pass --config because console test specifies `verbose: false`
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+    })}`,
     '--silent',
     '--no-cache',
   ]);
@@ -52,10 +51,9 @@ test('does not print to console with --silent', () => {
 test('respects --noStackTrace', () => {
   const {stderr, stdout, exitCode} = runJest('console', [
     // Need to pass --config because console test specifies `verbose: false`
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+    })}`,
     '--noStackTrace',
     '--no-cache',
   ]);
@@ -70,11 +68,10 @@ test('respects --noStackTrace', () => {
 test('respects noStackTrace in config', () => {
   const {stderr, stdout, exitCode} = runJest('console', [
     // Need to pass --config because console test specifies `verbose: false`
-    '--config=' +
-      JSON.stringify({
-        noStackTrace: true,
-        testEnvironment: 'node',
-      }),
+    `--config=${JSON.stringify({
+      noStackTrace: true,
+      testEnvironment: 'node',
+    })}`,
     '--no-cache',
   ]);
   const {summary, rest} = extractSummary(stderr);

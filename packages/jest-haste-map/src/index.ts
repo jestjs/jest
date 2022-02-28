@@ -118,8 +118,8 @@ export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const PACKAGE_JSON = path.sep + 'package.json';
+const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
+const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
@@ -278,7 +278,7 @@ export default class HasteMap extends EventEmitter {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
           options.ignorePattern.flags,
         );
       } else {
@@ -354,7 +354,7 @@ export default class HasteMap extends EventEmitter {
     const hash = createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
-      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
+      `${name.replace(/\W/g, '-')}-${hash.digest('hex')}`,
     );
   }
 
@@ -481,10 +481,10 @@ export default class HasteMap extends EventEmitter {
 
         this._console[method](
           [
-            'jest-haste-map: Haste module naming collision: ' + id,
+            `jest-haste-map: Haste module naming collision: ${id}`,
             '  The following files share their name; please adjust your hasteImpl:',
-            '    * <rootDir>' + path.sep + existingModule[H.PATH],
-            '    * <rootDir>' + path.sep + module[H.PATH],
+            `    * <rootDir>${path.sep}${existingModule[H.PATH]}`,
+            `    * <rootDir>${path.sep}${module[H.PATH]}`,
             '',
           ].join('\n'),
         );
@@ -611,10 +611,10 @@ export default class HasteMap extends EventEmitter {
 
           this._console[method](
             [
-              'jest-haste-map: duplicate manual mock found: ' + mockPath,
+              `jest-haste-map: duplicate manual mock found: ${mockPath}`,
               '  The following files share their name; please delete one of them:',
-              '    * <rootDir>' + path.sep + existingMockPath,
-              '    * <rootDir>' + path.sep + secondMockPath,
+              `    * <rootDir>${path.sep}${existingMockPath}`,
+              `    * <rootDir>${path.sep}${secondMockPath}`,
               '',
             ].join('\n'),
           );
@@ -790,8 +790,7 @@ export default class HasteMap extends EventEmitter {
             "  Usually this happens when watchman isn't running. Create an " +
             "empty `.watchmanconfig` file in your project's root folder or " +
             'initialize a git or hg repository in your project.\n' +
-            '  ' +
-            error,
+            `  ${error}`,
         );
         return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
@@ -845,7 +844,7 @@ export default class HasteMap extends EventEmitter {
     const createWatcher = (root: string): Promise<Watcher> => {
       const watcher = new Watcher(root, {
         dot: true,
-        glob: extensions.map(extension => '**/*.' + extension),
+        glob: extensions.map(extension => `**/*.${extension}`),
         ignored: ignorePattern,
       });
 

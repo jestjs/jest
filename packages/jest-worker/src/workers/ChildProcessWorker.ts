@@ -189,7 +189,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         break;
 
       case PARENT_MESSAGE_SETUP_ERROR:
-        error = new Error('Error when calling setup: ' + response[2]);
+        error = new Error(`Error when calling setup: ${response[2]}`);
 
         error.type = response[1];
         error.stack = response[3];
@@ -200,7 +200,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
+        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 

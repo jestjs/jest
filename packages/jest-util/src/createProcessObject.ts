@@ -64,7 +64,9 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     get: isWin32 ? getPropertyWin32 : getProperty,
 
     set(_target, key, value) {
+
       const strValue = String(value);
+
 
       if (typeof key === 'string') {
         lookup[key.toLowerCase()] = strValue;
@@ -92,9 +94,7 @@ export default function createProcessObject(): NodeJS.Process {
   } catch (e: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      e.message =
-        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n' +
-        e.message;
+      e.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n${e.message}`;
 
       throw e;
     }
