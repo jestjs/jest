@@ -116,7 +116,7 @@ export const printReceivedConstructorNameNot = (
         Object.getPrototypeOf(received) === expected
           ? 'extends'
           : 'extends … extends'
-      } ${EXPECTED_COLOR(expected.name)}'\n`
+      } ${EXPECTED_COLOR(expected.name)}\n`
     : `${printConstructorName(label, received, false, false)}\n`;
 
 const printConstructorName = (
