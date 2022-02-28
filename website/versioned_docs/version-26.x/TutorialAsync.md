@@ -11,7 +11,7 @@ Let's implement a module that fetches user data from an API and returns the user
 import request from './request';
 
 export function getUserName(userID) {
-  return request('/users/' + userID).then(user => user.name);
+  return request(`/users/${userID}`).then(user => user.name);
 }
 ```
 
@@ -51,7 +51,7 @@ export default function request(url) {
       users[userID]
         ? resolve(users[userID])
         : reject({
-            error: 'User with ' + userID + ' not found.',
+            error: `User with ${userID} not found.`,
           }),
     );
   });

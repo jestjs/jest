@@ -25,7 +25,7 @@ const replaceRootDirInPath = (rootDir: string, filePath: string): string => {
 
   return path.resolve(
     rootDir,
-    path.normalize('./' + filePath.substr('<rootDir>'.length)),
+    path.normalize(`./${filePath.substr('<rootDir>'.length)}`),
   );
 };
 

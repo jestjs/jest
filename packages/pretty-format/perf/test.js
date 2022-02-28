@@ -79,25 +79,23 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
     let message = current.name;
 
     if (current.time) {
-      message += ' - ' + formatTime(current.time, -9, 6);
+      message += ` - ${formatTime(current.time, -9, 6)}`;
     }
     if (current.total) {
-      message +=
-        ' - ' +
-        formatTime(current.total / NANOSECONDS, 0) +
-        ' total (' +
-        TIMES_TO_RUN +
-        ' runs)';
+      message += ` - ${formatTime(
+        current.total / NANOSECONDS,
+        0,
+      )} total (${TIMES_TO_RUN} runs)`;
     }
     if (current.error) {
-      message += ' - Error: ' + current.error.message;
+      message += ` - Error: ${current.error.message}`;
     }
 
     if (!ignoreResult && current.result) {
-      message += ' - ' + JSON.stringify(current.result);
+      message += ` - ${JSON.stringify(current.result)}`;
     }
 
-    message = ' ' + message + ' ';
+    message = ` ${message} `;
 
     if (current.error) {
       message = chalk.dim(message);
@@ -115,10 +113,10 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
       message = chalk.dim(message);
     }
 
-    console.log('  ' + message);
+    console.log(`  ${message}`);
   }
 
-  console.log(name + ': ');
+  console.log(`${name}: `);
   results.forEach(log);
   console.log();
 }

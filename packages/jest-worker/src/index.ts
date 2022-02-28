@@ -126,7 +126,7 @@ export class Worker {
 
       // eslint-disable-next-line no-prototype-builtins
       if (this.constructor.prototype.hasOwnProperty(name)) {
-        throw new TypeError('Cannot define a method called ' + name);
+        throw new TypeError(`Cannot define a method called ${name}`);
       }
 
       // @ts-expect-error: dynamic extension of the class instance is expected.

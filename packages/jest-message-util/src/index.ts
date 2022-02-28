@@ -161,7 +161,7 @@ export const formatExecError = (
 
   stack =
     stack && !options.noStackTrace
-      ? '\n' + formatStackTrace(stack, config, options, testPath)
+      ? `\n${formatStackTrace(stack, config, options, testPath)}`
       : '';
 
   if (
@@ -180,7 +180,7 @@ export const formatExecError = (
     messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
   }
 
-  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
+  return `${TITLE_INDENT + TITLE_BULLET + messageToUse + stack}\n`;
 };
 
 const removeInternalStackEntries = (
@@ -356,22 +356,21 @@ export const formatResultsErrors = (
       let {message, stack} = separateMessageFromStack(content);
       stack = options.noStackTrace
         ? ''
-        : STACK_TRACE_COLOR(
+        : `${STACK_TRACE_COLOR(
             formatStackTrace(stack, config, options, testPath),
-          ) + '\n';
+          )}\n`;
 
       message = indentAllLines(message, MESSAGE_INDENT);
 
-      const title =
-        chalk.bold.red(
-          TITLE_INDENT +
-            TITLE_BULLET +
-            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-            result.title,
-        ) + '\n';
+      const title = `${chalk.bold.red(
+        TITLE_INDENT +
+          TITLE_BULLET +
+          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          result.title,
+      )}\n`;
 
-      return title + '\n' + message + '\n' + stack;
+      return `${title}\n${message}\n${stack}`;
     })
     .join('\n');
 };

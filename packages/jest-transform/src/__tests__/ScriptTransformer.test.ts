@@ -806,8 +806,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -838,8 +839,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -870,8 +872,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
       content,
@@ -908,8 +911,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -943,8 +949,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -978,8 +987,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
       content,

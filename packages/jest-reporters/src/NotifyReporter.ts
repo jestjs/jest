@@ -105,7 +105,7 @@ export default class NotifyReporter extends BaseReporter {
         Math.ceil(Number.isNaN(failed) ? 0 : failed * 100),
       );
       const message = util.format(
-        (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
+        `${isDarwin ? '\u26D4\uFE0F ' : ''}%d of %d tests failed`,
         result.numFailedTests,
         result.numTotalTests,
       );

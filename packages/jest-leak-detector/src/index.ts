@@ -21,7 +21,7 @@ export default class LeakDetector {
       throw new TypeError(
         [
           'Primitives cannot leak memory.',
-          'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
+          `You passed a ${typeof value}: <${prettyFormat(value)}>`,
         ].join(' '),
       );
     }

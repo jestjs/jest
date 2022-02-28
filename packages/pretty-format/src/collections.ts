@@ -79,7 +79,7 @@ export function printIteratorEntries(
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -126,7 +126,7 @@ export function printIteratorValues(
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -171,7 +171,7 @@ export function printListItems(
       }
 
       if (i < list.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -209,10 +209,10 @@ export function printObjectProperties(
       const name = printer(key, config, indentationNext, depth, refs);
       const value = printer(val[key], config, indentationNext, depth, refs);
 
-      result += indentationNext + name + ': ' + value;
+      result += `${indentationNext + name}: ${value}`;
 
       if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }

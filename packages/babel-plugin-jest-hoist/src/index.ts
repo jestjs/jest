@@ -166,12 +166,10 @@ FUNCTIONS.mock = args => {
           throw id.buildCodeFrameError(
             'The module factory of `jest.mock()` is not allowed to ' +
               'reference any out-of-scope variables.\n' +
-              'Invalid variable access: ' +
-              name +
-              '\n' +
-              'Allowed objects: ' +
-              Array.from(ALLOWED_IDENTIFIERS).join(', ') +
-              '.\n' +
+              `Invalid variable access: ${name}\n` +
+              `Allowed objects: ${Array.from(ALLOWED_IDENTIFIERS).join(
+                ', ',
+              )}.\n` +
               'Note: This is a precaution to guard against uninitialized mock ' +
               'variables. If it is ensured that the mock is required lazily, ' +
               'variable names prefixed with `mock` (case insensitive) are permitted.\n',

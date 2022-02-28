@@ -384,7 +384,7 @@ describe('setupFilesAfterEnv', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
-      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+      name.startsWith('/') ? name : `/root/path/foo${path.sep}${name}`,
     );
   });
 
@@ -432,7 +432,7 @@ describe('setupTestFrameworkScriptFile', () => {
     (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
-      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+      name.startsWith('/') ? name : `/root/path/foo${path.sep}${name}`,
     );
   });
 
@@ -797,7 +797,7 @@ describe('babel-jest', () => {
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.indexOf('babel-jest') === -1
-        ? path.sep + 'node_modules' + path.sep + name
+        ? `${path.sep}node_modules${path.sep}${name}`
         : name,
     );
   });
@@ -1004,7 +1004,7 @@ describe('preset', () => {
         return null;
       }
 
-      return '/node_modules/' + name;
+      return `/node_modules/${name}`;
     });
     jest.doMock(
       '/node_modules/react-native/jest-preset.json',
@@ -1304,7 +1304,7 @@ describe('preset with globals', () => {
         return '/node_modules/global-foo/jest-preset.json';
       }
 
-      return '/node_modules/' + name;
+      return `/node_modules/${name}`;
     });
     jest.doMock(
       '/node_modules/global-foo/jest-preset.json',
@@ -1361,7 +1361,7 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
     beforeEach(() => {
       Resolver = require('jest-resolve').default;
       Resolver.findNodeModule = jest.fn(
-        name => path.sep + 'node_modules' + path.sep + name,
+        name => `${path.sep}node_modules${path.sep}${name}`,
       );
     });
 
@@ -1559,7 +1559,7 @@ describe('testPathPattern', () => {
   ];
   for (const opt of cliOptions) {
     describe(opt.name, () => {
-      it('uses ' + opt.name + ' if set', async () => {
+      it(`uses ${opt.name} if set`, async () => {
         const argv = {[opt.property]: ['a/b']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
@@ -1576,7 +1576,7 @@ describe('testPathPattern', () => {
         ).toMatchSnapshot();
       });
 
-      it('joins multiple ' + opt.name + ' if set', async () => {
+      it(`joins multiple ${opt.name} if set`, async () => {
         const argv = {testPathPattern: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 

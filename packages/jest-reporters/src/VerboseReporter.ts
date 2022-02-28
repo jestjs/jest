@@ -127,7 +127,7 @@ export default class VerboseReporter extends DefaultReporter {
     const time = test.duration
       ? ` (${formatTime(Math.round(test.duration))})`
       : '';
-    this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
+    this._logLine(`${status} ${chalk.dim(test.title + time)}`, indentLevel);
   }
 
   private _logTests(tests: Array<AssertionResult>, indentLevel: number) {

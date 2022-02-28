@@ -60,7 +60,7 @@ function freezeConsole(
       true,
     );
 
-    process.stderr.write('\n' + formattedError + '\n');
+    process.stderr.write(`\n${formattedError}\n`);
     process.exitCode = 1;
   };
 }

@@ -36,8 +36,8 @@ export const diffStringsUnified = (
 
     // getAlignedDiffs assumes that a newline was appended to the strings.
     const diffs = diffStringsRaw(
-      isMultiline ? a + '\n' : a,
-      isMultiline ? b + '\n' : b,
+      isMultiline ? `${a}\n` : a,
+      isMultiline ? `${b}\n` : b,
       true, // cleanupSemantic
     );
 
