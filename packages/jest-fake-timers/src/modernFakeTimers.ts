@@ -144,9 +144,7 @@ export default class FakeTimers {
           `configuration file\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
             this._config,
-            {
-              noStackTrace: false,
-            },
+            {noStackTrace: false},
           )}`,
       );
     }
