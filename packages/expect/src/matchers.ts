@@ -403,7 +403,8 @@ const matchers: MatchersObject = {
     };
     ensureNoExpected(expected, matcherName, options);
 
-    const pass = received != null;
+    // eslint-disable-next-line no-implicit-coercion
+    const pass = !!received;
 
     const message = () =>
       matcherHint(matcherName, undefined, '', options) +

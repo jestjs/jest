@@ -577,8 +577,8 @@ const usage = (
       'Enter' +
       chalk.dim(' to trigger a test run.'),
   ];
-
-  return messages.filter(message => Boolean(message)).join(delimiter) + '\n';
+  // eslint-disable-next-line no-implicit-coercion
+  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 const showToggleUsagePrompt = () =>
