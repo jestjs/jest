@@ -231,37 +231,43 @@ describe('ScriptTransformer', () => {
       ),
     });
 
-    fs = require('graceful-fs');
-    fs.readFileSync = jest.fn((path, options) => {
-      invariant(typeof path === 'string');
-
-      expect(options).toBe('utf8');
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      throw new Error(`Cannot read path '${path}'.`);
-    });
-    fs.writeFileSync = jest.fn((path, data, options) => {
-      invariant(typeof path === 'string');
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    });
-
-    fs.unlinkSync = jest.fn();
-    fs.statSync = jest.fn(path => ({
-      isFile() {
+    jest.doMock('graceful-fs', () => ({
+      /* eslint-disable sort-keys */
+      ...jest.requireActual('graceful-fs'),
+      readFileSync: jest.fn((path, options) => {
         invariant(typeof path === 'string');
+
+        expect(options).toBe('utf8');
+        if (mockFs[path]) {
+          return mockFs[path];
+        }
+
+        throw new Error(`Cannot read path '${path}'.`);
+      }),
+      writeFileSync: jest.fn((path, data, options) => {
+        invariant(typeof path === 'string');
+        expect(options).toBe('utf8');
+        mockFs[path] = data;
+      }),
+
+      unlinkSync: jest.fn(),
+      statSync: jest.fn(path => ({
+        isFile() {
+          invariant(typeof path === 'string');
+          return !!mockFs[path];
+        },
+        mtime: {getTime: () => 42, toString: () => '42'},
+      })),
+
+      existsSync: jest.fn(path => {
+        invariant(typeof path === 'string');
+
         return !!mockFs[path];
-      },
-      mtime: {getTime: () => 42, toString: () => '42'},
+      }),
+      /* eslint-enable */
     }));
 
-    fs.existsSync = jest.fn(path => {
-      invariant(typeof path === 'string');
-
-      return !!mockFs[path];
-    });
+    fs = require('graceful-fs');
 
     writeFileAtomic = require('write-file-atomic');
 
