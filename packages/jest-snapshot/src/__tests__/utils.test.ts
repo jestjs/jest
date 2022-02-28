@@ -102,8 +102,8 @@ test('getSnapshotData() throws for older snapshot version', () => {
         'file associated with this test is outdated. The snapshot file ' +
         'version ensures that all developers on a project are using ' +
         'the same version of Jest. ' +
-        'Please update all snapshots during this upgrade of Jest.\n\n',
-    )}Expected: v${SNAPSHOT_VERSION}\n` +
+        'Please update all snapshots during this upgrade of Jest.',
+    )}\n\nExpected: v${SNAPSHOT_VERSION}\n` +
       `Received: v0.99\n\n${SNAPSHOT_VERSION_WARNING}`,
   );
 });
@@ -124,8 +124,8 @@ test('getSnapshotData() throws for newer snapshot version', () => {
         'with a newer version of Jest. ' +
         'The snapshot file version ensures that all developers on a project ' +
         'are using the same version of Jest. ' +
-        'Please update your version of Jest and re-run the tests.\n\n',
-    )}Expected: v${SNAPSHOT_VERSION}\nReceived: v2`,
+        'Please update your version of Jest and re-run the tests.',
+    )}\n\nExpected: v${SNAPSHOT_VERSION}\nReceived: v2`,
   );
 });
 
