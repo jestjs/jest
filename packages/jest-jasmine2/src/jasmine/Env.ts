@@ -212,6 +212,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.catchExceptions = function (value) {
+        // eslint-disable-next-line no-implicit-coercion
         catchExceptions = !!value;
         return catchExceptions;
       };
@@ -221,6 +222,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.throwOnExpectationFailure = function (value) {
+        // eslint-disable-next-line no-implicit-coercion
         throwOnExpectationFailure = !!value;
       };
 
@@ -229,6 +231,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.randomizeTests = function (value) {
+        // eslint-disable-next-line no-implicit-coercion
         random = !!value;
       };
 

@@ -64,7 +64,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     get: isWin32 ? getPropertyWin32 : getProperty,
 
     set(_target, key, value) {
-      const strValue = '' + value;
+      const strValue = String(value);
 
       if (typeof key === 'string') {
         lookup[key.toLowerCase()] = strValue;

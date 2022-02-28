@@ -19,7 +19,7 @@ const testName = (name: any) =>
 export const test: NewPlugin['test'] = (val: object) =>
   val &&
   val.constructor &&
-  !!val.constructor.name &&
+  val.constructor.name != null &&
   testName(val.constructor.name);
 
 const isNamedNodeMap = (collection: object): collection is NamedNodeMap =>

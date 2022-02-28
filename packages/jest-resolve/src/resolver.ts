@@ -688,8 +688,9 @@ export default class Resolver {
   }
 
   private _isModuleResolved(from: string, moduleName: string): boolean {
-    return !!(
-      this.getModule(moduleName) || this.getMockModule(from, moduleName)
+    return (
+      this.getModule(moduleName) != null ||
+      this.getMockModule(from, moduleName) != null
     );
   }
 
@@ -697,9 +698,9 @@ export default class Resolver {
     from: string,
     moduleName: string,
   ): Promise<boolean> {
-    return !!(
-      this.getModule(moduleName) ||
-      (await this.getMockModuleAsync(from, moduleName))
+    return (
+      this.getModule(moduleName) != null ||
+      (await this.getMockModuleAsync(from, moduleName)) != null
     );
   }
 

@@ -1146,7 +1146,9 @@ export class ModuleMocker {
 
     if (!obj) {
       throw new Error(
-        'spyOn could not find an object to spy upon for ' + propertyName + '',
+        String(
+          'spyOn could not find an object to spy upon for ' + propertyName,
+        ),
       );
     }
 
@@ -1222,7 +1224,7 @@ export class ModuleMocker {
   }
 
   private _typeOf(value: any): string {
-    return value == null ? '' + value : typeof value;
+    return value == null ? String(value) : typeof value;
   }
 
   // the typings test helper

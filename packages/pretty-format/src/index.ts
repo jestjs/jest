@@ -128,7 +128,7 @@ function printBasicValue(
   escapeString: boolean,
 ): string | null {
   if (val === true || val === false) {
-    return '' + val;
+    return String(val);
   }
   if (val === undefined) {
     return 'undefined';
@@ -176,7 +176,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
+    return isNaN(Number(val)) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);

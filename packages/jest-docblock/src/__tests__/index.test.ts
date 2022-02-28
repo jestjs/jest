@@ -58,16 +58,11 @@ describe('docblock', () => {
   });
 
   it('returns extract and parsedocblock', () => {
-    const code =
-      '/** @provides module-name */' +
-      EOL +
-      '' +
-      '' +
-      EOL +
-      '' +
-      '.dummy {}' +
-      EOL +
-      '';
+    const code = String(
+      String(String('/** @provides module-name */' + EOL) + '' + EOL) +
+        '.dummy {}' +
+        EOL,
+    );
 
     expect(docblock.parse(docblock.extract(code))).toEqual({
       provides: 'module-name',
@@ -76,19 +71,15 @@ describe('docblock', () => {
 
   it('parses directives out of a docblock', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * @team foo' +
-      EOL +
-      '' +
-      ' * @css a b' +
-      EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(
+          String(String('/**' + EOL) + ' * @team foo' + EOL) +
+            ' * @css a b' +
+            EOL,
+        ) +
+          ' * @preserve-whitespace' +
+          EOL,
+      ) + ' */';
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
       'preserve-whitespace': '',
@@ -98,19 +89,13 @@ describe('docblock', () => {
 
   it('parses multiple of the same directives out of a docblock', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * @x foo' +
-      EOL +
-      '' +
-      ' * @x bar' +
-      EOL +
-      '' +
-      ' * @y' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(
+          String(String('/**' + EOL) + ' * @x foo' + EOL) + ' * @x bar' + EOL,
+        ) +
+          ' * @y' +
+          EOL,
+      ) + ' */';
     expect(docblock.parse(code)).toEqual({
       x: ['foo', 'bar'],
       y: '',
@@ -119,19 +104,13 @@ describe('docblock', () => {
 
   it('parses >=3 of the same directives out of a docblock', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * @x foo' +
-      EOL +
-      '' +
-      ' * @x bar' +
-      EOL +
-      '' +
-      ' * @x baz' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(
+          String(String('/**' + EOL) + ' * @x foo' + EOL) + ' * @x bar' + EOL,
+        ) +
+          ' * @x baz' +
+          EOL,
+      ) + ' */';
     expect(docblock.parse(code)).toEqual({
       x: ['foo', 'bar', 'baz'],
     });
@@ -139,28 +118,31 @@ describe('docblock', () => {
 
   it('parses directives out of a docblock with comments', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      EOL +
-      '' +
-      ' * @team foo' +
-      EOL +
-      '' +
-      ' * @css a b' +
-      EOL +
-      '' +
-      ' *' +
-      EOL +
-      '' +
-      ' * And some license here' +
-      EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(
+          String(
+            String(
+              String(
+                String(
+                  String('/**' + EOL) +
+                    ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
+                    EOL,
+                ) +
+                  ' * @team foo' +
+                  EOL,
+              ) +
+                ' * @css a b' +
+                EOL,
+            ) +
+              ' *' +
+              EOL,
+          ) +
+            ' * And some license here' +
+            EOL,
+        ) +
+          ' * @preserve-whitespace' +
+          EOL,
+      ) + ' */';
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
       'preserve-whitespace': '',
@@ -170,16 +152,11 @@ describe('docblock', () => {
 
   it('parses directives out of a docblock with line comments', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * @team foo' +
-      EOL +
-      '' +
-      ' * // TODO: test' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(String('/**' + EOL) + ' * @team foo' + EOL) +
+          ' * // TODO: test' +
+          EOL,
+      ) + ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// TODO: test',
       pragmas: {team: 'foo'},
@@ -188,28 +165,31 @@ describe('docblock', () => {
 
   it('parses multiline directives', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      EOL +
-      '' +
-      ' * @class A long declaration of a class' +
-      EOL +
-      '' +
-      ' *        goes here, so we can read it and enjoy' +
-      EOL +
-      '' +
-      ' *' +
-      EOL +
-      '' +
-      ' * And some license here' +
-      EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      EOL +
-      '' +
-      ' */';
+      String(
+        String(
+          String(
+            String(
+              String(
+                String(
+                  String('/**' + EOL) +
+                    ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
+                    EOL,
+                ) +
+                  ' * @class A long declaration of a class' +
+                  EOL,
+              ) +
+                ' *        goes here, so we can read it and enjoy' +
+                EOL,
+            ) +
+              ' *' +
+              EOL,
+          ) +
+            ' * And some license here' +
+            EOL,
+        ) +
+          ' * @preserve-whitespace' +
+          EOL,
+      ) + ' */';
     expect(docblock.parse(code)).toEqual({
       class:
         'A long declaration of a class goes here, ' +
@@ -220,27 +200,31 @@ describe('docblock', () => {
 
   it('parses multiline directives even if there are linecomments within the docblock', () => {
     const code =
-      '/**' +
-      EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      EOL +
-      '' +
-      ' * @class A long declaration of a class' +
-      EOL +
-      '' +
-      ' *        goes here, so we can read it and enjoy' +
-      EOL +
-      '' +
-      ' *' +
-      EOL +
-      '' +
-      ' * And some license here' +
-      EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      EOL +
-      '' +
+      String(
+        String(
+          String(
+            String(
+              String(
+                String(
+                  String('/**' + EOL) +
+                    ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
+                    EOL,
+                ) +
+                  ' * @class A long declaration of a class' +
+                  EOL,
+              ) +
+                ' *        goes here, so we can read it and enjoy' +
+                EOL,
+            ) +
+              ' *' +
+              EOL,
+          ) +
+            ' * And some license here' +
+            EOL,
+        ) +
+          ' * @preserve-whitespace' +
+          EOL,
+      ) +
       '// heres a comment' +
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({

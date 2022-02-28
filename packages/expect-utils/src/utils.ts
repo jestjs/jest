@@ -138,7 +138,7 @@ export const getObjectSubset = (
 const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = (object: any) =>
-  !!(object != null && object[IteratorSymbol]);
+  object != null && object[IteratorSymbol] != null;
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const iterableEquality = (

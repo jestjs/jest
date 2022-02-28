@@ -578,7 +578,7 @@ const usage = (
       chalk.dim(' to trigger a test run.'),
   ];
 
-  return messages.filter(message => !!message).join(delimiter) + '\n';
+  return messages.filter(message => Boolean(message)).join(delimiter) + '\n';
 };
 
 const showToggleUsagePrompt = () =>

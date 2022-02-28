@@ -25,7 +25,7 @@ jest
         throw new Error(`Cannot read path '${path}'.`);
       }),
       statSync: path => ({
-        isFile: () => !!mockFs[path],
+        isFile: () => mockFs[path] != null,
         mtime: {getTime: () => 42, toString: () => '42'},
       }),
     }),
@@ -277,7 +277,7 @@ describe('ScriptTransformer', () => {
     fs.statSync = jest.fn(path => ({
       isFile() {
         invariant(typeof path === 'string');
-        return !!mockFs[path];
+        return mockFs[path] != null;
       },
       mtime: {getTime: () => 42, toString: () => '42'},
     }));
@@ -285,7 +285,7 @@ describe('ScriptTransformer', () => {
     fs.existsSync = jest.fn(path => {
       invariant(typeof path === 'string');
 
-      return !!mockFs[path];
+      return mockFs[path] != null;
     });
 
     writeFileAtomic = require('write-file-atomic');

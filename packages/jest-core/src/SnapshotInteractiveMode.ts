@@ -204,7 +204,7 @@ export default class SnapshotInteractiveMode {
   }
 
   updateWithResults(results: AggregatedResult): void {
-    const hasSnapshotFailure = !!results.snapshot.failure;
+    const hasSnapshotFailure = results.snapshot.failure != null;
     if (hasSnapshotFailure) {
       this._drawUIOverlay();
       return;

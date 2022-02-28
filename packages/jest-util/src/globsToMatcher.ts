@@ -49,7 +49,7 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
         isMatch,
         // Matchers that are negated have different behavior than matchers that
         // are not negated, so we need to store this information ahead of time.
-        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
+        negated: isMatch.state.negated || isMatch.state.negatedExtglob != null,
       };
 
       globsToMatchersMap.set(glob, matcher);
@@ -90,6 +90,6 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
     // to allow some paths to be matched, while sets of globs that are mixed
     // negated and non-negated to cause the negated matchers to only omit paths
     // and not keep them.
-    return negatives === matchers.length ? kept !== false : !!kept;
+    return negatives === matchers.length ? kept !== false : kept != null;
   };
 }

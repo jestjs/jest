@@ -348,7 +348,7 @@ export async function readConfigs(
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(
-        ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
+        ({hasDeprecationWarnings}) => hasDeprecationWarnings != null,
       );
     }
     // If no config was passed initially, use the one from the first project
@@ -364,6 +364,6 @@ export async function readConfigs(
   return {
     configs,
     globalConfig,
-    hasDeprecationWarnings: !!hasDeprecationWarnings,
+    hasDeprecationWarnings: hasDeprecationWarnings != null,
   };
 }

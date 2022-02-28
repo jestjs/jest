@@ -100,6 +100,7 @@ export default class Spec {
   static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
+    // eslint-disable-next-line no-implicit-coercion
     return !!(
       e &&
       e.toString &&
@@ -129,6 +130,7 @@ export default class Spec {
         return '';
       };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
+    // eslint-disable-next-line no-implicit-coercion
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.initError = new Error();

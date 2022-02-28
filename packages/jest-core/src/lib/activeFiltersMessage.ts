@@ -27,7 +27,7 @@ const activeFilters = (
 
     const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
 
-    return messages.filter(message => !!message).join(delimiter);
+    return messages.filter(message => message.length > 0).join(delimiter);
   }
 
   return '';

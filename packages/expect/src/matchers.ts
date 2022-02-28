@@ -403,7 +403,7 @@ const matchers: MatchersObject = {
     };
     ensureNoExpected(expected, matcherName, options);
 
-    const pass = !!received;
+    const pass = received != null;
 
     const message = () =>
       matcherHint(matcherName, undefined, '', options) +

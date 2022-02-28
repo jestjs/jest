@@ -20,7 +20,7 @@ export const filterInteractivePlugins = (
     const usageInfo = usageInfos[i];
     if (usageInfo) {
       const {key} = usageInfo;
-      return !usageInfos.slice(i + 1).some(u => !!u && key === u.key);
+      return !usageInfos.slice(i + 1).some(u => u != null && key === u.key);
     }
 
     return false;
