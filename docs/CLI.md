@@ -130,7 +130,9 @@ Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`
 
 The cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.
 
-::: If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
+:::
+
+If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
 ### `--changedFilesWithAncestor`
 
