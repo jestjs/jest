@@ -46,6 +46,7 @@
     "@crowdin/cli": "^3.5.2",
     "@types/react": "^17.0.3",
     "graphql": "^16.3.0",
-    "graphql-request": "^4.0.0"
+    "graphql-request": "^4.0.0",
+    "js-yaml": "^4.1.0"
   }
 }

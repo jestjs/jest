@@ -5,11 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+'use strict';
+
 const path = require('path');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const i18n = require('./i18n');
 const ArchivedVersions = require('./archivedVersions.json');
 
 const JestThemeColor = '#15c213';
+
+const crowdinConfig = yaml.load(
+  fs.readFileSync(path.resolve(__dirname, '../crowdin.yaml'), 'utf8')
+);
+
+const localeMapping = new Map(
+  Object.entries(crowdinConfig.languages_mapping.locale).map(
+    ([translation, locale]) => [locale, translation]
+  )
+);
 
 module.exports = {
   i18n,
@@ -31,8 +45,10 @@ module.exports = {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
-            if (locale !== 'en') {
-              return `https://crowdin.com/project/jest-v2/${locale}`;
+            const translation =
+              locale === 'en' ? 'en' : localeMapping.get(locale) || locale;
+            if (translation !== 'en') {
+              return `https://crowdin.com/project/jest-v2/${translation}`;
             }
             return `https://github.com/facebook/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
           },

@@ -13626,6 +13626,7 @@ __metadata:
     globby: ^11.0.1
     graphql: ^16.3.0
     graphql-request: ^4.0.0
+    js-yaml: ^4.1.0
     react: ^17.0.1
     react-dom: ^17.0.1
     react-github-btn: ^1.2.0
