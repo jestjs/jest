@@ -1583,6 +1583,13 @@ describe('testPathPattern', () => {
         expect(options.testPathPattern).toBe('a/b|c/d');
       });
 
+      it('coerces all patterns to strings', async () => {
+        const argv = {[opt.property]: [1]} as Config.Argv;
+        const {options} = await normalize(initialOptions, argv);
+
+        expect(options.testPathPattern).toBe('1');
+      });
+
       describe('posix', () => {
         it('should not escape the pattern', async () => {
           const argv = {
@@ -1632,13 +1639,6 @@ describe('testPathPattern', () => {
           );
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
-        });
-
-        it('coerces all patterns to strings', async () => {
-          const argv = {[opt.property]: [1]} as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('1');
         });
       });
     });
