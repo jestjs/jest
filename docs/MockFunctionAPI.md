@@ -171,7 +171,7 @@ mockFn(3); // 39
 </TabItem>
 </Tabs>
 
-`jest.mockImplementation()` can also be used to mock class constructors:
+`.mockImplementation()` can also be used to mock class constructors:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
