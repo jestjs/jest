@@ -65,7 +65,7 @@ describe('JSON Reporter', () => {
     expect(failsTheTest).toHaveProperty('duration', expect.any(Number));
 
     const skipedTest = jsonResult.testResults[0].assertionResults.find(
-      item => item.title == 'skiped test',
+      item => item.title == 'skipped test',
     );
     expect(skipedTest).toHaveProperty('duration', null);
   });

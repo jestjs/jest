@@ -23,7 +23,7 @@ describe('sum', () => {
     });
   });
 
-  it.skip('skiped test', () => {
+  it.skip('skipped test', () => {
     expect(sum(1, 2)).toEqual(3);
   });
 });
