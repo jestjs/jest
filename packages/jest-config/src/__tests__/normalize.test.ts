@@ -1577,7 +1577,7 @@ describe('testPathPattern', () => {
       });
 
       it(`joins multiple ${opt.name} if set`, async () => {
-        const argv = {testPathPattern: ['a/b', 'c/d']} as Config.Argv;
+        const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('a/b|c/d');
