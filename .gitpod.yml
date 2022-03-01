@@ -1,4 +1,4 @@
-# List the start up tasks. See https://www.gitpod.io/docs/config-gitpod-file
+# Commands to start on workspace startup. See https://www.gitpod.io/docs/config-gitpod-file
 tasks:
   - init: yarn install && yarn run build
     command: yarn run watch
