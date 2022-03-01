@@ -16,7 +16,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
       "extensionsToTreatAsEsm": [],
-      "extraGlobals": [],
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
@@ -49,6 +48,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "<<REPLACED_ROOT_DIR>>"
       ],
       "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
+      "sandboxInjectedGlobals": [],
       "setupFiles": [],
       "setupFilesAfterEnv": [],
       "skipFilter": false,
@@ -66,7 +66,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "testRegex": [],
       "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
-      "testURL": "http://localhost",
       "timers": "real",
       "transform": [
         [

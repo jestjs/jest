@@ -480,7 +480,7 @@ describe('FakeTimers', () => {
       const mock4 = jest.fn(() => runOrder.push('mock4'));
       const mock5 = jest.fn(() => runOrder.push('mock5'));
       const mock6 = jest.fn(() => runOrder.push('mock6'));
-      const mockAnimatioNFrame = jest.fn(() => runOrder.push('animationFrame'));
+      const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, NaN);
@@ -491,7 +491,7 @@ describe('FakeTimers', () => {
       }, 200);
       global.setTimeout(mock5, Infinity);
       global.setTimeout(mock6, -Infinity);
-      global.requestAnimationFrame(mockAnimatioNFrame);
+      global.requestAnimationFrame(mockAnimationFrame);
 
       timers.runAllTimers();
       expect(runOrder).toEqual([

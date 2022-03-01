@@ -140,7 +140,7 @@ Default: `"/tmp/<path>"`
 
 The directory where Jest should store its cached dependency information.
 
-Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
+Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem churn that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 ### `clearMocks` \[boolean]
 
@@ -371,23 +371,6 @@ Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field 
   ...
   "jest": {
     "extensionsToTreatAsEsm": [".ts"]
-  }
-}
-```
-
-### `extraGlobals` \[array&lt;string&gt;]
-
-Default: `undefined`
-
-Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
-
-For example, if your tests call `Math` often, you can pass it by setting `extraGlobals`.
-
-```json
-{
-  ...
-  "jest": {
-    "extraGlobals": ["Math"]
   }
 }
 ```
@@ -851,8 +834,6 @@ module.exports = (request, options) => {
 };
 ```
 
-While Jest does not support [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points) (beyond `main`), Jest will provide `conditions` as an option when calling custom resolvers, which can be used to implement support for `exports` in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS. Additionally, custom test environments can specify an `exportConditions` method which returns an array of conditions that will be passed along with Jest's defaults.
-
 ### `restoreMocks` \[boolean]
 
 Default: `false`
@@ -909,11 +890,46 @@ async function runTests(
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
 
+### `sandboxInjectedGlobals` \[array&lt;string&gt;]
+
+:::tip
+
+Renamed from `extraGlobals` in Jest 28.
+
+:::
+
+Default: `undefined`
+
+Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
+
+For example, if your tests call `Math` often, you can pass it by setting `sandboxInjectedGlobals`.
+
+```json
+{
+  ...
+  "jest": {
+    "sandboxInjectedGlobals": ["Math"]
+  }
+}
+```
+
+:::note
+
+This option has no effect if you use [native ESM](ECMAScriptModules.md).
+
+:::
+
 ### `setupFiles` \[array]
 
 Default: `[]`
 
 A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment before executing [`setupFilesAfterEnv`](#setupfilesafterenv-array) and before the test code itself.
+
+:::tip
+
+If your setup script is a CJS module, it may export an async function. Jest will call the function and await its result. This might be useful to fetch some data asynchronously. If the file is an ESM module, simply use top-level await to achieve the same result.
+
+:::
 
 ### `setupFilesAfterEnv` \[array]
 
@@ -1021,7 +1037,7 @@ Example serializer module:
 // my-serializer-module
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return 'Pretty foo: ' + printer(val.foo);
+    return `Pretty foo: ${printer(val.foo)}`;
   },
 
   test(val) {
@@ -1090,7 +1106,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [global config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L284) and [project config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L349) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
@@ -1115,6 +1131,8 @@ const NodeEnvironment = require('jest-environment-node').default;
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
+    console.log(config.globalConfig);
+    console.log(config.projectConfig);
     this.testPath = context.testPath;
     this.docblockPragmas = context.docblockPragmas;
   }
@@ -1166,7 +1184,20 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [`jsdom`](https://github.com/jsdom/jsdom) such as `{html: "<html lang="zh-cmn-Hant"></html>", url: 'https://jestjs.io/', userAgent: "Agent/007"}`.
+
+These options can also be passed in a docblock, similar to `testEnvironment`. Note that it must be parseable by `JSON.parse`. Example:
+
+```js
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options {"url": "https://jestjs.io/"}
+ */
+
+test('use jsdom and set the URL in this test file', () => {
+  expect(window.location.href).toBe('https://jestjs.io/');
+});
+```
 
 ### `testFailureExitCode` \[number]
 
@@ -1329,12 +1360,6 @@ Use it in your Jest config file like this:
 Default: `5000`
 
 Default timeout of a test in milliseconds.
-
-### `testURL` \[string]
-
-Default: `http://localhost`
-
-This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
 ### `timers` \[string]
 

@@ -30,9 +30,9 @@ export class ValidationError extends Error {
 
   constructor(name: string, message: string, comment?: string | null) {
     super();
-    comment = comment ? '\n\n' + comment : '\n';
+    comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
-    this.message = chalk.red(chalk.bold(name) + ':\n\n' + message + comment);
+    this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
     Error.captureStackTrace(this, () => {});
   }
 }
@@ -42,8 +42,8 @@ export const logValidationWarning = (
   message: string,
   comment?: string | null,
 ): void => {
-  comment = comment ? '\n\n' + comment : '\n';
-  console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
+  comment = comment ? `\n\n${comment}` : '\n';
+  console.warn(chalk.yellow(`${chalk.bold(name)}:\n\n${message}${comment}`));
 };
 
 export const createDidYouMeanMessage = (

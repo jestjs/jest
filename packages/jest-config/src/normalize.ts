@@ -734,7 +734,7 @@ export default async function normalize(
       case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
-      case 'moduleLoader':
+      case 'runtime':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -902,8 +902,7 @@ export default async function normalize(
           // `require('some-package/package') without the trailing `.json` as it
           // works in Node normally.
           throw createConfigError(
-            errorMessage +
-              "\n  Please change your configuration to include 'js'.",
+            `${errorMessage}\n  Please change your configuration to include 'js'.`,
           );
         }
 
@@ -979,7 +978,6 @@ export default async function normalize(
       case 'errorOnDeprecated':
       case 'expand':
       case 'extensionsToTreatAsEsm':
-      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
@@ -1004,6 +1002,7 @@ export default async function normalize(
       case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
+      case 'sandboxInjectedGlobals':
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
@@ -1014,7 +1013,6 @@ export default async function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testURL':
       case 'timers':
       case 'useStderr':
       case 'verbose':
@@ -1210,8 +1208,8 @@ export default async function normalize(
     newOptions.projects = [];
   }
 
-  if (!newOptions.extraGlobals) {
-    newOptions.extraGlobals = [];
+  if (!newOptions.sandboxInjectedGlobals) {
+    newOptions.sandboxInjectedGlobals = [];
   }
 
   if (!newOptions.forceExit) {

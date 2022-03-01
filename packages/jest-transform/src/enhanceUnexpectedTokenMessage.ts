@@ -17,7 +17,7 @@ export default function handlePotentialSyntaxError(
   e: ErrorWithCodeFrame,
 ): ErrorWithCodeFrame {
   if (e.codeFrame) {
-    e.stack = e.message + '\n' + e.codeFrame;
+    e.stack = `${e.message}\n${e.codeFrame}`;
   }
 
   if (
@@ -32,8 +32,7 @@ export default function handlePotentialSyntaxError(
 }
 
 export function enhanceUnexpectedTokenMessage(e: Error): Error {
-  e.stack =
-    `${chalk.bold.red('Jest encountered an unexpected token')}
+  e.stack = `${chalk.bold.red('Jest encountered an unexpected token')}
 
 Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
 
@@ -43,20 +42,20 @@ By default "node_modules" folder is ignored by transformers.
 
 Here's what you can do:
 ${DOT}If you are trying to use ECMAScript Modules, see ${chalk.underline(
-      'https://jestjs.io/docs/ecmascript-modules',
-    )} for how to enable it.
+    'https://jestjs.io/docs/ecmascript-modules',
+  )} for how to enable it.
 ${DOT}If you are trying to use TypeScript, see ${chalk.underline(
-      'https://jestjs.io/docs/getting-started#using-typescript',
-    )}
+    'https://jestjs.io/docs/getting-started#using-typescript',
+  )}
 ${DOT}To have some of your "node_modules" files transformed, you can specify a custom ${chalk.bold(
-      '"transformIgnorePatterns"',
-    )} in your config.
+    '"transformIgnorePatterns"',
+  )} in your config.
 ${DOT}If you need a custom transformation specify a ${chalk.bold(
-      '"transform"',
-    )} option in your config.
+    '"transform"',
+  )} option in your config.
 ${DOT}If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the ${chalk.bold(
-      '"moduleNameMapper"',
-    )} config option.
+    '"moduleNameMapper"',
+  )} config option.
 
 You'll find more details and examples of these config options in the docs:
 ${chalk.cyan('https://jestjs.io/docs/configuration')}
@@ -65,7 +64,7 @@ ${chalk.cyan('https://jestjs.io/docs/code-transformation')}
 
 ${chalk.bold.red('Details:')}
 
-` + e.stack;
+${e.stack}`;
 
   return e;
 }

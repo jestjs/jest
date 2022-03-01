@@ -13,7 +13,6 @@ exports[`prints the config object 1`] = `
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "extensionsToTreatAsEsm": [],
-    "extraGlobals": [],
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
@@ -22,7 +21,6 @@ exports[`prints the config object 1`] = `
     "moduleFileExtensions": [
       "js"
     ],
-    "moduleLoader": "/test_module_loader_path",
     "moduleNameMapper": [],
     "modulePathIgnorePatterns": [],
     "modulePaths": [],
@@ -36,6 +34,8 @@ exports[`prints the config object 1`] = `
       "path/to/dir/test"
     ],
     "runner": "jest-runner",
+    "runtime": "/test_module_loader_path",
+    "sandboxInjectedGlobals": [],
     "setupFiles": [],
     "setupFilesAfterEnv": [],
     "skipFilter": false,
@@ -52,7 +52,6 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "testURL": "http://localhost",
     "timers": "real",
     "transform": [],
     "transformIgnorePatterns": [],

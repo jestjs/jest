@@ -132,6 +132,54 @@ exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
 <red></>"
 `;
 
+exports[`extraGlobals logs a deprecation warning when \`extraGlobals\` is used 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"extraGlobals"</> was replaced by <bold>"sandboxInjectedGlobals"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`moduleLoader logs a deprecation warning when \`moduleLoader\` is used 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"moduleLoader"</> was replaced by <bold>"runtime"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
@@ -227,6 +275,30 @@ exports[`testTimeout should throw an error if timeout is a negative number 1`] =
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration</>
 <red></>"
+`;
+
+exports[`testURL logs a deprecation warning when \`testURL\` is used 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"testURL"</> was replaced by passing the URL via <bold>"testEnvironmentOptions.url"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
 `;
 
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `

@@ -11,8 +11,8 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 1.  First install `@shelf/jest-mongodb`
 
-```
-yarn add @shelf/jest-mongodb --dev
+```bash npm2yarn
+npm install --save-dev @shelf/jest-mongodb
 ```
 
 2.  Specify preset in your Jest configuration:
@@ -35,13 +35,13 @@ describe('insert', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(globalThis.__MONGO_URI__, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
     db = await connection.db(globalThis.__MONGO_DB_NAME__);
   });
 
   afterAll(async () => {
     await connection.close();
-    await db.close();
   });
 
   it('should insert a doc into collection', async () => {

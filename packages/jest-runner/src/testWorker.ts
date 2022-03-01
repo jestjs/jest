@@ -61,7 +61,7 @@ const resolvers = new Map<string, Resolver>();
 const getResolver = (config: Config.ProjectConfig) => {
   const resolver = resolvers.get(config.name);
   if (!resolver) {
-    throw new Error('Cannot find resolver for: ' + config.name);
+    throw new Error(`Cannot find resolver for: ${config.name}`);
   }
   return resolver;
 };

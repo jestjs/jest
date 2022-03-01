@@ -32,7 +32,7 @@ beforeEach(() => {
   istanbulReports = require('istanbul-reports');
 
   const fileTree = {};
-  fileTree[process.cwd() + '/path-test-files'] = {
+  fileTree[`${process.cwd()}/path-test-files`] = {
     '000pc_coverage_file.js': '',
     '050pc_coverage_file.js': '',
     '100pc_coverage_file.js': '',

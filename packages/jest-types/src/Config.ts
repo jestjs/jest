@@ -112,7 +112,6 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testRunner: string;
   testSequencer: string;
-  testURL: string;
   timers: Timers;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
@@ -159,7 +158,6 @@ export type InitialOptions = Partial<{
   displayName: string | DisplayName;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
-  extraGlobals: Array<string>;
   filter: string;
   findRelatedTests: boolean;
   forceCoverageMatch: Array<string>;
@@ -178,7 +176,6 @@ export type InitialOptions = Partial<{
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleLoader: string;
   moduleNameMapper: {
     [key: string]: string | Array<string>;
   };
@@ -208,6 +205,8 @@ export type InitialOptions = Partial<{
   roots: Array<string>;
   runner: string;
   runTestsByPath: boolean;
+  runtime: string;
+  sandboxInjectedGlobals: Array<string>;
   /**
    * @deprecated Use `transform` options instead.
    */
@@ -241,7 +240,6 @@ export type InitialOptions = Partial<{
   testResultsProcessor: string;
   testRunner: string;
   testSequencer: string;
-  testURL: string;
   testTimeout: number;
   timers: Timers;
   transform: {
@@ -359,7 +357,6 @@ export type ProjectConfig = {
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<string>;
-  extraGlobals: Array<keyof typeof globalThis>;
   filter?: string;
   forceCoverageMatch: Array<string>;
   globalSetup?: string;
@@ -369,7 +366,6 @@ export type ProjectConfig = {
   injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleLoader?: string;
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
@@ -382,6 +378,8 @@ export type ProjectConfig = {
   rootDir: string;
   roots: Array<string>;
   runner: string;
+  runtime?: string;
+  sandboxInjectedGlobals: Array<keyof typeof globalThis>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
   skipFilter: boolean;
@@ -397,7 +395,6 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
-  testURL: string;
   timers: Timers;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
@@ -481,7 +478,6 @@ export type Argv = Arguments<
     testResultsProcessor: string;
     testRunner: string;
     testSequencer: string;
-    testURL: string;
     testTimeout: number | null | undefined;
     timers: string;
     transform: string;

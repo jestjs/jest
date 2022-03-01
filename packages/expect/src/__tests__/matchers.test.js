@@ -1883,7 +1883,6 @@ describe('.toHaveProperty()', () => {
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
-    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [{a: {b: [{c: [{d: 1}]}]}}, 'a.b[0].c[0].d', 1],
     [{a: {b: [{c: {d: [{e: 1}, {f: 2}]}}]}}, 'a.b[0].c.d[1].f', 2],
@@ -1927,7 +1926,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
+    [{a: {}}, 'a.b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

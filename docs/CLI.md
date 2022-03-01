@@ -49,6 +49,8 @@ jest --watchAll #runs all tests
 
 Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+
 ## Using with yarn
 
 If you run Jest via `yarn test`, you can pass the command line arguments directly as Jest arguments.

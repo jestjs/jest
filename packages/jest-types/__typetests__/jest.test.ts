@@ -7,7 +7,7 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, SpyInstance} from 'jest-mock';
+import type {Mock, ModuleMocker, SpyInstance, fn, spyOn} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -121,13 +121,19 @@ expectError(jest.unmock());
 expectType<typeof jest>(jest.clearAllMocks());
 expectError(jest.clearAllMocks('moduleName'));
 
+expectType<typeof jest>(jest.resetAllMocks());
+expectError(jest.resetAllMocks(true));
+
+expectType<typeof jest>(jest.restoreAllMocks());
+expectError(jest.restoreAllMocks(false));
+
 expectType<boolean>(jest.isMockFunction(() => {}));
 expectError(jest.isMockFunction());
 
 const maybeMock = (a: string, b: number) => true;
 
 if (jest.isMockFunction(maybeMock)) {
-  expectType<Mock<boolean, [a: string, b: number]>>(maybeMock);
+  expectType<Mock<(a: string, b: number) => boolean>>(maybeMock);
 
   maybeMock.mockReturnValueOnce(false);
   expectError(maybeMock.mockReturnValueOnce(123));
@@ -140,7 +146,7 @@ if (!jest.isMockFunction(maybeMock)) {
 const surelyMock = jest.fn((a: string, b: number) => true);
 
 if (jest.isMockFunction(surelyMock)) {
-  expectType<Mock<boolean, [a: string, b: number]>>(surelyMock);
+  expectType<Mock<(a: string, b: number) => boolean>>(surelyMock);
 
   surelyMock.mockReturnValueOnce(false);
   expectError(surelyMock.mockReturnValueOnce(123));
@@ -150,128 +156,60 @@ if (!jest.isMockFunction(surelyMock)) {
   expectType<never>(surelyMock);
 }
 
+const spiedObject = {
+  methodA(a: number, b: string) {
+    return true;
+  },
+};
+
+const surelySpy = jest.spyOn(spiedObject, 'methodA');
+
+if (jest.isMockFunction(surelySpy)) {
+  expectType<SpyInstance<(a: number, b: string) => boolean>>(surelySpy);
+
+  surelySpy.mockReturnValueOnce(false);
+  expectError(surelyMock.mockReturnValueOnce(123));
+}
+
+if (!jest.isMockFunction(surelySpy)) {
+  expectType<never>(surelySpy);
+}
+
 declare const stringMaybeMock: string;
+
+if (jest.isMockFunction(stringMaybeMock)) {
+  expectType<string & Mock<(...args: Array<unknown>) => unknown>>(
+    stringMaybeMock,
+  );
+}
 
 if (!jest.isMockFunction(stringMaybeMock)) {
   expectType<string>(stringMaybeMock);
 }
 
-if (jest.isMockFunction(stringMaybeMock)) {
-  expectType<string & Mock<unknown, Array<unknown>>>(stringMaybeMock);
-}
-
 declare const anyMaybeMock: any;
+
+if (jest.isMockFunction(anyMaybeMock)) {
+  expectType<Mock<(...args: Array<unknown>) => unknown>>(anyMaybeMock);
+}
 
 if (!jest.isMockFunction(anyMaybeMock)) {
   expectType<any>(anyMaybeMock);
 }
 
-if (jest.isMockFunction(anyMaybeMock)) {
-  expectType<Mock<unknown, Array<unknown>>>(anyMaybeMock);
-}
-
 declare const unknownMaybeMock: unknown;
+
+if (jest.isMockFunction(unknownMaybeMock)) {
+  expectType<Mock<(...args: Array<unknown>) => unknown>>(unknownMaybeMock);
+}
 
 if (!jest.isMockFunction(unknownMaybeMock)) {
   expectType<unknown>(unknownMaybeMock);
 }
 
-if (jest.isMockFunction(unknownMaybeMock)) {
-  expectType<Mock<unknown, Array<unknown>>>(unknownMaybeMock);
-}
+expectType<ModuleMocker['fn']>(jest.fn);
 
-expectType<Mock<unknown>>(jest.fn());
-expectType<Mock<void, []>>(jest.fn(() => {}));
-expectType<Mock<boolean, [a: string, b: number]>>(
-  jest.fn((a: string, b: number) => true),
-);
-expectType<Mock<never, [e: any]>>(
-  jest.fn((e: any) => {
-    throw new Error();
-  }),
-);
-expectError(jest.fn('moduleName'));
-
-expectType<typeof jest>(jest.resetAllMocks());
-expectError(jest.resetAllMocks(true));
-
-expectType<typeof jest>(jest.restoreAllMocks());
-expectError(jest.restoreAllMocks(false));
-
-const spiedArray = ['a', 'b'];
-
-const spiedFunction = () => {};
-
-spiedFunction.toString();
-
-const spiedObject = {
-  _propertyB: false,
-
-  methodA() {
-    return true;
-  },
-  methodB(a: string, b: number) {
-    return;
-  },
-  methodC(e: any) {
-    throw new Error();
-  },
-
-  propertyA: 'abc',
-
-  set propertyB(value) {
-    this._propertyB = value;
-  },
-  get propertyB() {
-    return this._propertyB;
-  },
-};
-
-expectType<SpyInstance<boolean, []>>(jest.spyOn(spiedObject, 'methodA'));
-expectType<SpyInstance<void, [a: string, b: number]>>(
-  jest.spyOn(spiedObject, 'methodB'),
-);
-expectType<SpyInstance<never, [e: any]>>(jest.spyOn(spiedObject, 'methodC'));
-
-expectType<SpyInstance<boolean, []>>(
-  jest.spyOn(spiedObject, 'propertyB', 'get'),
-);
-expectType<SpyInstance<void, [boolean]>>(
-  jest.spyOn(spiedObject, 'propertyB', 'set'),
-);
-expectError(jest.spyOn(spiedObject, 'propertyB'));
-expectError(jest.spyOn(spiedObject, 'methodB', 'get'));
-expectError(jest.spyOn(spiedObject, 'methodB', 'set'));
-
-expectType<SpyInstance<string, []>>(
-  jest.spyOn(spiedObject, 'propertyA', 'get'),
-);
-expectType<SpyInstance<void, [string]>>(
-  jest.spyOn(spiedObject, 'propertyA', 'set'),
-);
-expectError(jest.spyOn(spiedObject, 'propertyA'));
-
-expectError(jest.spyOn(spiedObject, 'notThere'));
-expectError(jest.spyOn('abc', 'methodA'));
-expectError(jest.spyOn(123, 'methodA'));
-expectError(jest.spyOn(true, 'methodA'));
-expectError(jest.spyOn(spiedObject));
-expectError(jest.spyOn());
-
-expectType<SpyInstance<boolean, [arg: any]>>(
-  jest.spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
-);
-expectError(jest.spyOn(spiedArray, 'isArray'));
-
-expectType<SpyInstance<string, []>>(
-  jest.spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
-);
-expectError(jest.spyOn(spiedFunction, 'toString'));
-
-expectType<SpyInstance<Date, [value: string | number | Date]>>(
-  jest.spyOn(globalThis, 'Date'),
-);
-expectType<SpyInstance<number, []>>(jest.spyOn(Date, 'now'));
+expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
 // Mock Timers
 

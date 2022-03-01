@@ -189,8 +189,12 @@ const makeResolveMatcher =
         ),
       reason => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(reason)}`;
         return Promise.reject(outerErr);
@@ -236,8 +240,12 @@ const makeRejectMatcher =
     return actualWrapper.then(
       result => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         return Promise.reject(outerErr);

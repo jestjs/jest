@@ -599,8 +599,8 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     });
     const dirs_expected = [
       src,
-      cwd + '\\node_modules',
-      path.dirname(cwd) + '\\node_modules',
+      `${cwd}\\node_modules`,
+      `${path.dirname(cwd)}\\node_modules`,
       'D:\\node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
@@ -619,8 +619,8 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     });
     const dirs_expected = [
       src,
-      cwd + '/node_modules',
-      path.dirname(cwd) + '/node_modules',
+      `${cwd}/node_modules`,
+      `${path.dirname(cwd)}/node_modules`,
       '/node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);

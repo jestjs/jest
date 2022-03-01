@@ -83,7 +83,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
 
   getMockModule(name: string): string | undefined {
     const mockPath =
-      this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
+      this._raw.mocks.get(name) || this._raw.mocks.get(`${name}/index`);
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
   }
 
@@ -224,14 +224,15 @@ class DuplicateHasteCandidatesError extends Error {
         'cannot be resolved, because there exists several different ' +
         'files, or packages, that provide a module for ' +
         `that particular name and platform. ${platformMessage} You must ` +
-        'delete or exclude files until there remains only one of these:\n\n' +
-        Array.from(duplicatesSet)
+        `delete or exclude files until there remains only one of these:\n\n${Array.from(
+          duplicatesSet,
+        )
           .map(
             ([dupFilePath, dupFileType]) =>
               `  * \`${dupFilePath}\` (${getTypeMessage(dupFileType)})\n`,
           )
           .sort()
-          .join(''),
+          .join('')}`,
     );
     this.hasteName = name;
     this.platform = platform;

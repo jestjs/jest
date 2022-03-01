@@ -16,6 +16,7 @@ import {deserialize, serialize} from 'v8';
 import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
+import {requireOrImportModule} from 'jest-util';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
@@ -29,6 +30,7 @@ import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
+  DependencyExtractor,
   EventsQueue,
   FileData,
   FileMetaData,
@@ -116,8 +118,8 @@ export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const PACKAGE_JSON = path.sep + 'package.json';
+const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
+const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
@@ -230,12 +232,16 @@ export default class HasteMap extends EventEmitter {
     return HasteMap;
   }
 
-  static create(options: Options): HasteMap {
+  static async create(options: Options): Promise<HasteMap> {
     if (options.hasteMapModulePath) {
       const CustomHasteMap = require(options.hasteMapModulePath);
       return new CustomHasteMap(options);
     }
-    return new HasteMap(options);
+    const hasteMap = new HasteMap(options);
+
+    await hasteMap.setupCachePath(options);
+
+    return hasteMap;
   }
 
   private constructor(options: Options) {
@@ -272,7 +278,7 @@ export default class HasteMap extends EventEmitter {
     if (options.ignorePattern) {
       if (options.ignorePattern instanceof RegExp) {
         this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+          options.ignorePattern.source.concat(`|${VCS_DIRECTORIES}`),
           options.ignorePattern.flags,
         );
       } else {
@@ -292,6 +298,13 @@ export default class HasteMap extends EventEmitter {
       );
     }
 
+    this._cachePath = '';
+    this._buildPromise = null;
+    this._watchers = [];
+    this._worker = null;
+  }
+
+  private async setupCachePath(options: Options): Promise<void> {
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
@@ -304,7 +317,11 @@ export default class HasteMap extends EventEmitter {
     }
 
     if (options.dependencyExtractor) {
-      const dependencyExtractor = require(options.dependencyExtractor);
+      const dependencyExtractor =
+        await requireOrImportModule<DependencyExtractor>(
+          options.dependencyExtractor,
+          false,
+        );
       if (dependencyExtractor.getCacheKey) {
         dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
       }
@@ -327,9 +344,6 @@ export default class HasteMap extends EventEmitter {
       dependencyExtractorHash,
       this._options.computeDependencies.toString(),
     );
-    this._buildPromise = null;
-    this._watchers = [];
-    this._worker = null;
   }
 
   static getCacheFilePath(
@@ -340,7 +354,7 @@ export default class HasteMap extends EventEmitter {
     const hash = createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
-      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
+      `${name.replace(/\W/g, '-')}-${hash.digest('hex')}`,
     );
   }
 
@@ -467,10 +481,10 @@ export default class HasteMap extends EventEmitter {
 
         this._console[method](
           [
-            'jest-haste-map: Haste module naming collision: ' + id,
+            `jest-haste-map: Haste module naming collision: ${id}`,
             '  The following files share their name; please adjust your hasteImpl:',
-            '    * <rootDir>' + path.sep + existingModule[H.PATH],
-            '    * <rootDir>' + path.sep + module[H.PATH],
+            `    * <rootDir>${path.sep}${existingModule[H.PATH]}`,
+            `    * <rootDir>${path.sep}${module[H.PATH]}`,
             '',
           ].join('\n'),
         );
@@ -597,10 +611,10 @@ export default class HasteMap extends EventEmitter {
 
           this._console[method](
             [
-              'jest-haste-map: duplicate manual mock found: ' + mockPath,
+              `jest-haste-map: duplicate manual mock found: ${mockPath}`,
               '  The following files share their name; please delete one of them:',
-              '    * <rootDir>' + path.sep + existingMockPath,
-              '    * <rootDir>' + path.sep + secondMockPath,
+              `    * <rootDir>${path.sep}${existingMockPath}`,
+              `    * <rootDir>${path.sep}${secondMockPath}`,
               '',
             ].join('\n'),
           );
@@ -776,8 +790,7 @@ export default class HasteMap extends EventEmitter {
             "  Usually this happens when watchman isn't running. Create an " +
             "empty `.watchmanconfig` file in your project's root folder or " +
             'initialize a git or hg repository in your project.\n' +
-            '  ' +
-            error,
+            `  ${error}`,
         );
         return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
@@ -831,7 +844,7 @@ export default class HasteMap extends EventEmitter {
     const createWatcher = (root: string): Promise<Watcher> => {
       const watcher = new Watcher(root, {
         dot: true,
-        glob: extensions.map(extension => '**/*.' + extension),
+        glob: extensions.map(extension => `**/*.${extension}`),
         ignored: ignorePattern,
       });
 

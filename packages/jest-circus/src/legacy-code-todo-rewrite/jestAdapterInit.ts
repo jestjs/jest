@@ -78,7 +78,7 @@ export const initialize = async ({
 
   globalsObject.test.concurrent = (test => {
     const concurrent = (
-      testName: string,
+      testName: Global.TestNameLike,
       testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
@@ -96,7 +96,7 @@ export const initialize = async ({
     };
 
     const only = (
-      testName: string,
+      testName: Global.TestNameLike,
       testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
@@ -239,12 +239,9 @@ export const runAndTransformResultsToJestFormat = async ({
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
     };
-    failureMessage =
-      (failureMessage || '') +
-      '\n\n' +
-      runResult.unhandledErrors
-        .map(err => formatExecError(err, config, globalConfig))
-        .join('\n');
+    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrors
+      .map(err => formatExecError(err, config, globalConfig))
+      .join('\n')}`;
   }
 
   await dispatch({name: 'teardown'});

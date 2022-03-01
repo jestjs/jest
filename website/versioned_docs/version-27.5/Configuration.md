@@ -140,7 +140,7 @@ Default: `"/tmp/<path>"`
 
 The directory where Jest should store its cached dependency information.
 
-Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
+Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem churn that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 ### `clearMocks` \[boolean]
 
@@ -844,7 +844,7 @@ module.exports = (request, options) => {
 };
 ```
 
-While Jest does not support [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points) (beyond `main`), Jest will provide `conditions` as an option when calling custom resolvers, which can be used to implement support for `exports` in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS. Additionally, custom test environments can specify an `exportConditions` method which returns an array of conditions that will be passed along with Jest's defaults.
+Jest currently only supports the "main" (`.`) subpath from [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points). However, since Jest provides `conditions` as an option when calling custom resolvers, full support for `exports` can be implemented in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS. Additionally, custom test environments can specify an `exportConditions` method which returns an array of conditions that will be passed along with Jest's defaults.
 
 ### `restoreMocks` \[boolean]
 
@@ -1014,7 +1014,7 @@ Example serializer module:
 // my-serializer-module
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return 'Pretty foo: ' + printer(val.foo);
+    return `Pretty foo: ${printer(val.foo)}`;
   },
 
   test(val) {

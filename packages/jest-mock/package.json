@@ -1,17 +1,10 @@
 {
   "name": "jest-mock",
-  "version": "28.0.0-alpha.4",
+  "version": "28.0.0-alpha.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-mock"
-  },
-  "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
-  },
-  "dependencies": {
-    "@jest/types": "^28.0.0-alpha.4",
-    "@types/node": "*"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -22,6 +15,17 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/types": "^28.0.0-alpha.5",
+    "@types/node": "*"
+  },
+  "devDependencies": {
+    "@tsd/typescript": "~4.5.5",
+    "tsd-lite": "^0.5.1"
+  },
+  "engines": {
+    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

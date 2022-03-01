@@ -133,6 +133,8 @@ it('renders correctly', () => {
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
 
+By default, Jest handles the writing of snapshots into your source code. However, if you're using [prettier](https://www.npmjs.com/package/prettier) in your project, Jest will detect this and delegate the work to prettier instead (including honoring your configuration).
+
 ### Property Matchers
 
 Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:
@@ -207,6 +209,22 @@ Object {
 }
 `;
 ```
+
+:::tip
+
+If the case concerns a string not an object then you need to replace random part of that string on your own before testing the snapshot.  
+You can use for that e.g. [`replace()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) and [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+
+```javascript
+const randomNumber = Math.round(Math.random() * 100);
+const stringWithRandomData = `<div id="${randomNumber}">Lorem ipsum</div>`;
+const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
+expect(stringWithConstantData).toMatchSnapshot();
+```
+
+Another way is to [mock](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
+
+:::
 
 ## Best Practices
 

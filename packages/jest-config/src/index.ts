@@ -41,7 +41,7 @@ export async function readConfig(
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: string | null,
   projectIndex = Infinity,
-  skipMultipleConfigWarning = false,
+  skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   let rawOptions: Config.InitialOptions;
   let configPath = null;
@@ -78,7 +78,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       argv.config,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
@@ -86,7 +86,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       packageRootOrConfig,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
@@ -184,7 +184,6 @@ const groupOptions = (
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
     extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
-    extraGlobals: options.extraGlobals,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
     globalSetup: options.globalSetup,
@@ -194,7 +193,6 @@ const groupOptions = (
     injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
-    moduleLoader: options.moduleLoader,
     moduleNameMapper: options.moduleNameMapper,
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
@@ -207,6 +205,8 @@ const groupOptions = (
     rootDir: options.rootDir,
     roots: options.roots,
     runner: options.runner,
+    runtime: options.runtime,
+    sandboxInjectedGlobals: options.sandboxInjectedGlobals,
     setupFiles: options.setupFiles,
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
@@ -222,7 +222,6 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
-    testURL: options.testURL,
     timers: options.timers,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,

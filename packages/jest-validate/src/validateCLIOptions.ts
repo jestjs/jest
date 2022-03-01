@@ -35,9 +35,9 @@ const createCLIValidationError = (
       unrecognized.length > 1
         ? createDidYouMeanMessage(unrecognized, Array.from(allowedOptions))
         : '';
-    message =
-      `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
-      (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');
+    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.${
+      didYouMeanMessage ? ` ${didYouMeanMessage}` : ''
+    }`;
   } else {
     title += 's';
     message =

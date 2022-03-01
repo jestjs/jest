@@ -13,8 +13,8 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 1.  First, install `jest-puppeteer`
 
-```
-yarn add --dev jest-puppeteer
+```bash npm2yarn
+npm install --save-dev jest-puppeteer
 ```
 
 2.  Specify preset in your [Jest configuration](Configuration.md):

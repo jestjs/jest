@@ -20,11 +20,7 @@ import {
   makeTest,
 } from './utils';
 
-// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
-const eventHandler: Circus.EventHandler = (
-  event: Circus.Event,
-  state: Circus.State,
-): void => {
+const eventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;

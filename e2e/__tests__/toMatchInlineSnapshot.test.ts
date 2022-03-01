@@ -155,7 +155,7 @@ test('removes obsolete external snapshots', () => {
   const snapshotPath = path.join(
     TESTS_DIR,
     '__snapshots__',
-    filename + '.snap',
+    `${filename}.snap`,
   );
   const template = makeTemplate(`
     test('removes obsolete external snapshots', () => {
