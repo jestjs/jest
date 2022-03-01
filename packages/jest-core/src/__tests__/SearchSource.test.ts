@@ -102,10 +102,12 @@ describe('SearchSource', () => {
     });
   });
 
-  describe('testPathsMatching', () => {
+  describe('getTestPaths', () => {
     const getTestPaths = async (initialOptions: Config.InitialOptions) => {
       const searchSource = await initSearchSource(initialOptions);
-      const {tests: paths} = searchSource.findMatchingTests();
+      const {tests: paths} = await searchSource.getTestPaths({
+        testPathPattern: '',
+      });
       return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
     };
 
