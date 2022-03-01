@@ -23,7 +23,7 @@ You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
 // This version of the interface you are seeing on the website has been trimmed down for brevity
-// For the full definition, see `packages/jest-transform/src/types.ts` in https://github.com/facebook/jest 
+// For the full definition, see `packages/jest-transform/src/types.ts` in https://github.com/facebook/jest
 // (taking care in choosing the right tag/commit for your version of Jest)
 
 interface TransformOptions<OptionType = unknown> {
@@ -33,7 +33,7 @@ interface TransformOptions<OptionType = unknown> {
   supportsTopLevelAwait: boolean;
   instrument: boolean;
   /** a cached file system which is used in jest-runtime - useful to improve performance */
-  cacheFS:  Map<string, string>;
+  cacheFS: Map<string, string>;
   config: Config.ProjectConfig;
   /** A stringified version of the configuration - useful in cache busting */
   configString: string;
@@ -111,8 +111,7 @@ type TransformerFactory<X extends Transformer> = {
 };
 ```
 
-There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). 
-This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or  _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
+There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
 
 So if your code base is ESM only implementing the async variants is sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous variant. Be aware that `node_modules` is not transpiled with default config.
 
