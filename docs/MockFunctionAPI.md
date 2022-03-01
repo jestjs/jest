@@ -137,6 +137,9 @@ Accepts a function that should be used as the implementation of the mock. The mo
 
 :::
 
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
 ```js
 const mockFn = jest.fn(scalar => 42 + scalar);
 
@@ -149,7 +152,26 @@ mockFn(2); // 38
 mockFn(3); // 39
 ```
 
-`mockImplementation` can also be used to mock class constructors:
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```js
+const mockFn = jest.fn((scalar: number) => 42 + scalar);
+
+mockFn(0); // 42
+mockFn(1); // 43
+
+mockFn.mockImplementation(scalar => 36 + scalar);
+
+mockFn(2); // 38
+mockFn(3); // 39
+```
+
+</TabItem>
+</Tabs>
+
+`.mockImplementation()` can also be used to mock class constructors:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
