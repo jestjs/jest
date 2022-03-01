@@ -27,16 +27,6 @@ export type SearchResult = {
   total?: number;
 };
 
-export type TestSelectionConfig = {
-  input?: string;
-  findRelatedTests?: boolean;
-  onlyChanged?: boolean;
-  paths?: Array<string>;
-  shouldTreatInputAsPattern?: boolean;
-  testPathPattern?: string;
-  watch?: boolean;
-};
-
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
