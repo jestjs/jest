@@ -1280,7 +1280,8 @@ This option allows the use of a custom results processor. This processor must be
       "location": {
         "column": number,
         "line": number
-      }
+      },
+      "duration": number | null
     },
     ...
     ],

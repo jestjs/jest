@@ -36,37 +36,45 @@ describe('JSON Reporter', () => {
       );
     }
 
-    expect(jsonResult.numTotalTests).toBe(3);
+    expect(jsonResult.numTotalTests).toBe(4);
     expect(jsonResult.numTotalTestSuites).toBe(1);
     expect(jsonResult.numRuntimeErrorTestSuites).toBe(0);
     expect(jsonResult.numPassedTests).toBe(2);
     expect(jsonResult.numFailedTests).toBe(1);
-    expect(jsonResult.numPendingTests).toBe(0);
+    expect(jsonResult.numPendingTests).toBe(1);
 
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'no ancestors',
     );
     let expected = {ancestorTitles: [] as Array<string>};
     expect(noAncestors).toEqual(expect.objectContaining(expected));
+    expect(noAncestors).toHaveProperty('duration', expect.any(Number));
 
     const addsNumbers = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'adds numbers',
     );
     expected = {ancestorTitles: ['sum']};
     expect(addsNumbers).toEqual(expect.objectContaining(expected));
+    expect(addsNumbers).toHaveProperty('duration', expect.any(Number));
 
     const failsTheTest = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'fails the test',
     );
     expected = {ancestorTitles: ['sum', 'failing tests']};
     expect(failsTheTest).toEqual(expect.objectContaining(expected));
+    expect(failsTheTest).toHaveProperty('duration', expect.any(Number));
+
+    const skipedTest = jsonResult.testResults[0].assertionResults.find(
+      item => item.title == 'skipped test',
+    );
+    expect(skipedTest).toHaveProperty('duration', null);
   });
 
   it('outputs coverage report', () => {
     const result = runJest('json-reporter', ['--json']);
     let jsonResult: FormattedTestResults;
 
-    expect(result.stderr).toMatch(/1 failed, 2 passed/);
+    expect(result.stderr).toMatch(/1 failed, 1 skipped, 2 passed/);
     expect(result.exitCode).toBe(1);
 
     try {
@@ -77,12 +85,12 @@ describe('JSON Reporter', () => {
       );
     }
 
-    expect(jsonResult.numTotalTests).toBe(3);
+    expect(jsonResult.numTotalTests).toBe(4);
     expect(jsonResult.numTotalTestSuites).toBe(1);
     expect(jsonResult.numRuntimeErrorTestSuites).toBe(0);
     expect(jsonResult.numPassedTests).toBe(2);
     expect(jsonResult.numFailedTests).toBe(1);
-    expect(jsonResult.numPendingTests).toBe(0);
+    expect(jsonResult.numPendingTests).toBe(1);
 
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'no ancestors',

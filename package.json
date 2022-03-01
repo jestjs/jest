@@ -14,7 +14,7 @@
     "@jest/test-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.19.4",
     "@tsconfig/node12": "^1.0.9",
-    "@tsd/typescript": "~4.5.5",
+    "@tsd/typescript": "~4.6.2",
     "@types/babel__core": "^7.0.0",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",
