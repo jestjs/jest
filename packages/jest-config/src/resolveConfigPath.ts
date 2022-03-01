@@ -9,11 +9,13 @@ import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
+import {ValidationError} from 'jest-validate';
 import {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } from './constants';
+import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
 const isFile = (filePath: string) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -23,7 +25,7 @@ const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 export default function resolveConfigPath(
   pathToResolve: string,
   cwd: string,
-  skipMultipleConfigWarning = false,
+  skipMultipleConfigError = false,
 ): string {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
@@ -58,7 +60,7 @@ export default function resolveConfigPath(
     absolutePath,
     pathToResolve,
     cwd,
-    skipMultipleConfigWarning,
+    skipMultipleConfigError,
   );
 }
 
@@ -66,7 +68,7 @@ const resolveConfigPathByTraversing = (
   pathToResolve: string,
   initialPath: string,
   cwd: string,
-  skipMultipleConfigWarning: boolean,
+  skipMultipleConfigError: boolean,
 ): string => {
   const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
@@ -77,8 +79,8 @@ const resolveConfigPathByTraversing = (
     configFiles.push(packageJson);
   }
 
-  if (!skipMultipleConfigWarning && configFiles.length > 1) {
-    console.warn(makeMultipleConfigsWarning(configFiles));
+  if (!skipMultipleConfigError && configFiles.length > 1) {
+    throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
   }
 
   if (configFiles.length > 0 || packageJson) {
@@ -96,7 +98,7 @@ const resolveConfigPathByTraversing = (
     path.dirname(pathToResolve),
     initialPath,
     cwd,
-    skipMultipleConfigWarning,
+    skipMultipleConfigError,
   );
 };
 
@@ -137,20 +139,18 @@ function extraIfPackageJson(configPath: string) {
   return '';
 }
 
-const makeMultipleConfigsWarning = (configPaths: Array<string>) =>
-  chalk.yellow(
-    [
-      chalk.bold('\u25cf Multiple configurations found:'),
-      ...configPaths.map(
-        configPath =>
-          `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
-      ),
-      '',
-      '  Implicit config resolution does not allow multiple configuration files.',
-      '  Either remove unused config files or select one explicitly with `--config`.',
-      '',
-      '  Configuration Documentation:',
-      '  https://jestjs.io/docs/configuration.html',
-      '',
-    ].join('\n'),
-  );
+const makeMultipleConfigsErrorMessage = (
+  configPaths: Array<string>,
+): [string, string, string] => [
+  `${BULLET}${chalk.bold('Multiple configurations found')}`,
+  [
+    ...configPaths.map(
+      configPath =>
+        `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+    ),
+    '',
+    '  Implicit config resolution does not allow multiple configuration files.',
+    '  Either remove unused config files or select one explicitly with `--config`.',
+  ].join('\n'),
+  DOCUMENTATION_NOTE,
+];

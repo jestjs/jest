@@ -156,7 +156,7 @@ class Any extends AsymmetricMatcher<any> {
   }
 
   toAsymmetricMatcher() {
-    return 'Any<' + fnNameFor(this.sample) + '>';
+    return `Any<${fnNameFor(this.sample)}>`;
   }
 }
 
@@ -184,9 +184,8 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   asymmetricMatch(other: Array<unknown>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        `You must provide an array to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an array to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 
@@ -217,9 +216,8 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        `You must provide an object to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an object to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 

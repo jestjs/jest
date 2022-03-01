@@ -142,7 +142,7 @@ const _callCircusHook = async ({
   hook,
   test,
   describeBlock,
-  testContext,
+  testContext = {},
 }: {
   hook: Circus.Hook;
   describeBlock?: Circus.DescribeBlock;

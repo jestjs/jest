@@ -51,7 +51,7 @@ describe('Using V8 implementation', () => {
   });
 
   objs.forEach((obj, i) => {
-    describe('Object ' + i, () => {
+    describe(`Object ${i}`, () => {
       it('serializes/deserializes in memory', () => {
         const buf = serializer.serialize(obj);
 

@@ -187,10 +187,11 @@ export default class DefaultReporter extends BaseReporter {
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
-        '  ' +
-          TITLE_BULLET +
-          'Console\n\n' +
-          getConsoleOutput(result.console, config, this._globalConfig),
+        `  ${TITLE_BULLET}Console\n\n${getConsoleOutput(
+          result.console,
+          config,
+          this._globalConfig,
+        )}`,
       );
     }
   }

@@ -76,7 +76,7 @@ describe('printDiffOrStringify', () => {
   describe('MAX_DIFF_STRING_LENGTH', () => {
     const lessChange = INVERTED_COLOR('single ');
     const less = 'single line';
-    const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
+    const more = `multi line${'\n123456789'.repeat(2000)}`; // 10 + 20K chars
 
     test('both are less', () => {
       const difference = testDiffOrStringify('multi\nline', less);

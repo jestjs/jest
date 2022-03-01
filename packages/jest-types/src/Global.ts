@@ -15,16 +15,14 @@ export type TestReturnValue = ValidTestReturnValues | TestReturnValuePromise;
 export type TestContext = Record<string, unknown>;
 
 export type DoneFn = (reason?: string | Error) => void;
-// these should not be undefined
+
 export type DoneTakingTestFn = (
-  this: TestContext | undefined,
+  this: TestContext,
   done: DoneFn,
 ) => ValidTestReturnValues;
-export type PromiseReturningTestFn = (
-  this: TestContext | undefined,
-) => TestReturnValue;
+export type PromiseReturningTestFn = (this: TestContext) => TestReturnValue;
 export type GeneratorReturningTestFn = (
-  this: TestContext | undefined,
+  this: TestContext,
 ) => TestReturnValueGenerator;
 
 // eslint-disable-next-line @typescript-eslint/ban-types

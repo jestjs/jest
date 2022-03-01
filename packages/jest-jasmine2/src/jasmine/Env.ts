@@ -130,11 +130,11 @@ export default function jasmineEnv(j$: Jasmine) {
       let nextSuiteId = 0;
 
       const getNextSpecId = function () {
-        return 'spec' + nextSpecId++;
+        return `spec${nextSpecId++}`;
       };
 
       const getNextSuiteId = function () {
-        return 'suite' + nextSuiteId++;
+        return `suite${nextSuiteId++}`;
       };
 
       const topSuite = new j$.Suite({
@@ -693,9 +693,7 @@ export default function jasmineEnv(j$: Jasmine) {
         const runnable = currentRunnable();
 
         if (!runnable) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
           throw errorAsErrorObject;
         }

@@ -28,7 +28,7 @@ describe('Runtime', () => {
     it('creates mock functions with mock implementations', async () => {
       const runtime = await createRuntime(__filename);
       const root = runtime.requireModule(runtime.__mockRootPath);
-      const mock = root.jest.fn(string => string + ' implementation');
+      const mock = root.jest.fn(string => `${string} implementation`);
       expect(mock._isMockFunction).toBe(true);
       const value = mock('mock');
       expect(value).toEqual('mock implementation');

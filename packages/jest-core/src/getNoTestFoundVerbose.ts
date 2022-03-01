@@ -38,8 +38,11 @@ export default function getNoTestFoundVerbose(
 
     return testRun.matches.total
       ? `In ${chalk.bold(config.rootDir)}\n` +
-          `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
-          statsMessage
+          `  ${pluralize(
+            'file',
+            testRun.matches.total || 0,
+            's',
+          )} checked.\n${statsMessage}`
       : `No files found in ${config.rootDir}.\n` +
           "Make sure Jest's configuration does not exclude this directory." +
           '\nTo set up Jest, make sure a package.json file exists.\n' +
@@ -59,22 +62,14 @@ export default function getNoTestFoundVerbose(
   }
 
   if (willExitWith0) {
-    return (
-      chalk.bold('No tests found, exiting with code 0') +
-      '\n' +
-      individualResults.join('\n') +
-      '\n' +
-      dataMessage
-    );
+    return `${chalk.bold(
+      'No tests found, exiting with code 0',
+    )}\n${individualResults.join('\n')}\n${dataMessage}`;
   }
 
   return (
-    chalk.bold('No tests found, exiting with code 1') +
-    '\n' +
+    `${chalk.bold('No tests found, exiting with code 1')}\n` +
     'Run with `--passWithNoTests` to exit with code 0' +
-    '\n' +
-    individualResults.join('\n') +
-    '\n' +
-    dataMessage
+    `\n${individualResults.join('\n')}\n${dataMessage}`
   );
 }

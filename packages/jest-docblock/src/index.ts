@@ -93,7 +93,7 @@ export function print({
   const printedObject = keys
     .map(key => printKeyValues(key, pragmas[key]))
     .reduce((arr, next) => arr.concat(next), [])
-    .map(keyValue => start + ' ' + keyValue + line)
+    .map(keyValue => `${start} ${keyValue}${line}`)
     .join('');
 
   if (!comments) {

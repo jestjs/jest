@@ -141,10 +141,11 @@ export default class FakeTimers {
         'A function to advance timers was called but the timers API is not ' +
           'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
           'enable fake timers globally by setting `"timers": "fake"` in the ' +
-          'configuration file\nStack Trace:\n' +
-          formatStackTrace(new Error().stack!, this._config, {
-            noStackTrace: false,
-          }),
+          `configuration file\nStack Trace:\n${formatStackTrace(
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
       );
     }
 

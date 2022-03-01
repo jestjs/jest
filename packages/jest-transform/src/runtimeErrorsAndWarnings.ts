@@ -18,7 +18,7 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold(
 export const makeInvalidReturnValueError = (): string =>
   chalk.red(
     [
-      chalk.bold(BULLET + 'Invalid return value:'),
+      chalk.bold(`${BULLET}Invalid return value:`),
       "  Code transformer's `process` function must return a string or an object",
       '  with `code` key containing a string. If `processAsync` function is implemented,',
       '  it must return a Promise resolving to one of these values.',
@@ -32,7 +32,7 @@ export const makeInvalidSourceMapWarning = (
 ): string =>
   chalk.yellow(
     [
-      chalk.bold(BULLET + 'Invalid source map:'),
+      chalk.bold(`${BULLET}Invalid source map:`),
       `  The source map for "${slash(filename)}" returned by "${slash(
         transformPath,
       )}" is invalid.`,
@@ -45,7 +45,7 @@ export const makeInvalidSyncTransformerError = (
 ): string =>
   chalk.red(
     [
-      chalk.bold(BULLET + 'Invalid synchronous transformer module:'),
+      chalk.bold(`${BULLET}Invalid synchronous transformer module:`),
       `  "${slash(
         transformPath,
       )}" specified in the "transform" object of Jest configuration`,
@@ -57,7 +57,7 @@ export const makeInvalidSyncTransformerError = (
 export const makeInvalidTransformerError = (transformPath: string): string =>
   chalk.red(
     [
-      chalk.bold(BULLET + 'Invalid transformer module:'),
+      chalk.bold(`${BULLET}Invalid transformer module:`),
       `  "${slash(
         transformPath,
       )}" specified in the "transform" object of Jest configuration`,

@@ -19,7 +19,7 @@ export default class BaseReporter implements Reporter {
   private _error?: Error;
 
   log(message: string): void {
-    process.stderr.write(message + '\n');
+    process.stderr.write(`${message}\n`);
   }
 
   onRunStart(

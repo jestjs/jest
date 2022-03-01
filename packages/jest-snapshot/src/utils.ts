@@ -46,13 +46,15 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 
   if (version < SNAPSHOT_VERSION) {
     return new Error(
+      // eslint-disable-next-line prefer-template
       chalk.red(
         `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
           'file associated with this test is outdated. The snapshot file ' +
           'version ensures that all developers on a project are using ' +
           'the same version of Jest. ' +
-          'Please update all snapshots during this upgrade of Jest.\n\n',
+          'Please update all snapshots during this upgrade of Jest.',
       ) +
+        '\n\n' +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}\n\n` +
         SNAPSHOT_VERSION_WARNING,
@@ -61,13 +63,15 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 
   if (version > SNAPSHOT_VERSION) {
     return new Error(
+      // eslint-disable-next-line prefer-template
       chalk.red(
         `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
           'snapshot file indicates that this project is meant to be used ' +
           'with a newer version of Jest. The snapshot file version ensures ' +
           'that all developers on a project are using the same version of ' +
-          'Jest. Please update your version of Jest and re-run the tests.\n\n',
+          'Jest. Please update your version of Jest and re-run the tests.',
       ) +
+        '\n\n' +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}`,
     );
@@ -81,7 +85,7 @@ function isObject(item: unknown): boolean {
 }
 
 export const testNameToKey = (testName: string, count: number): string =>
-  testName + ' ' + count;
+  `${testName} ${count}`;
 
 export const keyToTestName = (key: string): string => {
   if (!/ \d+$/.test(key)) {
@@ -186,7 +190,7 @@ export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');
 
 const printBacktickString = (str: string): string =>
-  '`' + escapeBacktickString(str) + '`';
+  `\`${escapeBacktickString(str)}\``;
 
 export const ensureDirectoryExists = (filePath: string): void => {
   try {
@@ -204,17 +208,15 @@ export const saveSnapshotFile = (
     .sort(naturalCompare)
     .map(
       key =>
-        'exports[' +
-        printBacktickString(key) +
-        '] = ' +
-        printBacktickString(normalizeNewlines(snapshotData[key])) +
-        ';',
+        `exports[${printBacktickString(key)}] = ${printBacktickString(
+          normalizeNewlines(snapshotData[key]),
+        )};`,
     );
 
   ensureDirectoryExists(snapshotPath);
   fs.writeFileSync(
     snapshotPath,
-    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
+    `${writeSnapshotVersion()}\n\n${snapshots.join('\n\n')}\n`,
   );
 };
 

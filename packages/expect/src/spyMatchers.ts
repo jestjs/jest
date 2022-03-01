@@ -79,10 +79,11 @@ const printNumberOfReturns = (
   countReturns: number,
   countCalls: number,
 ): string =>
-  `\nNumber of returns: ${printReceived(countReturns)}` +
-  (countCalls !== countReturns
-    ? `\nNumber of calls:   ${printReceived(countCalls)}`
-    : '');
+  `\nNumber of returns: ${printReceived(countReturns)}${
+    countCalls !== countReturns
+      ? `\nNumber of calls:   ${printReceived(countCalls)}`
+      : ''
+  }`;
 
 type PrintLabel = (string: string, isExpectedCall: boolean) => string;
 
@@ -95,7 +96,7 @@ const getRightAlignedPrinter = (label: string): PrintLabel => {
 
   return (string: string, isExpectedCall: boolean) =>
     (isExpectedCall
-      ? '->' + ' '.repeat(Math.max(0, index - 2 - string.length))
+      ? `->${' '.repeat(Math.max(0, index - 2 - string.length))}`
       : ' '.repeat(Math.max(index - string.length))) +
     string +
     suffix;
@@ -115,22 +116,20 @@ const printReceivedCallsNegative = (
 
   const label = 'Received:     ';
   if (isOnlyCall) {
-    return label + printReceivedArgs(indexedCalls[0], expected) + '\n';
+    return `${label + printReceivedArgs(indexedCalls[0], expected)}\n`;
   }
 
   const printAligned = getRightAlignedPrinter(label);
 
-  return (
-    'Received\n' +
-    indexedCalls.reduce(
-      (printed: string, [i, args]: IndexedCall) =>
+  return `Received\n${indexedCalls.reduce(
+    (printed: string, [i, args]: IndexedCall) =>
+      `${
         printed +
         printAligned(String(i + 1), i === iExpectedCall) +
-        printReceivedArgs(args, expected) +
-        '\n',
-      '',
-    )
-  );
+        printReceivedArgs(args, expected)
+      }\n`,
+    '',
+  )}`;
 };
 
 const printExpectedReceivedCallsPositive = (
@@ -173,42 +172,42 @@ const printExpectedReceivedCallsPositive = (
               difference.includes('+ Received')
             ) {
               // Omit annotation in case multiple args have diff.
-              lines.push(difference.split('\n').slice(3).join('\n') + ',');
+              lines.push(`${difference.split('\n').slice(3).join('\n')},`);
               continue;
             }
           }
         }
 
         if (i < expected.length) {
-          lines.push(EXPECTED_COLOR('- ' + stringify(expected[i])) + ',');
+          lines.push(`${EXPECTED_COLOR(`- ${stringify(expected[i])}`)},`);
         }
         if (i < received.length) {
-          lines.push(RECEIVED_COLOR('+ ' + stringify(received[i])) + ',');
+          lines.push(`${RECEIVED_COLOR(`+ ${stringify(received[i])}`)},`);
         }
       }
 
-      return lines.join('\n') + '\n';
+      return `${lines.join('\n')}\n`;
     }
 
-    return expectedLine + label + printReceivedArgs(received, expected) + '\n';
+    return `${expectedLine + label + printReceivedArgs(received, expected)}\n`;
   }
 
   const printAligned = getRightAlignedPrinter(label);
 
   return (
+    // eslint-disable-next-line prefer-template
     expectedLine +
     'Received\n' +
     indexedCalls.reduce((printed: string, [i, received]: IndexedCall) => {
       const aligned = printAligned(String(i + 1), i === iExpectedCall);
-      return (
+      return `${
         printed +
         ((i === iExpectedCall || iExpectedCall === undefined) &&
         isLineDiffableCall(expected, received)
           ? aligned.replace(': ', '\n') +
             printDiffCall(expected, received, expand)
-          : aligned + printReceivedArgs(received, expected)) +
-        '\n'
-      );
+          : aligned + printReceivedArgs(received, expected))
+      }\n`;
     }, '')
   );
 };
@@ -224,7 +223,7 @@ const printDiffCall = (
     .map((arg, i) => {
       if (i < expected.length) {
         if (isEqualValue(expected[i], arg)) {
-          return indentation + '  ' + printCommon(arg) + ',';
+          return `${indentation}  ${printCommon(arg)},`;
         }
 
         if (isLineDiffableArg(expected[i], arg)) {
@@ -237,25 +236,22 @@ const printDiffCall = (
           ) {
             // Display diff with indentation.
             // Omit annotation in case multiple args have diff.
-            return (
-              difference
-                .split('\n')
-                .slice(3)
-                .map(line => indentation + line)
-                .join('\n') + ','
-            );
+            return `${difference
+              .split('\n')
+              .slice(3)
+              .map(line => indentation + line)
+              .join('\n')},`;
           }
         }
       }
 
       // Display + only if received arg has no corresponding expected arg.
-      return (
+      return `${
         indentation +
         (i < expected.length
-          ? '  ' + printReceived(arg)
-          : RECEIVED_COLOR('+ ' + stringify(arg))) +
-        ','
-      );
+          ? `  ${printReceived(arg)}`
+          : RECEIVED_COLOR(`+ ${stringify(arg)}`))
+      },`;
     })
     .join('\n');
 
@@ -335,20 +331,22 @@ const printReceivedResults = (
   }
 
   if (isOnlyCall && (iExpectedCall === 0 || iExpectedCall === undefined)) {
-    return label + printResult(indexedResults[0][1], expected) + '\n';
+    return `${label + printResult(indexedResults[0][1], expected)}\n`;
   }
 
   const printAligned = getRightAlignedPrinter(label);
 
   return (
+    // eslint-disable-next-line prefer-template
     label.replace(':', '').trim() +
     '\n' +
     indexedResults.reduce(
       (printed: string, [i, result]: IndexedResult) =>
-        printed +
-        printAligned(String(i + 1), i === iExpectedCall) +
-        printResult(result, expected) +
-        '\n',
+        `${
+          printed +
+          printAligned(String(i + 1), i === iExpectedCall) +
+          printResult(result, expected)
+        }\n`,
       '',
     )
   );
@@ -379,6 +377,7 @@ const createToBeCalledMatcher = (matcherName: string) =>
     const pass = count > 0;
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of calls: ${printExpected(0)}\n` +
@@ -393,6 +392,7 @@ const createToBeCalledMatcher = (matcherName: string) =>
             }, [])
             .join('\n')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of calls: >= ${printExpected(1)}\n` +
@@ -427,6 +427,7 @@ const createToReturnMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: ${printExpected(0)}\n` +
@@ -446,6 +447,7 @@ const createToReturnMatcher = (matcherName: string) =>
               )}`
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: >= ${printExpected(1)}\n` +
@@ -483,10 +485,12 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of calls: not ${printExpected(expected)}`
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of calls: ${printExpected(expected)}\n` +
@@ -521,6 +525,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: not ${printExpected(expected)}` +
@@ -530,6 +535,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
               )}`
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: ${printExpected(expected)}\n` +
@@ -578,6 +584,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: not ${printExpectedArgs(expected)}\n` +
@@ -601,6 +608,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             printExpectedReceivedCallsPositive(
@@ -647,6 +655,7 @@ const createToReturnWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: not ${printExpected(expected)}\n` +
@@ -673,6 +682,7 @@ const createToReturnWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: ${printExpected(expected)}\n` +
@@ -722,6 +732,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
           indexedCalls.push([iLast, calls[iLast]]);
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: not ${printExpectedArgs(expected)}\n` +
@@ -756,6 +767,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             printExpectedReceivedCallsPositive(
@@ -802,6 +814,7 @@ const createLastReturnedMatcher = (matcherName: string) =>
           indexedResults.push([iLast, results[iLast]]);
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: not ${printExpected(expected)}\n` +
@@ -839,6 +852,7 @@ const createLastReturnedMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `Expected: ${printExpected(expected)}\n` +
@@ -907,6 +921,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
@@ -969,6 +984,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
@@ -1033,6 +1049,7 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
@@ -1098,6 +1115,7 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
