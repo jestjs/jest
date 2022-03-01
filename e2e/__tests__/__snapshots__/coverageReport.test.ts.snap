@@ -62,7 +62,7 @@ All files                            |      60 |        0 |      50 |      60 |
 
 exports[`json reporter printing with --coverage 1`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       1 failed, 2 passed, 3 total
+Tests:       1 failed, 1 skipped, 2 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."

@@ -128,10 +128,13 @@ export default class Jasmine2Reporter implements Reporter {
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
-    const start = this._startTimes.get(specResult.id);
-    const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
+    const start = this._startTimes.get(specResult.id);
+    const duration =
+      start && !['pending', 'skipped'].includes(status)
+        ? Date.now() - start
+        : null;
     const location = specResult.__callsite
       ? {
           column: specResult.__callsite.getColumnNumber(),
