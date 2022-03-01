@@ -49,19 +49,21 @@ export const trimAndFormatPath = (
   const basenameLength = basename.length;
   if (basenameLength + 4 < maxLength) {
     const dirnameLength = maxLength - 4 - basenameLength;
-    dirname =
-      '...' + dirname.slice(dirname.length - dirnameLength, dirname.length);
+    dirname = `...${dirname.slice(
+      dirname.length - dirnameLength,
+      dirname.length,
+    )}`;
     return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
   if (basenameLength + 4 === maxLength) {
-    return slash(chalk.dim('...' + path.sep) + chalk.bold(basename));
+    return slash(chalk.dim(`...${path.sep}`) + chalk.bold(basename));
   }
 
   // can't fit dirname, but can fit trimmed basename
   return slash(
     chalk.bold(
-      '...' + basename.slice(basename.length - maxLength - 4, basename.length),
+      `...${basename.slice(basename.length - maxLength - 4, basename.length)}`,
     ),
   );
 };
@@ -164,17 +166,15 @@ export const getSummary = (
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
-  const suites =
+  const suites = `${
     chalk.bold('Test Suites: ') +
-    (suitesFailed ? chalk.bold.red(`${suitesFailed} failed`) + ', ' : '') +
+    (suitesFailed ? `${chalk.bold.red(`${suitesFailed} failed`)}, ` : '') +
     (suitesPending
-      ? chalk.bold.yellow(`${suitesPending} skipped`) + ', '
+      ? `${chalk.bold.yellow(`${suitesPending} skipped`)}, `
       : '') +
-    (suitesPassed ? chalk.bold.green(`${suitesPassed} passed`) + ', ' : '') +
-    (suitesRun !== suitesTotal
-      ? suitesRun + ' of ' + suitesTotal
-      : suitesTotal) +
-    ' total';
+    (suitesPassed ? `${chalk.bold.green(`${suitesPassed} passed`)}, ` : '') +
+    (suitesRun !== suitesTotal ? `${suitesRun} of ${suitesTotal}` : suitesTotal)
+  } total`;
 
   const updatedTestsFailed =
     testsFailed + valuesForCurrentTestCases.numFailingTests;
@@ -186,53 +186,53 @@ export const getSummary = (
   const updatedTestsTotal =
     testsTotal + valuesForCurrentTestCases.numTotalTests;
 
-  const tests =
+  const tests = `${
     chalk.bold('Tests:       ') +
     (updatedTestsFailed > 0
-      ? chalk.bold.red(`${updatedTestsFailed} failed`) + ', '
+      ? `${chalk.bold.red(`${updatedTestsFailed} failed`)}, `
       : '') +
     (updatedTestsPending > 0
-      ? chalk.bold.yellow(`${updatedTestsPending} skipped`) + ', '
+      ? `${chalk.bold.yellow(`${updatedTestsPending} skipped`)}, `
       : '') +
     (updatedTestsTodo > 0
-      ? chalk.bold.magenta(`${updatedTestsTodo} todo`) + ', '
+      ? `${chalk.bold.magenta(`${updatedTestsTodo} todo`)}, `
       : '') +
     (updatedTestsPassed > 0
-      ? chalk.bold.green(`${updatedTestsPassed} passed`) + ', '
-      : '') +
-    `${updatedTestsTotal} total`;
+      ? `${chalk.bold.green(`${updatedTestsPassed} passed`)}, `
+      : '')
+  }${updatedTestsTotal} total`;
 
-  const snapshots =
+  const snapshots = `${
     chalk.bold('Snapshots:   ') +
     (snapshotsFailed
-      ? chalk.bold.red(`${snapshotsFailed} failed`) + ', '
+      ? `${chalk.bold.red(`${snapshotsFailed} failed`)}, `
       : '') +
     (snapshotsOutdated && !snapshotsDidUpdate
-      ? chalk.bold.yellow(`${snapshotsOutdated} obsolete`) + ', '
+      ? `${chalk.bold.yellow(`${snapshotsOutdated} obsolete`)}, `
       : '') +
     (snapshotsOutdated && snapshotsDidUpdate
-      ? chalk.bold.green(`${snapshotsOutdated} removed`) + ', '
+      ? `${chalk.bold.green(`${snapshotsOutdated} removed`)}, `
       : '') +
     (snapshotsFilesRemoved && !snapshotsDidUpdate
-      ? chalk.bold.yellow(
-          pluralize('file', snapshotsFilesRemoved) + ' obsolete',
-        ) + ', '
+      ? `${chalk.bold.yellow(
+          `${pluralize('file', snapshotsFilesRemoved)} obsolete`,
+        )}, `
       : '') +
     (snapshotsFilesRemoved && snapshotsDidUpdate
-      ? chalk.bold.green(
-          pluralize('file', snapshotsFilesRemoved) + ' removed',
-        ) + ', '
+      ? `${chalk.bold.green(
+          `${pluralize('file', snapshotsFilesRemoved)} removed`,
+        )}, `
       : '') +
     (snapshotsUpdated
-      ? chalk.bold.green(`${snapshotsUpdated} updated`) + ', '
+      ? `${chalk.bold.green(`${snapshotsUpdated} updated`)}, `
       : '') +
     (snapshotsAdded
-      ? chalk.bold.green(`${snapshotsAdded} written`) + ', '
+      ? `${chalk.bold.green(`${snapshotsAdded} written`)}, `
       : '') +
     (snapshotsPassed
-      ? chalk.bold.green(`${snapshotsPassed} passed`) + ', '
-      : '') +
-    `${snapshotsTotal} total`;
+      ? `${chalk.bold.green(`${snapshotsPassed} passed`)}, `
+      : '')
+  }${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
   return [suites, tests, snapshots, time].join('\n');
@@ -244,7 +244,7 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
     estimatedTime && runTime >= estimatedTime + 1
       ? chalk.bold.yellow(formatTime(runTime, 0))
       : formatTime(runTime, 0);
-  let time = chalk.bold('Time:') + `        ${renderedTime}`;
+  let time = `${chalk.bold('Time:')}        ${renderedTime}`;
   if (runTime < estimatedTime) {
     time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
@@ -258,10 +258,9 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
       availableWidth,
     );
     if (availableWidth >= 2) {
-      time +=
-        '\n' +
-        chalk.green('█').repeat(length) +
-        chalk.white('█').repeat(availableWidth - length);
+      time += `\n${chalk.green('█').repeat(length)}${chalk
+        .white('█')
+        .repeat(availableWidth - length)}`;
     }
   }
   return time;

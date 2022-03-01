@@ -7,36 +7,30 @@
 
 import * as path from 'path';
 import slash = require('slash');
-import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const MULTIPLE_CONFIGS_WARNING_TEXT = 'Multiple configurations found';
 
-test('multiple configs will warn', () => {
+test('multiple configs will throw error', () => {
   const rootDir = slash(path.resolve(__dirname, '../..'));
   const {exitCode, stderr} = runJest('multiple-configs', [], {
     skipPkgJsonCheck: true,
   });
 
-  expect(exitCode).toBe(0);
+  expect(exitCode).toBe(1);
   expect(stderr).toContain(MULTIPLE_CONFIGS_WARNING_TEXT);
 
   const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
-  const {rest, summary} = extractSummary(cleanStdErr);
-
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(cleanStdErr).toMatchSnapshot();
 });
 
-test('multiple configs warning can be suppressed by using --config', () => {
-  const {exitCode, stderr} = runJest(
+test('multiple configs error can be suppressed by using --config', () => {
+  const {exitCode} = runJest(
     'multiple-configs',
     ['--config', 'jest.config.json'],
     {
       skipPkgJsonCheck: true,
     },
   );
-
   expect(exitCode).toBe(0);
-  expect(stderr).not.toContain(MULTIPLE_CONFIGS_WARNING_TEXT);
 });

@@ -53,7 +53,7 @@ function stackFormatter(
   }
 
   if (initError) {
-    return errorMessage.trimRight() + '\n\n' + initError.stack;
+    return `${errorMessage.trimRight()}\n\n${initError.stack}`;
   }
 
   return new Error(errorMessage).stack;

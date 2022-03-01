@@ -108,11 +108,11 @@ export default class SummaryReporter extends BaseReporter {
         });
 
         if (!this._globalConfig.silent) {
-          message +=
-            '\n' +
-            (wasInterrupted
+          message += `\n${
+            wasInterrupted
               ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(contexts, this._globalConfig));
+              : this._getTestSummary(contexts, this._globalConfig)
+          }`;
         }
         this.log(message);
       }
@@ -144,9 +144,9 @@ export default class SummaryReporter extends BaseReporter {
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
-        updateCommand = `run \`${
-          client + ' ' + prefix + event + (isYarn ? '' : ' --')
-        } -u\``;
+        updateCommand = `run \`${`${client} ${prefix}${event}${
+          isYarn ? '' : ' --'
+        }`} -u\``;
       } else {
         updateCommand = 're-run jest with `-u`';
       }
@@ -179,10 +179,7 @@ export default class SummaryReporter extends BaseReporter {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
-            getResultHeader(testResult, globalConfig) +
-              '\n' +
-              failureMessage +
-              '\n',
+            `${getResultHeader(testResult, globalConfig)}\n${failureMessage}\n`,
           );
         }
       });
@@ -218,11 +215,11 @@ export default class SummaryReporter extends BaseReporter {
     let nameInfo = '';
 
     if (globalConfig.runTestsByPath) {
-      nameInfo = ' ' + globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ');
+      nameInfo = ` ${globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ')}`;
     } else if (globalConfig.testNamePattern) {
-      nameInfo =
-        chalk.dim(' with tests matching ') +
-        `"${globalConfig.testNamePattern}"`;
+      nameInfo = `${chalk.dim(' with tests matching ')}"${
+        globalConfig.testNamePattern
+      }"`;
     }
 
     const contextInfo =

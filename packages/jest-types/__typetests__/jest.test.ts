@@ -133,7 +133,7 @@ expectError(jest.isMockFunction());
 const maybeMock = (a: string, b: number) => true;
 
 if (jest.isMockFunction(maybeMock)) {
-  expectType<Mock<boolean, [a: string, b: number]>>(maybeMock);
+  expectType<Mock<(a: string, b: number) => boolean>>(maybeMock);
 
   maybeMock.mockReturnValueOnce(false);
   expectError(maybeMock.mockReturnValueOnce(123));
@@ -146,7 +146,7 @@ if (!jest.isMockFunction(maybeMock)) {
 const surelyMock = jest.fn((a: string, b: number) => true);
 
 if (jest.isMockFunction(surelyMock)) {
-  expectType<Mock<boolean, [a: string, b: number]>>(surelyMock);
+  expectType<Mock<(a: string, b: number) => boolean>>(surelyMock);
 
   surelyMock.mockReturnValueOnce(false);
   expectError(surelyMock.mockReturnValueOnce(123));
@@ -165,7 +165,7 @@ const spiedObject = {
 const surelySpy = jest.spyOn(spiedObject, 'methodA');
 
 if (jest.isMockFunction(surelySpy)) {
-  expectType<SpyInstance<boolean, [a: number, b: string]>>(surelySpy);
+  expectType<SpyInstance<(a: number, b: string) => boolean>>(surelySpy);
 
   surelySpy.mockReturnValueOnce(false);
   expectError(surelyMock.mockReturnValueOnce(123));
@@ -178,7 +178,9 @@ if (!jest.isMockFunction(surelySpy)) {
 declare const stringMaybeMock: string;
 
 if (jest.isMockFunction(stringMaybeMock)) {
-  expectType<string & Mock<unknown, Array<unknown>>>(stringMaybeMock);
+  expectType<string & Mock<(...args: Array<unknown>) => unknown>>(
+    stringMaybeMock,
+  );
 }
 
 if (!jest.isMockFunction(stringMaybeMock)) {
@@ -188,7 +190,7 @@ if (!jest.isMockFunction(stringMaybeMock)) {
 declare const anyMaybeMock: any;
 
 if (jest.isMockFunction(anyMaybeMock)) {
-  expectType<Mock<unknown, Array<unknown>>>(anyMaybeMock);
+  expectType<Mock<(...args: Array<unknown>) => unknown>>(anyMaybeMock);
 }
 
 if (!jest.isMockFunction(anyMaybeMock)) {
@@ -198,7 +200,7 @@ if (!jest.isMockFunction(anyMaybeMock)) {
 declare const unknownMaybeMock: unknown;
 
 if (jest.isMockFunction(unknownMaybeMock)) {
-  expectType<Mock<unknown, Array<unknown>>>(unknownMaybeMock);
+  expectType<Mock<(...args: Array<unknown>) => unknown>>(unknownMaybeMock);
 }
 
 if (!jest.isMockFunction(unknownMaybeMock)) {

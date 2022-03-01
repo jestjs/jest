@@ -57,7 +57,7 @@ export async function run(
   const filePath = path.resolve(root, argv._[0].toString());
 
   if (argv.debug) {
-    const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
+    const info = cliInfo ? `, ${cliInfo.join(', ')}` : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
   const options = await readConfig(argv, root);

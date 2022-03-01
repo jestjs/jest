@@ -11,30 +11,40 @@ import type {Config} from '@jest/types';
 import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
-  .mock('graceful-fs', () =>
-    // Node 10.5.x compatibility
-    ({
-      ...jest.createMockFromModule('fs'),
-      ReadStream: jest.requireActual('fs').ReadStream,
-      WriteStream: jest.requireActual('fs').WriteStream,
-      readFileSync: jest.fn(path => {
-        if (mockFs[path]) {
-          return mockFs[path];
-        }
-
-        throw new Error(`Cannot read path '${path}'.`);
-      }),
-      statSync: path => ({
-        isFile: () => !!mockFs[path],
-        mtime: {getTime: () => 42, toString: () => '42'},
-      }),
-    }),
-  )
   .mock('graceful-fs', () => ({
     ...jest.requireActual('graceful-fs'),
-    realPathSync: {
-      native: dirInput => dirInput,
-    },
+    /* eslint-disable sort-keys */
+    readFileSync: jest.fn((path, options) => {
+      mockInvariant(typeof path === 'string');
+
+      expect(options).toBe('utf8');
+      if (mockFs[path]) {
+        return mockFs[path];
+      }
+
+      throw new Error(`Cannot read path '${path}'.`);
+    }),
+    writeFileSync: jest.fn((path, data, options) => {
+      mockInvariant(typeof path === 'string');
+      expect(options).toBe('utf8');
+      mockFs[path] = data;
+    }),
+
+    unlinkSync: jest.fn(),
+    statSync: jest.fn(path => ({
+      isFile() {
+        mockInvariant(typeof path === 'string');
+        return !!mockFs[path];
+      },
+      mtime: {getTime: () => 42, toString: () => '42'},
+    })),
+
+    existsSync: jest.fn(path => {
+      mockInvariant(typeof path === 'string');
+
+      return !!mockFs[path];
+    }),
+    /* eslint-enable */
   }))
   .mock('jest-haste-map', () => ({
     getStatic() {
@@ -257,36 +267,6 @@ describe('ScriptTransformer', () => {
     });
 
     fs = require('graceful-fs');
-    fs.readFileSync = jest.fn((path, options) => {
-      invariant(typeof path === 'string');
-
-      expect(options).toBe('utf8');
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      throw new Error(`Cannot read path '${path}'.`);
-    });
-    fs.writeFileSync = jest.fn((path, data, options) => {
-      invariant(typeof path === 'string');
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    });
-
-    fs.unlinkSync = jest.fn();
-    fs.statSync = jest.fn(path => ({
-      isFile() {
-        invariant(typeof path === 'string');
-        return !!mockFs[path];
-      },
-      mtime: {getTime: () => 42, toString: () => '42'},
-    }));
-
-    fs.existsSync = jest.fn(path => {
-      invariant(typeof path === 'string');
-
-      return !!mockFs[path];
-    });
 
     writeFileAtomic = require('write-file-atomic');
 
@@ -410,7 +390,7 @@ describe('ScriptTransformer', () => {
     ];
 
     incorrectReturnValues.forEach(([returnValue, filePath]) => {
-      invariant(typeof filePath === 'string');
+      mockInvariant(typeof filePath === 'string');
       require('passthrough-preprocessor').process.mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
@@ -423,7 +403,7 @@ describe('ScriptTransformer', () => {
     ];
 
     correctReturnValues.forEach(([returnValue, filePath]) => {
-      invariant(typeof filePath === 'string');
+      mockInvariant(typeof filePath === 'string');
       require('passthrough-preprocessor').process.mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
@@ -806,8 +786,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -838,8 +819,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -870,8 +852,9 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
       content,
@@ -908,8 +891,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -943,8 +929,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -978,8 +967,11 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
       content,
@@ -1832,7 +1824,7 @@ function getCoverageOptions(
   };
 }
 
-function invariant(subject: unknown): asserts subject {
+function mockInvariant(subject: unknown): asserts subject {
   if (!subject) {
     throw new Error('Went boom');
   }

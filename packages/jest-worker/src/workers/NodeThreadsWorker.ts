@@ -156,7 +156,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_SETUP_ERROR:
-        error = new Error('Error when calling setup: ' + response[2]);
+        error = new Error(`Error when calling setup: ${response[2]}`);
 
         // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
@@ -168,7 +168,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
+        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 

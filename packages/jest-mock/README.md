@@ -1,5 +1,7 @@
 # jest-mock
 
+**Note:** More details on user side API can be found in [Jest documentation](https://jestjs.io/docs/mock-function-api).
+
 ## API
 
 ```js
@@ -12,7 +14,7 @@ Creates a new module mocker that generates mocks as if they were created in an e
 
 ### `generateFromMetadata(metadata)`
 
-Generates a mock based on the given metadata (Metadata for the mock in the schema returned by the getMetadata method of this module). Mocks treat functions specially, and all mock functions have additional members, described in the documentation for `fn` in this module.
+Generates a mock based on the given metadata (Metadata for the mock in the schema returned by the `getMetadata()` method of this module). Mocks treat functions specially, and all mock functions have additional members, described in the documentation for `fn()` in this module.
 
 One important note: function prototypes are handled specially by this mocking framework. For functions with prototypes, when called as a constructor, the mock will install mocked function members on the instance. This allows different instances of the same constructor to have different values for its mocks member and its return values.
 
@@ -56,9 +58,9 @@ const refID = {
 };
 ```
 
-defines an object with a slot named `self` that refers back to the object.
+Defines an object with a slot named `self` that refers back to the object.
 
-### `fn`
+### `fn(implementation?)`
 
 Generates a stand-alone function with members that help drive unit tests or confirm expectations. Specifically, functions returned by this method have the following members:
 
@@ -84,9 +86,15 @@ Sets the default mock implementation for the function.
 
 ##### `.mockReturnThis()`
 
-Syntactic sugar for .mockImplementation(function() {return this;})
+Syntactic sugar for:
 
-In case both `mockImplementationOnce()/mockImplementation()` and `mockReturnValueOnce()/mockReturnValue()` are called. The priority of which to use is based on what is the last call:
+```js
+mockFn.mockImplementation(function () {
+  return this;
+});
+```
 
-- if the last call is mockReturnValueOnce() or mockReturnValue(), use the specific return value or default return value. If specific return values are used up or no default return value is set, fall back to try mockImplementation();
-- if the last call is mockImplementationOnce() or mockImplementation(), run the specific implementation and return the result or run default implementation and return the result.
+In case both `.mockImplementationOnce()` / `.mockImplementation()` and `.mockReturnValueOnce()` / `.mockReturnValue()` are called. The priority of which to use is based on what is the last call:
+
+- if the last call is `.mockReturnValueOnce()` or `.mockReturnValue()`, use the specific return value or default return value. If specific return values are used up or no default return value is set, fall back to try `.mockImplementation()`;
+- if the last call is `.mockImplementationOnce()` or `.mockImplementation()`, run the specific implementation and return the result or run default implementation and return the result.

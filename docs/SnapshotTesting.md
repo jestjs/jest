@@ -210,6 +210,22 @@ Object {
 `;
 ```
 
+:::tip
+
+If the case concerns a string not an object then you need to replace random part of that string on your own before testing the snapshot.  
+You can use for that e.g. [`replace()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) and [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+
+```javascript
+const randomNumber = Math.round(Math.random() * 100);
+const stringWithRandomData = `<div id="${randomNumber}">Lorem ipsum</div>`;
+const stringWithConstantData = stringWithRandomData.replace(/id="\d+"/, 123);
+expect(stringWithConstantData).toMatchSnapshot();
+```
+
+Another way is to [mock](MockFunctions.md) the library responsible for generating the random part of the code you're snapshotting.
+
+:::
+
 ## Best Practices
 
 Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is an API response, UI, logs, or error messages. As with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.

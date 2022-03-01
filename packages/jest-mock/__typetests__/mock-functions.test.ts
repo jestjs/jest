@@ -15,30 +15,51 @@ import {Mock, SpyInstance, fn, spyOn} from 'jest-mock';
 
 // jest.fn()
 
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(async () => 'value')
     .mockClear()
     .mockReset()
-    .mockImplementation(fn())
-    .mockImplementationOnce(fn())
+    .mockImplementation(fn(async () => 'value'))
+    .mockImplementationOnce(fn(async () => 'value'))
     .mockName('mock')
-    .mockReturnThis()
-    .mockReturnValue(Promise.resolve('value'))
-    .mockReturnValueOnce(Promise.resolve('value'))
     .mockResolvedValue('value')
     .mockResolvedValueOnce('value')
     .mockRejectedValue('error')
-    .mockRejectedValue('error'),
+    .mockRejectedValueOnce('error')
+    .mockReturnThis()
+    .mockReturnValue(Promise.resolve('value'))
+    .mockReturnValueOnce(Promise.resolve('value')),
 );
+
+expectType<Mock<() => string>>(
+  fn(() => 'value')
+    .mockClear()
+    .mockReset()
+    .mockImplementation(() => 'value')
+    .mockImplementationOnce(() => 'value')
+    .mockName('mock')
+    .mockReturnThis()
+    .mockReturnValue('value')
+    .mockReturnValueOnce('value'),
+);
+
+expectError(fn(() => 'value').mockReturnValue(Promise.resolve('value')));
+expectError(fn(() => 'value').mockReturnValueOnce(Promise.resolve('value')));
+
+expectError(fn(() => 'value').mockResolvedValue('value'));
+expectError(fn(() => 'value').mockResolvedValueOnce('value'));
+
+expectError(fn(() => 'value').mockRejectedValue('error'));
+expectError(fn(() => 'value').mockRejectedValueOnce('error'));
 
 expectAssignable<Function>(fn()); // eslint-disable-line @typescript-eslint/ban-types
 
-expectType<Mock<unknown>>(fn());
-expectType<Mock<void, []>>(fn(() => {}));
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(...args: Array<unknown>) => unknown>>(fn());
+expectType<Mock<() => void>>(fn(() => {}));
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   fn((a: string, b?: number) => true),
 );
-expectType<Mock<never, [e: any]>>(
+expectType<Mock<(e: any) => never>>(
   fn((e: any) => {
     throw new Error();
   }),
@@ -63,7 +84,7 @@ const MockObject = fn((credentials: string) => ({
 }));
 
 expectType<{
-  connect(): Mock<unknown, Array<unknown>>;
+  connect(): Mock<(...args: Array<unknown>) => unknown>;
   disconnect(): void;
 }>(new MockObject('credentials'));
 expectError(new MockObject());
@@ -92,7 +113,7 @@ expectType<Array<number>>(mockFn.mock.invocationCallOrder);
 
 expectType<
   Array<{
-    connect(): Mock<unknown, Array<unknown>>;
+    connect(): Mock<(...args: Array<unknown>) => unknown>;
     disconnect(): void;
   }>
 >(MockObject.mock.instances);
@@ -114,12 +135,12 @@ if (returnValue.type === 'throw') {
   expectType<unknown>(returnValue.value);
 }
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockClear(),
 );
 expectError(mockFn.mockClear('some-mock'));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReset(),
 );
 expectError(mockFn.mockClear('some-mock'));
@@ -127,7 +148,7 @@ expectError(mockFn.mockClear('some-mock'));
 expectType<void>(mockFn.mockRestore());
 expectError(mockFn.mockClear('some-mock'));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockImplementation((a, b) => {
     expectType<string>(a);
     expectType<number | undefined>(b);
@@ -138,7 +159,7 @@ expectError(mockFn.mockImplementation((a: number) => false));
 expectError(mockFn.mockImplementation(a => 'false'));
 expectError(mockFn.mockImplementation());
 
-expectType<Mock<Promise<string>, [p: boolean]>>(
+expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockImplementation(async a => {
     expectType<boolean>(a);
     return 'mock value';
@@ -146,7 +167,7 @@ expectType<Mock<Promise<string>, [p: boolean]>>(
 );
 expectError(mockAsyncFn.mockImplementation(a => 'mock value'));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockImplementationOnce((a, b) => {
     expectType<string>(a);
     expectType<number | undefined>(b);
@@ -157,7 +178,7 @@ expectError(mockFn.mockImplementationOnce((a: number) => false));
 expectError(mockFn.mockImplementationOnce(a => 'false'));
 expectError(mockFn.mockImplementationOnce());
 
-expectType<Mock<Promise<string>, [p: boolean]>>(
+expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockImplementationOnce(async a => {
     expectType<boolean>(a);
     return 'mock value';
@@ -165,63 +186,63 @@ expectType<Mock<Promise<string>, [p: boolean]>>(
 );
 expectError(mockAsyncFn.mockImplementationOnce(a => 'mock value'));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockName('mockedFunction'),
 );
 expectError(mockFn.mockName(123));
 expectError(mockFn.mockName());
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnThis(),
 );
 expectError(mockFn.mockReturnThis('this'));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnValue(false),
 );
 expectError(mockFn.mockReturnValue('true'));
 expectError(mockFn.mockReturnValue());
 
-expectType<Mock<Promise<string>, [p: boolean]>>(
+expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockReturnValue(Promise.resolve('mock value')),
 );
 expectError(mockAsyncFn.mockReturnValue(Promise.resolve(true)));
 
-expectType<Mock<boolean, [a: string, b?: number | undefined]>>(
+expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockReturnValueOnce(false),
 );
 expectError(mockFn.mockReturnValueOnce('true'));
 expectError(mockFn.mockReturnValueOnce());
 
-expectType<Mock<Promise<string>, [p: boolean]>>(
+expectType<Mock<(p: boolean) => Promise<string>>>(
   mockAsyncFn.mockReturnValueOnce(Promise.resolve('mock value')),
 );
 expectError(mockAsyncFn.mockReturnValueOnce(Promise.resolve(true)));
 
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockResolvedValue('Mock value'),
 );
 expectError(fn(() => Promise.resolve('')).mockResolvedValue(123));
 expectError(fn(() => Promise.resolve('')).mockResolvedValue());
 
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockResolvedValueOnce('Mock value'),
 );
 expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce(123));
 expectError(fn(() => Promise.resolve('')).mockResolvedValueOnce());
 
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValue(new Error('Mock error')),
 );
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValue('Mock error'),
 );
 expectError(fn(() => Promise.resolve('')).mockRejectedValue());
 
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValueOnce(new Error('Mock error')),
 );
-expectType<Mock<Promise<string>, []>>(
+expectType<Mock<() => Promise<string>>>(
   fn(() => Promise.resolve('')).mockRejectedValueOnce('Mock error'),
 );
 expectError(fn(() => Promise.resolve('')).mockRejectedValueOnce());
@@ -261,22 +282,28 @@ expectNotAssignable<Function>(spy); // eslint-disable-line @typescript-eslint/ba
 expectError(spy());
 expectError(new spy());
 
-expectType<SpyInstance<boolean, []>>(spyOn(spiedObject, 'methodA'));
-expectType<SpyInstance<void, [a: string, b: number]>>(
+expectType<SpyInstance<typeof spiedObject.methodA>>(
+  spyOn(spiedObject, 'methodA'),
+);
+expectType<SpyInstance<typeof spiedObject.methodB>>(
   spyOn(spiedObject, 'methodB'),
 );
-expectType<SpyInstance<never, [e: any]>>(spyOn(spiedObject, 'methodC'));
+expectType<SpyInstance<typeof spiedObject.methodC>>(
+  spyOn(spiedObject, 'methodC'),
+);
 
-expectType<SpyInstance<boolean, []>>(spyOn(spiedObject, 'propertyB', 'get'));
-expectType<SpyInstance<void, [boolean]>>(
+expectType<SpyInstance<() => boolean>>(spyOn(spiedObject, 'propertyB', 'get'));
+expectType<SpyInstance<(value: boolean) => void>>(
   spyOn(spiedObject, 'propertyB', 'set'),
 );
 expectError(spyOn(spiedObject, 'propertyB'));
 expectError(spyOn(spiedObject, 'methodB', 'get'));
 expectError(spyOn(spiedObject, 'methodB', 'set'));
 
-expectType<SpyInstance<string, []>>(spyOn(spiedObject, 'propertyA', 'get'));
-expectType<SpyInstance<void, [string]>>(spyOn(spiedObject, 'propertyA', 'set'));
+expectType<SpyInstance<() => string>>(spyOn(spiedObject, 'propertyA', 'get'));
+expectType<SpyInstance<(value: string) => void>>(
+  spyOn(spiedObject, 'propertyA', 'set'),
+);
 expectError(spyOn(spiedObject, 'propertyA'));
 
 expectError(spyOn(spiedObject, 'notThere'));
@@ -286,17 +313,17 @@ expectError(spyOn(true, 'methodA'));
 expectError(spyOn(spiedObject));
 expectError(spyOn());
 
-expectType<SpyInstance<boolean, [arg: any]>>(
+expectType<SpyInstance<(arg: any) => boolean>>(
   spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
 );
 expectError(spyOn(spiedArray, 'isArray'));
 
-expectType<SpyInstance<string, []>>(
+expectType<SpyInstance<() => string>>(
   spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
 );
 expectError(spyOn(spiedFunction, 'toString'));
 
-expectType<SpyInstance<Date, [value: string | number | Date]>>(
+expectType<SpyInstance<(value: string | number | Date) => Date>>(
   spyOn(globalThis, 'Date'),
 );
-expectType<SpyInstance<number, []>>(spyOn(Date, 'now'));
+expectType<SpyInstance<() => number>>(spyOn(Date, 'now'));

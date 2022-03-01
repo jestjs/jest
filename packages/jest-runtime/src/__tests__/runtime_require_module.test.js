@@ -118,7 +118,7 @@ describe('Runtime requireModule', () => {
       'RegularModule',
     );
     expect(
-      exports.filename.endsWith('test_root' + path.sep + 'RegularModule.js'),
+      exports.filename.endsWith(`test_root${path.sep}RegularModule.js`),
     ).toBe(true);
   });
 

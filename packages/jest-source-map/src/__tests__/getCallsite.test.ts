@@ -9,12 +9,7 @@ import * as fs from 'graceful-fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
-// Node 10.5.x compatibility
-jest.mock('graceful-fs', () => ({
-  ...jest.createMockFromModule<typeof import('fs')>('fs'),
-  ReadStream: jest.requireActual('fs').ReadStream,
-  WriteStream: jest.requireActual('fs').WriteStream,
-}));
+jest.mock('graceful-fs');
 
 describe('getCallsite', () => {
   test('without source map', () => {
