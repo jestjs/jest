@@ -21,7 +21,7 @@
     "@types/node": "*"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.5.5",
+    "@tsd/typescript": "~4.6.2",
     "tsd-lite": "^0.5.1"
   },
   "engines": {
