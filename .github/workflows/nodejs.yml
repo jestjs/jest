@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
@@ -44,7 +44,7 @@ jobs:
     needs: prepare-yarn-cache
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -82,7 +82,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -114,7 +114,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
@@ -136,7 +136,7 @@ jobs:
     needs: prepare-yarn-cache
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
