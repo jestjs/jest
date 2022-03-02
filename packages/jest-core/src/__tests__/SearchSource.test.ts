@@ -62,7 +62,9 @@ describe('SearchSource', () => {
     // micromatch doesn't support '..' through the globstar ('**') to avoid
     // infinite recursion.
     it('supports ../ paths and unix separators via testRegex', async () => {
-      if (process.platform !== 'win32') {
+      if (process.platform === 'win32') {
+        return;
+      }
         const {options: config} =
           await normalize(
             {
@@ -83,9 +85,6 @@ describe('SearchSource', () => {
 
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
           expect(searchSource.isTestFilePath(path)).toEqual(true);
-      } else {
-        return undefined;
-      }
     });
 
     it('supports unix separators', () => {
@@ -602,7 +601,9 @@ describe('SearchSource', () => {
     });
 
     it('does not mistake roots folders with prefix names', async () => {
-      if (process.platform !== 'win32') {
+      if (process.platform === 'win32') {
+        return;
+      }
         const {options: config} =
           await normalize(
             {
@@ -614,14 +615,13 @@ describe('SearchSource', () => {
           )
         ;
 
-        searchSource = new SearchSource(
-          await Runtime.createContext(config, {maxWorkers, watchman: false}),
-        );
+        const context = await Runtime.createContext(config, {maxWorkers, watchman: false});
+
+        searchSource = new SearchSource(context);
 
         const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
         const data = searchSource.findTestsByPaths(input);
         expect(data.tests).toEqual([]);
-      }
     });
   });
 
