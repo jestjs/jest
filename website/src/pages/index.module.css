@@ -5,15 +5,45 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* Social Banner */
+/* Announcement banner */
 
-.banner {
-  font-weight: bold;
+:root {
+  --docusaurus-announcement-bar-height: auto !important;
+}
+
+div[class^="announcementBar"][role="banner"] {
+  border-bottom-color: var(--deepdark);
+}
+
+div[class^="announcementBarContent"] {
+  line-height: 40px;
   font-size: 20px;
-  padding: 20px;
-  max-width: 768px;
-  margin: 0 auto;
-  text-align: center;
+  font-weight: bold;
+  padding: 8px 30px;
+}
+
+div[class^="announcementBarContent"] a {
+  text-decoration: underline;
+  display: inline-block;
+  color: var(--ifm-color-primary) !important;
+}
+
+div[class^="announcementBarContent"] a:hover {
+  color: var(--brand) !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .announcement {
+    font-size: 18px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .announcement {
+    font-size: 15px;
+    line-height: 22px;
+    padding: 6px 30px;
+  }
 }
 
 /* Twitter Follow Button */
