@@ -301,15 +301,6 @@ class Index extends React.Component {
             {siteConfig.title} {siteConfig.titleDelimiter} {siteConfig.tagline}
           </title>
         </Head>
-        <Container background="light">
-          <div className={styles.banner}>
-            Support Ukraine 🇺🇦{' '}
-            <Link to="https://opensource.facebook.com/support-ukraine">
-              Help Provide Humanitarian Aid to Ukraine
-            </Link>
-            .
-          </div>
-        </Container>
         <HeroInteractive config={siteConfig} />
         <div className="mainContainerV1" style={{padding: 0}}>
           <Container
