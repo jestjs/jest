@@ -45,7 +45,7 @@ describe('SearchSource', () => {
 
   describe('isTestFilePath', () => {
     beforeEach(async () => {
-      const config = (
+      const {options: config} =
         await normalize(
           {
             name,
@@ -54,7 +54,7 @@ describe('SearchSource', () => {
           },
           {} as Config.Argv,
         )
-      ).options;
+      ;
       return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
         context => {
           searchSource = new SearchSource(context);
@@ -66,7 +66,7 @@ describe('SearchSource', () => {
     // infinite recursion.
     it('supports ../ paths and unix separators via testRegex', async () => {
       if (process.platform !== 'win32') {
-        const config = (
+        const {options: config} =
           await normalize(
             {
               name,
@@ -77,7 +77,7 @@ describe('SearchSource', () => {
             },
             {} as Config.Argv,
           )
-        ).options;
+        ;
         return Runtime.createContext(config, {
           maxWorkers,
           watchman: false,
@@ -406,7 +406,7 @@ describe('SearchSource', () => {
 
   describe('filterPathsWin32', () => {
     beforeEach(async () => {
-      const config = (
+      const {options: config} =
         await normalize(
           {
             name,
@@ -415,7 +415,7 @@ describe('SearchSource', () => {
           },
           {} as Config.Argv,
         )
-      ).options;
+      ;
       const context = await Runtime.createContext(config, {
         maxWorkers,
         watchman: false,
@@ -618,7 +618,7 @@ describe('SearchSource', () => {
 
     it('does not mistake roots folders with prefix names', async () => {
       if (process.platform !== 'win32') {
-        const config = (
+        const {options: config} =
           await normalize(
             {
               name,
@@ -627,7 +627,7 @@ describe('SearchSource', () => {
             },
             {} as Config.Argv,
           )
-        ).options;
+        ;
 
         searchSource = new SearchSource(
           await Runtime.createContext(config, {maxWorkers, watchman: false}),
