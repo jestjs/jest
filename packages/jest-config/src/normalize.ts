@@ -1160,13 +1160,6 @@ export default async function normalize(
     newOptions.testMatch = [];
   }
 
-  // If argv.json is set, coverageReporters shouldn't print a text report.
-  if (argv.json) {
-    newOptions.coverageReporters = (newOptions.coverageReporters || []).filter(
-      reporter => reporter !== 'text',
-    );
-  }
-
   // If collectCoverage is enabled while using --findRelatedTests we need to
   // avoid having false negatives in the generated coverage report.
   // The following: `--findRelatedTests '/rootDir/file1.js' --coverage`

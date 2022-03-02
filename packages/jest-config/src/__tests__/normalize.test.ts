@@ -122,19 +122,6 @@ it('minimal config is stable across runs', async () => {
   );
 });
 
-it('sets coverageReporters correctly when argv.json is set', async () => {
-  const {options} = await normalize(
-    {
-      rootDir: '/root/path/foo',
-    },
-    {
-      json: true,
-    } as Config.Argv,
-  );
-
-  expect(options.coverageReporters).toEqual(['json', 'lcov', 'clover']);
-});
-
 describe('rootDir', () => {
   it('throws if the options is missing a rootDir property', async () => {
     expect.assertions(1);
