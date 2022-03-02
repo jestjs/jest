@@ -37,8 +37,6 @@ const maxWorkers = 1;
 
 const toPaths = (tests: Array<Test>) => tests.map(({path}) => path);
 
-let findMatchingTests: (config: Config.ProjectConfig) => Promise<SearchResult>;
-
 const initSearchSource = async (
   initialOptions: Config.InitialOptions,
   options: {
@@ -105,25 +103,21 @@ describe('SearchSource', () => {
   });
 
   describe('testPathsMatching', () => {
-    beforeEach(() => {
-      findMatchingTests = async (initialOptions: Config.InitialOptions) => {
-        const searchSource = await initSearchSource(initialOptions);
-        return searchSource.findMatchingTests();
-      };
-    });
+    const getTestPaths = async (initialOptions: Config.InitialOptions) => {
+      const searchSource = await initSearchSource(initialOptions);
+      const {tests: paths} = searchSource.findMatchingTests();
+      return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
+    };
 
     it('finds tests matching a pattern via testRegex', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
         testMatch: undefined,
         testRegex: 'not-really-a-test',
       });
-      const relPaths = toPaths(data.tests)
-        .map(absPath => path.relative(rootDir, absPath))
-        .sort();
-      expect(relPaths).toEqual(
+      expect(paths).toEqual(
         [
           path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
@@ -132,17 +126,14 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a pattern via testMatch', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
         testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
         testRegex: '',
       });
-      const relPaths = toPaths(data.tests)
-        .map(absPath => path.relative(rootDir, absPath))
-        .sort();
-      expect(relPaths).toEqual(
+      expect(paths).toEqual(
         [
           path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
@@ -151,41 +142,35 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a JS regex pattern', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
         testMatch: undefined,
         testRegex: 'test.jsx?',
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests matching a JS glob pattern', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
         testMatch: ['**/test.js?(x)'],
         testRegex: '',
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests matching a JS with overriding glob patterns', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
@@ -197,138 +182,110 @@ describe('SearchSource', () => {
         ],
         testRegex: '',
       });
-
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('module.jsx'),
         path.normalize('noTests.js'),
       ]);
     });
 
     it('finds tests with default file extensions using testRegex', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         name,
         rootDir,
         testMatch: undefined,
         testRegex,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests with default file extensions using testMatch', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         name,
         rootDir,
         testMatch,
         testRegex: '',
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests with parentheses in their rootDir when using testMatch', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         name,
         rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
         testMatch: ['<rootDir>**/__testtests__/**/*'],
         testRegex: undefined,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         expect.stringContaining(path.normalize('__testtests__/test.js')),
       ]);
     });
 
     it('finds tests with similar but custom file extensions', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
         testMatch,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests with totally custom foobar file extensions', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'foobar'],
         name,
         rootDir,
         testMatch,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.foobar'),
         path.normalize('__testtests__/test.js'),
       ]);
     });
 
     it('finds tests with many kinds of file extensions', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
         testMatch,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests using a regex only', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         name,
         rootDir,
         testMatch: undefined,
         testRegex,
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
     });
 
     it('finds tests using a glob only', async () => {
-      const data = await findMatchingTests({
+      const paths = await getTestPaths({
         name,
         rootDir,
         testMatch,
         testRegex: '',
       });
-      const relPaths = toPaths(data.tests).map(absPath =>
-        path.relative(rootDir, absPath),
-      );
-      expect(relPaths.sort()).toEqual([
+      expect(paths).toEqual([
         path.normalize('__testtests__/test.js'),
         path.normalize('__testtests__/test.jsx'),
       ]);
