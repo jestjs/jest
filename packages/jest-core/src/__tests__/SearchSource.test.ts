@@ -39,25 +39,38 @@ const toPaths = (tests: Array<Test>) => tests.map(({path}) => path);
 
 let findMatchingTests: (config: Config.ProjectConfig) => Promise<SearchResult>;
 
+const initSearchSource = async (
+  initialOptions: Config.InitialOptions,
+  options: {
+    contextFiles?: Array<string>;
+  } = {},
+) => {
+  const {options: config} = await normalize(initialOptions, {} as Config.Argv);
+  const context = await Runtime.createContext(config, {
+    maxWorkers,
+    watchman: false,
+  });
+  if (options.contextFiles) {
+    jest
+      .spyOn(context.hasteFS, 'getAllFiles')
+      .mockReturnValue(options.contextFiles);
+  }
+  return new SearchSource(context);
+};
+
 describe('SearchSource', () => {
   const name = 'SearchSource';
   let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
     beforeEach(async () => {
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           name,
           rootDir: '.',
           roots: [],
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-      searchSource = new SearchSource(context);
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
@@ -66,7 +79,7 @@ describe('SearchSource', () => {
       if (process.platform === 'win32') {
         return;
       }
-      const {options: config} = await normalize(
+      const searchSource = await initSearchSource(
         {
           name,
           rootDir: '.',
@@ -74,13 +87,7 @@ describe('SearchSource', () => {
           testMatch: undefined,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-      searchSource = new SearchSource(context);
 
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
       expect(searchSource.isTestFilePath(path)).toEqual(true);
@@ -104,12 +111,8 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     beforeEach(() => {
       findMatchingTests = async (initialOptions: Config.InitialOptions) => {
-        const {options: config} = await normalize(initialOptions, {} as Config.Argv);
-        const context = await Runtime.createContext(config, {
-          maxWorkers,
-          watchman: false,
-        });
-        return new SearchSource(context).findMatchingTests();
+        const searchSource = await initSearchSource(initialOptions);
+        return searchSource.findMatchingTests();
       };
     });
 
@@ -364,27 +367,22 @@ describe('SearchSource', () => {
 
   describe('filterPathsWin32', () => {
     beforeEach(async () => {
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           name,
           rootDir: '.',
           roots: [],
         },
-        {} as Config.Argv,
-      );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-
-      searchSource = new SearchSource(context);
-      context.hasteFS.getAllFiles = () => [
+        {
+          contextFiles: [
         path.resolve('packages/lib/my-lib.ts'),
         path.resolve('packages/@core/my-app.ts'),
         path.resolve('packages/+cli/my-cli.ts'),
         path.resolve('packages/.hidden/my-app-hidden.ts'),
         path.resolve('packages/programs (x86)/my-program.ts'),
-      ];
+          ],
+        },
+      );
     });
 
     it('should allow a simple match', async () => {
@@ -449,7 +447,7 @@ describe('SearchSource', () => {
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(async () => {
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           haste: {
             hasteImplModulePath: path.join(
@@ -466,13 +464,7 @@ describe('SearchSource', () => {
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-      searchSource = new SearchSource(context);
     });
 
     it('makes sure a file is related to itself', async () => {
@@ -516,20 +508,14 @@ describe('SearchSource', () => {
 
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(async () => {
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           moduleFileExtensions: ['js', 'jsx', 'foobar'],
           name,
           rootDir,
           testMatch,
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-      searchSource = new SearchSource(context);
     });
 
     it('returns empty search result for empty input', async () => {
@@ -576,20 +562,13 @@ describe('SearchSource', () => {
       if (process.platform === 'win32') {
         return;
       }
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           name,
           rootDir: '.',
           roots: ['/foo/bar/prefix'],
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-
-      searchSource = new SearchSource(context);
 
       const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
       const data = searchSource.findTestsByPaths(input);
@@ -604,7 +583,7 @@ describe('SearchSource', () => {
     );
 
     beforeEach(async () => {
-      const {options: config} = await normalize(
+      searchSource = await initSearchSource(
         {
           haste: {
             hasteImplModulePath: path.resolve(
@@ -615,13 +594,7 @@ describe('SearchSource', () => {
           name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
           rootDir,
         },
-        {} as Config.Argv,
       );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
-      });
-      searchSource = new SearchSource(context);
     });
 
     it('return empty set if no SCM', async () => {
