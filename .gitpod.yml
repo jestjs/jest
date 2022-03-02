@@ -1,4 +1,22 @@
-# Commands to start on workspace startup. See https://www.gitpod.io/docs/config-gitpod-file
+# Commands to start on workspace startup. See https://www.gitpod.io/docs/config-start-tasks
 tasks:
   - init: yarn install && yarn run build
     command: yarn run watch
+
+github:
+  # https://www.gitpod.io/docs/prebuilds/#configure-prebuilds
+  prebuilds:
+    # enable for the default branch
+    master: true
+    # enable for all branches in this repo
+    branches: true
+    # enable for pull requests coming from this repo
+    pullRequests: true
+    # enable for pull requests coming from forks
+    pullRequestsFromForks: true
+    # add a check to pull requests
+    addCheck: true
+    # add a "Review in Gitpod" button to the pull request's description
+    addBadge: true
+    # don't add a "Review in Gitpod" button as a comment to pull requests
+    addComment: false
