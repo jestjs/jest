@@ -117,12 +117,10 @@ describe('SearchSource', () => {
         testMatch: undefined,
         testRegex: 'not-really-a-test',
       });
-      expect(paths).toEqual(
-        [
-          path.normalize('.hiddenFolder/not-really-a-test.txt'),
-          path.normalize('__testtests__/not-really-a-test.txt'),
-        ],
-      );
+      expect(paths).toEqual([
+        path.normalize('.hiddenFolder/not-really-a-test.txt'),
+        path.normalize('__testtests__/not-really-a-test.txt'),
+      ]);
     });
 
     it('finds tests matching a pattern via testMatch', async () => {
@@ -133,12 +131,10 @@ describe('SearchSource', () => {
         testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
         testRegex: '',
       });
-      expect(paths).toEqual(
-        [
-          path.normalize('.hiddenFolder/not-really-a-test.txt'),
-          path.normalize('__testtests__/not-really-a-test.txt'),
-        ],
-      );
+      expect(paths).toEqual([
+        path.normalize('.hiddenFolder/not-really-a-test.txt'),
+        path.normalize('__testtests__/not-really-a-test.txt'),
+      ]);
     });
 
     it('finds tests matching a JS regex pattern', async () => {
