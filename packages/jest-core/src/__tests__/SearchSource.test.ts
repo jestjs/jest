@@ -44,10 +44,8 @@ describe('SearchSource', () => {
   let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
-    let config;
-
     beforeEach(async () => {
-      config = (
+      const config = (
         await normalize(
           {
             name,
@@ -68,7 +66,7 @@ describe('SearchSource', () => {
     // infinite recursion.
     it('supports ../ paths and unix separators via testRegex', async () => {
       if (process.platform !== 'win32') {
-        config = (
+        const config = (
           await normalize(
             {
               name,
