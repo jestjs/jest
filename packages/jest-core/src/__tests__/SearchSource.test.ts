@@ -55,11 +55,8 @@ describe('SearchSource', () => {
           {} as Config.Argv,
         )
       ;
-      return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
+      const context = await Runtime.createContext(config, {maxWorkers, watchman: false});
           searchSource = new SearchSource(context);
-        },
-      );
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
@@ -78,15 +75,14 @@ describe('SearchSource', () => {
             {} as Config.Argv,
           )
         ;
-        return Runtime.createContext(config, {
+        const context = await Runtime.createContext(config, {
           maxWorkers,
           watchman: false,
-        }).then(context => {
+        });
           searchSource = new SearchSource(context);
 
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
           expect(searchSource.isTestFilePath(path)).toEqual(true);
-        });
       } else {
         return undefined;
       }
@@ -109,11 +105,13 @@ describe('SearchSource', () => {
 
   describe('testPathsMatching', () => {
     beforeEach(() => {
-      findMatchingTests = (config: Config.ProjectConfig) =>
-        Runtime.createContext(config, {
+      findMatchingTests = async (config: Config.ProjectConfig) => {
+        const context = await Runtime.createContext(config, {
           maxWorkers,
           watchman: false,
-        }).then(context => new SearchSource(context).findMatchingTests());
+        });
+        return new SearchSource(context).findMatchingTests();
+      };
     });
 
     it('finds tests matching a pattern via testRegex', async () => {
@@ -127,7 +125,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
@@ -137,7 +135,6 @@ describe('SearchSource', () => {
             path.normalize('__testtests__/not-really-a-test.txt'),
           ].sort(),
         );
-      });
     });
 
     it('finds tests matching a pattern via testMatch', async () => {
@@ -151,7 +148,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests)
           .map(absPath => path.relative(rootDir, absPath))
           .sort();
@@ -161,7 +158,6 @@ describe('SearchSource', () => {
             path.normalize('__testtests__/not-really-a-test.txt'),
           ].sort(),
         );
-      });
     });
 
     it('finds tests matching a JS regex pattern', async () => {
@@ -175,7 +171,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -183,7 +179,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests matching a JS glob pattern', async () => {
@@ -197,7 +192,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -205,7 +200,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests matching a JS with overriding glob patterns', async () => {
@@ -225,7 +219,7 @@ describe('SearchSource', () => {
         {} as Config.Argv,
       );
 
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -233,7 +227,6 @@ describe('SearchSource', () => {
           path.normalize('module.jsx'),
           path.normalize('noTests.js'),
         ]);
-      });
     });
 
     it('finds tests with default file extensions using testRegex', async () => {
@@ -246,7 +239,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -254,7 +247,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests with default file extensions using testMatch', async () => {
@@ -267,7 +259,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -275,7 +267,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests with parentheses in their rootDir when using testMatch', async () => {
@@ -288,14 +279,13 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
         expect(relPaths.sort()).toEqual([
           expect.stringContaining(path.normalize('__testtests__/test.js')),
         ]);
-      });
     });
 
     it('finds tests with similar but custom file extensions', async () => {
@@ -308,7 +298,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -316,7 +306,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests with totally custom foobar file extensions', async () => {
@@ -329,7 +318,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -337,7 +326,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.foobar'),
           path.normalize('__testtests__/test.js'),
         ]);
-      });
     });
 
     it('finds tests with many kinds of file extensions', async () => {
@@ -350,7 +338,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -358,7 +346,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests using a regex only', async () => {
@@ -371,7 +358,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -379,7 +366,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
 
     it('finds tests using a glob only', async () => {
@@ -392,7 +378,7 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      return findMatchingTests(config).then(data => {
+      const data = await findMatchingTests(config);
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
@@ -400,7 +386,6 @@ describe('SearchSource', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-      });
     });
   });
 
