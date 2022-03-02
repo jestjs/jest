@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test} from '@jest/test-result';
 import type {Context} from 'jest-runtime';
 import {
   PatternPrompt,
@@ -39,23 +38,6 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
-  }
-
-  _getMatchedTests(pattern: string): Array<Test> {
-    let regex;
-
-    try {
-      regex = new RegExp(pattern, 'i');
-    } catch {}
-
-    let tests: Array<Test> = [];
-    if (regex && this._searchSources) {
-      this._searchSources.forEach(({searchSource}) => {
-        tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
-      });
-    }
-
-    return tests;
   }
 
   updateSearchSources(searchSources: SearchSources): void {
