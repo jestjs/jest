@@ -5,6 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* Social Banner */
+
+.banner {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 20px;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: center;
+}
+
 /* Twitter Follow Button */
 
 .twitter-follow-button {
