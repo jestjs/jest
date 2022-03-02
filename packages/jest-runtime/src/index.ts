@@ -1141,6 +1141,8 @@ export default class Runtime {
     this._esmoduleRegistry.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
+    this._cacheFS.clear();
+    this._fileTransforms.clear();
 
     if (this._environment) {
       if (this._environment.global) {
