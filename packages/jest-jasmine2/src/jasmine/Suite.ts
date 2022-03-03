@@ -79,7 +79,8 @@ export default class Suite {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = convertDescriptorToString(attrs.description);
-    this.throwOnExpectationFailure = Boolean(attrs.throwOnExpectationFailure);
+    // eslint-disable-next-line no-implicit-coercion
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.beforeFns = [];
     this.afterFns = [];

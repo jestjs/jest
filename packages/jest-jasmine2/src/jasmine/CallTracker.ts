@@ -54,7 +54,8 @@ class CallTracker {
     };
 
     this.any = function () {
-      return Boolean(calls.length);
+      // eslint-disable-next-line no-implicit-coercion
+      return !!calls.length;
     };
 
     this.count = function () {

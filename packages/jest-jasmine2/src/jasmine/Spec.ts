@@ -100,10 +100,11 @@ export default class Spec {
   static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
-    return Boolean(
+    // eslint-disable-next-line no-implicit-coercion
+    return !!(
       e &&
-        e.toString &&
-        e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1,
+      e.toString &&
+      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
     );
   }
 
@@ -129,7 +130,8 @@ export default class Spec {
         return '';
       };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
-    this.throwOnExpectationFailure = Boolean(attrs.throwOnExpectationFailure);
+    // eslint-disable-next-line no-implicit-coercion
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.initError = new Error();
     this.initError.name = '';

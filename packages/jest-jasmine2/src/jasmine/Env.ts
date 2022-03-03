@@ -212,7 +212,8 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.catchExceptions = function (value) {
-        catchExceptions = Boolean(value);
+        // eslint-disable-next-line no-implicit-coercion
+        catchExceptions = !!value;
         return catchExceptions;
       };
 
@@ -221,7 +222,8 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.throwOnExpectationFailure = function (value) {
-        throwOnExpectationFailure = Boolean(value);
+        // eslint-disable-next-line no-implicit-coercion
+        throwOnExpectationFailure = !!value;
       };
 
       this.throwingExpectationFailures = function () {
@@ -229,7 +231,8 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.randomizeTests = function (value) {
-        random = Boolean(value);
+        // eslint-disable-next-line no-implicit-coercion
+        random = !!value;
       };
 
       this.randomTests = function () {

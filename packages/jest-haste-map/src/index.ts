@@ -917,8 +917,8 @@ export default class HasteMap extends EventEmitter {
                 event.type === type &&
                 event.filePath === filePath &&
                 ((!event.stat && !stat) ||
-                  (Boolean(event.stat) &&
-                    Boolean(stat) &&
+                  (event.stat != null &&
+                    stat != null &&
                     event.stat.mtime.getTime() === stat.mtime.getTime())),
             )
           ) {
