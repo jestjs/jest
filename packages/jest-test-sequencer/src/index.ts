@@ -17,6 +17,11 @@ type Cache = {
   [key: string]: [0 | 1, number];
 };
 
+export type SortOptions = {
+  shardIndex: number;
+  shardCount: number;
+};
+
 /**
  * The TestSequencer will ultimately decide which tests should run first.
  * It is responsible for storing and reading from a local cache
@@ -63,6 +68,23 @@ export default class TestSequencer {
     }
 
     return cache;
+  }
+
+  shard(
+    tests: Array<Test>,
+    options: SortOptions = {shardCount: 1, shardIndex: 1},
+  ): Array<Test> {
+    if (options.shardCount > 1) {
+      const shardSize = Math.ceil(tests.length / options.shardCount);
+      const shardStart = shardSize * (options.shardIndex - 1);
+      const shardEnd = shardSize * options.shardIndex;
+
+      return [...tests]
+        .sort((a, b) => (a.path > b.path ? 1 : -1))
+        .slice(shardStart, shardEnd);
+    }
+
+    return tests;
   }
 
   /**

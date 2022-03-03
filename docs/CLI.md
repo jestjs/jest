@@ -338,6 +338,16 @@ Run only the tests of the specified projects. Jest uses the attribute `displayNa
 
 A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
 
+### `--shard`
+
+Shard suite to execute in on multiple machines. For example, to split the suite into three shards, each running one third of the tests:
+
+```
+jest --shard=1/3
+jest --shard=2/3
+jest --shard=3/3
+```
+
 ### `--showConfig`
 
 Print your Jest config and then exits.

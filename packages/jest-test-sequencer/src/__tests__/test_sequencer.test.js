@@ -276,3 +276,74 @@ test('works with multiple contexts', () => {
     '/test-c.js': [SUCCESS, 3],
   });
 });
+
+test('does not shard by default', () => {
+  const tests = sequencer.shard(toTests(['/test-a.js', '/test-ab.js']));
+  expect(tests.map(test => test.path)).toEqual(['/test-a.js', '/test-ab.js']);
+});
+
+test('return first shard', () => {
+  const tests = sequencer.shard(
+    toTests(['/test-a.js', '/test-abc.js', '/test-ab.js']),
+    {
+      shardCount: 2,
+      shardIndex: 1,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-a.js', '/test-ab.js']);
+});
+
+test('return second shard', () => {
+  const tests = sequencer.shard(
+    toTests(['/test-ab.js', '/test-abc.js', '/test-a.js']),
+    {
+      shardCount: 2,
+      shardIndex: 2,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-abc.js']);
+});
+
+test('return third shard', () => {
+  const tests = sequencer.shard(
+    toTests(['/test-abc.js', '/test-a.js', '/test-ab.js']),
+    {
+      shardCount: 3,
+      shardIndex: 3,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-abc.js']);
+});
+
+test('returns expected 100/10 shards', () => {
+  const allTests = new Array(100).fill(true).map((_, i) => `/${i}.js`);
+
+  const shards = new Array(10).fill(true).map((_, i) =>
+    sequencer.shard(allTests, {
+      shardCount: 10,
+      shardIndex: i + 1,
+    }),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  ]);
+});
+
+test('returns expected 100/8 shards', () => {
+  const allTests = new Array(100).fill(true).map((_, i) => `/${i}.js`);
+
+  const shards = new Array(8).fill(true).map((_, i) =>
+    sequencer.shard(allTests, {
+      shardCount: 8,
+      shardIndex: i + 1,
+    }),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    13, 13, 13, 13, 13, 13, 13, 9,
+  ]);
+});

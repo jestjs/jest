@@ -87,6 +87,34 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.shard) {
+    const shardPair = argv?.shard
+      .split('/')
+      .filter(d => /^\d+$/.test(d))
+      .map(d => parseInt(d, 10))
+      .filter((shard: number) => !Number.isNaN(shard));
+
+    if (shardPair.length !== 2) {
+      throw new Error(
+        'The --shard option requires a string in the format of <n>/<m>.\n Example usage jest --shard=1/5',
+      );
+    }
+
+    const [shardIndex, shardCount] = shardPair;
+
+    if (shardIndex === 0 || shardCount === 0) {
+      throw new Error(
+        'The --shard option requires 1-based values, received 0 in the pair.\n Example usage jest --shard=1/5',
+      );
+    }
+
+    if (shardIndex > shardCount) {
+      throw new Error(
+        'The --shard option <n>/<m> requires <n> to be lower or equal than <m>.\n Example usage jest --shard=1/5',
+      );
+    }
+  }
+
   return true;
 }
 
@@ -520,6 +548,12 @@ export const options = {
       'set up the testing framework before each test ',
     string: true,
     type: 'array',
+  },
+  shard: {
+    description:
+      'Shard tests and execute only the selected shard, specify in ' +
+      'the form "current/all". 1-based, for example "3/5"',
+    type: 'string',
   },
   showConfig: {
     description: 'Print your jest config and then exits.',

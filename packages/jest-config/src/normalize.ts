@@ -1220,6 +1220,19 @@ export default async function normalize(
     newOptions.logHeapUsage = false;
   }
 
+  if (argv.shard) {
+    const [shardIndex, shardCount] = argv?.shard
+      .split('/')
+      .filter(d => /^\d+$/.test(d))
+      .map(d => parseInt(d, 10))
+      .filter((shard: number) => !Number.isNaN(shard));
+
+    newOptions.shard = {
+      shardCount,
+      shardIndex,
+    };
+  }
+
   return {
     hasDeprecationWarnings,
     options: newOptions,
