@@ -7,6 +7,6 @@
 
 import {isCI} from 'ci-info';
 
-export default Boolean(process.stdout.isTTY) &&
+export default process.stdout.isTTY != null &&
   process.env.TERM !== 'dumb' &&
   !isCI;
