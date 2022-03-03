@@ -6,7 +6,5 @@
  */
 
 import {isCI} from 'ci-info';
-
-export default process.stdout.isTTY != null &&
-  process.env.TERM !== 'dumb' &&
-  !isCI;
+// eslint-disable-next-line no-implicit-coercion
+export default !!process.stdout.isTTY && process.env.TERM !== 'dumb' && !isCI;

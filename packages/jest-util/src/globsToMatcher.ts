@@ -49,7 +49,8 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
         isMatch,
         // Matchers that are negated have different behavior than matchers that
         // are not negated, so we need to store this information ahead of time.
-        negated: isMatch.state.negated || isMatch.state.negatedExtglob != null,
+        // eslint-disable-next-line no-implicit-coercion
+        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
       };
 
       globsToMatchersMap.set(glob, matcher);
