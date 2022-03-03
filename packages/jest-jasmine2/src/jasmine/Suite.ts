@@ -79,7 +79,7 @@ export default class Suite {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = convertDescriptorToString(attrs.description);
-    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+    this.throwOnExpectationFailure = Boolean(attrs.throwOnExpectationFailure);
 
     this.beforeFns = [];
     this.afterFns = [];

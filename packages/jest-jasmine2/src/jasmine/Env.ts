@@ -212,7 +212,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.catchExceptions = function (value) {
-        catchExceptions = !!value;
+        catchExceptions = Boolean(value);
         return catchExceptions;
       };
 
@@ -221,7 +221,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.throwOnExpectationFailure = function (value) {
-        throwOnExpectationFailure = !!value;
+        throwOnExpectationFailure = Boolean(value);
       };
 
       this.throwingExpectationFailures = function () {
@@ -229,7 +229,7 @@ export default function jasmineEnv(j$: Jasmine) {
       };
 
       this.randomizeTests = function (value) {
-        random = !!value;
+        random = Boolean(value);
       };
 
       this.randomTests = function () {

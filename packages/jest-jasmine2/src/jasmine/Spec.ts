@@ -100,10 +100,10 @@ export default class Spec {
   static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
-    return !!(
+    return Boolean(
       e &&
-      e.toString &&
-      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+        e.toString &&
+        e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1,
     );
   }
 
@@ -129,7 +129,7 @@ export default class Spec {
         return '';
       };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
-    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+    this.throwOnExpectationFailure = Boolean(attrs.throwOnExpectationFailure);
 
     this.initError = new Error();
     this.initError.name = '';

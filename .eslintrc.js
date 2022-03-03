@@ -398,7 +398,7 @@ module.exports = {
     'no-fallthrough': 'warn',
     'no-floating-decimal': 'error',
     'no-func-assign': 'error',
-    'no-implicit-coercion': 'off',
+    'no-implicit-coercion': 'error',
     'no-implied-eval': 'error',
     'no-inline-comments': 'off',
     'no-inner-declarations': 'off',

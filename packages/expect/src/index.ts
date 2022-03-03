@@ -64,7 +64,7 @@ export class JestAssertionError extends Error {
 }
 
 const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
-  !!obj &&
+  Boolean(obj) &&
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 

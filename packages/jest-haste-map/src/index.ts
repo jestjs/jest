@@ -256,7 +256,7 @@ export default class HasteMap extends EventEmitter {
       dependencyExtractor: options.dependencyExtractor || null,
       enableSymlinks: options.enableSymlinks || false,
       extensions: options.extensions,
-      forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
+      forceNodeFilesystemAPI: Boolean(options.forceNodeFilesystemAPI),
       hasteImplModulePath: options.hasteImplModulePath,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
@@ -268,10 +268,10 @@ export default class HasteMap extends EventEmitter {
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
       roots: Array.from(new Set(options.roots)),
-      skipPackageJson: !!options.skipPackageJson,
-      throwOnModuleCollision: !!options.throwOnModuleCollision,
+      skipPackageJson: Boolean(options.skipPackageJson),
+      throwOnModuleCollision: Boolean(options.throwOnModuleCollision),
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
-      watch: !!options.watch,
+      watch: Boolean(options.watch),
     };
     this._console = options.console || globalThis.console;
 
@@ -917,8 +917,8 @@ export default class HasteMap extends EventEmitter {
                 event.type === type &&
                 event.filePath === filePath &&
                 ((!event.stat && !stat) ||
-                  (!!event.stat &&
-                    !!stat &&
+                  (Boolean(event.stat) &&
+                    Boolean(stat) &&
                     event.stat.mtime.getTime() === stat.mtime.getTime())),
             )
           ) {

@@ -34,7 +34,7 @@ jest
     statSync: jest.fn(path => ({
       isFile() {
         mockInvariant(typeof path === 'string');
-        return !!mockFs[path];
+        return Boolean(mockFs[path]);
       },
       mtime: {getTime: () => 42, toString: () => '42'},
     })),
@@ -42,7 +42,7 @@ jest
     existsSync: jest.fn(path => {
       mockInvariant(typeof path === 'string');
 
-      return !!mockFs[path];
+      return Boolean(mockFs[path]);
     }),
     /* eslint-enable */
   }))
