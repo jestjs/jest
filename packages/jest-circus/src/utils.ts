@@ -165,7 +165,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
-  return Boolean(error && (error as Error).message && (error as Error).stack);
+  return (error && (error as Error).message && (error as Error).stack) != null;
 }
 
 export const callAsyncCircusFn = (

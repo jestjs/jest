@@ -43,7 +43,7 @@ export const serialize: NewPlugin['serialize'] = (
 };
 
 export const test: NewPlugin['test'] = val =>
-  val && Boolean(val._isMockFunction);
+  val && val._isMockFunction != null;
 
 const plugin: NewPlugin = {serialize, test};
 

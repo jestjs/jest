@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-globalThis.describeDefined = Boolean(globalThis.describe);
+globalThis.describeDefined = globalThis.describe = null;

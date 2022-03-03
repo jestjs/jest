@@ -17,7 +17,7 @@ const install = (
 ) => {
   const bindingWithArray = data.length === 0;
   const bindingWithTemplate =
-    Array.isArray(table) && Boolean((table as any).raw);
+    Array.isArray(table) && (table as any).raw != null;
   if (!bindingWithArray && !bindingWithTemplate) {
     throw new Error(
       '`.each` must only be called with an Array or Tagged Template Literal.',
