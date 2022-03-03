@@ -193,11 +193,12 @@ class TestScheduler {
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
-      aggregatedResults.snapshot.failure =
-        (!updateAll &&
+      aggregatedResults.snapshot.failure = Boolean(
+        !updateAll &&
           (aggregatedResults.snapshot.unchecked ||
             aggregatedResults.snapshot.unmatched ||
-            aggregatedResults.snapshot.filesRemoved)) != null;
+            aggregatedResults.snapshot.filesRemoved),
+      );
     };
 
     await this._dispatcher.onRunStart(aggregatedResults, {
