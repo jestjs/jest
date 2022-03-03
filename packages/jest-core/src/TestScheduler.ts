@@ -193,11 +193,12 @@ class TestScheduler {
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
-      aggregatedResults.snapshot.failure = Boolean(
+      //eslint-disable-next-line no-implicit-coercion
+      aggregatedResults.snapshot.failure = !!(
         !updateAll &&
-          (aggregatedResults.snapshot.unchecked ||
-            aggregatedResults.snapshot.unmatched ||
-            aggregatedResults.snapshot.filesRemoved),
+        (aggregatedResults.snapshot.unchecked ||
+          aggregatedResults.snapshot.unmatched ||
+          aggregatedResults.snapshot.filesRemoved)
       );
     };
 
@@ -341,10 +342,9 @@ class TestScheduler {
   ): boolean {
     return (
       !reporters ||
-      Boolean(
-        reporters.find(
-          reporter => this._getReporterProps(reporter).path === 'default',
-        ),
+      // eslint-disable-next-line no-implicit-coercion
+      !!reporters.find(
+        reporter => this._getReporterProps(reporter).path === 'default',
       )
     );
   }
