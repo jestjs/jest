@@ -109,7 +109,8 @@ const siteConfig = {
   onPageNav: 'separate',
   recruitingLink: 'https://crowdin.com/project/jest',
   algolia: {
-    apiKey: process.env.ALGOLIA_JEST_API_KEY,
+    appId: 'QAOZ8Q81GE',
+    apiKey: '5efa602ceacf0d41c2620168e17f8fbf',
     indexName: 'jest',
     algoliaOptions: {
       facetFilters: ['language:LANGUAGE', 'version:VERSION'],
