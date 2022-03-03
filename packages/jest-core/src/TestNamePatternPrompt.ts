@@ -35,28 +35,6 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
-  _getMatchedTests(pattern: string): Array<string> {
-    let regex: RegExp;
-
-    try {
-      regex = new RegExp(pattern, 'i');
-    } catch {
-      return [];
-    }
-
-    const matchedTests: Array<string> = [];
-
-    this._cachedTestResults.forEach(({testResults}) =>
-      testResults.forEach(({title}) => {
-        if (regex.test(title)) {
-          matchedTests.push(title);
-        }
-      }),
-    );
-
-    return matchedTests;
-  }
-
   updateCachedTestResults(testResults: Array<TestResult> = []): void {
     this._cachedTestResults = testResults;
   }

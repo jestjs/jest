@@ -19,7 +19,7 @@ import type {
   WorkerMetadata,
 } from './types';
 
-const PACKAGE_JSON = path.sep + 'package.json';
+const PACKAGE_JSON = `${path.sep}package.json`;
 
 let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;

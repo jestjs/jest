@@ -7,9 +7,9 @@
 
 import {expectAssignable, expectNotAssignable, expectType} from 'tsd-lite';
 import type {
-  ConstructorLike,
+  ClassLike,
   ConstructorLikeKeys,
-  MethodLike,
+  FunctionLike,
   MethodLikeKeys,
   PropertyLikeKeys,
 } from 'jest-mock';
@@ -58,27 +58,27 @@ type SomeObject = typeof someObject;
 
 // ClassLike
 
-expectAssignable<ConstructorLike>(SomeClass);
-expectNotAssignable<ConstructorLike>(() => {});
-expectNotAssignable<ConstructorLike>(function abc() {
+expectAssignable<ClassLike>(SomeClass);
+expectNotAssignable<ClassLike>(() => {});
+expectNotAssignable<ClassLike>(function abc() {
   return;
 });
-expectNotAssignable<ConstructorLike>('abc');
-expectNotAssignable<ConstructorLike>(123);
-expectNotAssignable<ConstructorLike>(false);
-expectNotAssignable<ConstructorLike>(someObject);
+expectNotAssignable<ClassLike>('abc');
+expectNotAssignable<ClassLike>(123);
+expectNotAssignable<ClassLike>(false);
+expectNotAssignable<ClassLike>(someObject);
 
 // FunctionLike
 
-expectAssignable<MethodLike>(() => {});
-expectAssignable<MethodLike>(function abc() {
+expectAssignable<FunctionLike>(() => {});
+expectAssignable<FunctionLike>(function abc() {
   return;
 });
-expectNotAssignable<MethodLike>('abc');
-expectNotAssignable<MethodLike>(123);
-expectNotAssignable<MethodLike>(false);
-expectNotAssignable<MethodLike>(SomeClass);
-expectNotAssignable<MethodLike>(someObject);
+expectNotAssignable<FunctionLike>('abc');
+expectNotAssignable<FunctionLike>(123);
+expectNotAssignable<FunctionLike>(false);
+expectNotAssignable<FunctionLike>(SomeClass);
+expectNotAssignable<FunctionLike>(someObject);
 
 // ConstructorKeys
 

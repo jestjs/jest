@@ -336,8 +336,9 @@ export default async function watch(
       // terminal and give just a little bit of extra space so they fit below
       // `preRunMessagePrint` message nicely.
       console.error(
-        '\n\n' +
-          formatExecError(error, contexts[0].config, {noStackTrace: false}),
+        `\n\n${formatExecError(error, contexts[0].config, {
+          noStackTrace: false,
+        })}`,
       ),
     );
   };
@@ -539,51 +540,48 @@ const usage = (
     activeFilters(globalConfig),
 
     globalConfig.testPathPattern || globalConfig.testNamePattern
-      ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
+      ? `${chalk.dim(' \u203A Press ')}c${chalk.dim(' to clear filters.')}`
       : null,
-    '\n' + chalk.bold('Watch Usage'),
+    `\n${chalk.bold('Watch Usage')}`,
 
     globalConfig.watch
-      ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
+      ? `${chalk.dim(' \u203A Press ')}a${chalk.dim(' to run all tests.')}`
       : null,
 
     globalConfig.onlyFailures
-      ? chalk.dim(' \u203A Press ') +
-        'f' +
-        chalk.dim(' to quit "only failed tests" mode.')
-      : chalk.dim(' \u203A Press ') +
-        'f' +
-        chalk.dim(' to run only failed tests.'),
+      ? `${chalk.dim(' \u203A Press ')}f${chalk.dim(
+          ' to quit "only failed tests" mode.',
+        )}`
+      : `${chalk.dim(' \u203A Press ')}f${chalk.dim(
+          ' to run only failed tests.',
+        )}`,
 
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||
       globalConfig.testNamePattern) &&
     !globalConfig.noSCM
-      ? chalk.dim(' \u203A Press ') +
-        'o' +
-        chalk.dim(' to only run tests related to changed files.')
+      ? `${chalk.dim(' \u203A Press ')}o${chalk.dim(
+          ' to only run tests related to changed files.',
+        )}`
       : null,
 
     ...getSortedUsageRows(watchPlugins, globalConfig).map(
       plugin =>
-        chalk.dim(' \u203A Press') +
-        ' ' +
-        plugin.key +
-        ' ' +
-        chalk.dim(`to ${plugin.prompt}.`),
+        `${chalk.dim(' \u203A Press')} ${plugin.key} ${chalk.dim(
+          `to ${plugin.prompt}.`,
+        )}`,
     ),
 
-    chalk.dim(' \u203A Press ') +
-      'Enter' +
-      chalk.dim(' to trigger a test run.'),
+    `${chalk.dim(' \u203A Press ')}Enter${chalk.dim(
+      ' to trigger a test run.',
+    )}`,
   ];
 
-  return messages.filter(message => !!message).join(delimiter) + '\n';
+  return `${messages.filter(message => !!message).join(delimiter)}\n`;
 };
 
 const showToggleUsagePrompt = () =>
   '\n' +
-  chalk.bold('Watch Usage: ') +
-  chalk.dim('Press ') +
-  'w' +
-  chalk.dim(' to show more.');
+  `${chalk.bold('Watch Usage: ')}${chalk.dim('Press ')}w${chalk.dim(
+    ' to show more.',
+  )}`;

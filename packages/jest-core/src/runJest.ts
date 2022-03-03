@@ -165,10 +165,9 @@ export default async function runJest({
     ).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
-        '\n' +
-          chalk.bold('--watch') +
-          ' is not supported without git/hg, please use --watchAll ' +
-          '\n',
+        `\n${chalk.bold(
+          '--watch',
+        )} is not supported without git/hg, please use --watchAll\n`,
       );
       exit(1);
     }

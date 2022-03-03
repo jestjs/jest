@@ -665,7 +665,7 @@ describe('outer React element (non-snapshot)', () => {
 
 describe('trailing newline in multiline string not enclosed in quotes', () => {
   const a = ['line 1', 'line 2', 'line 3'].join('\n');
-  const b = a + '\n';
+  const b = `${a}\n`;
 
   describe('from less to more', () => {
     const expected = ['  line 1', '  line 2', '  line 3', '+'].join('\n');
@@ -851,7 +851,7 @@ describe('diffLinesUnified2 edge cases', () => {
     test('a', () => {
       const aDisplay = 'MiXeD cAsE';
       const bDisplay = 'Mixed case\nUPPER CASE';
-      const aCompare = aDisplay.toLowerCase() + '\nlower case';
+      const aCompare = `${aDisplay.toLowerCase()}\nlower case`;
       const bCompare = bDisplay.toLowerCase();
 
       const received = diffLinesUnified2(

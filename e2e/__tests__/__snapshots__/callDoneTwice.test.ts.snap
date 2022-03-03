@@ -70,7 +70,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       50 |
       51 |   it('should fail', () => {
 
-      at done (__tests__/index.test.js:48:5)
+      at Object.done (__tests__/index.test.js:48:5)
 
 
   ● Test suite failed to run
@@ -85,5 +85,5 @@ exports[`\`done()\` should not be called more than once 1`] = `
       61 |
       62 |   it('should fail', () => {
 
-      at done (__tests__/index.test.js:59:5)"
+      at Object.done (__tests__/index.test.js:59:5)"
 `;

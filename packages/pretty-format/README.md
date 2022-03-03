@@ -266,11 +266,15 @@ const plugin = {
   serialize(array, config, indentation, depth, refs, printer) {
     const name = array.constructor.name;
     return ++depth > config.maxDepth
-      ? '[' + name + ']'
-      : (config.min ? '' : name + ' ') +
-          '[' +
-          serializeItems(array, config, indentation, depth, refs, printer) +
-          ']';
+      ? `[${name}]`
+      : `${config.min ? '' : `${name} `}[${serializeItems(
+          array,
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}]`;
   },
 };
 ```

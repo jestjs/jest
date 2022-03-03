@@ -11,42 +11,42 @@ const testEventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
     case 'start_describe_definition':
     case 'finish_describe_definition': {
-      console.log(event.name + ':', event.blockName);
+      console.log(`${event.name}:`, event.blockName);
       break;
     }
     case 'run_describe_start':
     case 'run_describe_finish': {
-      console.log(event.name + ':', event.describeBlock.name);
+      console.log(`${event.name}:`, event.describeBlock.name);
       break;
     }
     case 'test_start':
     case 'test_retry':
     case 'test_done': {
-      console.log(event.name + ':', event.test.name);
+      console.log(`${event.name}:`, event.test.name);
       break;
     }
 
     case 'add_test': {
-      console.log(event.name + ':', event.testName);
+      console.log(`${event.name}:`, event.testName);
       break;
     }
 
     case 'test_fn_start':
     case 'test_fn_success':
     case 'test_fn_failure': {
-      console.log(event.name + ':', event.test.name);
+      console.log(`${event.name}:`, event.test.name);
       break;
     }
 
     case 'add_hook': {
-      console.log(event.name + ':', event.hookType);
+      console.log(`${event.name}:`, event.hookType);
       break;
     }
 
     case 'hook_start':
     case 'hook_success':
     case 'hook_failure': {
-      console.log(event.name + ':', event.hook.type);
+      console.log(`${event.name}:`, event.hook.type);
       break;
     }
 

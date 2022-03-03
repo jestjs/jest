@@ -71,7 +71,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
     },
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
-    name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
+    name: `Runtime-${filename.replace(/\W/, '-')}.tests`,
     rootDir,
     ...projectConfig,
     moduleNameMapper,

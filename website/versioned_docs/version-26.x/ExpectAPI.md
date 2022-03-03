@@ -67,7 +67,7 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
 interface CustomMatchers<R = unknown> {
@@ -173,6 +173,7 @@ expect.extend({
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
@@ -182,6 +183,7 @@ expect.extend({
             expand: this.expand,
           });
           return (
+            // eslint-disable-next-line prefer-template
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -245,8 +247,8 @@ It's also possible to create custom matchers for inline snapshots, the snapshots
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10));
+  toMatchTrimmedInlineSnapshot(received, ...rest) {
+    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
   },
 });
 
@@ -257,6 +259,41 @@ it('stores only 10 characters', () => {
   expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot(
     `"extra long"`
   );
+  */
+});
+```
+
+#### async
+
+If your custom inline snapshot matcher is async i.e. uses `async`-`await` you might encounter an error like "Multiple inline snapshots for the same call are not supported". Jest needs additional context information to find where the custom inline snapshot matcher was used to update the snapshots properly.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  async toMatchObservationInlineSnapshot(fn, ...rest) {
+    // The error (and its stacktrace) must be created before any `await`
+    this.error = new Error();
+
+    // The implementation of `observe` doesn't matter.
+    // It only matters that the custom snapshot matcher is async.
+    const observation = await observe(async () => {
+      await fn();
+    });
+
+    return toMatchInlineSnapshot.call(this, recording, ...rest);
+  },
+});
+
+it('observes something', async () => {
+  await expect(async () => {
+    return 'async action';
+  }).toMatchTrimmedInlineSnapshot();
+  /*
+  The snapshot will be added inline like
+  await expect(async () => {
+    return 'async action';
+  }).toMatchTrimmedInlineSnapshot(`"async action"`);
   */
 });
 ```
@@ -654,7 +691,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -1345,7 +1382,7 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](/blog/2016/07/27/jest-14) for more information on snapshot testing.
 
 ### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 

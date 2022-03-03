@@ -35,14 +35,13 @@ export const serialize: NewPlugin['serialize'] = (
 ) => {
   const name = collection.constructor.name;
   if (++depth > config.maxDepth) {
-    return '[' + name + ']';
+    return `[${name}]`;
   }
 
   return (
     (config.min ? '' : name + SPACE) +
     (OBJECT_NAMES.indexOf(name) !== -1
-      ? '{' +
-        printObjectProperties(
+      ? `{${printObjectProperties(
           isNamedNodeMap(collection)
             ? Array.from(collection).reduce<Record<string, string>>(
                 (props, attribute) => {
@@ -57,18 +56,15 @@ export const serialize: NewPlugin['serialize'] = (
           depth,
           refs,
           printer,
-        ) +
-        '}'
-      : '[' +
-        printListItems(
+        )}}`
+      : `[${printListItems(
           Array.from(collection),
           config,
           indentation,
           depth,
           refs,
           printer,
-        ) +
-        ']')
+        )}]`)
   );
 };
 

@@ -29,15 +29,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ArrayNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '[' +
-      printListItems(val.sample, config, indentation, depth, refs, printer) +
-      ']'
-    );
+    return `${stringedValue + SPACE}[${printListItems(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}]`;
   }
 
   if (
@@ -45,22 +46,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ObjectNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '{' +
-      printObjectProperties(
-        val.sample,
-        config,
-        indentation,
-        depth,
-        refs,
-        printer,
-      ) +
-      '}'
-    );
+    return `${stringedValue + SPACE}{${printObjectProperties(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}}`;
   }
 
   if (
