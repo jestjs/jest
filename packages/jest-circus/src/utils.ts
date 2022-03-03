@@ -165,7 +165,8 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
-  return (error && (error as Error).message && (error as Error).stack) != null;
+  //eslint-disable-next-line no-implicit-coercion
+  return !!(error && (error as Error).message && (error as Error).stack);
 }
 
 export const callAsyncCircusFn = (
