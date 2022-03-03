@@ -17,7 +17,8 @@ const install = (
 ) => {
   const bindingWithArray = data.length === 0;
   const bindingWithTemplate =
-    Array.isArray(table) && (table as any).raw != null;
+    //eslint-disable-next-line no-implicit-coercion
+    Array.isArray(table) && !!(table as any).raw;
   if (!bindingWithArray && !bindingWithTemplate) {
     throw new Error(
       '`.each` must only be called with an Array or Tagged Template Literal.',
