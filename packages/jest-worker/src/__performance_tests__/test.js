@@ -20,7 +20,7 @@ assert(process.argv[3], 'Pass the number of iterations');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const method = process.argv[2];
-const calls = +process.argv[3];
+const calls = Number(process.argv[3]);
 const threads = 6;
 const iterations = 10;
 

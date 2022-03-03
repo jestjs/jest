@@ -109,7 +109,7 @@ it('exposes an equality function to custom matchers', () => {
   jestExpect.extend({
     toBeOne() {
       expect(this.equals).toBe(equals);
-      return {pass: !!this.equals(1, 1)};
+      return {pass: this.equals(1, 1)};
     },
   });
 

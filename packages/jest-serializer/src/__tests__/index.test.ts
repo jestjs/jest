@@ -16,7 +16,7 @@ const objs = [
   null,
   [0, true, '2', [3.14, {}, null]],
   {key1: 'foo', key2: 'bar', key3: {array: [null, {}]}},
-  {minusInf: -Infinity, nan: NaN, plusInf: +Infinity},
+  {minusInf: -Infinity, nan: NaN, plusInf: Number(Infinity)},
   {date: new Date(1234567890), re: /foo/gi},
   {
     // @ts-expect-error - testing NaN

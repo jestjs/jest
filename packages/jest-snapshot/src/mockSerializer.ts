@@ -42,7 +42,8 @@ export const serialize: NewPlugin['serialize'] = (
   return `[MockFunction${nameString}]${callsString}`;
 };
 
-export const test: NewPlugin['test'] = val => val && !!val._isMockFunction;
+export const test: NewPlugin['test'] = val =>
+  val && Boolean(val._isMockFunction);
 
 const plugin: NewPlugin = {serialize, test};
 
