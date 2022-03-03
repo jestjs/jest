@@ -285,7 +285,8 @@ module.exports = {
     },
     algolia: {
       indexName: 'jest-v2',
-      apiKey: '833906d7486e4059359fa58823c4ef56',
+      appId: 'HP439UUSOL',
+      apiKey: 'e5e670fd16f8f17caada79d6b0931682',
       contextualSearch: true,
     },
   },
