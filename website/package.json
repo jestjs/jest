@@ -29,11 +29,11 @@
     ]
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.16",
-    "@docusaurus/plugin-client-redirects": "^2.0.0-beta.16",
-    "@docusaurus/plugin-pwa": "^2.0.0-beta.16",
-    "@docusaurus/preset-classic": "^2.0.0-beta.16",
-    "@docusaurus/remark-plugin-npm2yarn": "^2.0.0-beta.16",
+    "@docusaurus/core": "^2.0.0-beta.17",
+    "@docusaurus/plugin-client-redirects": "^2.0.0-beta.17",
+    "@docusaurus/plugin-pwa": "^2.0.0-beta.17",
+    "@docusaurus/preset-classic": "^2.0.0-beta.17",
+    "@docusaurus/remark-plugin-npm2yarn": "^2.0.0-beta.17",
     "clsx": "^1.1.1",
     "globby": "^11.0.1",
     "react": "^17.0.1",
@@ -46,7 +46,6 @@
     "@crowdin/cli": "^3.5.2",
     "@types/react": "^17.0.3",
     "graphql": "^16.3.0",
-    "graphql-request": "^4.0.0",
-    "js-yaml": "^4.1.0"
+    "graphql-request": "^4.0.0"
   }
 }
