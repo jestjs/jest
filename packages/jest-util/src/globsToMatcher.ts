@@ -91,6 +91,7 @@ export default function globsToMatcher(globs: Array<string>): Matcher {
     // to allow some paths to be matched, while sets of globs that are mixed
     // negated and non-negated to cause the negated matchers to only omit paths
     // and not keep them.
-    return negatives === matchers.length ? kept !== false : kept != null;
+    //eslint-disable-next-line no-implicit-coercion
+    return negatives === matchers.length ? kept !== false : !!kept;
   };
 }
