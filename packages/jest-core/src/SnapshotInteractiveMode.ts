@@ -207,7 +207,8 @@ export default class SnapshotInteractiveMode {
   }
 
   updateWithResults(results: AggregatedResult): void {
-    const hasSnapshotFailure = results.snapshot.failure != null;
+    // eslint-disable-next-line no-implicit-coercion
+    const hasSnapshotFailure = !!results.snapshot.failure;
     if (hasSnapshotFailure) {
       this._drawUIOverlay();
       return;
