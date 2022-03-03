@@ -57,7 +57,7 @@ const toHumanReadableAnsi = (text: string) =>
   });
 
 export const test: NewPlugin['test'] = (val: unknown) =>
-  typeof val === 'string' && Boolean(val.match(ansiRegex()));
+  typeof val === 'string' && val.match(ansiRegex()) != null;
 
 export const serialize: NewPlugin['serialize'] = (
   val: string,
