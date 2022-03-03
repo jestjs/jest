@@ -415,8 +415,8 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
     ensureNoExpected(expected, matcherName, options);
-
-    const pass = received != null;
+    //eslint-disable-next-line no-implicit-coercion
+    const pass = !!received;
 
     const message = () =>
       // eslint-disable-next-line prefer-template
