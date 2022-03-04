@@ -19,6 +19,8 @@ jobs:
     parameters:
       node-version:
         type: string
+      shard:
+        type: string
     working_directory: ~/jest
     executor: node/default
     steps:
@@ -27,7 +29,7 @@ jobs:
           node-version: << parameters.node-version >>
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci-partial --shard=<< parameters.shard >>
       - store_test_results:
           path: reports/junit
 
@@ -49,8 +51,9 @@ workflows:
   build-and-deploy:
     jobs:
       - test-node:
-          name: test-node-partial-<< matrix.node-version >>
+          name: test-node-partial-<< matrix.node-version >>-<< matrix.shard >>
           matrix:
             parameters:
               node-version: ['12', '14', '16', '17']
+              shard: ['1/3', '2/3', '3/3']
       - test-jest-jasmine
