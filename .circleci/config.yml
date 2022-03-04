@@ -19,30 +19,30 @@ jobs:
     parameters:
       node-version:
         type: string
-      shard:
-        type: string
     working_directory: ~/jest
     executor: node/default
+    parallelism: 4
     steps:
       - checkout
       - node/install:
           node-version: << parameters.node-version >>
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial --shard=<< parameters.shard >>
+          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: reports/junit
 
   test-jest-jasmine:
     working_directory: ~/jest
     executor: node/default
+    parallelism: 4
     steps:
       - checkout
       - node/install:
           node-version: lts/*
       - node/install-packages: *install
       - run:
-          command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak
+          command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: reports/junit
 
@@ -51,9 +51,8 @@ workflows:
   build-and-deploy:
     jobs:
       - test-node:
-          name: test-node-partial-<< matrix.node-version >>-<< matrix.shard >>
+          name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
               node-version: ['12', '14', '16', '17']
-              shard: ['1/3', '2/3', '3/3']
       - test-jest-jasmine
