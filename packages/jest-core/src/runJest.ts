@@ -192,7 +192,9 @@ export default async function runJest({
     }),
   );
 
-  allTests = sequencer.shard?.(allTests, globalConfig.shard) ?? allTests;
+  allTests = globalConfig.shard
+    ? sequencer.shard(allTests, globalConfig.shard)
+    : allTests;
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {

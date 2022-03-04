@@ -70,21 +70,14 @@ export default class TestSequencer {
     return cache;
   }
 
-  shard(
-    tests: Array<Test>,
-    options: SortOptions = {shardCount: 1, shardIndex: 1},
-  ): Array<Test> {
-    if (options.shardCount > 1) {
-      const shardSize = Math.ceil(tests.length / options.shardCount);
-      const shardStart = shardSize * (options.shardIndex - 1);
-      const shardEnd = shardSize * options.shardIndex;
+  shard(tests: Array<Test>, options: SortOptions): Array<Test> {
+    const shardSize = Math.ceil(tests.length / options.shardCount);
+    const shardStart = shardSize * (options.shardIndex - 1);
+    const shardEnd = shardSize * options.shardIndex;
 
-      return [...tests]
-        .sort((a, b) => (a.path > b.path ? 1 : -1))
-        .slice(shardStart, shardEnd);
-    }
-
-    return tests;
+    return [...tests]
+      .sort((a, b) => (a.path > b.path ? 1 : -1))
+      .slice(shardStart, shardEnd);
   }
 
   /**
