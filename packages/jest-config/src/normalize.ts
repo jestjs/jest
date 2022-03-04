@@ -34,6 +34,7 @@ import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
 import {
   BULLET,
@@ -1221,16 +1222,7 @@ export default async function normalize(
   }
 
   if (argv.shard) {
-    const [shardIndex, shardCount] = argv.shard
-      .split('/')
-      .filter(d => /^\d+$/.test(d))
-      .map(d => parseInt(d, 10))
-      .filter((shard: number) => !Number.isNaN(shard));
-
-    newOptions.shard = {
-      shardCount,
-      shardIndex,
-    };
+    newOptions.shard = parseShardPair(argv.shard);
   }
 
   return {

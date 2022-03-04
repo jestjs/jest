@@ -94,52 +94,6 @@ describe('check', () => {
     expect(() => check(argv({config: 'jest.configjs'}))).toThrow(message);
     expect(() => check(argv({config: 'jest.config.exe'}))).toThrow(message);
   });
-
-  it('raises an exception if shard has wrong format', () => {
-    expect(() => check(argv({shard: 'mumblemuble'}))).toThrow(
-      /string in the format of <n>\/<m>/,
-    );
-  });
-
-  it('raises an exception if shard pair has to many items', () => {
-    expect(() => check(argv({shard: '1/2/2'}))).toThrow(
-      /string in the format of <n>\/<m>/,
-    );
-  });
-
-  it('raises an exception if shard has floating points', () => {
-    expect(() => check(argv({shard: '1.0/1'}))).toThrow(
-      /string in the format of <n>\/<m>/,
-    );
-  });
-
-  it('raises an exception if first item in shard pair is no number', () => {
-    expect(() => check(argv({shard: 'a/1'}))).toThrow(
-      /string in the format of <n>\/<m>/,
-    );
-  });
-
-  it('raises an exception if second item in shard pair is no number', () => {
-    expect(() => check(argv({shard: '1/a'}))).toThrow(
-      /string in the format of <n>\/<m>/,
-    );
-  });
-
-  it('raises an exception if shard is zero-indexed', () => {
-    expect(() => check(argv({shard: '0/1'}))).toThrow(
-      /requires 1-based values, received 0/,
-    );
-  });
-
-  it('raises an exception if shard index is larger than shard count', () => {
-    expect(() => check(argv({shard: '2/1'}))).toThrow(
-      /requires <n> to be lower or equal than <m>/,
-    );
-  });
-
-  it('allows valid shard format', () => {
-    expect(() => check(argv({shard: '1/2'}))).not.toThrow();
-  });
 });
 
 describe('buildArgv', () => {
