@@ -278,7 +278,10 @@ test('works with multiple contexts', () => {
 });
 
 test('does not shard by default', () => {
-  const tests = sequencer.shard(toTests(['/test-a.js', '/test-ab.js']));
+  const tests = sequencer.shard(toTests(['/test-a.js', '/test-ab.js']), {
+    shardCount: 1,
+    shardIndex: 1,
+  });
   expect(tests.map(test => test.path)).toEqual(['/test-a.js', '/test-ab.js']);
 });
 
