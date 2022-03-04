@@ -1221,7 +1221,7 @@ export default async function normalize(
   }
 
   if (argv.shard) {
-    const [shardIndex, shardCount] = argv?.shard
+    const [shardIndex, shardCount] = argv.shard
       .split('/')
       .filter(d => /^\d+$/.test(d))
       .map(d => parseInt(d, 10))
