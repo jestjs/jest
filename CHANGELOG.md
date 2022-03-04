@@ -39,6 +39,7 @@
 - `[jest-test-result]` Add duration property to JSON test output ([#12518](https://github.com/facebook/jest/pull/12518))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
+- `[jest-cli, jest-core]` Add `--shard` parameter for distributed parallel test execution ([#12546](https://github.com/facebook/jest/pull/12546))
 
 ### Fixes
 
