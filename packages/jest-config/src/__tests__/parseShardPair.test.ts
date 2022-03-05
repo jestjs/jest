@@ -30,6 +30,12 @@ it('raises an exception if second item in shard pair is no number', () => {
   );
 });
 
+it('raises an exception if shard contains negative number', () => {
+  expect(() => parseShardPair('1/-1')).toThrow(
+    /string in the format of <n>\/<m>/,
+  );
+});
+
 it('raises an exception if shard is zero-indexed', () => {
   expect(() => parseShardPair('0/1')).toThrow(
     /requires 1-based values, received 0/,
