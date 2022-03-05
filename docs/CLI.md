@@ -340,7 +340,7 @@ A list of paths to modules that run some code to configure or to set up the test
 
 ### `--shard`
 
-Shard suite to execute in on multiple machines. For example, to split the suite into three shards, each running one third of the tests:
+Shard suite to execute them on multiple machines. For example, to split the suite into three shards, each running one third of the tests:
 
 ```
 jest --shard=1/3
