@@ -457,7 +457,7 @@ This option allows the use of a custom global setup module, which must export a 
 
 A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
 
-Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites.\_
+Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites.
 
 While code transformation is applied to the linked setup-file, Jest will **not** transform any code in `node_modules`. This is due to the need to load the actual transformers (e.g. `babel` or `typescript`) to perform transformation.
 
