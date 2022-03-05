@@ -963,11 +963,11 @@ The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount
 
 `shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
 
-`shardIndex` and `shardCount` have to be 1-based, positive numbers, `shardIndex` has to be lower than or equal to `shardCount`.
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
 
 When `shard` is specified the used [testSquencer](#testsequencer-string) implementation has to implement a `shard` method.
 
-Refer to [testSquencer](#testsequencer-string) on how to override the default sharding implementation.
+Refer to [`testSquencer`](#testsequencer-string) on how to override the default sharding implementation.
 
 ### `slowTestThreshold` \[number]
 
@@ -1341,7 +1341,11 @@ Default: `@jest/test-sequencer`
 
 This option allows you to use a custom sequencer instead of Jest's default.
 
+:::tip
+
 Both `sort` and `shard` may optionally return a `Promise`.
+
+:::
 
 Example:
 

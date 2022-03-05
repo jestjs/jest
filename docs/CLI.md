@@ -348,7 +348,7 @@ jest --shard=2/3
 jest --shard=3/3
 ```
 
-Please refer to [shard configuration](Configuration.md#shard)
+Please refer to [shard configuration](Configuration.md#shard).
 
 ### `--showConfig`
 
