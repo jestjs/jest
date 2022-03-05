@@ -6,7 +6,9 @@
  */
 
 import * as crypto from 'crypto';
+import * as path from 'path';
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import type {AggregatedResult, Test} from '@jest/test-result';
 import HasteMap from 'jest-haste-map';
 import type {Context} from 'jest-runtime';
@@ -100,13 +102,18 @@ export default class TestSequencer {
     const shardStart = shardSize * (options.shardIndex - 1);
     const shardEnd = shardSize * options.shardIndex;
 
-    return [...tests]
+    return tests
       .map(test => {
-        const shasum = crypto.createHash('sha1');
-        shasum.update(test.path);
+        const relativeTestPath = path.relative(
+          test.context.config.rootDir,
+          test.path,
+        );
 
         return {
-          hash: shasum.digest('hex'),
+          hash: crypto
+            .createHash('sha1')
+            .update(slash(relativeTestPath))
+            .digest('hex'),
           test,
         };
       })
