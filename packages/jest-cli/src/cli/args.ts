@@ -6,7 +6,7 @@
  */
 
 import type {Config} from '@jest/types';
-import {constants, isJSONString, parseShardPairResult} from 'jest-config';
+import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
   if (
@@ -85,14 +85,6 @@ export function check(argv: Config.Argv): true {
         ', ',
       )}.\nExample usage: jest --config ./jest.config.js`,
     );
-  }
-
-  if (argv.shard) {
-    const result = parseShardPairResult(argv.shard);
-    if (result instanceof Error) {
-      result.message += '\n Example usage: jest --shard 1/5';
-      throw result;
-    }
   }
 
   return true;

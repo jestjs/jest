@@ -18,7 +18,6 @@ import {isJSONString, replaceRootDirInPath} from './utils';
 
 export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
-export {parseShardPair, parseShardPairResult} from './parseShardPair';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';

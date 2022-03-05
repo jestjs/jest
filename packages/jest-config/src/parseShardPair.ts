@@ -4,16 +4,6 @@ export interface ShardPair {
 }
 
 export const parseShardPair = (pair: string): ShardPair => {
-  const parseResult = parseShardPairResult(pair);
-
-  if (parseResult instanceof Error) {
-    throw parseResult;
-  }
-
-  return parseResult;
-};
-
-export const parseShardPairResult = (pair: string): Error | ShardPair => {
   const shardPair = pair
     .split('/')
     .filter(d => /^\d+$/.test(d))
@@ -30,7 +20,7 @@ export const parseShardPairResult = (pair: string): Error | ShardPair => {
 
   if (shardIndex === 0 || shardCount === 0) {
     throw new Error(
-      'The shard option requires 1-based values, received 0 in the pair.',
+      'The shard option requires 1-based values, received 0 or lower in the pair.',
     );
   }
 
