@@ -401,7 +401,7 @@ Lets you specify a custom test runner.
 
 ### `--testSequencer=<path>`
 
-Lets you specify a custom test sequencer. Please refer to the [testSequencer configuration](Configuration.md#testsequencer-string) for details.
+Lets you specify a custom test sequencer. Please refer to the [`testSequencer` configuration](Configuration.md#testsequencer-string) for details.
 
 ### `--testTimeout=<number>`
 
