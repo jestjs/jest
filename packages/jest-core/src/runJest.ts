@@ -198,7 +198,7 @@ export default async function runJest({
         `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
       );
     }
-    allTests = await sequencer.shard(allTests, globalConfig.shard)
+    allTests = await sequencer.shard(allTests, globalConfig.shard);
   }
 
   allTests = await sequencer.sort(allTests);
