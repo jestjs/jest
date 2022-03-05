@@ -66,13 +66,14 @@ jobs:
       - name: check copyright headers
         run: yarn check-copyright-headers
 
-  test-1:
-    name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (1/2)
+  test:
+    name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
         node-version: [12.x, 14.x, 16.x, 17.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
 
@@ -97,47 +98,15 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=1/2
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
-  test-2:
-    name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (2/2)
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
-
-    steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - name: install
-        run: yarn --immutable
-      - name: build
-        run: yarn build:js
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=2/2
-
-  test-jasmine-1:
+  test-jasmine:
     name: Node LTS on ${{ matrix.os }} using jest-jasmine2 (1/2)
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
 
@@ -163,38 +132,6 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=1/2
-
-  test-jasmine-2:
-    name: Node LTS on ${{ matrix.os }} using jest-jasmine2 (2/2)
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
-
-    steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
-      - uses: actions/checkout@v3
-      - name: Use Node.js LTS
-        uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: install
-        run: yarn --immutable
-      - name: build
-        run: yarn build:js
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=2/2
 
   test-coverage:
     name: Node LTS on Ubuntu with coverage
