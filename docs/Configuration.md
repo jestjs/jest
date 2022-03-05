@@ -186,7 +186,7 @@ Each glob pattern is applied in the order they are specified in the config. For 
 
 :::note
 
-This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`.
+This option requires `collectCoverage` to be set to `true` or Jest to be invoked with `--coverage`.
 
 :::
 
