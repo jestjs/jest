@@ -106,7 +106,7 @@ CLI options take precedence over values from the [Configuration](Configuration.m
 
 :::
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc.slice(2)} />
 

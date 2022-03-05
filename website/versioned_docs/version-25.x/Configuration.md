@@ -53,7 +53,7 @@ module.exports = {
 };
 ```
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc.slice(2)} />
 

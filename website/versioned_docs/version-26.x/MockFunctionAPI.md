@@ -7,7 +7,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc.slice(1)} />
 
