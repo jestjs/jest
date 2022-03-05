@@ -128,7 +128,7 @@ test('if utils mocked automatically', () => {
 
 Node modules are automatically mocked when you have a manual mock in place (e.g.: `__mocks__/lodash.js`). More info [here](ManualMocks.md#mocking-node-modules).
 
-Built in modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.
+Node.js core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.
 
 :::
 
