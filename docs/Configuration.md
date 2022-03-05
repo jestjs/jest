@@ -957,6 +957,18 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
+### `shard`  \[string]
+
+The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount>\d+)`.
+
+`shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
+
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, `shardIndex` has to lower than or equal to `shardCount`.
+
+When `shard` is specified the used [testSquencer](#testsequencer-string) implementation has to implement a `shard` method.
+
+Refer to [testSquencer](#testsequencer-string) on how to override the default sharding implementation.
+
 ### `slowTestThreshold` \[number]
 
 Default: `5`
@@ -1327,7 +1339,11 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 Default: `@jest/test-sequencer`
 
-This option allows you to use a custom sequencer instead of Jest's default. `sort` may optionally return a Promise.
+This option allows you to use a custom sequencer instead of Jest's default. 
+
+`sort` may optionally return a Promise.
+
+`shard` may optionally return a Promise.
 
 Example:
 
@@ -1337,6 +1353,24 @@ Sort test path alphabetically.
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
+  /**
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
+   */
+  shard(tests, { shardIndex, shardCount }) {
+    const shardSize = Math.ceil(tests.length / options.shardCount);
+    const shardStart = shardSize * (options.shardIndex - 1);
+    const shardEnd = shardSize * options.shardIndex;
+
+    return [...tests]
+      .sort((a, b) => (a.path > b.path ? 1 : -1))
+      .slice(shardStart, shardEnd);
+  }
+
+  /**
+   * Sort test to determine order of execution
+   * Sorting is applied after sharding
+   */
   sort(tests) {
     // Test structure information
     // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21

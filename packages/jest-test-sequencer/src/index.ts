@@ -17,7 +17,7 @@ type Cache = {
   [key: string]: [0 | 1, number];
 };
 
-export type SortOptions = {
+export type ShardOptions = {
   shardIndex: number;
   shardCount: number;
 };
@@ -70,9 +70,30 @@ export default class TestSequencer {
     return cache;
   }
 
+  /**
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
+   *
+   * @param tests All tests
+   * @param options shardIndex and shardIndex to select
+   *
+   * @example
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *  shard(tests, { shardIndex, shardCount }) {
+   *    const shardSize = Math.ceil(tests.length / options.shardCount);
+   *    const shardStart = shardSize * (options.shardIndex - 1);
+   *    const shardEnd = shardSize * options.shardIndex;
+   *    return [...tests]
+   *     .sort((a, b) => (a.path > b.path ? 1 : -1))
+   *     .slice(shardStart, shardEnd);
+   *  }
+   * }
+   * ```
+   */
   shard(
     tests: Array<Test>,
-    options: SortOptions,
+    options: ShardOptions,
   ): Array<Test> | Promise<Array<Test>> {
     const shardSize = Math.ceil(tests.length / options.shardCount);
     const shardStart = shardSize * (options.shardIndex - 1);
@@ -84,24 +105,38 @@ export default class TestSequencer {
   }
 
   /**
-   * Sorting tests is very important because it has a great impact on the
-   * user-perceived responsiveness and speed of the test run.
+   * Sort test to determine order of execution
+   * Sorting is applied after sharding
+   * @param tests
    *
-   * If such information is on cache, tests are sorted based on:
-   * -> Has it failed during the last run ?
-   * Since it's important to provide the most expected feedback as quickly
-   * as possible.
-   * -> How long it took to run ?
-   * Because running long tests first is an effort to minimize worker idle
-   * time at the end of a long test run.
-   * And if that information is not available they are sorted based on file size
-   * since big test files usually take longer to complete.
-   *
-   * Note that a possible improvement would be to analyse other information
-   * from the file other than its size.
-   *
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *   sort(tests) {
+   *     const copyTests = Array.from(tests);
+   *     return [...tests].sort((a, b) => (a.path > b.path ? 1 : -1));
+   *   }
+   * }
+   * ```
    */
   sort(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
+    /**
+     * Sorting tests is very important because it has a great impact on the
+     * user-perceived responsiveness and speed of the test run.
+     *
+     * If such information is on cache, tests are sorted based on:
+     * -> Has it failed during the last run ?
+     * Since it's important to provide the most expected feedback as quickly
+     * as possible.
+     * -> How long it took to run ?
+     * Because running long tests first is an effort to minimize worker idle
+     * time at the end of a long test run.
+     * And if that information is not available they are sorted based on file size
+     * since big test files usually take longer to complete.
+     *
+     * Note that a possible improvement would be to analyse other information
+     * from the file other than its size.
+     *
+     */
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) || 0);

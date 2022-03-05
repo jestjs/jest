@@ -348,6 +348,8 @@ jest --shard=2/3
 jest --shard=3/3
 ```
 
+Please refer to [shard configuration](./Configuration.md#shard)
+
 ### `--showConfig`
 
 Print your Jest config and then exits.
@@ -399,7 +401,7 @@ Lets you specify a custom test runner.
 
 ### `--testSequencer=<path>`
 
-Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
+Lets you specify a custom test sequencer. Please refer to the [testSequencer configuration](Configuration.md#testsequencer-string) for details.
 
 ### `--testTimeout=<number>`
 
