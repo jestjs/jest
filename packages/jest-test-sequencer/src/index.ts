@@ -117,7 +117,7 @@ export default class TestSequencer {
           test,
         };
       })
-      .sort((a, b) => a.hash.localeCompare(b.hash))
+      .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0))
       .slice(shardStart, shardEnd)
       .map(result => result.test);
   }
