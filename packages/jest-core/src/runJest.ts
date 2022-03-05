@@ -195,7 +195,7 @@ export default async function runJest({
   if (globalConfig.shard) {
     if (typeof sequencer.shard !== 'function') {
       throw new Error(
-        `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test schedulder ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
+        `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
       );
     }
   }
