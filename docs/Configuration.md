@@ -180,7 +180,7 @@ This will collect coverage information for all the files inside the project's `r
 
 :::tip
 
-Each glob pattern is applied in the order they are specified in the config. (For example `["!**/__tests__/**", "**/*.js"]` will not exclude `__tests__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/*.js`.)
+Each glob pattern is applied in the order they are specified in the config. For example `["!**/__tests__/**", "**/*.js"]` will not exclude `__tests__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/*.js`.
 
 :::
 
