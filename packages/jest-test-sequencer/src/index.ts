@@ -104,15 +104,15 @@ export default class TestSequencer {
 
     return tests
       .map(test => {
-        const relativeTestPath = path.relative(
-          test.context.config.rootDir,
-          test.path,
+        const relativeTestPath = path.posix.relative(
+          slash(test.context.config.rootDir),
+          slash(test.path),
         );
 
         return {
           hash: crypto
             .createHash('sha1')
-            .update(slash(relativeTestPath))
+            .update(relativeTestPath)
             .digest('hex'),
           test,
         };
