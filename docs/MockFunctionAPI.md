@@ -17,16 +17,15 @@ import {jest} from '@jest/globals';
 
 ## Methods
 
-import TOCInline from '@theme/TOCInline';
+import TOCInline from "@theme/TOCInline"
 
-<TOCInline toc={toc.slice(1)} />
+<TOCInline toc={toc.slice(1)}/>
 
 ---
 
 ## Reference
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from '@theme/Tabs'; import TabItem from '@theme/TabItem';
 
 ### `mockFn.getMockName()`
 
