@@ -1283,7 +1283,7 @@ See also [`testRegex` [string | array&lt;string&gt;]](#testregex-string--arrayst
 
 :::tip
 
-Each glob pattern is applied in the order they are specified in the config. (For example `["!**/__fixtures__/**", "**/__tests__/**/*.js"]` will not exclude `__fixtures__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/__tests__/**/*.js`.)
+Each glob pattern is applied in the order they are specified in the config. For example `["!**/__fixtures__/**", "**/__tests__/**/*.js"]` will not exclude `__fixtures__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/__tests__/**/*.js`.
 
 :::
 
