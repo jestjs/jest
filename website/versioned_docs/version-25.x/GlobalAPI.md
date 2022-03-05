@@ -7,9 +7,9 @@ In your test files, Jest puts each of these methods and objects into the global 
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 

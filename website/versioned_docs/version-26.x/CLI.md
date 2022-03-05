@@ -100,9 +100,9 @@ jest --update-snapshot --detectOpenHandles
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
