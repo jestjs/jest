@@ -48,5 +48,7 @@ test('--shard=4/4', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
+  // project only has 3 files
+  // shards > 3 are empty
   expect(paths).toEqual([]);
 });
