@@ -52,3 +52,33 @@ test('--shard=4/4', () => {
   // shards > 3 are empty
   expect(paths).toEqual([]);
 });
+
+test('--shard=1/2 custom non-sharding test sequencer', () => {
+  const result = runJest('shard', [
+    '--shard=1/2',
+    '--listTests',
+    '--testSequencer=./no-sharding-test-sequencer.js',
+  ]);
+
+  expect(result).toMatchObject({
+    failed: true,
+    stderr: expect.stringMatching(
+      /Shard (.*) requested, but test schedulder (.*) in (.*) has no shard method./,
+    ),
+  });
+});
+
+test('--shard=1/2 custom sharding test sequencer', () => {
+  const result = runJest('shard', [
+    '--shard=1/2',
+    '--listTests',
+    '--testSequencer=./sharding-test-sequencer.js',
+  ]);
+
+  const paths = result.stdout
+    .split('\n')
+    .filter(Boolean)
+    .map(file => path.basename(file));
+
+  expect(paths).toEqual(['3.test.js']);
+});

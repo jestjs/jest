@@ -70,7 +70,10 @@ export default class TestSequencer {
     return cache;
   }
 
-  shard(tests: Array<Test>, options: SortOptions): Array<Test> {
+  shard(
+    tests: Array<Test>,
+    options: SortOptions,
+  ): Array<Test> | Promise<Array<Test>> {
     const shardSize = Math.ceil(tests.length / options.shardCount);
     const shardStart = shardSize * (options.shardIndex - 1);
     const shardEnd = shardSize * options.shardIndex;
@@ -98,7 +101,7 @@ export default class TestSequencer {
    * from the file other than its size.
    *
    */
-  sort(tests: Array<Test>): Array<Test> {
+  sort(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
@@ -127,7 +130,7 @@ export default class TestSequencer {
     });
   }
 
-  allFailedTests(tests: Array<Test>): Array<Test> {
+  allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
     const hasFailed = (cache: Cache, test: Test) =>
       cache[test.path]?.[0] === FAIL;
     return this.sort(
