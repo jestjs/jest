@@ -14,7 +14,7 @@ export const parseShardPair = (pair: string): ShardPair => {
     .split('/')
     .filter(d => /^\d+$/.test(d))
     .map(d => parseInt(d, 10))
-    .filter((shard: number) => !Number.isNaN(shard));
+    .filter(shard => !Number.isNaN(shard));
 
   const [shardIndex, shardCount] = shardPair;
 
