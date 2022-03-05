@@ -490,7 +490,7 @@ This option allows the use of a custom global teardown module which must export 
 
 :::info
 
-A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.\_
+A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
 
 The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`.
 
