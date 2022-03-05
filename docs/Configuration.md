@@ -963,7 +963,7 @@ The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount
 
 `shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
 
-`shardIndex` and `shardCount` have to be 1-based, positive numbers, `shardIndex` has to lower than or equal to `shardCount`.
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, `shardIndex` has to be lower than or equal to `shardCount`.
 
 When `shard` is specified the used [testSquencer](#testsequencer-string) implementation has to implement a `shard` method.
 
