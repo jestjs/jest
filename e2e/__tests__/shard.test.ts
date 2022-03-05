@@ -15,7 +15,7 @@ test('--shard=1/1', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['1.test.js', '2.test.js', '3.test.js']);
+  expect(paths).toEqual(['1.test.js', '3.test.js', '2.test.js']);
 });
 
 test('--shard=1/2', () => {
@@ -26,7 +26,7 @@ test('--shard=1/2', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['2.test.js', '3.test.js']);
+  expect(paths).toEqual(['3.test.js', '2.test.js']);
 });
 
 test('--shard=2/2', () => {

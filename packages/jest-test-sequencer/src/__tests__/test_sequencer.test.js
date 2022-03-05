@@ -299,7 +299,7 @@ test('return first shard', () => {
     '1/2',
     tests.map(test => test.path),
   );
-  expect(tests.map(test => test.path)).toEqual(['/test-ab.js', '/test-abc.js']);
+  expect(tests.map(test => test.path)).toEqual(['/test-ab.js', '/test-a.js']);
 });
 
 test('return second shard', () => {
@@ -311,7 +311,7 @@ test('return second shard', () => {
     },
   );
 
-  expect(tests.map(test => test.path)).toEqual(['/test-a.js']);
+  expect(tests.map(test => test.path)).toEqual(['/test-abc.js']);
 });
 
 test('return third shard', () => {
