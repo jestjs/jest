@@ -15,7 +15,7 @@ test('--shard=1/1', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['3.test.js', '2.test.js', '1.test.js']);
+  expect(paths).toEqual(['1.test.js', '2.test.js', '3.test.js']);
 });
 
 test('--shard=1/2', () => {
@@ -26,7 +26,7 @@ test('--shard=1/2', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['2.test.js', '1.test.js']);
+  expect(paths).toEqual(['2.test.js', '3.test.js']);
 });
 
 test('--shard=2/2', () => {
@@ -37,7 +37,7 @@ test('--shard=2/2', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['3.test.js']);
+  expect(paths).toEqual(['1.test.js']);
 });
 
 test('--shard=4/4', () => {
@@ -63,7 +63,7 @@ test('--shard=1/2 custom non-sharding test sequencer', () => {
   expect(result).toMatchObject({
     failed: true,
     stderr: expect.stringMatching(
-      /Shard (.*) requested, but test schedulder (.*) in (.*) has no shard method./,
+      /Shard (.*) requested, but test sequencer (.*) in (.*) has no shard method./,
     ),
   });
 });
