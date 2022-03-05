@@ -340,15 +340,21 @@ A list of paths to modules that run some code to configure or to set up the test
 
 ### `--shard`
 
-Shard suite to execute them on multiple machines. For example, to split the suite into three shards, each running one third of the tests:
+The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount>\d+)`.
+
+`shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
+
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
+
+When `shard` is specified the configured [`testSquencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
+
+For example, to split the suite into three shards, each running one third of the tests:
 
 ```
 jest --shard=1/3
 jest --shard=2/3
 jest --shard=3/3
 ```
-
-Please refer to [shard configuration](Configuration.md#shard).
 
 ### `--showConfig`
 

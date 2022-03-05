@@ -957,18 +957,6 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
-### `shard` \[string]
-
-The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount>\d+)`.
-
-`shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
-
-`shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
-
-When `shard` is specified the configured [`testSquencer`](#testsequencer-string) implementation has to implement a `shard` method.
-
-Refer to [`testSquencer`](#testsequencer-string) on how to override the default sharding implementation.
-
 ### `slowTestThreshold` \[number]
 
 Default: `5`
