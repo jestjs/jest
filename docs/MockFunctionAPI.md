@@ -19,7 +19,7 @@ import {jest} from '@jest/globals';
 
 import TOCInline from "@theme/TOCInline"
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 

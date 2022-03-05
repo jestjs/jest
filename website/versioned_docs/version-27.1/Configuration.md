@@ -82,7 +82,7 @@ module.exports = {
 
 import TOCInline from "@theme/TOCInline"
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
