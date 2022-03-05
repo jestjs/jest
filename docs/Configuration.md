@@ -1341,9 +1341,7 @@ Default: `@jest/test-sequencer`
 
 This option allows you to use a custom sequencer instead of Jest's default. 
 
-`sort` may optionally return a Promise.
-
-`shard` may optionally return a Promise.
+Both `sort` and `shard` may optionally return a `Promise`.
 
 Example:
 
