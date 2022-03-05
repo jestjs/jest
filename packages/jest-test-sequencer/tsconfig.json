@@ -10,6 +10,6 @@
     {"path": "../jest-haste-map"},
     {"path": "../jest-runtime"},
     {"path": "../jest-test-result"},
-    {"path": "../jest-test-utils"}
+    {"path": "../test-utils"}
   ]
 }
