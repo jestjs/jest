@@ -965,7 +965,7 @@ The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount
 
 `shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
 
-When `shard` is specified the used [testSquencer](#testsequencer-string) implementation has to implement a `shard` method.
+When `shard` is specified the configured [`testSquencer`](#testsequencer-string) implementation has to implement a `shard` method.
 
 Refer to [`testSquencer`](#testsequencer-string) on how to override the default sharding implementation.
 
