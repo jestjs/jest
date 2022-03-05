@@ -327,14 +327,16 @@ test('return third shard', async () => {
   expect(tests.map(test => test.path)).toEqual(['/test-a.js']);
 });
 
-test('returns expected 100/10 shards', () => {
+test('returns expected 100/10 shards', async () => {
   const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
 
-  const shards = new Array(10).fill(true).map((_, i) =>
-    sequencer.shard(allTests, {
-      shardCount: 10,
-      shardIndex: i + 1,
-    }),
+  const shards = await Promise.all(
+    new Array(10).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 10,
+        shardIndex: i + 1,
+      }),
+    ),
   );
 
   expect(shards.map(shard => shard.length)).toEqual([
@@ -342,14 +344,16 @@ test('returns expected 100/10 shards', () => {
   ]);
 });
 
-test('returns expected 100/8 shards', () => {
+test('returns expected 100/8 shards', async () => {
   const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
 
-  const shards = new Array(8).fill(true).map((_, i) =>
-    sequencer.shard(allTests, {
-      shardCount: 8,
-      shardIndex: i + 1,
-    }),
+  const shards = await Promise.all(
+    new Array(8).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 8,
+        shardIndex: i + 1,
+      }),
+    ),
   );
 
   expect(shards.map(shard => shard.length)).toEqual([
