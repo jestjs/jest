@@ -11,7 +11,7 @@ For additional Jest matchers maintained by the Jest Community check out [`jest-e
 
 import TOCInline from "@theme/TOCInline"
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 

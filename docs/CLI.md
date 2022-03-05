@@ -108,7 +108,7 @@ CLI options take precedence over values from the [Configuration](Configuration.m
 
 import TOCInline from "@theme/TOCInline"
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
