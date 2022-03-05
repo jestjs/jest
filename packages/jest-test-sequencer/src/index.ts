@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {jumpConsistentHash} from '@subspace/jump-consistent-hash';
 import * as fs from 'graceful-fs';
 import type {AggregatedResult, Test} from '@jest/test-result';
 import HasteMap from 'jest-haste-map';
@@ -100,8 +101,17 @@ export default class TestSequencer {
     const shardEnd = shardSize * options.shardIndex;
 
     return [...tests]
-      .sort((a, b) => (a.path > b.path ? 1 : -1))
-      .slice(shardStart, shardEnd);
+      .map(test => {
+        const path = new TextEncoder().encode(test.path.padEnd(8, '.'));
+
+        return {
+          hash: jumpConsistentHash(path, options.shardCount),
+          test,
+        };
+      })
+      .sort((a, b) => (a.hash > b.hash ? 1 : -1))
+      .slice(shardStart, shardEnd)
+      .map(result => result.test);
   }
 
   /**

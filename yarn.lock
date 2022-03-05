@@ -2818,6 +2818,7 @@ __metadata:
   resolution: "@jest/test-sequencer@workspace:packages/jest-test-sequencer"
   dependencies:
     "@jest/test-result": ^28.0.0-alpha.6
+    "@subspace/jump-consistent-hash": ^1.1.1
     "@types/graceful-fs": ^4.1.3
     graceful-fs: ^4.2.9
     jest-haste-map: ^28.0.0-alpha.6
@@ -4415,6 +4416,13 @@ __metadata:
     url: ^0.11.0
     webpack-sources: ^1.4.3
   checksum: 6ddf70513c869d23044abf74574392c4c98f8a79bcd29a2a07e06b8aca8945dab48eb48a61d7bae7217fe7d9b9ce16abe50fe4b8e75bfa35b4aae4d16c637fd3
+  languageName: node
+  linkType: hard
+
+"@subspace/jump-consistent-hash@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@subspace/jump-consistent-hash@npm:1.1.1"
+  checksum: 1aeb3872de541b2794c81ba6dcc209c7cf5656fdae7a383b78d810d0b0aa0d37354d5a8b553147644ce8b0be0f9d1816efb0553b651b2007b5508f7263108101
   languageName: node
   linkType: hard
 
