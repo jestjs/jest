@@ -13,11 +13,10 @@ test('--shard=1/1', () => {
   const paths = result.stdout
     .split('\n')
     .filter(Boolean)
-    .map(file => path.basename(file));
+    .map(file => path.basename(file))
+    .sort();
 
-  expect(paths).toEqual(
-    expect.arrayContaining(['1.test.js', '2.test.js', '3.test.js']),
-  );
+  expect(paths).toEqual(['1.test.js', '2.test.js', '3.test.js']);
 });
 
 test('--shard=1/2', () => {
@@ -26,9 +25,10 @@ test('--shard=1/2', () => {
   const paths = result.stdout
     .split('\n')
     .filter(Boolean)
-    .map(file => path.basename(file));
+    .map(file => path.basename(file))
+    .sort();
 
-  expect(paths).toEqual(expect.arrayContaining(['2.test.js', '3.test.js']));
+  expect(paths).toEqual(['1.test.js', '3.test.js']);
 });
 
 test('--shard=2/2', () => {
@@ -39,8 +39,7 @@ test('--shard=2/2', () => {
     .filter(Boolean)
     .map(file => path.basename(file));
 
-  expect(paths).toEqual(['1.test.js']);
-  expect(paths).not.toEqual(expect.arrayContaining(['2.test.js', '3.test.js']));
+  expect(paths).toEqual(['2.test.js']);
 });
 
 test('--shard=4/4', () => {
