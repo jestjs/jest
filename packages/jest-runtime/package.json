@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "28.0.0-alpha.6",
+  "version": "28.0.0-alpha.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,35 +17,35 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^28.0.0-alpha.6",
-    "@jest/fake-timers": "^28.0.0-alpha.6",
-    "@jest/globals": "^28.0.0-alpha.6",
+    "@jest/environment": "^28.0.0-alpha.7",
+    "@jest/fake-timers": "^28.0.0-alpha.7",
+    "@jest/globals": "^28.0.0-alpha.7",
     "@jest/source-map": "^28.0.0-alpha.6",
-    "@jest/test-result": "^28.0.0-alpha.6",
-    "@jest/transform": "^28.0.0-alpha.6",
-    "@jest/types": "^28.0.0-alpha.6",
+    "@jest/test-result": "^28.0.0-alpha.7",
+    "@jest/transform": "^28.0.0-alpha.7",
+    "@jest/types": "^28.0.0-alpha.7",
     "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
     "execa": "^5.0.0",
     "glob": "^7.1.3",
     "graceful-fs": "^4.2.9",
-    "jest-haste-map": "^28.0.0-alpha.6",
-    "jest-message-util": "^28.0.0-alpha.6",
-    "jest-mock": "^28.0.0-alpha.6",
+    "jest-haste-map": "^28.0.0-alpha.7",
+    "jest-message-util": "^28.0.0-alpha.7",
+    "jest-mock": "^28.0.0-alpha.7",
     "jest-regex-util": "^28.0.0-alpha.6",
-    "jest-resolve": "^28.0.0-alpha.6",
-    "jest-snapshot": "^28.0.0-alpha.6",
-    "jest-util": "^28.0.0-alpha.6",
+    "jest-resolve": "^28.0.0-alpha.7",
+    "jest-snapshot": "^28.0.0-alpha.7",
+    "jest-util": "^28.0.0-alpha.7",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.0.0-alpha.6",
+    "@jest/test-utils": "^28.0.0-alpha.7",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
     "@types/node": "^14.0.27",
-    "jest-environment-node": "^28.0.0-alpha.6"
+    "jest-environment-node": "^28.0.0-alpha.7"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
