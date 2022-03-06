@@ -6,7 +6,11 @@
  */
 module.exports = class NoShardingSequencer {
   shard(tests) {
-    return [tests[2]];
+    return [
+      Array.from(tests).sort((a, b) =>
+        a.path < b.path ? -1 : a.path > b.path ? 1 : 0,
+      )[2],
+    ];
   }
   sort(tests) {
     return tests;
