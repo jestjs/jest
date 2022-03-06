@@ -65,13 +65,15 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
+
   test:
-    name: Node v${{ matrix.node-version }} on ${{ matrix.os }}
+    name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
         node-version: [12.x, 14.x, 16.x, 17.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
 
@@ -96,14 +98,15 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-jasmine:
-    name: Node LTS on ${{ matrix.os }} using jest-jasmine2
+    name: Node LTS on ${{ matrix.os }} using jest-jasmine2 (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
 
@@ -128,10 +131,14 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-coverage:
-    name: Node LTS on Ubuntu with coverage
+    name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
@@ -151,7 +158,7 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests with coverage
         run: |
-          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }}
+          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
           yarn test-leak
       - name: map coverage
         run: node ./scripts/mapCoverage.js

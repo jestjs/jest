@@ -361,7 +361,7 @@ export const options = {
     description:
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
-      'extensions Jest will look for. ',
+      'extensions Jest will look for.',
     string: true,
     type: 'array',
   },
@@ -510,16 +510,22 @@ export const options = {
   setupFiles: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing environment before each test. ',
+      'set up the testing environment before each test.',
     string: true,
     type: 'array',
   },
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing framework before each test ',
+      'set up the testing framework before each test',
     string: true,
     type: 'array',
+  },
+  shard: {
+    description:
+      'Shard tests and execute only the selected shard, specify in ' +
+      'the form "current/all". 1-based, for example "3/5".',
+    type: 'string',
   },
   showConfig: {
     description: 'Print your jest config and then exits.',

@@ -1327,7 +1327,13 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 Default: `@jest/test-sequencer`
 
-This option allows you to use a custom sequencer instead of Jest's default. `sort` may optionally return a Promise.
+This option allows you to use a custom sequencer instead of Jest's default.
+
+:::tip
+
+Both `sort` and `shard` may optionally return a `Promise`.
+
+:::
 
 Example:
 
@@ -1337,6 +1343,24 @@ Sort test path alphabetically.
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
+  /**
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
+   */
+  shard(tests, {shardIndex, shardCount}) {
+    const shardSize = Math.ceil(tests.length / options.shardCount);
+    const shardStart = shardSize * (options.shardIndex - 1);
+    const shardEnd = shardSize * options.shardIndex;
+
+    return [...tests]
+      .sort((a, b) => (a.path > b.path ? 1 : -1))
+      .slice(shardStart, shardEnd);
+  }
+
+  /**
+   * Sort test to determine order of execution
+   * Sorting is applied after sharding
+   */
   sort(tests) {
     // Test structure information
     // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21

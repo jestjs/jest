@@ -338,6 +338,24 @@ Run only the tests of the specified projects. Jest uses the attribute `displayNa
 
 A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
 
+### `--shard`
+
+The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount>\d+)`.
+
+`shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
+
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
+
+When `shard` is specified the configured [`testSquencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
+
+For example, to split the suite into three shards, each running one third of the tests:
+
+```
+jest --shard=1/3
+jest --shard=2/3
+jest --shard=3/3
+```
+
 ### `--showConfig`
 
 Print your Jest config and then exits.
@@ -389,7 +407,7 @@ Lets you specify a custom test runner.
 
 ### `--testSequencer=<path>`
 
-Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
+Lets you specify a custom test sequencer. Please refer to the [`testSequencer` configuration](Configuration.md#testsequencer-string) for details.
 
 ### `--testTimeout=<number>`
 

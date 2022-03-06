@@ -1972,3 +1972,13 @@ describe('moduleLoader', () => {
     expect(console.warn).toMatchSnapshot();
   });
 });
+
+describe('shards', () => {
+  it('should be object if defined', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      shard: '1/2',
+    } as Config.Argv);
+
+    expect(options.shard).toEqual({shardCount: 2, shardIndex: 1});
+  });
+});
