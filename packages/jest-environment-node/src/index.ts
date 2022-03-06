@@ -86,10 +86,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     if (typeof MessageEvent !== 'undefined') {
       global.MessageEvent = MessageEvent;
     }
-    // MessagePort is global in Node >= 15
-    if (typeof MessagePort !== 'undefined') {
-      global.MessagePort = MessagePort;
-    }
     // performance is global in Node >= 16
     if (typeof performance !== 'undefined') {
       global.performance = performance;
