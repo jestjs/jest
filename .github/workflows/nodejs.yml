@@ -134,7 +134,11 @@ jobs:
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-coverage:
-    name: Node LTS on Ubuntu with coverage
+    name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
@@ -154,7 +158,7 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests with coverage
         run: |
-          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }}
+          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
           yarn test-leak
       - name: map coverage
         run: node ./scripts/mapCoverage.js
