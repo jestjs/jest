@@ -6,7 +6,10 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import * as mockedFs from 'graceful-fs';
+import type {Test} from '@jest/test-result';
+import {makeProjectConfig} from '@jest/test-utils';
+import type {Context} from 'jest-runtime';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
@@ -17,34 +20,36 @@ jest.mock('graceful-fs', () => ({
 const FAIL = 0;
 const SUCCESS = 1;
 
-let sequencer;
+let sequencer: TestSequencer;
 
-const context = {
-  config: {
+const fs = jest.mocked(mockedFs);
+
+const context: Context = {
+  config: makeProjectConfig({
     cache: true,
     cacheDirectory: '/cache',
     haste: {},
     name: 'test',
-  },
+  }),
   hasteFS: {
     getSize: path => path.length,
   },
 };
 
-const secondContext = {
-  config: {
+const secondContext: Context = {
+  config: makeProjectConfig({
     cache: true,
     cacheDirectory: '/cache2',
     haste: {},
     name: 'test2',
-  },
+  }),
   hasteFS: {
     getSize: path => path.length,
   },
 };
 
-const toTests = paths =>
-  paths.map(path => ({
+const toTests = (paths: Array<string>) =>
+  paths.map<Test>(path => ({
     context,
     duration: undefined,
     path,
@@ -125,13 +130,13 @@ test('sorts based on failures, timing information and file size', () => {
   ]);
 });
 
-test('writes the cache based on results without existing cache', () => {
+test('writes the cache based on results without existing cache', async () => {
   fs.readFileSync.mockImplementationOnce(() => {
     throw new Error('File does not exist.');
   });
 
   const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
-  const tests = sequencer.sort(toTests(testPaths));
+  const tests = await sequencer.sort(toTests(testPaths));
   sequencer.cacheResults(tests, {
     testResults: [
       {
@@ -179,7 +184,7 @@ test('returns failed tests in sorted order', () => {
   ]);
 });
 
-test('writes the cache based on the results', () => {
+test('writes the cache based on the results', async () => {
   fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
@@ -189,7 +194,7 @@ test('writes the cache based on the results', () => {
   );
 
   const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
-  const tests = sequencer.sort(toTests(testPaths));
+  const tests = await sequencer.sort(toTests(testPaths));
   sequencer.cacheResults(tests, {
     testResults: [
       {
@@ -223,7 +228,7 @@ test('writes the cache based on the results', () => {
   });
 });
 
-test('works with multiple contexts', () => {
+test('works with multiple contexts', async () => {
   fs.readFileSync.mockImplementationOnce(cacheName =>
     cacheName.startsWith(`${path.sep}cache${path.sep}`)
       ? JSON.stringify({
@@ -240,7 +245,7 @@ test('works with multiple contexts', () => {
     {context, duration: null, path: '/test-b.js'},
     {context: secondContext, duration: null, path: '/test-c.js'},
   ];
-  const tests = sequencer.sort(testPaths);
+  const tests = await sequencer.sort(testPaths);
   sequencer.cacheResults(tests, {
     testResults: [
       {
@@ -275,4 +280,83 @@ test('works with multiple contexts', () => {
   expect(fileDataB).toEqual({
     '/test-c.js': [SUCCESS, 3],
   });
+});
+
+test('does not shard by default', async () => {
+  const tests = await sequencer.shard(toTests(['/test-a.js', '/test-ab.js']), {
+    shardCount: 1,
+    shardIndex: 1,
+  });
+
+  expect(tests.map(test => test.path)).toEqual(['/test-ab.js', '/test-a.js']);
+});
+
+test('return first shard', async () => {
+  const tests = await sequencer.shard(
+    toTests(['/test-a.js', '/test-abc.js', '/test-ab.js']),
+    {
+      shardCount: 3,
+      shardIndex: 1,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-ab.js']);
+});
+
+test('return second shard', async () => {
+  const tests = await sequencer.shard(
+    toTests(['/test-a.js', '/test-abc.js', '/test-ab.js']),
+    {
+      shardCount: 3,
+      shardIndex: 2,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-abc.js']);
+});
+
+test('return third shard', async () => {
+  const tests = await sequencer.shard(
+    toTests(['/test-abc.js', '/test-a.js', '/test-ab.js']),
+    {
+      shardCount: 3,
+      shardIndex: 3,
+    },
+  );
+
+  expect(tests.map(test => test.path)).toEqual(['/test-a.js']);
+});
+
+test('returns expected 100/10 shards', async () => {
+  const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
+
+  const shards = await Promise.all(
+    new Array(10).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 10,
+        shardIndex: i + 1,
+      }),
+    ),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  ]);
+});
+
+test('returns expected 100/8 shards', async () => {
+  const allTests = toTests(new Array(100).fill(true).map((_, i) => `/${i}.js`));
+
+  const shards = await Promise.all(
+    new Array(8).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 8,
+        shardIndex: i + 1,
+      }),
+    ),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    13, 13, 13, 13, 13, 13, 13, 9,
+  ]);
 });

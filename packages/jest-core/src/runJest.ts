@@ -192,6 +192,15 @@ export default async function runJest({
     }),
   );
 
+  if (globalConfig.shard) {
+    if (typeof sequencer.shard !== 'function') {
+      throw new Error(
+        `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
+      );
+    }
+    allTests = await sequencer.shard(allTests, globalConfig.shard);
+  }
+
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {

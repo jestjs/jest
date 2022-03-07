@@ -137,6 +137,15 @@
         "options": {
           "singleQuote": false
         }
+      },
+      {
+        "files": [
+          "docs/*.md",
+          "website/versioned_docs/*/*.md"
+        ],
+        "options": {
+          "parser": "mdx"
+        }
       }
     ]
   },

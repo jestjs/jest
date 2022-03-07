@@ -145,6 +145,14 @@ module.exports = {
     ],
   ],
   themeConfig: {
+    announcementBar: {
+      id: 'support_ukraine',
+      content:
+        'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.facebook.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
+      backgroundColor: '#20232a',
+      textColor: '#fff',
+      isCloseable: false,
+    },
     navbar: {
       title: 'Jest',
       items: [
@@ -277,7 +285,8 @@ module.exports = {
     },
     algolia: {
       indexName: 'jest-v2',
-      apiKey: '833906d7486e4059359fa58823c4ef56',
+      appId: 'HP439UUSOL',
+      apiKey: 'e5e670fd16f8f17caada79d6b0931682',
       contextualSearch: true,
     },
   },
