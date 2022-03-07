@@ -14,7 +14,7 @@ const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
 
 function replaceEntities(s: string): string {
   const substitutions: Array<[RegExp, string]> = [
-    [/%/, '%25'],
+    [/%/g, '%25'],
     [/\r/g, '%0D'],
     [/\n/g, '%0A'],
   ];
