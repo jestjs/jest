@@ -6,7 +6,7 @@
  */
 'use strict';
 
-let GithubActionsReporter;
+let GitHubActionsReporter;
 
 const write = process.stderr.write;
 const globalConfig = {
@@ -18,7 +18,7 @@ let results = [];
 
 function requireReporter() {
   jest.isolateModules(() => {
-    GithubActionsReporter = require('../GithubActionsReporter').default;
+    GitHubActionsReporter = require('../GitHubActionsReporter').default;
   });
 }
 
@@ -112,7 +112,7 @@ const aggregatedResults = {
 
 test("reporter returns empty string if GITHUB_ACTIONS isn't set", () => {
   requireReporter();
-  const testReporter = new GithubActionsReporter(globalConfig);
+  const testReporter = new GitHubActionsReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('')).toBe('');
 });
@@ -121,7 +121,7 @@ test('reporter extracts the correct filename, line, and column', () => {
   jest.doMock('ci-info', () => ({GITHUB_ACTIONS: true}));
 
   requireReporter();
-  const testReporter = new GithubActionsReporter(globalConfig);
+  const testReporter = new GitHubActionsReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
 });

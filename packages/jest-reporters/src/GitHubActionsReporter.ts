@@ -21,7 +21,7 @@ function replaceEntities(s: string): string {
   return substitutions.reduce((acc, sub) => acc.replace(...sub), s);
 }
 
-export default class GithubActionsReporter extends BaseReporter {
+export default class GitHubActionsReporter extends BaseReporter {
   onRunComplete(
     _contexts?: Set<Context>,
     aggregatedResults?: AggregatedResult,
