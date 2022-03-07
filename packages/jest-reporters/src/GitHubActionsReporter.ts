@@ -41,26 +41,16 @@ export default class GitHubActionsReporter extends BaseReporter {
 function getMessages(results: Array<TestResult> | undefined) {
   if (!results) return [];
 
-  return results.reduce(
-    flatMap(({testFilePath, testResults}) =>
-      testResults
-        .filter(r => r.status === 'failed')
-        .reduce(
-          flatMap(r => r.failureMessages),
-          [],
-        )
-        .map(m => replaceEntities(m))
-        .map(m => lineAndColumnInStackTrace.exec(m))
-        .filter((m): m is RegExpExecArray => m !== null)
-        .map(
-          ([message, line, col]) =>
-            `::error file=${testFilePath},line=${line},col=${col}::${message}`,
-        ),
-    ),
-    [],
+  return results.flatMap(({testFilePath, testResults}) =>
+    testResults
+      .filter(r => r.status === 'failed')
+      .flatMap(r => r.failureMessages)
+      .map(m => replaceEntities(m))
+      .map(m => lineAndColumnInStackTrace.exec(m))
+      .filter((m): m is RegExpExecArray => m !== null)
+      .map(
+        ([message, line, col]) =>
+          `::error file=${testFilePath},line=${line},col=${col}::${message}`,
+      ),
   );
-}
-
-function flatMap<In, Out>(map: (x: In) => Array<Out>) {
-  return (out: Array<Out>, entry: In) => out.concat(...map(entry));
 }
