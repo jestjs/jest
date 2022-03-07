@@ -365,9 +365,7 @@ Note that `column` is 0-indexed while `line` is not.
 
 ### `--testMatch glob1 ... globN`
 
-The glob patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
-
-See the [micromatch](https://github.com/micromatch/micromatch) package for details of the patterns you can specify.
+The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
 
 ### `--testNamePattern=<regex>`
 
