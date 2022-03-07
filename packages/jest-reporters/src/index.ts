@@ -26,7 +26,7 @@ export {default as DefaultReporter} from './DefaultReporter';
 export {default as NotifyReporter} from './NotifyReporter';
 export {default as SummaryReporter} from './SummaryReporter';
 export {default as VerboseReporter} from './VerboseReporter';
-export {default as GithubActionsReporter} from './GithubActionsReporter';
+export {default as GitHubActionsReporter} from './GitHubActionsReporter';
 export type {
   Context,
   Reporter,
