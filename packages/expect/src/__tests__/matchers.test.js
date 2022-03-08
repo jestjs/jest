@@ -14,6 +14,18 @@ const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
+jestExpect.extend({
+  optionalFn(fn) {
+    const pass = fn === undefined || typeof fn === 'function';
+    console.log(`optionalFn: fn:${typeof fn} pass:${pass}`);
+
+    return {
+      pass,
+      message: () => 'fn argument must either be a function or undefined.',
+    };
+  },
+});
+
 beforeAll(() => {
   chalk.enabled = true;
 });
@@ -440,6 +452,40 @@ describe('.toStrictEqual()', () => {
     expect(Uint8Array.from([9, 3]).buffer).toStrictEqual(
       Uint8Array.from([9, 3]).buffer,
     );
+  });
+
+  it('fails for missing keys even if backed by an asymmetric matcher accepting them', () => {
+    // issue 12463
+    expect({a: 1}).not.toStrictEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).not.toStrictEqual({a: 1});
+    expect([1]).not.toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).not.toStrictEqual([1]);
+  });
+
+  it('passes if keys are present and asymmetric matcher accept them', () => {
+    // issue 12463
+    // with a proper function
+    expect({a: 1, b: () => {}}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: () => {},
+    });
+    expect([1, () => {}]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, () => {}]);
+    // with undefined
+    expect({a: 1, b: undefined}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: undefined,
+    });
+    expect([1, undefined]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, undefined]);
   });
   /* eslint-enable */
 });
@@ -980,6 +1026,25 @@ describe('.toEqual()', () => {
       expect(c).not.toEqual(d);
       expect(d).not.toEqual(c);
     });
+  });
+
+  it('passes if asymmetric matcher accept the values even if keys are missing', () => {
+    // issue 12463
+    // with a proper function
+    expect({a: 1, b: () => {}}).toEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1, b: () => {}});
+    expect([1, () => {}]).toEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toEqual([1, () => {}]);
+    // with undefined
+    expect({a: 1, b: undefined}).toEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1, b: undefined});
+    expect([1, undefined]).toEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toEqual([1, undefined]);
+    // with missing
+    expect({a: 1}).toEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1});
+    expect([1]).toEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toEqual([1]);
   });
   /* eslint-enable */
 });

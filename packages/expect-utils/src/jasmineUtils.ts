@@ -153,13 +153,24 @@ function eq(
     return false;
   }
 
+  // Extended hasKeys including asymmetric matchers
+  // We either have the key defined on the object or the key is linked to an asymmetric matcher in the other entity
+  // TODO - This code is probably not correct regarding the strict mode, in such mode we exactly want the keys
+  // TODO - This code does handle symbols properly has they do not rely on hasKey, but it is already a bug in the existing eq
+  const hasKeyExtendedA = (obj: object, key: string): boolean => {
+    return hasKey(obj, key) || isAsymmetric(b[key]);
+  };
+  const hasKeyExtendedB = (obj: object, key: string): boolean => {
+    return hasKey(obj, key) || isAsymmetric(a[key]);
+  };
+
   // Deep compare objects.
-  var aKeys = keys(a, hasKey),
+  var aKeys = keys(a, hasKeyExtendedA),
     key;
   var size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, hasKey).length !== size) {
+  if (keys(b, hasKeyExtendedB).length !== size) {
     return false;
   }
 
