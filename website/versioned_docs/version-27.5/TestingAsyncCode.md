@@ -7,9 +7,9 @@ It's common in JavaScript for code to run asynchronously. When you have code tha
 
 ## Promises
 
-If your code uses promises, there is a more straightforward way to handle asynchronous tests. Return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+Return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will fail.
 
-For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `'peanut butter'`. We could test it with:
+For example, let's say that `fetchData` returns a promise that is supposed to resolve to the string `'peanut butter'`. We could test it with:
 
 ```js
 test('the data is peanut butter', () => {
@@ -53,7 +53,11 @@ test('the fetch fails with an error', async () => {
 
 In these cases, `async` and `await` are effectively syntactic sugar for the same logic as the promises example uses.
 
-Be sure to return the promise - if you omit this `return` statement, your test will complete before the promise returned from `fetchData` resolves and then() has a chance to execute the callback.
+:::caution
+
+Be sure to return (or `await`) the promise - if you omit the `return` statement, your test will complete before the promise returned from `fetchData` resolves and `then()` has a chance to execute the callback.
+
+:::
 
 If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise, a fulfilled promise would not fail the test.
 
@@ -66,7 +70,7 @@ test('the fetch fails with an error', () => {
 
 ## Callbacks
 
-For example, let's say that you have a `fetchData(callback)` function that fetches some data and calls `callback(data)` when it is complete. You want to test that this returned data is the string `'peanut butter'`.
+For example, let's say that `fetchData`, instead of returning a promise, expects a callback, i.e. fetches some data and calls `callback(data)` when it is complete. You want to test that this returned data is the string `'peanut butter'`.
 
 By default, Jest tests complete once they reach the end of their execution. That means this test will _not_ work as intended:
 
