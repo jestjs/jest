@@ -104,7 +104,7 @@
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --check --ignore-path .gitignore",
     "remove-examples": "node ./scripts/remove-examples.js",
     "test-types": "yarn jest --config jest.config.tsd.js",
-    "test-ci-partial": "yarn test-ci-partial:parallel -i",
+    "test-ci-partial": "yarn test-ci-partial:parallel -i --detectOpenHandles",
     "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
