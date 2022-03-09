@@ -93,7 +93,7 @@ jobs:
       - name: install
         run: yarn --immutable
       - name: build
-        run: yarn build:js
+        run: yarn build
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
@@ -152,7 +152,7 @@ jobs:
       - name: install
         run: yarn --immutable
       - name: build
-        run: yarn build
+        run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
