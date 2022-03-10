@@ -146,7 +146,13 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 ### `--clearCache`
 
-Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
+Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`.
+
+:::caution
+
+Clearing the cache will reduce performance.
+
+:::
 
 ### `--clearMocks`
 
