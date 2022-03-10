@@ -88,6 +88,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "ci": true,
     "collectCoverage": false,
     "collectCoverageFrom": [],
+    "colors": true,
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
     "coverageProvider": "babel",
     "coverageReporters": [
