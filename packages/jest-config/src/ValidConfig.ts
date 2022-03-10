@@ -27,6 +27,7 @@ const initialOptions: Config.InitialOptions = {
   collectCoverageOnlyFrom: {
     '<rootDir>/this-directory-is-covered/Covered.js': true,
   },
+  colors: true,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'v8',

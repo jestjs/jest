@@ -30,8 +30,14 @@ const generateConfigFile = (
   results: Record<string, unknown>,
   generateEsm = false,
 ): string => {
-  const {useTypescript, coverage, coverageProvider, clearMocks, environment} =
-    results;
+  const {
+    useTypescript,
+    coverage,
+    coverageProvider,
+    color,
+    clearMocks,
+    environment,
+  } = results;
 
   const overrides: Record<string, unknown> = {};
 
@@ -45,6 +51,12 @@ const generateConfigFile = (
   if (coverageProvider === 'v8') {
     Object.assign(overrides, {
       coverageProvider: 'v8',
+    });
+  }
+
+  if (color) {
+    Object.assign(overrides, {
+      colors: true,
     });
   }
 

@@ -68,6 +68,7 @@ export type DefaultOptions = {
   ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
@@ -147,6 +148,7 @@ export type InitialOptions = Partial<{
   collectCoverageOnlyFrom: {
     [key: string]: boolean;
   };
+  colors: boolean;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
@@ -294,6 +296,7 @@ export type GlobalConfig = {
   collectCoverageOnlyFrom?: {
     [key: string]: boolean;
   };
+  colors: boolean;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
@@ -355,6 +358,7 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   cwd: string;
   dependencyExtractor?: string;
@@ -424,7 +428,6 @@ export type Argv = Arguments<
     collectCoverageFrom: string;
     collectCoverageOnlyFrom: Array<string>;
     color: boolean;
-    colors: boolean;
     config: string;
     coverage: boolean;
     coverageDirectory: string;

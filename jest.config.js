@@ -22,6 +22,7 @@ module.exports = {
     '!**/vendor/**',
     '!e2e/**',
   ],
+  colors: false,
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
