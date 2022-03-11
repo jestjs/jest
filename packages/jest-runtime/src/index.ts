@@ -1449,8 +1449,13 @@ export default class Runtime {
 
     const vmContext = this._environment.getVmContext();
 
+    const defaultTimeout = 30;
+
     if (vmContext) {
-      runScript = script.runInContext(vmContext, {filename});
+      runScript = script.runInContext(vmContext, {
+        filename,
+        timeout: defaultTimeout * 60000,
+      });
     }
 
     if (runScript !== null) {
