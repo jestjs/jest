@@ -2326,6 +2326,14 @@ describe('toMatchObject()', () => {
 
 describe('.toHaveBeenCalledWith', () => {
   [
+    [
+      [1, 2, 3],
+      [1, 2, 3],
+    ],
+    [
+      [1, 2, 3],
+      [jestExpect.any(Number), jestExpect.any(Number), jestExpect.any(Number)],
+    ],
     // issue 12463
     [
       [1, () => {}],
@@ -2346,6 +2354,22 @@ describe('.toHaveBeenCalledWith', () => {
     });
   });
   [
+    [
+      [1, 2],
+      [1, 2, 3],
+    ],
+    [
+      [1, 2, 3],
+      [1, 2],
+    ],
+    [
+      [1, 2, 3],
+      [1, 2, 4],
+    ],
+    [
+      [1, 2, 3],
+      [jestExpect.any(Number), jestExpect.any(Number), jestExpect.any(String)],
+    ],
     // issue 12463
     [[1], [1, jestExpect.any(Function)]],
     [
