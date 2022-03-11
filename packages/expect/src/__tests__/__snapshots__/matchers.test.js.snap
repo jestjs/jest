@@ -392,6 +392,8 @@ exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
 exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
+<d>If it should pass with deep equality, replace "toBe" with "toEqual"</>
+
 <g>- Expected  - 0</>
 <r>+ Received  + 1</>
 
