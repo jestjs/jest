@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import util = require('util');
+import {promisify} from 'util';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import type {
   FunctionLike,
@@ -422,7 +422,7 @@ export default class FakeTimers<TimerRef = unknown> {
 
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
     // @ts-expect-error: no index
-    promisifiableFakeSetTimeout[util.promisify.custom] = (
+    promisifiableFakeSetTimeout[promisify.custom] = (
       delay?: number,
       arg?: unknown,
     ) =>
