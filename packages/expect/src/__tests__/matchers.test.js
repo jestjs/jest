@@ -894,10 +894,51 @@ describe('.toEqual()', () => {
       // eslint-disable-next-line no-sparse-arrays
       [, , 1, undefined, ,], // same length but hole replaced by undefined
     ],
+    // issue 12463 - "matcher" vs "proper function"
+    [
+      {a: 1, b: () => {}},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: () => {}},
+    ],
+    [
+      [1, () => {}],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, () => {}],
+    ],
+    // issue 12463 - "matcher" vs "undefined"
+    [
+      {a: 1, b: undefined},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: undefined},
+    ],
+    [
+      [1, undefined],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, undefined],
+    ],
+    // issue 12463 - "matcher" vs "missing"
+    [{a: 1}, {a: 1, b: jestExpect.optionalFn()}],
+    [{a: 1, b: jestExpect.optionalFn()}, {a: 1}],
+    [[1], [1, jestExpect.optionalFn()]],
+    [[1, jestExpect.optionalFn()], [1]],
   ].forEach(([a, b]) => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      if (stringify(a) === '[1]' && stringify(b) === '[1, optionalFn<>]')
+        debugger;
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
@@ -1028,24 +1069,6 @@ describe('.toEqual()', () => {
     });
   });
 
-  it('passes if asymmetric matcher accept the values even if keys are missing', () => {
-    // issue 12463
-    // with a proper function
-    expect({a: 1, b: () => {}}).toEqual({a: 1, b: jestExpect.optionalFn()});
-    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1, b: () => {}});
-    expect([1, () => {}]).toEqual([1, jestExpect.optionalFn()]);
-    expect([1, jestExpect.optionalFn()]).toEqual([1, () => {}]);
-    // with undefined
-    expect({a: 1, b: undefined}).toEqual({a: 1, b: jestExpect.optionalFn()});
-    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1, b: undefined});
-    expect([1, undefined]).toEqual([1, jestExpect.optionalFn()]);
-    expect([1, jestExpect.optionalFn()]).toEqual([1, undefined]);
-    // with missing
-    expect({a: 1}).toEqual({a: 1, b: jestExpect.optionalFn()});
-    expect({a: 1, b: jestExpect.optionalFn()}).toEqual({a: 1});
-    expect([1]).toEqual([1, jestExpect.optionalFn()]);
-    expect([1, jestExpect.optionalFn()]).toEqual([1]);
-  });
   /* eslint-enable */
 });
 
@@ -2303,5 +2326,43 @@ describe('toMatchObject()', () => {
     expect(() =>
       jestExpect(b).toMatchObject(matcher),
     ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('.toHaveBeenCalledWith', () => {
+  [
+    // issue 12463
+    [
+      [1, () => {}],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, undefined],
+      [1, jestExpect.optionalFn()],
+    ],
+    [[1], [1, jestExpect.optionalFn()]],
+  ].forEach(([received, expected]) => {
+    test(`{pass: true} expect(f).toHaveBeenCalledWith(...${stringify(
+      expected,
+    )}) when called with ${stringify(received)}`, () => {
+      const f = jest.fn();
+      f(...received);
+      jestExpect(f).toHaveBeenCalledWith(...expected);
+    });
+  });
+  [
+    // issue 12463
+    [
+      [1, undefined],
+      [1, jestExpect.any(Function)],
+    ],
+  ].forEach(([received, expected]) => {
+    test(`{pass: false} expect(f).toHaveBeenCalledWith(...${stringify(
+      expected,
+    )}) when called with ${stringify(received)}`, () => {
+      const f = jest.fn();
+      f(...received);
+      jestExpect(f).not.toHaveBeenCalledWith(...expected);
+    });
   });
 });

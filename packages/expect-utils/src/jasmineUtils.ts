@@ -36,7 +36,7 @@ export type EqualsFunction = (
 // Extracted out of jasmine 2.5.2
 export const equals: EqualsFunction = (a, b, customTesters, strictCheck) => {
   customTesters = customTesters || [];
-  return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
+  return eq(a, b, [], [], customTesters, strictCheck);
 };
 
 function isAsymmetric(obj: any) {
@@ -68,7 +68,7 @@ function eq(
   aStack: Array<unknown>,
   bStack: Array<unknown>,
   customTesters: Array<Tester>,
-  hasKey: any,
+  strictCheck: boolean | undefined,
 ): boolean {
   var result = true;
 
@@ -149,28 +149,34 @@ function eq(
   bStack.push(b);
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
-  if (className == '[object Array]' && a.length !== b.length) {
+  if (strictCheck && className == '[object Array]' && a.length !== b.length) {
     return false;
   }
 
-  // Extended hasKeys including asymmetric matchers
-  // We either have the key defined on the object or the key is linked to an asymmetric matcher in the other entity
-  // TODO - This code is probably not correct regarding the strict mode, in such mode we exactly want the keys
-  // TODO - This code does handle symbols properly has they do not rely on hasKey, but it is already a bug in the existing eq
-  const hasKeyExtendedA = (obj: object, key: string): boolean => {
-    return hasKey(obj, key) || isAsymmetric(b[key]);
-  };
-  const hasKeyExtendedB = (obj: object, key: string): boolean => {
-    return hasKey(obj, key) || isAsymmetric(a[key]);
-  };
-
   // Deep compare objects.
-  var aKeys = keys(a, hasKeyExtendedA),
+  var aKeys = keys(a, hasKey),
     key;
-  var size = aKeys.length;
+
+  var bKeys = keys(b, hasKey);
+  // Add keys corresponding to asymmetric matchers if they miss in non strict check mode
+  if (!strictCheck) {
+    for (var index = 0; index !== bKeys.length; ++index) {
+      key = bKeys[index];
+      if (isAsymmetric(b[key]) && !hasKey(a, key)) {
+        aKeys.push(key);
+      }
+    }
+    for (var index = 0; index !== aKeys.length; ++index) {
+      key = aKeys[index];
+      if (isAsymmetric(a[key]) && !hasKey(b, key)) {
+        bKeys.push(key);
+      }
+    }
+  }
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, hasKeyExtendedB).length !== size) {
+  var size = aKeys.length;
+  if (bKeys.length !== size) {
     return false;
   }
 
@@ -178,9 +184,14 @@ function eq(
     key = aKeys[size];
 
     // Deep compare each member
-    result =
-      hasKey(b, key) &&
-      eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
+    if (strictCheck)
+      result =
+        hasKey(b, key) &&
+        eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
+    else
+      result =
+        (hasKey(b, key) || isAsymmetric(a[key])) &&
+        eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
 
     if (!result) {
       return false;
@@ -207,10 +218,6 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
           .enumerable,
     ),
   );
-}
-
-function hasDefinedKey(obj: any, key: string) {
-  return hasKey(obj, key) && obj[key] !== undefined;
 }
 
 function hasKey(obj: any, key: string) {
