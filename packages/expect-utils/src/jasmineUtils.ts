@@ -162,13 +162,13 @@ function eq(
   if (!strictCheck) {
     for (var index = 0; index !== bKeys.length; ++index) {
       key = bKeys[index];
-      if (isAsymmetric(b[key]) && !hasKey(a, key)) {
+      if ((isAsymmetric(b[key]) || b[key] === undefined) && !hasKey(a, key)) {
         aKeys.push(key);
       }
     }
     for (var index = 0; index !== aKeys.length; ++index) {
       key = aKeys[index];
-      if (isAsymmetric(a[key]) && !hasKey(b, key)) {
+      if ((isAsymmetric(a[key]) || a[key] === undefined) && !hasKey(b, key)) {
         bKeys.push(key);
       }
     }
@@ -190,7 +190,7 @@ function eq(
         eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
     else
       result =
-        (hasKey(b, key) || isAsymmetric(a[key])) &&
+        (hasKey(b, key) || isAsymmetric(a[key]) || a[key] === undefined) &&
         eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
 
     if (!result) {

@@ -17,12 +17,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 jestExpect.extend({
   optionalFn(fn) {
     const pass = fn === undefined || typeof fn === 'function';
-    console.log(`optionalFn: fn:${typeof fn} pass:${pass}`);
-
-    return {
-      pass,
-      message: () => 'fn argument must either be a function or undefined.',
-    };
+    return {pass, message: () => 'expect either a function or undefined'};
   },
 });
 
