@@ -2347,6 +2347,7 @@ describe('.toHaveBeenCalledWith', () => {
   });
   [
     // issue 12463
+    [[1], [1, jestExpect.any(Function)]],
     [
       [1, undefined],
       [1, jestExpect.any(Function)],
