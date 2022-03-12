@@ -52,7 +52,9 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "timers": {},
+    "timers": {
+      "loopLimit": 100000
+    },
     "transform": [],
     "transformIgnorePatterns": [],
     "watchPathIgnorePatterns": []

@@ -98,7 +98,6 @@ export default class FakeTimers {
       >;
 
       const resolvedTimersConfig: SinonTimersConfig = {
-        loopLimit: 100_000,
         now: Date.now(),
         toFake,
         ...this._config.timers,
