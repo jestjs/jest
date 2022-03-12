@@ -141,8 +141,8 @@ export default class FakeTimers {
       this._global.console.warn(
         'A function to advance timers was called but the timers API is not ' +
           'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
-          'enable fake timers globally by setting `"timers": {"strategy": "modern"}` ' +
-          `in the configuration file\nStack Trace:\n${formatStackTrace(
+          'enable fake timers globally using "timers" option in the Jest ' +
+          `configuration file\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
             this._config,
             {noStackTrace: false},
