@@ -2065,13 +2065,13 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers: Jest['useFakeTimers'] = config => {
-      if (config?.strategy === 'legacy') {
+    const useFakeTimers: Jest['useFakeTimers'] = timersConfig => {
+      if (timersConfig?.strategy === 'legacy') {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
-      this._fakeTimersImplementation!.useFakeTimers(config);
+      this._fakeTimersImplementation!.useFakeTimers(timersConfig);
       return jestObject;
     };
     const useRealTimers = () => {
