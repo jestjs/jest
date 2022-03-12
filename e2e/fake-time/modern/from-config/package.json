@@ -1,6 +1,6 @@
 {
   "jest": {
-    "timers": "fake",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "timers": {"strategy": "modern"}
   }
 }

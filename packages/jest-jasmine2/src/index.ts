@@ -88,9 +88,9 @@ export default async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake' || config.timers === 'modern') {
-    environment.fakeTimersModern!.useFakeTimers();
-  } else if (config.timers === 'legacy') {
+  if (config.timers.strategy === 'modern') {
+    environment.fakeTimersModern!.useFakeTimers(config.timers);
+  } else if (config.timers.strategy === 'legacy') {
     environment.fakeTimers!.useFakeTimers();
   }
 

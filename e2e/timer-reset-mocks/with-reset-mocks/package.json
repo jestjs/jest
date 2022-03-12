@@ -1,7 +1,7 @@
 {
   "jest": {
-    "testEnvironment": "node",
     "resetMocks": true,
-    "timers": "fake"
+    "testEnvironment": "node",
+    "timers": {"strategy": "modern"}
   }
 }

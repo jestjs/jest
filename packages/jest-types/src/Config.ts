@@ -12,7 +12,104 @@ import type {SnapshotFormat} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
-type Timers = 'real' | 'fake' | 'modern' | 'legacy';
+export type FakeableTimerAPIs =
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance';
+// | 'queueMicrotask'; // ?
+
+export type LegacyTimersConfig = {
+  /**
+   * The strategy to be use for the fake timers.
+   *
+   * @defaultValue
+   * The default is `'modern'`.
+   */
+  strategy?: 'legacy';
+  /**
+   * The maximum number of timers that will be run when calling `jest.advanceTimersByTime()`,
+   * `jest.runAllImmediates()`, `jest.runAllTicks()` or `jest.runAllTimers()`.
+   *
+   * @defaultValue
+   * The default is `100_000` timers.
+   */
+  loopLimit?: number;
+};
+
+export type ModernTimersConfig = {
+  /**
+   * The strategy to be use for the fake timers.
+   *
+   * @defaultValue
+   * The default is `'modern'`.
+   */
+  strategy?: 'modern';
+  /**
+   * Sets the default unix epoch. May be a number (in milliseconds) or a Date object.
+   *
+   * @defaultValue
+   * The default is `Date.now()`.
+   */
+  now?: number | Date;
+  /**
+   * Allows to cherry pick the timer methods and objects (e.g. `setTimeout()`,
+   * `setImmediate()`, `Date`, `nextTick`, `performance`) that should be faked.
+   *
+   * @defaultValue
+   * All timer APIs are faked by default.
+   *
+   * @example
+   * {toFake: ['nextTick', 'setTimeout']}
+   */
+  toFake?: Array<FakeableTimerAPIs>;
+  /**
+   * The maximum number of timers that will be run when calling `jest.advanceTimersByTime()`,
+   * `jest.runAllTicks()` or `jest.runAllTimers()`.
+   *
+   * @defaultValue
+   * The default is `100_000` timers.
+   */
+  loopLimit?: number;
+  /**
+   * Whether to increment mocked time automatically based on the real system time
+   * shift. If `shouldAdvanceTime` is not set, the mocked time will be incremented
+   * by 20 milliseconds for every 20 milliseconds change in the real system time.
+   *
+   * @defaultValue
+   * The default is `false`.
+   */
+  shouldAdvanceTime?: boolean;
+  /**
+   * Relevant only when using with `shouldAdvanceTime: true`. Increment mocked
+   * time by `advanceTimeDelta` milliseconds every `advanceTimeDelta` milliseconds.
+   *
+   * @defaultValue
+   * The default is `20` milliseconds.
+   */
+  advanceTimeDelta?: number;
+  /**
+   * Forwards clear timer calls to native functions if they are not fakes.
+   * These are not cleared by default, leading to potentially unexpected behavior
+   * if timers existed prior to installing fake timers.
+   *
+   * @defaultValue
+   * The default is `false`.
+   */
+  shouldClearNativeTimers?: boolean;
+};
+
+export type TimersConfig = LegacyTimersConfig | ModernTimersConfig;
 
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */
@@ -112,7 +209,7 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testRunner: string;
   testSequencer: string;
-  timers: Timers;
+  timers: TimersConfig;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
   watch: boolean;
@@ -241,7 +338,7 @@ export type InitialOptions = Partial<{
   testRunner: string;
   testSequencer: string;
   testTimeout: number;
-  timers: Timers;
+  timers: TimersConfig;
   transform: {
     [regex: string]: string | TransformerConfig;
   };
@@ -401,7 +498,7 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
-  timers: Timers;
+  timers: TimersConfig;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;

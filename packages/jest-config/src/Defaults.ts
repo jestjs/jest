@@ -72,7 +72,7 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
-  timers: 'real',
+  timers: {},
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
   watch: false,

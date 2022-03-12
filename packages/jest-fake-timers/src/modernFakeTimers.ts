@@ -8,30 +8,28 @@
 import {
   FakeTimerWithContext,
   InstalledClock,
+  FakeTimerInstallOpts as SinonTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
-import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {Config} from '@jest/types';
+import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _config: StackTraceConfig;
+  private _config: Config.ProjectConfig;
   private _fakingTime: boolean;
   private _global: typeof globalThis;
   private _fakeTimers: FakeTimerWithContext;
-  private _maxLoops: number;
 
   constructor({
     global,
     config,
-    maxLoops,
   }: {
     global: typeof globalThis;
-    config: StackTraceConfig;
-    maxLoops?: number;
+    config: Config.ProjectConfig;
   }) {
     this._global = global;
     this._config = config;
-    this._maxLoops = maxLoops || 100000;
 
     this._fakingTime = false;
     this._fakeTimers = withGlobal(global);
@@ -93,17 +91,21 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(): void {
+  useFakeTimers(timersConfig?: SinonTimersConfig): void {
     if (!this._fakingTime) {
       const toFake = Object.keys(this._fakeTimers.timers) as Array<
         keyof FakeTimerWithContext['timers']
       >;
 
-      this._clock = this._fakeTimers.install({
-        loopLimit: this._maxLoops,
+      const resolvedTimersConfig: SinonTimersConfig = {
+        loopLimit: 100_000,
         now: Date.now(),
         toFake,
-      });
+        ...this._config.timers,
+        ...timersConfig,
+      };
+
+      this._clock = this._fakeTimers.install(resolvedTimersConfig);
 
       this._fakingTime = true;
     }
@@ -140,8 +142,8 @@ export default class FakeTimers {
       this._global.console.warn(
         'A function to advance timers was called but the timers API is not ' +
           'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
-          'enable fake timers globally by setting `"timers": "fake"` in the ' +
-          `configuration file\nStack Trace:\n${formatStackTrace(
+          'enable fake timers globally by setting `"timers": {"strategy": "modern"}` ' +
+          `in the configuration file\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
             this._config,
             {noStackTrace: false},

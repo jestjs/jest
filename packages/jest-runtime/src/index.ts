@@ -280,7 +280,7 @@ export default class Runtime {
     this._transitiveShouldMock = new Map();
 
     this._fakeTimersImplementation =
-      config.timers === 'legacy'
+      config.timers.strategy === 'legacy'
         ? this._environment.fakeTimers
         : this._environment.fakeTimersModern;
 
@@ -2065,13 +2065,13 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers: Jest['useFakeTimers'] = (type = 'modern') => {
-      if (type === 'legacy') {
+    const useFakeTimers: Jest['useFakeTimers'] = config => {
+      if (config?.strategy === 'legacy') {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
-      this._fakeTimersImplementation!.useFakeTimers();
+      this._fakeTimersImplementation!.useFakeTimers(config);
       return jestObject;
     };
     const useRealTimers = () => {

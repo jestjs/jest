@@ -43,8 +43,7 @@ expectType<typeof jest>(
     .setTimeout(6000)
     .unmock('moduleName')
     .useFakeTimers()
-    .useFakeTimers('modern')
-    .useFakeTimers('legacy')
+    .useFakeTimers({strategy: 'legacy'})
     .useRealTimers(),
 );
 
@@ -248,9 +247,42 @@ expectType<void>(jest.setSystemTime(new Date(1995, 11, 17)));
 expectError(jest.setSystemTime('1995-12-17T03:24:00'));
 
 expectType<typeof jest>(jest.useFakeTimers());
-expectType<typeof jest>(jest.useFakeTimers('modern'));
-expectType<typeof jest>(jest.useFakeTimers('legacy'));
-expectError(jest.useFakeTimers('latest'));
+expectType<typeof jest>(jest.useFakeTimers({strategy: 'modern'}));
+expectType<typeof jest>(jest.useFakeTimers({loopLimit: 1000}));
+expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
+expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
+expectType<typeof jest>(jest.useFakeTimers({now: new Date(1995, 11, 17)}));
+expectType<typeof jest>(jest.useFakeTimers({shouldAdvanceTime: true}));
+expectType<typeof jest>(jest.useFakeTimers({advanceTimeDelta: 10}));
+expectType<typeof jest>(jest.useFakeTimers({shouldClearNativeTimers: false}));
+expectType<typeof jest>(
+  jest.useFakeTimers({
+    toFake: [
+      'setImmediate',
+      'clearImmediate',
+      'setInterval',
+      'clearInterval',
+      'setTimeout',
+      'clearTimeout',
+      'requestAnimationFrame',
+      'cancelAnimationFrame',
+      'requestIdleCallback',
+      'cancelIdleCallback',
+      'Date',
+      'hrtime',
+      'nextTick',
+      'performance',
+    ],
+  }),
+);
+
+expectType<typeof jest>(jest.useFakeTimers({strategy: 'legacy'}));
+expectType<typeof jest>(
+  jest.useFakeTimers({loopLimit: 1000, strategy: 'legacy'}),
+);
+
+expectError(jest.useFakeTimers('modern'));
+expectError(jest.useFakeTimers({strategy: 'legacy', toFake: 'Date'}));
 
 expectType<typeof jest>(jest.useRealTimers());
 expectError(jest.useRealTimers(true));
