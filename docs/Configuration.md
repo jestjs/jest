@@ -405,12 +405,12 @@ Currently you can choose between Modern Fake Timers (default):
 
 ```json
 {
-  "advanceTimers": true,
+  "strategy": "modern",
   "doNotFake": ["nextTick"]
 }
 ```
 
-Or Legacy Fake Timers (`"strategy"` must be set explicitly to enable legacy timers):
+Or Legacy Fake Timers:
 
 ```json
 {
@@ -418,6 +418,12 @@ Or Legacy Fake Timers (`"strategy"` must be set explicitly to enable legacy time
   "loopLimit": 1000
 }
 ```
+
+:::note
+
+`"strategy"` must be included in the object to enable fake timers.
+
+:::
 
 For the full list of options see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
 
