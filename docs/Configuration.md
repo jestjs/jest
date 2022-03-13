@@ -401,31 +401,71 @@ Default: `{}`
 
 This option allows to configure the implementation of fake timers. For example, fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
-Currently you can choose between Modern Fake Timers (default):
+:::info
 
-```json
-{
-  "strategy": "modern",
-  "doNotFake": ["nextTick"]
-}
-```
-
-Or Legacy Fake Timers:
-
-```json
-{
-  "strategy": "legacy",
-  "timerLimit": 1000
-}
-```
-
-:::note
-
-`"strategy"` must be included in the object to enable fake timers.
+Currently you can choose between modern (default) and legacy fake timers. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
 
 :::
 
-For the full list of options see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
+Here is how you can enable fake timers globally for all tests:
+
+```json
+{
+  "enableGlobally": true
+}
+```
+
+Supported configuration options of Modern Fake Timers:
+
+```ts
+type FakeableAPIs =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout';
+
+type ModernFakeTimersConfig = {
+  /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
+   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   * The default is `false`.
+   */
+  advanceTimers?: boolean | number;
+  /** List of names of methods or objects that should not be faked. The default is `[]`. */
+  doNotFake?: Array<FakeableAPIs>;
+  /** Whether fake timers should be enabled for all tests. The default is `false`. */
+  enableGlobally?: boolean;
+  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  now?: number | Date;
+  /**
+   * Forwards clear timer calls to native functions if they are not fakes.
+   * The default is `false`.
+   */
+  shouldClearNativeTimers?: boolean;
+  /** Maximum number of timers that will be run. The default is `100_000` timers. */
+  timerLimit?: number;
+};
+```
+
+If for some reason you have to use legacy implementation, here is how to enable it globally (additional options are not supported):
+
+```json
+{
+  "enableGlobally": true,
+  "legacyFakeTimers": true
+}
+```
 
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 

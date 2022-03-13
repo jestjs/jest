@@ -649,7 +649,6 @@ Modern Fake Timers will swap out `Date` and `performance` objects as well as `qu
 Example:
 
 ```js
-// `strategy` may be omitted if you use modern timers
 jest.useFakeTimers({
   doNotFake: ['nextTick'],
   now: new Date(1990, 12, 1),
@@ -678,25 +677,23 @@ type FakeableAPIs =
   | 'clearTimeout';
 
 type ModernFakeTimersConfig = {
-  /** Strategy to be used for the fake timers. The default is `'modern'`. */
-  strategy?: 'modern';
-  /** List of names of methods or objects that should not be faked. The default is `[]`. */
-  doNotFake?: Array<FakeableAPIs>;
-  /** Maximum number of timers that will be run. The default is `100_000` timers. */
-  timerLimit?: number;
-  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
-  now?: number | Date;
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
+  /** List of names of methods or objects that should not be faked. The default is `[]`. */
+  doNotFake?: Array<FakeableAPIs>;
+  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  now?: number | Date;
   /**
    * Forwards clear timer calls to native functions if they are not fakes.
    * The default is `false`.
    */
   shouldClearNativeTimers?: boolean;
+  /** Maximum number of timers that will be run. The default is `100_000` timers. */
+  timerLimit?: number;
 };
 ```
 
@@ -704,24 +701,12 @@ type ModernFakeTimersConfig = {
 
 Legacy Fake Timers will swap out `requestAnimationFrame()`, `cancelAnimationFrame()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` methods with mock functions. In node environment `process.nextTick()` will be also replaced.
 
-Example:
+You can enable legacy timers like this:
 
 ```js
 jest.useFakeTimers({
-  strategy: 'legacy', // must be set explicitly to enable legacy timers
-  timerLimit: 1000,
+  legacyFakeTimers: true,
 });
-```
-
-Configuration options:
-
-```ts
-type LegacyFakeTimersConfig = {
-  /** Strategy to be used for the fake timers. The default is `'modern'`. */
-  strategy?: 'legacy';
-  /** Maximum number of timers that will be run. The default is `100_000` timers. */
-  timerLimit?: number;
-};
 ```
 
 ### `jest.useRealTimers()`
