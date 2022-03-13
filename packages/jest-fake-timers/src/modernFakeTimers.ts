@@ -90,7 +90,7 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(timersConfig?: Config.TimersConfig): void {
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
     if (!this._fakingTime) {
       const toFake = Object.keys(this._fakeTimers.timers) as Array<
         keyof FakeTimerWithContext['timers']
@@ -100,8 +100,8 @@ export default class FakeTimers {
         now: Date.now(),
         toFake,
         ...this._config.timers,
-        ...timersConfig,
-      } as Config.ModernTimersConfig;
+        ...fakeTimersConfig,
+      } as Config.ModernFakeTimersConfig;
 
       this._clock = this._fakeTimers.install({
         advanceTimeDelta: resolvedTimersConfig.advanceTimeDelta,

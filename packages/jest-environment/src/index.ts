@@ -304,7 +304,7 @@ export interface Jest {
   /**
    * Instructs Jest to use fake versions of the standard timer functions.
    */
-  useFakeTimers(timersConfig?: Config.TimersConfig): Jest;
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): Jest;
   /**
    * Instructs Jest to use the real versions of the standard timer functions.
    */

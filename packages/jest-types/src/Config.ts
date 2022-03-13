@@ -29,7 +29,7 @@ export type FakeableTimerAPIs =
   | 'setTimeout'
   | 'clearTimeout';
 
-export type LegacyTimersConfig = {
+export type LegacyFakeTimersConfig = {
   /**
    * The strategy to be used for the fake timers.
    *
@@ -46,7 +46,7 @@ export type LegacyTimersConfig = {
   timerLimit?: number;
 };
 
-export type ModernTimersConfig = {
+export type ModernFakeTimersConfig = {
   /**
    * The strategy to be used for the fake timers.
    *
@@ -107,7 +107,7 @@ export type ModernTimersConfig = {
   shouldClearNativeTimers?: boolean;
 };
 
-export type TimersConfig = LegacyTimersConfig | ModernTimersConfig;
+export type FakeTimersConfig = LegacyFakeTimersConfig | ModernFakeTimersConfig;
 
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */
@@ -207,7 +207,7 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testRunner: string;
   testSequencer: string;
-  timers: TimersConfig;
+  timers: FakeTimersConfig;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
   watch: boolean;
@@ -336,7 +336,7 @@ export type InitialOptions = Partial<{
   testRunner: string;
   testSequencer: string;
   testTimeout: number;
-  timers: TimersConfig;
+  timers: FakeTimersConfig;
   transform: {
     [regex: string]: string | TransformerConfig;
   };
@@ -496,7 +496,7 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
-  timers: TimersConfig;
+  timers: FakeTimersConfig;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
