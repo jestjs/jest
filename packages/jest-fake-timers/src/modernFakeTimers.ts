@@ -8,7 +8,6 @@
 import {
   FakeTimerWithContext,
   InstalledClock,
-  FakeTimerInstallOpts as SinonTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -91,20 +90,27 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(timersConfig?: SinonTimersConfig): void {
+  useFakeTimers(timersConfig?: Config.TimersConfig): void {
     if (!this._fakingTime) {
       const toFake = Object.keys(this._fakeTimers.timers) as Array<
         keyof FakeTimerWithContext['timers']
       >;
 
-      const resolvedTimersConfig: SinonTimersConfig = {
+      const resolvedTimersConfig = {
         now: Date.now(),
         toFake,
         ...this._config.timers,
         ...timersConfig,
-      };
+      } as Config.ModernTimersConfig;
 
-      this._clock = this._fakeTimers.install(resolvedTimersConfig);
+      this._clock = this._fakeTimers.install({
+        advanceTimeDelta: resolvedTimersConfig.advanceTimeDelta,
+        loopLimit: resolvedTimersConfig.timerLimit,
+        now: resolvedTimersConfig.now,
+        shouldAdvanceTime: resolvedTimersConfig.shouldAdvanceTime,
+        shouldClearNativeTimers: resolvedTimersConfig.shouldClearNativeTimers,
+        toFake: resolvedTimersConfig.toFake,
+      });
 
       this._fakingTime = true;
     }

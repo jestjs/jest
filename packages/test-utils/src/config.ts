@@ -116,7 +116,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-circus/runner',
-  timers: {loopLimit: 100_000},
+  timers: {timerLimit: 100_000},
   transform: [],
   transformIgnorePatterns: [],
   unmockedModulePathPatterns: undefined,

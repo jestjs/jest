@@ -415,7 +415,7 @@ Or Legacy Fake Timers:
 ```json
 {
   "strategy": "legacy",
-  "loopLimit": 1000
+  "timerLimit": 1000
 }
 ```
 

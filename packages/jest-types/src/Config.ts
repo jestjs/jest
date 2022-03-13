@@ -13,43 +13,42 @@ import type {SnapshotFormat} from '@jest/schemas';
 type CoverageProvider = 'babel' | 'v8';
 
 export type FakeableTimerAPIs =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  // | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
   | 'setImmediate'
   | 'clearImmediate'
   | 'setInterval'
   | 'clearInterval'
   | 'setTimeout'
-  | 'clearTimeout'
-  | 'requestAnimationFrame'
-  | 'cancelAnimationFrame'
-  | 'requestIdleCallback'
-  | 'cancelIdleCallback'
-  | 'Date'
-  | 'hrtime'
-  | 'nextTick'
-  | 'performance';
-// | 'queueMicrotask'; // ?
+  | 'clearTimeout';
 
 export type LegacyTimersConfig = {
   /**
-   * The strategy to be use for the fake timers.
+   * The strategy to be used for the fake timers.
    *
    * @defaultValue
    * The default is `'modern'`.
    */
   strategy?: 'legacy';
   /**
-   * The maximum number of timers that will be run when calling `jest.advanceTimersByTime()`,
-   * `jest.runAllImmediates()`, `jest.runAllTicks()` or `jest.runAllTimers()`.
+   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
    *
    * @defaultValue
    * The default is `100_000` timers.
    */
-  loopLimit?: number;
+  timerLimit?: number;
 };
 
 export type ModernTimersConfig = {
   /**
-   * The strategy to be use for the fake timers.
+   * The strategy to be used for the fake timers.
    *
    * @defaultValue
    * The default is `'modern'`.
@@ -74,13 +73,12 @@ export type ModernTimersConfig = {
    */
   toFake?: Array<FakeableTimerAPIs>;
   /**
-   * The maximum number of timers that will be run when calling `jest.advanceTimersByTime()`,
-   * `jest.runAllTicks()` or `jest.runAllTimers()`.
+   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
    *
    * @defaultValue
    * The default is `100_000` timers.
    */
-  loopLimit?: number;
+  timerLimit?: number;
   /**
    * Whether to increment mocked time automatically based on the real system time
    * shift. If `shouldAdvanceTime` is not set, the mocked time will be incremented

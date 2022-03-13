@@ -683,7 +683,7 @@ type ModernFakeTimersConfig = {
   /** List of names of methods or objects that should not be faked. The default is `[]`. */
   doNotFake?: Array<FakeableAPIs>;
   /** Maximum number of timers that will be run. The default is `100_000` timers. */
-  loopLimit?: number;
+  timerLimit?: number;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
   /**
@@ -709,7 +709,7 @@ Example:
 ```js
 jest.useFakeTimers({
   strategy: 'legacy', // must be set explicitly to enable legacy timers
-  loopLimit: 1000,
+  timerLimit: 1000,
 });
 ```
 
@@ -720,7 +720,7 @@ type LegacyFakeTimersConfig = {
   /** Strategy to be used for the fake timers. The default is `'modern'`. */
   strategy?: 'legacy';
   /** Maximum number of timers that will be run. The default is `100_000` timers. */
-  loopLimit?: number;
+  timerLimit?: number;
 };
 ```
 

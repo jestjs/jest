@@ -248,7 +248,7 @@ expectError(jest.setSystemTime('1995-12-17T03:24:00'));
 
 expectType<typeof jest>(jest.useFakeTimers());
 expectType<typeof jest>(jest.useFakeTimers({strategy: 'modern'}));
-expectType<typeof jest>(jest.useFakeTimers({loopLimit: 1000}));
+expectType<typeof jest>(jest.useFakeTimers({timerLimit: 1000}));
 expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
 expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
 expectType<typeof jest>(jest.useFakeTimers({now: new Date(1995, 11, 17)}));
@@ -278,7 +278,7 @@ expectType<typeof jest>(
 
 expectType<typeof jest>(jest.useFakeTimers({strategy: 'legacy'}));
 expectType<typeof jest>(
-  jest.useFakeTimers({loopLimit: 1000, strategy: 'legacy'}),
+  jest.useFakeTimers({strategy: 'legacy', timerLimit: 1000}),
 );
 
 expectError(jest.useFakeTimers('modern'));

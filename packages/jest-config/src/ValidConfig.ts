@@ -133,14 +133,14 @@ const initialOptions: Config.InitialOptions = {
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   timers: multipleValidOptions(
-    {loopLimit: 1000, strategy: 'legacy'} as const,
+    {strategy: 'legacy', timerLimit: 1000} as const,
     {
       advanceTimeDelta: 1000,
-      loopLimit: 1000,
       now: multipleValidOptions(0, new Date()),
       shouldAdvanceTime: false,
       shouldClearNativeTimers: false,
       strategy: 'modern',
+      timerLimit: 1000,
       toFake: [
         'setImmediate',
         'clearImmediate',
