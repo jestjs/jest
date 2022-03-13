@@ -395,6 +395,32 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 }
 ```
 
+### `fakeTimers` \[object]
+
+Default: `{}`
+
+This option allows to configure the implementation of fake timers. For example, fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test.
+
+Currently you can choose between Modern Fake Timers (default):
+
+```json
+{
+  "advanceTimers": true,
+  "doNotFake": ["nextTick"]
+}
+```
+
+Or Legacy Fake Timers (`"strategy"` must be set explicitly to enable legacy timers):
+
+```json
+{
+  "strategy": "legacy",
+  "loopLimit": 1000
+}
+```
+
+For the full list of options see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
+
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 
 Default: `['']`
@@ -1457,14 +1483,6 @@ Use it in your Jest config file like this:
 Default: `5000`
 
 Default timeout of a test in milliseconds.
-
-### `timers` \[string]
-
-Default: `real`
-
-Setting this value to `fake` or `modern` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](JestObjectAPI.md#jestusefaketimersimplementation-modern--legacy).
-
-If the value is `legacy`, the old implementation will be used as implementation instead of one backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
 ### `transform` \[object&lt;string, pathToTransformer | \[pathToTransformer, object]&gt;]
 

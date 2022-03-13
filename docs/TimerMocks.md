@@ -53,7 +53,11 @@ test('do something with real timers', () => {
 });
 ```
 
-Currently, two implementations of the fake timers are included - `modern` and `legacy`, where `modern` is the default one. See [configuration](Configuration.md#timers-string) for how to configure it.
+:::info
+
+Currently you can choose between modern (default) or legacy fake timers. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
+
+:::
 
 ## Run All Timers
 
