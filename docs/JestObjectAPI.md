@@ -636,7 +636,6 @@ Instructs Jest to use fake versions of the global date, performance and timers A
 
 Returns the `jest` object for chaining.
 
-
 #### Modern Fake Timers
 
 :::info
@@ -654,7 +653,7 @@ Example:
 jest.useFakeTimers({
   doNotFake: ['nextTick'],
   now: new Date(1990, 12, 1),
-  advanceTimers: true
+  advanceTimers: true,
 });
 ```
 
@@ -687,14 +686,14 @@ type ModernFakeTimersConfig = {
   loopLimit?: number;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
-  /** 
-   * If set to `true` all timers will be advanced automatically by 20 milliseconds 
+  /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** 
-   * Forwards clear timer calls to native functions if they are not fakes. 
+  /**
+   * Forwards clear timer calls to native functions if they are not fakes.
    * The default is `false`.
    */
   shouldClearNativeTimers?: boolean;
@@ -710,7 +709,7 @@ Example:
 ```js
 jest.useFakeTimers({
   strategy: 'legacy', // must be set explicitly to enable legacy timers
-  loopLimit: 1000
+  loopLimit: 1000,
 });
 ```
 
