@@ -647,6 +647,7 @@ This implementation is backed by [@sinonjs/fake-timers](https://github.com/sinon
 
 Modern Fake Timers will swap out `Date` and `performance` objects as well as `queueMicrotask()`, `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` methods. In node environment `process.hrtime`, `process.nextTick()` will be also replaced.
 
+Example:
 
 ```js
 // `strategy` may be omitted if you use modern timers
@@ -703,6 +704,8 @@ type ModernFakeTimersConfig = {
 #### Legacy Fake Timers
 
 Legacy Fake Timers will swap out `requestAnimationFrame()`, `cancelAnimationFrame()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` methods with mock functions. In node environment `process.nextTick()` will be also replaced.
+
+Example:
 
 ```js
 jest.useFakeTimers({
