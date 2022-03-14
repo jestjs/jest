@@ -55,7 +55,7 @@ test('do something with real timers', () => {
 
 :::info
 
-Currently you can choose between modern (default) or legacy fake timers. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
+For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
 
 :::
 

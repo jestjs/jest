@@ -399,13 +399,7 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 
 Default: `{}`
 
-This option allows to configure the implementation of fake timers. For example, fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test.
-
-:::info
-
-Currently you can choose between modern (default) and legacy fake timers. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
-
-:::
+This option allows configuration of the implementation of fake timers. The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
 
 Here is how you can enable fake timers globally for all tests:
 
@@ -415,10 +409,10 @@ Here is how you can enable fake timers globally for all tests:
 }
 ```
 
-Supported configuration options of Modern Fake Timers:
+Configuration options:
 
 ```ts
-type FakeableAPIs =
+type FakeableAPI =
   | 'Date'
   | 'hrtime'
   | 'nextTick'
@@ -442,8 +436,8 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of methods or objects that should not be faked. The default is `[]`. */
-  doNotFake?: Array<FakeableAPIs>;
+  /** List of names of APIs that should not be faked. The default is `[]`. */
+  doNotFake?: Array<FakeableAPI>;
   /** Whether fake timers should be enabled for all tests. The default is `false`. */
   enableGlobally?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
@@ -458,7 +452,9 @@ type ModernFakeTimersConfig = {
 };
 ```
 
-If for some reason you have to use legacy implementation, here is how to enable it globally (additional options are not supported):
+:::info Legacy Fake Timers
+
+For some reason you might have to use legacy implementation of fake timers. Here is how to enable it globally (additional options are not supported):
 
 ```json
 {
@@ -466,6 +462,8 @@ If for some reason you have to use legacy implementation, here is how to enable 
   "legacyFakeTimers": true
 }
 ```
+
+:::
 
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 

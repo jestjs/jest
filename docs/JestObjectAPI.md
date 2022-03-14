@@ -632,34 +632,22 @@ test('direct', () => {
 
 ### `jest.useFakeTimers(fakeTimersConfig?)`
 
-Instructs Jest to use fake versions of the global date, performance and timers APIs. Currently you can choose between modern (default) or legacy fake timers.
+Instructs Jest to use fake versions of the global date, performance, time and timers APIs. Fake timers implementation is backed by [@sinonjs/fake-timers](https://github.com/sinonjs/fake-timers).
 
-Returns the `jest` object for chaining.
+Fake timers will swap out `Date`, `performance.now()`, `queueMicrotask()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with an implementation that gets its time from the fake clock.
 
-#### Modern Fake Timers
+In node environment `process.hrtime`, `process.nextTick()` and in jsdom environment `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()` will be replaced as well.
 
-:::info
+:::tip
 
-This implementation is backed by [@sinonjs/fake-timers](https://github.com/sinonjs/fake-timers).
+The fake `performance` instance includes only `.now()` method. In case if your code requires `performance.mark()`, use `doNotFake` option to preserve the original instance.
 
 :::
-
-Modern Fake Timers will swap out `Date` and `performance` objects as well as `queueMicrotask()`, `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` methods. In node environment `process.hrtime`, `process.nextTick()` will be also replaced.
-
-Example:
-
-```js
-jest.useFakeTimers({
-  doNotFake: ['nextTick'],
-  now: new Date(1990, 12, 1),
-  advanceTimers: true,
-});
-```
 
 Configuration options:
 
 ```ts
-type FakeableAPIs =
+type FakeableAPI =
   | 'Date'
   | 'hrtime'
   | 'nextTick'
@@ -676,15 +664,15 @@ type FakeableAPIs =
   | 'setTimeout'
   | 'clearTimeout';
 
-type ModernFakeTimersConfig = {
+type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of methods or objects that should not be faked. The default is `[]`. */
-  doNotFake?: Array<FakeableAPIs>;
+  /** List of names of APIs that should not be faked. The default is `[]`. */
+  doNotFake?: Array<FakeableAPI>;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
   /**
@@ -697,17 +685,31 @@ type ModernFakeTimersConfig = {
 };
 ```
 
-#### Legacy Fake Timers
+Example:
 
-Legacy Fake Timers will swap out `requestAnimationFrame()`, `cancelAnimationFrame()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` methods with mock functions. In node environment `process.nextTick()` will be also replaced.
+```js
+jest.useFakeTimers({
+  doNotFake: ['nextTick', 'performance'],
+  now: new Date(1990, 12, 1),
+  advanceTimers: true,
+});
+```
 
-You can enable legacy timers like this:
+:::info Legacy Fake Timers
+
+For some reason you might have to use legacy implementation of fake timers. It can be enabled like this (additional options are not supported):
 
 ```js
 jest.useFakeTimers({
   legacyFakeTimers: true,
 });
 ```
+
+Legacy fake timers will swap out `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with Jest mock functions. In node environment `process.nextTick()` and in jsdom environment `requestAnimationFrame()`, `cancelAnimationFrame()` will be also replaced.
+
+:::
+
+Returns the `jest` object for chaining.
 
 ### `jest.useRealTimers()`
 
@@ -733,9 +735,9 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 Exhausts all tasks queued by `setImmediate()`.
 
-:::note
+:::info
 
-This function is only available when using Legacy Fake Timers.
+This function is only available when using legacy fake timers implementation.
 
 :::
 
@@ -771,9 +773,9 @@ Returns the number of fake timers still left to run.
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
-:::note
+:::info
 
-This function is only available when using Modern Fake Timers.
+This function is not available when using legacy fake timers implementation.
 
 :::
 
@@ -781,9 +783,9 @@ This function is only available when using Modern Fake Timers.
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
-:::note
+:::info
 
-This function is only available when using Modern Fake Timers.
+This function is not available when using legacy fake timers implementation.
 
 :::
 
