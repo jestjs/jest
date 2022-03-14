@@ -8,11 +8,11 @@
 import runJest from '../runJest';
 
 test('run timers after resetAllMocks test', () => {
-  const result = runJest('timer-reset-mocks/after-reset-all-mocks');
+  const result = runJest('fake-timers-reset-mocks/after-reset-all-mocks');
   expect(result.exitCode).toBe(0);
 });
 
 test('run timers with resetMocks in config test', () => {
-  const result = runJest('timer-reset-mocks/with-reset-mocks');
+  const result = runJest('fake-timers-reset-mocks/with-reset-mocks');
   expect(result.exitCode).toBe(0);
 });

@@ -9,12 +9,12 @@ import runJest from '../runJest';
 
 describe('modern implementation of fake timers', () => {
   it('should be possible to use modern implementation from config', () => {
-    const result = runJest('modern-fake-timers/from-config');
+    const result = runJest('fake-timers-modern/from-config');
     expect(result.exitCode).toBe(0);
   });
 
   it('should be possible to use modern implementation from jest-object', () => {
-    const result = runJest('modern-fake-timers/from-jest-object');
+    const result = runJest('fake-timers-modern/from-jest-object');
     expect(result.exitCode).toBe(0);
   });
 });

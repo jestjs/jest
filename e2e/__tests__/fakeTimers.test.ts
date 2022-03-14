@@ -11,12 +11,12 @@ describe.each(['modern', 'legacy'])(
   '%s implementation of fake timers',
   implementation => {
     it('should be possible to use from config', () => {
-      const result = runJest(`fake-time/${implementation}/from-config`);
+      const result = runJest(`fake-timers/${implementation}/from-config`);
       expect(result.exitCode).toBe(0);
     });
 
     it('should be possible to use from jest-object', () => {
-      const result = runJest(`fake-time/${implementation}/from-jest-object`);
+      const result = runJest(`fake-timers/${implementation}/from-jest-object`);
       expect(result.exitCode).toBe(0);
     });
   },

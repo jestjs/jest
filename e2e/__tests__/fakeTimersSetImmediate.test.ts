@@ -7,8 +7,9 @@
 
 import runJest from '../runJest';
 
-test('useRealTimers cancels "timers": "fake" for whole test file', () => {
-  const result = runJest('timer-use-real-timers');
-  expect(result.stdout).toMatch('API is not mocked with fake timers.');
+test('setImmediate', () => {
+  const result = runJest('fake-timers-set-immediate', ['--verbose']);
+
+  expect(result.stderr).toMatch('setImmediate test');
   expect(result.exitCode).toBe(0);
 });
