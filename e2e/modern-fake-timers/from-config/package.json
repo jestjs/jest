@@ -1,6 +1,6 @@
 {
   "jest": {
     "testEnvironment": "node",
-    "timers": {"strategy": "modern"}
+    "timers": {"enableGlobally": true}
   }
 }

@@ -2,6 +2,6 @@
   "jest": {
     "resetMocks": true,
     "testEnvironment": "node",
-    "timers": {"strategy": "modern"}
+    "timers": {"enableGlobally": true}
   }
 }

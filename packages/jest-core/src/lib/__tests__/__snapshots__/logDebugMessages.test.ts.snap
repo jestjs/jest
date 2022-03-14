@@ -53,7 +53,7 @@ exports[`prints the config object 1`] = `
     ],
     "testRunner": "myRunner",
     "timers": {
-      "timerLimit": 100000
+      "enableGlobally": false
     },
     "transform": [],
     "transformIgnorePatterns": [],

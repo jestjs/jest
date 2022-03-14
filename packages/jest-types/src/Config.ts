@@ -29,31 +29,27 @@ export type FakeableTimerAPIs =
   | 'setTimeout'
   | 'clearTimeout';
 
+export type BaseFakeTimersConfig = {
+  /**
+   * Whether fake timers should be enabled for all tests.
+   *
+   * @defaultValue
+   * The default is `false`.
+   * */
+  enableGlobally?: boolean;
+};
+
 export type LegacyFakeTimersConfig = {
   /**
-   * The strategy to be used for the fake timers.
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
    *
    * @defaultValue
-   * The default is `'modern'`.
+   * The default is `'false'`.
    */
-  strategy?: 'legacy';
-  /**
-   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
-   *
-   * @defaultValue
-   * The default is `100_000` timers.
-   */
-  timerLimit?: number;
+  legacyFakeTimers?: true;
 };
 
 export type ModernFakeTimersConfig = {
-  /**
-   * The strategy to be used for the fake timers.
-   *
-   * @defaultValue
-   * The default is `'modern'`.
-   */
-  strategy?: 'modern';
   /**
    * Sets the default unix epoch. May be a number (in milliseconds) or a Date object.
    *
@@ -105,9 +101,17 @@ export type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   shouldClearNativeTimers?: boolean;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   *
+   * @defaultValue
+   * The default is `'false'`.
+   */
+  legacyFakeTimers?: false;
 };
 
-export type FakeTimersConfig = LegacyFakeTimersConfig | ModernFakeTimersConfig;
+export type FakeTimersConfig = BaseFakeTimersConfig &
+  (LegacyFakeTimersConfig | ModernFakeTimersConfig);
 
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */

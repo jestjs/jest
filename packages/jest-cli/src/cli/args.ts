@@ -623,9 +623,7 @@ export const options = {
     type: 'number',
   },
   timers: {
-    description:
-      'Setting this value to fake allows the use of fake timers ' +
-      'for functions such as setTimeout.',
+    description: 'A JSON string with configuration options for fake timers.',
     type: 'string',
   },
   transform: {

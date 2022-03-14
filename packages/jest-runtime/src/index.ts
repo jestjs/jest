@@ -279,10 +279,9 @@ export default class Runtime {
     this._shouldUnmockTransitiveDependenciesCache = new Map();
     this._transitiveShouldMock = new Map();
 
-    this._fakeTimersImplementation =
-      config.timers.strategy === 'legacy'
-        ? this._environment.fakeTimers
-        : this._environment.fakeTimersModern;
+    this._fakeTimersImplementation = !config.timers.legacyFakeTimers
+      ? this._environment.fakeTimersModern
+      : this._environment.fakeTimers;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -2065,13 +2064,13 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers: Jest['useFakeTimers'] = timersConfig => {
-      if (timersConfig?.strategy === 'legacy') {
-        this._fakeTimersImplementation = this._environment.fakeTimers;
-      } else {
+    const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
+      if (!fakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
+      } else {
+        this._fakeTimersImplementation = this._environment.fakeTimers;
       }
-      this._fakeTimersImplementation!.useFakeTimers(timersConfig);
+      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
       return jestObject;
     };
     const useRealTimers = () => {

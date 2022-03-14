@@ -283,9 +283,9 @@ module.exports = {
   // This option allows use of a custom test runner
   // testRunner: "jest-circus/runner",
 
-  // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
+  // The configuration for fake timers.
   // timers: {
-  //   "timerLimit": 100000
+  //   "enableGlobally": false
   // },
 
   // A map from regular expressions to paths to transformers

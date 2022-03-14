@@ -8,7 +8,9 @@
 'use strict';
 
 test('fake timers', () => {
-  jest.useFakeTimers({strategy: 'legacy'});
+  jest.useFakeTimers({
+    legacyFakeTimers: true,
+  });
 
   expect(() => jest.setSystemTime(0)).toThrow(
     'setSystemTime is not available when not using modern timers',

@@ -67,7 +67,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "testRegex": [],
       "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
       "timers": {
-        "timerLimit": 100000
+        "enableGlobally": false
       },
       "transform": [
         [

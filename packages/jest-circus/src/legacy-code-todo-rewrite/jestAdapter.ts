@@ -38,11 +38,13 @@ const jestAdapter = async (
     testPath,
   });
 
-  if (config.timers.strategy === 'modern') {
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimersModern!.useFakeTimers(config.timers);
-  } else if (config.timers.strategy === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
+  if (config.timers.enableGlobally) {
+    if (!config.timers.legacyFakeTimers) {
+      // during setup, this cannot be null (and it's fine to explode if it is)
+      environment.fakeTimersModern!.useFakeTimers();
+    } else {
+      environment.fakeTimers!.useFakeTimers();
+    }
   }
 
   globals.beforeEach(() => {
