@@ -8,8 +8,15 @@
 import runJest from '../runJest';
 
 describe('enableGlobally', () => {
-  test('enables legacy fake timers from Jest Config', () => {
+  test('enables legacy fake timers from Jest config', () => {
     const result = runJest('fake-timers-legacy/enable-globally');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
+describe('legacyFakeTimers', () => {
+  test('toggles legacy fake timers from Jest config', () => {
+    const result = runJest('fake-timers-legacy/without-enable-globally');
     expect(result.exitCode).toBe(0);
   });
 });
