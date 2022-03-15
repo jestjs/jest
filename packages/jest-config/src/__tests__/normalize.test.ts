@@ -1937,6 +1937,24 @@ describe('testURL', () => {
   });
 });
 
+describe('timers', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `timers` is used', async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        timers: 'real',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
 describe('extraGlobals', () => {
   beforeEach(() => {
     jest.mocked(console.warn).mockImplementation(() => {});
