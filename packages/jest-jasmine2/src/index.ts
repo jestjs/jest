@@ -88,8 +88,8 @@ export default async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers.enableGlobally) {
-    if (!config.timers.legacyFakeTimers) {
+  if (config.fakeTimers.enableGlobally) {
+    if (!config.fakeTimers.legacyFakeTimers) {
       environment.fakeTimersModern!.useFakeTimers();
     } else {
       environment.fakeTimers!.useFakeTimers();
@@ -108,7 +108,7 @@ export default async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'legacy') {
+      if (config.fakeTimers.legacyFakeTimers) {
         environment.fakeTimers!.useFakeTimers();
       }
     }

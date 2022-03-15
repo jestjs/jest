@@ -189,7 +189,7 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
 
       const timers = new FakeTimers({
-        config: makeProjectConfig({timers: {timerLimit: 100}}),
+        config: makeProjectConfig({fakeTimers: {timerLimit: 100}}),
         global,
       });
 
@@ -346,7 +346,7 @@ describe('FakeTimers', () => {
         setTimeout,
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({
-        config: makeProjectConfig({timers: {timerLimit: 1000}}),
+        config: makeProjectConfig({fakeTimers: {timerLimit: 1000}}),
         global,
       });
       timers.useFakeTimers();

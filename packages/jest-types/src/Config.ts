@@ -175,6 +175,7 @@ export type DefaultOptions = {
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
+  fakeTimers: FakeTimersConfig;
   forceCoverageMatch: Array<string>;
   globals: ConfigGlobals;
   haste: HasteConfig;
@@ -211,7 +212,6 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testRunner: string;
   testSequencer: string;
-  timers: FakeTimersConfig;
   transformIgnorePatterns: Array<string>;
   useStderr: boolean;
   watch: boolean;
@@ -257,6 +257,7 @@ export type InitialOptions = Partial<{
   displayName: string | DisplayName;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
+  fakeTimers: FakeTimersConfig;
   filter: string;
   findRelatedTests: boolean;
   forceCoverageMatch: Array<string>;
@@ -340,7 +341,6 @@ export type InitialOptions = Partial<{
   testRunner: string;
   testSequencer: string;
   testTimeout: number;
-  timers: FakeTimersConfig;
   transform: {
     [regex: string]: string | TransformerConfig;
   };
@@ -462,6 +462,7 @@ export type ProjectConfig = {
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<string>;
+  fakeTimers: FakeTimersConfig;
   filter?: string;
   forceCoverageMatch: Array<string>;
   globalSetup?: string;
@@ -500,7 +501,6 @@ export type ProjectConfig = {
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
-  timers: FakeTimersConfig;
   transform: Array<[string, string, Record<string, unknown>]>;
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
@@ -533,6 +533,7 @@ export type Argv = Arguments<
     debug: boolean;
     env: string;
     expand: boolean;
+    fakeTimers: string;
     findRelatedTests: boolean;
     forceExit: boolean;
     globals: string;
@@ -585,7 +586,6 @@ export type Argv = Arguments<
     testRunner: string;
     testSequencer: string;
     testTimeout: number | null | undefined;
-    timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;
     unmockedModulePathPatterns: Array<string> | null | undefined;

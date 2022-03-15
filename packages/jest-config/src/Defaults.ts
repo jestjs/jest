@@ -31,6 +31,7 @@ const defaultOptions: Config.DefaultOptions = {
   errorOnDeprecated: false,
   expand: false,
   extensionsToTreatAsEsm: [],
+  fakeTimers: {enableGlobally: false},
   forceCoverageMatch: [],
   globals: {},
   haste: {
@@ -72,7 +73,6 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
-  timers: {enableGlobally: false},
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
   watch: false,

@@ -260,6 +260,10 @@ export const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  fakeTimers: {
+    description: 'A JSON string with configuration options for fake timers.',
+    type: 'string',
+  },
   filter: {
     description:
       'Path to a module exporting a filtering function. This method receives ' +
@@ -621,10 +625,6 @@ export const options = {
   testTimeout: {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
-  },
-  timers: {
-    description: 'A JSON string with configuration options for fake timers.',
-    type: 'string',
   },
   transform: {
     description:

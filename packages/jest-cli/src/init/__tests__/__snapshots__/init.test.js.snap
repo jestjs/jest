@@ -168,6 +168,11 @@ module.exports = {
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
+  // The configuration for fake timers.
+  // fakeTimers: {
+  //   "enableGlobally": false
+  // },
+
   // Force coverage collection from ignored files using an array of glob patterns
   // forceCoverageMatch: [],
 
@@ -282,11 +287,6 @@ module.exports = {
 
   // This option allows use of a custom test runner
   // testRunner: "jest-circus/runner",
-
-  // The configuration for fake timers.
-  // timers: {
-  //   "enableGlobally": false
-  // },
 
   // A map from regular expressions to paths to transformers
   // transform: undefined,

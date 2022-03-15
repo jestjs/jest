@@ -279,7 +279,7 @@ export default class Runtime {
     this._shouldUnmockTransitiveDependenciesCache = new Map();
     this._transitiveShouldMock = new Map();
 
-    this._fakeTimersImplementation = !config.timers.legacyFakeTimers
+    this._fakeTimersImplementation = !config.fakeTimers.legacyFakeTimers
       ? this._environment.fakeTimersModern
       : this._environment.fakeTimers;
 

@@ -1,6 +1,6 @@
 {
   "jest": {
-    "testEnvironment": "node",
-    "timers": {"enableGlobally": true, "legacyFakeTimers": true}
+    "fakeTimers": {"enableGlobally": true, "legacyFakeTimers": true},
+    "testEnvironment": "node"
   }
 }
