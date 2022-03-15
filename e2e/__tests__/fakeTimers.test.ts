@@ -29,6 +29,11 @@ describe('useFakeTimers', () => {
     const result = runJest('fake-timers/timer-limit');
     expect(result.exitCode).toBe(0);
   });
+
+  test('allows clearing not faked timers', () => {
+    const result = runJest('fake-timers/clear-real-timers');
+    expect(result.exitCode).toBe(0);
+  });
 });
 
 describe('useRealTimers', () => {
