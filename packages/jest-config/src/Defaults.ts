@@ -44,7 +44,7 @@ const defaultOptions: Config.DefaultOptions = {
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+  moduleFileExtensions: ['js', 'mjs', 'jsx', 'ts', 'tsx', 'json', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,

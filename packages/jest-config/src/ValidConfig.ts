@@ -74,7 +74,7 @@ const initialOptions: Config.InitialOptions = {
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
+  moduleFileExtensions: ['js', 'mjs', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
   },
