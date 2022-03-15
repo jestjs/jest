@@ -91,29 +91,31 @@ export default class FakeTimers {
   }
 
   useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
-    if (!this._fakingTime) {
-      const toFake = Object.keys(this._fakeTimers.timers) as Array<
-        keyof FakeTimerWithContext['timers']
-      >;
-
-      const resolvedTimersConfig = {
-        now: Date.now(),
-        toFake,
-        ...this._projectConfig.fakeTimers,
-        ...fakeTimersConfig,
-      } as Config.ModernFakeTimersConfig;
-
-      this._clock = this._fakeTimers.install({
-        advanceTimeDelta: resolvedTimersConfig.advanceTimeDelta,
-        loopLimit: resolvedTimersConfig.timerLimit,
-        now: resolvedTimersConfig.now,
-        shouldAdvanceTime: resolvedTimersConfig.shouldAdvanceTime,
-        shouldClearNativeTimers: resolvedTimersConfig.shouldClearNativeTimers,
-        toFake: resolvedTimersConfig.toFake,
-      });
-
-      this._fakingTime = true;
+    if (this._fakingTime) {
+      this._clock.uninstall();
     }
+
+    const toFake = Object.keys(this._fakeTimers.timers) as Array<
+      keyof FakeTimerWithContext['timers']
+    >;
+
+    const resolvedTimersConfig = {
+      now: Date.now(),
+      toFake,
+      ...this._projectConfig.fakeTimers,
+      ...fakeTimersConfig,
+    } as Config.ModernFakeTimersConfig;
+
+    this._clock = this._fakeTimers.install({
+      advanceTimeDelta: resolvedTimersConfig.advanceTimeDelta,
+      loopLimit: resolvedTimersConfig.timerLimit,
+      now: resolvedTimersConfig.now,
+      shouldAdvanceTime: resolvedTimersConfig.shouldAdvanceTime,
+      shouldClearNativeTimers: resolvedTimersConfig.shouldClearNativeTimers,
+      toFake: resolvedTimersConfig.toFake,
+    });
+
+    this._fakingTime = true;
   }
 
   reset(): void {

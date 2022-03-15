@@ -2074,7 +2074,7 @@ export default class Runtime {
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       }
-      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
+      this._fakeTimersImplementation!.useFakeTimers(resolvedFakeTimersConfig);
       return jestObject;
     };
     const useRealTimers = () => {
