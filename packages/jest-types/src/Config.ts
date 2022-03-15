@@ -44,7 +44,7 @@ export type LegacyFakeTimersConfig = {
    * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
    *
    * @defaultValue
-   * The default is `'false'`.
+   * The default is `false`.
    */
   legacyFakeTimers?: true;
 };
@@ -105,7 +105,7 @@ export type ModernFakeTimersConfig = {
    * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
    *
    * @defaultValue
-   * The default is `'false'`.
+   * The default is `false`.
    */
   legacyFakeTimers?: false;
 };
