@@ -2065,7 +2065,11 @@ export default class Runtime {
       return this._fakeTimersImplementation!;
     };
     const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
-      if (!fakeTimersConfig?.legacyFakeTimers) {
+      const resolvedFakeTimersConfig = {
+        ...this._config.fakeTimers,
+        ...fakeTimersConfig,
+      };
+      if (!resolvedFakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimers;

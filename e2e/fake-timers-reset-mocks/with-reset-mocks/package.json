@@ -1,7 +1,0 @@
-{
-  "jest": {
-    "fakeTimers": {"enableGlobally": true},
-    "resetMocks": true,
-    "testEnvironment": "node"
-  }
-}

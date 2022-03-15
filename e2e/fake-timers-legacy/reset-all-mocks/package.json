@@ -1,0 +1,6 @@
+{
+  "jest": {
+    "fakeTimers": {"legacyFakeTimers": true},
+    "resetMocks": false
+  }
+}
