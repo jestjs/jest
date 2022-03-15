@@ -13,6 +13,6 @@ test('fake timers', () => {
   });
 
   expect(() => jest.setSystemTime(0)).toThrow(
-    'setSystemTime is not available when not using modern timers',
+    'jest.setSystemTime() is not available when using legacy fake timers.',
   );
 });

@@ -2171,7 +2171,7 @@ export default class Runtime {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
-            'setSystemTime is not available when not using modern timers',
+            'jest.setSystemTime() is not available when using legacy fake timers.',
           );
         }
       },
