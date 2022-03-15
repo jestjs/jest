@@ -20,6 +20,11 @@ describe('useFakeTimers', () => {
     expect(result.exitCode).toBe(0);
   });
 
+  test('allows to pass advanceTimers option', () => {
+    const result = runJest('fake-timers/advance-timers');
+    expect(result.exitCode).toBe(0);
+  });
+
   test('allows to pass timerLimit option', () => {
     const result = runJest('fake-timers/timer-limit');
     expect(result.exitCode).toBe(0);

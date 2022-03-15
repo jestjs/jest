@@ -8,6 +8,7 @@
 import {
   FakeTimerWithContext,
   InstalledClock,
+  FakeTimerInstallOpts as SinonFakeTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
 import type {Config} from '@jest/types';
@@ -95,25 +96,38 @@ export default class FakeTimers {
       this._clock.uninstall();
     }
 
-    const toFake = Object.keys(this._fakeTimers.timers) as Array<
-      keyof FakeTimerWithContext['timers']
-    >;
+    const toSinonFakeTimersConfig = (
+      fakeTimersConfig?: Config.FakeTimersConfig,
+    ): SinonFakeTimersConfig => {
+      fakeTimersConfig = {
+        ...this._projectConfig.fakeTimers,
+        ...fakeTimersConfig,
+      } as Config.ModernFakeTimersConfig;
 
-    const resolvedTimersConfig = {
-      now: Date.now(),
-      toFake,
-      ...this._projectConfig.fakeTimers,
-      ...fakeTimersConfig,
-    } as Config.ModernFakeTimersConfig;
+      const advanceTimeDelta =
+        typeof fakeTimersConfig.advanceTimers === 'number'
+          ? fakeTimersConfig.advanceTimers
+          : undefined;
 
-    this._clock = this._fakeTimers.install({
-      advanceTimeDelta: resolvedTimersConfig.advanceTimeDelta,
-      loopLimit: resolvedTimersConfig.timerLimit,
-      now: resolvedTimersConfig.now,
-      shouldAdvanceTime: resolvedTimersConfig.shouldAdvanceTime,
-      shouldClearNativeTimers: resolvedTimersConfig.shouldClearNativeTimers,
-      toFake: resolvedTimersConfig.toFake,
-    });
+      const toFake =
+        fakeTimersConfig.toFake ||
+        (Object.keys(this._fakeTimers.timers) as Array<
+          keyof FakeTimerWithContext['timers']
+        >);
+
+      return {
+        advanceTimeDelta,
+        loopLimit: fakeTimersConfig.timerLimit,
+        now: fakeTimersConfig.now || Date.now(),
+        shouldAdvanceTime: !!fakeTimersConfig.advanceTimers,
+        shouldClearNativeTimers: true,
+        toFake,
+      };
+    };
+
+    this._clock = this._fakeTimers.install(
+      toSinonFakeTimersConfig(fakeTimersConfig),
+    );
 
     this._fakingTime = true;
   }

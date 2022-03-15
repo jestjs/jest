@@ -51,6 +51,14 @@ export type LegacyFakeTimersConfig = {
 
 export type ModernFakeTimersConfig = {
   /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
+   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   *
+   * @defaultValue
+   * The default is `false`.
+   */
+  advanceTimers?: boolean | number;
+  /**
    * Sets the default unix epoch. May be a number (in milliseconds) or a Date object.
    *
    * @defaultValue
@@ -75,32 +83,6 @@ export type ModernFakeTimersConfig = {
    * The default is `100_000` timers.
    */
   timerLimit?: number;
-  /**
-   * Whether to increment mocked time automatically based on the real system time
-   * shift. If `shouldAdvanceTime` is not set, the mocked time will be incremented
-   * by 20 milliseconds for every 20 milliseconds change in the real system time.
-   *
-   * @defaultValue
-   * The default is `false`.
-   */
-  shouldAdvanceTime?: boolean;
-  /**
-   * Relevant only when using with `shouldAdvanceTime: true`. Increment mocked
-   * time by `advanceTimeDelta` milliseconds every `advanceTimeDelta` milliseconds.
-   *
-   * @defaultValue
-   * The default is `20` milliseconds.
-   */
-  advanceTimeDelta?: number;
-  /**
-   * Forwards clear timer calls to native functions if they are not fakes.
-   * These are not cleared by default, leading to potentially unexpected behavior
-   * if timers existed prior to installing fake timers.
-   *
-   * @defaultValue
-   * The default is `false`.
-   */
-  shouldClearNativeTimers?: boolean;
   /**
    * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
    *

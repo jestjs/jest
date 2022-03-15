@@ -2065,16 +2065,16 @@ export default class Runtime {
       return this._fakeTimersImplementation!;
     };
     const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
-      const resolvedFakeTimersConfig = {
+      fakeTimersConfig = {
         ...this._config.fakeTimers,
         ...fakeTimersConfig,
       };
-      if (!resolvedFakeTimersConfig?.legacyFakeTimers) {
+      if (!fakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       }
-      this._fakeTimersImplementation!.useFakeTimers(resolvedFakeTimersConfig);
+      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
       return jestObject;
     };
     const useRealTimers = () => {

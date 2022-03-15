@@ -50,12 +50,10 @@ const initialOptions: Config.InitialOptions = {
   expand: false,
   extensionsToTreatAsEsm: [],
   fakeTimers: {
-    advanceTimeDelta: 1000,
+    advanceTimers: multipleValidOptions(40, true),
     enableGlobally: true,
     legacyFakeTimers: false,
     now: multipleValidOptions(0, new Date()),
-    shouldAdvanceTime: false,
-    shouldClearNativeTimers: false,
     timerLimit: 1000,
     toFake: [
       'Date',
