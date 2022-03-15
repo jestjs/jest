@@ -1668,6 +1668,7 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
       'jsx',
       'ts',
       'tsx',
