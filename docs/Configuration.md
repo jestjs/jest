@@ -442,11 +442,6 @@ type ModernFakeTimersConfig = {
   enableGlobally?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
-  /**
-   * Forwards clear timer calls to native functions if they are not fakes.
-   * The default is `false`.
-   */
-  shouldClearNativeTimers?: boolean;
   /** Maximum number of timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
 };
