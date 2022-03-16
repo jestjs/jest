@@ -7,8 +7,14 @@
 
 'use strict';
 
-test('fake timers', () => {
+test('getRealSystemTime', () => {
+  expect(() => jest.getRealSystemTime()).toThrow(
+    '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
+  );
+});
+
+test('setSystemTime', () => {
   expect(() => jest.setSystemTime(0)).toThrow(
-    'jest.setSystemTime() is not available when using legacy fake timers.',
+    '`jest.setSystemTime()` is not available when using legacy fake timers.',
   );
 });

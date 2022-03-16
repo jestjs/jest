@@ -26,3 +26,9 @@ test('fake timers with Date argument', () => {
 
   expect(Date.now()).toBe(1000);
 });
+
+test('runAllImmediates', () => {
+  expect(() => jest.runAllImmediates()).toThrow(
+    '`jest.runAllImmediates()` is only available when using legacy fake timers.',
+  );
+});

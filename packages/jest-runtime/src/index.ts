@@ -2137,7 +2137,7 @@ export default class Runtime {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
-            'getRealSystemTime is not available when not using modern timers',
+            '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },
@@ -2159,7 +2159,7 @@ export default class Runtime {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
-            'runAllImmediates is not available when using modern timers',
+            '`jest.runAllImmediates()` is only available when using legacy fake timers.',
           );
         }
       },
@@ -2175,7 +2175,7 @@ export default class Runtime {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
-            'jest.setSystemTime() is not available when using legacy fake timers.',
+            '`jest.setSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },
