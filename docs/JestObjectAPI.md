@@ -638,12 +638,6 @@ Fake timers will swap out `Date`, `performance.now()`, `queueMicrotask()`, `setI
 
 In node environment `process.hrtime`, `process.nextTick()` and in jsdom environment `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()` will be replaced as well.
 
-:::tip
-
-The fake `performance` instance includes only `.now()` method. In case if your code requires `performance.mark()`, use `doNotFake` option to preserve the original instance.
-
-:::
-
 Configuration options:
 
 ```ts
@@ -675,18 +669,32 @@ type FakeTimersConfig = {
   doNotFake?: Array<FakeableAPI>;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
-  /** Maximum number of timers that will be run. The default is `100_000` timers. */
+  /**
+   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
+   * The default is `100_000` timers.
+   */
   timerLimit?: number;
 };
 ```
 
-Example:
+Calling `jest.useRealTimers()` will use fake timers for all tests within the file, until original timers are restored with `jest.useRealTimers()`.
+
+You can call `jest.useFakeTimers()` or `jest.useRealTimers()` from anywhere: top level, inside an `test` block, etc. Keep in mind that this is a **global operation** and will affect other tests within the same file. Calling `jest.useFakeTimers()` once again in the same test file would reset the internal state (e.g. timer count) and reinstall fake timers using the provided options:
 
 ```js
-jest.useFakeTimers({
-  doNotFake: ['nextTick', 'performance'],
-  now: new Date(1990, 12, 1),
-  advanceTimers: true,
+test('advance the timers automatically', () => {
+  jest.useFakeTimers({advanceTimers: true});
+  // ...
+});
+
+test('do not advance the timers and do not fake `performance`', () => {
+  jest.useFakeTimers({doNotFake: ['performance']});
+  // ...
+});
+
+test('uninstall fake timers for the rest of tests in the file', () => {
+  jest.useRealTimers();
+  // ...
 });
 ```
 
@@ -708,7 +716,22 @@ Returns the `jest` object for chaining.
 
 ### `jest.useRealTimers()`
 
-Instructs Jest to use the real versions of the global date, performance and timers APIs.
+Instructs Jest to restore the original implementations of the global date, performance, time and timers APIs. For example, you may call `jest.useRealTimers()` inside `afterEach` hook to restore timers after each test:
+
+```js
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+test('do something with fake timers', () => {
+  jest.useFakeTimers();
+  // ...
+});
+
+test('do something with real timers', () => {
+  // ...
+});
+```
 
 Returns the `jest` object for chaining.
 
