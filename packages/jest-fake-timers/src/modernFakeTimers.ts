@@ -7,6 +7,7 @@
 
 import {
   FakeTimerWithContext,
+  FakeMethod as FakeableAPI,
   InstalledClock,
   FakeTimerInstallOpts as SinonFakeTimersConfig,
   withGlobal,
@@ -109,11 +110,14 @@ export default class FakeTimers {
           ? fakeTimersConfig.advanceTimers
           : undefined;
 
-      const toFake =
-        fakeTimersConfig.toFake ||
-        (Object.keys(this._fakeTimers.timers) as Array<
-          keyof FakeTimerWithContext['timers']
-        >);
+      const toFake = new Set(
+        Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
+      );
+
+      fakeTimersConfig?.doNotFake?.forEach(nameOfFakeableAPI => {
+        // @ts-expect-error: TODO remove after merging https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59269
+        toFake.delete(nameOfFakeableAPI);
+      });
 
       return {
         advanceTimeDelta,
@@ -121,7 +125,7 @@ export default class FakeTimers {
         now: fakeTimersConfig.now || Date.now(),
         shouldAdvanceTime: !!fakeTimersConfig.advanceTimers,
         shouldClearNativeTimers: true,
-        toFake,
+        toFake: Array.from(toFake),
       };
     };
 

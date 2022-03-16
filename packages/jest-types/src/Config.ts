@@ -12,12 +12,12 @@ import type {SnapshotFormat} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
-export type FakeableTimerAPIs =
+export type FakeableTimersAPI =
   | 'Date'
   | 'hrtime'
   | 'nextTick'
   | 'performance'
-  // | 'queueMicrotask'
+  | 'queueMicrotask'
   | 'requestAnimationFrame'
   | 'cancelAnimationFrame'
   | 'requestIdleCallback'
@@ -59,23 +59,20 @@ export type ModernFakeTimersConfig = {
    */
   advanceTimers?: boolean | number;
   /**
+   * List of names of APIs (e.g. `setTimeout()`, `setImmediate()`, `Date`,
+   * `nextTick`, `performance`) that should not be faked.
+   *
+   * @defaultValue
+   * The default is `[]`.
+   * */
+  doNotFake?: Array<FakeableTimersAPI>;
+  /**
    * Sets the default unix epoch. May be a number (in milliseconds) or a Date object.
    *
    * @defaultValue
    * The default is `Date.now()`.
    */
   now?: number | Date;
-  /**
-   * Allows to cherry pick the timer methods and objects (e.g. `setTimeout()`,
-   * `setImmediate()`, `Date`, `nextTick`, `performance`) that should be faked.
-   *
-   * @defaultValue
-   * All timer APIs are faked by default.
-   *
-   * @example
-   * {toFake: ['nextTick', 'setTimeout']}
-   */
-  toFake?: Array<FakeableTimerAPIs>;
   /**
    * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
    *

@@ -25,6 +25,11 @@ describe('useFakeTimers', () => {
     expect(result.exitCode).toBe(0);
   });
 
+  test('allows to pass doNotFake option', () => {
+    const result = runJest('fake-timers/do-not-fake');
+    expect(result.exitCode).toBe(0);
+  });
+
   test('allows to pass timerLimit option', () => {
     const result = runJest('fake-timers/timer-limit');
     expect(result.exitCode).toBe(0);
