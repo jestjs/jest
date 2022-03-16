@@ -17,7 +17,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 jestExpect.extend({
   optionalFn(fn) {
     const pass = fn === undefined || typeof fn === 'function';
-    return {pass, message: () => 'expect either a function or undefined'};
+    return {message: () => 'expect either a function or undefined', pass};
   },
 });
 
@@ -932,8 +932,6 @@ describe('.toEqual()', () => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
-      if (stringify(a) === '[1]' && stringify(b) === '[1, optionalFn<>]')
-        debugger;
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
