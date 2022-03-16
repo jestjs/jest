@@ -44,7 +44,7 @@ describe('useFakeTimers', () => {
 describe('useRealTimers', () => {
   test('restores timers to the native implementation', () => {
     const result = runJest('fake-timers/use-real-timers');
-    expect(result.stdout).toMatch('API is not mocked with fake timers.');
+    expect(result.stdout).toMatch('APIs are not replaced with fake timers.');
     expect(result.exitCode).toBe(0);
   });
 });

@@ -165,10 +165,10 @@ export default class FakeTimers {
   private _checkFakeTimers() {
     if (!this._fakingTime) {
       this._global.console.warn(
-        'A function to advance timers was called but the timers API is not ' +
-          'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
-          'enable fake timers globally using "timers" option in the Jest ' +
-          `configuration file\nStack Trace:\n${formatStackTrace(
+        'A function to advance timers was called but the timers APIs are not replaced ' +
+          'with fake timers. Call `jest.useFakeTimers()` in this test file or enable ' +
+          "fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} " +
+          `in Jest configuration file.\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
             this._projectConfig,
             {noStackTrace: false},
