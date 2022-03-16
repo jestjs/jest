@@ -759,7 +759,9 @@ class ScriptTransformer {
         }
       },
       {
-        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
+        exts: this._config.moduleFileExtensions
+          .filter(ext => ext !== 'mjs')
+          .map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {
@@ -799,6 +801,13 @@ class ScriptTransformer {
   shouldTransform(filename: string): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
+    console.log(
+      'should transform',
+      filename,
+      this._config.transform,
+      ignoreRegexp,
+      this._config.transform.length !== 0 && !isIgnored,
+    );
 
     return this._config.transform.length !== 0 && !isIgnored;
   }
