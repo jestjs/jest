@@ -49,8 +49,6 @@ describe('`@sinonjs/fake-timers` integration', () => {
   });
 
   test('passes default options to `install()` method', () => {
-    const now = Date.now();
-
     const timers = new FakeTimers({
       config: makeProjectConfig(),
       global: globalThis,
@@ -61,7 +59,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     expect(mockInstall).toBeCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: undefined,
-      now,
+      now: expect.any(Number),
       shouldAdvanceTime: false,
       shouldClearNativeTimers: true,
       toFake: [
