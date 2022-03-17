@@ -801,13 +801,6 @@ class ScriptTransformer {
   shouldTransform(filename: string): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-    console.log(
-      'should transform',
-      filename,
-      this._config.transform,
-      ignoreRegexp,
-      this._config.transform.length !== 0 && !isIgnored,
-    );
 
     return this._config.transform.length !== 0 && !isIgnored;
   }
