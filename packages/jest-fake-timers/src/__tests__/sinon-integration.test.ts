@@ -99,7 +99,6 @@ describe('`@sinonjs/fake-timers` integration', () => {
       shouldAdvanceTime: true,
       shouldClearNativeTimers: true,
       toFake: [
-        'Date',
         'clearImmediate',
         'clearInterval',
         'clearTimeout',
