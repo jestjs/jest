@@ -21,7 +21,6 @@ const mockWithGlobal = {
     clearTimeout,
     hrtime: process.hrtime,
     nextTick: process.nextTick,
-    performance,
     queueMicrotask,
     setImmediate,
     setInterval,
@@ -70,7 +69,6 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearTimeout',
         'hrtime',
         'nextTick',
-        'performance',
         'queueMicrotask',
         'setImmediate',
         'setInterval',
@@ -84,7 +82,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
       config: makeProjectConfig({
         fakeTimers: {
           advanceTimers: true,
-          doNotFake: ['nextTick', 'performance'],
+          doNotFake: ['Date', 'nextTick'],
           now: 0,
           timerLimit: 100,
         },
@@ -139,7 +137,6 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearTimeout',
         'hrtime',
         'nextTick',
-        'performance',
         'setImmediate',
         'setInterval',
         'setTimeout',
@@ -152,7 +149,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
       config: makeProjectConfig({
         fakeTimers: {
           advanceTimers: 20,
-          doNotFake: ['Date', 'nextTick', 'performance'],
+          doNotFake: ['Date', 'nextTick'],
           now: 0,
           timerLimit: 1000,
         },
@@ -181,7 +178,6 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearInterval',
         'clearTimeout',
         'nextTick',
-        'performance',
         'queueMicrotask',
         'setImmediate',
         'setInterval',
