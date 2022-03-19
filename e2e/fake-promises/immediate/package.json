@@ -3,7 +3,6 @@
     "fakeTimers": {"enableGlobally": true},
     "setupFiles": [
       "<rootDir>/fake-promises"
-    ],
-    "testEnvironment": "node"
+    ]
   }
 }

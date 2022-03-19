@@ -1,4 +1,5 @@
 {
+  "name": "enable-globally",
   "jest": {
     "fakeTimers": {"enableGlobally": true}
   }

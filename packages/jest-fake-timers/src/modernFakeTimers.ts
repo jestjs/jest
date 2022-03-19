@@ -17,7 +17,7 @@ import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _projectConfig: Config.ProjectConfig;
+  private _config: Config.ProjectConfig;
   private _fakingTime: boolean;
   private _global: typeof globalThis;
   private _fakeTimers: FakeTimerWithContext;
@@ -30,7 +30,7 @@ export default class FakeTimers {
     config: Config.ProjectConfig;
   }) {
     this._global = global;
-    this._projectConfig = config;
+    this._config = config;
 
     this._fakingTime = false;
     this._fakeTimers = withGlobal(global);
@@ -101,7 +101,7 @@ export default class FakeTimers {
       fakeTimersConfig?: Config.FakeTimersConfig,
     ): SinonFakeTimersConfig => {
       fakeTimersConfig = {
-        ...this._projectConfig.fakeTimers,
+        ...this._config.fakeTimers,
         ...fakeTimersConfig,
       } as Config.ModernFakeTimersConfig;
 
@@ -123,7 +123,7 @@ export default class FakeTimers {
         advanceTimeDelta,
         loopLimit: fakeTimersConfig.timerLimit,
         now: fakeTimersConfig.now ?? Date.now(),
-        shouldAdvanceTime: !!fakeTimersConfig.advanceTimers,
+        shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
         shouldClearNativeTimers: true,
         toFake: Array.from(toFake),
       };
@@ -170,7 +170,7 @@ export default class FakeTimers {
           "fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} " +
           `in Jest configuration file.\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
-            this._projectConfig,
+            this._config,
             {noStackTrace: false},
           )}`,
       );

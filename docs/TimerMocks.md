@@ -13,7 +13,7 @@ Also see [Fake Timers](JestObjectAPI.md#fake-timers) API documentation.
 
 ## Enable Fake Timers
 
-In the following example we enable fake timers by calling `jest.useFakeTimers()`. This replace the original implementation of `setTimeout()` and other timer functions. Timers can be restored to their normal behavior with `jest.useRealTimers()`.
+In the following example we enable fake timers by calling `jest.useFakeTimers()`. This is replacing the original implementation of `setTimeout()` and other timer functions. Timers can be restored to their normal behavior with `jest.useRealTimers()`.
 
 ```javascript title="timerGame.js"
 function timerGame(callback) {
@@ -29,7 +29,7 @@ module.exports = timerGame;
 
 ```javascript title="__tests__/timerGame-test.js"
 jest.useFakeTimers();
-jest.spyOn(globalThis, 'setTimeout');
+jest.spyOn(global, 'setTimeout');
 
 test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');

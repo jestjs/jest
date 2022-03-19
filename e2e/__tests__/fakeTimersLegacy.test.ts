@@ -16,23 +16,21 @@ describe('enableGlobally', () => {
 
 describe('legacyFakeTimers', () => {
   test('toggles legacy fake timers from Jest config', () => {
-    const result = runJest('fake-timers-legacy/without-enable-globally');
+    const result = runJest('fake-timers-legacy/enable-legacy-fake-timers');
     expect(result.exitCode).toBe(0);
   });
 });
 
 describe('useFakeTimers', () => {
   test('enables legacy fake timers from Jest Object', () => {
-    const result = runJest('fake-timers-legacy/use-fake-timers');
+    const result = runJest('fake-timers-legacy/use-legacy-fake-timers');
     expect(result.exitCode).toBe(0);
   });
 });
 
 describe('requestAnimationFrame', () => {
   test('fakes requestAnimationFrame', () => {
-    const result = runJest('fake-timers-legacy/request-animation-frame', [
-      '--verbose',
-    ]);
+    const result = runJest('fake-timers-legacy/request-animation-frame');
 
     expect(result.stderr).toMatch('requestAnimationFrame test');
     expect(result.exitCode).toBe(0);

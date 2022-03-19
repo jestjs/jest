@@ -1,5 +1,3 @@
 {
-  "jest": {
-    "testEnvironment": "node"
-  }
+  "name": "use-fake-timers"
 }

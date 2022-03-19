@@ -51,7 +51,7 @@ describe('useRealTimers', () => {
 
 describe('setImmediate', () => {
   test('fakes setImmediate', () => {
-    const result = runJest('fake-timers/set-immediate', ['--verbose']);
+    const result = runJest('fake-timers/set-immediate');
 
     expect(result.stderr).toMatch('setImmediate test');
     expect(result.exitCode).toBe(0);
@@ -60,9 +60,7 @@ describe('setImmediate', () => {
 
 describe('requestAnimationFrame', () => {
   test('fakes requestAnimationFrame', () => {
-    const result = runJest('fake-timers/request-animation-frame', [
-      '--verbose',
-    ]);
+    const result = runJest('fake-timers/request-animation-frame');
 
     expect(result.stderr).toMatch('requestAnimationFrame test');
     expect(result.exitCode).toBe(0);
