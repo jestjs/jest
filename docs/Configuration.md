@@ -399,7 +399,7 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 
 Default: `{}`
 
-This option allows configuration of the implementation of fake timers. The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For more details see [Fake Timers](JestObjectAPI.md#fake-timers) documentation.
+This option allows configuration of the implementation of fake timers. The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For more details see [Fake Timers API](JestObjectAPI.md#fake-timers) documentation.
 
 Here is how you can enable fake timers globally for all tests:
 
@@ -440,7 +440,7 @@ type ModernFakeTimersConfig = {
   advanceTimers?: boolean | number;
   /** List of names of APIs that should not be faked. The default is `[]`. */
   doNotFake?: Array<FakeableAPI>;
-  /** Whether fake timers should be enabled for all tests. The default is `false`. */
+  /** Whether fake timers should be enabled for all test files. The default is `false`. */
   enableGlobally?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;

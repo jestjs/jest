@@ -12,7 +12,7 @@
 const mockPerformanceMark = jest.fn();
 window.performance.mark = mockPerformanceMark;
 
-test('fakes all timers APIs', () => {
+test('fakes all APIs', () => {
   jest.useFakeTimers();
 
   expect(window.performance.mark).toBeUndefined();

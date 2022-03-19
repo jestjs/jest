@@ -7,7 +7,7 @@ The native timer functions (i.e., `setTimeout()`, `setInterval()`, `clearTimeout
 
 :::info
 
-Also see [Fake Timers](JestObjectAPI.md#fake-timers) API documentation.
+Also see [Fake Timers API](JestObjectAPI.md#fake-timers) documentation.
 
 :::
 
@@ -169,7 +169,7 @@ Lastly, it may occasionally be useful in some tests to be able to clear all of t
 
 ## Selective Faking
 
-By default, calling `jest.useFakeTimers()` will fake all timers API. Sometimes your code may require to avoid overwriting the original implementations. If that is the case, you can use `doNotFake` option. For example, here is how you could provide a custom mock function for `performance.mark()` in jsdom environment:
+Sometimes your code may require to avoid overwriting the original implementation of one or another API. If that is the case, you can use `doNotFake` option. For example, here is how you could provide a custom mock function for `performance.mark()` in jsdom environment:
 
 ```js
 /**
