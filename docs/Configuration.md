@@ -405,7 +405,9 @@ Here is how you can enable fake timers globally for all tests:
 
 ```json
 {
-  "enableGlobally": true
+  "fakeTimers": {
+    "enableGlobally": true
+  }
 }
 ```
 
@@ -453,8 +455,10 @@ For some reason you might have to use legacy implementation of fake timers. Here
 
 ```json
 {
-  "enableGlobally": true,
-  "legacyFakeTimers": true
+  "fakeTimers": {
+    "enableGlobally": true,
+    "legacyFakeTimers": true
+  }
 }
 ```
 
