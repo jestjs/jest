@@ -37,7 +37,7 @@ test('adds 1 + 2 to equal 3', () => {
 ```
 
 Add the following section to your `package.json`:
-
+ 
 ```json
 {
   "scripts": {
@@ -45,6 +45,8 @@ Add the following section to your `package.json`:
   }
 }
 ```
+> Note: Remember that being a json, before adding this entry a comma must be put at the end of the previous field.
+
 
 Finally, run `yarn test` or `npm run test` and Jest will print this message:
 
