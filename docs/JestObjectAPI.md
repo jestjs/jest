@@ -632,7 +632,7 @@ test('direct', () => {
 
 ### `jest.useFakeTimers(fakeTimersConfig?)`
 
-Instructs Jest to use fake versions of the global date, performance, time and timer APIs. Fake timers implementation is backed by [@sinonjs/fake-timers](https://github.com/sinonjs/fake-timers).
+Instructs Jest to use fake versions of the global date, performance, time and timer APIs. Fake timers implementation is backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
 Fake timers will swap out `Date`, `performance.now()`, `queueMicrotask()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with an implementation that gets its time from the fake clock.
 
