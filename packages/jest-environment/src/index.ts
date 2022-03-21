@@ -304,7 +304,7 @@ export interface Jest {
   /**
    * Instructs Jest to use fake versions of the global date, performance,
    * time and timers APIs. Fake timers implementation is backed by
-   * [@sinonjs/fake-timers](https://github.com/sinonjs/fake-timers).
+   * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
    *
    * @remarks
    * Calling `jest.useFakeTimers()` once again in the same test file would reinstall
