@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {TestResult} from '@jest/test-result';
 import {
   PatternPrompt,
   Prompt,
@@ -14,28 +13,19 @@ import {
   printRestoredPatternCaret,
 } from 'jest-watcher';
 
-// TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {
-  _cachedTestResults: Array<TestResult>;
-
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
-    super(pipe, prompt);
-    this._entityName = 'tests';
-    this._cachedTestResults = [];
+    super(pipe, prompt, 'tests');
   }
 
-  _onChange(pattern: string, options: ScrollOptions): void {
+  protected _onChange(pattern: string, options: ScrollOptions): void {
     super._onChange(pattern, options);
     this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string): void {
+  private _printPrompt(pattern: string): void {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
-  }
-
-  updateCachedTestResults(testResults: Array<TestResult> = []): void {
-    this._cachedTestResults = testResults;
   }
 }
