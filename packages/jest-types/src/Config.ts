@@ -31,7 +31,7 @@ export type FakeableTimersAPI =
 
 export type BaseFakeTimersConfig = {
   /**
-   * Whether fake timers should be enabled for all tests.
+   * Whether fake timers should be enabled for all test files.
    *
    * @defaultValue
    * The default is `false`.
@@ -67,7 +67,7 @@ export type ModernFakeTimersConfig = {
    * */
   doNotFake?: Array<FakeableTimersAPI>;
   /**
-   * Sets the default unix epoch. May be a number (in milliseconds) or a Date object.
+   * Sets current system time to be used by fake timers.
    *
    * @defaultValue
    * The default is `Date.now()`.
