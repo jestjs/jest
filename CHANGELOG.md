@@ -50,7 +50,7 @@
 - `[jest-circus, @jest/types]` Disallow undefined value in `TestContext` type ([#12507](https://github.com/facebook/jest/pull/12507))
 - `[jest-config]` Correctly detect CI environment and update snapshots accordingly ([#12378](https://github.com/facebook/jest/pull/12378))
 - `[jest-config]` Pass `moduleTypes` to `ts-node` to enforce CJS when transpiling ([#12397](https://github.com/facebook/jest/pull/12397))
-- `[jest-config]` Add `mjs` to default `moduleFileExtensions` config ([12578](https://github.com/facebook/jest/pull/12578))
+- `[jest-config]` Add `mjs` and `cjs` to default `moduleFileExtensions` config ([12578](https://github.com/facebook/jest/pull/12578))
 - `[jest-config, jest-haste-map]` Allow searching for tests in `node_modules` by exposing `retainAllFiles` ([#11084](https://github.com/facebook/jest/pull/11084))
 - `[jest-core]` [**BREAKING**] Exit with status `1` if no tests are found with `--findRelatedTests` flag ([#12487](https://github.com/facebook/jest/pull/12487))
 - `[jest-each]` `%#` is not replaced with index of the test case ([#12517](https://github.com/facebook/jest/pull/12517))
