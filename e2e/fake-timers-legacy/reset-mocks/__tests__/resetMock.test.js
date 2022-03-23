@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+'use strict';
+
 test('works when resetMocks is set in Jest config', () => {
   jest.useFakeTimers();
   const f = jest.fn();
