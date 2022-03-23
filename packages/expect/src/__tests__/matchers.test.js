@@ -1061,7 +1061,6 @@ describe('.toEqual()', () => {
       expect(d).not.toEqual(c);
     });
   });
-
   /* eslint-enable */
 });
 
