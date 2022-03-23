@@ -269,6 +269,30 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test("works with arguments that don't match with matchers even when argument is undefined", () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      caller(
+        jestExpect(createSpy(fn)).not[calledWith],
+        'foo',
+        jestExpect.any(String),
+      );
+      caller(
+        jestExpect(fn).not[calledWith],
+        'foo'
+        jestExpect.any(String),
+      );
+
+      expect(() =>
+        caller(
+          jestExpect(fn)[calledWith],
+          jestExpect.any(String),
+          jestExpect.any(Number),
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('works with arguments that match', () => {
       const fn = jest.fn();
       fn('foo', 'bar');
