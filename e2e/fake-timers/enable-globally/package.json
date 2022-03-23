@@ -1,0 +1,6 @@
+{
+  "name": "enable-globally",
+  "jest": {
+    "timers": "modern"
+  }
+}
