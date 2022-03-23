@@ -174,6 +174,14 @@ Received: <d>"foo"</>, <r>undefined</>
 Number of calls: <r>1</>
 `;
 
+exports[`lastCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`lastCalledWith works with trailing undefined arguments when explicitely requested as optional by matcher 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -528,6 +536,15 @@ exports[`nthCalledWith works with trailing undefined arguments 1`] = `
 n: 1
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -1172,6 +1189,14 @@ Received: <d>"foo"</>, <r>undefined</>
 Number of calls: <r>1</>
 `;
 
+exports[`toBeCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toBeCalledWith works with trailing undefined arguments when explicitely requested as optional by matcher 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1551,6 +1576,14 @@ Received: <d>"foo"</>, <r>undefined</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenCalledWith works with trailing undefined arguments when explicitely requested as optional by matcher 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1730,6 +1763,14 @@ exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = 
 
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -1945,6 +1986,15 @@ exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
 n: 1
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>undefined</>
 
 Number of calls: <r>1</>
 `;

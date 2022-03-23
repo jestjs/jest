@@ -341,6 +341,16 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test('works with trailing undefined arguments if requested by the match query', () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      caller(jestExpect(fn)[calledWith], 'foo', undefined);
+      expect(() =>
+        caller(jestExpect(fn).not[calledWith], 'foo', undefined),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('works with trailing undefined arguments when explicitely requested as optional by matcher', () => {
       // issue 12463
       const fn = jest.fn();
