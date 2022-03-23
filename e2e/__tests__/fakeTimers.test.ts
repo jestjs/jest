@@ -29,3 +29,12 @@ describe('requestAnimationFrame', () => {
     expect(result.exitCode).toBe(0);
   });
 });
+
+describe('setImmediate', () => {
+  test('fakes setImmediate', () => {
+    const result = runJest('fake-timers/set-immediate');
+
+    expect(result.stderr).toMatch('setImmediate test');
+    expect(result.exitCode).toBe(0);
+  });
+});
