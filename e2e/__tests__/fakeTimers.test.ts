@@ -20,3 +20,12 @@ describe('useFakeTimers', () => {
     expect(result.exitCode).toBe(0);
   });
 });
+
+describe('requestAnimationFrame', () => {
+  test('fakes requestAnimationFrame', () => {
+    const result = runJest('fake-timers/request-animation-frame');
+
+    expect(result.stderr).toMatch('requestAnimationFrame test');
+    expect(result.exitCode).toBe(0);
+  });
+});
