@@ -1,6 +1,6 @@
 {
+  "name": "use-real-timers",
   "jest": {
-    "testEnvironment": "node",
     "timers": "fake"
   }
 }
