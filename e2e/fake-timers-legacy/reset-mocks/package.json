@@ -1,0 +1,7 @@
+{
+  "name": "reset-mocks",
+  "jest": {
+    "resetMocks": true,
+    "timers": "legacy"
+  }
+}

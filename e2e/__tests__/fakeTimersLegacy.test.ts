@@ -46,3 +46,15 @@ describe('useRealTimers', () => {
     expect(result.exitCode).toBe(0);
   });
 });
+
+describe('when mocks are reset', () => {
+  test('calling resetAllMocks does not break tests', () => {
+    const result = runJest('fake-timers-legacy/reset-all-mocks');
+    expect(result.exitCode).toBe(0);
+  });
+
+  test('setting resetMocks in Jest config does not break tests', () => {
+    const result = runJest('fake-timers-legacy/reset-mocks');
+    expect(result.exitCode).toBe(0);
+  });
+});
