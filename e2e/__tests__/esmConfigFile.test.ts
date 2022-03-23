@@ -63,7 +63,7 @@ onNodeVersions('>=12.17.0', () => {
       if (!existsSync(indexDTsFile)) {
         await execa('tsc', ['-b', typesPackageDirectory], {cwd});
       }
-    }, 60_000);
+    }, 360_000);
 
     test('reads config from ts file when package.json#type=module', () => {
       const {configs} = getConfig('esm-config/ts', [], {
