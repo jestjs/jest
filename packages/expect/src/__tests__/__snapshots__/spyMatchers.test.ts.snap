@@ -99,6 +99,15 @@ Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
 Number of calls: <r>1</>
 `;
 
+exports[`lastCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`lastCalledWith works with arguments that don't match with matchers 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -448,6 +457,16 @@ exports[`nthCalledWith works with arguments that don't match in number of argume
 n: 1
 Expected: <g>"foo"</>, <g>"bar"</>
 Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
 
 Number of calls: <r>1</>
 `;
@@ -1078,6 +1097,15 @@ Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toBeCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toBeCalledWith works with arguments that don't match with matchers 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1448,6 +1476,15 @@ Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenCalledWith works with arguments that don't match with matchers 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1618,6 +1655,15 @@ exports[`toHaveBeenLastCalledWith works with arguments that don't match in numbe
 
 Expected: <g>"foo"</>, <g>"bar"</>
 Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
 
 Number of calls: <r>1</>
 `;
@@ -1828,6 +1874,16 @@ exports[`toHaveBeenNthCalledWith works with arguments that don't match in number
 n: 1
 Expected: <g>"foo"</>, <g>"bar"</>
 Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
 
 Number of calls: <r>1</>
 `;

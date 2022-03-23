@@ -285,6 +285,17 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test("works with arguments that don't match in size even if one is an optional matcher", () => {
+      // issue 12463
+      const fn = jest.fn();
+      fn('foo');
+
+      jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn();
+      expect(() =>
+        caller(jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn()),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('works with arguments that match', () => {
       const fn = jest.fn();
       fn('foo', 'bar');
