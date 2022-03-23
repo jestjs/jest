@@ -5,14 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+jest.useRealTimers();
 
-test('fake timers', () => {
-  jest.setSystemTime(0);
-
-  expect(Date.now()).toBe(0);
-
-  jest.setSystemTime(1000);
-
-  expect(Date.now()).toBe(1000);
+test('bar', () => {
+  jest.runAllTimers();
 });

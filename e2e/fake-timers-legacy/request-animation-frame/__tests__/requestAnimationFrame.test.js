@@ -9,7 +9,7 @@
 
 'use strict';
 
-test('requestAnimationFrame', () => {
+test('requestAnimationFrame test', () => {
   jest.useFakeTimers('legacy');
   let frameTimestamp = -1;
   requestAnimationFrame(timestamp => {

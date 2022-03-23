@@ -7,14 +7,10 @@
 
 'use strict';
 
-test('fake timers', () => {
-  jest.useFakeTimers();
+test('setImmediate test', () => {
+  expect(true).toBe(true);
 
-  jest.setSystemTime(0);
-
-  expect(Date.now()).toBe(0);
-
-  jest.setSystemTime(1000);
-
-  expect(Date.now()).toBe(1000);
+  setImmediate(() => {
+    throw new Error('Scheduled Error');
+  });
 });
