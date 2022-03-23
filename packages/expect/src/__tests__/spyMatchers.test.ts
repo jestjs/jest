@@ -278,18 +278,10 @@ const createSpy = (fn: jest.Mock) => {
         'foo',
         jestExpect.any(String),
       );
-      caller(
-        jestExpect(fn).not[calledWith],
-        'foo'
-        jestExpect.any(String),
-      );
+      caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.any(String));
 
       expect(() =>
-        caller(
-          jestExpect(fn)[calledWith],
-          jestExpect.any(String),
-          jestExpect.any(Number),
-        ),
+        caller(jestExpect(fn)[calledWith], 'foo', jestExpect.any(String)),
       ).toThrowErrorMatchingSnapshot();
     });
 

@@ -108,6 +108,15 @@ Received: <d>"foo"</>, <r>"bar"</>
 Number of calls: <r>1</>
 `;
 
+exports[`lastCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`lastCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -449,6 +458,16 @@ exports[`nthCalledWith works with arguments that don't match with matchers 1`] =
 n: 1
 Expected: <g>Any<String></>, <g>Any<Number></>
 Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -1068,6 +1087,15 @@ Received: <d>"foo"</>, <r>"bar"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toBeCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toBeCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1429,6 +1457,15 @@ Received: <d>"foo"</>, <r>"bar"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
@@ -1590,6 +1627,15 @@ exports[`toHaveBeenLastCalledWith works with arguments that don't match with mat
 
 Expected: <g>Any<String></>, <g>Any<Number></>
 Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
 
 Number of calls: <r>1</>
 `;
@@ -1792,6 +1838,16 @@ exports[`toHaveBeenNthCalledWith works with arguments that don't match with matc
 n: 1
 Expected: <g>Any<String></>, <g>Any<Number></>
 Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
 
 Number of calls: <r>1</>
 `;
