@@ -115,7 +115,6 @@ export default class FakeTimers {
       );
 
       fakeTimersConfig?.doNotFake?.forEach(nameOfFakeableAPI => {
-        // @ts-expect-error: TODO remove after merging https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59269
         toFake.delete(nameOfFakeableAPI);
       });
 

@@ -2654,7 +2654,7 @@ __metadata:
     "@jest/types": ^28.0.0-alpha.7
     "@sinonjs/fake-timers": ^9.1.1
     "@types/node": "*"
-    "@types/sinonjs__fake-timers": ^8.1.1
+    "@types/sinonjs__fake-timers": ^8.1.2
     jest-message-util: ^28.0.0-alpha.7
     jest-mock: ^28.0.0-alpha.7
     jest-util: ^28.0.0-alpha.7
@@ -5425,10 +5425,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinonjs__fake-timers@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@types/sinonjs__fake-timers@npm:8.1.1"
-  checksum: ca09d54d47091d87020824a73f026300fa06b17cd9f2f9b9387f28b549364b141ef194ee28db762f6588de71d8febcd17f753163cb7ea116b8387c18e80ebd5c
+"@types/sinonjs__fake-timers@npm:^8.1.2":
+  version: 8.1.2
+  resolution: "@types/sinonjs__fake-timers@npm:8.1.2"
+  checksum: bbc73a5ab6c0ec974929392f3d6e1e8db4ebad97ec506d785301e1c3d8a4f98a35b1aa95b97035daef02886fd8efd7788a2fa3ced2ec7105988bfd8dce61eedd
   languageName: node
   linkType: hard
 
