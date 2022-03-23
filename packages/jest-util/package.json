@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^4.0.1",
     "@types/picomatch": "^2.2.2"
   },
   "engines": {
