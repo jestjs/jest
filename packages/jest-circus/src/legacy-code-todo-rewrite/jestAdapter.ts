@@ -39,11 +39,11 @@ const jestAdapter = async (
   });
 
   if (config.fakeTimers.enableGlobally) {
-    if (!config.fakeTimers.legacyFakeTimers) {
+    if (config.fakeTimers.legacyFakeTimers) {
       // during setup, this cannot be null (and it's fine to explode if it is)
-      environment.fakeTimersModern!.useFakeTimers();
-    } else {
       environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
     }
   }
 
