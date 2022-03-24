@@ -1,0 +1,6 @@
+{
+  "name": "set-immediate",
+  "jest": {
+    "timers": "fake"
+  }
+}

@@ -34,6 +34,7 @@ import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
 import {
   BULLET,
@@ -1218,6 +1219,10 @@ export default async function normalize(
 
   if (!newOptions.logHeapUsage) {
     newOptions.logHeapUsage = false;
+  }
+
+  if (argv.shard) {
+    newOptions.shard = parseShardPair(argv.shard);
   }
 
   return {

@@ -279,6 +279,11 @@ type CoverageThreshold = {
   global: CoverageThresholdValue;
 };
 
+type ShardConfig = {
+  shardIndex: number;
+  shardCount: number;
+};
+
 export type GlobalConfig = {
   bail: number;
   changedSince?: string;
@@ -322,6 +327,7 @@ export type GlobalConfig = {
   reporters?: Array<string | ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
+  shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
   snapshotFormat: SnapshotFormat;
@@ -464,6 +470,7 @@ export type Argv = Arguments<
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
+    shard: string;
     showConfig: boolean;
     silent: boolean;
     snapshotSerializers: Array<string>;

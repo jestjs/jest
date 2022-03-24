@@ -112,7 +112,7 @@ export type MockedClass<T extends ClassLike> = MockInstance<
   prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
 } & T;
 
-type UnknownFunction = (...args: Array<unknown>) => unknown;
+export type UnknownFunction = (...args: Array<unknown>) => unknown;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.

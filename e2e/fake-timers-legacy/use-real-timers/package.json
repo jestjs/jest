@@ -1,0 +1,6 @@
+{
+  "name": "use-real-timers-legacy",
+  "jest": {
+    "timers": "legacy"
+  }
+}

@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as crypto from 'crypto';
+import * as path from 'path';
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import type {AggregatedResult, Test} from '@jest/test-result';
 import HasteMap from 'jest-haste-map';
 import type {Context} from 'jest-runtime';
@@ -15,6 +18,11 @@ const SUCCESS = 1;
 
 type Cache = {
   [key: string]: [0 | 1, number];
+};
+
+export type ShardOptions = {
+  shardIndex: number;
+  shardCount: number;
 };
 
 /**
@@ -66,24 +74,87 @@ export default class TestSequencer {
   }
 
   /**
-   * Sorting tests is very important because it has a great impact on the
-   * user-perceived responsiveness and speed of the test run.
+   * Select tests for shard requested via --shard=shardIndex/shardCount
+   * Sharding is applied before sorting
    *
-   * If such information is on cache, tests are sorted based on:
-   * -> Has it failed during the last run ?
-   * Since it's important to provide the most expected feedback as quickly
-   * as possible.
-   * -> How long it took to run ?
-   * Because running long tests first is an effort to minimize worker idle
-   * time at the end of a long test run.
-   * And if that information is not available they are sorted based on file size
-   * since big test files usually take longer to complete.
+   * @param tests All tests
+   * @param options shardIndex and shardIndex to select
    *
-   * Note that a possible improvement would be to analyse other information
-   * from the file other than its size.
-   *
+   * @example
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *  shard(tests, { shardIndex, shardCount }) {
+   *    const shardSize = Math.ceil(tests.length / options.shardCount);
+   *    const shardStart = shardSize * (options.shardIndex - 1);
+   *    const shardEnd = shardSize * options.shardIndex;
+   *    return [...tests]
+   *     .sort((a, b) => (a.path > b.path ? 1 : -1))
+   *     .slice(shardStart, shardEnd);
+   *  }
+   * }
+   * ```
    */
-  sort(tests: Array<Test>): Array<Test> {
+  shard(
+    tests: Array<Test>,
+    options: ShardOptions,
+  ): Array<Test> | Promise<Array<Test>> {
+    const shardSize = Math.ceil(tests.length / options.shardCount);
+    const shardStart = shardSize * (options.shardIndex - 1);
+    const shardEnd = shardSize * options.shardIndex;
+
+    return tests
+      .map(test => {
+        const relativeTestPath = path.posix.relative(
+          slash(test.context.config.rootDir),
+          slash(test.path),
+        );
+
+        return {
+          hash: crypto
+            .createHash('sha1')
+            .update(relativeTestPath)
+            .digest('hex'),
+          test,
+        };
+      })
+      .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0))
+      .slice(shardStart, shardEnd)
+      .map(result => result.test);
+  }
+
+  /**
+   * Sort test to determine order of execution
+   * Sorting is applied after sharding
+   * @param tests
+   *
+   * ```typescript
+   * class CustomSequencer extends Sequencer {
+   *   sort(tests) {
+   *     const copyTests = Array.from(tests);
+   *     return [...tests].sort((a, b) => (a.path > b.path ? 1 : -1));
+   *   }
+   * }
+   * ```
+   */
+  sort(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
+    /**
+     * Sorting tests is very important because it has a great impact on the
+     * user-perceived responsiveness and speed of the test run.
+     *
+     * If such information is on cache, tests are sorted based on:
+     * -> Has it failed during the last run ?
+     * Since it's important to provide the most expected feedback as quickly
+     * as possible.
+     * -> How long it took to run ?
+     * Because running long tests first is an effort to minimize worker idle
+     * time at the end of a long test run.
+     * And if that information is not available they are sorted based on file size
+     * since big test files usually take longer to complete.
+     *
+     * Note that a possible improvement would be to analyse other information
+     * from the file other than its size.
+     *
+     */
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
@@ -112,7 +183,7 @@ export default class TestSequencer {
     });
   }
 
-  allFailedTests(tests: Array<Test>): Array<Test> {
+  allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
     const hasFailed = (cache: Cache, test: Test) =>
       cache[test.path]?.[0] === FAIL;
     return this.sort(

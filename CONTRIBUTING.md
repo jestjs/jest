@@ -2,6 +2,8 @@
 
 Jest is one of Facebook's open source projects that is both under very active development and is also being used to ship code to everybody on [facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully this document makes the process for contributing clear and answers some questions that you may have.
 
+If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
+
 ## [Code of Conduct](https://code.facebook.com/codeofconduct)
 
 Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.facebook.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
