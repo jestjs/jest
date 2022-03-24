@@ -7,10 +7,12 @@
 
 'use strict';
 
-test('works when resetMocks is set in Jest config', () => {
-  jest.useFakeTimers();
-  const f = jest.fn();
-  setTimeout(f, 0);
-  jest.runAllTimers();
-  expect(f).toHaveBeenCalledTimes(1);
+test('fake timers', () => {
+  jest.useFakeTimers({
+    legacyFakeTimers: true,
+  });
+
+  expect(() => jest.setSystemTime(0)).toThrow(
+    '`jest.setSystemTime()` is not available when using legacy fake timers.',
+  );
 });

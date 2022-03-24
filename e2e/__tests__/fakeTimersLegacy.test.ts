@@ -22,7 +22,7 @@ describe('legacyFakeTimers', () => {
 });
 
 describe('useFakeTimers', () => {
-  test('enables legacy fake timers from Jest Object', () => {
+  test('enables legacy fake timers from Jest object', () => {
     const result = runJest('fake-timers-legacy/use-legacy-fake-timers');
     expect(result.exitCode).toBe(0);
   });
@@ -33,6 +33,23 @@ describe('requestAnimationFrame', () => {
     const result = runJest('fake-timers-legacy/request-animation-frame');
 
     expect(result.stderr).toMatch('requestAnimationFrame test');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
+describe('setImmediate', () => {
+  test('fakes setImmediate', () => {
+    const result = runJest('fake-timers-legacy/set-immediate');
+
+    expect(result.stderr).toMatch('setImmediate test');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
+describe('useRealTimers', () => {
+  test('restores timers to the native implementation', () => {
+    const result = runJest('fake-timers-legacy/use-real-timers');
+    expect(result.stdout).toMatch('APIs are not mocked with fake timers.');
     expect(result.exitCode).toBe(0);
   });
 });

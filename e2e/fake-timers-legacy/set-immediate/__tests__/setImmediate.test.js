@@ -7,10 +7,10 @@
 
 'use strict';
 
-test('works when resetMocks is set in Jest config', () => {
-  jest.useFakeTimers();
-  const f = jest.fn();
-  setTimeout(f, 0);
-  jest.runAllTimers();
-  expect(f).toHaveBeenCalledTimes(1);
+test('setImmediate test', () => {
+  expect(true).toBe(true);
+
+  setImmediate(() => {
+    throw new Error('Scheduled Error');
+  });
 });

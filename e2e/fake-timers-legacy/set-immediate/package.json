@@ -1,5 +1,5 @@
 {
-  "name": "enable-globally-legacy",
+  "name": "set-immediate-legacy",
   "jest": {
     "fakeTimers": {"enableGlobally": true, "legacyFakeTimers": true}
   }

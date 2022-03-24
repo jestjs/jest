@@ -8,14 +8,14 @@
 import runJest from '../runJest';
 
 describe('enableGlobally', () => {
-  test('enables fake timers from Jest Config', () => {
+  test('enables fake timers from Jest config', () => {
     const result = runJest('fake-timers/enable-globally');
     expect(result.exitCode).toBe(0);
   });
 });
 
 describe('useFakeTimers', () => {
-  test('enables fake timers from Jest Object', () => {
+  test('enables fake timers from Jest object', () => {
     const result = runJest('fake-timers/use-fake-timers');
     expect(result.exitCode).toBe(0);
   });
@@ -41,14 +41,6 @@ describe('useFakeTimers', () => {
   });
 });
 
-describe('useRealTimers', () => {
-  test('restores timers to the native implementation', () => {
-    const result = runJest('fake-timers/use-real-timers');
-    expect(result.stdout).toMatch('APIs are not replaced with fake timers.');
-    expect(result.exitCode).toBe(0);
-  });
-});
-
 describe('setImmediate', () => {
   test('fakes setImmediate', () => {
     const result = runJest('fake-timers/set-immediate');
@@ -63,6 +55,14 @@ describe('requestAnimationFrame', () => {
     const result = runJest('fake-timers/request-animation-frame');
 
     expect(result.stderr).toMatch('requestAnimationFrame test');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
+describe('useRealTimers', () => {
+  test('restores timers to the native implementation', () => {
+    const result = runJest('fake-timers/use-real-timers');
+    expect(result.stdout).toMatch('APIs are not replaced with fake timers.');
     expect(result.exitCode).toBe(0);
   });
 });
