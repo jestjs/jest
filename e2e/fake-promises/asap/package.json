@@ -1,6 +1,8 @@
 {
   "jest": {
-    "fakeTimers": {"enableGlobally": true},
+    "fakeTimers": {
+      "enableGlobally": true
+    },
     "setupFiles": [
       "<rootDir>/fake-promises"
     ]
