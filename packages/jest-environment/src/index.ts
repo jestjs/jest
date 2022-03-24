@@ -303,7 +303,7 @@ export interface Jest {
   unmock(moduleName: string): Jest;
   /**
    * Instructs Jest to use fake versions of the global date, performance,
-   * time and timers APIs. Fake timers implementation is backed by
+   * time and timer APIs. Fake timers implementation is backed by
    * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
    *
    * @remarks
@@ -317,7 +317,7 @@ export interface Jest {
   ): Jest;
   /**
    * Instructs Jest to restore the original implementations of the global date,
-   * performance, time and timers APIs.
+   * performance, time and timer APIs.
    */
   useRealTimers(): Jest;
 }
