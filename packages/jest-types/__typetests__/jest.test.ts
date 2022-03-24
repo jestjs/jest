@@ -247,8 +247,11 @@ expectType<void>(jest.setSystemTime(new Date(1995, 11, 17)));
 expectError(jest.setSystemTime('1995-12-17T03:24:00'));
 
 expectType<typeof jest>(jest.useFakeTimers());
+
 expectType<typeof jest>(jest.useFakeTimers({advanceTimers: true}));
 expectType<typeof jest>(jest.useFakeTimers({advanceTimers: 10}));
+expectError(jest.useFakeTimers({advanceTimers: 'fast'}));
+
 expectType<typeof jest>(jest.useFakeTimers({doNotFake: ['Date']}));
 expectType<typeof jest>(
   jest.useFakeTimers({
@@ -271,13 +274,23 @@ expectType<typeof jest>(
     ],
   }),
 );
+expectError(jest.useFakeTimers({doNotFake: ['globalThis']}));
+
 expectType<typeof jest>(jest.useFakeTimers({legacyFakeTimers: true}));
+expectError(jest.useFakeTimers({legacyFakeTimers: 1000}));
+expectError(jest.useFakeTimers({doNotFake: ['Date'], legacyFakeTimers: true}));
+expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));
+expectError(jest.useFakeTimers({now: 1483228800000, legacyFakeTimers: true}));
+expectError(jest.useFakeTimers({timerLimit: 1000, legacyFakeTimers: true}));
+
 expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
 expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
+expectError(jest.useFakeTimers({now: new Date()}));
+
 expectType<typeof jest>(jest.useFakeTimers({timerLimit: 1000}));
+expectError(jest.useFakeTimers({timerLimit: true}));
+
 expectError(jest.useFakeTimers({enableGlobally: true}));
-expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({legacyFakeTimers: true, toFake: ['Date']}));
 expectError(jest.useFakeTimers('modern'));
 
 expectType<typeof jest>(jest.useRealTimers());
