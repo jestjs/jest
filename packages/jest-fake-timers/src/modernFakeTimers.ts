@@ -92,18 +92,18 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimers): void {
     if (this._fakingTime) {
       this._clock.uninstall();
     }
 
     const toSinonFakeTimersConfig = (
-      fakeTimersConfig?: Config.FakeTimersConfig,
+      fakeTimersConfig?: Config.FakeTimers,
     ): SinonFakeTimersConfig => {
       fakeTimersConfig = {
         ...this._config.fakeTimers,
         ...fakeTimersConfig,
-      } as Config.ModernFakeTimersConfig;
+      } as Config.FakeTimersConfig;
 
       const advanceTimeDelta =
         typeof fakeTimersConfig.advanceTimers === 'number'

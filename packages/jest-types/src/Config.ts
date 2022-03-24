@@ -12,7 +12,7 @@ import type {SnapshotFormat} from '@jest/schemas';
 
 type CoverageProvider = 'babel' | 'v8';
 
-export type FakeableTimersAPI =
+export type FakeableAPI =
   | 'Date'
   | 'hrtime'
   | 'nextTick'
@@ -29,9 +29,9 @@ export type FakeableTimersAPI =
   | 'setTimeout'
   | 'clearTimeout';
 
-export type BaseFakeTimersConfig = {
+export type GlobalFakeTimersConfig = {
   /**
-   * Whether fake timers should be enabled for all test files.
+   * Whether fake timers should be enabled globally for all test files.
    *
    * @defaultValue
    * The default is `false`.
@@ -49,7 +49,7 @@ export type LegacyFakeTimersConfig = {
   legacyFakeTimers?: true;
 };
 
-export type ModernFakeTimersConfig = {
+export type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
    * every 20 milliseconds. A custom time delta may be provided by passing a number.
@@ -65,7 +65,7 @@ export type ModernFakeTimersConfig = {
    * @defaultValue
    * The default is `[]`.
    * */
-  doNotFake?: Array<FakeableTimersAPI>;
+  doNotFake?: Array<FakeableAPI>;
   /**
    * Sets current system time to be used by fake timers.
    *
@@ -89,8 +89,8 @@ export type ModernFakeTimersConfig = {
   legacyFakeTimers?: false;
 };
 
-export type FakeTimersConfig = BaseFakeTimersConfig &
-  (LegacyFakeTimersConfig | ModernFakeTimersConfig);
+export type FakeTimers = GlobalFakeTimersConfig &
+  (FakeTimersConfig | LegacyFakeTimersConfig);
 
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */
@@ -154,7 +154,7 @@ export type DefaultOptions = {
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
-  fakeTimers: FakeTimersConfig;
+  fakeTimers: FakeTimers;
   forceCoverageMatch: Array<string>;
   globals: ConfigGlobals;
   haste: HasteConfig;
@@ -236,7 +236,7 @@ export type InitialOptions = Partial<{
   displayName: string | DisplayName;
   expand: boolean;
   extensionsToTreatAsEsm: Array<string>;
-  fakeTimers: FakeTimersConfig;
+  fakeTimers: FakeTimers;
   filter: string;
   findRelatedTests: boolean;
   forceCoverageMatch: Array<string>;
@@ -441,7 +441,7 @@ export type ProjectConfig = {
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<string>;
-  fakeTimers: FakeTimersConfig;
+  fakeTimers: FakeTimers;
   filter?: string;
   forceCoverageMatch: Array<string>;
   globalSetup?: string;

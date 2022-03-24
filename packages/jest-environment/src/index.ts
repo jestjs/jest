@@ -311,9 +311,7 @@ export interface Jest {
    * fake timers using the provided options.
    */
   useFakeTimers(
-    fakeTimersConfig?:
-      | Config.LegacyFakeTimersConfig
-      | Config.ModernFakeTimersConfig,
+    fakeTimersConfig?: Config.FakeTimersConfig | Config.LegacyFakeTimersConfig,
   ): Jest;
   /**
    * Instructs Jest to restore the original implementations of the global date,
