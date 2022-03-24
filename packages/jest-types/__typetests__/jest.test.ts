@@ -274,7 +274,6 @@ expectType<typeof jest>(
 expectType<typeof jest>(jest.useFakeTimers({legacyFakeTimers: true}));
 expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
 expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
-expectType<typeof jest>(jest.useFakeTimers({now: new Date(1995, 11, 17)}));
 expectType<typeof jest>(jest.useFakeTimers({timerLimit: 1000}));
 expectError(jest.useFakeTimers({enableGlobally: true}));
 expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));

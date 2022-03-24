@@ -70,7 +70,7 @@ const initialOptions: Config.InitialOptions = {
     ],
     enableGlobally: true,
     legacyFakeTimers: false,
-    now: multipleValidOptions(0, new Date()),
+    now: 1483228800000,
     timerLimit: 1000,
   },
   filter: '<rootDir>/filter.js',

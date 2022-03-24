@@ -63,7 +63,7 @@ export type FakeTimersConfig = {
    * `nextTick`, `performance`) that should not be faked.
    *
    * @defaultValue
-   * The default is `[]`.
+   * The default is `[]`, meaning all APIs are faked.
    * */
   doNotFake?: Array<FakeableAPI>;
   /**
@@ -72,7 +72,7 @@ export type FakeTimersConfig = {
    * @defaultValue
    * The default is `Date.now()`.
    */
-  now?: number | Date;
+  now?: number;
   /**
    * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
    *
