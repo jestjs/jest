@@ -202,6 +202,10 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
    */
   instances: Array<ReturnType<T>>;
   /**
+   * List of all the function contexts that have been applied to calls to the mock.
+   */
+  contexts: Array<unknown>;
+  /**
    * List of the call order indexes of the mock. Jest is indexing the order of
    * invocations of all mocks in a test file. The index is starting with `1`.
    */
@@ -570,6 +574,7 @@ export class ModuleMocker {
     return {
       calls: [],
       instances: [],
+      contexts: [],
       invocationCallOrder: [],
       results: [],
     };
@@ -636,6 +641,7 @@ export class ModuleMocker {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
+        mockState.contexts.push(this);
         mockState.calls.push(args);
         // Create and record an "incomplete" mock result immediately upon
         // calling rather than waiting for the mock to return. This avoids

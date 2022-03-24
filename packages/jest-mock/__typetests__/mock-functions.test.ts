@@ -118,7 +118,9 @@ expectType<
   }>
 >(MockObject.mock.instances);
 
-const returnValue = mockFn.mock.results[0];
+const returnValue =
+
+mockFn.mock.contexts[0];
 
 expectType<'incomplete' | 'return' | 'throw'>(returnValue.type);
 expectType<unknown>(returnValue.value);

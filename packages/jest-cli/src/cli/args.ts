@@ -154,7 +154,7 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls, instances and results before every test. ' +
+      'Automatically clear mock calls, instances, contexts and results before every test. ' +
       'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
