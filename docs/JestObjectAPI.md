@@ -636,7 +636,7 @@ Instructs Jest to use fake versions of the global date, performance, time and ti
 
 Fake timers will swap out `Date`, `performance.now()`, `queueMicrotask()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with an implementation that gets its time from the fake clock.
 
-In node environment `process.hrtime`, `process.nextTick()` and in jsdom environment `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()` will be replaced as well.
+In Node environment `process.hrtime`, `process.nextTick()` and in JSDOM environment `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()` will be replaced as well.
 
 Configuration options:
 
@@ -708,7 +708,7 @@ jest.useFakeTimers({
 });
 ```
 
-Legacy fake timers will swap out `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with Jest mock functions. In node environment `process.nextTick()` and in jsdom environment `requestAnimationFrame()`, `cancelAnimationFrame()` will be also replaced.
+Legacy fake timers will swap out `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with Jest [mock functions](MockFunctionAPI.md). In Node environment `process.nextTick()` and in JSDOM environment `requestAnimationFrame()`, `cancelAnimationFrame()` will be also replaced.
 
 :::
 

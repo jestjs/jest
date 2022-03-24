@@ -438,12 +438,12 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of APIs that should not be faked. The default is `[]`. */
+  /** List of names of APIs that should not be faked. The default is `[]`, meaning all APIs are faked. */
   doNotFake?: Array<FakeableAPI>;
   /** Whether fake timers should be enabled for all test files. The default is `false`. */
   enableGlobally?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
-  now?: number | Date;
+  now?: number;
   /** Maximum number of timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
 };
