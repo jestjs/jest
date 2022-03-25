@@ -442,6 +442,11 @@ type ModernFakeTimersConfig = {
   doNotFake?: Array<FakeableAPI>;
   /** Whether fake timers should be enabled for all test files. The default is `false`. */
   enableGlobally?: boolean;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * The default is `false`.
+   */
+  legacyFakeTimers?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number;
   /** Maximum number of timers that will be run. The default is `100_000` timers. */

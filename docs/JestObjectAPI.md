@@ -665,8 +665,13 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of APIs that should not be faked. The default is `[]`. */
+  /** List of names of APIs that should not be faked. The default is `[]`, meaning all APIs are faked. */
   doNotFake?: Array<FakeableAPI>;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * The default is `false`.
+   */
+  legacyFakeTimers?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
   /**
@@ -677,7 +682,7 @@ type FakeTimersConfig = {
 };
 ```
 
-Calling `jest.useRealTimers()` will use fake timers for all tests within the file, until original timers are restored with `jest.useRealTimers()`.
+Calling `jest.useFakeTimers()` will use fake timers for all tests within the file, until original timers are restored with `jest.useRealTimers()`.
 
 You can call `jest.useFakeTimers()` or `jest.useRealTimers()` from anywhere: top level, inside an `test` block, etc. Keep in mind that this is a **global operation** and will affect other tests within the same file. Calling `jest.useFakeTimers()` once again in the same test file would reset the internal state (e.g. timer count) and reinstall fake timers using the provided options:
 
