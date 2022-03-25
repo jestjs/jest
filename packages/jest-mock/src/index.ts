@@ -204,7 +204,7 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
   /**
    * List of all the function contexts that have been applied to calls to the mock.
    */
-  contexts: Array<unknown>;
+  contexts: Array<ThisParameterType<T>>;
   /**
    * List of the call order indexes of the mock. Jest is indexing the order of
    * invocations of all mocks in a test file. The index is starting with `1`.
