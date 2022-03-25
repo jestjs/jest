@@ -66,7 +66,7 @@ expectType<Mock<(e: any) => never>>(
 );
 expectError(fn('moduleName'));
 
-declare const mockFnImpl: (this: Date, a: string, b?: number) => true;
+declare const mockFnImpl: (this: Date, a: string, b?: number) => boolean;
 const mockFn = fn(mockFnImpl);
 const mockAsyncFn = fn(async (p: boolean) => 'value');
 
