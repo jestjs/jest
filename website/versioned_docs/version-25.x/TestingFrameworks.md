@@ -43,3 +43,7 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 ## Hapi.js
 
 - [Testing Hapi.js With Jest](http://niralar.com/testing-hapi-js-with-jest/) by Niralar ([Sivasankar](http://sivasankar.in/))
+
+## Next.js
+
+- [Jest and React Testing Library](https://nextjs.org/docs/testing#jest-and-react-testing-library) by Next.js docs
