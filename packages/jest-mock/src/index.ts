@@ -573,8 +573,8 @@ export class ModuleMocker {
   private _defaultMockState(): MockFunctionState {
     return {
       calls: [],
-      instances: [],
       contexts: [],
+      instances: [],
       invocationCallOrder: [],
       results: [],
     };
