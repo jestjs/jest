@@ -11,6 +11,13 @@ import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
+jestExpect.extend({
+  optionalFn(fn) {
+    const pass = fn === undefined || typeof fn === 'function';
+    return {message: () => 'expect either a function or undefined', pass};
+  },
+});
+
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
 const createSpy = (fn: jest.Mock) => {
   const spy = function () {};
@@ -226,6 +233,69 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test("works with arguments that don't match in number of arguments", () => {
+      const fn = jest.fn();
+      fn('foo', 'bar', 'plop');
+
+      caller(jestExpect(createSpy(fn)).not[calledWith], 'foo', 'bar');
+      caller(jestExpect(fn).not[calledWith], 'foo', 'bar');
+
+      expect(() =>
+        caller(jestExpect(fn)[calledWith], 'foo', 'bar'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test("works with arguments that don't match with matchers", () => {
+      const fn = jest.fn();
+      fn('foo', 'bar');
+
+      caller(
+        jestExpect(createSpy(fn)).not[calledWith],
+        jestExpect.any(String),
+        jestExpect.any(Number),
+      );
+      caller(
+        jestExpect(fn).not[calledWith],
+        jestExpect.any(String),
+        jestExpect.any(Number),
+      );
+
+      expect(() =>
+        caller(
+          jestExpect(fn)[calledWith],
+          jestExpect.any(String),
+          jestExpect.any(Number),
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test("works with arguments that don't match with matchers even when argument is undefined", () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      caller(
+        jestExpect(createSpy(fn)).not[calledWith],
+        'foo',
+        jestExpect.any(String),
+      );
+      caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.any(String));
+
+      expect(() =>
+        caller(jestExpect(fn)[calledWith], 'foo', jestExpect.any(String)),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test("works with arguments that don't match in size even if one is an optional matcher", () => {
+      // issue 12463
+      const fn = jest.fn();
+      fn('foo');
+
+      caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn());
+      expect(() =>
+        caller(jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn()),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('works with arguments that match', () => {
       const fn = jest.fn();
       fn('foo', 'bar');
@@ -238,12 +308,57 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
+    test('works with arguments that match with matchers', () => {
+      const fn = jest.fn();
+      fn('foo', 'bar');
+
+      caller(
+        jestExpect(createSpy(fn))[calledWith],
+        jestExpect.any(String),
+        jestExpect.any(String),
+      );
+      caller(
+        jestExpect(fn)[calledWith],
+        jestExpect.any(String),
+        jestExpect.any(String),
+      );
+
+      expect(() =>
+        caller(
+          jestExpect(fn).not[calledWith],
+          jestExpect.any(String),
+          jestExpect.any(String),
+        ),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
     test('works with trailing undefined arguments', () => {
       const fn = jest.fn();
       fn('foo', undefined);
 
       expect(() =>
         caller(jestExpect(fn)[calledWith], 'foo'),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('works with trailing undefined arguments if requested by the match query', () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      caller(jestExpect(fn)[calledWith], 'foo', undefined);
+      expect(() =>
+        caller(jestExpect(fn).not[calledWith], 'foo', undefined),
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test('works with trailing undefined arguments when explicitely requested as optional by matcher', () => {
+      // issue 12463
+      const fn = jest.fn();
+      fn('foo', undefined);
+
+      caller(jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn());
+      expect(() =>
+        caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn()),
       ).toThrowErrorMatchingSnapshot();
     });
 
