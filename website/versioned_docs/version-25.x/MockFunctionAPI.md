@@ -79,34 +79,9 @@ mockFn.mock.instances[0] === a; // true
 mockFn.mock.instances[1] === b; // true
 ```
 
-
-### `mockFn.mock.contexts`
-
-An array that contains the contexts for all calls of the mock function.
-
-A context is the `this` value that a function receives when called.
-The context can be set using 
-`Function.prototype.bind`, `Function.prototype.call` or `Function.prototype.apply`.
-
-For example:
-
-```js
-const mockFn = jest.fn();
-
-const boundMockFn = mockFn.bind(thisContext0);
-boundMockFn('a', 'b');
-mockFn.call(thisContext1, 'a', 'b');
-mockFn.apply(thisContext2, ['a', 'b']);
-
-mockFn.mock.contexts[0] === thisContext0; // true
-mockFn.mock.contexts[1] === thisContext1; // true
-mockFn.mock.contexts[2] === thisContext2; // true
-```
-
-
 ### `mockFn.mockClear()`
 
-Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances) [`mockFn.mock.contexts`](#mockfnmockcontexts) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.
+Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.
 
 Beware that `mockClear` will replace `mockFn.mock`, not just these three properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 

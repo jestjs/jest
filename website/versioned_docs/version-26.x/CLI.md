@@ -140,7 +140,7 @@ Deletes the Jest cache directory and then exits without running tests. Will dele
 
 ### `--clearMocks`
 
-Automatically clear mock calls, instances, contexts, and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls, instances, and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
 
 ### `--collectCoverageFrom=<glob>`
 
