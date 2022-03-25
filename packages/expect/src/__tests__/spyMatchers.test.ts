@@ -290,7 +290,7 @@ const createSpy = (fn: jest.Mock) => {
       const fn = jest.fn();
       fn('foo');
 
-      jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn();
+      caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn());
       expect(() =>
         caller(jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn()),
       ).toThrowErrorMatchingSnapshot();
@@ -356,7 +356,7 @@ const createSpy = (fn: jest.Mock) => {
       const fn = jest.fn();
       fn('foo', undefined);
 
-      jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn();
+      caller(jestExpect(fn)[calledWith], 'foo', jestExpect.optionalFn());
       expect(() =>
         caller(jestExpect(fn).not[calledWith], 'foo', jestExpect.optionalFn()),
       ).toThrowErrorMatchingSnapshot();
