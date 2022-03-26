@@ -280,8 +280,8 @@ expectType<typeof jest>(jest.useFakeTimers({legacyFakeTimers: true}));
 expectError(jest.useFakeTimers({legacyFakeTimers: 1000}));
 expectError(jest.useFakeTimers({doNotFake: ['Date'], legacyFakeTimers: true}));
 expectError(jest.useFakeTimers({enableGlobally: true, legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({now: 1483228800000, legacyFakeTimers: true}));
-expectError(jest.useFakeTimers({timerLimit: 1000, legacyFakeTimers: true}));
+expectError(jest.useFakeTimers({legacyFakeTimers: true, now: 1483228800000}));
+expectError(jest.useFakeTimers({legacyFakeTimers: true, timerLimit: 1000}));
 
 expectType<typeof jest>(jest.useFakeTimers({now: 1483228800000}));
 expectType<typeof jest>(jest.useFakeTimers({now: Date.now()}));
