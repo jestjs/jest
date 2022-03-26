@@ -97,39 +97,8 @@ export default class FakeTimers {
       this._clock.uninstall();
     }
 
-    const toSinonFakeTimersConfig = (
-      fakeTimersConfig?: Config.FakeTimers,
-    ): SinonFakeTimersConfig => {
-      fakeTimersConfig = {
-        ...this._config.fakeTimers,
-        ...fakeTimersConfig,
-      } as Config.FakeTimersConfig;
-
-      const advanceTimeDelta =
-        typeof fakeTimersConfig.advanceTimers === 'number'
-          ? fakeTimersConfig.advanceTimers
-          : undefined;
-
-      const toFake = new Set(
-        Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
-      );
-
-      fakeTimersConfig?.doNotFake?.forEach(nameOfFakeableAPI => {
-        toFake.delete(nameOfFakeableAPI);
-      });
-
-      return {
-        advanceTimeDelta,
-        loopLimit: fakeTimersConfig.timerLimit,
-        now: fakeTimersConfig.now ?? Date.now(),
-        shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
-        shouldClearNativeTimers: true,
-        toFake: Array.from(toFake),
-      };
-    };
-
     this._clock = this._fakeTimers.install(
-      toSinonFakeTimersConfig(fakeTimersConfig),
+      this._toSinonFakeTimersConfig(fakeTimersConfig),
     );
 
     this._fakingTime = true;
@@ -176,5 +145,36 @@ export default class FakeTimers {
     }
 
     return this._fakingTime;
+  }
+
+  private _toSinonFakeTimersConfig(
+    fakeTimersConfig: Config.FakeTimers = {},
+  ): SinonFakeTimersConfig {
+    fakeTimersConfig = {
+      ...this._config.fakeTimers,
+      ...fakeTimersConfig,
+    } as Config.FakeTimersConfig;
+
+    const advanceTimeDelta =
+      typeof fakeTimersConfig.advanceTimers === 'number'
+        ? fakeTimersConfig.advanceTimers
+        : undefined;
+
+    const toFake = new Set(
+      Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
+    );
+
+    fakeTimersConfig.doNotFake?.forEach(nameOfFakeableAPI => {
+      toFake.delete(nameOfFakeableAPI);
+    });
+
+    return {
+      advanceTimeDelta,
+      loopLimit: fakeTimersConfig.timerLimit,
+      now: fakeTimersConfig.now ?? Date.now(),
+      shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
+      shouldClearNativeTimers: true,
+      toFake: Array.from(toFake),
+    };
   }
 }
