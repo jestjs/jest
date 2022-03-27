@@ -21,7 +21,7 @@ const aliasCircusIt = () => {
 
 aliasCircusIt();
 
-describe('test/it.pending error throwing', () => {
+describe('test/it.failing error throwing', () => {
   it("it doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusIt.failing('test1', () => {});

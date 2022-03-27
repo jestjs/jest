@@ -8,10 +8,24 @@
 import * as path from 'path';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
-const dir = path.resolve(__dirname, '../test-pending');
+const dir = path.resolve(__dirname, '../test-failing');
 
 test('works with all statuses', () => {
   const result = runJest(dir, ['statuses.test.js']);
+  expect(result.exitCode).toBe(1);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+});
+
+test('works with only mode', () => {
+  const result = runJest(dir, ['worksWithOnlyMode.test.js']);
+  expect(result.exitCode).toBe(1);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+});
+
+test('works with skip mode', () => {
+  const result = runJest(dir, ['worksWithSkipMode.test.js']);
   expect(result.exitCode).toBe(1);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();

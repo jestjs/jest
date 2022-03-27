@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works with all statuses 1`] = `
+"FAIL __tests__/statuses.test.js
+  ✓ passes
+  ✕ fails
+  ✓ failing failes = passes
+  ✕ failing passes = fails
+  ○ skipped skips
+  ○ skipped skipped failing 1
+  ○ skipped skipped failing 2
+  ✎ todo todo
+
+  ● fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      11 |
+      12 | it('fails', () => {
+    > 13 |   expect(10).toBe(101);
+         |              ^
+      14 | });
+      15 |
+      16 | it.skip('skips', () => {
+
+      at Object.toBe (__tests__/statuses.test.js:13:14)
+
+  ● failing passes = fails
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+`;
+
+exports[`works with only mode 1`] = `
+"FAIL __tests__/worksWithOnlyMode.test.js
+  block with only, should pass
+    ✓ failing failes = passes, should pass
+    ○ skipped failing test
+    ○ skipped passing test
+  block with only, should fail
+    ✕ failing passes = fails, should fail
+    ○ skipped failing test
+    ○ skipped passing test
+
+  ● block with only, should fail › failing passes = fails, should fail
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+`;
+
+exports[`works with skip mode 1`] = `
+"FAIL __tests__/worksWithSkipMode.test.js
+  block with only, should pass
+    ✕ failing test
+    ✓ failing failes = passes
+    ○ skipped skipped failing failes = passes, should pass
+    ○ skipped passing test
+  block with only, should fail
+    ✓ passing test
+    ✓ failing passes = fails
+    ○ skipped failing passes = fails, should fail
+    ○ skipped failing test
+
+  ● block with only, should pass › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      12 |
+      13 |   it('failing test', () => {
+    > 14 |     expect(10).toBe(101);
+         |                ^
+      15 |   });
+      16 |
+      17 |   it.skip('passing test', () => {
+
+      at Object.toBe (__tests__/worksWithSkipMode.test.js:14:16)"
+`;

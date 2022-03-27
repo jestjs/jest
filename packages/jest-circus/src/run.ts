@@ -181,10 +181,10 @@ const _callCircusTest = async (
       isHook: false,
       timeout,
     });
-    if (test.mode === 'failing') {
+    if (test.failing) {
       await dispatch({
         error: new ErrorWithStack(
-          'Pending test passed even though it was supposed to fail. Remove `.pending` to remove error.',
+          'Failing test passed even though it was supposed to fail. Remove `.failing` to remove error.',
           test.fn,
         ),
         name: 'test_fn_failure',
@@ -194,7 +194,7 @@ const _callCircusTest = async (
       await dispatch({name: 'test_fn_success', test});
     }
   } catch (error) {
-    if (test.mode === 'failing') {
+    if (test.failing) {
       await dispatch({name: 'test_fn_success', test});
     } else {
       await dispatch({error, name: 'test_fn_failure', test});

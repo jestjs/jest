@@ -128,11 +128,15 @@ const test: Global.It = (() => {
     fn: Circus.TestFn,
     timeout?: number,
   ): void => _addTest(testName, 'only', fn, test.only, timeout);
-  const failing = (
-    testName: Circus.TestNameLike,
-    fn?: Circus.TestFn,
-    timeout?: number,
-  ): void => _addTest(testName, 'failing', fn, failing, timeout);
+
+  const bindFailing = (mode: Circus.TestMode) => {
+    const failing = (
+      testName: Circus.TestNameLike,
+      fn?: Circus.TestFn,
+      timeout?: number,
+    ): void => _addTest(testName, mode, fn, failing, timeout, true);
+    return failing;
+  };
 
   test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
@@ -154,6 +158,7 @@ const test: Global.It = (() => {
       timeout?: number,
     ) => void,
     timeout?: number,
+    failing?: boolean,
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
 
@@ -178,6 +183,7 @@ const test: Global.It = (() => {
 
     return dispatchSync({
       asyncError,
+      failing: failing === undefined ? false : failing,
       fn,
       mode,
       name: 'add_test',
@@ -190,10 +196,10 @@ const test: Global.It = (() => {
   only.each = bindEach(only);
   skip.each = bindEach(skip);
 
-  only.failing = failing;
-  skip.failing = failing;
+  only.failing = bindFailing('only');
+  skip.failing = bindFailing('skip');
 
-  test.failing = failing;
+  test.failing = bindFailing();
   test.only = only;
   test.skip = skip;
 

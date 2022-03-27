@@ -13,7 +13,7 @@ export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
 export type BlockName = Global.BlockName;
 export type BlockNameLike = Global.BlockNameLike;
-export type BlockMode = void | 'skip' | 'only' | 'todo' | 'failing';
+export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
 export type TestNameLike = Global.TestNameLike;
@@ -72,6 +72,7 @@ export type SyncEvent =
       fn: TestFn;
       mode?: TestMode;
       timeout: number | undefined;
+      failing: boolean;
     }
   | {
       // Any unhandled error that happened outside of test/hooks (unless it is
@@ -244,4 +245,5 @@ export type TestEntry = {
   seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
+  failing: boolean;
 };

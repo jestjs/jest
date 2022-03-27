@@ -19,10 +19,18 @@ it.skip('skips', () => {
 
 it.todo('todo');
 
-it.pending('pending failes = passes', () => {
+it.failing('failing failes = passes', () => {
   expect(10).toBe(101);
 });
 
-it.pending('pending passes = fails', () => {
+it.skip.failing('skipped failing 1', () => {
+  expect(10).toBe(10);
+});
+
+it.skip.failing('skipped failing 2', () => {
+  expect(10).toBe(101);
+});
+
+it.failing('failing passes = fails', () => {
   expect(10).toBe(10);
 });

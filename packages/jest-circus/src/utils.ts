@@ -60,11 +60,13 @@ export const makeTest = (
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
   asyncError: Circus.Exception,
+  failing: boolean,
 ): Circus.TestEntry => ({
   type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
   duration: null,
   errors: [],
+  failing,
   fn,
   invocations: 0,
   mode,
