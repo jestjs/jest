@@ -878,3 +878,24 @@ const add = (a, b) => a + b;
 
 test.todo('add should be associative');
 ```
+
+### `test.failing(name, fn)`
+
+Also under the aliases: `it.failing(name, fn)`, `xtest.failing(name, fn)`, `xit.failing(name, fn)`, `it.skip.failing(name, fn)`, `it.only.failing(name, fn)`
+
+Use `test.failing` when you are writing a test and expecting it to fail. These tests will behave the other way normal tests do. If `failing` test will throw any errors then it will pass. If it does not throw it will fail.
+
+_Note_: You can use this type of tests i.e. when writing code in a BDD way. In that case the tests will not show up as failing until they pass. Then you can just remove the `failing` modifier to make them pass.
+
+Example:
+
+```js
+test.failing('it is not equal', () => {
+  expect(5).toBe(6); // this test will pass
+});
+
+test.failing('it is equal', () => {
+  expect(10).toBe(10); // this test will fail
+});
+```
+
