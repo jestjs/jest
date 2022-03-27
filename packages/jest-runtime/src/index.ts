@@ -2068,7 +2068,7 @@ export default class Runtime {
       fakeTimersConfig = {
         ...this._config.fakeTimers,
         ...fakeTimersConfig,
-      };
+      } as Config.FakeTimersConfig;
       if (fakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       } else {

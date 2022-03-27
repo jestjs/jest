@@ -39,16 +39,6 @@ export type GlobalFakeTimersConfig = {
   enableGlobally?: boolean;
 };
 
-export type LegacyFakeTimersConfig = {
-  /**
-   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
-   *
-   * @defaultValue
-   * The default is `false`.
-   */
-  legacyFakeTimers?: true;
-};
-
 export type FakeTimersConfig = {
   /**
    * If set to `true` all timers will be advanced automatically by 20 milliseconds
@@ -72,7 +62,7 @@ export type FakeTimersConfig = {
    * @defaultValue
    * The default is `Date.now()`.
    */
-  now?: number;
+  now?: number | Date;
   /**
    * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
    *
@@ -81,7 +71,8 @@ export type FakeTimersConfig = {
    */
   timerLimit?: number;
   /**
-   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * Use the old fake timers implementation instead of one backed by
+   * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
    *
    * @defaultValue
    * The default is `false`.
@@ -89,8 +80,24 @@ export type FakeTimersConfig = {
   legacyFakeTimers?: false;
 };
 
-export type FakeTimers = GlobalFakeTimersConfig &
-  (FakeTimersConfig | LegacyFakeTimersConfig);
+export type LegacyFakeTimersConfig = {
+  /**
+   * Use the old fake timers implementation instead of one backed by
+   * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
+   *
+   * @defaultValue
+   * The default is `false`.
+   */
+  legacyFakeTimers?: true;
+};
+
+type FakeTimers = GlobalFakeTimersConfig &
+  (
+    | (FakeTimersConfig & {
+        now?: Exclude<FakeTimersConfig['now'], Date>;
+      })
+    | LegacyFakeTimersConfig
+  );
 
 export type HasteConfig = {
   /** Whether to hash files using SHA-1. */

@@ -92,7 +92,7 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(fakeTimersConfig?: Config.FakeTimers): void {
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
     if (this._fakingTime) {
       this._clock.uninstall();
     }
@@ -148,7 +148,7 @@ export default class FakeTimers {
   }
 
   private _toSinonFakeTimersConfig(
-    fakeTimersConfig: Config.FakeTimers = {},
+    fakeTimersConfig: Config.FakeTimersConfig = {},
   ): SinonFakeTimersConfig {
     fakeTimersConfig = {
       ...this._config.fakeTimers,

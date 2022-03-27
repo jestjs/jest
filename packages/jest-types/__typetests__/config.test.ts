@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable} from 'tsd-lite';
+import {expectAssignable, expectError, expectNotAssignable} from 'tsd-lite';
 import type {Config} from '@jest/types';
+
+expectAssignable<Config.InitialOptions>({});
 
 expectAssignable<Config.InitialOptions>({
   coverageThreshold: {
@@ -38,4 +40,80 @@ expectAssignable<Config.InitialOptions>({
       rootDir: './src/components',
     },
   ],
+});
+
+const doNotFake: Array<Config.FakeableAPI> = [
+  'Date',
+  'hrtime',
+  'nextTick',
+  'performance',
+  'queueMicrotask',
+  'requestAnimationFrame',
+  'cancelAnimationFrame',
+  'requestIdleCallback',
+  'cancelIdleCallback',
+  'setImmediate',
+  'clearImmediate',
+  'setInterval',
+  'clearInterval',
+  'setTimeout',
+  'clearTimeout',
+];
+
+expectAssignable<Config.InitialOptions>({
+  fakeTimers: {
+    advanceTimers: true,
+    doNotFake,
+    enableGlobally: true,
+    now: 1483228800000,
+    timerLimit: 1000,
+  },
+});
+
+expectAssignable<Config.InitialOptions>({
+  fakeTimers: {
+    advanceTimers: 40,
+    now: Date.now(),
+  },
+});
+
+expectError<Config.InitialOptions>({
+  fakeTimers: {
+    now: new Date(),
+  },
+});
+
+expectAssignable<Config.InitialOptions>({
+  fakeTimers: {
+    enableGlobally: true,
+    legacyFakeTimers: true,
+  },
+});
+
+expectError<Config.InitialOptions>({
+  fakeTimers: {
+    advanceTimers: true,
+    legacyFakeTimers: true,
+  },
+});
+
+expectError<Config.InitialOptions>({
+  fakeTimers: {
+    doNotFake,
+    legacyFakeTimers: true,
+  },
+});
+
+expectError<Config.InitialOptions>({
+  fakeTimers: {
+    legacyFakeTimers: true,
+    now: 1483228800000,
+  },
+});
+
+expectError<Config.InitialOptions>({
+  fakeTimers: {
+    legacyFakeTimers: true,
+    timerLimit: 1000,
+  },
 });
