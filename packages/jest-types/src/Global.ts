@@ -75,6 +75,7 @@ export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
   todo: (testName: TestNameLike) => void;
+  failing: ItBase;
 }
 
 export interface ItConcurrentBase {

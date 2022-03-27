@@ -128,6 +128,11 @@ const test: Global.It = (() => {
     fn: Circus.TestFn,
     timeout?: number,
   ): void => _addTest(testName, 'only', fn, test.only, timeout);
+  const failing = (
+    testName: Circus.TestNameLike,
+    fn?: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'failing', fn, failing, timeout);
 
   test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
@@ -185,6 +190,10 @@ const test: Global.It = (() => {
   only.each = bindEach(only);
   skip.each = bindEach(skip);
 
+  only.failing = failing;
+  skip.failing = failing;
+
+  test.failing = failing;
   test.only = only;
   test.skip = skip;
 

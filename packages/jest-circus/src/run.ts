@@ -6,6 +6,7 @@
  */
 
 import type {Circus} from '@jest/types';
+import {ErrorWithStack} from 'jest-util';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {
@@ -180,9 +181,24 @@ const _callCircusTest = async (
       isHook: false,
       timeout,
     });
-    await dispatch({name: 'test_fn_success', test});
+    if (test.mode === 'failing') {
+      await dispatch({
+        error: new ErrorWithStack(
+          'Pending test passed even though it was supposed to fail. Remove `.pending` to remove error.',
+          test.fn,
+        ),
+        name: 'test_fn_failure',
+        test,
+      });
+    } else {
+      await dispatch({name: 'test_fn_success', test});
+    }
   } catch (error) {
-    await dispatch({error, name: 'test_fn_failure', test});
+    if (test.mode === 'failing') {
+      await dispatch({name: 'test_fn_success', test});
+    } else {
+      await dispatch({error, name: 'test_fn_failure', test});
+    }
   }
 };
 
