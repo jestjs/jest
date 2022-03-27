@@ -1,5 +1,11 @@
-fixtures/failing-jsons/
-packages/jest-diff/src/cleanupSemantic.ts
-packages/jest-config/src/__tests__/jest-preset.json
-packages/pretty-format/perf/world.geo.json
-website/versions.json
+api-extractor.json
+coverage
+
+/packages/*/build
+/packages/jest-config/src/__tests__/jest-preset.json
+/packages/pretty-format/perf/world.geo.json
+
+/website/.docusaurus
+/website/backers.json
+/website/build
+/website/versions.json
