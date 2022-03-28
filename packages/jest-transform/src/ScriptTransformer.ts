@@ -759,6 +759,7 @@ class ScriptTransformer {
         }
       },
       {
+        // Exclude `mjs` extension when addHook because pirates don't support hijack es module
         exts: this._config.moduleFileExtensions
           .filter(ext => ext !== 'mjs')
           .map(ext => `.${ext}`),
