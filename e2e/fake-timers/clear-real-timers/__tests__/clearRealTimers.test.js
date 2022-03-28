@@ -8,7 +8,9 @@
 'use strict';
 
 test('allows clearing not faked timers', () => {
-  const timer = setTimeout(() => console.log('should not be called'), 1000);
+  const timer = setTimeout(() => {
+    throw new Error('Should not throw');
+  }, 1000);
 
   jest.useFakeTimers();
 
