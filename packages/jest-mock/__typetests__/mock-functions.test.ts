@@ -136,8 +136,7 @@ if (returnValue.type === 'throw') {
   expectType<unknown>(returnValue.value);
 }
 
-const context = mockFn.mock.contexts[0];
-expectType<Date>(context);
+expectType<Array<Date>>(mockFn.mock.contexts);
 
 expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockClear(),
