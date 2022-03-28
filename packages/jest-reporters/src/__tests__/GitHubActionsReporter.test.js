@@ -110,16 +110,7 @@ const aggregatedResults = {
   ],
 };
 
-test("reporter returns empty string if GITHUB_ACTIONS isn't set", () => {
-  requireReporter();
-  const testReporter = new GitHubActionsReporter(globalConfig);
-  testReporter.onRunComplete(new Set(), aggregatedResults);
-  expect(results.join('')).toBe('');
-});
-
 test('reporter extracts the correct filename, line, and column', () => {
-  jest.doMock('ci-info', () => ({GITHUB_ACTIONS: true}));
-
   requireReporter();
   const testReporter = new GitHubActionsReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
