@@ -17,16 +17,16 @@ const mockInstall = jest.fn();
 const mockWithGlobal = {
   install: mockInstall,
   timers: {
-    Date,
-    clearImmediate,
-    clearInterval,
-    clearTimeout,
-    hrtime: process.hrtime,
-    nextTick: process.nextTick,
-    queueMicrotask,
-    setImmediate,
-    setInterval,
-    setTimeout,
+    Date: jest.fn(),
+    clearImmediate: jest.fn(),
+    clearInterval: jest.fn(),
+    clearTimeout: jest.fn(),
+    hrtime: jest.fn(),
+    nextTick: jest.fn(),
+    queueMicrotask: jest.fn(),
+    setImmediate: jest.fn(),
+    setInterval: jest.fn(),
+    setTimeout: jest.fn(),
   },
 };
 
