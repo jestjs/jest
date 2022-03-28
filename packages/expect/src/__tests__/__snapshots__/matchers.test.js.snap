@@ -2767,6 +2767,13 @@ Expected: not <g>[, , 1, ]</>
 
 `;
 
+exports[`.toEqual() {pass: true} expect([1, [Function anonymous]]).not.toEqual([1, optionalFn<>]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, optionalFn<>]</>
+Received:     <r>[1, [Function anonymous]]</>
+`;
+
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2779,6 +2786,41 @@ exports[`.toEqual() {pass: true} expect([1, 2]).not.toEqual([1, 2]) 1`] = `
 
 Expected: not <g>[1, 2]</>
 
+`;
+
+exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1, [Function anonymous]]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, [Function anonymous]]</>
+Received:     <r>[1, optionalFn<>]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1, undefined]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, undefined]</>
+Received:     <r>[1, optionalFn<>]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([1, optionalFn<>]).not.toEqual([1]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1]</>
+Received:     <r>[1, optionalFn<>]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([1, undefined]).not.toEqual([1, optionalFn<>]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, optionalFn<>]</>
+Received:     <r>[1, undefined]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1, optionalFn<>]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, optionalFn<>]</>
+Received:     <r>[1]</>
 `;
 
 exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1]) 1`] = `
@@ -2809,11 +2851,53 @@ Expected: not <g>{"a": 1, "b": Any<Function>, "c": Anything}</>
 Received:     <r>{"a": 1, "b": [Function b], "c": true}</>
 `;
 
+exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b]}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1, "b": optionalFn<>}</>
+Received:     <r>{"a": 1, "b": [Function b]}</>
+`;
+
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": 2}).not.toEqual(ObjectContaining {"a": 1}) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>ObjectContaining {"a": 1}</>
 Received:     <r>{"a": 1, "b": 2}</>
+`;
+
+exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1, "b": [Function b]}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1, "b": [Function b]}</>
+Received:     <r>{"a": 1, "b": optionalFn<>}</>
+`;
+
+exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1, "b": undefined}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1, "b": undefined}</>
+Received:     <r>{"a": 1, "b": optionalFn<>}</>
+`;
+
+exports[`.toEqual() {pass: true} expect({"a": 1, "b": optionalFn<>}).not.toEqual({"a": 1}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1}</>
+Received:     <r>{"a": 1, "b": optionalFn<>}</>
+`;
+
+exports[`.toEqual() {pass: true} expect({"a": 1, "b": undefined}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1, "b": optionalFn<>}</>
+Received:     <r>{"a": 1, "b": undefined}</>
+`;
+
+exports[`.toEqual() {pass: true} expect({"a": 1}).not.toEqual({"a": 1, "b": optionalFn<>}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{"a": 1, "b": optionalFn<>}</>
+Received:     <r>{"a": 1}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 99}).not.toEqual({"a": 99}) 1`] = `
