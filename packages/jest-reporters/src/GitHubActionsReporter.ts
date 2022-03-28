@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import stripAnsi = require('strip-ansi');
 import type {AggregatedResult, TestResult} from '@jest/test-result';
 import BaseReporter from './BaseReporter';
 import type {Context} from './types';
@@ -40,6 +41,7 @@ function getMessages(results: Array<TestResult> | undefined) {
     testResults
       .filter(r => r.status === 'failed')
       .flatMap(r => r.failureMessages)
+      .map(m => stripAnsi(m))
       .map(m => replaceEntities(m))
       .map(m => lineAndColumnInStackTrace.exec(m))
       .filter((m): m is RegExpExecArray => m !== null)
