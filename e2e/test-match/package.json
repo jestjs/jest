@@ -1,5 +1,7 @@
 {
   "jest": {
-    "testMatch": ["**/test-suites/*.?js"]
+    "testMatch": [
+      "**/test-suites/*.?js"
+    ]
   }
 }
