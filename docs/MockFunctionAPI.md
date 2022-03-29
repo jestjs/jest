@@ -92,14 +92,11 @@ mockFn.mock.instances[0] === a; // true
 mockFn.mock.instances[1] === b; // true
 ```
 
-
 ### `mockFn.mock.contexts`
 
 An array that contains the contexts for all calls of the mock function.
 
-A context is the `this` value that a function receives when called.
-The context can be set using 
-`Function.prototype.bind`, `Function.prototype.call` or `Function.prototype.apply`.
+A context is the `this` value that a function receives when called. The context can be set using `Function.prototype.bind`, `Function.prototype.call` or `Function.prototype.apply`.
 
 For example:
 
@@ -115,7 +112,6 @@ mockFn.mock.contexts[0] === thisContext0; // true
 mockFn.mock.contexts[1] === thisContext1; // true
 mockFn.mock.contexts[2] === thisContext2; // true
 ```
-
 
 ### `mockFn.mock.lastCall`
 
