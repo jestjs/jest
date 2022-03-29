@@ -108,7 +108,7 @@ Array [
   },
   Object {
     "initial": false,
-    "message": "Automatically clear mock calls, instances and results before every test?",
+    "message": "Automatically clear mock calls, instances, contexts and results before every test?",
     "name": "clearMocks",
     "type": "confirm",
   },
@@ -131,7 +131,7 @@ module.exports = {
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/tmp/jest",
 
-  // Automatically clear mock calls, instances and results before every test
+  // Automatically clear mock calls, instances, contexts and results before every test
   // clearMocks: false,
 
   // Indicates whether the coverage information should be collected while executing the test
