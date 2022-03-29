@@ -158,6 +158,10 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
 
+```bash
+yarn add --dev ts-jest
+```
+
 ### Using TypeScript: type definitions
 
 You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
