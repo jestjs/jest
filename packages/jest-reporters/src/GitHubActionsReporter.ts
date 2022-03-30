@@ -13,6 +13,7 @@ import type {Context} from './types';
 const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
 
 function replaceEntities(s: string): string {
+  // https://github.com/actions/toolkit/blob/b4639928698a6bfe1c4bdae4b2bfdad1cb75016d/packages/core/src/command.ts#L80-L85
   const substitutions: Array<[RegExp, string]> = [
     [/%/g, '%25'],
     [/\r/g, '%0D'],
