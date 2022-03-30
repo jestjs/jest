@@ -151,7 +151,7 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
 
 ```bash npm2yarn
-npm install --save-dev jest
+npm install --save-dev ts-jest
 ```
 
 #### Type definitions
