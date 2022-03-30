@@ -27,16 +27,6 @@ export type SearchResult = {
   total?: number;
 };
 
-export type TestSelectionConfig = {
-  input?: string;
-  findRelatedTests?: boolean;
-  onlyChanged?: boolean;
-  paths?: Array<string>;
-  shouldTreatInputAsPattern?: boolean;
-  testPathPattern?: string;
-  watch?: boolean;
-};
-
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
@@ -121,7 +111,7 @@ export default class SearchSource {
 
   private _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPattern?: string,
+    testPathPattern: string,
   ): SearchResult {
     const data: {
       stats: Stats;
@@ -163,7 +153,7 @@ export default class SearchSource {
     return data;
   }
 
-  private _getAllTestPaths(testPathPattern?: string): SearchResult {
+  private _getAllTestPaths(testPathPattern: string): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
       testPathPattern,
@@ -174,7 +164,7 @@ export default class SearchSource {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
-  findMatchingTests(testPathPattern?: string): SearchResult {
+  findMatchingTests(testPathPattern: string): SearchResult {
     return this._getAllTestPaths(testPathPattern);
   }
 
@@ -333,7 +323,7 @@ export default class SearchSource {
 
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
-    changedFiles: ChangedFiles | undefined,
+    changedFiles?: ChangedFiles,
     filter?: Filter,
   ): Promise<SearchResult> {
     const searchResult = await this._getTestPaths(globalConfig, changedFiles);

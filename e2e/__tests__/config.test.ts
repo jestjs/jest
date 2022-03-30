@@ -9,11 +9,10 @@ import runJest, {getConfig} from '../runJest';
 
 test('config as JSON', () => {
   const result = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-        testMatch: ['banana strawberry kiwi'],
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+      testMatch: ['banana strawberry kiwi'],
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(1);
@@ -22,10 +21,9 @@ test('config as JSON', () => {
 
 test('works with sane config JSON', () => {
   const result = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(1);
@@ -44,11 +42,10 @@ test('watchman config option is respected over default argv', () => {
 
 test('config from argv is respected with sane config JSON', () => {
   const {stdout} = runJest('verbose-reporter', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'node',
-        watchman: false,
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'node',
+      watchman: false,
+    })}`,
     '--debug',
   ]);
 
@@ -57,13 +54,12 @@ test('config from argv is respected with sane config JSON', () => {
 
 test('works with jsdom testEnvironmentOptions config JSON', () => {
   const result = runJest('environmentOptions', [
-    '--config=' +
-      JSON.stringify({
-        testEnvironment: 'jsdom',
-        testEnvironmentOptions: {
-          url: 'https://jestjs.io',
-        },
-      }),
+    `--config=${JSON.stringify({
+      testEnvironment: 'jsdom',
+      testEnvironmentOptions: {
+        url: 'https://jestjs.io',
+      },
+    })}`,
   ]);
 
   expect(result.exitCode).toBe(0);

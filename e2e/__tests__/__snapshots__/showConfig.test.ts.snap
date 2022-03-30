@@ -30,6 +30,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleFileExtensions": [
         "js",
+        "mjs",
+        "cjs",
         "jsx",
         "ts",
         "tsx",

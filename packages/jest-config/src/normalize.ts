@@ -34,6 +34,7 @@ import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
 import {
   BULLET,
@@ -902,8 +903,7 @@ export default async function normalize(
           // `require('some-package/package') without the trailing `.json` as it
           // works in Node normally.
           throw createConfigError(
-            errorMessage +
-              "\n  Please change your configuration to include 'js'.",
+            `${errorMessage}\n  Please change your configuration to include 'js'.`,
           );
         }
 
@@ -1219,6 +1219,10 @@ export default async function normalize(
 
   if (!newOptions.logHeapUsage) {
     newOptions.logHeapUsage = false;
+  }
+
+  if (argv.shard) {
+    newOptions.shard = parseShardPair(argv.shard);
   }
 
   return {

@@ -11,7 +11,7 @@ import {diffStringsUnified} from '../printDiffs';
 
 // 1. Use options to omit line colors.
 const identity = (string: string) => string;
-const changeColor = (string: string) => '<i>' + string + '</i>';
+const changeColor = (string: string) => `<i>${string}</i>`;
 const options = {
   aColor: identity,
   bColor: identity,

@@ -9,6 +9,7 @@
   "references": [
     {"path": "../jest-haste-map"},
     {"path": "../jest-runtime"},
-    {"path": "../jest-test-result"}
+    {"path": "../jest-test-result"},
+    {"path": "../test-utils"}
   ]
 }

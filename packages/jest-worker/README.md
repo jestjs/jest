@@ -35,7 +35,7 @@ main();
 
 ```js
 export function hello(param) {
-  return 'Hello, ' + param;
+  return `Hello, ${param}`;
 }
 ```
 
@@ -182,11 +182,11 @@ main();
 
 ```js
 export function foo(param) {
-  return 'Hello from foo: ' + param;
+  return `Hello from foo: ${param}`;
 }
 
 export function bar(param) {
-  return 'Hello from bar: ' + param;
+  return `Hello from bar: ${param}`;
 }
 
 export function getWorkerId() {

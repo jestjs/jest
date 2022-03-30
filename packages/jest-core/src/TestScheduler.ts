@@ -127,8 +127,9 @@ class TestScheduler {
       // Throws when the context is leaked after executing a test.
       if (testResult.leaks) {
         const message =
-          chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
-          'Your test suite is leaking memory. Please ensure all references are cleaned.\n' +
+          `${chalk.red.bold(
+            'EXPERIMENTAL FEATURE!\n',
+          )}Your test suite is leaking memory. Please ensure all references are cleaned.\n` +
           '\n' +
           'There is a number of things that can leak memory:\n' +
           '  - Async operations that have not finished (e.g. fs.readFile).\n' +
@@ -411,11 +412,9 @@ class TestScheduler {
         const Reporter = await requireOrImportModule<any>(path, true);
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error: any) {
-        error.message =
-          'An error occurred while adding the reporter at path "' +
-          chalk.bold(path) +
-          '".' +
-          error.message;
+        error.message = `An error occurred while adding the reporter at path "${chalk.bold(
+          path,
+        )}".${error.message}`;
         throw error;
       }
     }

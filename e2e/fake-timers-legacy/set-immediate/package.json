@@ -1,0 +1,6 @@
+{
+  "name": "set-immediate-legacy",
+  "jest": {
+    "timers": "legacy"
+  }
+}

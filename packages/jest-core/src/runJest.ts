@@ -165,10 +165,9 @@ export default async function runJest({
     ).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
-        '\n' +
-          chalk.bold('--watch') +
-          ' is not supported without git/hg, please use --watchAll ' +
-          '\n',
+        `\n${chalk.bold(
+          '--watch',
+        )} is not supported without git/hg, please use --watchAll\n`,
       );
       exit(1);
     }
@@ -192,6 +191,15 @@ export default async function runJest({
       return {context, matches};
     }),
   );
+
+  if (globalConfig.shard) {
+    if (typeof sequencer.shard !== 'function') {
+      throw new Error(
+        `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
+      );
+    }
+    allTests = await sequencer.shard(allTests, globalConfig.shard);
+  }
 
   allTests = await sequencer.sort(allTests);
 

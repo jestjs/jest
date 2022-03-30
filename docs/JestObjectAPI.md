@@ -7,9 +7,9 @@ The `jest` object is automatically in scope within every test file. The methods 
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -453,7 +453,7 @@ const otherCopyOfMyModule = require('myModule');
 
 ## Mock Functions
 
-### `jest.fn(implementation)`
+### `jest.fn(implementation?)`
 
 Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
@@ -466,6 +466,12 @@ expect(mockFn).toHaveBeenCalled();
 const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
+
+:::note
+
+See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
+
+:::
 
 ### `jest.isMockFunction(fn)`
 
@@ -564,7 +570,7 @@ test('plays audio', () => {
 
 ### `jest.clearAllMocks()`
 
-Clears the `mock.calls`, `mock.instances` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
 
 Returns the `jest` object for chaining.
 

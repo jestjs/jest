@@ -187,17 +187,17 @@ const pushDelIns = (aLines, aIndex, aEnd, bLines, bIndex, bEnd, array) => {
   const insertLines = bIndex !== bEnd;
   const changeLines = deleteLines && insertLines;
   if (changeLines) {
-    array.push(getRange(aIndex, aEnd) + 'c' + getRange(bIndex, bEnd));
+    array.push(`${getRange(aIndex, aEnd)}c${getRange(bIndex, bEnd)}`);
   } else if (deleteLines) {
-    array.push(getRange(aIndex, aEnd) + 'd' + String(bIndex));
+    array.push(`${getRange(aIndex, aEnd)}d${String(bIndex)}`);
   } else if (insertLines) {
-    array.push(String(aIndex) + 'a' + getRange(bIndex, bEnd));
+    array.push(`${String(aIndex)}a${getRange(bIndex, bEnd)}`);
   } else {
     return;
   }
 
   for (; aIndex !== aEnd; aIndex += 1) {
-    array.push('< ' + aLines[aIndex]); // delete is less than
+    array.push(`< ${aLines[aIndex]}`); // delete is less than
   }
 
   if (changeLines) {
@@ -205,7 +205,7 @@ const pushDelIns = (aLines, aIndex, aEnd, bLines, bIndex, bEnd, array) => {
   }
 
   for (; bIndex !== bEnd; bIndex += 1) {
-    array.push('> ' + bLines[bIndex]); // insert is greater than
+    array.push(`> ${bLines[bIndex]}`); // insert is greater than
   }
 };
 
@@ -232,7 +232,7 @@ const findShortestEditScript = (a, b) => {
   // After the last common subsequence, push remaining change lines.
   pushDelIns(aLines, aIndex, aLength, bLines, bIndex, bLength, array);
 
-  return array.length === 0 ? '' : array.join('\n') + '\n';
+  return array.length === 0 ? '' : `${array.join('\n')}\n`;
 };
 ```
 
@@ -263,14 +263,14 @@ const formatDiffLines = (a, b) => {
   const array = [];
   const foundSubsequence = (nCommon, aCommon, bCommon) => {
     for (; aIndex !== aCommon; aIndex += 1) {
-      array.push('-·' + aLinesIn[aIndex]); // delete is minus
+      array.push(`-·${aLinesIn[aIndex]}`); // delete is minus
     }
     for (; bIndex !== bCommon; bIndex += 1) {
-      array.push('+·' + bLinesIn[bIndex]); // insert is plus
+      array.push(`+·${bLinesIn[bIndex]}`); // insert is plus
     }
     for (; nCommon !== 0; nCommon -= 1, aIndex += 1, bIndex += 1) {
       // For common lines, received indentation seems more intuitive.
-      array.push('··' + bLinesIn[bIndex]); // common is space
+      array.push(`··${bLinesIn[bIndex]}`); // common is space
     }
   };
 
@@ -278,10 +278,10 @@ const formatDiffLines = (a, b) => {
 
   // After the last common subsequence, push remaining change lines.
   for (; aIndex !== aLength; aIndex += 1) {
-    array.push('-·' + aLinesIn[aIndex]);
+    array.push(`-·${aLinesIn[aIndex]}`);
   }
   for (; bIndex !== bLength; bIndex += 1) {
-    array.push('+·' + bLinesIn[bIndex]);
+    array.push(`+·${bLinesIn[bIndex]}`);
   }
 
   return array;

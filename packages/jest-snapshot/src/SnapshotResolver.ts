@@ -18,7 +18,7 @@ export type SnapshotResolver = {
 };
 
 export const EXTENSION = 'snap';
-export const DOT_EXTENSION = '.' + EXTENSION;
+export const DOT_EXTENSION = `.${EXTENSION}`;
 
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
@@ -109,12 +109,9 @@ async function createCustomSnapshotResolver(
 }
 
 function mustImplement(propName: string, requiredType: string) {
-  return (
-    chalk.bold(
-      `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
-    ) +
-    '\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string'
-  );
+  return `${chalk.bold(
+    `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
+  )}\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string`;
 }
 
 function verifyConsistentTransformations(custom: SnapshotResolver) {

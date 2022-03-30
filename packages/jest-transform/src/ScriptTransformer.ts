@@ -203,7 +203,7 @@ class ScriptTransformer {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
-      'jest-transform-cache-' + this._config.name,
+      `jest-transform-cache-${this._config.name}`,
       VERSION,
     );
     // Create sub folders based on the cacheKey to avoid creating one
@@ -213,7 +213,7 @@ class ScriptTransformer {
       .basename(filename, path.extname(filename))
       .replace(/\W/g, '');
     const cachePath = slash(
-      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
+      path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`),
     );
     createDirectory(cacheDir);
 
@@ -460,7 +460,7 @@ class ScriptTransformer {
     const {transformer, transformerConfig = {}} =
       this._getTransformer(filename) || {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
-    const sourceMapPath: string = cacheFilePath + '.map';
+    const sourceMapPath: string = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -519,7 +519,7 @@ class ScriptTransformer {
       content,
       options,
     );
-    const sourceMapPath: string = cacheFilePath + '.map';
+    const sourceMapPath: string = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -759,7 +759,10 @@ class ScriptTransformer {
         }
       },
       {
-        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
+        // Exclude `mjs` extension when addHook because pirates don't support hijack es module
+        exts: this._config.moduleFileExtensions
+          .filter(ext => ext !== 'mjs')
+          .map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {
@@ -862,7 +865,7 @@ const stripShebang = (content: string) => {
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
   const checksum = createHash('md5').update(code).digest('hex');
-  writeCacheFile(cachePath, checksum + '\n' + code);
+  writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
 /**
@@ -898,11 +901,7 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
       return;
     }
 
-    e.message =
-      'jest: failed to cache transform results in: ' +
-      cachePath +
-      '\nFailure message: ' +
-      e.message;
+    e.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${e.message}`;
     removeFile(cachePath);
     throw e;
   }
@@ -931,11 +930,7 @@ const readCacheFile = (cachePath: string): string | null => {
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
   } catch (e: any) {
-    e.message =
-      'jest: failed to read cache file: ' +
-      cachePath +
-      '\nFailure message: ' +
-      e.message;
+    e.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${e.message}`;
     removeFile(cachePath);
     throw e;
   }
@@ -950,7 +945,7 @@ const readCacheFile = (cachePath: string): string | null => {
 
 const getScriptCacheKey = (filename: string, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
-  return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
+  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {

@@ -154,14 +154,14 @@ describe('shouldInstrument', () => {
     });
 
     it('when testRegex and testPathIgnorePatterns are provided and filename is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testPathIgnorePatterns: ['src/'],
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
 
     it('when testMatch and testPathIgnorePatterns are provided and file is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testMatch: ['**/?(*.)(test).js'],
         testPathIgnorePatterns: ['src/'],
       });

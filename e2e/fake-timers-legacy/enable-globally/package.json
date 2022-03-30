@@ -1,0 +1,6 @@
+{
+  "name": "enable-globally-legacy",
+  "jest": {
+    "timers": "legacy"
+  }
+}

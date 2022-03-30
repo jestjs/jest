@@ -7,9 +7,9 @@ The `jest` object is automatically in scope within every test file. The methods 
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
