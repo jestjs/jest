@@ -151,6 +151,49 @@ describe('Given a config with two named projects, first-project and second-proje
       expect(result.stderr).toMatch(/^Running one project: first-project/);
     });
   });
+
+  describe('when Jest is started with `--ignoreProjects third-project`', () => {
+    let result: RunJestJsonResult;
+    beforeAll(() => {
+      result = runWithJson('select-projects', [
+        '--ignoreProjects',
+        'third-project',
+      ]);
+    });
+    it('runs the tests in the first and second projects', () => {
+      expect(result.json).toHaveProperty('success', true);
+      expect(result.json).toHaveProperty('numTotalTests', 2);
+      expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('prints that both first-project and second-project will run', () => {
+      expect(result.stderr).toMatch(
+        /^Running 2 projects:\n- first-project\n- second-project/,
+      );
+    });
+  });
+
+  describe('when Jest is started with `--ignoreProjects first-project second-project`', () => {
+    let result: RunJestResult;
+    beforeAll(() => {
+      result = run('select-projects', [
+        '--ignoreProjects',
+        'first-project',
+        'second-project',
+      ]);
+    });
+    it('fails', () => {
+      expect(result).toHaveProperty('failed', true);
+    });
+    // FIXME(F3n67u)
+    it.skip('prints that no project was found', () => {
+      expect(result.stdout).toMatch(
+        /^You provided values for --selectProjects but no projects were found matching the selection/,
+      );
+    });
+  });
 });
 
 describe('Given a config with two projects, first-project and an unnamed project', () => {
@@ -223,6 +266,33 @@ describe('Given a config with two projects, first-project and an unnamed project
       expect(stdoutThirdLine).toMatch(
         /^You provided values for --selectProjects but no projects were found matching the selection/,
       );
+    });
+  });
+
+  describe('when Jest is started with `--ignoreProjects first-project`', () => {
+    let result: RunJestJsonResult;
+    beforeAll(() => {
+      result = runWithJson('select-projects-missing-name', [
+        '--ignoreProjects',
+        'first-project',
+      ]);
+    });
+    it('runs the tests in the second project only', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    // FIXME(F3n67u)
+    it('prints that a project does not have a name', () => {
+      expect(result.stderr).toMatch(
+        /^You provided values for --selectProjects but a project does not have a name/,
+      );
+    });
+    it('prints that only second-project will run', () => {
+      const stderrThirdLine = result.stderr.split('\n')[2];
+      expect(stderrThirdLine).toMatch(/^Running one project: second-project/);
     });
   });
 });
