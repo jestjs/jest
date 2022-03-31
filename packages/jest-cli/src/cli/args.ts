@@ -68,6 +68,13 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.ignoreProjects && argv.ignoreProjects.length === 0) {
+    throw new Error(
+      'The --ignoreProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --ignoreProjects my-first-project my-second-project',
+    );
+  }
+
   if (
     argv.config &&
     !isJSONString(argv.config) &&
