@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
@@ -102,7 +103,7 @@ export const usage =
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
-export const options = {
+export const options: {[key: string]: Options} = {
   all: {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
@@ -313,7 +314,7 @@ export const options = {
       'Ignore the tests of the specified projects.' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
-    type: Array,
+    type: 'array',
   },
   init: {
     description: 'Generate a basic configuration file',
@@ -709,4 +710,4 @@ export const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-} as const;
+};
