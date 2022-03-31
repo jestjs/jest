@@ -284,10 +284,9 @@ describe('Given a config with two projects, first-project and an unnamed project
         resolve(dir, '__tests__/second-project.test.js'),
       ]);
     });
-    // FIXME(F3n67u)
     it('prints that a project does not have a name', () => {
       expect(result.stderr).toMatch(
-        /^You provided values for --selectProjects but a project does not have a name/,
+        /^You provided values for --ignoreProjects but a project does not have a name/,
       );
     });
     it('prints that only second-project will run', () => {
