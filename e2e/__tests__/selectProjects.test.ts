@@ -111,6 +111,46 @@ describe('Given a config with two named projects, first-project and second-proje
       );
     });
   });
+
+  describe('when Jest is started with `--ignoreProjects first-project', () => {
+    let result: RunJestJsonResult;
+    beforeAll(() => {
+      result = runWithJson('select-projects', [
+        '--ignoreProjects',
+        'first-project',
+      ]);
+    });
+    it('runs the tests in the second project only', () => {
+      expect(result.json).toHaveProperty('success', true);
+      expect(result.json).toHaveProperty('numTotalTests', 1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('prints that only second-project will run', () => {
+      expect(result.stderr).toMatch(/^Running one project: second-project/);
+    });
+  });
+
+  describe('when Jest is started with `--ignoreProjects second-project', () => {
+    let result: RunJestJsonResult;
+    beforeAll(() => {
+      result = runWithJson('select-projects', [
+        '--ignoreProjects',
+        'second-project',
+      ]);
+    });
+    it('runs the tests in the first project only', () => {
+      expect(result.json).toHaveProperty('success', true);
+      expect(result.json).toHaveProperty('numTotalTests', 1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+      ]);
+    });
+    it('prints that only first-project will run', () => {
+      expect(result.stderr).toMatch(/^Running one project: first-project/);
+    });
+  });
 });
 
 describe('Given a config with two projects, first-project and an unnamed project', () => {
