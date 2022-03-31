@@ -301,6 +301,13 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  ignoreProjects: {
+    description:
+      'Ignore the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: Array,
+  },
   init: {
     description: 'Generate a basic configuration file',
     type: 'boolean',
@@ -502,7 +509,7 @@ export const options = {
   },
   selectProjects: {
     description:
-      'Run only the tests of the specified projects.' +
+      'Run the tests of the specified projects.' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',

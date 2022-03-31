@@ -71,16 +71,15 @@ export async function runCLI(
     exit(0);
   }
 
-  let configsOfProjectsToRun = configs;
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(configs, {
+    ignoreProjects: argv.ignoreProjects,
+    selectProjects: argv.selectProjects,
+  });
   if (argv.selectProjects) {
     const namesMissingWarning = getProjectNamesMissingWarning(configs);
     if (namesMissingWarning) {
       outputStream.write(namesMissingWarning);
     }
-    configsOfProjectsToRun = getConfigsOfProjectsToRun(
-      argv.selectProjects,
-      configs,
-    );
     outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
