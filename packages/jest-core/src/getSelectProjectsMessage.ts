@@ -28,7 +28,8 @@ function getProjectsRunningMessage(
   projectConfigs: Array<Config.ProjectConfig>,
 ): string {
   if (projectConfigs.length === 1) {
-    const name = getProjectDisplayName(projectConfigs[0]);
+    const name =
+      getProjectDisplayName(projectConfigs[0]) ?? '<unnamed project>';
     return `Running one project: ${chalk.bold(name)}\n`;
   }
   const projectsList = projectConfigs

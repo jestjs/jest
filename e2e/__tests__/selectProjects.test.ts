@@ -291,7 +291,9 @@ describe('Given a config with two projects, first-project and an unnamed project
     });
     it('prints that only second-project will run', () => {
       const stderrThirdLine = result.stderr.split('\n')[2];
-      expect(stderrThirdLine).toMatch(/^Running one project: second-project/);
+      expect(stderrThirdLine).toMatch(
+        /^Running one project: <unnamed project>/,
+      );
     });
   });
 });
