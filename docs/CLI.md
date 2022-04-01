@@ -224,7 +224,7 @@ This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, 
 
 Show the help information, similar to this page.
 
-### `--igoreProjects <project1> ... <projectN>`
+### `--ignoreProjects <project1> ... <projectN>`
 
 Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
