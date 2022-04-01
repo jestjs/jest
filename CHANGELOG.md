@@ -14,6 +14,7 @@
 - `[jest-config]` [**BREAKING**] Rename `extraGlobals` to `sandboxInjectedGlobals` ([#10817](https://github.com/facebook/jest/pull/10817))
 - `[jest-config]` [**BREAKING**] Throw an error instead of showing a warning if multiple configs are used ([#12510](https://github.com/facebook/jest/pull/12510))
 - `[jest-core]` Pass project config to `globalSetup`/`globalTeardown` function as second argument ([#12440](https://github.com/facebook/jest/pull/12440))
+- `[jest-cli, jest-core]` Add `--ignoreProjects` CLI argument to ignore test suites by project name ([#12620](https://github.com/facebook/jest/pull/12620))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-jsdom]` [**BREAKING**] Pass global config to Jest environment constructor for `jsdom` environment ([#12461](https://github.com/facebook/jest/pull/12461))
