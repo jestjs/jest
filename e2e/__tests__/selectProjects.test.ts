@@ -187,10 +187,52 @@ describe('Given a config with two named projects, first-project and second-proje
     it('fails', () => {
       expect(result).toHaveProperty('failed', true);
     });
-    // FIXME(F3n67u)
     it.skip('prints that no project was found', () => {
       expect(result.stdout).toMatch(
-        /^You provided values for --selectProjects but no projects were found matching the selection/,
+        /^You provided values for --ignoreProjects, but no projects were found matching the selection/,
+      );
+    });
+  });
+
+  describe('when Jest is started with `--selectProjects first-project second-project --ignoreProjects first-project` ', () => {
+    let result: RunJestJsonResult;
+    beforeAll(() => {
+      result = runWithJson('select-projects', [
+        '--selectProjects',
+        'first-project',
+        'second-project',
+        '--ignoreProjects',
+        'first-project',
+      ]);
+    });
+    it('runs the tests in the second project only', () => {
+      expect(result.json).toHaveProperty('success', true);
+      expect(result.json).toHaveProperty('numTotalTests', 1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('prints that only second-project will run', () => {
+      expect(result.stderr).toMatch(/^Running one project: second-project/);
+    });
+  });
+
+  describe('when Jest is started with `--selectProjects first-project --ignoreProjects first-project` ', () => {
+    let result: RunJestResult;
+    beforeAll(() => {
+      result = run('select-projects', [
+        '--selectProjects',
+        'first-project',
+        '--ignoreProjects',
+        'first-project',
+      ]);
+    });
+    it('fails', () => {
+      expect(result).toHaveProperty('failed', true);
+    });
+    it.skip('prints that no project was found', () => {
+      expect(result.stdout).toMatch(
+        /^You provided values for --selectProjects and --ignoreProjects, but no projects were found matching the selection./,
       );
     });
   });

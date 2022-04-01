@@ -83,7 +83,12 @@ export async function runCLI(
     if (namesMissingWarning) {
       outputStream.write(namesMissingWarning);
     }
-    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
+    outputStream.write(
+      getSelectProjectsMessage(configsOfProjectsToRun, {
+        ignoreProjects: argv.ignoreProjects,
+        selectProjects: argv.selectProjects,
+      }),
+    );
   }
 
   await _run10000(
