@@ -440,6 +440,7 @@ export type Argv = Arguments<
     globalSetup: string | null | undefined;
     globalTeardown: string | null | undefined;
     haste: string;
+    ignoreProjects: Array<string>;
     init: boolean;
     injectGlobals: boolean;
     json: boolean;
@@ -468,7 +469,6 @@ export type Argv = Arguments<
     roots: Array<string>;
     runInBand: boolean;
     selectProjects: Array<string>;
-    ignoreProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
     shard: string;
