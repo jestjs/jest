@@ -35,7 +35,7 @@ function createProjectFilter(opts: {
     : always;
 
   const notIgnore = ignoreProjects
-    ? (name: string | undefined) => !name || !ignoreProjects.includes(name)
+    ? (name: string | undefined) => !(name && ignoreProjects.includes(name))
     : always;
 
   function test(name: string | undefined) {
