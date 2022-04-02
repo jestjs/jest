@@ -6,6 +6,7 @@
  */
 
 import {printListItems, printObjectProperties} from '../collections';
+import {pluralize} from 'jest-util';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const asymmetricMatcher =
@@ -77,6 +78,19 @@ export const serialize: NewPlugin['serialize'] = (
       stringedValue +
       SPACE +
       printer(val.sample, config, indentation, depth, refs)
+    );
+  }
+
+  if (
+    stringedValue === 'NumberCloseTo' ||
+    stringedValue === 'NumberNotCloseTo'
+  ) {
+    return (
+      stringedValue +
+      SPACE +
+      printer(val.sample, config, indentation, depth, refs) +
+      SPACE +
+      `(${pluralize('digit', val.precision)})`
     );
   }
 
