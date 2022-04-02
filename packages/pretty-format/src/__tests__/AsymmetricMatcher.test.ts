@@ -131,6 +131,16 @@ test('stringNotMatching(string)', () => {
   expect(result).toEqual('StringNotMatching /jest/');
 });
 
+test('closeTo()', () => {
+  const result = prettyFormat(expect.closeTo(1.2345, 4), options);
+  expect(result).toEqual(`NumberCloseTo 1.2345 (4 digits)`);
+});
+
+test('notCloseTo()', () => {
+  const result = prettyFormat(expect.not.closeTo(1.2345, 1), options);
+  expect(result).toEqual(`NumberNotCloseTo 1.2345 (1 digit)`);
+});
+
 test('supports multiple nested asymmetric matchers', () => {
   const result = prettyFormat(
     {
