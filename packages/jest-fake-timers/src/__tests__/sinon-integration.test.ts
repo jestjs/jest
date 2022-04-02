@@ -6,7 +6,6 @@
  *
  */
 
-import {withGlobal} from '@sinonjs/fake-timers';
 import {makeProjectConfig} from '@jest/test-utils';
 import FakeTimers from '../modernFakeTimers';
 
@@ -23,6 +22,7 @@ const mockWithGlobal = {
     clearTimeout: jest.fn(),
     hrtime: jest.fn(),
     nextTick: jest.fn(),
+    performance: jest.fn(),
     queueMicrotask: jest.fn(),
     setImmediate: jest.fn(),
     setInterval: jest.fn(),
@@ -41,16 +41,7 @@ afterEach(() => {
 });
 
 describe('`@sinonjs/fake-timers` integration', () => {
-  test('passes `globalThis` to `withGlobal()` method', () => {
-    const timers = new FakeTimers({
-      config: makeProjectConfig(),
-      global: globalThis,
-    });
-
-    expect(withGlobal).toBeCalledWith(globalThis);
-  });
-
-  test('passes default options to `install()` method', () => {
+  test('uses default global config, when `useFakeTimers()` is called without options', () => {
     const timers = new FakeTimers({
       config: makeProjectConfig(),
       global: globalThis,
@@ -60,7 +51,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
 
     expect(mockInstall).toBeCalledWith({
       advanceTimeDelta: undefined,
-      loopLimit: undefined,
+      loopLimit: 100_000,
       now: 123456,
       shouldAdvanceTime: false,
       shouldClearNativeTimers: true,
@@ -71,6 +62,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearTimeout',
         'hrtime',
         'nextTick',
+        'performance',
         'queueMicrotask',
         'setImmediate',
         'setInterval',
@@ -79,7 +71,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     });
   });
 
-  test('passes `projectConfig.fakeTimers` to `install()` method', () => {
+  test('uses custom global config, when `useFakeTimers()` is called without options', () => {
     const timers = new FakeTimers({
       config: makeProjectConfig({
         fakeTimers: {
@@ -105,6 +97,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearInterval',
         'clearTimeout',
         'hrtime',
+        'performance',
         'queueMicrotask',
         'setImmediate',
         'setInterval',
@@ -113,7 +106,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     });
   });
 
-  test('passes `fakeTimersConfig` to `install()` method', () => {
+  test('overrides default global config, when `useFakeTimers()` is called with options,', () => {
     const timers = new FakeTimers({
       config: makeProjectConfig(),
       global: globalThis,
@@ -138,6 +131,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearTimeout',
         'hrtime',
         'nextTick',
+        'performance',
         'setImmediate',
         'setInterval',
         'setTimeout',
@@ -145,7 +139,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
     });
   });
 
-  test('overrides `projectConfig.fakeTimers` if `fakeTimersConfig` is passed', () => {
+  test('overrides custom global config, when `useFakeTimers()` is called with options,', () => {
     const timers = new FakeTimers({
       config: makeProjectConfig({
         fakeTimers: {
@@ -162,12 +156,11 @@ describe('`@sinonjs/fake-timers` integration', () => {
       advanceTimers: false,
       doNotFake: ['hrtime'],
       now: 123456,
-      timerLimit: 5000,
     });
 
     expect(mockInstall).toBeCalledWith({
       advanceTimeDelta: undefined,
-      loopLimit: 5000,
+      loopLimit: 1000,
       now: 123456,
       shouldAdvanceTime: false,
       shouldClearNativeTimers: true,
@@ -177,6 +170,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
         'clearInterval',
         'clearTimeout',
         'nextTick',
+        'performance',
         'queueMicrotask',
         'setImmediate',
         'setInterval',

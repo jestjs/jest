@@ -170,7 +170,7 @@ export default class FakeTimers {
 
     return {
       advanceTimeDelta,
-      loopLimit: fakeTimersConfig.timerLimit,
+      loopLimit: fakeTimersConfig.timerLimit || 100_000,
       now: fakeTimersConfig.now ?? Date.now(),
       shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
       shouldClearNativeTimers: true,
