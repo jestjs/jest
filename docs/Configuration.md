@@ -399,9 +399,32 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 
 Default: `{}`
 
-This option allows configuration of the implementation of fake timers. The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For more details see [Fake Timers API](JestObjectAPI.md#fake-timers) documentation.
+The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For additional details see [Fake Timers guide](TimerMocks.md) and [API documentation](JestObjectAPI.md#fake-timers).
 
-Here is how you can enable fake timers globally for all tests:
+This option allows global configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
+
+```json
+{
+  "fakeTimers": {
+    "doNotFake": ["nextTick"],
+    "timerLimit": 1000
+  }
+}
+```
+
+```js title="fakeTime.test.js"
+// install fake timers for this file using the options from Jest configuration
+jest.useFakeTimers();
+
+test('increase the limit of recursive timers for this and following tests', () => {
+  jest.useFakeTimers({timerLimit: 5000});
+  // ...
+});
+```
+
+:::tip
+
+Instead of including `jest.useFakeTimers()` to each test file, you can enable fake timers globally for all tests:
 
 ```json
 {
@@ -410,6 +433,8 @@ Here is how you can enable fake timers globally for all tests:
   }
 }
 ```
+
+:::
 
 Configuration options:
 
@@ -438,7 +463,10 @@ type ModernFakeTimersConfig = {
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of APIs that should not be faked. The default is `[]`, meaning all APIs are faked. */
+  /**
+   * List of names of APIs that should not be faked. The default is `[]`, meaning
+   * all APIs are faked.
+   */
   doNotFake?: Array<FakeableAPI>;
   /** Whether fake timers should be enabled for all test files. The default is `false`. */
   enableGlobally?: boolean;
@@ -449,7 +477,7 @@ type ModernFakeTimersConfig = {
   legacyFakeTimers?: boolean;
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number;
-  /** Maximum number of timers that will be run. The default is `100_000` timers. */
+  /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
   timerLimit?: number;
 };
 ```

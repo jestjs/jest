@@ -41,16 +41,17 @@ export type GlobalFakeTimersConfig = {
 
 export type FakeTimersConfig = {
   /**
-   * If set to `true` all timers will be advanced automatically by 20 milliseconds
-   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   * If set to `true` all timers will be advanced automatically
+   * by 20 milliseconds every 20 milliseconds. A custom time delta
+   * may be provided by passing a number.
    *
    * @defaultValue
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
   /**
-   * List of names of APIs (e.g. `setTimeout()`, `setImmediate()`, `Date`,
-   * `nextTick`, `performance`) that should not be faked.
+   * List of names of APIs (e.g. `Date`, `nextTick()`, `setImmediate()`,
+   * `setTimeout()`) that should not be faked.
    *
    * @defaultValue
    * The default is `[]`, meaning all APIs are faked.
@@ -64,7 +65,8 @@ export type FakeTimersConfig = {
    */
   now?: number | Date;
   /**
-   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
+   * The maximum number of recursive timers that will be run when calling
+   * `jest.runAllTimers()`.
    *
    * @defaultValue
    * The default is `100_000` timers.

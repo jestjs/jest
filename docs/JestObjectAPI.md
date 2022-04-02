@@ -665,7 +665,10 @@ type FakeTimersConfig = {
    * The default is `false`.
    */
   advanceTimers?: boolean | number;
-  /** List of names of APIs that should not be faked. The default is `[]`, meaning all APIs are faked. */
+  /**
+   * List of names of APIs that should not be faked. The default is `[]`, meaning
+   * all APIs are faked.
+   */
   doNotFake?: Array<FakeableAPI>;
   /**
    * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
@@ -675,7 +678,7 @@ type FakeTimersConfig = {
   /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
   now?: number | Date;
   /**
-   * The maximum number of timers that will be run when calling `jest.runAllTimers()`.
+   * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
    * The default is `100_000` timers.
    */
   timerLimit?: number;
