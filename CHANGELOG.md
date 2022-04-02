@@ -79,6 +79,7 @@
 - `[@jest/reporters]` Move missing icon file which is needed for `NotifyReporter` class. ([#12593](https://github.com/facebook/jest/pull/12593))
 - `[jest-resolver]` Call custom resolver with core node.js modules ([#12654](https://github.com/facebook/jest/pull/12654))
 - `[jest-worker]` Fix `Farm` execution results memory leak ([#12497](https://github.com/facebook/jest/pull/12497))
+- `[pretty-format]` Fix print for the `closeTo` matcher ([#12626](https://github.com/facebook/jest/pull/12626))
 
 ### Chore & Maintenance
 
