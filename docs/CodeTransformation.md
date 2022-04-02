@@ -128,9 +128,9 @@ As can be seen, only `process` or `processAsync` is mandatory to implement, alth
 
 Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
 
-:::info
+:::tip
 
-Jest might not be able to report the coverage and error information accurately if a source map is not returned by the `process` or `processAsync` function.
+Make sure `TransformedSource` contains a source map, so it is possible to report line information accurately in code coverage and test errors. Inline source maps also work but are slower.
 
 :::
 
