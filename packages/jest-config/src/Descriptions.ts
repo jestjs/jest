@@ -31,7 +31,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   dependencyExtractor: 'A path to a custom dependency extractor',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
-  fakeTimers: 'The configuration for fake timers.',
+  fakeTimers: 'The global configuration for fake timers',
   forceCoverageMatch:
     'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
