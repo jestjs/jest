@@ -521,7 +521,6 @@ export type Argv = Arguments<
     debug: boolean;
     env: string;
     expand: boolean;
-    fakeTimers: string;
     findRelatedTests: boolean;
     forceExit: boolean;
     globals: string;

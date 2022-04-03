@@ -202,10 +202,6 @@ Make calling deprecated APIs throw helpful error messages. Useful for easing the
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
-### `--fakeTimers=<json string>`
-
-A JSON string with configuration options for fake timers. For details see [Fake Timers API](JestObjectAPI.md#fake-timers) documentation.
-
 ### `--filter=<file>`
 
 Path to a module exporting a filtering function. This method receives a list of tests which can be manipulated to exclude tests from running. Especially useful when used in conjunction with a testing infrastructure to filter known broken.
