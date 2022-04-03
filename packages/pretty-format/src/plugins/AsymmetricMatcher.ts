@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {printListItems, printObjectProperties} from '../collections';
 import {pluralize} from 'jest-util';
+import {printListItems, printObjectProperties} from '../collections';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const asymmetricMatcher =
@@ -85,13 +85,12 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'NumberCloseTo' ||
     stringedValue === 'NumberNotCloseTo'
   ) {
-    return (
+    return `${
       stringedValue +
       SPACE +
       printer(val.sample, config, indentation, depth, refs) +
-      SPACE +
-      `(${pluralize('digit', val.precision)})`
-    );
+      SPACE
+    }(${pluralize('digit', val.precision)})`;
   }
 
   return val.toAsymmetricMatcher();
