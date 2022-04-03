@@ -131,15 +131,36 @@ test('stringNotMatching(string)', () => {
   expect(result).toEqual('StringNotMatching /jest/');
 });
 
-test('closeTo()', () => {
+test('closeTo(number, precision)', () => {
   const result = prettyFormat(expect.closeTo(1.2345, 4), options);
   expect(result).toEqual(`NumberCloseTo 1.2345 (4 digits)`);
 });
 
-test('notCloseTo()', () => {
+test('notCloseTo(number, precision)', () => {
   const result = prettyFormat(expect.not.closeTo(1.2345, 1), options);
   expect(result).toEqual(`NumberNotCloseTo 1.2345 (1 digit)`);
 });
+
+test('closeTo(number)', () => {
+  const result = prettyFormat(expect.closeTo(1.2345), options);
+  expect(result).toEqual(`NumberCloseTo 1.2345 (2 digits)`);
+});
+
+test('closeTo(Infinity)', () => {
+  const result = prettyFormat(expect.closeTo(-Infinity), options);
+  expect(result).toEqual(`NumberCloseTo -Infinity (2 digits)`);
+});
+
+test('closeTo(scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-3, 4), options);
+  expect(result).toEqual(`NumberCloseTo 0.00156 (4 digits)`);
+});
+
+test('closeTo(very small scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-10, 4), options);
+  expect(result).toEqual(`NumberCloseTo 1.56e-10 (4 digits)`);
+});
+
 
 test('supports multiple nested asymmetric matchers', () => {
   const result = prettyFormat(
