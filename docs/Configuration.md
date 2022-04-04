@@ -401,7 +401,7 @@ Default: `{}`
 
 The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For additional details see [Fake Timers guide](TimerMocks.md) and [API documentation](JestObjectAPI.md#fake-timers).
 
-This option allows global configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
+This option provides the default configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
 
 ```json
 {
@@ -424,7 +424,7 @@ test('increase the limit of recursive timers for this and following tests', () =
 
 :::tip
 
-Instead of including `jest.useFakeTimers()` to each test file, you can enable fake timers globally for all tests:
+Instead of including `jest.useFakeTimers()` in each test file, you can enable fake timers globally for all tests:
 
 ```json
 {

@@ -168,7 +168,7 @@ module.exports = {
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
-  // The global configuration for fake timers
+  // The default configuration for fake timers
   // fakeTimers: {
   //   "enableGlobally": false
   // },
