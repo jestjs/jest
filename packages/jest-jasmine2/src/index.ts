@@ -108,7 +108,10 @@ export default async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.fakeTimers.legacyFakeTimers) {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         environment.fakeTimers!.useFakeTimers();
       }
     }

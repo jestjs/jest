@@ -59,7 +59,10 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.fakeTimers.legacyFakeTimers) {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
