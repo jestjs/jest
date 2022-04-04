@@ -95,6 +95,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       global.atob = atob;
       global.btoa = btoa;
     }
+    // structuredClone is global in Node >= 17
+    if (typeof structuredClone !== 'undefined') {
+      global.structuredClone = structuredClone;
+    }
     installCommonGlobals(global, projectConfig.globals);
 
     this.moduleMocker = new ModuleMocker(global);
