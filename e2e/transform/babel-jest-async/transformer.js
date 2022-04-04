@@ -6,7 +6,7 @@
  */
 
 import {fileURLToPath} from 'url';
-import babelJest, {createTransformer} from 'babel-jest';
+import {createTransformer} from 'babel-jest';
 
 export default {
   ...createTransformer({

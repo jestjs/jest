@@ -52,11 +52,13 @@ describe('getCacheKey', () => {
       readFileSync: () => 'new this file',
     }));
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest
-      .createTransformer()
-      .getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = createTransformer().getCacheKey(
+      sourceText,
+      sourcePath,
+      transformOptions,
+    );
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -73,11 +75,13 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest
-      .createTransformer()
-      .getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = createTransformer().getCacheKey(
+      sourceText,
+      sourcePath,
+      transformOptions,
+    );
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -123,11 +127,13 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest
-      .createTransformer()
-      .getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = createTransformer().getCacheKey(
+      sourceText,
+      sourcePath,
+      transformOptions,
+    );
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -144,11 +150,13 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest
-      .createTransformer()
-      .getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = createTransformer().getCacheKey(
+      sourceText,
+      sourcePath,
+      transformOptions,
+    );
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
