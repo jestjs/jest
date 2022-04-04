@@ -440,6 +440,7 @@ export type Argv = Arguments<
     globalSetup: string | null | undefined;
     globalTeardown: string | null | undefined;
     haste: string;
+    ignoreProjects: Array<string>;
     init: boolean;
     injectGlobals: boolean;
     json: boolean;
