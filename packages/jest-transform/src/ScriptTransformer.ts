@@ -42,6 +42,7 @@ import type {
   TransformResult,
   TransformedSource,
   Transformer,
+  TransformerFactory,
 } from './types';
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
@@ -70,6 +71,13 @@ async function waitForPromiseWithCleanup(
   } finally {
     cleanup();
   }
+}
+
+// type predicate
+function isTransformerFactory<X extends Transformer>(
+  t: Transformer | TransformerFactory<X>,
+): t is TransformerFactory<X> {
+  return typeof (t as TransformerFactory<X>).createTransformer === 'function';
 }
 
 class ScriptTransformer {
@@ -259,14 +267,13 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer = await requireOrImportModule(
-            transformPath,
-          );
+          let transformer: Transformer | TransformerFactory<Transformer> =
+            await requireOrImportModule(transformPath);
 
           if (!transformer) {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
-          if (typeof transformer.createTransformer === 'function') {
+          if (isTransformerFactory(transformer)) {
             transformer = transformer.createTransformer(transformerConfig);
           }
           if (

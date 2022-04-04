@@ -19,14 +19,13 @@ import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
+  TransformerCreator,
 } from '@jest/transform';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
-
-type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
 
 function assertLoadedBabelConfig(
   babelConfig: Readonly<PartialConfig> | null,
@@ -148,7 +147,10 @@ async function loadBabelOptionsAsync(
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
-export const createTransformer: CreateTransformer = userOptions => {
+export const createTransformer: TransformerCreator<
+  SyncTransformer<TransformOptions>,
+  TransformOptions
+> = userOptions => {
   const inputOptions = userOptions ?? {};
 
   const options = {
@@ -269,11 +271,10 @@ export const createTransformer: CreateTransformer = userOptions => {
   };
 };
 
-const transformer: SyncTransformer<TransformOptions> = {
-  ...createTransformer(),
-  // Assigned here so only the exported transformer has `createTransformer`,
-  // instead of all created transformers by the function
+const transformerFactory = {
+  // Assigned here, instead of as a separate export, due to limitations in Jest's
+  // requireOrImportModule, requiring all exports to be on the `default` export
   createTransformer,
 };
 
-export default transformer;
+export default transformerFactory;

@@ -9,6 +9,8 @@ import type {TransformOptions as BabelTransformOptions} from '@babel/core';
 import type {TransformOptions as JestTransformOptions} from '@jest/transform';
 import babelJest from '../index';
 
+const {getCacheKey} = babelJest.createTransformer();
+
 const processVersion = process.version;
 const nodeEnv = process.env.NODE_ENV;
 const babelEnv = process.env.BABEL_ENV;
@@ -39,11 +41,7 @@ describe('getCacheKey', () => {
     instrument: true,
   } as JestTransformOptions;
 
-  const oldCacheKey = babelJest.getCacheKey(
-    sourceText,
-    sourcePath,
-    transformOptions,
-  );
+  const oldCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
 
   test('returns cache key hash', () => {
     expect(oldCacheKey.length).toEqual(32);
@@ -54,9 +52,9 @@ describe('getCacheKey', () => {
       readFileSync: () => 'new this file',
     }));
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey(
       sourceText,
       sourcePath,
       transformOptions,
@@ -77,9 +75,9 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey(
       sourceText,
       sourcePath,
       transformOptions,
@@ -89,7 +87,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourceText` value is changing', () => {
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = getCacheKey(
       'new source text',
       sourcePath,
       transformOptions,
@@ -99,7 +97,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourcePath` value is changing', () => {
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = getCacheKey(
       sourceText,
       'new-source-path.js',
       transformOptions,
@@ -109,7 +107,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `configString` value is changing', () => {
-    const newCacheKey = babelJest.getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey(sourceText, sourcePath, {
       ...transformOptions,
       configString: 'new-config-string',
     });
@@ -129,9 +127,9 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey(
       sourceText,
       sourcePath,
       transformOptions,
@@ -152,9 +150,9 @@ describe('getCacheKey', () => {
       };
     });
 
-    const {default: babelJest}: typeof import('../index') = require('../index');
+    const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = babelJest.getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey(
       sourceText,
       sourcePath,
       transformOptions,
@@ -164,7 +162,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `instrument` value is changing', () => {
-    const newCacheKey = babelJest.getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey(sourceText, sourcePath, {
       ...transformOptions,
       instrument: false,
     });
@@ -175,11 +173,7 @@ describe('getCacheKey', () => {
   test('if `process.env.NODE_ENV` value is changing', () => {
     process.env.NODE_ENV = 'NEW_NODE_ENV';
 
-    const newCacheKey = babelJest.getCacheKey(
-      sourceText,
-      sourcePath,
-      transformOptions,
-    );
+    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -187,11 +181,7 @@ describe('getCacheKey', () => {
   test('if `process.env.BABEL_ENV` value is changing', () => {
     process.env.BABEL_ENV = 'NEW_BABEL_ENV';
 
-    const newCacheKey = babelJest.getCacheKey(
-      sourceText,
-      sourcePath,
-      transformOptions,
-    );
+    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -200,11 +190,7 @@ describe('getCacheKey', () => {
     delete process.version;
     process.version = 'new-node-version';
 
-    const newCacheKey = babelJest.getCacheKey(
-      sourceText,
-      sourcePath,
-      transformOptions,
-    );
+    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
