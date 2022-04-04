@@ -73,7 +73,6 @@ jobs:
         run: yarn --immutable
       - name: build
         run: yarn build:js
-      - name: test typings
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
       - name: run eslint
