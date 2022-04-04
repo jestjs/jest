@@ -9,6 +9,9 @@
     <img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter" />
   </a>
 </p>
+<p align="center">
+  <a href="https://gitpod.io/#https://github.com/facebook/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
+</p>
 
 <!-- A spacer -->
 <p>&nbsp;</p>

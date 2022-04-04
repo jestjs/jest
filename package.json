@@ -14,7 +14,7 @@
     "@jest/test-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.19.4",
     "@tsconfig/node12": "^1.0.9",
-    "@tsd/typescript": "~4.5.5",
+    "@tsd/typescript": "~4.6.2",
     "@types/babel__core": "^7.0.0",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",
@@ -22,8 +22,8 @@
     "@types/jest": "^27.4.0",
     "@types/node": "~12.12.0",
     "@types/which": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.11.0",
-    "@typescript-eslint/parser": "^5.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "camelcase": "^6.2.0",
@@ -100,8 +100,8 @@
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
-    "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --write --ignore-path .gitignore",
-    "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --check --ignore-path .gitignore",
+    "lint:prettier": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --write",
+    "lint:prettier:ci": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --check",
     "remove-examples": "node ./scripts/remove-examples.js",
     "test-types": "yarn jest --config jest.config.tsd.js",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
@@ -136,6 +136,15 @@
         "files": ".yarnrc.yml",
         "options": {
           "singleQuote": false
+        }
+      },
+      {
+        "files": [
+          "docs/*.md",
+          "website/versioned_docs/*/*.md"
+        ],
+        "options": {
+          "parser": "mdx"
         }
       }
     ]

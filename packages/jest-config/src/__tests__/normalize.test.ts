@@ -1577,10 +1577,17 @@ describe('testPathPattern', () => {
       });
 
       it(`joins multiple ${opt.name} if set`, async () => {
-        const argv = {testPathPattern: ['a/b', 'c/d']} as Config.Argv;
+        const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
         const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('a/b|c/d');
+      });
+
+      it('coerces all patterns to strings', async () => {
+        const argv = {[opt.property]: [1]} as Config.Argv;
+        const {options} = await normalize(initialOptions, argv);
+
+        expect(options.testPathPattern).toBe('1');
       });
 
       describe('posix', () => {
@@ -1633,13 +1640,6 @@ describe('testPathPattern', () => {
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
         });
-
-        it('coerces all patterns to strings', async () => {
-          const argv = {[opt.property]: [1]} as Config.Argv;
-          const {options} = await normalize(initialOptions, argv);
-
-          expect(options.testPathPattern).toBe('1');
-        });
       });
     });
   }
@@ -1668,6 +1668,8 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
@@ -1970,5 +1972,15 @@ describe('moduleLoader', () => {
     );
 
     expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('shards', () => {
+  it('should be object if defined', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      shard: '1/2',
+    } as Config.Argv);
+
+    expect(options.shard).toEqual({shardCount: 2, shardIndex: 1});
   });
 });

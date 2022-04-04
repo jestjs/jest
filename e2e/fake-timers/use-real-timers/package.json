@@ -1,0 +1,6 @@
+{
+  "name": "use-real-timers",
+  "jest": {
+    "timers": "fake"
+  }
+}

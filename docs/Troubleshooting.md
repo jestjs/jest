@@ -182,6 +182,18 @@ jest --maxWorkers=4
 yarn test --maxWorkers=4
 ```
 
+If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to detect number of CPUs, and pass that to Jest.
+
+```yaml
+- name: Get number of CPU cores
+  id: cpu-cores
+  uses: SimenB/github-actions-cpu-cores@v1
+- name: run tests
+  run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
+```
+
+Another thing you can do is use the [`shard`](CLI.md#--shard) flag to parallelize the test run across multiple machines.
+
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
 Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by `coveragePathIgnorePatterns`.
