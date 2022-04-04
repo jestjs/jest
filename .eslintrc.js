@@ -467,7 +467,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'no-unused-vars': ['error', {argsIgnorePattern: '^_'}],
     'no-use-before-define': 'off',
-    'no-useless-call': 'warn',
+    'no-useless-call': 'error',
     'no-useless-computed-key': 'error',
     'no-useless-concat': 'error',
     'no-var': 'error',
