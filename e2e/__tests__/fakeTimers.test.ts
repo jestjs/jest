@@ -19,13 +19,24 @@ describe('useFakeTimers', () => {
     const result = runJest('fake-timers/use-fake-timers');
     expect(result.exitCode).toBe(0);
   });
-});
 
-describe('requestAnimationFrame', () => {
-  test('fakes requestAnimationFrame', () => {
-    const result = runJest('fake-timers/request-animation-frame');
+  test('allows to pass advanceTimers option', () => {
+    const result = runJest('fake-timers/advance-timers');
+    expect(result.exitCode).toBe(0);
+  });
 
-    expect(result.stderr).toMatch('requestAnimationFrame test');
+  test('allows to pass doNotFake option', () => {
+    const result = runJest('fake-timers/do-not-fake');
+    expect(result.exitCode).toBe(0);
+  });
+
+  test('allows to pass timerLimit option', () => {
+    const result = runJest('fake-timers/timer-limit');
+    expect(result.exitCode).toBe(0);
+  });
+
+  test('allows clearing not faked timers', () => {
+    const result = runJest('fake-timers/clear-real-timers');
     expect(result.exitCode).toBe(0);
   });
 });
@@ -39,10 +50,19 @@ describe('setImmediate', () => {
   });
 });
 
+describe('requestAnimationFrame', () => {
+  test('fakes requestAnimationFrame', () => {
+    const result = runJest('fake-timers/request-animation-frame');
+
+    expect(result.stderr).toMatch('requestAnimationFrame test');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
 describe('useRealTimers', () => {
   test('restores timers to the native implementation', () => {
     const result = runJest('fake-timers/use-real-timers');
-    expect(result.stdout).toMatch('API is not mocked with fake timers.');
+    expect(result.stdout).toMatch('APIs are not replaced with fake timers.');
     expect(result.exitCode).toBe(0);
   });
 });

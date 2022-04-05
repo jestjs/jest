@@ -637,12 +637,6 @@ export const options: {[key: string]: Options} = {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
   },
-  timers: {
-    description:
-      'Setting this value to fake allows the use of fake timers ' +
-      'for functions such as setTimeout.',
-    type: 'string',
-  },
   transform: {
     description:
       'A JSON string which maps from regular expressions to paths ' +

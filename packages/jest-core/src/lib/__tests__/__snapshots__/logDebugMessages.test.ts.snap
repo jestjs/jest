@@ -13,6 +13,9 @@ exports[`prints the config object 1`] = `
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "extensionsToTreatAsEsm": [],
+    "fakeTimers": {
+      "enableGlobally": false
+    },
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
@@ -52,7 +55,6 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "timers": "real",
     "transform": [],
     "transformIgnorePatterns": [],
     "watchPathIgnorePatterns": []

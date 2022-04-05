@@ -8,7 +8,6 @@
 'use strict';
 
 test('works when resetMocks is set in Jest config', () => {
-  jest.useFakeTimers();
   const f = jest.fn();
   setTimeout(f, 0);
   jest.runAllTimers();

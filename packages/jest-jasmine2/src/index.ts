@@ -88,10 +88,12 @@ export default async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake' || config.timers === 'modern') {
-    environment.fakeTimersModern!.useFakeTimers();
-  } else if (config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   env.beforeEach(() => {
@@ -106,7 +108,10 @@ export default async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'legacy') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         environment.fakeTimers!.useFakeTimers();
       }
     }

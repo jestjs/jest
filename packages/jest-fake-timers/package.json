@@ -25,7 +25,8 @@
     "jest-util": "^28.0.0-alpha.7"
   },
   "devDependencies": {
-    "@types/sinonjs__fake-timers": "^8.1.1"
+    "@jest/test-utils": "^28.0.0-alpha.7",
+    "@types/sinonjs__fake-timers": "^8.1.2"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

@@ -301,6 +301,30 @@ exports[`testURL logs a deprecation warning when \`testURL\` is used 1`] = `
 }
 `;
 
+exports[`timers logs a deprecation warning when \`timers\` is used 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"timers"</> was replaced by <bold>"fakeTimers"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>

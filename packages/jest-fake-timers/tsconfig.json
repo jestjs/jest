@@ -10,6 +10,7 @@
     {"path": "../jest-message-util"},
     {"path": "../jest-mock"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"}
+    {"path": "../jest-util"},
+    {"path": "../test-utils"}
   ]
 }

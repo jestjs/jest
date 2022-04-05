@@ -395,6 +395,108 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 }
 ```
 
+### `fakeTimers` \[object]
+
+Default: `{}`
+
+The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For additional details see [Fake Timers guide](TimerMocks.md) and [API documentation](JestObjectAPI.md#fake-timers).
+
+This option provides the default configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
+
+```json
+{
+  "fakeTimers": {
+    "doNotFake": ["nextTick"],
+    "timerLimit": 1000
+  }
+}
+```
+
+```js title="fakeTime.test.js"
+// install fake timers for this file using the options from Jest configuration
+jest.useFakeTimers();
+
+test('increase the limit of recursive timers for this and following tests', () => {
+  jest.useFakeTimers({timerLimit: 5000});
+  // ...
+});
+```
+
+:::tip
+
+Instead of including `jest.useFakeTimers()` in each test file, you can enable fake timers globally for all tests:
+
+```json
+{
+  "fakeTimers": {
+    "enableGlobally": true
+  }
+}
+```
+
+:::
+
+Configuration options:
+
+```ts
+type FakeableAPI =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout';
+
+type ModernFakeTimersConfig = {
+  /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
+   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   * The default is `false`.
+   */
+  advanceTimers?: boolean | number;
+  /**
+   * List of names of APIs that should not be faked. The default is `[]`, meaning
+   * all APIs are faked.
+   */
+  doNotFake?: Array<FakeableAPI>;
+  /** Whether fake timers should be enabled for all test files. The default is `false`. */
+  enableGlobally?: boolean;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * The default is `false`.
+   */
+  legacyFakeTimers?: boolean;
+  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  now?: number;
+  /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
+  timerLimit?: number;
+};
+```
+
+:::info Legacy Fake Timers
+
+For some reason you might have to use legacy implementation of fake timers. Here is how to enable it globally (additional options are not supported):
+
+```json
+{
+  "fakeTimers": {
+    "enableGlobally": true,
+    "legacyFakeTimers": true
+  }
+}
+```
+
+:::
+
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 
 Default: `['']`
@@ -1457,14 +1559,6 @@ Use it in your Jest config file like this:
 Default: `5000`
 
 Default timeout of a test in milliseconds.
-
-### `timers` \[string]
-
-Default: `real`
-
-Setting this value to `fake` or `modern` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](JestObjectAPI.md#jestusefaketimersimplementation-modern--legacy).
-
-If the value is `legacy`, the old implementation will be used as implementation instead of one backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
 ### `transform` \[object&lt;string, pathToTransformer | \[pathToTransformer, object]&gt;]
 

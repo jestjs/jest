@@ -980,6 +980,7 @@ export default async function normalize(
       case 'expand':
       case 'extensionsToTreatAsEsm':
       case 'globals':
+      case 'fakeTimers':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
@@ -1014,7 +1015,6 @@ export default async function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'timers':
       case 'useStderr':
       case 'verbose':
       case 'watch':

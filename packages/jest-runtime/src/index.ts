@@ -279,10 +279,9 @@ export default class Runtime {
     this._shouldUnmockTransitiveDependenciesCache = new Map();
     this._transitiveShouldMock = new Map();
 
-    this._fakeTimersImplementation =
-      config.timers === 'legacy'
-        ? this._environment.fakeTimers
-        : this._environment.fakeTimersModern;
+    this._fakeTimersImplementation = config.fakeTimers.legacyFakeTimers
+      ? this._environment.fakeTimers
+      : this._environment.fakeTimersModern;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -2065,13 +2064,17 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers: Jest['useFakeTimers'] = (type = 'modern') => {
-      if (type === 'legacy') {
+    const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
+      fakeTimersConfig = {
+        ...this._config.fakeTimers,
+        ...fakeTimersConfig,
+      } as Config.FakeTimersConfig;
+      if (fakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
-      this._fakeTimersImplementation!.useFakeTimers();
+      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
       return jestObject;
     };
     const useRealTimers = () => {
@@ -2134,7 +2137,7 @@ export default class Runtime {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
-            'getRealSystemTime is not available when not using modern timers',
+            '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },
@@ -2156,7 +2159,7 @@ export default class Runtime {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
-            'runAllImmediates is not available when using modern timers',
+            '`jest.runAllImmediates()` is only available when using legacy fake timers.',
           );
         }
       },
@@ -2172,7 +2175,7 @@ export default class Runtime {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
-            'setSystemTime is not available when not using modern timers',
+            '`jest.setSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },

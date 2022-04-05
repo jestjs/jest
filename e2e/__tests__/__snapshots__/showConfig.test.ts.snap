@@ -16,6 +16,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
       "extensionsToTreatAsEsm": [],
+      "fakeTimers": {
+        "enableGlobally": false
+      },
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
@@ -68,7 +71,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "testRegex": [],
       "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
-      "timers": "real",
       "transform": [
         [
           "\\\\.[jt]sx?$",
