@@ -97,9 +97,7 @@ const deprecatedOptions: DeprecatedOptions = {
 
   timers: (_options: {timers?: string}) => `  Option ${chalk.bold(
     '"timers"',
-  )} was replaced by ${chalk.bold(
-    '"fakeTimers"',
-  )}. See migration guide: https://jestjs.io/docs/next/migration-guide#faketimers.
+  )} was replaced by ${chalk.bold('"fakeTimers"')}.
 
   Please update your configuration.`,
 };

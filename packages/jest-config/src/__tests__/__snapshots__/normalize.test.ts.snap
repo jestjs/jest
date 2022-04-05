@@ -307,7 +307,7 @@ exports[`timers logs a deprecation warning when \`timers\` is used 1`] = `
     Array [
       "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
-<yellow>  Option <bold>"timers"</> was replaced by <bold>"fakeTimers"</>. See migration guide: https://jestjs.io/docs/next/migration-guide#faketimers.</>
+<yellow>  Option <bold>"timers"</> was replaced by <bold>"fakeTimers"</>.</>
 <yellow></>
 <yellow>  Please update your configuration.</>
 <yellow></>
