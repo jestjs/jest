@@ -570,7 +570,7 @@ test('plays audio', () => {
 
 ### `jest.clearAllMocks()`
 
-Clears the `mock.calls`, `mock.instances` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
 
 Returns the `jest` object for chaining.
 

@@ -13,7 +13,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
   clearMocks:
-    'Automatically clear mock calls, instances and results before every test',
+    'Automatically clear mock calls, instances, contexts and results before every test',
   collectCoverage:
     'Indicates whether the coverage information should be collected while executing the test',
   collectCoverageFrom:

@@ -81,6 +81,12 @@ describe('check', () => {
     );
   });
 
+  it('raises an exception if ignoreProjects is not provided any project names', () => {
+    expect(() => check(argv({ignoreProjects: []}))).toThrow(
+      'The --ignoreProjects option requires the name of at least one project to be specified.\n',
+    );
+  });
+
   it('raises an exception if config is not a valid JSON string', () => {
     expect(() => check(argv({config: 'x:1'}))).toThrow(
       'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json',

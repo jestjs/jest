@@ -71,7 +71,7 @@ export interface Jest {
    */
   autoMockOn(): Jest;
   /**
-   * Clears the `mock.calls`, `mock.instances` and `mock.results` properties of
+   * Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of
    * all mocks. Equivalent to calling `.mockClear()` on every mocked function.
    */
   clearAllMocks(): Jest;

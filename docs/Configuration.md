@@ -150,7 +150,7 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 
 Default: `false`
 
-Automatically clear mock calls, instances and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
 
 ### `collectCoverage` \[boolean]
 
@@ -673,7 +673,7 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
-Default: `["js", "jsx", "ts", "tsx", "json", "node"]`
+Default: `["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 

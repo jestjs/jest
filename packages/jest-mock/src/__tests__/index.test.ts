@@ -424,20 +424,53 @@ describe('moduleMocker', () => {
         expect(fn.mock.instances[1]).toBe(instance2);
       });
 
+      it('tracks context objects passed to mock calls', () => {
+        const fn = moduleMocker.fn();
+        expect(fn.mock.instances).toEqual([]);
+
+        const ctx0 = {};
+        fn.apply(ctx0, []);
+        expect(fn.mock.contexts[0]).toBe(ctx0);
+
+        const ctx1 = {};
+        fn.call(ctx1);
+        expect(fn.mock.contexts[1]).toBe(ctx1);
+
+        const ctx2 = {};
+        const bound2 = fn.bind(ctx2);
+        bound2();
+        expect(fn.mock.contexts[2]).toBe(ctx2);
+
+        // null context
+        fn.apply(null, []); // eslint-disable-line no-useless-call
+        expect(fn.mock.contexts[3]).toBe(null);
+        fn.call(null); // eslint-disable-line no-useless-call
+        expect(fn.mock.contexts[4]).toBe(null);
+        fn.bind(null)();
+        expect(fn.mock.contexts[5]).toBe(null);
+
+        // Unspecified context is `undefined` in strict mode (like in this test) and `window` otherwise.
+        fn();
+        expect(fn.mock.contexts[6]).toBe(undefined);
+      });
+
       it('supports clearing mock calls', () => {
         const fn = moduleMocker.fn();
         expect(fn.mock.calls).toEqual([]);
 
         fn(1, 2, 3);
         expect(fn.mock.calls).toEqual([[1, 2, 3]]);
+        expect(fn.mock.contexts).toEqual([undefined]);
 
         fn.mockReturnValue('abcd');
 
         fn.mockClear();
         expect(fn.mock.calls).toEqual([]);
+        expect(fn.mock.contexts).toEqual([]);
 
         fn('a', 'b', 'c');
         expect(fn.mock.calls).toEqual([['a', 'b', 'c']]);
+        expect(fn.mock.contexts).toEqual([undefined]);
 
         expect(fn()).toEqual('abcd');
       });
