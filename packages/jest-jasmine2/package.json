@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "28.0.0-alpha.7",
+  "version": "28.0.0-alpha.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,22 +17,22 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^28.0.0-alpha.7",
-    "@jest/expect": "^28.0.0-alpha.7",
+    "@jest/environment": "^28.0.0-alpha.8",
+    "@jest/expect": "^28.0.0-alpha.8",
     "@jest/source-map": "^28.0.0-alpha.6",
-    "@jest/test-result": "^28.0.0-alpha.7",
-    "@jest/types": "^28.0.0-alpha.7",
+    "@jest/test-result": "^28.0.0-alpha.8",
+    "@jest/types": "^28.0.0-alpha.8",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^28.0.0-alpha.7",
-    "jest-matcher-utils": "^28.0.0-alpha.7",
-    "jest-message-util": "^28.0.0-alpha.7",
-    "jest-runtime": "^28.0.0-alpha.7",
-    "jest-snapshot": "^28.0.0-alpha.7",
-    "jest-util": "^28.0.0-alpha.7",
-    "pretty-format": "^28.0.0-alpha.7",
+    "jest-each": "^28.0.0-alpha.8",
+    "jest-matcher-utils": "^28.0.0-alpha.8",
+    "jest-message-util": "^28.0.0-alpha.8",
+    "jest-runtime": "^28.0.0-alpha.8",
+    "jest-snapshot": "^28.0.0-alpha.8",
+    "jest-util": "^28.0.0-alpha.8",
+    "pretty-format": "^28.0.0-alpha.8",
     "throat": "^6.0.1"
   },
   "devDependencies": {

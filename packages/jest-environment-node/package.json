@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-node",
-  "version": "28.0.0-alpha.7",
+  "version": "28.0.0-alpha.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^28.0.0-alpha.7",
-    "@jest/fake-timers": "^28.0.0-alpha.7",
-    "@jest/types": "^28.0.0-alpha.7",
+    "@jest/environment": "^28.0.0-alpha.8",
+    "@jest/fake-timers": "^28.0.0-alpha.8",
+    "@jest/types": "^28.0.0-alpha.8",
     "@types/node": "*",
-    "jest-mock": "^28.0.0-alpha.7",
-    "jest-util": "^28.0.0-alpha.7"
+    "jest-mock": "^28.0.0-alpha.8",
+    "jest-util": "^28.0.0-alpha.8"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.0.0-alpha.7"
+    "@jest/test-utils": "^28.0.0-alpha.8"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
