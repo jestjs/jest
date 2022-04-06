@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import assert from 'assert';
 import fs from 'fs';
 import os from 'os';
@@ -18,7 +16,7 @@ import stripJsonComments from 'strip-json-comments';
 import throat from 'throat';
 import {getPackages} from './buildUtils.mjs';
 
-try {
+(async () => {
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
@@ -196,7 +194,7 @@ try {
   console.log(
     chalk.inverse.green(' Successfully validated TypeScript definition files '),
   );
-} catch (error) {
+})().catch(error => {
   console.error('Got error', error.stack);
   process.exitCode = 1;
-}
+});

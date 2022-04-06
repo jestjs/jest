@@ -16,8 +16,6 @@
  *  node ./scripts/build.mjs /users/123/jest/packages/jest-111/src/111.js
  */
 
-'use strict';
-
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';

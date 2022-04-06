@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import assert from 'assert';
 import fs from 'fs';
 import {createRequire} from 'module';

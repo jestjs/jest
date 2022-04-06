@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import fs from 'fs';
 import {createRequire} from 'module';
 import path from 'path';
@@ -38,7 +36,7 @@ const copyrightSnippet = `
  */
 `.trim();
 
-try {
+(async () => {
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
@@ -201,7 +199,7 @@ try {
   console.log(
     chalk.inverse.green(' Successfully extracted TypeScript definition files '),
   );
-} catch (error) {
+})().catch(error => {
   console.error('Got error', error.stack);
   process.exitCode = 1;
-}
+});
