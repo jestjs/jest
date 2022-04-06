@@ -23,7 +23,7 @@
     "@jest/test-result": "^28.0.0-alpha.7",
     "@jest/types": "^28.0.0-alpha.7",
     "@types/node": "*",
-    "chalk": "^4.0.0",
+    "chalk": "^5.0.0",
     "co": "^4.6.0",
     "dedent": "^0.7.0",
     "is-generator-fn": "^2.0.0",

@@ -19,7 +19,7 @@
     "@jest/types": "^28.0.0-alpha.7",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^4.0.0",
+    "chalk": "^5.0.0",
     "emittery": "^0.8.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",

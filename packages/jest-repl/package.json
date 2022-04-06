@@ -23,7 +23,7 @@
     "@jest/environment": "^28.0.0-alpha.7",
     "@jest/transform": "^28.0.0-alpha.7",
     "@jest/types": "^28.0.0-alpha.7",
-    "chalk": "^4.0.0",
+    "chalk": "^5.0.0",
     "jest-config": "^28.0.0-alpha.7",
     "jest-runtime": "^28.0.0-alpha.7",
     "jest-util": "^28.0.0-alpha.7",

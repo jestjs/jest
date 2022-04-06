@@ -24,7 +24,7 @@
     "@jest/test-result": "^28.0.0-alpha.7",
     "@jest/transform": "^28.0.0-alpha.7",
     "@jest/types": "^28.0.0-alpha.7",
-    "chalk": "^4.0.0",
+    "chalk": "^5.0.0",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
     "execa": "^5.0.0",
