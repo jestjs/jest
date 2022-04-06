@@ -7,18 +7,18 @@
 
 'use strict';
 
-const assert = require('assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const chalk = require('chalk');
-const execa = require('execa');
-const globby = require('globby');
-const stripJsonComments = require('strip-json-comments');
-const throat = require('throat');
-const {getPackages} = require('./buildUtils');
+import assert from 'assert';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+import execa from 'execa';
+import globby from 'globby';
+import stripJsonComments from 'strip-json-comments';
+import throat from 'throat';
+import {getPackages} from './buildUtils.mjs';
 
-(async () => {
+try {
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
@@ -196,7 +196,7 @@ const {getPackages} = require('./buildUtils');
   console.log(
     chalk.inverse.green(' Successfully validated TypeScript definition files '),
   );
-})().catch(error => {
+} catch (error) {
   console.error('Got error', error.stack);
   process.exitCode = 1;
-});
+}

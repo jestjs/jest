@@ -12,36 +12,41 @@
  * Non-js files not matching IGNORE_PATTERN will be copied without transpiling.
  *
  * Example:
- *  node ./scripts/build.js
- *  node ./scripts/build.js /users/123/jest/packages/jest-111/src/111.js
- *
- * NOTE: this script is node@6 compatible
+ *  node ./scripts/build.mjs
+ *  node ./scripts/build.mjs /users/123/jest/packages/jest-111/src/111.js
  */
 
 'use strict';
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const babel = require('@babel/core');
-const chalk = require('chalk');
-const glob = require('glob');
-const micromatch = require('micromatch');
-const prettier = require('prettier');
-const transformOptions = require('../babel.config.js');
-const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import babel from '@babel/core';
+import chalk from 'chalk';
+import glob from 'glob';
+import micromatch from 'micromatch';
+import prettier from 'prettier';
+import transformOptions from '../babel.config.js';
+import {
+  OK,
+  PACKAGES_DIR,
+  adjustToTerminalWidth,
+  getPackages,
+} from './buildUtils.mjs';
 
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const JS_FILES_PATTERN = '**/*.js';
 const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
-const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_EXCLUDE_LIST =
   /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const prettierConfig = prettier.resolveConfig.sync(__filename);
+const prettierConfig = prettier.resolveConfig.sync(
+  fileURLToPath(import.meta.url),
+);
 prettierConfig.trailingComma = 'none';
 prettierConfig.parser = 'babel';
 
@@ -110,7 +115,10 @@ function buildFile(file, silent) {
       // The excluded modules are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
-        require.resolve('./babel-plugin-jest-native-globals'),
+        path.resolve(
+          path.dirname(fileURLToPath(import.meta.url)),
+          'babel-plugin-jest-native-globals.js',
+        ),
       );
     } else {
       options.plugins = options.plugins.map(plugin => {

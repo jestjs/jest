@@ -254,7 +254,7 @@ module.exports = {
     },
     {
       env: {node: true},
-      files: ['*.js', '*.jsx'],
+      files: ['*.js', '*.jsx', 'scripts/*'],
     },
     {
       files: [

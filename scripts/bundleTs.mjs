@@ -7,21 +7,22 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const {
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import {
   CompilerState,
   Extractor,
   ExtractorConfig,
-} = require('@microsoft/api-extractor');
-const chalk = require('chalk');
-const {sync: pkgDir} = require('pkg-dir');
-const prettier = require('prettier');
-const rimraf = require('rimraf');
-const {getPackages} = require('./buildUtils');
+} from '@microsoft/api-extractor';
+import chalk from 'chalk';
+import {sync as pkgDir} from 'pkg-dir';
+import prettier from 'prettier';
+import rimraf from 'rimraf';
+import {getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
-  __filename.replace(/\.js$/, '.d.ts'),
+  fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
 );
 
 const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
@@ -35,7 +36,7 @@ const copyrightSnippet = `
  */
 `.trim();
 
-(async () => {
+try {
   const packages = getPackages();
 
   const packagesWithTs = packages.filter(p =>
@@ -195,7 +196,7 @@ const copyrightSnippet = `
   console.log(
     chalk.inverse.green(' Successfully extracted TypeScript definition files '),
   );
-})().catch(error => {
+} catch (error) {
   console.error('Got error', error.stack);
   process.exitCode = 1;
-});
+}

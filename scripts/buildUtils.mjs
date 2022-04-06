@@ -7,24 +7,30 @@
 
 'use strict';
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const {sync: readPkg} = require('read-pkg');
-const stringLength = require('string-length');
-const rootPackage = require('../package.json');
+import assert from 'assert';
+import fs from 'fs';
+import {createRequire} from 'module';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import chalk from 'chalk';
+import {sync as readPkg} from 'read-pkg';
+import stringLength from 'string-length';
 
-const PACKAGES_DIR = path.resolve(__dirname, '../packages');
+export const PACKAGES_DIR = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../packages',
+);
 
-const OK = chalk.reset.inverse.bold.green(' DONE ');
+export const OK = chalk.reset.inverse.bold.green(' DONE ');
 
 // Get absolute paths of all directories under packages/*
-module.exports.getPackages = function getPackages() {
+export function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
     .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+  const require = createRequire(import.meta.url);
+  const rootPackage = require('../package.json');
 
   const nodeEngineRequirement = rootPackage.engines.node;
 
@@ -104,9 +110,9 @@ module.exports.getPackages = function getPackages() {
 
     return {packageDir, pkg};
   });
-};
+}
 
-module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {
+export function adjustToTerminalWidth(str) {
   const columns = process.stdout.columns || 80;
   const WIDTH = columns - stringLength(OK) + 1;
   const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
@@ -115,7 +121,4 @@ module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
   return strs.slice(0, -1).concat(lastString).join('\n');
-};
-
-module.exports.OK = OK;
-module.exports.PACKAGES_DIR = PACKAGES_DIR;
+}
