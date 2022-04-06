@@ -133,6 +133,12 @@
         }
       },
       {
+        "files": "lerna.json",
+        "options": {
+          "parser": "json-stringify"
+        }
+      },
+      {
         "files": ".yarnrc.yml",
         "options": {
           "singleQuote": false
@@ -158,7 +164,6 @@
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "resolutions": {
-    "@jest/create-cache-key-function": "workspace:*",
     "@testing-library/dom/pretty-format": "26.6.1",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
