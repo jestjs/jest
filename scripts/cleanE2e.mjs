@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const {normalize, resolve} = require('path');
-const {sync: glob} = require('glob');
-const {sync: rimraf} = require('rimraf');
+import {dirname, normalize, resolve} from 'path';
+import {fileURLToPath} from 'url';
+import glob from 'glob';
+import rimraf from 'rimraf';
 
 const excludedModules = [
   'e2e/global-setup-node-modules/node_modules/',
@@ -22,12 +21,13 @@ const excludedModules = [
   'e2e/retain-all-files/node_modules/',
 ].map(dir => normalize(dir));
 
-const e2eNodeModules = glob('e2e/*/node_modules/')
-  .concat(glob('e2e/*/*/node_modules/'))
+const e2eNodeModules = glob
+  .sync('e2e/*/node_modules/')
+  .concat(glob.sync('e2e/*/*/node_modules/'))
   .filter(dir => !excludedModules.includes(dir))
-  .map(dir => resolve(__dirname, '..', dir))
+  .map(dir => resolve(dirname(fileURLToPath(import.meta.url)), '..', dir))
   .sort();
 
 e2eNodeModules.forEach(dir => {
-  rimraf(dir, {glob: false});
+  rimraf.sync(dir, {glob: false});
 });

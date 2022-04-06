@@ -92,7 +92,7 @@
     "bundle:ts": "node ./scripts/bundleTs.mjs",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.mjs",
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
-    "clean-e2e": "node ./scripts/cleanE2e.js",
+    "clean-e2e": "node ./scripts/cleanE2e.mjs",
     "crowdin:upload": "echo 'Uploading sources to Crowdin' && crowdin upload sources --config ./crowdin.yaml",
     "crowdin:download": "echo 'Downloading translations from Crowdin' && crowdin download --config ./crowdin.yaml",
     "jest": "node ./packages/jest-cli/bin/jest.js",
