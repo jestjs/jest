@@ -114,14 +114,20 @@ module.exports = {
 
 We've told Jest to ignore files matching a stylesheet or image extension, and instead, require our mock files. You can adjust the regular expression to match the file types your webpack config handles.
 
-_Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module._
+:::tip
+
+Keep in mind that a transformer only runs once per file unless the file has changed.
+
+If you wish to use `babel-jest` transformer alongside with additional code preprocessors, `babel-jest` must be included in the object explicitly:
 
 ```json
 "transform": {
-  "\\.js$": "babel-jest",
-  "\\.css$": "custom-transformer",
+  "\\.[jt]sx?$": "babel-jest",
+  "\\.css$": "some-css-transformer",
 }
 ```
+
+:::
 
 ### Configuring Jest to find our files
 

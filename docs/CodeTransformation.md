@@ -3,19 +3,30 @@ id: code-transformation
 title: Code Transformation
 ---
 
-Jest runs the code in your project as JavaScript, but if you use some syntax not supported by Node.js out of the box (such as JSX, types from TypeScript, Vue templates etc.) then you'll need to transform that code into plain JavaScript, similar to what you would do when building for browsers.
+Jest runs the code in your project as JavaScript, but if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates) then you'll need to transform that code into plain JavaScript, similar to what you would do when building for browsers.
 
-Jest supports this via the [`transform` configuration option](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
+Jest supports this via the [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) configuration option.
 
-A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by Node, you might plug in one of many compilers that compile a future version of JavaScript to a current one.
+A transformer is a module that provides a method for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by Node, you might plug in a code preprocessor that would transpile a future version of JavaScript to a current one.
 
 Jest will cache the result of a transformation and attempt to invalidate that result based on a number of factors, such as the source of the file being transformed and changing configuration.
 
 ## Defaults
 
-Jest ships with one transformer out of the box - `babel-jest`. It will automatically load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+Jest ships with one transformer out of the box - `babel-jest`. It will load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
-If you override the `transform` configuration option `babel-jest` will no longer be active, and you'll need to add it manually if you wish to use Babel.
+:::tip
+
+If you wish to use `babel-jest` transformer alongside with additional code preprocessors, `babel-jest` must be included in the object explicitly:
+
+```json
+"transform": {
+  "\\.[jt]sx?$": "babel-jest",
+  "\\.css$": "some-css-transformer",
+}
+```
+
+:::
 
 ## Writing custom transformers
 
@@ -133,6 +144,8 @@ Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the 
 :::tip
 
 Make sure `process{Async}` method returns source map alongside with transformed code, so it is possible to report line information accurately in code coverage and test errors. Inline source maps also work but are slower.
+
+During the development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete cache](Troubleshooting.md#caching-issues).
 
 :::
 
