@@ -450,7 +450,7 @@ test('Does transform files with the corresponding project transformer', () => {
       };`,
     'project1/transformer.js': `
       module.exports = {
-        process: () => 'module.exports = "PROJECT1";',
+        process: () => ({code: 'module.exports = "PROJECT1";'}),
         getCacheKey: () => 'PROJECT1_CACHE_KEY',
       }
     `,
@@ -465,7 +465,7 @@ test('Does transform files with the corresponding project transformer', () => {
       };`,
     'project2/transformer.js': `
       module.exports = {
-        process: () => 'module.exports = "PROJECT2";',
+        process: () => ({code: 'module.exports = "PROJECT2";'}),
         getCacheKey: () => 'PROJECT2_CACHE_KEY',
       }
     `,

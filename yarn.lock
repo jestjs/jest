@@ -18672,9 +18672,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@patch:react-native@0.68.0#./patches/react-native.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+"react-native@patch:react-native@npm:0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 0.68.0
-  resolution: "react-native@patch:react-native@npm%3A0.68.0#./patches/react-native.patch::version=0.68.0&hash=5ca1dc&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "react-native@patch:react-native@npm%3A0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::version=0.68.0&hash=c5a757&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": ^7.0.3
@@ -18712,7 +18712,7 @@ __metadata:
     react: 17.0.2
   bin:
     react-native: cli.js
-  checksum: f953ba6590354181e1331466c54b3d90d2d0a4b60c077808cd23b9c88b6008f332078e5541ad69a7ca5c66123cdda4ec8ea085bcfa9d61e28535d2233059cf96
+  checksum: 14f503f007e6372c9c31c397df1cc6ecc581a597a8752009721402c132905aa9381d1bb5459da8862dde498348eb0c18a9e93ce1ee911a4947ff01cc5df9928d
   languageName: node
   linkType: hard
 

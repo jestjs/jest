@@ -14,9 +14,9 @@ const fileToTransform = require.resolve('./module');
 export default {
   process(src, filepath) {
     if (filepath === fileToTransform) {
-      return 'module.exports = 42;';
+      return {code: 'module.exports = 42;'};
     }
 
-    return src;
+    return {code: src};
   },
 };

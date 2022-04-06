@@ -244,7 +244,7 @@ export const createTransformer: TransformerCreator<
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelOptionsAsync(
@@ -266,7 +266,7 @@ export const createTransformer: TransformerCreator<
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
   };
 };

@@ -7,13 +7,15 @@
 
 module.exports = {
   process() {
-    return `
-      module.exports = {
-        root: 'App-root',
-        header: 'App-header',
-        logo: 'App-logo',
-        intro: 'App-intro',
-      };
-    `;
+    const code = `
+    module.exports = {
+      root: 'App-root',
+      header: 'App-header',
+      logo: 'App-logo',
+      intro: 'App-intro',
+    };
+  `;
+
+    return {code};
   },
 };
