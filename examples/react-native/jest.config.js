@@ -2,7 +2,6 @@ const {resolve} = require('path');
 
 module.exports = {
   preset: 'react-native',
-  testEnvironment: 'jsdom',
   transform: {
     '\\.(js|ts|tsx)$': require.resolve('react-native/jest/preprocessor.js'),
   },
