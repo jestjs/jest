@@ -132,6 +132,12 @@
           "trailingComma": "es5"
         }
       },
+       {
+        "files": "lerna.json",
+        "options": {
+          "parser": "json-stringify"
+        }
+      },
       {
         "files": ".yarnrc.yml",
         "options": {
