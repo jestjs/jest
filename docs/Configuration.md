@@ -1568,7 +1568,7 @@ A map from regular expressions to paths to transformers. Optionally, a tuple wit
 
 Jest runs the code in your project as JavaScript, hence a transformer is needed if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates). For more details and instructions on building your own transformer see the [Code Transformation](CodeTransformation.md) section.
 
-By default [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup) will be used. It will load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+By default [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup) transformer will be used. It will load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
 :::tip
 
