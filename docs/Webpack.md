@@ -83,8 +83,6 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 }
 ```
 
-> Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
-
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
 
 ```js title="fileTransformer.js"
@@ -116,9 +114,7 @@ We've told Jest to ignore files matching a stylesheet or image extension, and in
 
 :::tip
 
-Keep in mind that a transformer only runs once per file unless the file has changed.
-
-If you wish to use `babel-jest` transformer alongside with additional code preprocessors, `babel-jest` must be included in the object explicitly:
+Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
 
 ```json
 "transform": {

@@ -1564,17 +1564,17 @@ Default timeout of a test in milliseconds.
 
 Default: `{"\\.[jt]sx?$": "babel-jest"}`
 
-A map from regular expressions to paths to transformers. Optionally, a tuple with configuration options can be passed as second argument: `{filePattern: ['path-to-transformer', {options}]}`. For example, to configure `babel-jest` for non-default behavior: `{'\\.js$': ['babel-jest', {rootMode: 'upward'}]}`.
+A map from regular expressions to paths to transformers. Optionally, a tuple with configuration options can be passed as second argument: `{filePattern: ['path-to-transformer', {options}]}`. For example, here is how you can configure `babel-jest` for non-default behavior: `{'\\.js$': ['babel-jest', {rootMode: 'upward'}]}`.
 
-Jest runs the code in your project as JavaScript, hence a transformer is needed if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates). For more details and instructions on building your own transformer see the [Code Transformation](CodeTransformation.md) section.
+Jest runs the code of your project as JavaScript, hence a transformer is needed if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates). By default, Jest will use [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup) transformer, which will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
-By default [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup) transformer will be used. It will load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+See the [Code Transformation](CodeTransformation.md) section for more details and instructions on building your own transformer.
 
 :::tip
 
 Keep in mind that a transformer only runs once per file unless the file has changed.
 
-If you wish to use `babel-jest` transformer alongside with additional code preprocessors, `babel-jest` must be included in the object explicitly:
+Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
 
 ```json
 "transform": {
