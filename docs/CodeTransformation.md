@@ -150,8 +150,10 @@ Importing images is a way to include them in your browser bundle, but they are n
 const path = require('path');
 
 module.exports = {
-  process(src, filename, config, options) {
-    return `module.exports = ${JSON.stringify(path.basename(filename))};`;
+  process(sourceText, sourcePath, options) {
+    return {
+      code: `module.exports = ${JSON.stringify(path.basename(sourcePath))};`,
+    };
   },
 };
 ```

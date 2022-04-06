@@ -91,8 +91,10 @@ If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`tra
 const path = require('path');
 
 module.exports = {
-  process(src, filename, config, options) {
-    return `module.exports = ${JSON.stringify(path.basename(filename))};`;
+  process(sourceText, sourcePath, options) {
+    return {
+      code: `module.exports = ${JSON.stringify(path.basename(sourcePath))};`,
+    };
   },
 };
 ```
@@ -118,7 +120,6 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 "transform": {
   "\\.js$": "babel-jest",
   "\\.css$": "custom-transformer",
-  ...
 }
 ```
 
@@ -186,8 +187,7 @@ That's it! webpack is a complex and flexible tool, so you may have to make some 
 
 webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
 
-```json
-// .babelrc
+```json title=".babelrc"
 {
   "presets": [["env", {"modules": false}]],
 
@@ -203,8 +203,7 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
 
-```json
-// .babelrc
+```json title=".babelrc"
 {
   "presets": [["env", {"modules": false}]],
 
