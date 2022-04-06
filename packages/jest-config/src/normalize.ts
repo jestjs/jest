@@ -7,7 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import merge = require('deepmerge');
 import {sync as glob} from 'glob';
 import {statSync} from 'graceful-fs';

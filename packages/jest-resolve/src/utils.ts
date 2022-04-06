@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 

@@ -431,7 +431,7 @@ The `jest-diff` package does not assume that the 2 labels have equal length.
 For consistency with most diff tools, you might exchange the colors:
 
 ```ts
-import chalk = require('chalk');
+import chalk from 'chalk';
 
 const options = {
   aColor: chalk.red,
@@ -444,7 +444,7 @@ const options = {
 Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background color:
 
 ```ts
-import chalk = require('chalk');
+import chalk from 'chalk';
 
 const options = {
   changeColor: chalk.bold.bgYellowBright,
@@ -534,7 +534,7 @@ A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
 If you want patch marks to have the same dim color as common lines:
 
 ```ts
-import chalk = require('chalk');
+import chalk from 'chalk';
 
 const options = {
   expand: false,

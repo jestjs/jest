@@ -6,7 +6,7 @@
  *
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
 import {

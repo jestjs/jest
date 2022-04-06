@@ -7,7 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,

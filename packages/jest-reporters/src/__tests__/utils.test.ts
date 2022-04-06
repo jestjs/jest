@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import stripAnsi = require('strip-ansi');
 import {makeProjectConfig} from '@jest/test-utils';
 import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';

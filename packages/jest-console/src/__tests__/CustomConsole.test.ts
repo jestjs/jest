@@ -6,7 +6,7 @@
  */
 
 import {Writable} from 'stream';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {

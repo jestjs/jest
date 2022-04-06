@@ -8,7 +8,7 @@
 import assert = require('assert');
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 

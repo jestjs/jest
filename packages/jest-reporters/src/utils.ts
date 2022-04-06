@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import slash = require('slash');
 import type {AggregatedResult, TestCaseResult} from '@jest/test-result';
 import type {Config} from '@jest/types';

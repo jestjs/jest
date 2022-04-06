@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import terminalLink = require('terminal-link');
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';

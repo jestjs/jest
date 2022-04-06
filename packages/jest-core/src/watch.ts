@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import ansiEscapes = require('ansi-escapes');
-import chalk = require('chalk');
+import chalk from 'chalk';
 import exit = require('exit');
 import slash = require('slash');
 import type {Config} from '@jest/types';

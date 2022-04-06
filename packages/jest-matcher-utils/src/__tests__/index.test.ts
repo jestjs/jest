@@ -6,7 +6,7 @@
  *
  */
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {

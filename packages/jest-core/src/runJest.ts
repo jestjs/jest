@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';

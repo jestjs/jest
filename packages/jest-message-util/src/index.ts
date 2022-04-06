@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {fileURLToPath} from 'url';
 import {codeFrameColumns} from '@babel/code-frame';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 import slash = require('slash');

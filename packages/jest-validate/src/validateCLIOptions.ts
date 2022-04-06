@@ -6,7 +6,7 @@
  */
 
 import camelcase = require('camelcase');
-import chalk = require('chalk');
+import chalk from 'chalk';
 import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import defaultConfig from './defaultConfig';

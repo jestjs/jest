@@ -7,7 +7,7 @@
 
 import {cpus} from 'os';
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';

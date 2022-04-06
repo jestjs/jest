@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import glob = require('glob');
 import * as fs from 'graceful-fs';
 import istanbulCoverage = require('istanbul-lib-coverage');

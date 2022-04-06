@@ -8,7 +8,7 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import * as path from 'path';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import slash = require('slash');
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';

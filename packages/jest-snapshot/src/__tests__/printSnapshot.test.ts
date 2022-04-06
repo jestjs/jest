@@ -7,7 +7,7 @@
 
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
-import chalk = require('chalk');
+import chalk from 'chalk';
 import format from 'pretty-format';
 import {
   aBackground2,

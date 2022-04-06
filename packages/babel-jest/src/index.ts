@@ -13,7 +13,7 @@ import {
   transformSync as babelTransform,
   transformAsync as babelTransformAsync,
 } from '@babel/core';
-import chalk = require('chalk');
+import chalk from 'chalk';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {
