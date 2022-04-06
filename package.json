@@ -109,9 +109,9 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
-    "verify-old-ts": "node ./scripts/verifyOldTs.js",
-    "verify-pnp": "node ./scripts/verifyPnP.js",
-    "watch": "yarn build:js && node ./scripts/watch.js",
+    "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
+    "verify-pnp": "node ./scripts/verifyPnP.mjs",
+    "watch": "yarn build:js && node ./scripts/watch.mjs",
     "watch:ts": "yarn build:ts --watch"
   },
   "workspaces": [

@@ -7,16 +7,20 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const dedent = require('dedent');
-const execa = require('execa');
-const yaml = require('js-yaml');
-const rimraf = require('rimraf');
-const tempy = require('tempy');
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import chalk from 'chalk';
+import dedent from 'dedent';
+import execa from 'execa';
+import yaml from 'js-yaml';
+import rimraf from 'rimraf';
+import tempy from 'tempy';
 
-const rootDirectory = path.resolve(__dirname, '..');
+const rootDirectory = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
 
 const cwd = tempy.directory();
 
