@@ -7,9 +7,12 @@
 
 'use strict';
 
-const {writeFileSync} = require('fs');
-const {resolve} = require('path');
-const rimraf = require('rimraf');
+import {writeFileSync} from 'fs';
+import {createRequire} from 'module';
+import {dirname, resolve} from 'path';
+import {fileURLToPath} from 'url';
+import rimraf from 'rimraf';
+const require = createRequire(import.meta.url);
 
 const configFile = require.resolve('../jest.config');
 
@@ -19,4 +22,4 @@ delete config.projects;
 
 writeFileSync(configFile, `module.exports = ${JSON.stringify(config)};\n`);
 
-rimraf.sync(resolve(__dirname, '../examples/'));
+rimraf.sync(resolve(dirname(fileURLToPath(import.meta.url)), '../examples/'));
