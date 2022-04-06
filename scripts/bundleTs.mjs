@@ -107,7 +107,10 @@ try {
   };
 
   await fs.promises.writeFile(
-    path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../api-extractor.json'),
+    path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../api-extractor.json',
+    ),
     JSON.stringify(sharedExtractorConfig, null, 2),
   );
 
