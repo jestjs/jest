@@ -4122,11 +4122,11 @@ __metadata:
   linkType: hard
 
 "@react-native-community/cli-debugger-ui@npm:^6.0.0-rc.0":
-  version: 6.0.0-rc.0
-  resolution: "@react-native-community/cli-debugger-ui@npm:6.0.0-rc.0"
+  version: 6.0.0
+  resolution: "@react-native-community/cli-debugger-ui@npm:6.0.0"
   dependencies:
     serve-static: ^1.13.1
-  checksum: 8e044f8cf7744cd42a1459283d47ccc6a41746fd07760a1422f76744ed79cf258ffe69c3fa93f83a0438c68586af046573fa7e9687c87a464f063353366eae41
+  checksum: 3257e7efcd9849124adca07facd414729c0402774fb5593cd0b5343f4410c8306f0b2a65d0ef2f676a372fd5ca130fe21365fa3411b5c490bd27b1fc1911bf9c
   languageName: node
   linkType: hard
 
@@ -4196,8 +4196,8 @@ __metadata:
   linkType: hard
 
 "@react-native-community/cli-server-api@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@react-native-community/cli-server-api@npm:6.4.0"
+  version: 6.4.3
+  resolution: "@react-native-community/cli-server-api@npm:6.4.3"
   dependencies:
     "@react-native-community/cli-debugger-ui": ^6.0.0-rc.0
     "@react-native-community/cli-tools": ^6.2.0
@@ -4208,7 +4208,7 @@ __metadata:
     pretty-format: ^26.6.2
     serve-static: ^1.13.1
     ws: ^1.1.0
-  checksum: 287998dccc417a6fa82e43f18934341d637d1a68c8e52ccaf4d48c13dc93786f5ea8d7ab9ba1618e7895e21c8371889c403d0a676ec5dda2732f9d302db97f08
+  checksum: 52b36ebbfc19c2f39350cbd01069703ed64885f90fccdd6e3f71b5e464fcb49ce41308bd6eb9b1306206122277f4b5bd2416fe326b7948b8d99300916aa738fa
   languageName: node
   linkType: hard
 
@@ -5197,9 +5197,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^14.0.27":
-  version: 14.18.11
-  resolution: "@types/node@npm:14.18.11"
-  checksum: 58f75d05406004b83f1fd4c72115d2c180f22812bd48187b89b27dd9ea09f90774b2261f068e94bf6a6792a1f33a585b624135be3c4b6e2acd766043148754a7
+  version: 14.18.12
+  resolution: "@types/node@npm:14.18.12"
+  checksum: 8a0273caa0584020adb8802784fc7d4f18f05e6c205335b7f3818a91d6b0c22736b9f51da3428d5bc54076ad47f1a4d6d57990a3ce8489a520ac66b2b3ff24bc
   languageName: node
   linkType: hard
 
@@ -6214,9 +6214,9 @@ __metadata:
   linkType: hard
 
 "ansi-regex@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "ansi-regex@npm:4.1.0"
-  checksum: 97aa4659538d53e5e441f5ef2949a3cffcb838e57aeaad42c4194e9d7ddb37246a6526c4ca85d3940a9d1e19b11cc2e114530b54c9d700c8baf163c31779baf8
+  version: 4.1.1
+  resolution: "ansi-regex@npm:4.1.1"
+  checksum: b1a6ee44cb6ecdabaa770b2ed500542714d4395d71c7e5c25baa631f680fb2ad322eb9ba697548d498a6fd366949fc8b5bfcf48d49a32803611f648005b01888
   languageName: node
   linkType: hard
 
@@ -7110,12 +7110,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bplist-parser@npm:0.3.0":
-  version: 0.3.0
-  resolution: "bplist-parser@npm:0.3.0"
+"bplist-parser@npm:0.3.1":
+  version: 0.3.1
+  resolution: "bplist-parser@npm:0.3.1"
   dependencies:
     big-integer: 1.6.x
-  checksum: f1c49e4850eabda94b63a1764507cfa33c4e85f6289164964de06cb781d753cca63ccde4c2334999b6fd58ac85cab11f716a1e2fcdc31cd2213f718439c5383c
+  checksum: 7cabc5beadb7530f100cfdcce2b2f1d5d1674309b20f281b9b376022b2de55e86904598f1fd67254ec7f6ac1b74d67dc92c3445eb4cef5dec21c36c58d4a1106
   languageName: node
   linkType: hard
 
@@ -8710,9 +8710,9 @@ __metadata:
   linkType: hard
 
 "dayjs@npm:^1.8.15":
-  version: 1.10.7
-  resolution: "dayjs@npm:1.10.7"
-  checksum: a0a4ca95abaa03d0702161dc2c35d16121188e342f5052b9c61cdf784dab68af766f477c04f87f71c6af666fd4d13db9b9853b87265850d6093b7b04e1bb1cd7
+  version: 1.11.0
+  resolution: "dayjs@npm:1.11.0"
+  checksum: 2d36f6d71345114cdcd89147adf9e05b4f8fe81684e08c8bf1f86b140aa0b86ecc3cae661a9348d96feb7fbefd03e1bc3697303688e95209670abcb36b4ece15
   languageName: node
   linkType: hard
 
@@ -10741,9 +10741,9 @@ __metadata:
   linkType: hard
 
 "flow-parser@npm:0.*":
-  version: 0.171.0
-  resolution: "flow-parser@npm:0.171.0"
-  checksum: fbeab8e8324050efaeb7b1def51bb6224000803e12f50987a0f471d8e959913ae8774b07de6325465dff41caa3fb950f2d5adba8b365bde7c57b9ea109a9baa1
+  version: 0.175.1
+  resolution: "flow-parser@npm:0.175.1"
+  checksum: 85e9597aa8a5d572fc3a867bd65c5579d0f2fb624faaeca47e3abc20c57c49305b5224a65cbbd28d131824990b3d99f6dfb7d94f049d731e82093435fe923b96
   languageName: node
   linkType: hard
 
@@ -11402,9 +11402,9 @@ __metadata:
   linkType: hard
 
 "graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.15, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.2, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
-  version: 4.2.9
-  resolution: "graceful-fs@npm:4.2.9"
-  checksum: 68ea4e07ff2c041ada184f9278b830375f8e0b75154e3f080af6b70f66172fabb4108d19b3863a96b53fc068a310b9b6493d86d1291acc5f3861eb4b79d26ad6
+  version: 4.2.10
+  resolution: "graceful-fs@npm:4.2.10"
+  checksum: 3f109d70ae123951905d85032ebeae3c2a5a7a997430df00ea30df0e3a6c60cf6689b109654d6fdacd28810a053348c4d14642da1d075049e6be1ba5216218da
   languageName: node
   linkType: hard
 
@@ -15763,9 +15763,9 @@ __metadata:
   linkType: hard
 
 "minimist@npm:^1.1.1, minimist@npm:^1.2.0, minimist@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "minimist@npm:1.2.5"
-  checksum: 86706ce5b36c16bfc35c5fe3dbb01d5acdc9a22f2b6cc810b6680656a1d2c0e44a0159c9a3ba51fb072bb5c203e49e10b51dcd0eec39c481f4c42086719bae52
+  version: 1.2.6
+  resolution: "minimist@npm:1.2.6"
+  checksum: d15428cd1e11eb14e1233bcfb88ae07ed7a147de251441d61158619dfb32c4d7e9061d09cab4825fdee18ecd6fce323228c8c47b5ba7cd20af378ca4048fb3fb
   languageName: node
   linkType: hard
 
@@ -17422,13 +17422,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plist@npm:^3.0.2, plist@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "plist@npm:3.0.4"
+"plist@npm:^3.0.2, plist@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "plist@npm:3.0.5"
   dependencies:
     base64-js: ^1.5.1
     xmlbuilder: ^9.0.7
-  checksum: cb5883ed1b1aa227ddc5f99003750d312a8ac5cfd6f58d3ce0b24939255b175b54f25ebc6adcbd4266105ffd54f6831acb6cb06f529652bb3344215c10f5601b
+  checksum: f8b82816f66559965a4dabf139bd8dd95cdec7e51f32742bb353af276ea8228b9807113743b860eda3e867f6ed70d2bcbc1e135b3204d92b5c37ac765f68444e
   languageName: node
   linkType: hard
 
@@ -20114,13 +20114,13 @@ __metadata:
   linkType: hard
 
 "simple-plist@npm:^1.0.0":
-  version: 1.3.0
-  resolution: "simple-plist@npm:1.3.0"
+  version: 1.3.1
+  resolution: "simple-plist@npm:1.3.1"
   dependencies:
     bplist-creator: 0.1.0
-    bplist-parser: 0.3.0
-    plist: ^3.0.4
-  checksum: 60955ac24ce73b9c5ba71c450bc9b1b90b4e21e862735e4fd33073e451bcb2dc543bf2d364527ae78c6b76354eb5674c5a1163ec78428598fdd8fde60ce24bb3
+    bplist-parser: 0.3.1
+    plist: ^3.0.5
+  checksum: 3890b49db544096e6f35f53268901112be859c44b187528979f1a67e604b5b48b4cd6e5d6ee9e2e32aeb1e2535fe93e1cb102e2cf2bf5a37200d8884cb65b918
   languageName: node
   linkType: hard
 
