@@ -8,6 +8,7 @@
 'use strict';
 
 import fs from 'fs';
+import {createRequire} from 'module';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {
@@ -25,6 +26,7 @@ const prettierConfig = prettier.resolveConfig.sync(
   fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
 );
 
+const require = createRequire(import.meta.url);
 const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
 
 const copyrightSnippet = `
@@ -105,7 +107,7 @@ try {
   };
 
   await fs.promises.writeFile(
-    path.resolve(__dirname, '../api-extractor.json'),
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../api-extractor.json'),
     JSON.stringify(sharedExtractorConfig, null, 2),
   );
 
