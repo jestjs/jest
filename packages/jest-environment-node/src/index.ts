@@ -22,7 +22,14 @@ type Timer = {
   unref: () => Timer;
 };
 
-const nodeGlobals = new Set(Object.getOwnPropertyNames(globalThis));
+// some globals we do not want, either because deprecated or we set it ourselves
+const denyList = new Set(['GLOBAL', 'root', 'global']);
+
+const nodeGlobals = new Set(
+  Object.getOwnPropertyNames(globalThis).filter(
+    global => !denyList.has(global),
+  ),
+);
 
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
