@@ -51,9 +51,9 @@ export default class TestRunner {
 
   readonly isSerial?: boolean;
 
-  constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
+  constructor(globalConfig: Config.GlobalConfig, context: TestRunnerContext) {
     this._globalConfig = globalConfig;
-    this._context = context || {};
+    this._context = context;
   }
 
   async runTests(
