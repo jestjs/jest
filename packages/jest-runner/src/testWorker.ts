@@ -30,7 +30,7 @@ type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: string;
-  context?: TestRunnerSerializedContext;
+  context: TestRunnerSerializedContext;
 };
 
 // Make sure uncaught errors are logged before we exit.
@@ -97,7 +97,7 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config),
-      context && {
+      {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
         sourcesRelatedToTestsInChangedFiles:
