@@ -39,7 +39,7 @@ export type {
 } from './types';
 
 export default class TestRunner extends EmittingTestRunner {
-  private readonly _eventEmitter = new Emittery<TestEvents>();
+  readonly #eventEmitter = new Emittery<TestEvents>();
 
   async runTests(
     tests: Array<Test>,
@@ -47,11 +47,11 @@ export default class TestRunner extends EmittingTestRunner {
     options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
-      ? this._createInBandTestRun(tests, watcher)
-      : this._createParallelTestRun(tests, watcher));
+      ? this.#createInBandTestRun(tests, watcher)
+      : this.#createParallelTestRun(tests, watcher));
   }
 
-  private async _createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
+  async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
     return tests.reduce(
@@ -65,12 +65,12 @@ export default class TestRunner extends EmittingTestRunner {
 
               // `deepCyclicCopy` used here to avoid mem-leak
               const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this._eventEmitter.emit(
+                this.#eventEmitter.emit(
                   eventName,
                   deepCyclicCopy(args, {keepPrototype: false}),
                 );
 
-              await this._eventEmitter.emit('test-file-start', [test]);
+              await this.#eventEmitter.emit('test-file-start', [test]);
 
               return runTest(
                 test.path,
@@ -83,19 +83,16 @@ export default class TestRunner extends EmittingTestRunner {
             })
             .then(
               result =>
-                this._eventEmitter.emit('test-file-success', [test, result]),
+                this.#eventEmitter.emit('test-file-success', [test, result]),
               error =>
-                this._eventEmitter.emit('test-file-failure', [test, error]),
+                this.#eventEmitter.emit('test-file-failure', [test, error]),
             ),
         ),
       Promise.resolve(),
     );
   }
 
-  private async _createParallelTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-  ) {
+  async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {
       if (!resolvers.has(test.context.config.name)) {
@@ -127,7 +124,7 @@ export default class TestRunner extends EmittingTestRunner {
           return Promise.reject();
         }
 
-        await this._eventEmitter.emit('test-file-start', [test]);
+        await this.#eventEmitter.emit('test-file-start', [test]);
 
         const promise = worker.worker({
           config: test.context.config,
@@ -147,7 +144,7 @@ export default class TestRunner extends EmittingTestRunner {
         if (promise.UNSTABLE_onCustomMessage) {
           // TODO: Get appropriate type for `onCustomMessage`
           promise.UNSTABLE_onCustomMessage(([event, payload]: any) =>
-            this._eventEmitter.emit(event, payload),
+            this.#eventEmitter.emit(event, payload),
           );
         }
 
@@ -166,8 +163,8 @@ export default class TestRunner extends EmittingTestRunner {
       tests.map(test =>
         runTestInWorker(test).then(
           result =>
-            this._eventEmitter.emit('test-file-success', [test, result]),
-          error => this._eventEmitter.emit('test-file-failure', [test, error]),
+            this.#eventEmitter.emit('test-file-success', [test, result]),
+          error => this.#eventEmitter.emit('test-file-failure', [test, error]),
         ),
       ),
     );
@@ -193,7 +190,7 @@ export default class TestRunner extends EmittingTestRunner {
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
   ): Emittery.UnsubscribeFn {
-    return this._eventEmitter.on(eventName, listener);
+    return this.#eventEmitter.on(eventName, listener);
   }
 }
 
