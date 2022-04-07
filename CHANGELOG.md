@@ -65,6 +65,7 @@
 - `[jest-environment-jsdom]` Log JSDOM errors more cleanly ([#12386](https://github.com/facebook/jest/pull/12386))
 - `[jest-environment-node]` Add `MessageChannel`, `MessageEvent` to globals ([#12553](https://github.com/facebook/jest/pull/12553))
 - `[jest-environment-node]` Add `structuredClone` to globals ([#12631](https://github.com/facebook/jest/pull/12631))
+- `[jest-environment-node]` Add `fetch` et al. to globals ([#12642](https://github.com/facebook/jest/pull/12642))
 - `[@jest/expect-utils]` [**BREAKING**] Fix false positives when looking for `undefined` prop ([#8923](https://github.com/facebook/jest/pull/8923))
 - `[jest-haste-map]` Don't use partial results if file crawl errors ([#12420](https://github.com/facebook/jest/pull/12420))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
