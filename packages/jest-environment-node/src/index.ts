@@ -23,7 +23,14 @@ type Timer = {
 };
 
 // some globals we do not want, either because deprecated or we set it ourselves
-const denyList = new Set(['GLOBAL', 'root', 'global']);
+const denyList = new Set([
+  'GLOBAL',
+  'root',
+  'global',
+  'Buffer',
+  'ArrayBuffer',
+  'Uint8Array',
+]);
 
 const nodeGlobals = new Set(
   Object.getOwnPropertyNames(globalThis).filter(
@@ -56,6 +63,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     }
 
     global.global = global;
+    global.Buffer = Buffer;
+    global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
     // different than the global one used by users in tests. This makes sure the
     // same constructor is referenced by both.
