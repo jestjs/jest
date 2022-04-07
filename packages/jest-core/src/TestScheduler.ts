@@ -242,11 +242,7 @@ class TestScheduler {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
 
-          /**
-           * Test runners with event emitters are still not supported
-           * for third party test runners.
-           */
-          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmitters__) {
+          if (testRunner.supportsEventEmitters) {
             const unsubscribes = [
               testRunner.on('test-file-start', ([test]) =>
                 onTestFileStart(test),
