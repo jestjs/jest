@@ -13804,6 +13804,7 @@ __metadata:
     react: ^17.0.1
     react-dom: ^17.0.1
     react-github-btn: ^1.2.0
+    react-lite-youtube-embed: ^2.2.1-a
     react-markdown: ^8.0.0
   languageName: unknown
   linkType: soft
@@ -18554,6 +18555,16 @@ __metadata:
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
+  languageName: node
+  linkType: hard
+
+"react-lite-youtube-embed@npm:^2.2.1-a":
+  version: 2.2.1
+  resolution: "react-lite-youtube-embed@npm:2.2.1"
+  peerDependencies:
+    react: ">=16.0.8"
+    react-dom: ">=16.0.8"
+  checksum: f3be7bcaa6ec5ca5a7e35a941a7e6d555ac465486807240992ef3389d29631bcc7f85e37a3199ee1dd7ce47ac21440987f113694dcb73ad9be0b3d1e02cfabf9
   languageName: node
   linkType: hard
 

@@ -39,6 +39,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-github-btn": "^1.2.0",
+    "react-lite-youtube-embed": "^2.2.1-a",
     "react-markdown": "^8.0.0"
   },
   "devDependencies": {
