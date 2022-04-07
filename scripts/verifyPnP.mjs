@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
