@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const assert = require('assert');
+import assert from 'assert';
 
 /*
 Replace
@@ -23,7 +21,7 @@ require(require.resolve('package', {
 
 const REQUIRE_OUTSIDE_FUNCTION_NAME = 'requireOutside';
 
-module.exports = ({template, types: t}) => {
+export default ({template, types: t}) => {
   const replacement = template(`
     require(require.resolve(IMPORT_PATH, {
       [(globalThis['jest-symbol-do-not-touch'] || globalThis.Symbol).for('jest-resolve-outside-vm-option')]: true,
