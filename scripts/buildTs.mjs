@@ -5,18 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const assert = require('assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const chalk = require('chalk');
-const execa = require('execa');
-const globby = require('globby');
-const stripJsonComments = require('strip-json-comments');
-const throat = require('throat');
-const {getPackages} = require('./buildUtils');
+import assert from 'assert';
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+import execa from 'execa';
+import globby from 'globby';
+import fs from 'graceful-fs';
+import stripJsonComments from 'strip-json-comments';
+import throat from 'throat';
+import {getPackages} from './buildUtils.mjs';
 
 (async () => {
   const packages = getPackages();

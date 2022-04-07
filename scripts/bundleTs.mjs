@@ -5,25 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
-const {
+import {createRequire} from 'module';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import {
   CompilerState,
   Extractor,
   ExtractorConfig,
-} = require('@microsoft/api-extractor');
-const chalk = require('chalk');
-const {sync: pkgDir} = require('pkg-dir');
-const prettier = require('prettier');
-const rimraf = require('rimraf');
-const {getPackages} = require('./buildUtils');
+} from '@microsoft/api-extractor';
+import chalk from 'chalk';
+import fs from 'graceful-fs';
+import {sync as pkgDir} from 'pkg-dir';
+import prettier from 'prettier';
+import rimraf from 'rimraf';
+import {getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
-  __filename.replace(/\.js$/, '.d.ts'),
+  fileURLToPath(import.meta.url).replace(/\.js$/, '.d.ts'),
 );
 
+const require = createRequire(import.meta.url);
 const typescriptCompilerFolder = pkgDir(require.resolve('typescript'));
 
 const copyrightSnippet = `
@@ -104,7 +105,10 @@ const copyrightSnippet = `
   };
 
   await fs.promises.writeFile(
-    path.resolve(__dirname, '../api-extractor.json'),
+    path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../api-extractor.json',
+    ),
     JSON.stringify(sharedExtractorConfig, null, 2),
   );
 

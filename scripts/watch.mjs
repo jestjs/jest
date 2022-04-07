@@ -9,14 +9,18 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-const {execSync} = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const chokidar = require('chokidar');
-const {PACKAGES_DIR, getPackages} = require('./buildUtils');
+import {execSync} from 'child_process';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import chalk from 'chalk';
+import chokidar from 'chokidar';
+import fs from 'graceful-fs';
+import {PACKAGES_DIR, getPackages} from './buildUtils.mjs';
 
-const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
+const BUILD_CMD = `node ${path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'build.mjs',
+)}`;
 
 let filesToBuild = new Map();
 

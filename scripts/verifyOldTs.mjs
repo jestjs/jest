@@ -5,15 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const execa = require('execa');
-const rimraf = require('rimraf');
-const stripJsonComments = require('strip-json-comments');
-const tempy = require('tempy');
+import {createRequire} from 'module';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import chalk from 'chalk';
+import execa from 'execa';
+import fs from 'graceful-fs';
+import rimraf from 'rimraf';
+import stripJsonComments from 'strip-json-comments';
+import tempy from 'tempy';
+const require = createRequire(import.meta.url);
 
 const baseTsConfig = JSON.parse(
   stripJsonComments(
@@ -35,7 +36,10 @@ const tsConfig = {
 const tsVersion = '4.2';
 
 function smoketest() {
-  const jestDirectory = path.resolve(__dirname, '../packages/jest');
+  const jestDirectory = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../packages/jest',
+  );
 
   const cwd = tempy.directory();
 
@@ -71,7 +75,7 @@ function smoketest() {
 }
 
 function typeTests() {
-  const cwd = path.resolve(__dirname, '../');
+  const cwd = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../');
   const rootPackageJson = require('../package.json');
 
   const currentTsdTypescriptVersion =

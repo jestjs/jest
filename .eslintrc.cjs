@@ -5,11 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {getPackages} = require('./scripts/buildUtils');
+const fs = require('fs');
+const path = require('path');
+const {sync: readPkg} = require('read-pkg');
 
-const internalPackages = getPackages()
-  .map(({pkg}) => pkg.name)
-  .sort();
+function getPackages() {
+  const PACKAGES_DIR = path.resolve(__dirname, 'packages');
+  const packages = fs
+    .readdirSync(PACKAGES_DIR)
+    .map(file => path.resolve(PACKAGES_DIR, file))
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+  return packages.map(packageDir => {
+    const pkg = readPkg({cwd: packageDir});
+    return pkg.name;
+  });
+}
 
 module.exports = {
   env: {
@@ -254,7 +264,7 @@ module.exports = {
     },
     {
       env: {node: true},
-      files: ['*.js', '*.jsx'],
+      files: ['*.js', '*.jsx', '*.mjs', '*.cjs'],
     },
     {
       files: [
@@ -325,7 +335,7 @@ module.exports = {
           'scripts/**',
           'babel.config.js',
           'testSetupFile.js',
-          '.eslintrc.js',
+          '.eslintrc.cjs',
         ],
       },
     ],
@@ -507,7 +517,9 @@ module.exports = {
     'import/ignore': ['react-native'],
     // using `new RegExp` makes sure to escape `/`
     'import/internal-regex': new RegExp(
-      internalPackages.map(pkg => `^${pkg}$`).join('|'),
+      getPackages()
+        .map(pkg => `^${pkg}$`)
+        .join('|'),
     ).source,
     'import/resolver': {
       typescript: {},

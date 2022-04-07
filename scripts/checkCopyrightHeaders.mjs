@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const {execSync} = require('child_process');
-const fs = require('fs');
-const {isBinaryFileSync} = require('isbinaryfile');
+import {execSync} from 'child_process';
+import fs from 'graceful-fs';
+import {isBinaryFileSync} from 'isbinaryfile';
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});
 const isDirectory = path => fs.lstatSync(path).isDirectory();
@@ -149,7 +147,7 @@ function check() {
 
   ${invalidFiles.join('\n  ')}
 
-Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.js\``);
+Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.mjs\``);
     process.exit(1);
   }
 }
