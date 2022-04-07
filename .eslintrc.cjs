@@ -335,7 +335,7 @@ module.exports = {
           'scripts/**',
           'babel.config.js',
           'testSetupFile.js',
-          '.eslintrc.js',
+          '.eslintrc.cjs',
         ],
       },
     ],
