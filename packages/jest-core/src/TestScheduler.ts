@@ -216,9 +216,9 @@ class TestScheduler {
           const Runner: typeof TestRunner =
             await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
-            changedFiles: this._context?.changedFiles,
+            changedFiles: this._context.changedFiles,
             sourcesRelatedToTestsInChangedFiles:
-              this._context?.sourcesRelatedToTestsInChangedFiles,
+              this._context.sourcesRelatedToTestsInChangedFiles,
           });
           testRunners[config.runner] = runner;
           contextsByTestRunner.set(runner, context);
