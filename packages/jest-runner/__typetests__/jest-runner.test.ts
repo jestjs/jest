@@ -23,7 +23,7 @@ const globalConfig = {} as Config.GlobalConfig;
 const runnerContext = {} as TestRunnerContext;
 
 class CallbackRunner extends CallbackTestRunner {
-  override async runTests(
+  async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
     onStart: OnTestStart,
@@ -41,14 +41,14 @@ expectType<boolean | undefined>(callbackRunner.isSerial);
 expectType<false>(callbackRunner.supportsEventEmitters);
 
 class EmittingRunner extends EmittingTestRunner {
-  override on<Name extends keyof TestEvents>(
+  on<Name extends keyof TestEvents>(
     eventName: string,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
   ): UnsubscribeFn {
     return () => {};
   }
 
-  override async runTests(
+  async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
     options: TestRunnerOptions,
