@@ -7,6 +7,7 @@
  */
 
 import {TestWatcher} from '@jest/core';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import TestRunner from '../index';
 
 let mockWorkerFarm;
@@ -26,8 +27,8 @@ jest.mock('jest-worker', () => ({
 jest.mock('../testWorker', () => {});
 
 test('injects the serializable module map into each worker in watch mode', async () => {
-  const globalConfig = {maxWorkers: 2, watch: true};
-  const config = {rootDir: '/path/'};
+  const globalConfig = makeGlobalConfig({maxWorkers: 2, watch: true});
+  const config = makeProjectConfig({rootDir: '/path/'});
   const serializableModuleMap = jest.fn();
   const runContext = {};
   const context = {
@@ -35,7 +36,7 @@ test('injects the serializable module map into each worker in watch mode', async
     moduleMap: {toJSON: () => serializableModuleMap},
   };
 
-  await new TestRunner(globalConfig).runTests(
+  await new TestRunner(globalConfig, {}).runTests(
     [
       {context, path: './file.test.js'},
       {context, path: './file2.test.js'},
@@ -68,11 +69,11 @@ test('injects the serializable module map into each worker in watch mode', async
 });
 
 test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () => {
-  const globalConfig = {maxWorkers: 1, watch: false};
-  const config = {rootDir: '/path/'};
+  const globalConfig = makeGlobalConfig({maxWorkers: 1, watch: false});
+  const config = makeProjectConfig({rootDir: '/path/'});
   const context = {config};
 
-  await new TestRunner(globalConfig).runTests(
+  await new TestRunner(globalConfig, {}).runTests(
     [{context, path: './file.test.js'}],
     new TestWatcher({isWatchMode: globalConfig.watch}),
     undefined,
