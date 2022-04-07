@@ -6,12 +6,12 @@
  */
 
 import assert from 'assert';
-import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
 import globby from 'globby';
+import fs from 'graceful-fs';
 import stripJsonComments from 'strip-json-comments';
 import throat from 'throat';
 import {getPackages} from './buildUtils.mjs';

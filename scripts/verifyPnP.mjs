@@ -7,12 +7,12 @@
 
 'use strict';
 
-import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
+import fs from 'graceful-fs';
 import yaml from 'js-yaml';
 import rimraf from 'rimraf';
 import tempy from 'tempy';

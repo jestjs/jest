@@ -7,12 +7,12 @@
 
 'use strict';
 
-import fs from 'fs';
 import {createRequire} from 'module';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
+import fs from 'graceful-fs';
 import rimraf from 'rimraf';
 import stripJsonComments from 'strip-json-comments';
 import tempy from 'tempy';
