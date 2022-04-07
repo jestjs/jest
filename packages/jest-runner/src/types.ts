@@ -10,6 +10,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
   Test,
+  TestEvents,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
@@ -19,10 +20,12 @@ import type RuntimeType from 'jest-runtime';
 export type ErrorWithCode = Error & {code?: string};
 
 export type OnTestStart = (test: Test) => Promise<void>;
+
 export type OnTestFailure = (
   test: Test,
   serializableError: SerializableError,
 ) => Promise<void>;
+
 export type OnTestSuccess = (
   test: Test,
   testResult: TestResult,
@@ -60,3 +63,43 @@ export interface TestWatcher extends Emittery<{change: WatcherState}> {
   isInterrupted(): boolean;
   isWatchMode(): boolean;
 }
+
+abstract class BaseTestRunner {
+  readonly isSerial?: boolean;
+  abstract readonly supportsEventEmitters: boolean;
+
+  constructor(
+    protected readonly _globalConfig: Config.GlobalConfig,
+    protected readonly _context: TestRunnerContext,
+  ) {}
+}
+
+export abstract class TestRunner extends BaseTestRunner {
+  readonly supportsEventEmitters = false;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+}
+
+export abstract class EmittingTestRunner extends BaseTestRunner {
+  readonly supportsEventEmitters = true;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+
+  abstract on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): Emittery.UnsubscribeFn;
+}
+
+export type JestTestRunner = TestRunner | EmittingTestRunner;

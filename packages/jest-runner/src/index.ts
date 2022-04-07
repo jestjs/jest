@@ -14,19 +14,11 @@ import type {
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
-import type {
-  OnTestFailure,
-  OnTestStart,
-  OnTestSuccess,
-  TestRunnerContext,
-  TestRunnerOptions,
-  TestWatcher,
-} from './types';
+import {EmittingTestRunner, TestRunnerOptions, TestWatcher} from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
@@ -41,29 +33,17 @@ export type {
   TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
+  EmittingTestRunner,
+  JestTestRunner,
+  TestRunner,
 } from './types';
 
-export default class TestRunner {
-  private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _context: TestRunnerContext;
-  private readonly eventEmitter = new Emittery<TestEvents>();
-  readonly supportsEventEmitters: boolean = true;
-
-  readonly isSerial?: boolean;
-
-  constructor(globalConfig: Config.GlobalConfig, context: TestRunnerContext) {
-    this._globalConfig = globalConfig;
-    this._context = context;
-  }
+export default class TestRunner extends EmittingTestRunner {
+  private readonly _eventEmitter = new Emittery<TestEvents>();
 
   async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
-    // keep these three as they're still passed and should be in the types,
-    // even if this particular runner doesn't use them
-    _onStart: OnTestStart | undefined,
-    _onResult: OnTestSuccess | undefined,
-    _onFailure: OnTestFailure | undefined,
     options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
@@ -85,12 +65,12 @@ export default class TestRunner {
 
               // `deepCyclicCopy` used here to avoid mem-leak
               const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this.eventEmitter.emit(
+                this._eventEmitter.emit(
                   eventName,
                   deepCyclicCopy(args, {keepPrototype: false}),
                 );
 
-              await this.eventEmitter.emit('test-file-start', [test]);
+              await this._eventEmitter.emit('test-file-start', [test]);
 
               return runTest(
                 test.path,
@@ -103,8 +83,9 @@ export default class TestRunner {
             })
             .then(
               result =>
-                this.eventEmitter.emit('test-file-success', [test, result]),
-              err => this.eventEmitter.emit('test-file-failure', [test, err]),
+                this._eventEmitter.emit('test-file-success', [test, result]),
+              error =>
+                this._eventEmitter.emit('test-file-failure', [test, error]),
             ),
         ),
       Promise.resolve(),
@@ -146,7 +127,7 @@ export default class TestRunner {
           return Promise.reject();
         }
 
-        await this.eventEmitter.emit('test-file-start', [test]);
+        await this._eventEmitter.emit('test-file-start', [test]);
 
         const promise = worker.worker({
           config: test.context.config,
@@ -166,7 +147,7 @@ export default class TestRunner {
         if (promise.UNSTABLE_onCustomMessage) {
           // TODO: Get appropriate type for `onCustomMessage`
           promise.UNSTABLE_onCustomMessage(([event, payload]: any) =>
-            this.eventEmitter.emit(event, payload),
+            this._eventEmitter.emit(event, payload),
           );
         }
 
@@ -184,8 +165,9 @@ export default class TestRunner {
     const runAllTests = Promise.all(
       tests.map(test =>
         runTestInWorker(test).then(
-          result => this.eventEmitter.emit('test-file-success', [test, result]),
-          error => this.eventEmitter.emit('test-file-failure', [test, error]),
+          result =>
+            this._eventEmitter.emit('test-file-success', [test, result]),
+          error => this._eventEmitter.emit('test-file-failure', [test, error]),
         ),
       ),
     );
@@ -211,7 +193,7 @@ export default class TestRunner {
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
   ): Emittery.UnsubscribeFn {
-    return this.eventEmitter.on(eventName, listener);
+    return this._eventEmitter.on(eventName, listener);
   }
 }
 
