@@ -99,7 +99,7 @@
     "jest-jasmine": "JEST_JASMINE=1 yarn jest",
     "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
-    "lint": "eslint . --cache --ext js,jsx,mjs,ts,tsx,md",
+    "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --write",
     "lint:prettier:ci": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --check",
     "remove-examples": "node ./scripts/remove-examples.mjs",
