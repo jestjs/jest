@@ -24,6 +24,7 @@
 - `[jest-environment-node]` [**BREAKING**] Add default `node` and `node-addon` conditions to `exportConditions` for `node` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-node]` [**BREAKING**] Pass global config to Jest environment constructor for `node` environment ([#12461](https://github.com/facebook/jest/pull/12461))
 - `[jest-environment-node]` [**BREAKING**] Second argument `context` to constructor is mandatory ([#12469](https://github.com/facebook/jest/pull/12469))
+- `[jest-environment-node]` Add all available globals to test globals, not just explicit ones ([#12642](https://github.com/facebook/jest/pull/12642))
 - `[@jest/expect]` New module which extends `expect` with `jest-snapshot` matchers ([#12404](https://github.com/facebook/jest/pull/12404), [#12410](https://github.com/facebook/jest/pull/12410), [#12418](https://github.com/facebook/jest/pull/12418))
 - `[@jest/expect-utils]` New module exporting utils for `expect` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[@jest/fake-timers]` [**BREAKING**] Rename `timers` configuration option to `fakeTimers` ([#12572](https://github.com/facebook/jest/pull/12572))
