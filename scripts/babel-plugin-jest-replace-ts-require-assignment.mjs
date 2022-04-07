@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 // Replace `import thing = require('thing')` with `const thing = require('thing')` which allows us to keep CJS semantics
 
-module.exports = ({template}) => {
+export default ({template}) => {
   const moduleExportsDeclaration = template(`
     import NAME from 'IMPORT';
   `);

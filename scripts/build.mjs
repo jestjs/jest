@@ -25,7 +25,7 @@ import glob from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
-import transformOptions from '../babel.config.js';
+import transformOptions from '../babel.config.mjs';
 import {
   OK,
   PACKAGES_DIR,
@@ -60,14 +60,16 @@ function getBuildPath(file, buildFolder) {
   return path.resolve(pkgBuildPath, relativeToSrcPath).replace(/\.ts$/, '.js');
 }
 
-function buildNodePackage({packageDir, pkg}) {
+async function buildNodePackage({packageDir, pkg}) {
   const srcDir = path.resolve(packageDir, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
   const files = glob.sync(pattern, {nodir: true});
 
   process.stdout.write(adjustToTerminalWidth(`${pkg.name}\n`));
 
-  files.forEach(file => buildFile(file, true));
+  for (const file of files) {
+    await buildFile(file, true);
+  }
 
   assert.ok(
     fs.existsSync(path.resolve(packageDir, pkg.main)),
@@ -77,7 +79,7 @@ function buildNodePackage({packageDir, pkg}) {
   process.stdout.write(`${OK}\n`);
 }
 
-function buildFile(file, silent) {
+async function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
@@ -115,7 +117,7 @@ function buildFile(file, silent) {
       options.plugins.push(
         path.resolve(
           path.dirname(fileURLToPath(import.meta.url)),
-          'babel-plugin-jest-native-globals.js',
+          'babel-plugin-jest-native-globals.mjs',
         ),
       );
     } else {
@@ -131,7 +133,7 @@ function buildFile(file, silent) {
       });
     }
 
-    const transformed = babel.transformFileSync(file, options).code;
+    const {code: transformed} = await babel.transformFileAsync(file, options);
     const prettyCode = prettier.format(transformed, prettierConfig);
 
     fs.writeFileSync(destPath, prettyCode);
@@ -148,12 +150,20 @@ function buildFile(file, silent) {
   }
 }
 
-const files = process.argv.slice(2);
-
-if (files.length) {
-  files.forEach(file => buildFile(file));
-} else {
-  const packages = getPackages();
-  process.stdout.write(chalk.inverse(' Building packages \n'));
-  packages.forEach(buildNodePackage);
-}
+(async () => {
+  const files = process.argv.slice(2);
+  if (files.length) {
+    for (const file of files) {
+      await buildFile(file, true);
+    }
+  } else {
+    const packages = getPackages();
+    process.stdout.write(chalk.inverse(' Building packages \n'));
+    for (const pkg of packages) {
+      await buildNodePackage(pkg);
+    }
+  }
+})().catch(error => {
+  console.error('Got error', error.stack);
+  process.exitCode = 1;
+});

@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 // This plugin exists to make sure that we use a `Promise` that has not been messed with by user code.
 // Might consider extending this to other globals as well in the future
 
-module.exports = ({template}) => {
+export default ({template}) => {
   const promiseDeclaration = template(`
     var Promise = globalThis[Symbol.for('jest-native-promise')] || globalThis.Promise;
   `);
