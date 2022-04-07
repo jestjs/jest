@@ -101,6 +101,16 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       // @ts-expect-error type definition for structuredClone is missing
       global.structuredClone = structuredClone;
     }
+    // fetch is global in Node >= 17 with a flag, and 18 without a flag
+    if (typeof fetch !== 'undefined') {
+      global.Blob = Blob;
+      global.BroadcastChannel = BroadcastChannel;
+      global.fetch = fetch;
+      global.FormData = FormData;
+      global.Headers = Headers;
+      global.Request = Request;
+      global.Response = Response;
+    }
     installCommonGlobals(global, projectConfig.globals);
 
     this.moduleMocker = new ModuleMocker(global);
