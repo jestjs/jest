@@ -40,7 +40,7 @@ export type {
 export default class TestRunner extends EmittingTestRunner {
   readonly #eventEmitter = new Emittery<TestEvents>();
 
-  async runTests(
+  override async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
     options: TestRunnerOptions,
