@@ -12,7 +12,6 @@ import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
 import LiteYouTubeEmbed from 'react-lite-youtube-embed';
-import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css';
 
 import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimation';
 
