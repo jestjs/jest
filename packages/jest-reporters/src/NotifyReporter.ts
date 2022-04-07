@@ -37,7 +37,10 @@ export default class NotifyReporter extends BaseReporter {
     this._context = context;
   }
 
-  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
+  override onRunComplete(
+    contexts: Set<Context>,
+    result: AggregatedResult,
+  ): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 

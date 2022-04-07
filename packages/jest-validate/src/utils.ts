@@ -25,8 +25,8 @@ export const formatPrettyObject = (value: unknown): string =>
     : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
-  name: string;
-  message: string;
+  override name: string;
+  override message: string;
 
   constructor(name: string, message: string, comment?: string | null) {
     super();

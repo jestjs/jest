@@ -64,7 +64,7 @@ export default class CoverageReporter extends BaseReporter {
     this._options = options || {};
   }
 
-  onTestResult(_test: Test, testResult: TestResult): void {
+  override onTestResult(_test: Test, testResult: TestResult): void {
     if (testResult.v8Coverage) {
       this._v8CoverageResults.push(testResult.v8Coverage);
       return;
@@ -75,7 +75,7 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  async onRunComplete(
+  override async onRunComplete(
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
   ): Promise<void> {

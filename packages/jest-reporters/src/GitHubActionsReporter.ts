@@ -23,7 +23,7 @@ function replaceEntities(s: string): string {
 }
 
 export default class GitHubActionsReporter extends BaseReporter {
-  onRunComplete(
+  override onRunComplete(
     _contexts?: Set<Context>,
     aggregatedResults?: AggregatedResult,
   ): void {
