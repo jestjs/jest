@@ -26,6 +26,7 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
+export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
   OnTestFailure,
   OnTestStart,
@@ -33,9 +34,7 @@ export type {
   TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
-  EmittingTestRunner,
   JestTestRunner,
-  TestRunner,
 } from './types';
 
 export default class TestRunner extends EmittingTestRunner {

@@ -74,7 +74,7 @@ abstract class BaseTestRunner {
   ) {}
 }
 
-export abstract class TestRunner extends BaseTestRunner {
+export abstract class CallbackTestRunner extends BaseTestRunner {
   readonly supportsEventEmitters = false;
 
   abstract runTests(
@@ -102,4 +102,4 @@ export abstract class EmittingTestRunner extends BaseTestRunner {
   ): Emittery.UnsubscribeFn;
 }
 
-export type JestTestRunner = TestRunner | EmittingTestRunner;
+export type JestTestRunner = CallbackTestRunner | EmittingTestRunner;
