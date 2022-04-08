@@ -352,10 +352,7 @@ export default class HasteMap extends EventEmitter {
     ...extra: Array<string>
   ): string {
     const hash = createHash('md5').update(extra.join(''));
-    return path.join(
-      tmpdir,
-      `${id.replace(/\W/g, '-')}-${hash.digest('hex')}`,
-    );
+    return path.join(tmpdir, `${id.replace(/\W/g, '-')}-${hash.digest('hex')}`);
   }
 
   static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
