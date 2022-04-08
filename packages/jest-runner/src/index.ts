@@ -100,8 +100,8 @@ export default class TestRunner extends EmittingTestRunner {
   async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {
-      if (!resolvers.has(test.context.config.name)) {
-        resolvers.set(test.context.config.name, {
+      if (!resolvers.has(test.context.config.id)) {
+        resolvers.set(test.context.config.id, {
           config: test.context.config,
           serializableModuleMap: test.context.moduleMap.toJSON(),
         });

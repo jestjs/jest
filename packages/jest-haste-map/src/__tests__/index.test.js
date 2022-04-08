@@ -206,8 +206,8 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
+      id: 'haste-map-test',
       maxWorkers: 1,
-      name: 'haste-map-test',
       platforms: ['ios', 'android'],
       resetCache: false,
       rootDir: path.join('/', 'project'),
@@ -300,11 +300,11 @@ describe('HasteMap', () => {
     const HasteMap = require('../').default;
     const hasteMap1 = await HasteMap.create({
       ...defaultConfig,
-      name: '@scoped/package',
+      id: '@scoped/package',
     });
     const hasteMap2 = await HasteMap.create({
       ...defaultConfig,
-      name: '-scoped-package',
+      id: '-scoped-package',
     });
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });

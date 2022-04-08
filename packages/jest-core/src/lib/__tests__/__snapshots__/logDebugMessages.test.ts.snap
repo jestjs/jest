@@ -19,6 +19,7 @@ exports[`prints the config object 1`] = `
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
+    "id": "test_name",
     "injectGlobals": true,
     "moduleDirectories": [],
     "moduleFileExtensions": [
@@ -27,7 +28,6 @@ exports[`prints the config object 1`] = `
     "moduleNameMapper": [],
     "modulePathIgnorePatterns": [],
     "modulePaths": [],
-    "name": "test_name",
     "prettierPath": "prettier",
     "resetMocks": false,
     "resetModules": false,

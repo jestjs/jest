@@ -29,7 +29,7 @@ const context: Context = {
     cache: true,
     cacheDirectory: '/cache',
     haste: {},
-    name: 'test',
+    id: 'test',
   }),
   hasteFS: {
     getSize: path => path.length,
@@ -41,7 +41,7 @@ const secondContext: Context = {
     cache: true,
     cacheDirectory: '/cache2',
     haste: {},
-    name: 'test2',
+    id: 'test2',
   }),
   hasteFS: {
     getSize: path => path.length,

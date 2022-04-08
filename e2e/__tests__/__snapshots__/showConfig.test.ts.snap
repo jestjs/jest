@@ -27,6 +27,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "forceNodeFilesystemAPI": true,
         "throwOnModuleCollision": false
       },
+      "id": "[md5 hash]",
       "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
@@ -43,7 +44,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleNameMapper": [],
       "modulePathIgnorePatterns": [],
-      "name": "[md5 hash]",
       "prettierPath": "prettier",
       "resetMocks": false,
       "resetModules": false,
