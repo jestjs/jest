@@ -2912,7 +2912,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/types@npm:^26.6.1, @jest/types@npm:^26.6.2":
+"@jest/types@npm:^26.6.2":
   version: 26.6.2
   resolution: "@jest/types@npm:26.6.2"
   dependencies:
@@ -17980,18 +17980,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"pretty-format@npm:26.6.1":
-  version: 26.6.1
-  resolution: "pretty-format@npm:26.6.1"
-  dependencies:
-    "@jest/types": ^26.6.1
-    ansi-regex: ^5.0.0
-    ansi-styles: ^4.0.0
-    react-is: ^17.0.1
-  checksum: d2e714b5dc54c23ffa64e5bdb5efa5a580d13bc78404cb30939207a53ac2ad0d289fb4086d89d237a863657f7d8528c7de0eeec273e4ad1612800aa1f41b3e0a
-  languageName: node
-  linkType: hard
-
 "pretty-format@npm:^26.5.2, pretty-format@npm:^26.6.2":
   version: 26.6.2
   resolution: "pretty-format@npm:26.6.2"
@@ -18004,7 +17992,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.5.1":
+"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
   version: 27.5.1
   resolution: "pretty-format@npm:27.5.1"
   dependencies:

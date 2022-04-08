@@ -164,7 +164,6 @@
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "resolutions": {
-    "@testing-library/dom/pretty-format": "26.6.1",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
