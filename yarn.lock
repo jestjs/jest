@@ -17975,7 +17975,7 @@ __metadata:
     jest-util: ^28.0.0-alpha.8
     react: "*"
     react-dom: "*"
-    react-is: ^17.0.1
+    react-is: ^18.0.0
     react-test-renderer: "*"
   languageName: unknown
   linkType: soft
