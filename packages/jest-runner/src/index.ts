@@ -18,7 +18,12 @@ import {deepCyclicCopy} from 'jest-util';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
-import {EmittingTestRunner, TestRunnerOptions, TestWatcher} from './types';
+import {
+  EmittingTestRunner,
+  TestRunnerOptions,
+  TestWatcher,
+  UnsubscribeFn,
+} from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
@@ -35,6 +40,7 @@ export type {
   TestRunnerContext,
   TestRunnerOptions,
   JestTestRunner,
+  UnsubscribeFn,
 } from './types';
 
 export default class TestRunner extends EmittingTestRunner {
@@ -188,7 +194,7 @@ export default class TestRunner extends EmittingTestRunner {
   on<Name extends keyof TestEvents>(
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
-  ): Emittery.UnsubscribeFn {
+  ): UnsubscribeFn {
     return this.#eventEmitter.on(eventName, listener);
   }
 }

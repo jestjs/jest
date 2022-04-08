@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {UnsubscribeFn} from 'emittery';
 import {expectType} from 'tsd-lite';
 import type {Test, TestEvents} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -17,6 +16,7 @@ import type {
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
+  UnsubscribeFn,
 } from 'jest-runner';
 
 const globalConfig = {} as Config.GlobalConfig;

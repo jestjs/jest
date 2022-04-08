@@ -55,14 +55,7 @@ export type TestRunnerSerializedContext = {
   sourcesRelatedToTestsInChangedFiles?: Array<string>;
 };
 
-// TODO: Should live in `@jest/core` or `jest-watcher`
-type WatcherState = {interrupted: boolean};
-export interface TestWatcher extends Emittery<{change: WatcherState}> {
-  state: WatcherState;
-  setState(state: WatcherState): void;
-  isInterrupted(): boolean;
-  isWatchMode(): boolean;
-}
+export type UnsubscribeFn = () => void;
 
 abstract class BaseTestRunner {
   readonly isSerial?: boolean;
@@ -99,7 +92,16 @@ export abstract class EmittingTestRunner extends BaseTestRunner {
   abstract on<Name extends keyof TestEvents>(
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
-  ): Emittery.UnsubscribeFn;
+  ): UnsubscribeFn;
 }
 
 export type JestTestRunner = CallbackTestRunner | EmittingTestRunner;
+
+// TODO: Should live in `@jest/core` or `jest-watcher`
+type WatcherState = {interrupted: boolean};
+export interface TestWatcher extends Emittery<{change: WatcherState}> {
+  state: WatcherState;
+  setState(state: WatcherState): void;
+  isInterrupted(): boolean;
+  isWatchMode(): boolean;
+}
