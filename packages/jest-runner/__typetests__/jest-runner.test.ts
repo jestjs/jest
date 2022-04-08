@@ -22,6 +22,8 @@ import type {
 const globalConfig = {} as Config.GlobalConfig;
 const runnerContext = {} as TestRunnerContext;
 
+// CallbackRunner
+
 class CallbackRunner extends CallbackTestRunner {
   async runTests(
     tests: Array<Test>,
@@ -42,6 +44,8 @@ const callbackRunner = new CallbackRunner(globalConfig, runnerContext);
 
 expectType<boolean | undefined>(callbackRunner.isSerial);
 expectType<false>(callbackRunner.supportsEventEmitters);
+
+// EmittingRunner
 
 class EmittingRunner extends EmittingTestRunner {
   async runTests(
