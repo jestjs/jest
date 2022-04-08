@@ -34,7 +34,7 @@ test('injects the serializable module map into each worker in watch mode', async
     moduleMap: {toJSON: jest.fn()},
   } as unknown as TestContext;
 
-  await new TestRunner(globalConfig, {}).runTests(
+  await new TestRunner(globalConfig, runContext).runTests(
     [
       {context: mockTestContext, path: './file.test.js'},
       {context: mockTestContext, path: './file2.test.js'},
@@ -45,24 +45,21 @@ test('injects the serializable module map into each worker in watch mode', async
 
   expect(mockTestContext.moduleMap.toJSON).toBeCalledTimes(1);
 
-  expect(mockWorkerFarm.worker.mock.calls).toEqual([
-    [
-      {
-        config,
-        context: runContext,
-        globalConfig,
-        path: './file.test.js',
-      },
-    ],
-    [
-      {
-        config,
-        context: runContext,
-        globalConfig,
-        path: './file2.test.js',
-      },
-    ],
-  ]);
+  expect(mockWorkerFarm.worker).toBeCalledTimes(2);
+
+  expect(mockWorkerFarm.worker).nthCalledWith(1, {
+    config,
+    context: runContext,
+    globalConfig,
+    path: './file.test.js',
+  });
+
+  expect(mockWorkerFarm.worker).nthCalledWith(2, {
+    config,
+    context: runContext,
+    globalConfig,
+    path: './file2.test.js',
+  });
 });
 
 test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () => {
