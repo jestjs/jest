@@ -29,7 +29,7 @@ import {
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import type TestRunner from 'jest-runner';
+import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import {
   buildSnapshotResolver,
@@ -39,6 +39,11 @@ import {requireOrImportModule} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
+
+type TestRunnerConstructor = new (
+  globalConfig: Config.GlobalConfig,
+  context: TestRunnerContext,
+) => JestTestRunner;
 
 export type TestSchedulerOptions = {
   startRun: (globalConfig: Config.GlobalConfig) => void;
@@ -206,14 +211,14 @@ class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners: {[key: string]: TestRunner} = Object.create(null);
-    const contextsByTestRunner = new WeakMap<TestRunner, Context>();
+    const testRunners: Record<string, JestTestRunner> = Object.create(null);
+    const contextsByTestRunner = new WeakMap<JestTestRunner, Context>();
     await Promise.all(
       Array.from(contexts).map(async context => {
         const {config} = context;
         if (!testRunners[config.runner]) {
           const transformer = await createScriptTransformer(config);
-          const Runner: typeof TestRunner =
+          const Runner: TestRunnerConstructor =
             await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
             changedFiles: this._context.changedFiles,
@@ -262,14 +267,7 @@ class TestScheduler {
               ),
             ];
 
-            await testRunner.runTests(
-              tests,
-              watcher,
-              undefined,
-              undefined,
-              undefined,
-              testRunnerOptions,
-            );
+            await testRunner.runTests(tests, watcher, testRunnerOptions);
 
             unsubscribes.forEach(sub => sub());
           } else {
@@ -310,7 +308,7 @@ class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: Record<string, TestRunner>,
+    testRunners: Record<string, JestTestRunner>,
     tests: Array<Test>,
   ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
