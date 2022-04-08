@@ -31,19 +31,21 @@ test('injects the serializable module map into each worker in watch mode', async
   const globalConfig = makeGlobalConfig({maxWorkers: 2, watch: true});
   const config = makeProjectConfig({rootDir: '/path/'});
   const runContext = {};
-  const context = {
+  const mockTestContext = {
     config,
     moduleMap: {toJSON: jest.fn()},
   } as unknown as TestContext;
 
   await new TestRunner(globalConfig, {}).runTests(
     [
-      {context, path: './file.test.js'},
-      {context, path: './file2.test.js'},
+      {context: mockTestContext, path: './file.test.js'},
+      {context: mockTestContext, path: './file2.test.js'},
     ],
     new TestWatcher({isWatchMode: globalConfig.watch}),
     {serial: false},
   );
+
+  expect(mockTestContext.moduleMap.toJSON).toBeCalledTimes(1);
 
   expect(mockWorkerFarm.worker.mock.calls).toEqual([
     [
