@@ -13,3 +13,7 @@ website/static
 
 # Third-party script
 packages/jest-diff/src/cleanupSemantic.ts
+
+**/.yarn
+**/.pnp.*
+
