@@ -27,7 +27,6 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
-export type {TestWatcher} from 'jest-watcher';
 export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
   OnTestFailure,
