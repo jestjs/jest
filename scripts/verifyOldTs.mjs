@@ -33,7 +33,7 @@ const tsConfig = {
 };
 /* eslint-enable */
 
-const tsVersion = '4.2';
+const tsVersion = '4.3';
 
 function smoketest() {
   const jestDirectory = path.resolve(
