@@ -7,6 +7,7 @@ api-extractor.json
 coverage
 
 /packages/*/build
+/packages/*/dist
 /packages/jest-config/src/__tests__/jest-preset.json
 /packages/pretty-format/perf/world.geo.json
 
