@@ -14,18 +14,15 @@ import type {
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
-import type {
-  OnTestFailure,
-  OnTestStart,
-  OnTestSuccess,
-  TestRunnerContext,
+import {
+  EmittingTestRunner,
   TestRunnerOptions,
   TestWatcher,
+  UnsubscribeFn,
 } from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
@@ -34,6 +31,7 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
+export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
   OnTestFailure,
   OnTestStart,
@@ -41,37 +39,24 @@ export type {
   TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
+  JestTestRunner,
+  UnsubscribeFn,
 } from './types';
 
-export default class TestRunner {
-  private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _context: TestRunnerContext;
-  private readonly eventEmitter = new Emittery<TestEvents>();
-  readonly supportsEventEmitters: boolean = true;
-
-  readonly isSerial?: boolean;
-
-  constructor(globalConfig: Config.GlobalConfig, context: TestRunnerContext) {
-    this._globalConfig = globalConfig;
-    this._context = context;
-  }
+export default class TestRunner extends EmittingTestRunner {
+  readonly #eventEmitter = new Emittery<TestEvents>();
 
   async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
-    // keep these three as they're still passed and should be in the types,
-    // even if this particular runner doesn't use them
-    _onStart: OnTestStart | undefined,
-    _onResult: OnTestSuccess | undefined,
-    _onFailure: OnTestFailure | undefined,
     options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
-      ? this._createInBandTestRun(tests, watcher)
-      : this._createParallelTestRun(tests, watcher));
+      ? this.#createInBandTestRun(tests, watcher)
+      : this.#createParallelTestRun(tests, watcher));
   }
 
-  private async _createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
+  async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
     return tests.reduce(
@@ -85,12 +70,12 @@ export default class TestRunner {
 
               // `deepCyclicCopy` used here to avoid mem-leak
               const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this.eventEmitter.emit(
+                this.#eventEmitter.emit(
                   eventName,
                   deepCyclicCopy(args, {keepPrototype: false}),
                 );
 
-              await this.eventEmitter.emit('test-file-start', [test]);
+              await this.#eventEmitter.emit('test-file-start', [test]);
 
               return runTest(
                 test.path,
@@ -103,18 +88,16 @@ export default class TestRunner {
             })
             .then(
               result =>
-                this.eventEmitter.emit('test-file-success', [test, result]),
-              err => this.eventEmitter.emit('test-file-failure', [test, err]),
+                this.#eventEmitter.emit('test-file-success', [test, result]),
+              error =>
+                this.#eventEmitter.emit('test-file-failure', [test, error]),
             ),
         ),
       Promise.resolve(),
     );
   }
 
-  private async _createParallelTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-  ) {
+  async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {
       if (!resolvers.has(test.context.config.name)) {
@@ -146,7 +129,7 @@ export default class TestRunner {
           return Promise.reject();
         }
 
-        await this.eventEmitter.emit('test-file-start', [test]);
+        await this.#eventEmitter.emit('test-file-start', [test]);
 
         const promise = worker.worker({
           config: test.context.config,
@@ -166,7 +149,7 @@ export default class TestRunner {
         if (promise.UNSTABLE_onCustomMessage) {
           // TODO: Get appropriate type for `onCustomMessage`
           promise.UNSTABLE_onCustomMessage(([event, payload]: any) =>
-            this.eventEmitter.emit(event, payload),
+            this.#eventEmitter.emit(event, payload),
           );
         }
 
@@ -184,8 +167,9 @@ export default class TestRunner {
     const runAllTests = Promise.all(
       tests.map(test =>
         runTestInWorker(test).then(
-          result => this.eventEmitter.emit('test-file-success', [test, result]),
-          error => this.eventEmitter.emit('test-file-failure', [test, error]),
+          result =>
+            this.#eventEmitter.emit('test-file-success', [test, result]),
+          error => this.#eventEmitter.emit('test-file-failure', [test, error]),
         ),
       ),
     );
@@ -210,8 +194,8 @@ export default class TestRunner {
   on<Name extends keyof TestEvents>(
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
-  ): Emittery.UnsubscribeFn {
-    return this.eventEmitter.on(eventName, listener);
+  ): UnsubscribeFn {
+    return this.#eventEmitter.on(eventName, listener);
   }
 }
 
