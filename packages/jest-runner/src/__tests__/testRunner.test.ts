@@ -25,6 +25,8 @@ jest.mock('jest-worker', () => ({
   ),
 }));
 
+jest.mock('../testWorker', () => {});
+
 test('injects the serializable module map into each worker in watch mode', async () => {
   const globalConfig = makeGlobalConfig({maxWorkers: 2, watch: true});
   const config = makeProjectConfig({rootDir: '/path/'});
@@ -42,8 +44,6 @@ test('injects the serializable module map into each worker in watch mode', async
     new TestWatcher({isWatchMode: globalConfig.watch}),
     {serial: false},
   );
-
-  expect(mockTestContext.moduleMap.toJSON).toBeCalledTimes(1);
 
   expect(mockWorkerFarm.worker).toBeCalledTimes(2);
 
