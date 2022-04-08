@@ -70,7 +70,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  onRunStart(
+  override onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ): void {
@@ -78,7 +78,7 @@ export default class SummaryReporter extends BaseReporter {
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(
+  override onRunComplete(
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
   ): void {

@@ -81,7 +81,7 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v10 and v15 and target first LTS `16.13.0` ([#12220](https://github.com/facebook/jest/pull/12220))
-- `[*]` [**BREAKING**] Drop support for `typescript@3.8`, minimum version is now `4.2` ([#11142](https://github.com/facebook/jest/pull/11142))
+- `[*]` [**BREAKING**] Drop support for `typescript@3.8`, minimum version is now `4.3` ([#11142](https://github.com/facebook/jest/pull/11142), [#12648](https://github.com/facebook/jest/pull/12648))
 - `[*]` Bundle all `.d.ts` files into a single `index.d.ts` per module ([#12345](https://github.com/facebook/jest/pull/12345))
 - `[*]` Use `globalThis` instead of `global` ([#12447](https://github.com/facebook/jest/pull/12447))
 - `[babel-jest]` [**BREAKING**] Only export `createTransformer` ([#12407](https://github.com/facebook/jest/pull/12407))

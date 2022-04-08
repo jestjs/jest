@@ -55,7 +55,7 @@ jobs:
         run: yarn build
       - name: test typings
         run: yarn test-types
-      - name: verify TypeScript@4.2 compatibility
+      - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
 
   lint:

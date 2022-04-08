@@ -18,7 +18,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     super(pipe, prompt, 'filenames');
   }
 
-  protected _onChange(pattern: string, options: ScrollOptions): void {
+  protected override _onChange(pattern: string, options: ScrollOptions): void {
     super._onChange(pattern, options);
     this._printPrompt(pattern);
   }
