@@ -94,6 +94,7 @@
 - `[expect]` [**BREAKING**] Snapshot matcher types are moved to `@jest/expect` ([#12404](https://github.com/facebook/jest/pull/12404))
 - `[jest-cli]` Update `yargs` to v17 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest-config]` [**BREAKING**] Remove `getTestEnvironment` export ([#12353](https://github.com/facebook/jest/pull/12353))
+- `[jest-config]` [**BREAKING**] Rename config option `name` to `id` ([#11981](https://github.com/facebook/jest/pull/11981))
 - `[jest-create-cache-key-function]` Added README.md file with basic usage instructions ([#12492](https://github.com/facebook/jest/pull/12492))
 - `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 - `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
@@ -250,7 +251,6 @@
 
 - `[expect]` `BigInt` global is always defined, don't check for its existence at runtime ([#11979](https://github.com/facebook/jest/pull/11979))
 - `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([#11973](https://github.com/facebook/jest/pull/11973))
-- `[jest-config, jest-haste-map]` [**BREAKING**] Rename config option `name` to `id` - does not affect `displayName` ([#11981](https://github.com/facebook/jest/pull/11981))
 
 ## 27.3.0
 
