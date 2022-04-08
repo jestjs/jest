@@ -1,3 +1,4 @@
+!.*
 **/coverage/**
 **/node_modules/**
 bin/
@@ -10,7 +11,6 @@ website/build
 website/node_modules
 website/i18n/*.js
 website/static
-!.eslintrc.js
 
 # Third-party script
 packages/jest-diff/src/cleanupSemantic.ts
