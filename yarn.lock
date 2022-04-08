@@ -2557,7 +2557,7 @@ __metadata:
     "@types/rimraf": ^3.0.0
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
-    emittery: ^0.8.1
+    emittery: ^0.10.2
     exit: ^0.1.2
     graceful-fs: ^4.2.9
     jest-changed-files: ^28.0.0-alpha.3
@@ -9353,10 +9353,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emittery@npm:^0.8.1":
-  version: 0.8.1
-  resolution: "emittery@npm:0.8.1"
-  checksum: 2457e8c7b0688bb006126f2c025b2655abe682f66b184954122a8a065b5277f9813d49d627896a10b076b81c513ec5f491fd9c14fbd42c04b95ca3c9f3c365ee
+"emittery@npm:^0.10.2":
+  version: 0.10.2
+  resolution: "emittery@npm:0.10.2"
+  checksum: ee3e21788b043b90885b18ea756ec3105c1cedc50b29709c92b01e239c7e55345d4bb6d3aef4ddbaf528eef448a40b3bb831bad9ee0fc9c25cbf1367ab1ab5ac
   languageName: node
   linkType: hard
 
@@ -13502,7 +13502,7 @@ __metadata:
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
-    emittery: ^0.8.1
+    emittery: ^0.10.2
     graceful-fs: ^4.2.9
     jest-docblock: ^28.0.0-alpha.6
     jest-environment-node: ^28.0.0-alpha.8
