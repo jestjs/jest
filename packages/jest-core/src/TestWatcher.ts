@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import emittery = require('emittery');
+import Emittery = require('emittery');
 
 type State = {
   interrupted: boolean;
 };
 
-export default class TestWatcher extends emittery<{change: State}> {
+export default class TestWatcher extends Emittery<{change: State}> {
   state: State;
   private _isWatchMode: boolean;
 

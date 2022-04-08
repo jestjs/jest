@@ -142,7 +142,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -156,7 +158,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -167,7 +171,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
@@ -183,7 +189,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
