@@ -2,7 +2,6 @@
 **/coverage/**
 **/node_modules/**
 bin/
-flow-typed/**
 packages/*/build/**
 packages/*/dist/**
 website/.docusaurus
