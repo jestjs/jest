@@ -49,6 +49,8 @@ jest --watchAll #runs all tests
 
 Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+
 ## Using with yarn
 
 If you run Jest via `yarn test`, you can pass the command line arguments directly as Jest arguments.
@@ -98,11 +100,15 @@ jest --update-snapshot --detectOpenHandles
 
 ## Options
 
-_Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
+:::note
 
-import TOCInline from "@theme/TOCInline"
+CLI options take precedence over values from the [Configuration](Configuration.md).
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+:::
+
+import TOCInline from '@theme/TOCInline';
+
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -118,7 +124,13 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 ### `--cache`
 
-Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. _Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower._
+Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`.
+
+:::caution
+
+The cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.
+
+:::
 
 If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
@@ -136,7 +148,17 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 ### `--clearCache`
 
-Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
+Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`.
+
+:::caution
+
+Clearing the cache will reduce performance.
+
+:::
+
+### `--clearMocks`
+
+Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -190,11 +212,21 @@ Find and run the tests that cover a space separated list of source files that we
 
 ### `--forceExit`
 
-Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. _Note: This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down._
+Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
+
+:::caution
+
+This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
+
+:::
 
 ### `--help`
 
 Show the help information, similar to this page.
+
+### `--ignoreProjects <project1> ... <projectN>`
+
+Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--init`
 
@@ -214,15 +246,15 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using the default `jest-circus` test runner._
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
+
+:::
 
 ### `--json`
 
 Prints the test results in JSON. This mode will send all other test output and user messages to stderr.
-
-### `--outputFile=<filename>`
-
-Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
 
 ### `--lastCommit`
 
@@ -258,6 +290,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--outputFile=<filename>`
+
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
+
 ### `--passWithNoTests`
 
 Allows the test suite to pass when no files are found.
@@ -272,6 +308,14 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 `jest --reporters="default" --reporters="jest-junit"`
 
+### `--resetMocks`
+
+Automatically reset mock state before every test. Equivalent to calling [`jest.resetAllMocks()`](JestObjectAPI.md#jestresetallmocks) before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
+
+### `--restoreMocks`
+
+Automatically restore mock state and implementation before every test. Equivalent to calling [`jest.restoreAllMocks()`](JestObjectAPI.md#jestrestoreallmocks) before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
+
 ### `--roots`
 
 A list of paths to directories that Jest should use to search for files in.
@@ -280,19 +324,41 @@ A list of paths to directories that Jest should use to search for files in.
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
-### `--selectProjects <project1> ... <projectN>`
-
-Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
-
 ### `--runTestsByPath`
 
 Run only the tests that were specified with their exact paths.
 
-_Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
+:::tip
+
+The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files.
+
+:::
+
+### `--selectProjects <project1> ... <projectN>`
+
+Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
 A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
+
+### `--shard`
+
+The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount>\d+)`.
+
+`shardIndex` describes which shard to select while `shardCount` controls the number of shards the suite should be split into.
+
+`shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
+
+When `shard` is specified the configured [`testSquencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
+
+For example, to split the suite into three shards, each running one third of the tests:
+
+```
+jest --shard=1/3
+jest --shard=2/3
+jest --shard=3/3
+```
 
 ### `--showConfig`
 
@@ -305,12 +371,6 @@ Prevent tests from printing messages through the console.
 ### `--testEnvironmentOptions=<json string>`
 
 A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
-
-### `--testNamePattern=<regex>`
-
-Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
-
-_Note: The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks._
 
 ### `--testLocationInResults`
 
@@ -325,9 +385,19 @@ Note that `column` is 0-indexed while `line` is not.
 }
 ```
 
-### `--testPathPattern=<regex>`
+### `--testMatch glob1 ... globN`
 
-A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
+The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
+
+### `--testNamePattern=<regex>`
+
+Alias: -t. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
+
+:::tip
+
+The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks.
+
+:::
 
 ### `--testPathIgnorePatterns=<regex>|[array]`
 
@@ -335,13 +405,17 @@ A single or array of regexp pattern strings that are tested against all tests pa
 
 To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/ /tests/e2e/\)`. Alternatively, you can omit parentheses by combining regexps into a single regexp like `/node_modules/|/tests/e2e/`. These two examples are equivalent.
 
+### `--testPathPattern=<regex>`
+
+A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
+
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
 
 ### `--testSequencer=<path>`
 
-Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
+Lets you specify a custom test sequencer. Please refer to the [`testSequencer` configuration](Configuration.md#testsequencer-string) for details.
 
 ### `--testTimeout=<number>`
 

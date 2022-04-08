@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
     return string.replace(/(\/|\\(?!\.))/g, '\\\\');
@@ -28,6 +28,7 @@ const defaultConfig = {
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
+  fakeTimers: {enableGlobally: false},
   globals: {},
   haste: {},
   moduleDirectories: ['node_modules'],
@@ -44,12 +45,10 @@ const defaultConfig = {
   restoreMocks: false,
   roots: ['<rootDir>'],
   snapshotSerializers: [],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: null,
-  testURL: 'http://localhost',
-  timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   useStderr: false,
   verbose: null,
@@ -78,6 +77,7 @@ const validConfig = {
     },
   },
   expand: false,
+  fakeTimers: {enableGlobally: false},
   forceExit: false,
   globals: {},
   haste: {},
@@ -85,7 +85,6 @@ const validConfig = {
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
-  moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
     '^Vue$': ['<rootDir>/node_modules/vue', '<rootDir>/node_modules/vue3'],
@@ -102,18 +101,17 @@ const validConfig = {
   restoreMocks: false,
   rootDir: '/',
   roots: ['<rootDir>'],
+  runtime: '<rootDir>',
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'circus',
-  testURL: 'http://localhost',
-  timers: 'real',
   transform: {
     '\\.js$': '<rootDir>/preprocessor.js',
   },

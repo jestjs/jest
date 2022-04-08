@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
@@ -32,8 +31,6 @@ const SHOULD_NOT_PASS_IN_JEST = new Set([
   'spyOnProperty.test.js',
 ]);
 
-const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-
 testFiles.forEach(testFile => {
   test(`${testFile} errors in errorOnDeprecated mode`, () => {
     const result = runJest('error-on-deprecated', [
@@ -41,23 +38,9 @@ testFiles.forEach(testFile => {
       '--errorOnDeprecated',
     ]);
     expect(result.exitCode).toBe(1);
-    let {rest} = extractSummary(result.stderr);
+    const {rest} = extractSummary(result.stderr);
 
-    if (
-      nodeMajorVersion < 12 &&
-      testFile === 'defaultTimeoutInterval.test.js'
-    ) {
-      const lineEntry = '(__tests__/defaultTimeoutInterval.test.js:10:3)';
-
-      expect(rest).toContain(`at Object.<anonymous>.test ${lineEntry}`);
-
-      rest = rest.replace(
-        `at Object.<anonymous>.test ${lineEntry}`,
-        `at Object.<anonymous> ${lineEntry}`,
-      );
-    }
-
-    expect(wrap(rest)).toMatchSnapshot();
+    expect(rest).toMatchSnapshot();
   });
 });
 

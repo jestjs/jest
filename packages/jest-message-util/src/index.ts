@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {fileURLToPath} from 'url';
 import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
@@ -17,8 +18,6 @@ import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
-
-type Path = Config.Path;
 
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
@@ -126,7 +125,7 @@ export const formatExecError = (
   error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
   reuseMessage?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
@@ -162,7 +161,7 @@ export const formatExecError = (
 
   stack =
     stack && !options.noStackTrace
-      ? '\n' + formatStackTrace(stack, config, options, testPath)
+      ? `\n${formatStackTrace(stack, config, options, testPath)}`
       : '';
 
   if (
@@ -181,7 +180,7 @@ export const formatExecError = (
     messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
   }
 
-  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
+  return `${TITLE_INDENT + TITLE_BULLET + messageToUse + stack}\n`;
 };
 
 const removeInternalStackEntries = (
@@ -237,7 +236,7 @@ const removeInternalStackEntries = (
 
 const formatPaths = (
   config: StackTraceConfig,
-  relativeTestPath: Path | null,
+  relativeTestPath: string | null,
   line: string,
 ) => {
   // Extract the file path from the trace line.
@@ -273,6 +272,9 @@ export const getTopFrame = (lines: Array<string>): Frame | null => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
+      if (parsedFrame.file.startsWith('file://')) {
+        parsedFrame.file = slash(fileURLToPath(parsedFrame.file));
+      }
       return parsedFrame as Frame;
     }
   }
@@ -284,7 +286,7 @@ export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string => {
   const lines = getStackTraceLines(stack, options);
   let renderedCallsite = '';
@@ -333,7 +335,7 @@ export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath?: Path,
+  testPath?: string,
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
@@ -354,22 +356,21 @@ export const formatResultsErrors = (
       let {message, stack} = separateMessageFromStack(content);
       stack = options.noStackTrace
         ? ''
-        : STACK_TRACE_COLOR(
+        : `${STACK_TRACE_COLOR(
             formatStackTrace(stack, config, options, testPath),
-          ) + '\n';
+          )}\n`;
 
       message = indentAllLines(message, MESSAGE_INDENT);
 
-      const title =
-        chalk.bold.red(
-          TITLE_INDENT +
-            TITLE_BULLET +
-            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-            result.title,
-        ) + '\n';
+      const title = `${chalk.bold.red(
+        TITLE_INDENT +
+          TITLE_BULLET +
+          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          result.title,
+      )}\n`;
 
-      return title + '\n' + message + '\n' + stack;
+      return `${title}\n${message}\n${stack}`;
     })
     .join('\n');
 };

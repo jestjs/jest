@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import {readFileSync} from 'graceful-fs';
-import wrap from 'jest-snapshot-serializer-raw';
 import {cleanup, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -23,7 +22,7 @@ it('code coverage for Handlebars', () => {
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.exitCode).toBe(0);
-  expect(wrap(result.stdout)).toMatchSnapshot();
+  expect(result.stdout).toMatchSnapshot();
 
   const coverageMapFile = path.join(coverageDir, 'coverage-final.json');
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));

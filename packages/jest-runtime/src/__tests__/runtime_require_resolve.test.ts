@@ -69,7 +69,7 @@ describe('Runtime require.resolve', () => {
       'utf-8',
     );
 
-    await fs.writeFile(target, `module.exports = {}`, 'utf-8');
+    await fs.writeFile(target, 'module.exports = {}', 'utf-8');
 
     const runtime = await createRuntime(__filename);
     const resolved = runtime.requireModule(runtime.__mockRootPath, entrypoint);

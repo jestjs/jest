@@ -29,8 +29,8 @@ export type SerializableResolver = {
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  path: Config.Path;
-  context?: TestRunnerSerializedContext;
+  path: string;
+  context: TestRunnerSerializedContext;
 };
 
 // Make sure uncaught errors are logged before we exit.
@@ -61,7 +61,7 @@ const resolvers = new Map<string, Resolver>();
 const getResolver = (config: Config.ProjectConfig) => {
   const resolver = resolvers.get(config.id);
   if (!resolver) {
-    throw new Error('Cannot find resolver for: ' + config.id);
+    throw new Error(`Cannot find resolver for: ${config.id}`);
   }
   return resolver;
 };
@@ -97,7 +97,7 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config),
-      context && {
+      {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
         sourcesRelatedToTestsInChangedFiles:

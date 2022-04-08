@@ -12,6 +12,7 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
+  FunctionLike,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
@@ -41,6 +42,7 @@ const messageListener = (request: any) => {
       const init: ChildMessageInitialize = request;
       file = init[2];
       setupArgs = request[3];
+      process.env.JEST_WORKER_ID = request[4];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -54,7 +56,7 @@ const messageListener = (request: any) => {
 
     default:
       throw new TypeError(
-        'Unexpected request from parent process: ' + request[0],
+        `Unexpected request from parent process: ${request[0]}`,
       );
   }
 };
@@ -114,7 +116,7 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: (...args: Array<unknown>) => unknown;
+  let fn: FunctionLike;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -143,13 +145,13 @@ const isPromise = (obj: any): obj is PromiseLike<unknown> =>
   typeof obj.then === 'function';
 
 function execFunction(
-  fn: (...args: Array<unknown>) => unknown,
+  fn: FunctionLike,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,
   onError: (error: Error) => void,
 ): void {
-  let result;
+  let result: unknown;
 
   try {
     result = fn.apply(ctx, args);

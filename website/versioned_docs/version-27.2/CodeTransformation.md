@@ -19,12 +19,12 @@ If you override the `transform` configuration option `babel-jest` will no longer
 
 ## Writing custom transformers
 
-You can write you own transformer. The API of a transformer is as follows:
+You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
 interface SyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -59,7 +59,7 @@ interface SyncTransformer<OptionType = unknown> {
 
 interface AsyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -120,13 +120,19 @@ type TransformedSource =
   | {code: string; map?: RawSourceMap | string | null}
   | string;
 
-// Config.ProjectConfig can be seen in in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
+// Config.ProjectConfig can be seen in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
 // RawSourceMap comes from [`source-map`](https://github.com/mozilla/source-map/blob/0.6.1/source-map.d.ts#L6-L12)
 ```
 
-As can be seen, only `process` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+As can be seen, only `process` or `processAsync` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
 
 Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+
+:::tip
+
+Make sure `TransformedSource` contains a source map, so it is possible to report line information accurately in code coverage and test errors. Inline source maps also work but are slower.
+
+:::
 
 ### Examples
 
@@ -143,7 +149,7 @@ const path = require('path');
 
 module.exports = {
   process(src, filename, config, options) {
-    return 'module.exports = ' + JSON.stringify(path.basename(filename)) + ';';
+    return `module.exports = ${JSON.stringify(path.basename(filename))};`;
   },
 };
 ```

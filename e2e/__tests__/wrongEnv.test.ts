@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import wrap from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 function assertFailuresAndSnapshot(args: Array<string>) {
   const result = runJest('wrong-env', args);
   expect(result.exitCode).toBe(1);
-  expect(wrap(extractSummary(result.stderr).rest)).toMatchSnapshot();
+  expect(extractSummary(result.stderr).rest).toMatchSnapshot();
 }
 
 describe('Wrong globals for environment', () => {

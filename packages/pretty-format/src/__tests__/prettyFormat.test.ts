@@ -400,7 +400,7 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
   });
 
-  it("doesn't escape string with {excapeString: false}", () => {
+  it("doesn't escape string with {escapeString: false}", () => {
     const val = '"\'\\n';
     expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
   });
@@ -412,7 +412,7 @@ describe('prettyFormat()', () => {
 
   it('prints a multiline string', () => {
     const val = ['line 1', 'line 2', 'line 3'].join('\n');
-    expect(prettyFormat(val)).toEqual('"' + val + '"');
+    expect(prettyFormat(val)).toEqual(`"${val}"`);
   });
 
   it('prints a multiline string as value of object property', () => {
@@ -560,6 +560,59 @@ describe('prettyFormat()', () => {
         '}',
       ].join('\n'),
     );
+  });
+
+  describe('maxWidth option', () => {
+    it('applies to arrays', () => {
+      const val = Array(1_000_000).fill('x');
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Array [',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  …',
+          ']',
+        ].join('\n'),
+      );
+    });
+
+    it('applies to sets', () => {
+      const val = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  …', '}'].join(
+          '\n',
+        ),
+      );
+    });
+
+    it('applies to maps', () => {
+      const val = new Map();
+      val.set('a', 1);
+      val.set('b', 2);
+      val.set('c', 3);
+      val.set('d', 4);
+      val.set('e', 5);
+      val.set('f', 6);
+      val.set('g', 7);
+      val.set('h', 8);
+      val.set('i', 9);
+      val.set('j', 10);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Map {',
+          '  "a" => 1,',
+          '  "b" => 2,',
+          '  "c" => 3,',
+          '  "d" => 4,',
+          '  "e" => 5,',
+          '  …',
+          '}',
+        ].join('\n'),
+      );
+    });
   });
 
   it('can customize the max depth', () => {
@@ -831,9 +884,7 @@ describe('prettyFormat()', () => {
         callToJSON: false,
       }),
     ).toEqual(
-      'Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ' +
-        name +
-        '],\n  },\n}',
+      `Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ${name}],\n  },\n}`,
     );
     expect((set as any).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
@@ -853,15 +904,13 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"boolean": [false, true]',
-            '"null": null',
-            '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
-            '"string": ["", "non-empty"]',
-            '"undefined": undefined',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"boolean": [false, true]',
+          '"null": null',
+          '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
+          '"string": ["", "non-empty"]',
+          '"undefined": undefined',
+        ].join(', ')}}`,
       );
     });
 
@@ -887,23 +936,21 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"arguments empty": []',
-            '"arguments non-empty": ["arg"]',
-            '"array literal empty": []',
-            '"array literal non-empty": ["item"]',
-            '"extended array empty": []',
-            '"map empty": Map {}',
-            '"map non-empty": Map {"name" => "value"}',
-            '"object literal empty": {}',
-            '"object literal non-empty": {"name": "value"}',
-            '"object with constructor": {"name": "value"}',
-            '"object without constructor": {}',
-            '"set empty": Set {}',
-            '"set non-empty": Set {"value"}',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"arguments empty": []',
+          '"arguments non-empty": ["arg"]',
+          '"array literal empty": []',
+          '"array literal non-empty": ["item"]',
+          '"extended array empty": []',
+          '"map empty": Map {}',
+          '"map non-empty": Map {"name" => "value"}',
+          '"object literal empty": {}',
+          '"object literal non-empty": {"name": "value"}',
+          '"object with constructor": {"name": "value"}',
+          '"object without constructor": {}',
+          '"set empty": Set {}',
+          '"set non-empty": Set {"value"}',
+        ].join(', ')}}`,
       );
     });
 

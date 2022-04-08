@@ -37,7 +37,10 @@ export default class NotifyReporter extends BaseReporter {
     this._context = context;
   }
 
-  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
+  override onRunComplete(
+    contexts: Set<Context>,
+    result: AggregatedResult,
+  ): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
@@ -81,7 +84,13 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       )} passed`;
 
-      this._notifier.notify({icon, message, timeout: false, title});
+      this._notifier.notify({
+        hint: 'int:transient:1',
+        icon,
+        message,
+        timeout: false,
+        title,
+      });
     } else if (
       testsHaveRun &&
       !success &&
@@ -99,7 +108,7 @@ export default class NotifyReporter extends BaseReporter {
         Math.ceil(Number.isNaN(failed) ? 0 : failed * 100),
       );
       const message = util.format(
-        (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
+        `${isDarwin ? '\u26D4\uFE0F ' : ''}%d of %d tests failed`,
         result.numFailedTests,
         result.numTotalTests,
       );
@@ -109,12 +118,20 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        this._notifier.notify({icon, message, timeout: false, title});
+        this._notifier.notify({
+          hint: 'int:transient:1',
+          icon,
+          message,
+          timeout: false,
+          title,
+        });
       } else {
         this._notifier.notify(
           {
+            // @ts-expect-error - not all options are supported by all systems (specifically `actions` and `hint`)
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
+            hint: 'int:transient:1',
             icon,
             message,
             timeout: false,

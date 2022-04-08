@@ -24,7 +24,7 @@ export const replacePathSepForRegex = (string: string): string => {
   if (sep === '\\') {
     return string.replace(
       /(\/|(.)?\\(?![[\]{}()*+?.^$|\\]))/g,
-      (_match, _, p2) => (p2 && p2 !== '\\' ? p2 + '\\\\' : '\\\\'),
+      (_match, _, p2) => (p2 && p2 !== '\\' ? `${p2}\\\\` : '\\\\'),
     );
   }
   return string;

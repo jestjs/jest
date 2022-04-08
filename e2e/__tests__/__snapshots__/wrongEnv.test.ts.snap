@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Wrong globals for environment print useful error for document 1`] = `
-FAIL __tests__/node.js
+"FAIL __tests__/node.js
   ✕ use document
   ○ skipped use window
   ○ skipped use navigator
@@ -21,11 +21,11 @@ FAIL __tests__/node.js
       18 |   console.log(div);
       19 |
 
-      at Object.document (__tests__/node.js:16:15)
+      at Object.document (__tests__/node.js:16:15)"
 `;
 
 exports[`Wrong globals for environment print useful error for navigator 1`] = `
-FAIL __tests__/node.js
+"FAIL __tests__/node.js
   ✕ use navigator
   ○ skipped use document
   ○ skipped use window
@@ -45,11 +45,11 @@ FAIL __tests__/node.js
       34 |   console.log(userAgent);
       35 |
 
-      at Object.navigator (__tests__/node.js:32:21)
+      at Object.navigator (__tests__/node.js:32:21)"
 `;
 
 exports[`Wrong globals for environment print useful error for unref 1`] = `
-FAIL __tests__/jsdom.js
+"FAIL __tests__/jsdom.js
   ✕ use unref
 
   ● use unref
@@ -67,11 +67,11 @@ FAIL __tests__/jsdom.js
       15 |   expect(1).toBe(1);
       16 | });
 
-      at Object.unref (__tests__/jsdom.js:13:27)
+      at Object.unref (__tests__/jsdom.js:13:27)"
 `;
 
 exports[`Wrong globals for environment print useful error for window 1`] = `
-FAIL __tests__/node.js
+"FAIL __tests__/node.js
   ✕ use window
   ○ skipped use document
   ○ skipped use navigator
@@ -91,11 +91,11 @@ FAIL __tests__/node.js
       26 |   console.log(location);
       27 |
 
-      at Object.window (__tests__/node.js:24:20)
+      at Object.window (__tests__/node.js:24:20)"
 `;
 
 exports[`Wrong globals for environment print useful error when it explodes during evaluation 1`] = `
-FAIL __tests__/beforeTest.js
+"FAIL __tests__/beforeTest.js
   ● Test suite failed to run
 
     The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
@@ -111,5 +111,5 @@ FAIL __tests__/beforeTest.js
       15 | console.log(div);
       16 |
 
-      at Object.document (__tests__/beforeTest.js:13:13)
+      at Object.document (__tests__/beforeTest.js:13:13)"
 `;

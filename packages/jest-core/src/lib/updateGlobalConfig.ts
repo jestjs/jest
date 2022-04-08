@@ -13,10 +13,10 @@ type ExtraConfigOptions = Partial<
   Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
 >;
 
-export default (
+export default function updateGlobalConfig(
   globalConfig: Config.GlobalConfig,
   options: AllowedConfigOptions & ExtraConfigOptions = {},
-): Config.GlobalConfig => {
+): Config.GlobalConfig {
   const newConfig: Config.GlobalConfig = {...globalConfig};
 
   if (options.mode === 'watch') {
@@ -112,4 +112,4 @@ export default (
   }
 
   return Object.freeze(newConfig);
-};
+}

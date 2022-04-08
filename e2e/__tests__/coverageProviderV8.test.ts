@@ -6,11 +6,14 @@
  */
 
 import * as path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-provider-v8');
+
+// https://github.com/nodejs/node/issues/42638
+const nodeOptions =
+  typeof fetch === 'undefined' ? '' : '--no-experimental-fetch';
 
 test('prints coverage with missing sourcemaps', () => {
   const sourcemapDir = path.join(DIR, 'no-sourcemap');
@@ -18,11 +21,11 @@ test('prints coverage with missing sourcemaps', () => {
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8'],
-    {stripAnsi: true},
+    {nodeOptions, stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints coverage with empty sourcemaps', () => {
@@ -31,11 +34,11 @@ test('prints coverage with empty sourcemaps', () => {
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8'],
-    {stripAnsi: true},
+    {nodeOptions, stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints correct coverage report, if a CJS module is put under test without transformation', () => {
@@ -44,11 +47,11 @@ test('prints correct coverage report, if a CJS module is put under test without 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {stripAnsi: true},
+    {nodeOptions, stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 test('prints correct coverage report, if a TS module is transpiled by Babel to CJS and put under test', () => {
@@ -57,11 +60,11 @@ test('prints correct coverage report, if a TS module is transpiled by Babel to C
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {stripAnsi: true},
+    {nodeOptions, stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
@@ -73,13 +76,13 @@ onNodeVersions('>=12.16.0', () => {
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
       {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
+        nodeOptions: `${nodeOptions} --experimental-vm-modules --no-warnings`,
         stripAnsi: true,
       },
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   test('prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test', () => {
@@ -89,12 +92,12 @@ onNodeVersions('>=12.16.0', () => {
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
       {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
+        nodeOptions: `${nodeOptions} --experimental-vm-modules --no-warnings`,
         stripAnsi: true,
       },
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });

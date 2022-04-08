@@ -7,7 +7,6 @@
 
 import {dirname, resolve} from 'path';
 import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
 export function clearFsCache(): void {
@@ -30,7 +29,8 @@ function statSyncCached(path: string): IPathType {
 
   let stat;
   try {
-    stat = fs.statSync(path);
+    // @ts-expect-error TS2554 - throwIfNoEntry is only available in recent version of node, but inclusion of the option is a backward compatible no-op.
+    stat = fs.statSync(path, {throwIfNoEntry: false});
   } catch (e: any) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
       throw e;
@@ -52,7 +52,7 @@ function statSyncCached(path: string): IPathType {
 }
 
 const checkedRealpathPaths = new Map<string, string>();
-function realpathCached(path: Config.Path): Config.Path {
+function realpathCached(path: string): string {
   let result = checkedRealpathPaths.get(path);
 
   if (result != null) {
@@ -74,7 +74,7 @@ function realpathCached(path: Config.Path): Config.Path {
 export type PkgJson = Record<string, unknown>;
 
 const packageContents = new Map<string, PkgJson>();
-export function readPackageCached(path: Config.Path): PkgJson {
+export function readPackageCached(path: string): PkgJson {
   let result = packageContents.get(path);
 
   if (result != null) {
@@ -91,9 +91,7 @@ export function readPackageCached(path: Config.Path): PkgJson {
 // adapted from
 // https://github.com/lukeed/escalade/blob/2477005062cdbd8407afc90d3f48f4930354252b/src/sync.js
 // to use cached `fs` calls
-export function findClosestPackageJson(
-  start: Config.Path,
-): Config.Path | undefined {
+export function findClosestPackageJson(start: string): string | undefined {
   let dir = resolve('.', start);
   if (!isDirectory(dir)) {
     dir = dirname(dir);
@@ -119,14 +117,14 @@ export function findClosestPackageJson(
 /*
  * helper functions
  */
-export function isFile(file: Config.Path): boolean {
+export function isFile(file: string): boolean {
   return statSyncCached(file) === IPathType.FILE;
 }
 
-export function isDirectory(dir: Config.Path): boolean {
+export function isDirectory(dir: string): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
 }
 
-export function realpathSync(file: Config.Path): Config.Path {
+export function realpathSync(file: string): string {
   return realpathCached(file);
 }

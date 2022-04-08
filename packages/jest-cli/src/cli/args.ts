@@ -5,11 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
-  if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
+  if (
+    argv.runInBand &&
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
+  ) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
         'options do not make sense together. Which is it?',
@@ -33,7 +37,7 @@ export function check(argv: Config.Argv): true {
 
   if (argv.onlyFailures && argv.watchAll) {
     throw new Error(
-      `Both --onlyFailures and --watchAll were specified, but these two ` +
+      'Both --onlyFailures and --watchAll were specified, but these two ' +
         'options do not make sense together.',
     );
   }
@@ -46,7 +50,10 @@ export function check(argv: Config.Argv): true {
     );
   }
 
-  if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
+  if (
+    Object.prototype.hasOwnProperty.call(argv, 'maxWorkers') &&
+    argv.maxWorkers === undefined
+  ) {
     throw new Error(
       'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
@@ -59,6 +66,13 @@ export function check(argv: Config.Argv): true {
     throw new Error(
       'The --selectProjects option requires the name of at least one project to be specified.\n' +
         'Example usage: jest --selectProjects my-first-project my-second-project',
+    );
+  }
+
+  if (argv.ignoreProjects && argv.ignoreProjects.length === 0) {
+    throw new Error(
+      'The --ignoreProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --ignoreProjects my-first-project my-second-project',
     );
   }
 
@@ -89,7 +103,7 @@ export const usage =
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
-export const options = {
+export const options: {[key: string]: Options} = {
   all: {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
@@ -148,8 +162,8 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls and instances between every ' +
-      'test. Equivalent to calling jest.clearAllMocks() between each test.',
+      'Automatically clear mock calls, instances, contexts and results before every test. ' +
+      'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
   collectCoverage: {
@@ -295,6 +309,13 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  ignoreProjects: {
+    description:
+      'Ignore the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
+  },
   init: {
     description: 'Generate a basic configuration file',
     type: 'boolean',
@@ -355,7 +376,7 @@ export const options = {
     description:
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
-      'extensions Jest will look for. ',
+      'extensions Jest will look for.',
     string: true,
     type: 'array',
   },
@@ -440,8 +461,8 @@ export const options = {
   },
   resetMocks: {
     description:
-      'Automatically reset mock state between every test. ' +
-      'Equivalent to calling jest.resetAllMocks() between each test.',
+      'Automatically reset mock state before every test. ' +
+      'Equivalent to calling jest.resetAllMocks() before each test.',
     type: 'boolean',
   },
   resetModules: {
@@ -456,8 +477,8 @@ export const options = {
   },
   restoreMocks: {
     description:
-      'Automatically restore mock state and implementation between every test. ' +
-      'Equivalent to calling jest.restoreAllMocks() between each test.',
+      'Automatically restore mock state and implementation before every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() before each test.',
     type: 'boolean',
   },
   rootDir: {
@@ -496,7 +517,7 @@ export const options = {
   },
   selectProjects: {
     description:
-      'Run only the tests of the specified projects.' +
+      'Run the tests of the specified projects.' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',
@@ -504,16 +525,22 @@ export const options = {
   setupFiles: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing environment before each test. ',
+      'set up the testing environment before each test.',
     string: true,
     type: 'array',
   },
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing framework before each test ',
+      'set up the testing framework before each test',
     string: true,
     type: 'array',
+  },
+  shard: {
+    description:
+      'Shard tests and execute only the selected shard, specify in ' +
+      'the form "current/all". 1-based, for example "3/5".',
+    type: 'string',
   },
   showConfig: {
     description: 'Print your jest config and then exits.',
@@ -610,16 +637,6 @@ export const options = {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
   },
-  testURL: {
-    description: 'This option sets the URL for the jsdom environment.',
-    type: 'string',
-  },
-  timers: {
-    description:
-      'Setting this value to fake allows the use of fake timers ' +
-      'for functions such as setTimeout.',
-    type: 'string',
-  },
   transform: {
     description:
       'A JSON string which maps from regular expressions to paths ' +
@@ -659,11 +676,6 @@ export const options = {
       'Display individual test results with the test suite hierarchy.',
     type: 'boolean',
   },
-  version: {
-    alias: 'v',
-    description: 'Print the version and exit',
-    type: 'boolean',
-  },
   watch: {
     description:
       'Watch files for changes and rerun tests related to ' +
@@ -692,4 +704,4 @@ export const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-} as const;
+};

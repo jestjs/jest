@@ -9,9 +9,9 @@ For additional Jest matchers maintained by the Jest Community check out [`jest-e
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -67,14 +67,18 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
   }
 }
 ```
@@ -169,6 +173,7 @@ expect.extend({
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
@@ -178,6 +183,7 @@ expect.extend({
             expand: this.expand,
           });
           return (
+            // eslint-disable-next-line prefer-template
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -241,8 +247,8 @@ It's also possible to create custom matchers for inline snapshots, the snapshots
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10));
+  toMatchTrimmedInlineSnapshot(received, ...rest) {
+    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
   },
 });
 
@@ -253,6 +259,41 @@ it('stores only 10 characters', () => {
   expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot(
     `"extra long"`
   );
+  */
+});
+```
+
+#### async
+
+If your custom inline snapshot matcher is async i.e. uses `async`-`await` you might encounter an error like "Multiple inline snapshots for the same call are not supported". Jest needs additional context information to find where the custom inline snapshot matcher was used to update the snapshots properly.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  async toMatchObservationInlineSnapshot(fn, ...rest) {
+    // The error (and its stacktrace) must be created before any `await`
+    this.error = new Error();
+
+    // The implementation of `observe` doesn't matter.
+    // It only matters that the custom snapshot matcher is async.
+    const observation = await observe(async () => {
+      await fn();
+    });
+
+    return toMatchInlineSnapshot.call(this, recording, ...rest);
+  },
+});
+
+it('observes something', async () => {
+  await expect(async () => {
+    return 'async action';
+  }).toMatchTrimmedInlineSnapshot();
+  /*
+  The snapshot will be added inline like
+  await expect(async () => {
+    return 'async action';
+  }).toMatchTrimmedInlineSnapshot(`"async action"`);
   */
 });
 ```
@@ -313,9 +354,20 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
+}
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
 }
@@ -639,7 +691,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -685,7 +737,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -1078,6 +1130,8 @@ test('the flavor list contains lime', () => {
 });
 ```
 
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
+
 ### `.toContainEqual(item)`
 
 Use `.toContainEqual` when you want to check that an item with a specific structure and values is contained in an array. For testing the items in the array, this matcher recursively checks the equality of all fields, rather than checking for object identity.
@@ -1328,7 +1382,7 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](/blog/2016/07/27/jest-14) for more information on snapshot testing.
 
 ### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 

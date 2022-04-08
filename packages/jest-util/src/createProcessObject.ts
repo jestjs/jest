@@ -22,7 +22,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
 
   function deletePropertyWin32(_target: unknown, key: unknown) {
     for (const name in real) {
-      if (real.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(real, name)) {
         if (typeof key === 'string') {
           if (name.toLowerCase() === key.toLowerCase()) {
             delete real[name];
@@ -64,7 +64,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     get: isWin32 ? getPropertyWin32 : getProperty,
 
     set(_target, key, value) {
-      const strValue = '' + value;
+      const strValue = `${value}`;
 
       if (typeof key === 'string') {
         lookup[key.toLowerCase()] = strValue;
@@ -79,7 +79,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function (): NodeJS.Process {
+export default function createProcessObject(): NodeJS.Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
@@ -92,9 +92,7 @@ export default function (): NodeJS.Process {
   } catch (e: any) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      e.message =
-        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n' +
-        e.message;
+      e.message = `Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n${e.message}`;
 
       throw e;
     }

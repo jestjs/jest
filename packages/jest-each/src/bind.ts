@@ -7,7 +7,7 @@
  */
 
 import type {Global} from '@jest/types';
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString} from 'jest-util';
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
 import {
@@ -16,9 +16,9 @@ import {
   validateTemplateTableArguments,
 } from './validation';
 
-export type EachTests = Array<{
+export type EachTests = ReadonlyArray<{
   title: string;
-  arguments: Array<unknown>;
+  arguments: ReadonlyArray<unknown>;
 }>;
 
 // type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
@@ -28,16 +28,20 @@ type GlobalCallback = (
   timeout?: number,
 ) => void;
 
-export default <EachCallback extends Global.TestCallback>(
-    cb: GlobalCallback,
-    supportsDone: boolean = true,
+export default function bind<EachCallback extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone: boolean = true,
+) {
+  return (
+    table: Global.EachTable,
+    ...taggedTemplateData: Global.TemplateData
   ) =>
-  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
     function eachBind(
-      title: string,
+      title: Global.BlockNameLike,
       test: Global.EachTestFn<EachCallback>,
       timeout?: number,
     ): void {
+      title = convertDescriptorToString(title);
       try {
         const tests = isArrayTable(taggedTemplateData)
           ? buildArrayTests(title, table)
@@ -57,6 +61,7 @@ export default <EachCallback extends Global.TestCallback>(
         });
       }
     };
+}
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 
@@ -80,7 +85,7 @@ const getHeadingKeys = (headings: string): Array<string> =>
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
-  params: Array<unknown>,
+  params: ReadonlyArray<unknown>,
   test: Global.EachTestFn<EachCallback>,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length

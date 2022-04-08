@@ -29,13 +29,21 @@ import {
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import type TestRunner from 'jest-runner';
+import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
 import type {Context} from 'jest-runtime';
-import snapshot = require('jest-snapshot');
+import {
+  buildSnapshotResolver,
+  cleanup as cleanupSnapshots,
+} from 'jest-snapshot';
 import {requireOrImportModule} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
+
+type TestRunnerConstructor = new (
+  globalConfig: Config.GlobalConfig,
+  context: TestRunnerContext,
+) => JestTestRunner;
 
 export type TestSchedulerOptions = {
   startRun: (globalConfig: Config.GlobalConfig) => void;
@@ -43,8 +51,8 @@ export type TestSchedulerOptions = {
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export async function createTestScheduler(
@@ -124,8 +132,9 @@ class TestScheduler {
       // Throws when the context is leaked after executing a test.
       if (testResult.leaks) {
         const message =
-          chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
-          'Your test suite is leaking memory. Please ensure all references are cleaned.\n' +
+          `${chalk.red.bold(
+            'EXPERIMENTAL FEATURE!\n',
+          )}Your test suite is leaking memory. Please ensure all references are cleaned.\n` +
           '\n' +
           'There is a number of things that can leak memory:\n' +
           '  - Async operations that have not finished (e.g. fs.readFile).\n' +
@@ -170,15 +179,12 @@ class TestScheduler {
       const contextsWithSnapshotResolvers = await Promise.all(
         Array.from(contexts).map(
           async context =>
-            [
-              context,
-              await snapshot.buildSnapshotResolver(context.config),
-            ] as const,
+            [context, await buildSnapshotResolver(context.config)] as const,
         ),
       );
 
       contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
-        const status = snapshot.cleanup(
+        const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
           snapshotResolver,
@@ -205,19 +211,19 @@ class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners: {[key: string]: TestRunner} = Object.create(null);
-    const contextsByTestRunner = new WeakMap<TestRunner, Context>();
+    const testRunners: Record<string, JestTestRunner> = Object.create(null);
+    const contextsByTestRunner = new WeakMap<JestTestRunner, Context>();
     await Promise.all(
       Array.from(contexts).map(async context => {
         const {config} = context;
         if (!testRunners[config.runner]) {
           const transformer = await createScriptTransformer(config);
-          const Runner: typeof TestRunner =
+          const Runner: TestRunnerConstructor =
             await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
-            changedFiles: this._context?.changedFiles,
+            changedFiles: this._context.changedFiles,
             sourcesRelatedToTestsInChangedFiles:
-              this._context?.sourcesRelatedToTestsInChangedFiles,
+              this._context.sourcesRelatedToTestsInChangedFiles,
           });
           testRunners[config.runner] = runner;
           contextsByTestRunner.set(runner, context);
@@ -241,11 +247,7 @@ class TestScheduler {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
 
-          /**
-           * Test runners with event emitters are still not supported
-           * for third party test runners.
-           */
-          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmitters__) {
+          if (testRunner.supportsEventEmitters) {
             const unsubscribes = [
               testRunner.on('test-file-start', ([test]) =>
                 onTestFileStart(test),
@@ -265,14 +267,7 @@ class TestScheduler {
               ),
             ];
 
-            await testRunner.runTests(
-              tests,
-              watcher,
-              undefined,
-              undefined,
-              undefined,
-              testRunnerOptions,
-            );
+            await testRunner.runTests(tests, watcher, testRunnerOptions);
 
             unsubscribes.forEach(sub => sub());
           } else {
@@ -286,7 +281,7 @@ class TestScheduler {
             );
           }
         }
-      } catch (error: unknown) {
+      } catch (error) {
         if (!watcher.isInterrupted()) {
           throw error;
         }
@@ -313,7 +308,7 @@ class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: Record<string, TestRunner>,
+    testRunners: Record<string, JestTestRunner>,
     tests: Array<Test>,
   ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
@@ -411,11 +406,9 @@ class TestScheduler {
         const Reporter = await requireOrImportModule<any>(path, true);
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error: any) {
-        error.message =
-          'An error occurred while adding the reporter at path "' +
-          chalk.bold(path) +
-          '".' +
-          error.message;
+        error.message = `An error occurred while adding the reporter at path "${chalk.bold(
+          path,
+        )}".${error.message}`;
         throw error;
       }
     }

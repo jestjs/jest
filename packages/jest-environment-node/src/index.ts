@@ -6,9 +6,13 @@
  */
 
 import {Context, createContext, runInContext} from 'vm';
-import type {JestEnvironment} from '@jest/environment';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {Config, Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 
@@ -18,63 +22,55 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment<Timer> {
+// some globals we do not want, either because deprecated or we set it ourselves
+const denyList = new Set([
+  'GLOBAL',
+  'root',
+  'global',
+  'Buffer',
+  'ArrayBuffer',
+  'Uint8Array',
+]);
+
+const nodeGlobals = new Set(
+  Object.getOwnPropertyNames(globalThis).filter(
+    global => !denyList.has(global),
+  ),
+);
+
+export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig) {
+  // while `context` is unused, it should always be passed
+  constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
+    const {projectConfig} = config;
     this.context = createContext();
     const global = (this.global = runInContext(
       'this',
-      Object.assign(this.context, config.testEnvironmentOptions),
+      Object.assign(this.context, projectConfig.testEnvironmentOptions),
     ));
+
+    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    for (const nodeGlobalsKey of nodeGlobals) {
+      if (!contextGlobals.has(nodeGlobalsKey)) {
+        // @ts-expect-error
+        global[nodeGlobalsKey] = globalThis[nodeGlobalsKey];
+      }
+    }
+
     global.global = global;
-    global.clearInterval = clearInterval;
-    global.clearTimeout = clearTimeout;
-    global.setInterval = setInterval;
-    global.setTimeout = setTimeout;
     global.Buffer = Buffer;
-    global.setImmediate = setImmediate;
-    global.clearImmediate = clearImmediate;
     global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
     // different than the global one used by users in tests. This makes sure the
     // same constructor is referenced by both.
     global.Uint8Array = Uint8Array;
 
-    // URL and URLSearchParams are global in Node >= 10
-    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      global.URL = URL;
-      global.URLSearchParams = URLSearchParams;
-    }
-    // TextDecoder and TextDecoder are global in Node >= 11
-    if (
-      typeof TextEncoder !== 'undefined' &&
-      typeof TextDecoder !== 'undefined'
-    ) {
-      global.TextEncoder = TextEncoder;
-      global.TextDecoder = TextDecoder;
-    }
-    // queueMicrotask is global in Node >= 11
-    if (typeof queueMicrotask !== 'undefined') {
-      global.queueMicrotask = queueMicrotask;
-    }
-    // AbortController is global in Node >= 15
-    if (typeof AbortController !== 'undefined') {
-      global.AbortController = AbortController;
-    }
-    // Event is global in Node >= 15.4
-    if (typeof Event !== 'undefined') {
-      global.Event = Event;
-    }
-    // EventTarget is global in Node >= 15.4
-    if (typeof EventTarget !== 'undefined') {
-      global.EventTarget = EventTarget;
-    }
-    installCommonGlobals(global, config.globals);
+    installCommonGlobals(global, projectConfig.globals);
 
     this.moduleMocker = new ModuleMocker(global);
 
@@ -91,19 +87,20 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     const timerRefToId = (timer: Timer): number | undefined =>
       (timer && timer.id) || undefined;
 
-    const timerConfig = {
-      idToRef: timerIdToRef,
-      refToId: timerRefToId,
-    };
-
     this.fakeTimers = new LegacyFakeTimers({
-      config,
+      config: projectConfig,
       global,
       moduleMocker: this.moduleMocker,
-      timerConfig,
+      timerConfig: {
+        idToRef: timerIdToRef,
+        refToId: timerRefToId,
+      },
     });
 
-    this.fakeTimersModern = new ModernFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({
+      config: projectConfig,
+      global,
+    });
   }
 
   async setup(): Promise<void> {}
@@ -120,9 +117,13 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     this.fakeTimersModern = null;
   }
 
+  exportConditions(): Array<string> {
+    return ['node', 'node-addons'];
+  }
+
   getVmContext(): Context | null {
     return this.context;
   }
 }
 
-export = NodeEnvironment;
+export const TestEnvironment = NodeEnvironment;

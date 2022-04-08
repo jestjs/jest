@@ -89,7 +89,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         ...process.env,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         ...forceColor,
-      } as NodeJS.ProcessEnv,
+      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       silent: true,
@@ -173,7 +173,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
@@ -189,7 +189,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         break;
 
       case PARENT_MESSAGE_SETUP_ERROR:
-        error = new Error('Error when calling setup: ' + response[2]);
+        error = new Error(`Error when calling setup: ${response[2]}`);
 
         error.type = response[1];
         error.stack = response[3];
@@ -200,7 +200,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
+        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 

@@ -20,10 +20,10 @@ import * as args from './args';
 
 export async function run(
   maybeArgv?: Array<string>,
-  project?: Config.Path,
+  project?: string,
 ): Promise<void> {
   try {
-    const argv: Config.Argv = buildArgv(maybeArgv);
+    const argv = await buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -48,14 +48,15 @@ export async function run(
   }
 }
 
-export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
+export async function buildArgv(
+  maybeArgv?: Array<string>,
+): Promise<Config.Argv> {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Config.Argv | Array<string> =
-    maybeArgv || process.argv.slice(2);
-  const argv: Config.Argv = yargs(rawArgv)
+  const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
+  const argv: Config.Argv = await yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -82,12 +83,9 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
     },
     {$0: argv.$0, _: argv._},
   );
-};
+}
 
-const getProjectListFromCLIArgs = (
-  argv: Config.Argv,
-  project?: Config.Path,
-) => {
+const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {
@@ -126,8 +124,9 @@ const readResultsAndExit = (
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
       console.warn(
-        chalk.bold('Force exiting Jest: ') +
-          'Have you considered using `--detectOpenHandles` to detect ' +
+        `${chalk.bold(
+          'Force exiting Jest: ',
+        )}Have you considered using \`--detectOpenHandles\` to detect ` +
           'async operations that kept running after all tests finished?',
       );
     }

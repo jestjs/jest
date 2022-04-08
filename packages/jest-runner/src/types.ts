@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Emittery = require('emittery');
+import type Emittery = require('emittery');
 import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
   Test,
+  TestEvents,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
@@ -19,10 +20,12 @@ import type RuntimeType from 'jest-runtime';
 export type ErrorWithCode = Error & {code?: string};
 
 export type OnTestStart = (test: Test) => Promise<void>;
+
 export type OnTestFailure = (
   test: Test,
   serializableError: SerializableError,
 ) => Promise<void>;
+
 export type OnTestSuccess = (
   test: Test,
   testResult: TestResult,
@@ -43,14 +46,56 @@ export type TestRunnerOptions = {
 
 // make sure all props here are present in the type below it as well
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
 export type TestRunnerSerializedContext = {
-  changedFiles?: Array<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Array<Config.Path>;
+  changedFiles?: Array<string>;
+  sourcesRelatedToTestsInChangedFiles?: Array<string>;
 };
+
+export type UnsubscribeFn = () => void;
+
+abstract class BaseTestRunner {
+  readonly isSerial?: boolean;
+  abstract readonly supportsEventEmitters: boolean;
+
+  constructor(
+    protected readonly _globalConfig: Config.GlobalConfig,
+    protected readonly _context: TestRunnerContext,
+  ) {}
+}
+
+export abstract class CallbackTestRunner extends BaseTestRunner {
+  readonly supportsEventEmitters = false;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+}
+
+export abstract class EmittingTestRunner extends BaseTestRunner {
+  readonly supportsEventEmitters = true;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+
+  abstract on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn;
+}
+
+export type JestTestRunner = CallbackTestRunner | EmittingTestRunner;
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
 type WatcherState = {interrupted: boolean};

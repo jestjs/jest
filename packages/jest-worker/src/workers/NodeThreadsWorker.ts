@@ -5,12 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {PassThrough} from 'stream';
-import {
-  Worker,
-  WorkerOptions as WorkerThreadsWorkerOptions,
-} from 'worker_threads';
+import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -62,23 +58,14 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   initialize(): void {
-    this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
+    this._worker = new Worker(require.resolve('./threadChild'), {
       eval: false,
       resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,
-      workerData: {
-        cwd: process.cwd(),
-        env: {
-          ...process.env,
-          JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-        } as NodeJS.ProcessEnv,
-        // Suppress --debug / --inspect flags while preserving others (like --harmony).
-        execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-        silent: true,
-        ...this._options.forkOptions,
-      },
-    } as WorkerThreadsWorkerOptions);
+      workerData: this._options.workerData,
+      ...this._options.forkOptions,
+    });
 
     if (this._worker.stdout) {
       if (!this._stdout) {
@@ -108,6 +95,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       false,
       this._options.workerPath,
       this._options.setupArgs,
+      String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
     ]);
 
     this._retries++;
@@ -152,7 +140,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
@@ -168,7 +156,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_SETUP_ERROR:
-        error = new Error('Error when calling setup: ' + response[2]);
+        error = new Error(`Error when calling setup: ${response[2]}`);
 
         // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
@@ -180,7 +168,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
+        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 

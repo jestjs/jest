@@ -13,8 +13,8 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 1.  First, install `jest-puppeteer`
 
-```
-yarn add --dev jest-puppeteer
+```bash npm2yarn
+npm install --save-dev jest-puppeteer
 ```
 
 2.  Specify preset in your [Jest configuration](Configuration.md):
@@ -65,7 +65,7 @@ module.exports = async function () {
   const browser = await puppeteer.launch();
   // store the browser instance so we can teardown it later
   // this global is only available in the teardown but not in TestEnvironments
-  global.__BROWSER_GLOBAL__ = browser;
+  globalThis.__BROWSER_GLOBAL__ = browser;
 
   // use the file system to expose the wsEndpoint for TestEnvironments
   await mkdir(DIR, {recursive: true});
@@ -80,7 +80,7 @@ const {readFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
 const puppeteer = require('puppeteer');
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').default;
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
@@ -98,7 +98,7 @@ class PuppeteerEnvironment extends NodeEnvironment {
     }
 
     // connect to puppeteer
-    this.global.__BROWSER__ = await puppeteer.connect({
+    this.global.__BROWSER_GLOBAL__ = await puppeteer.connect({
       browserWSEndpoint: wsEndpoint,
     });
   }
@@ -125,7 +125,7 @@ const path = require('path');
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {
   // close the browser instance
-  await global.__BROWSER_GLOBAL__.close();
+  await globalThis.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
   await fs.rm(DIR, {recursive: true, force: true});
@@ -142,7 +142,7 @@ describe(
   () => {
     let page;
     beforeAll(async () => {
-      page = await global.__BROWSER__.newPage();
+      page = await globalThis.__BROWSER_GLOBAL__.newPage();
       await page.goto('https://google.com');
     }, timeout);
 

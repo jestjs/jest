@@ -22,7 +22,7 @@ import {
 } from './utils';
 
 const RUNNING_TEXT = ' RUNS ';
-const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
+const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;
 
 /**
  * This class is a perf optimization for sorting the list of currently
@@ -31,7 +31,7 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  */
 class CurrentTestList {
   private _array: Array<{
-    testPath: Config.Path;
+    testPath: string;
     config: Config.ProjectConfig;
   } | null>;
 
@@ -39,7 +39,7 @@ class CurrentTestList {
     this._array = [];
   }
 
-  add(testPath: Config.Path, config: Config.ProjectConfig) {
+  add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
     if (index !== -1) {
@@ -49,7 +49,7 @@ class CurrentTestList {
     }
   }
 
-  delete(testPath: Config.Path) {
+  delete(testPath: string) {
     const record = this._array.find(
       record => record !== null && record.testPath === testPath,
     );
@@ -126,7 +126,7 @@ export default class Status {
     }
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
+  testStarted(testPath: string, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -168,28 +168,25 @@ export default class Status {
         const {config, testPath} = record;
 
         const projectDisplayName = config.displayName
-          ? printDisplayName(config) + ' '
+          ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
 
-        content +=
-          wrapAnsiString(
-            prefix +
-              trimAndFormatPath(stringLength(prefix), config, testPath, width),
-            width,
-          ) + '\n';
+        content += `${wrapAnsiString(
+          prefix +
+            trimAndFormatPath(stringLength(prefix), config, testPath, width),
+          width,
+        )}\n`;
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content +=
-        '\n' +
-        getSummary(this._aggregatedResults, {
-          currentTestCases: this._currentTestCases,
-          estimatedTime: this._estimatedTime,
-          roundTime: true,
-          width,
-        });
+      content += `\n${getSummary(this._aggregatedResults, {
+        currentTestCases: this._currentTestCases,
+        estimatedTime: this._estimatedTime,
+        roundTime: true,
+        width,
+      })}`;
     }
 
     let height = 0;

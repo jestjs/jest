@@ -11,29 +11,31 @@ import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
+import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
-jest.mock('../__mocks__/userResolver');
+jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
 // Do not fully mock `resolve` because it is used by Jest. Doing it will crash
-// in very strange ways. Instead just spy on the method `sync`.
+// in very strange ways. Instead just spy on it and its `sync` method.
 jest.mock('resolve', () => {
   const originalModule = jest.requireActual('resolve');
-  return {
-    ...originalModule,
-    sync: jest.spyOn(originalModule, 'sync'),
-  };
+
+  const m = jest.fn((...args) => originalModule(...args));
+  Object.assign(m, originalModule);
+  m.sync = jest.spyOn(originalModule, 'sync');
+
+  return m;
 });
 
-const mockResolveSync = <
-  jest.Mock<ReturnType<typeof resolveSync>, Parameters<typeof resolveSync>>
->resolveSync;
+const mockResolveSync = jest.mocked(resolveSync);
 
 beforeEach(() => {
   userResolver.mockClear();
+  userResolverAsync.async.mockClear();
   mockResolveSync.mockClear();
 });
 
@@ -160,26 +162,152 @@ describe('findNodeModule', () => {
     });
 
     test('resolves with import', () => {
-      const result = Resolver.findNodeModule('import', {
+      const result = Resolver.findNodeModule('exports', {
         basedir: conditionsRoot,
         conditions: ['import'],
       });
 
       expect(result).toEqual(
-        path.resolve(conditionsRoot, './node_modules/import/file.js'),
+        path.resolve(conditionsRoot, './node_modules/exports/import.js'),
       );
     });
 
     test('resolves with require', () => {
-      const result = Resolver.findNodeModule('require', {
+      const result = Resolver.findNodeModule('exports', {
         basedir: conditionsRoot,
         conditions: ['require'],
       });
 
       expect(result).toEqual(
-        path.resolve(conditionsRoot, './node_modules/require/file.js'),
+        path.resolve(conditionsRoot, './node_modules/exports/require.js'),
       );
     });
+
+    test('gets default when nothing is passed', () => {
+      const result = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/default.js'),
+      );
+    });
+
+    test('respects order in package.json, not conditions', () => {
+      const resultImport = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: ['import', 'require'],
+      });
+      const resultRequire = Resolver.findNodeModule('exports', {
+        basedir: conditionsRoot,
+        conditions: ['require', 'import'],
+      });
+
+      expect(resultImport).toEqual(resultRequire);
+    });
+
+    test('supports nested paths', () => {
+      const result = Resolver.findNodeModule('exports/nested', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
+      );
+    });
+
+    test('supports nested conditions', () => {
+      const resultRequire = Resolver.findNodeModule('exports/deeplyNested', {
+        basedir: conditionsRoot,
+        conditions: ['require'],
+      });
+      const resultDefault = Resolver.findNodeModule('exports/deeplyNested', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(resultRequire).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedRequire.js'),
+      );
+
+      expect(resultDefault).toEqual(
+        path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
+      );
+    });
+
+    test('supports separate directory path', () => {
+      const result = Resolver.findNodeModule('exports/directory/file.js', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          conditionsRoot,
+          './node_modules/exports/some-other-directory/file.js',
+        ),
+      );
+    });
+  });
+});
+
+describe('findNodeModuleAsync', () => {
+  it('is possible to override the default resolver', async () => {
+    const cwd = process.cwd();
+    const resolvedCwd = fs.realpathSync(cwd) || cwd;
+    const nodePaths = process.env.NODE_PATH
+      ? process.env.NODE_PATH.split(path.delimiter)
+          .filter(Boolean)
+          .map(p => path.resolve(resolvedCwd, p))
+      : null;
+
+    userResolverAsync.async.mockImplementation(() => Promise.resolve('module'));
+
+    const newPath = await Resolver.findNodeModuleAsync('test', {
+      basedir: '/',
+      browser: true,
+      conditions: ['conditions, woooo'],
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      paths: ['/something'],
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    });
+
+    expect(newPath).toBe('module');
+    expect(userResolverAsync.async.mock.calls[0][0]).toBe('test');
+    expect(userResolverAsync.async.mock.calls[0][1]).toStrictEqual({
+      basedir: '/',
+      browser: true,
+      conditions: ['conditions, woooo'],
+      defaultResolver,
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      paths: (nodePaths || []).concat(['/something']),
+      rootDir: undefined,
+    });
+  });
+
+  it('passes packageFilter to the resolve module when using the default resolver', async () => {
+    const packageFilter = jest.fn();
+
+    // A resolver that delegates to defaultResolver with a packageFilter implementation
+    userResolverAsync.async.mockImplementation((request, opts) =>
+      Promise.resolve(opts.defaultResolver(request, {...opts, packageFilter})),
+    );
+
+    await Resolver.findNodeModuleAsync('test', {
+      basedir: '/',
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    });
+
+    expect(mockResolveSync).toHaveBeenCalledWith(
+      'test',
+      expect.objectContaining({
+        packageFilter,
+      }),
+    );
   });
 });
 
@@ -251,8 +379,8 @@ describe('resolveModule', () => {
     const src = require.resolve('../');
     const resolved = resolver.resolveModule(src, 'mockJsDependency', {
       paths: [
-        path.resolve(__dirname, '../../src/__tests__'),
         path.resolve(__dirname, '../../src/__mocks__'),
+        path.resolve(__dirname, '../../src/__tests__'),
       ],
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
@@ -268,6 +396,103 @@ describe('resolveModule', () => {
 
     const resolvedWithSlash = resolver.resolveModule(fooSlashFoo, './');
     const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
+    expect(resolvedWithSlash).toBe(fooSlashIndex);
+    expect(resolvedWithSlash).toBe(resolvedWithDot);
+  });
+});
+
+describe('resolveModuleAsync', () => {
+  let moduleMap: ModuleMap;
+  beforeEach(() => {
+    moduleMap = ModuleMap.create('/');
+  });
+
+  it('is possible to resolve node modules', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    const resolved = await resolver.resolveModuleAsync(
+      src,
+      './__mocks__/mockJsDependency',
+    );
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
+
+  it('is possible to resolve node modules with custom extensions', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    const resolvedJsx = await resolver.resolveModuleAsync(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.jsx'),
+    );
+  });
+
+  it('is possible to resolve node modules with custom extensions and platforms', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js', '.jsx'],
+      platforms: ['native'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    const resolvedJsx = await resolver.resolveModuleAsync(
+      src,
+      './__mocks__/mockJsxDependency',
+    );
+    expect(resolvedJsx).toBe(
+      require.resolve('../__mocks__/mockJsxDependency.native.jsx'),
+    );
+  });
+
+  it('is possible to resolve node modules by resolving their realpath', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = path.join(
+      path.resolve(__dirname, '../../src/__mocks__/bar/node_modules/'),
+      'foo/index.js',
+    );
+    const resolved = await resolver.resolveModuleAsync(src, 'dep');
+    expect(resolved).toBe(
+      require.resolve('../../src/__mocks__/foo/node_modules/dep/index.js'),
+    );
+  });
+
+  it('is possible to specify custom resolve paths', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    const resolved = await resolver.resolveModuleAsync(
+      src,
+      'mockJsDependency',
+      {
+        paths: [
+          path.resolve(__dirname, '../../src/__tests__'),
+          path.resolve(__dirname, '../../src/__mocks__'),
+        ],
+      },
+    );
+    expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
+  });
+
+  it('does not confuse directories with files', async () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const mocksDirectory = path.resolve(__dirname, '../__mocks__');
+    const fooSlashFoo = path.join(mocksDirectory, 'foo/foo.js');
+    const fooSlashIndex = path.join(mocksDirectory, 'foo/index.js');
+
+    const resolvedWithSlash = await resolver.resolveModuleAsync(
+      fooSlashFoo,
+      './',
+    );
+    const resolvedWithDot = await resolver.resolveModuleAsync(fooSlashFoo, '.');
     expect(resolvedWithSlash).toBe(fooSlashIndex);
     expect(resolvedWithSlash).toBe(resolvedWithDot);
   });
@@ -294,6 +519,34 @@ describe('getMockModule', () => {
     expect(userResolver).toHaveBeenCalled();
     expect(userResolver.mock.calls[0][0]).toBe('dependentModule');
     expect(userResolver.mock.calls[0][1]).toHaveProperty(
+      'basedir',
+      path.dirname(src),
+    );
+  });
+});
+
+describe('getMockModuleAsync', () => {
+  it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', async () => {
+    userResolverAsync.async.mockImplementation(() => Promise.resolve('module'));
+
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+      moduleNameMapper: [
+        {
+          moduleName: '$1',
+          regex: /(.*)/,
+        },
+      ],
+      resolver: require.resolve('../__mocks__/userResolverAsync'),
+    } as ResolverConfig);
+    const src = require.resolve('../');
+
+    await resolver.resolveModuleAsync(src, 'dependentModule');
+
+    expect(userResolverAsync.async).toHaveBeenCalled();
+    expect(userResolverAsync.async.mock.calls[0][0]).toBe('dependentModule');
+    expect(userResolverAsync.async.mock.calls[0][1]).toHaveProperty(
       'basedir',
       path.dirname(src),
     );
@@ -346,8 +599,8 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     });
     const dirs_expected = [
       src,
-      cwd + '\\node_modules',
-      path.dirname(cwd) + '\\node_modules',
+      `${cwd}\\node_modules`,
+      `${path.dirname(cwd)}\\node_modules`,
       'D:\\node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
@@ -366,8 +619,8 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     });
     const dirs_expected = [
       src,
-      cwd + '/node_modules',
-      path.dirname(cwd) + '/node_modules',
+      `${cwd}/node_modules`,
+      `${path.dirname(cwd)}/node_modules`,
       '/node_modules',
     ];
     const dirs_actual = resolver.getModulePaths(cwd);

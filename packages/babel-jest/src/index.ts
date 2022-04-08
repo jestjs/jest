@@ -19,20 +19,18 @@ import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
+  TransformerCreator,
 } from '@jest/transform';
-import type {Config} from '@jest/types';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
-
 function assertLoadedBabelConfig(
   babelConfig: Readonly<PartialConfig> | null,
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
 ): asserts babelConfig {
   if (!babelConfig) {
     throw new Error(
@@ -72,7 +70,7 @@ function addIstanbulInstrumentation(
 
 function getCacheKeyFromConfig(
   sourceText: string,
-  sourcePath: Config.Path,
+  sourcePath: string,
   babelOptions: PartialConfig,
   transformOptions: JestTransformOptions,
 ): string {
@@ -98,12 +96,14 @@ function getCacheKeyFromConfig(
     .update(process.env.NODE_ENV || '')
     .update('\0', 'utf8')
     .update(process.env.BABEL_ENV || '')
+    .update('\0', 'utf8')
+    .update(process.version)
     .digest('hex');
 }
 
 function loadBabelConfig(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
 ): PartialConfig {
   const babelConfig = loadPartialConfig(transformOptions);
@@ -114,8 +114,8 @@ function loadBabelConfig(
 }
 
 async function loadBabelConfigAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
 ): Promise<PartialConfig> {
   const babelConfig = await loadPartialConfigAsync(transformOptions);
@@ -126,8 +126,8 @@ async function loadBabelConfigAsync(
 }
 
 function loadBabelOptions(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
   jestTransformOptions: JestTransformOptions,
 ): TransformOptions {
@@ -137,8 +137,8 @@ function loadBabelOptions(
 }
 
 async function loadBabelOptionsAsync(
-  cwd: Config.Path,
-  filename: Config.Path,
+  cwd: string,
+  filename: string,
   transformOptions: TransformOptions,
   jestTransformOptions: JestTransformOptions,
 ): Promise<TransformOptions> {
@@ -147,7 +147,10 @@ async function loadBabelOptionsAsync(
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
-const createTransformer: CreateTransformer = userOptions => {
+export const createTransformer: TransformerCreator<
+  SyncTransformer<TransformOptions>,
+  TransformOptions
+> = userOptions => {
   const inputOptions = userOptions ?? {};
 
   const options = {
@@ -167,7 +170,7 @@ const createTransformer: CreateTransformer = userOptions => {
   } as const;
 
   function mergeBabelTransformOptions(
-    filename: Config.Path,
+    filename: string,
     transformOptions: JestTransformOptions,
   ): TransformOptions {
     const {cwd} = transformOptions.config;
@@ -241,7 +244,7 @@ const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelOptionsAsync(
@@ -263,16 +266,15 @@ const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
   };
 };
 
-const transformer: SyncTransformer<TransformOptions> = {
-  ...createTransformer(),
-  // Assigned here so only the exported transformer has `createTransformer`,
-  // instead of all created transformers by the function
+const transformerFactory = {
+  // Assigned here, instead of as a separate export, due to limitations in Jest's
+  // requireOrImportModule, requiring all exports to be on the `default` export
   createTransformer,
 };
 
-export default transformer;
+export default transformerFactory;

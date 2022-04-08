@@ -152,8 +152,10 @@ function compareObjects(
     difference = getObjectsDifference(a, b, formatOptions, options);
 
     if (difference !== noDiffMessage && !hasThrown) {
-      difference =
-        getCommonMessage(SIMILAR_MESSAGE, options) + '\n\n' + difference;
+      difference = `${getCommonMessage(
+        SIMILAR_MESSAGE,
+        options,
+      )}\n\n${difference}`;
     }
   }
 

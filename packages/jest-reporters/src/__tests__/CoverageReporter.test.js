@@ -32,7 +32,7 @@ beforeEach(() => {
   istanbulReports = require('istanbul-reports');
 
   const fileTree = {};
-  fileTree[process.cwd() + '/path-test-files'] = {
+  fileTree[`${process.cwd()}/path-test-files`] = {
     '000pc_coverage_file.js': '',
     '050pc_coverage_file.js': '',
     '100pc_coverage_file.js': '',
@@ -389,7 +389,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that files are matched by all matching threshold groups`, () => {
+  test('that files are matched by all matching threshold groups', () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -420,7 +420,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that it passes custom options when creating reporters`, () => {
+  test('that it passes custom options when creating reporters', () => {
     const testReporter = new CoverageReporter({
       coverageReporters: ['json', ['lcov', {maxCols: 10, projectRoot: './'}]],
     });

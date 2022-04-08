@@ -26,11 +26,11 @@ const PASS = chalk.supportsColor
   ? chalk.reset.inverse.bold.green(` ${PASS_TEXT} `)
   : PASS_TEXT;
 
-export default (
+export default function getResultHeader(
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-): string => {
+): string {
   const testPath = result.testFilePath;
   const formattedTestPath = formatTestPath(
     projectConfig ? projectConfig : globalConfig,
@@ -57,11 +57,10 @@ export default (
 
   const projectDisplayName =
     projectConfig && projectConfig.displayName
-      ? printDisplayName(projectConfig) + ' '
+      ? `${printDisplayName(projectConfig)} `
       : '';
 
-  return (
-    `${status} ${projectDisplayName}${fileLink}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
-  );
-};
+  return `${status} ${projectDisplayName}${fileLink}${
+    testDetail.length ? ` (${testDetail.join(', ')})` : ''
+  }`;
+}
