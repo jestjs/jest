@@ -183,12 +183,12 @@ export type SnapshotSummary = {
 };
 
 export type Test = {
-  context: Context;
+  context: TestContext;
   duration?: number;
   path: string;
 };
 
-type Context = {
+export type TestContext = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
