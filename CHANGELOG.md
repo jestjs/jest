@@ -42,6 +42,7 @@
 - `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
 - `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
 - `[jest-runner]` Allow passing `testEnvironmentOptions` via docblocks ([#12470](https://github.com/facebook/jest/pull/12470))
+- `[jest-runner]` Exposing `CallbackTestRunner`, `EmittingTestRunner` abstract classes to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646))
 - `[jest-runtime]` [**BREAKING**] `Runtime.createHasteMap` now returns a promise ([#12008](https://github.com/facebook/jest/pull/12008))
 - `[jest-runtime]` Calling `jest.resetModules` function will clear FS and transform cache ([#12531](https://github.com/facebook/jest/pull/12531))
 - `[@jest/schemas]` New module for JSON schemas for Jest's config ([#12384](https://github.com/facebook/jest/pull/12384))
