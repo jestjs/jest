@@ -31,6 +31,9 @@ class CallbackRunner extends CallbackTestRunner {
     onFailure: OnTestFailure,
     options: TestRunnerOptions,
   ): Promise<void> {
+    expectType<Config.GlobalConfig>(this._globalConfig);
+    expectType<TestRunnerContext>(this._context);
+
     return;
   }
 }
@@ -41,19 +44,22 @@ expectType<boolean | undefined>(callbackRunner.isSerial);
 expectType<false>(callbackRunner.supportsEventEmitters);
 
 class EmittingRunner extends EmittingTestRunner {
-  on<Name extends keyof TestEvents>(
-    eventName: string,
-    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
-  ): UnsubscribeFn {
-    return () => {};
-  }
-
   async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
+    expectType<Config.GlobalConfig>(this._globalConfig);
+    expectType<TestRunnerContext>(this._context);
+
     return;
+  }
+
+  on<Name extends keyof TestEvents>(
+    eventName: string,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn {
+    return () => {};
   }
 }
 
