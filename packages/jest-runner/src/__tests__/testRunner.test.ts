@@ -6,9 +6,9 @@
  *
  */
 
-import {TestWatcher} from '@jest/core';
 import type {TestContext} from '@jest/test-result';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import {TestWatcher} from 'jest-watcher';
 import TestRunner from '../index';
 
 let mockWorkerFarm;

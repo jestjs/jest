@@ -16,7 +16,7 @@ import {readConfigs} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
 import Runtime, {Context} from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
-import TestWatcher from '../TestWatcher';
+import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';

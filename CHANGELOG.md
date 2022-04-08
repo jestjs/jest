@@ -17,6 +17,7 @@
 - `[jest-cli, jest-core]` Add `--ignoreProjects` CLI argument to ignore test suites by project name ([#12620](https://github.com/facebook/jest/pull/12620))
 - `[jest-core]` Pass project config to `globalSetup`/`globalTeardown` function as second argument ([#12440](https://github.com/facebook/jest/pull/12440))
 - `[jest-core]` Stabilize test runners with event emitters ([#12641](https://github.com/facebook/jest/pull/12641))
+- `[jest-core, jest-watcher]` [**BREAKING**] Move `TestWatcher` class to `jest-watcher` package ([#12652](https://github.com/facebook/jest/pull/12652))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-jsdom]` [**BREAKING**] Pass global config to Jest environment constructor for `jsdom` environment ([#12461](https://github.com/facebook/jest/pull/12461))

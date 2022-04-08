@@ -36,8 +36,8 @@ import {
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
 import {requireOrImportModule} from 'jest-util';
+import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
-import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 type TestRunnerConstructor = new (

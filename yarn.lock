@@ -2557,7 +2557,6 @@ __metadata:
     "@types/rimraf": ^3.0.0
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
-    emittery: ^0.10.2
     exit: ^0.1.2
     graceful-fs: ^4.2.9
     jest-changed-files: ^28.0.0-alpha.3
@@ -13514,6 +13513,7 @@ __metadata:
     jest-resolve: ^28.0.0-alpha.8
     jest-runtime: ^28.0.0-alpha.8
     jest-util: ^28.0.0-alpha.8
+    jest-watcher: ^28.0.0-alpha.8
     jest-worker: ^28.0.0-alpha.8
     source-map-support: ^0.5.6
     throat: ^6.0.1
@@ -13721,6 +13721,7 @@ __metadata:
     "@types/node": "*"
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
+    emittery: ^0.10.2
     jest-util: ^28.0.0-alpha.8
     string-length: ^4.0.1
   languageName: unknown

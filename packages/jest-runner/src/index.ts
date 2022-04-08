@@ -15,15 +15,11 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import {deepCyclicCopy} from 'jest-util';
+import type {TestWatcher} from 'jest-watcher';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
-import {
-  EmittingTestRunner,
-  TestRunnerOptions,
-  TestWatcher,
-  UnsubscribeFn,
-} from './types';
+import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
@@ -36,7 +32,6 @@ export type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
   JestTestRunner,

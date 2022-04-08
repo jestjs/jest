@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type Emittery = require('emittery');
 import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
@@ -16,6 +15,7 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type RuntimeType from 'jest-runtime';
+import type {TestWatcher} from 'jest-watcher';
 
 export type ErrorWithCode = Error & {code?: string};
 
@@ -96,12 +96,3 @@ export abstract class EmittingTestRunner extends BaseTestRunner {
 }
 
 export type JestTestRunner = CallbackTestRunner | EmittingTestRunner;
-
-// TODO: Should live in `@jest/core` or `jest-watcher`
-type WatcherState = {interrupted: boolean};
-export interface TestWatcher extends Emittery<{change: WatcherState}> {
-  state: WatcherState;
-  setState(state: WatcherState): void;
-  isInterrupted(): boolean;
-  isWatchMode(): boolean;
-}
