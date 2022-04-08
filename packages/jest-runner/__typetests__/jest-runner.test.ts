@@ -15,9 +15,9 @@ import type {
   OnTestSuccess,
   TestRunnerContext,
   TestRunnerOptions,
+  TestWatcher,
   UnsubscribeFn,
 } from 'jest-runner';
-import type {TestWatcher} from 'jest-watcher';
 
 const globalConfig = {} as Config.GlobalConfig;
 const runnerContext = {} as TestRunnerContext;
