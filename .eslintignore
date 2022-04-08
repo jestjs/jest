@@ -4,7 +4,6 @@ bin/
 flow-typed/**
 packages/*/build/**
 packages/*/dist/**
-packages/jest-diff/src/cleanupSemantic.ts
 website/.docusaurus
 website/blog
 website/build
@@ -12,3 +11,6 @@ website/node_modules
 website/i18n/*.js
 website/static
 !.eslintrc.js
+
+# Third-party script
+packages/jest-diff/src/cleanupSemantic.ts

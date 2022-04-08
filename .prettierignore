@@ -10,6 +10,12 @@ coverage
 /packages/jest-config/src/__tests__/jest-preset.json
 /packages/pretty-format/perf/world.geo.json
 
+# Breaks tests
+/e2e/coverage-handlebars/greet.hbs
+
+# Third-party script
+packages/jest-diff/src/cleanupSemantic.ts
+
 /website/.docusaurus
 /website/backers.json
 /website/build
