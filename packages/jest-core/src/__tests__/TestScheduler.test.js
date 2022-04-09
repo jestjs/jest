@@ -104,7 +104,7 @@ test('config for reporters supports `github-actions`', async () => {
     {},
     {},
   );
-  expect(GitHubActionsReporter).toHaveBeenCalledTimes(100);
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(1);
 
   await createTestScheduler(
     makeGlobalConfig({
