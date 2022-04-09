@@ -88,8 +88,8 @@ class TestScheduler {
     this._dispatcher.register(reporter);
   }
 
-  removeReporter(reporter: ReporterConstructor): void {
-    this._dispatcher.unregister(reporter);
+  removeReporter(reporterConstructor: ReporterConstructor): void {
+    this._dispatcher.unregister(reporterConstructor);
   }
 
   async scheduleTests(
