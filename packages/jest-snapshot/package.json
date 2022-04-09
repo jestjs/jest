@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
+    "@babel/core": "^7.11.6",
     "@babel/generator": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/traverse": "^7.7.2",
