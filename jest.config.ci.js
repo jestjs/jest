@@ -11,6 +11,7 @@ module.exports = {
   ...require('./jest.config'),
   coverageReporters: ['json'],
   reporters: [
+    'github-actions',
     [
       'jest-junit',
       {outputDirectory: 'reports/junit', outputName: 'js-test-results.xml'},
