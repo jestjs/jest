@@ -50,7 +50,7 @@ function getMessages(results: Array<TestResult> | undefined) {
       .filter((m): m is RegExpExecArray => m !== null)
       .map(
         ([message, line, col]) =>
-          `::error file=${testFilePath},line=${line},col=${col}::${message}`,
+          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
       ),
   );
 }
