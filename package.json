@@ -72,7 +72,7 @@
     "read-pkg": "^5.2.0",
     "resolve": "^1.15.0",
     "rimraf": "^3.0.0",
-    "semver": "^7.3.2",
+    "semver": "^7.3.5",
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
