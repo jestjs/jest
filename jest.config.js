@@ -66,7 +66,7 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
   transform: {
-    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': '<rootDir>/transformer.js',
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
