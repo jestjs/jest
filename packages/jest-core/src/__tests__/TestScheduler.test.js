@@ -11,6 +11,8 @@ import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
+jest.mock('ci-info', () => ({GITHUB_ACTIONS: true}));
+
 jest.mock('@jest/reporters');
 
 const mockSerialRunner = {
@@ -30,18 +32,10 @@ jest.mock('jest-runner-parallel', () => jest.fn(() => mockParallelRunner), {
 
 const spyShouldRunInBand = jest.spyOn(testSchedulerHelper, 'shouldRunInBand');
 
-const original_GITHUB_ACTIONS = process.env.GITHUB_ACTIONS;
-
 beforeEach(() => {
   mockSerialRunner.runTests.mockClear();
   mockParallelRunner.runTests.mockClear();
   spyShouldRunInBand.mockClear();
-
-  process.env.GITHUB_ACTIONS = true;
-});
-
-afterEach(() => {
-  process.env.GITHUB_ACTIONS = original_GITHUB_ACTIONS;
 });
 
 test('config for reporters supports `default`', async () => {
