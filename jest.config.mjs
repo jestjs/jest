@@ -70,7 +70,7 @@ export default {
   ],
   testTimeout: 70000,
   transform: {
-    '\\.[jt]sx?$': require.resolve('babel-jest'),
+    '\\.[jt]sx?$': '<rootDir>/transformer.js',
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
