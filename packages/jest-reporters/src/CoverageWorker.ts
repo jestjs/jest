@@ -11,16 +11,14 @@ import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
 } from './generateEmptyCoverage';
-import type {CoverageReporterSerializedOptions} from './types';
+import type {ReporterContextSerialized} from './types';
 
 export type CoverageWorkerData = {
-  globalConfig: Config.GlobalConfig;
   config: Config.ProjectConfig;
+  context: ReporterContextSerialized;
+  globalConfig: Config.GlobalConfig;
   path: string;
-  options?: CoverageReporterSerializedOptions;
 };
-
-export type {CoverageWorkerResult};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -32,15 +30,15 @@ export function worker({
   config,
   globalConfig,
   path,
-  options,
+  context,
 }: CoverageWorkerData): Promise<CoverageWorkerResult | null> {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
     globalConfig,
     config,
-    options?.changedFiles && new Set(options.changedFiles),
-    options?.sourcesRelatedToTestsInChangedFiles &&
-      new Set(options.sourcesRelatedToTestsInChangedFiles),
+    context.changedFiles && new Set(context.changedFiles),
+    context.sourcesRelatedToTestsInChangedFiles &&
+      new Set(context.sourcesRelatedToTestsInChangedFiles),
   );
 }

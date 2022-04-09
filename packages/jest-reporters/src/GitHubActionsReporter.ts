@@ -6,9 +6,12 @@
  */
 
 import stripAnsi = require('strip-ansi');
-import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  TestContext,
+  TestResult,
+} from '@jest/test-result';
 import BaseReporter from './BaseReporter';
-import type {Context} from './types';
 
 const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
 
@@ -24,7 +27,7 @@ function replaceEntities(s: string): string {
 
 export default class GitHubActionsReporter extends BaseReporter {
   override onRunComplete(
-    _contexts?: Set<Context>,
+    _testContexts?: Set<TestContext>,
     aggregatedResults?: AggregatedResult,
   ): void {
     const messages = getMessages(aggregatedResults?.testResults);

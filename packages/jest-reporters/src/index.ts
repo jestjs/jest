@@ -14,12 +14,6 @@ import {
   trimAndFormatPath,
 } from './utils';
 
-export type {Config} from '@jest/types';
-export type {
-  AggregatedResult,
-  SnapshotSummary,
-  TestResult,
-} from '@jest/test-result';
 export {default as BaseReporter} from './BaseReporter';
 export {default as CoverageReporter} from './CoverageReporter';
 export {default as DefaultReporter} from './DefaultReporter';
@@ -28,11 +22,10 @@ export {default as SummaryReporter} from './SummaryReporter';
 export {default as VerboseReporter} from './VerboseReporter';
 export {default as GitHubActionsReporter} from './GitHubActionsReporter';
 export type {
-  Context,
   Reporter,
   ReporterOnStartOptions,
+  ReporterContext,
   SummaryOptions,
-  Test,
 } from './types';
 export const utils = {
   formatTestPath,
