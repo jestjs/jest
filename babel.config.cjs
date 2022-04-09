@@ -5,16 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
-import path from 'path';
-import {fileURLToPath} from 'url';
-import semver from 'semver';
-const require = createRequire(import.meta.url);
+const path = require('path');
+const semver = require('semver');
 const pkg = require('./package.json');
 
 const supportedNodeVersion = semver.minVersion(pkg.engines.node).version;
 
-export default {
+module.exports = {
   babelrcRoots: ['examples/*'],
   // we don't wanna run the transforms in this file over react native
   exclude: /react-native/,
@@ -22,7 +19,7 @@ export default {
     {
       plugins: [
         path.resolve(
-          path.dirname(fileURLToPath(import.meta.url)),
+          __dirname,
           'scripts/babel-plugin-jest-replace-ts-require-assignment.mjs',
         ),
       ],
@@ -42,10 +39,7 @@ export default {
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      'scripts/babel-plugin-jest-require-outside-vm.mjs',
-    ),
+    path.resolve(__dirname, 'scripts/babel-plugin-jest-require-outside-vm.mjs'),
   ],
   presets: [
     [
