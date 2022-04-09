@@ -21,7 +21,7 @@
     "@babel/generator": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/traverse": "^7.7.2",
-    "@babel/types": "^7.0.0",
+    "@babel/types": "^7.3.3",
     "@jest/expect-utils": "^28.0.0-alpha.8",
     "@jest/transform": "^28.0.0-alpha.8",
     "@jest/types": "^28.0.0-alpha.8",
