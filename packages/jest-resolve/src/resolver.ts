@@ -216,8 +216,9 @@ export default class Resolver {
     // ignore all modules that look like node modules (ie. are not relative
     // requires). This enables us to speed up resolution when we build a
     // dependency graph because we don't have to look at modules that may not
-    // exist and aren't mocked.waq
+    // exist and aren't mocked.
     const resolveNodeModule = (name: string, throwIfNotFound = false) => {
+      // Only skip default resolver
       if (this.isCoreModule(name) && !this._options.resolver) {
         return name;
       }
@@ -292,6 +293,7 @@ export default class Resolver {
     // dependency graph because we don't have to look at modules that may not
     // exist and aren't mocked.
     const resolveNodeModule = async (name: string, throwIfNotFound = false) => {
+      // Only skip default resolver
       if (this.isCoreModule(name) && !this._options.resolver) {
         return name;
       }
