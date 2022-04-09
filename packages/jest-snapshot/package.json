@@ -50,7 +50,7 @@
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "prettier": "^2.0.0"
+    "prettier": "^2.1.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
