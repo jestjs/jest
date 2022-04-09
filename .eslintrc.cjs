@@ -333,7 +333,7 @@ module.exports = {
           '**/__typetests__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'babel.config.mjs',
+          'babel.config.cjs',
           'testSetupFile.js',
           '.eslintrc.cjs',
         ],
