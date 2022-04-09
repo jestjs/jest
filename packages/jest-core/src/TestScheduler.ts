@@ -355,9 +355,6 @@ class TestScheduler {
       reporter => this._getReporterProps(reporter).path,
     );
 
-    console.log('GITHUB_ACTIONS');
-    console.log(GITHUB_ACTIONS);
-
     const isDefault = reporterNames?.includes('default');
     const isGitHubActions =
       GITHUB_ACTIONS && reporterNames?.includes('github-actions');
