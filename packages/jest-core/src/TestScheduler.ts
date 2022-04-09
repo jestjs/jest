@@ -12,6 +12,7 @@ import exit = require('exit');
 import {
   CoverageReporter,
   DefaultReporter,
+  GitHubActionsReporter,
   NotifyReporter,
   Reporter,
   SummaryReporter,
@@ -28,6 +29,7 @@ import {
 } from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {constants} from 'jest-config';
 import {formatExecError} from 'jest-message-util';
 import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
 import type {Context} from 'jest-runtime';
@@ -330,23 +332,38 @@ class TestScheduler {
     }
   }
 
-  private _shouldAddDefaultReporters(
-    reporters?: Array<string | Config.ReporterConfig>,
-  ): boolean {
-    return (
-      !reporters ||
-      !!reporters.find(
-        reporter => this._getReporterProps(reporter).path === 'default',
-      )
-    );
-  }
-
   async _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
-    const isDefault = this._shouldAddDefaultReporters(reporters);
+
+    if (notify) {
+      this.addReporter(
+        new NotifyReporter(
+          this._globalConfig,
+          this._options.startRun,
+          this._context,
+        ),
+      );
+    }
+
+    if (!reporters) {
+      this._setupDefaultReporters(collectCoverage);
+      return;
+    }
+
+    const reporterNames = reporters.map(
+      reporter => this._getReporterProps(reporter).path,
+    );
+
+    const isDefault = reporterNames?.includes('default');
+    const isGitHubActions =
+      process.env.GITHUB_ACTIONS && reporterNames?.includes('github-actions');
 
     if (isDefault) {
       this._setupDefaultReporters(collectCoverage);
+    }
+
+    if (isGitHubActions) {
+      this.addReporter(new GitHubActionsReporter());
     }
 
     if (!isDefault && collectCoverage) {
@@ -359,19 +376,7 @@ class TestScheduler {
       );
     }
 
-    if (notify) {
-      this.addReporter(
-        new NotifyReporter(
-          this._globalConfig,
-          this._options.startRun,
-          this._context,
-        ),
-      );
-    }
-
-    if (reporters && Array.isArray(reporters)) {
-      await this._addCustomReporters(reporters);
-    }
+    await this._addCustomReporters(reporters);
   }
 
   private _setupDefaultReporters(collectCoverage: boolean) {
@@ -400,7 +405,7 @@ class TestScheduler {
     for (const reporter of reporters) {
       const {options, path} = this._getReporterProps(reporter);
 
-      if (path === 'default') continue;
+      if (constants.BUILD_IN_REPORTERS.includes(path)) continue;
 
       try {
         const Reporter = await requireOrImportModule<any>(path, true);

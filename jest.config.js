@@ -31,6 +31,7 @@ module.exports = {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
+  reporters: ['default', 'github-actions'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotFormat: {
     escapeString: false,
