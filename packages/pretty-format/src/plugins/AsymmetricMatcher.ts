@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {pluralize} from 'jest-util';
+import {isA} from '@jest/expect-utils';
 import {printListItems, printObjectProperties} from '../collections';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 
@@ -81,16 +81,10 @@ export const serialize: NewPlugin['serialize'] = (
     );
   }
 
-  if (
-    stringedValue === 'NumberCloseTo' ||
-    stringedValue === 'NumberNotCloseTo'
-  ) {
-    return `${
-      stringedValue +
-      SPACE +
-      printer(val.sample, config, indentation, depth, refs) +
-      SPACE
-    }(${pluralize('digit', val.precision)})`;
+  if (!isA('Function', val.toAsymmetricMatcher)) {
+    throw new Error(
+      `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
+    );
   }
 
   return val.toAsymmetricMatcher();

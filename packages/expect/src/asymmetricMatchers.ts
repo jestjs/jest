@@ -13,6 +13,7 @@ import {
   subsetEquality,
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
+import {pluralize} from 'jest-util';
 import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
@@ -328,6 +329,14 @@ class CloseTo extends AsymmetricMatcher<number> {
 
   override getExpectedType() {
     return 'number';
+  }
+
+  override toAsymmetricMatcher(): string {
+    return [
+      this.toString(),
+      this.sample,
+      `(${pluralize('digit', this.precision)})`,
+    ].join(' ');
   }
 }
 
