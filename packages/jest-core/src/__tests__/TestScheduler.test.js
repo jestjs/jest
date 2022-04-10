@@ -6,12 +6,15 @@
  *
  */
 
-import {SummaryReporter} from '@jest/reporters';
+import {GitHubActionsReporter, SummaryReporter} from '@jest/reporters';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
+jest.mock('ci-info', () => ({GITHUB_ACTIONS: true}));
+
 jest.mock('@jest/reporters');
+
 const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
@@ -76,6 +79,35 @@ test('config for reporters supports `default`', async () => {
     {},
   );
   expect(emptyReportersScheduler._dispatcher._reporters.length).toBe(0);
+});
+
+test('config for reporters supports `github-actions`', async () => {
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: [],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: ['github-actions'],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(1);
+
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: ['default', 'github-actions'],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(2);
 });
 
 test('.addReporter() .removeReporter()', async () => {

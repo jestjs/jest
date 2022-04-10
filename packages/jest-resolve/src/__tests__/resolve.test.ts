@@ -399,6 +399,21 @@ describe('resolveModule', () => {
     expect(resolvedWithSlash).toBe(fooSlashIndex);
     expect(resolvedWithSlash).toBe(resolvedWithDot);
   });
+
+  it('custom resolver can resolve node modules', () => {
+    userResolver.mockImplementation(() => 'module');
+
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+      resolver: require.resolve('../__mocks__/userResolver'),
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    resolver.resolveModule(src, 'fs');
+
+    expect(userResolver).toHaveBeenCalled();
+    expect(userResolver.mock.calls[0][0]).toBe('fs');
+  });
 });
 
 describe('resolveModuleAsync', () => {

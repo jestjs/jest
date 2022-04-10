@@ -6,10 +6,12 @@
  */
 
 import chalk = require('chalk');
+import {GITHUB_ACTIONS} from 'ci-info';
 import exit = require('exit');
 import {
   CoverageReporter,
   DefaultReporter,
+  GitHubActionsReporter,
   BaseReporter as JestReporter,
   NotifyReporter,
   Reporter,
@@ -330,36 +332,39 @@ class TestScheduler {
     }
   }
 
-  private _shouldAddDefaultReporters(
-    reporters?: Array<string | Config.ReporterConfig>,
-  ): boolean {
-    return (
-      !reporters ||
-      !!reporters.find(
-        reporter => this._getReporterProps(reporter).path === 'default',
-      )
-    );
-  }
-
   async _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
-    const isDefault = this._shouldAddDefaultReporters(reporters);
+
+    if (notify) {
+      this.addReporter(new NotifyReporter(this._globalConfig, this._context));
+    }
+
+    if (!reporters) {
+      this._setupDefaultReporters(collectCoverage);
+      return;
+    }
+
+    const reporterNames = reporters.map(
+      reporter => this._getReporterProps(reporter).path,
+    );
+
+    const isDefault = reporterNames?.includes('default');
+    const isGitHubActions =
+      GITHUB_ACTIONS && reporterNames?.includes('github-actions');
 
     if (isDefault) {
       this._setupDefaultReporters(collectCoverage);
+    }
+
+    if (isGitHubActions) {
+      this.addReporter(new GitHubActionsReporter());
     }
 
     if (!isDefault && collectCoverage) {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    if (notify) {
-      this.addReporter(new NotifyReporter(this._globalConfig, this._context));
-    }
-
-    if (reporters && Array.isArray(reporters)) {
-      await this._addCustomReporters(reporters);
-    }
+    await this._addCustomReporters(reporters);
   }
 
   private _setupDefaultReporters(collectCoverage: boolean) {
@@ -382,7 +387,7 @@ class TestScheduler {
     for (const reporter of reporters) {
       const {options, path} = this._getReporterProps(reporter);
 
-      if (path === 'default') continue;
+      if (['default', 'github-actions'].includes(path)) continue;
 
       try {
         const Reporter: ReporterConstructor = await requireOrImportModule(path);
