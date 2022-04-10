@@ -30,7 +30,6 @@ import {
 } from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {constants} from 'jest-config';
 import {formatExecError} from 'jest-message-util';
 import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
 import type {Context} from 'jest-runtime';
@@ -406,7 +405,7 @@ class TestScheduler {
     for (const reporter of reporters) {
       const {options, path} = this._getReporterProps(reporter);
 
-      if (constants.BUILD_IN_REPORTERS.includes(path)) continue;
+      if (['default', 'github-actions'].includes(path)) continue;
 
       try {
         const Reporter = await requireOrImportModule<any>(path, true);

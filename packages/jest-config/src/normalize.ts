@@ -32,7 +32,7 @@ import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
 import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
-import {BUILD_IN_REPORTERS, DEFAULT_JS_PATTERN} from './constants';
+import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
@@ -433,7 +433,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       normalizedReporterConfig[0],
     );
 
-    if (!BUILD_IN_REPORTERS.includes(reporterPath)) {
+    if (!['default', 'github-actions'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: options.rootDir,
       });

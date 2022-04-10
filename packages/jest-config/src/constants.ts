@@ -8,7 +8,6 @@
 import * as path from 'path';
 
 export const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
-export const BUILD_IN_REPORTERS = ['default', 'github-actions'];
 export const DEFAULT_JS_PATTERN = '\\.[jt]sx?$';
 export const PACKAGE_JSON = 'package.json';
 export const JEST_CONFIG_BASE_NAME = 'jest.config';
