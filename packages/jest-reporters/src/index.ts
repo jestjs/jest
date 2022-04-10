@@ -6,6 +6,8 @@
  */
 
 import getResultHeader from './getResultHeader';
+import getSnapshotStatus from './getSnapshotStatus';
+import getSnapshotSummary from './getSnapshotSummary';
 import {
   formatTestPath,
   getSummary,
@@ -16,6 +18,7 @@ import {
 
 export type {
   AggregatedResult,
+  SnapshotSummary,
   Test,
   TestCaseResult,
   TestContext,
@@ -38,6 +41,8 @@ export type {
 export const utils = {
   formatTestPath,
   getResultHeader,
+  getSnapshotStatus,
+  getSnapshotSummary,
   getSummary,
   printDisplayName,
   relativePath,
