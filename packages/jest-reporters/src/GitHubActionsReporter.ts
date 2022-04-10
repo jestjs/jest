@@ -23,6 +23,8 @@ function replaceEntities(s: string): string {
 }
 
 export default class GitHubActionsReporter extends BaseReporter {
+  static readonly filename = __filename;
+
   override onRunComplete(
     _contexts?: Set<Context>,
     aggregatedResults?: AggregatedResult,
@@ -48,7 +50,7 @@ function getMessages(results: Array<TestResult> | undefined) {
       .filter((m): m is RegExpExecArray => m !== null)
       .map(
         ([message, line, col]) =>
-          `::error file=${testFilePath},line=${line},col=${col}::${message}`,
+          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
       ),
   );
 }
