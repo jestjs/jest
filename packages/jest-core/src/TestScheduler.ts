@@ -53,13 +53,7 @@ type TestRunnerConstructor = new (
   testRunnerContext: TestRunnerContext,
 ) => JestTestRunner;
 
-export type TestSchedulerContext = {
-  firstRun: boolean;
-  previousSuccess: boolean;
-  changedFiles?: Set<string>;
-  sourcesRelatedToTestsInChangedFiles?: Set<string>;
-  startRun?: (globalConfig: Config.GlobalConfig) => void;
-};
+export type TestSchedulerContext = ReporterContext & TestRunnerContext;
 
 export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
