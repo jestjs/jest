@@ -14,6 +14,14 @@ import {
   trimAndFormatPath,
 } from './utils';
 
+export type {Config} from '@jest/types';
+export type {
+  AggregatedResult,
+  Test,
+  TestCaseResult,
+  TestContext,
+  TestResult,
+} from '@jest/test-result';
 export {default as BaseReporter} from './BaseReporter';
 export {default as CoverageReporter} from './CoverageReporter';
 export {default as DefaultReporter} from './DefaultReporter';
