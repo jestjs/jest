@@ -28,12 +28,12 @@ import {
   AllowedConfigOptions,
   JestHook,
   KEYS,
+  TestWatcher,
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import TestWatcher from './TestWatcher';
 import getChangedFilesPromise from './getChangedFilesPromise';
 import activeFilters from './lib/activeFiltersMessage';
 import createContext from './lib/createContext';

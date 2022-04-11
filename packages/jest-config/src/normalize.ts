@@ -32,7 +32,7 @@ import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
 import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
+import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
@@ -370,8 +370,8 @@ const normalizeMissingOptions = (
   configPath: string | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
-  if (!options.name) {
-    options.name = createHash('md5')
+  if (!options.id) {
+    options.id = createHash('md5')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -433,7 +433,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       normalizedReporterConfig[0],
     );
 
-    if (reporterPath !== DEFAULT_REPORTER_LABEL) {
+    if (!['default', 'github-actions'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: options.rootDir,
       });
@@ -980,6 +980,7 @@ export default async function normalize(
       case 'expand':
       case 'extensionsToTreatAsEsm':
       case 'globals':
+      case 'fakeTimers':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
@@ -988,7 +989,7 @@ export default async function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'name':
+      case 'id':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':
@@ -1014,7 +1015,6 @@ export default async function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'timers':
       case 'useStderr':
       case 'verbose':
       case 'watch':

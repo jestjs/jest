@@ -11,24 +11,46 @@ import getProjectDisplayName from './getProjectDisplayName';
 
 export default function getSelectProjectsMessage(
   projectConfigs: Array<Config.ProjectConfig>,
+  opts: {
+    ignoreProjects: Array<string> | undefined;
+    selectProjects: Array<string> | undefined;
+  },
 ): string {
   if (projectConfigs.length === 0) {
-    return getNoSelectionWarning();
+    return getNoSelectionWarning(opts);
   }
   return getProjectsRunningMessage(projectConfigs);
 }
 
-function getNoSelectionWarning(): string {
-  return chalk.yellow(
-    'You provided values for --selectProjects but no projects were found matching the selection.\n',
-  );
+function getNoSelectionWarning(opts: {
+  ignoreProjects: Array<string> | undefined;
+  selectProjects: Array<string> | undefined;
+}): string {
+  if (opts.ignoreProjects && opts.selectProjects) {
+    return chalk.yellow(
+      'You provided values for --selectProjects and --ignoreProjects, but no projects were found matching the selection.\n' +
+        'Are you ignoring all the selected projects?\n',
+    );
+  } else if (opts.ignoreProjects) {
+    return chalk.yellow(
+      'You provided values for --ignoreProjects, but no projects were found matching the selection.\n' +
+        'Are you ignoring all projects?\n',
+    );
+  } else if (opts.selectProjects) {
+    return chalk.yellow(
+      'You provided values for --selectProjects but no projects were found matching the selection.\n',
+    );
+  } else {
+    return chalk.yellow('No projects were found.\n');
+  }
 }
 
 function getProjectsRunningMessage(
   projectConfigs: Array<Config.ProjectConfig>,
 ): string {
   if (projectConfigs.length === 1) {
-    const name = getProjectDisplayName(projectConfigs[0]);
+    const name =
+      getProjectDisplayName(projectConfigs[0]) ?? '<unnamed project>';
     return `Running one project: ${chalk.bold(name)}\n`;
   }
   const projectsList = projectConfigs

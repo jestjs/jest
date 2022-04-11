@@ -158,7 +158,7 @@ Clearing the cache will reduce performance.
 
 ### `--clearMocks`
 
-Automatically clear mock calls, instances and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -223,6 +223,10 @@ This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, 
 ### `--help`
 
 Show the help information, similar to this page.
+
+### `--ignoreProjects <project1> ... <projectN>`
+
+Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--init`
 
@@ -332,7 +336,7 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--selectProjects <project1> ... <projectN>`
 
-Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
+Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
@@ -380,6 +384,10 @@ Note that `column` is 0-indexed while `line` is not.
   "line": 5
 }
 ```
+
+### `--testMatch glob1 ... globN`
+
+The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
 
 ### `--testNamePattern=<regex>`
 

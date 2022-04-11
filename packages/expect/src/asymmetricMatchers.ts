@@ -131,7 +131,7 @@ class Any extends AsymmetricMatcher<any> {
     return 'Any';
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     if (this.sample == String) {
       return 'string';
     }
@@ -155,7 +155,7 @@ class Any extends AsymmetricMatcher<any> {
     return fnNameFor(this.sample);
   }
 
-  toAsymmetricMatcher() {
+  override toAsymmetricMatcher() {
     return `Any<${fnNameFor(this.sample)}>`;
   }
 }
@@ -171,7 +171,7 @@ class Anything extends AsymmetricMatcher<void> {
 
   // No getExpectedType method, because it matches either null or undefined.
 
-  toAsymmetricMatcher() {
+  override toAsymmetricMatcher() {
     return 'Anything';
   }
 }
@@ -203,7 +203,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     return `Array${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'array';
   }
 }
@@ -240,7 +240,7 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     return `Object${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'object';
   }
 }
@@ -263,7 +263,7 @@ class StringContaining extends AsymmetricMatcher<string> {
     return `String${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
   }
 }
@@ -286,7 +286,7 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     return `String${this.inverse ? 'Not' : ''}Matching`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
   }
 }
@@ -326,7 +326,7 @@ class CloseTo extends AsymmetricMatcher<number> {
     return `Number${this.inverse ? 'Not' : ''}CloseTo`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'number';
   }
 }

@@ -38,8 +38,8 @@ jobs:
           YARN_ENABLE_SCRIPTS: false
         run: yarn --immutable
 
-  lint-and-typecheck:
-    name: Running TypeScript compiler & ESLint
+  typecheck:
+    name: Running TypeScript compiler
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
@@ -55,8 +55,24 @@ jobs:
         run: yarn build
       - name: test typings
         run: yarn test-types
-      - name: verify TypeScript@4.2 compatibility
+      - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
+
+  lint:
+    name: Running ESLint
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: install
+        run: yarn --immutable
+      - name: build
+        run: yarn build:js
       - name: verify Yarn PnP compatibility
         run: yarn verify-pnp
       - name: run eslint
@@ -161,9 +177,9 @@ jobs:
           yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
           yarn test-leak
       - name: map coverage
-        run: node ./scripts/mapCoverage.js
+        run: node ./scripts/mapCoverage.mjs
         if: always()
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         if: always()
         with:
           directory: ./coverage

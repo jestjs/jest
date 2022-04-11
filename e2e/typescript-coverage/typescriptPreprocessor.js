@@ -8,18 +8,19 @@
 const tsc = require('typescript');
 
 module.exports = {
-  process(src, path) {
-    if (path.endsWith('.ts') || path.endsWith('.tsx')) {
-      return tsc.transpile(
-        src,
-        {
+  process(sourceText, fileName) {
+    if (fileName.endsWith('.ts') || fileName.endsWith('.tsx')) {
+      const {outputText, sourceMapText} = tsc.transpileModule(sourceText, {
+        compilerOptions: {
           jsx: tsc.JsxEmit.React,
           module: tsc.ModuleKind.CommonJS,
+          sourceMap: true, // if code is transformed, source map is necessary for coverage
         },
-        path,
-        [],
-      );
+        fileName,
+      });
+
+      return {code: outputText, map: sourceMapText};
     }
-    return src;
+    return {code: sourceText};
   },
 };

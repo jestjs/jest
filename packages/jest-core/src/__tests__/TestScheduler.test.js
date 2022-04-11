@@ -6,12 +6,15 @@
  *
  */
 
-import {SummaryReporter} from '@jest/reporters';
-import {makeProjectConfig} from '@jest/test-utils';
+import {GitHubActionsReporter, SummaryReporter} from '@jest/reporters';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
+jest.mock('ci-info', () => ({GITHUB_ACTIONS: true}));
+
 jest.mock('@jest/reporters');
+
 const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
@@ -37,18 +40,20 @@ beforeEach(() => {
 
 test('config for reporters supports `default`', async () => {
   const undefinedReportersScheduler = await createTestScheduler(
-    {
+    makeGlobalConfig({
       reporters: undefined,
-    },
+    }),
+    {},
     {},
   );
   const numberOfReporters =
     undefinedReportersScheduler._dispatcher._reporters.length;
 
   const stringDefaultReportersScheduler = await createTestScheduler(
-    {
+    makeGlobalConfig({
       reporters: ['default'],
-    },
+    }),
+    {},
     {},
   );
   expect(stringDefaultReportersScheduler._dispatcher._reporters.length).toBe(
@@ -56,9 +61,10 @@ test('config for reporters supports `default`', async () => {
   );
 
   const defaultReportersScheduler = await createTestScheduler(
-    {
+    makeGlobalConfig({
       reporters: [['default', {}]],
-    },
+    }),
+    {},
     {},
   );
   expect(defaultReportersScheduler._dispatcher._reporters.length).toBe(
@@ -66,16 +72,46 @@ test('config for reporters supports `default`', async () => {
   );
 
   const emptyReportersScheduler = await createTestScheduler(
-    {
+    makeGlobalConfig({
       reporters: [],
-    },
+    }),
+    {},
     {},
   );
   expect(emptyReportersScheduler._dispatcher._reporters.length).toBe(0);
 });
 
+test('config for reporters supports `github-actions`', async () => {
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: [],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: ['github-actions'],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(1);
+
+  await createTestScheduler(
+    makeGlobalConfig({
+      reporters: ['default', 'github-actions'],
+    }),
+    {},
+    {},
+  );
+  expect(GitHubActionsReporter).toHaveBeenCalledTimes(2);
+});
+
 test('.addReporter() .removeReporter()', async () => {
-  const scheduler = await createTestScheduler({}, {});
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
   const reporter = new SummaryReporter();
   scheduler.addReporter(reporter);
   expect(scheduler._dispatcher._reporters).toContain(reporter);
@@ -84,7 +120,7 @@ test('.addReporter() .removeReporter()', async () => {
 });
 
 test('schedule tests run in parallel per default', async () => {
-  const scheduler = await createTestScheduler({}, {});
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -107,7 +143,7 @@ test('schedule tests run in parallel per default', async () => {
 });
 
 test('schedule tests run in serial if the runner flags them', async () => {
-  const scheduler = await createTestScheduler({}, {});
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -130,7 +166,11 @@ test('schedule tests run in serial if the runner flags them', async () => {
 });
 
 test('should bail after `n` failures', async () => {
-  const scheduler = await createTestScheduler({bail: 2}, {});
+  const scheduler = await createTestScheduler(
+    makeGlobalConfig({bail: 2}),
+    {},
+    {},
+  );
   const test = {
     context: {
       config: makeProjectConfig({
@@ -162,7 +202,11 @@ test('should bail after `n` failures', async () => {
 });
 
 test('should not bail if less than `n` failures', async () => {
-  const scheduler = await createTestScheduler({bail: 2}, {});
+  const scheduler = await createTestScheduler(
+    makeGlobalConfig({bail: 2}),
+    {},
+    {},
+  );
   const test = {
     context: {
       config: makeProjectConfig({
@@ -194,7 +238,7 @@ test('should not bail if less than `n` failures', async () => {
 });
 
 test('should set runInBand to run in serial', async () => {
-  const scheduler = await createTestScheduler({}, {});
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -220,7 +264,7 @@ test('should set runInBand to run in serial', async () => {
 });
 
 test('should set runInBand to not run in serial', async () => {
-  const scheduler = await createTestScheduler({}, {});
+  const scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
   const test = {
     context: {
       config: makeProjectConfig({

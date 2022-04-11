@@ -27,7 +27,7 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     this.getWorkerById(workerId).send(request, onStart, onEnd, onCustomMessage);
   }
 
-  createWorker(workerOptions: WorkerOptions): WorkerInterface {
+  override createWorker(workerOptions: WorkerOptions): WorkerInterface {
     let Worker;
     if (this._options.enableWorkerThreads) {
       Worker = require('./workers/NodeThreadsWorker').default;

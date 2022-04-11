@@ -8,10 +8,12 @@
 /* eslint-disable local/ban-types-eventually */
 
 import chalk = require('chalk');
+import {GITHUB_ACTIONS} from 'ci-info';
 import exit = require('exit');
 import {
   CoverageReporter,
   DefaultReporter,
+  GitHubActionsReporter,
   NotifyReporter,
   Reporter,
   SummaryReporter,
@@ -29,16 +31,21 @@ import {
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import type TestRunner from 'jest-runner';
+import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import {
   buildSnapshotResolver,
   cleanup as cleanupSnapshots,
 } from 'jest-snapshot';
 import {requireOrImportModule} from 'jest-util';
+import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
-import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
+
+type TestRunnerConstructor = new (
+  globalConfig: Config.GlobalConfig,
+  context: TestRunnerContext,
+) => JestTestRunner;
 
 export type TestSchedulerOptions = {
   startRun: (globalConfig: Config.GlobalConfig) => void;
@@ -206,19 +213,19 @@ class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners: {[key: string]: TestRunner} = Object.create(null);
-    const contextsByTestRunner = new WeakMap<TestRunner, Context>();
+    const testRunners: Record<string, JestTestRunner> = Object.create(null);
+    const contextsByTestRunner = new WeakMap<JestTestRunner, Context>();
     await Promise.all(
       Array.from(contexts).map(async context => {
         const {config} = context;
         if (!testRunners[config.runner]) {
           const transformer = await createScriptTransformer(config);
-          const Runner: typeof TestRunner =
+          const Runner: TestRunnerConstructor =
             await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
-            changedFiles: this._context?.changedFiles,
+            changedFiles: this._context.changedFiles,
             sourcesRelatedToTestsInChangedFiles:
-              this._context?.sourcesRelatedToTestsInChangedFiles,
+              this._context.sourcesRelatedToTestsInChangedFiles,
           });
           testRunners[config.runner] = runner;
           contextsByTestRunner.set(runner, context);
@@ -242,11 +249,7 @@ class TestScheduler {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
 
-          /**
-           * Test runners with event emitters are still not supported
-           * for third party test runners.
-           */
-          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmitters__) {
+          if (testRunner.supportsEventEmitters) {
             const unsubscribes = [
               testRunner.on('test-file-start', ([test]) =>
                 onTestFileStart(test),
@@ -266,14 +269,7 @@ class TestScheduler {
               ),
             ];
 
-            await testRunner.runTests(
-              tests,
-              watcher,
-              undefined,
-              undefined,
-              undefined,
-              testRunnerOptions,
-            );
+            await testRunner.runTests(tests, watcher, testRunnerOptions);
 
             unsubscribes.forEach(sub => sub());
           } else {
@@ -314,7 +310,7 @@ class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: Record<string, TestRunner>,
+    testRunners: Record<string, JestTestRunner>,
     tests: Array<Test>,
   ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
@@ -336,23 +332,38 @@ class TestScheduler {
     }
   }
 
-  private _shouldAddDefaultReporters(
-    reporters?: Array<string | Config.ReporterConfig>,
-  ): boolean {
-    return (
-      !reporters ||
-      !!reporters.find(
-        reporter => this._getReporterProps(reporter).path === 'default',
-      )
-    );
-  }
-
   async _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
-    const isDefault = this._shouldAddDefaultReporters(reporters);
+
+    if (notify) {
+      this.addReporter(
+        new NotifyReporter(
+          this._globalConfig,
+          this._options.startRun,
+          this._context,
+        ),
+      );
+    }
+
+    if (!reporters) {
+      this._setupDefaultReporters(collectCoverage);
+      return;
+    }
+
+    const reporterNames = reporters.map(
+      reporter => this._getReporterProps(reporter).path,
+    );
+
+    const isDefault = reporterNames?.includes('default');
+    const isGitHubActions =
+      GITHUB_ACTIONS && reporterNames?.includes('github-actions');
 
     if (isDefault) {
       this._setupDefaultReporters(collectCoverage);
+    }
+
+    if (isGitHubActions) {
+      this.addReporter(new GitHubActionsReporter());
     }
 
     if (!isDefault && collectCoverage) {
@@ -365,19 +376,7 @@ class TestScheduler {
       );
     }
 
-    if (notify) {
-      this.addReporter(
-        new NotifyReporter(
-          this._globalConfig,
-          this._options.startRun,
-          this._context,
-        ),
-      );
-    }
-
-    if (reporters && Array.isArray(reporters)) {
-      await this._addCustomReporters(reporters);
-    }
+    await this._addCustomReporters(reporters);
   }
 
   private _setupDefaultReporters(collectCoverage: boolean) {
@@ -406,7 +405,7 @@ class TestScheduler {
     for (const reporter of reporters) {
       const {options, path} = this._getReporterProps(reporter);
 
-      if (path === 'default') continue;
+      if (['default', 'github-actions'].includes(path)) continue;
 
       try {
         const Reporter = await requireOrImportModule<any>(path, true);

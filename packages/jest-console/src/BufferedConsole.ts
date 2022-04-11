@@ -24,7 +24,7 @@ export default class BufferedConsole extends Console {
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
-  Console: typeof Console = Console;
+  override Console: typeof Console = Console;
 
   constructor() {
     super({
@@ -71,7 +71,7 @@ export default class BufferedConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): void {
+  override assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
     } catch (error: any) {
@@ -79,7 +79,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  count(label: string = 'default'): void {
+  override count(label: string = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -87,28 +87,28 @@ export default class BufferedConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default'): void {
+  override countReset(label: string = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: unknown, ...rest: Array<unknown>): void {
+  override debug(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('debug', format(firstArg, ...rest));
   }
 
-  dir(firstArg: unknown, options: InspectOptions = {}): void {
+  override dir(firstArg: unknown, options: InspectOptions = {}): void {
     const representation = inspect(firstArg, options);
     this._log('dir', formatWithOptions(options, representation));
   }
 
-  dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
+  override dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...rest));
   }
 
-  error(firstArg: unknown, ...rest: Array<unknown>): void {
+  override error(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('error', format(firstArg, ...rest));
   }
 
-  group(title?: string, ...rest: Array<unknown>): void {
+  override group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -116,7 +116,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupCollapsed(title?: string, ...rest: Array<unknown>): void {
+  override groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -124,21 +124,21 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupEnd(): void {
+  override groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: unknown, ...rest: Array<unknown>): void {
+  override info(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('info', format(firstArg, ...rest));
   }
 
-  log(firstArg: unknown, ...rest: Array<unknown>): void {
+  override log(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('log', format(firstArg, ...rest));
   }
 
-  time(label: string = 'default'): void {
+  override time(label: string = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -146,7 +146,7 @@ export default class BufferedConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default'): void {
+  override timeEnd(label: string = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {
@@ -157,7 +157,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  timeLog(label = 'default', ...data: Array<unknown>): void {
+  override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
     if (startTime) {
@@ -167,7 +167,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  warn(firstArg: unknown, ...rest: Array<unknown>): void {
+  override warn(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('warn', format(firstArg, ...rest));
   }
 

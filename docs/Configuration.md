@@ -150,7 +150,7 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 
 Default: `false`
 
-Automatically clear mock calls, instances and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls, instances, contexts and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
 
 ### `collectCoverage` \[boolean]
 
@@ -395,6 +395,108 @@ Jest's ESM support is still experimental, see [its docs for more details](ECMASc
 }
 ```
 
+### `fakeTimers` \[object]
+
+Default: `{}`
+
+The fake timers may be useful when a piece of code sets a long timeout that we don't want to wait for in a test. For additional details see [Fake Timers guide](TimerMocks.md) and [API documentation](JestObjectAPI.md#fake-timers).
+
+This option provides the default configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
+
+```json
+{
+  "fakeTimers": {
+    "doNotFake": ["nextTick"],
+    "timerLimit": 1000
+  }
+}
+```
+
+```js title="fakeTime.test.js"
+// install fake timers for this file using the options from Jest configuration
+jest.useFakeTimers();
+
+test('increase the limit of recursive timers for this and following tests', () => {
+  jest.useFakeTimers({timerLimit: 5000});
+  // ...
+});
+```
+
+:::tip
+
+Instead of including `jest.useFakeTimers()` in each test file, you can enable fake timers globally for all tests:
+
+```json
+{
+  "fakeTimers": {
+    "enableGlobally": true
+  }
+}
+```
+
+:::
+
+Configuration options:
+
+```ts
+type FakeableAPI =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout';
+
+type ModernFakeTimersConfig = {
+  /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
+   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   * The default is `false`.
+   */
+  advanceTimers?: boolean | number;
+  /**
+   * List of names of APIs that should not be faked. The default is `[]`, meaning
+   * all APIs are faked.
+   */
+  doNotFake?: Array<FakeableAPI>;
+  /** Whether fake timers should be enabled for all test files. The default is `false`. */
+  enableGlobally?: boolean;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * The default is `false`.
+   */
+  legacyFakeTimers?: boolean;
+  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  now?: number;
+  /** Maximum number of recursive timers that will be run. The default is `100_000` timers. */
+  timerLimit?: number;
+};
+```
+
+:::info Legacy Fake Timers
+
+For some reason you might have to use legacy implementation of fake timers. Here is how to enable it globally (additional options are not supported):
+
+```json
+{
+  "fakeTimers": {
+    "enableGlobally": true,
+    "legacyFakeTimers": true
+  }
+}
+```
+
+:::
+
 ### `forceCoverageMatch` \[array&lt;string&gt;]
 
 Default: `['']`
@@ -571,7 +673,7 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
-Default: `["js", "jsx", "ts", "tsx", "json", "node"]`
+Default: `["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 
@@ -1458,39 +1560,30 @@ Default: `5000`
 
 Default timeout of a test in milliseconds.
 
-### `timers` \[string]
-
-Default: `real`
-
-Setting this value to `fake` or `modern` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](JestObjectAPI.md#jestusefaketimersimplementation-modern--legacy).
-
-If the value is `legacy`, the old implementation will be used as implementation instead of one backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
-
 ### `transform` \[object&lt;string, pathToTransformer | \[pathToTransformer, object]&gt;]
 
 Default: `{"\\.[jt]sx?$": "babel-jest"}`
 
-A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/main/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
+A map from regular expressions to paths to transformers. Optionally, a tuple with configuration options can be passed as second argument: `{filePattern: ['path-to-transformer', {options}]}`. For example, here is how you can configure `babel-jest` for non-default behavior: `{'\\.js$': ['babel-jest', {rootMode: 'upward'}]}`.
 
-Examples of such compilers include:
+Jest runs the code of your project as JavaScript, hence a transformer is needed if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates). By default, Jest will use [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup) transformer, which will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
-- [Babel](https://babeljs.io/)
-- [TypeScript](http://www.typescriptlang.org/)
-- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
-
-You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
+See the [Code Transformation](CodeTransformation.md) section for more details and instructions on building your own transformer.
 
 :::tip
 
-A transformer is only run once per file unless the file has changed. During the development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues).
+Keep in mind that a transformer only runs once per file unless the file has changed.
 
-When adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or TypeScript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup).
+Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
+
+```json
+"transform": {
+  "\\.[jt]sx?$": "babel-jest",
+  "\\.css$": "some-css-transformer",
+}
+```
 
 :::
-
-A transformer must be an object with at least a `process` function, and it's also recommended to include a `getCacheKey` function. If your transformer is written in ESM you should have a default export with that object.
-
-If the tests are written using [native ESM](ECMAScriptModules.md) the transformer can export `processAsync` and `getCacheKeyAsync` instead or in addition to the synchronous variants.
 
 ### `transformIgnorePatterns` \[array&lt;string&gt;]
 

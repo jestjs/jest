@@ -7,7 +7,6 @@
 
 export {
   SearchSource,
-  TestWatcher,
   createTestScheduler,
   getVersion,
   runCLI,

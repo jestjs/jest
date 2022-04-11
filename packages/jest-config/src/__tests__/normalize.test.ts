@@ -66,7 +66,7 @@ afterEach(() => {
   (console.warn as unknown as jest.SpyInstance).mockRestore();
 });
 
-it('picks a name based on the rootDir', async () => {
+it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
   const expected = createHash('md5')
     .update('/root/path/foo')
@@ -78,32 +78,32 @@ it('picks a name based on the rootDir', async () => {
     },
     {} as Config.Argv,
   );
-  expect(options.name).toBe(expected);
+  expect(options.id).toBe(expected);
 });
 
-it('keeps custom project name based on the projects rootDir', async () => {
-  const name = 'test';
+it('keeps custom project id based on the projects rootDir', async () => {
+  const id = 'test';
   const {options} = await normalize(
     {
-      projects: [{name, rootDir: '/path/to/foo'}],
+      projects: [{id, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect(options.projects[0].id).toBe(id);
 });
 
-it('keeps custom names based on the rootDir', async () => {
+it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
-      name: 'custom-name',
+      id: 'custom-id',
       rootDir: '/root/path/foo',
     },
     {} as Config.Argv,
   );
 
-  expect(options.name).toBe('custom-name');
+  expect(options.id).toBe('custom-id');
 });
 
 it('minimal config is stable across runs', async () => {
@@ -1668,6 +1668,8 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
@@ -1929,6 +1931,24 @@ describe('testURL', () => {
       {
         rootDir: '/root/',
         testURL: 'https://jestjs.io/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('timers', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `timers` is used', async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        timers: 'real',
       },
       {} as Config.Argv,
     );

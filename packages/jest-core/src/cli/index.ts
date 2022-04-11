@@ -16,7 +16,7 @@ import {readConfigs} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
 import Runtime, {Context} from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
-import TestWatcher from '../TestWatcher';
+import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
@@ -71,17 +71,24 @@ export async function runCLI(
     exit(0);
   }
 
-  let configsOfProjectsToRun = configs;
-  if (argv.selectProjects) {
-    const namesMissingWarning = getProjectNamesMissingWarning(configs);
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(configs, {
+    ignoreProjects: argv.ignoreProjects,
+    selectProjects: argv.selectProjects,
+  });
+  if (argv.selectProjects || argv.ignoreProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs, {
+      ignoreProjects: argv.ignoreProjects,
+      selectProjects: argv.selectProjects,
+    });
     if (namesMissingWarning) {
       outputStream.write(namesMissingWarning);
     }
-    configsOfProjectsToRun = getConfigsOfProjectsToRun(
-      argv.selectProjects,
-      configs,
+    outputStream.write(
+      getSelectProjectsMessage(configsOfProjectsToRun, {
+        ignoreProjects: argv.ignoreProjects,
+        selectProjects: argv.selectProjects,
+      }),
     );
-    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
   await _run10000(
