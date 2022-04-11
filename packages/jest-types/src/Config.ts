@@ -411,7 +411,7 @@ export type GlobalConfig = {
   passWithNoTests: boolean;
   projects: Array<string>;
   replname?: string;
-  reporters?: Array<string | ReporterConfig>;
+  reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
   shard?: ShardConfig;
@@ -546,8 +546,9 @@ export type Argv = Arguments<
     onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
-    projects: Array<string>;
     prettierPath: string | null | undefined;
+    projects: Array<string>;
+    reporters: Array<string>;
     resetMocks: boolean;
     resetModules: boolean;
     resolver: string | null | undefined;

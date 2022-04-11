@@ -55,6 +55,8 @@ type TestRunnerConstructor = new (
 
 export type TestSchedulerContext = ReporterContext & TestRunnerContext;
 
+type ReporterMap = Record<string, Record<string, unknown>>;
+
 export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
   context: TestSchedulerContext,
@@ -338,13 +340,19 @@ class TestScheduler {
       return;
     }
 
-    const reporterNames = reporters.map(
-      reporter => this._getReporterProps(reporter).path,
-    );
+    let reporterMap: ReporterMap = {};
 
-    const isDefault = reporterNames?.includes('default');
+    reporters.forEach(reporter => {
+      reporterMap = Object.assign(reporterMap, {
+        [reporter[0]]: reporter[1],
+      });
+    });
+
+    const reporterNames = Object.keys(reporterMap);
+
+    const isDefault = reporterNames.includes('default');
     const isGitHubActions =
-      GITHUB_ACTIONS && reporterNames?.includes('github-actions');
+      GITHUB_ACTIONS && reporterNames.includes('github-actions');
 
     if (isDefault) {
       this._setupDefaultReporters(collectCoverage);
@@ -358,7 +366,9 @@ class TestScheduler {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    await this._addCustomReporters(reporters);
+    if (reporterNames.length) {
+      await this._addCustomReporters(reporterMap);
+    }
   }
 
   private _setupDefaultReporters(collectCoverage: boolean) {
@@ -375,44 +385,22 @@ class TestScheduler {
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
-  private async _addCustomReporters(
-    reporters: Array<string | Config.ReporterConfig>,
-  ) {
-    for (const reporter of reporters) {
-      const {options, path} = this._getReporterProps(reporter);
-
+  private async _addCustomReporters(reporters: ReporterMap) {
+    for (const path in reporters) {
       if (['default', 'github-actions'].includes(path)) continue;
 
       try {
         const Reporter: ReporterConstructor = await requireOrImportModule(path);
         this.addReporter(
-          new Reporter(this._globalConfig, options, this._context),
+          new Reporter(this._globalConfig, reporters[path], this._context),
         );
       } catch (error: any) {
         error.message = `An error occurred while adding the reporter at path "${chalk.bold(
           path,
-        )}".${error.message}`;
+        )}".\n${error.message}`;
         throw error;
       }
     }
-  }
-
-  /**
-   * Get properties of a reporter in an object
-   * to make dealing with them less painful.
-   */
-  private _getReporterProps(reporter: string | Config.ReporterConfig): {
-    options: Record<string, unknown>;
-    path: string;
-  } {
-    if (typeof reporter === 'string') {
-      return {options: {}, path: reporter};
-    } else if (Array.isArray(reporter)) {
-      const [path, options] = reporter;
-      return {options, path};
-    }
-
-    throw new Error('Reporter should be either a string or an array');
   }
 
   private async _bailIfNeeded(
