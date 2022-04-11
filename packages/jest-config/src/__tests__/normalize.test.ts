@@ -309,6 +309,50 @@ describe('roots', () => {
   testPathArray('roots');
 });
 
+describe('reporters', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+  });
+
+  it('allows empty list', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([]);
+  });
+
+  it('normalizes the path and options object', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [
+          'default',
+          'github-actions',
+          '<rootDir>/custom-reporter.js',
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+          ['jest-junit', {outputName: 'report.xml'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['default', {}],
+      ['github-actions', {}],
+      ['/root/custom-reporter.js', {}],
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+      ['jest-junit', {outputName: 'report.xml'}],
+    ]);
+  });
+});
+
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
