@@ -860,7 +860,7 @@ If included in the list, the built-in GitHub Actions Reporter will annotate chan
 
 :::tip
 
-Hungry for reporters? Take a look at long list of [awesome reporters](https://github.com/jest-community/awesome-jest#reporters) from Awesome Jest.
+Hungry for reporters? Take a look at long list of [awesome reporters](https://github.com/jest-community/awesome-jest/blob/main/README.md#reporters) from Awesome Jest.
 
 :::
 
