@@ -2100,13 +2100,11 @@ export default class Runtime {
       });
 
     const setTimeout = (timeout: number) => {
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[testTimeoutSymbol] = timeout;
       return jestObject;
     };
 
     const retryTimes = (numTestRetries: number) => {
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[retryTimesSymbol] = numTestRetries;
       return jestObject;
     };
