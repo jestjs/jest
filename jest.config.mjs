@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 
 /** @type import('@jest/types').Config.InitialOptions */
-module.exports = {
+export default {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
     '**/packages/*/**/*.ts',
