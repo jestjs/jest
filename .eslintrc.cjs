@@ -375,7 +375,6 @@ module.exports = {
     'no-bitwise': 'warn',
     'no-caller': 'error',
     'no-case-declarations': 'off',
-    'no-catch-shadow': 'error',
     'no-class-assign': 'warn',
     'no-cond-assign': 'off',
     'no-confusing-arrow': 'off',
