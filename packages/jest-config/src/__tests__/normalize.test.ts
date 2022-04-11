@@ -351,6 +351,58 @@ describe('reporters', () => {
       ['jest-junit', {outputName: 'report.xml'}],
     ]);
   });
+
+  it('throws an error if value is neither string nor array', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [123],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if first value in the tuple is not a string', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [[123]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value is missing in the tuple', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter']],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value in the tuple is not an object', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter', true]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('transform', () => {
