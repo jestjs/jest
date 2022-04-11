@@ -55,7 +55,7 @@ In these cases, `async` and `await` are effectively syntactic sugar for the same
 
 :::caution
 
-Be sure to return (or `await`) the promise - if you omit the `return` statement, your test will complete before the promise returned from `fetchData` resolves and `then()` has a chance to execute the callback.
+Be sure to return (or `await`) the promise - if you omit the `return`/`await` statement, your test will complete before the promise returned from `fetchData` resolves or rejects.
 
 :::
 
@@ -70,14 +70,17 @@ test('the fetch fails with an error', () => {
 
 ## Callbacks
 
-For example, let's say that `fetchData`, instead of returning a promise, expects a callback, i.e. fetches some data and calls `callback(data)` when it is complete. You want to test that this returned data is the string `'peanut butter'`.
+If you don't use promises, you can use callbacks. For example, let's say that `fetchData`, instead of returning a promise, expects a callback, i.e. fetches some data and calls `callback(null, data)` when it is complete. You want to test that this returned data is the string `'peanut butter'`.
 
 By default, Jest tests complete once they reach the end of their execution. That means this test will _not_ work as intended:
 
 ```js
 // Don't do this!
 test('the data is peanut butter', () => {
-  function callback(data) {
+  function callback(error, data) {
+    if (error) {
+      throw error;
+    }
     expect(data).toBe('peanut butter');
   }
 
@@ -91,7 +94,11 @@ There is an alternate form of `test` that fixes this. Instead of putting the tes
 
 ```js
 test('the data is peanut butter', done => {
-  function callback(data) {
+  function callback(error, data) {
+    if (error) {
+      done(error);
+      return;
+    }
     try {
       expect(data).toBe('peanut butter');
       done();
