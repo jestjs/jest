@@ -124,13 +124,11 @@ function getPathInModule(
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
-        // we need to make sure resolve ignores `main`
-        delete pkg.main;
-
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
-          pkg,
+          // we need to make sure resolve ignores `main`
+          omit(pkg, ['main']),
           subpath,
           createResolveOptions(options.conditions),
         );
@@ -158,3 +156,11 @@ function createResolveOptions(
 // if it's a relative import or an absolute path, exports are ignored
 const shouldIgnoreRequestForExports = (path: string) =>
   path.startsWith('.') || isAbsolute(path);
+
+function omit<T>(obj: T, keys: Array<keyof T>): Partial<T> {
+  const objCopy = {...obj};
+  for (const key of keys) {
+    delete objCopy[key];
+  }
+  return objCopy;
+}
