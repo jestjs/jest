@@ -833,7 +833,7 @@ Use this configuration option to add reporters to Jest. It must be a list of rep
 }
 ```
 
-#### Default Reporters
+#### Default Reporter
 
 If custom reporters are specified, the default Jest reporter will be overridden. If you wish to keep it, `'default'` must be passed as a reporters name:
 
