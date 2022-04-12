@@ -128,7 +128,7 @@ function getPathInModule(
 
         const resolved = resolveExports(
           // we need to make sure resolve ignores `main`
-          omit(pkg, ['main']),
+         {...pkg, main: undefined},
           subpath,
           createResolveOptions(options.conditions),
         );
