@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 import type {
   AggregatedResult,
   Test,
   TestCaseResult,
+  TestContext,
   TestResult,
 } from '@jest/test-result';
-import type {Context} from 'jest-runtime';
+import type {ReporterConstructor} from './TestScheduler';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;
@@ -27,9 +26,9 @@ export default class ReporterDispatcher {
     this._reporters.push(reporter);
   }
 
-  unregister(ReporterClass: Function): void {
+  unregister(reporterConstructor: ReporterConstructor): void {
     this._reporters = this._reporters.filter(
-      reporter => !(reporter instanceof ReporterClass),
+      reporter => !(reporter instanceof reporterConstructor),
     );
   }
 
@@ -82,12 +81,12 @@ export default class ReporterDispatcher {
   }
 
   async onRunComplete(
-    contexts: Set<Context>,
+    testContexts: Set<TestContext>,
     results: AggregatedResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
       if (reporter.onRunComplete) {
-        await reporter.onRunComplete(contexts, results);
+        await reporter.onRunComplete(testContexts, results);
       }
     }
   }

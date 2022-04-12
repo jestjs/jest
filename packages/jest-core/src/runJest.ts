@@ -23,8 +23,7 @@ import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
-import {JestHook, JestHookEmitter} from 'jest-watcher';
-import type {TestWatcher} from 'jest-watcher';
+import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
@@ -280,11 +279,10 @@ export default async function runJest({
     }
   }
 
-  const scheduler = await createTestScheduler(
-    globalConfig,
-    {startRun},
-    testSchedulerContext,
-  );
+  const scheduler = await createTestScheduler(globalConfig, {
+    startRun,
+    ...testSchedulerContext,
+  });
 
   const results = await scheduler.scheduleTests(allTests, testWatcher);
 

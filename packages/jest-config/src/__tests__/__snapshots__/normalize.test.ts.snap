@@ -200,6 +200,74 @@ exports[`preset throws when preset not found 1`] = `
 <red></>"
 `;
 
+exports[`reporters throws an error if first value in the tuple is not a string 1`] = `
+"<red><bold><bold>● </><bold>Reporter Validation Error</>:</>
+<red></>
+<red>  Unexpected value for Path at index 0 of reporter at index 0</>
+<red>  Expected:</>
+<red>    <bold><red>string</><red></></>
+<red>  Got:</>
+<red>    <bold><green>number</><red></></>
+<red>  Reporter configuration:</>
+<red>    <bold><green>[</><red></></>
+<red><bold><green>      123</><red></></>
+<red><bold><green>    ]</><red></></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
+`;
+
+exports[`reporters throws an error if second value in the tuple is not an object 1`] = `
+"<red><bold><bold>● </><bold>Reporter Validation Error</>:</>
+<red></>
+<red>  Unexpected value for Reporter Configuration at index 1 of reporter at index 0</>
+<red>  Expected:</>
+<red>    <bold><red>object</><red></></>
+<red>  Got:</>
+<red>    <bold><green>boolean</><red></></>
+<red>  Reporter configuration:</>
+<red>    <bold><green>[</><red></></>
+<red><bold><green>      "some-reporter",</><red></></>
+<red><bold><green>      true</><red></></>
+<red><bold><green>    ]</><red></></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
+`;
+
+exports[`reporters throws an error if second value is missing in the tuple 1`] = `
+"<red><bold><bold>● </><bold>Reporter Validation Error</>:</>
+<red></>
+<red>  Unexpected value for Reporter Configuration at index 1 of reporter at index 0</>
+<red>  Expected:</>
+<red>    <bold><red>object</><red></></>
+<red>  Got:</>
+<red>    <bold><green>undefined</><red></></>
+<red>  Reporter configuration:</>
+<red>    <bold><green>[</><red></></>
+<red><bold><green>      "some-reporter"</><red></></>
+<red><bold><green>    ]</><red></></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
+`;
+
+exports[`reporters throws an error if value is neither string nor array 1`] = `
+"<red><bold><bold>● </><bold>Reporter Validation Error</>:</>
+<red></>
+<red>  Reporter at index 0 must be of type:</>
+<red>    <bold><green>array or string</><red></></>
+<red>  but instead received:</>
+<red>    <bold><red>number</><red></></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration</>
+<red></>"
+`;
+
 exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>

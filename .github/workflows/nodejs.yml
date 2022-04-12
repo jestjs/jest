@@ -174,7 +174,7 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests with coverage
         run: |
-          yarn jest-coverage --color --config jest.config.ci.js --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+          yarn jest-coverage --color --config jest.config.ci.mjs --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
           yarn test-leak
       - name: map coverage
         run: node ./scripts/mapCoverage.mjs

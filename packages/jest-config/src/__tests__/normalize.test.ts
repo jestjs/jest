@@ -309,6 +309,102 @@ describe('roots', () => {
   testPathArray('roots');
 });
 
+describe('reporters', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+  });
+
+  it('allows empty list', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([]);
+  });
+
+  it('normalizes the path and options object', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [
+          'default',
+          'github-actions',
+          '<rootDir>/custom-reporter.js',
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+          ['jest-junit', {outputName: 'report.xml'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['default', {}],
+      ['github-actions', {}],
+      ['/root/custom-reporter.js', {}],
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+      ['jest-junit', {outputName: 'report.xml'}],
+    ]);
+  });
+
+  it('throws an error if value is neither string nor array', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [123],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if first value in the tuple is not a string', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [[123]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value is missing in the tuple', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter']],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value in the tuple is not an object', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter', true]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
