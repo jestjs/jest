@@ -128,7 +128,7 @@ function getPathInModule(
 
         const resolved = resolveExports(
           // we need to make sure resolve ignores `main`
-         {...pkg, main: undefined},
+          {...pkg, main: undefined},
           subpath,
           createResolveOptions(options.conditions),
         );
@@ -156,11 +156,3 @@ function createResolveOptions(
 // if it's a relative import or an absolute path, exports are ignored
 const shouldIgnoreRequestForExports = (path: string) =>
   path.startsWith('.') || isAbsolute(path);
-
-function omit<T>(obj: T, keys: Array<keyof T>): Partial<T> {
-  const objCopy = {...obj};
-  for (const key of keys) {
-    delete objCopy[key];
-  }
-  return objCopy;
-}
