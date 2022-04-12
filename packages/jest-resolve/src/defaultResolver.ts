@@ -124,13 +124,11 @@ function getPathInModule(
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
-        // we need to make sure resolve ignores `main`
-        delete pkg.main;
-
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
-          pkg,
+          // we need to make sure resolve ignores `main`
+          {...pkg, main: undefined},
           subpath,
           createResolveOptions(options.conditions),
         );

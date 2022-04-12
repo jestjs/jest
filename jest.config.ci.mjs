@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import jestConfigBase from './jest.config.mjs';
 
-module.exports = {
-  ...require('./jest.config'),
+export default {
+  ...jestConfigBase,
   coverageReporters: ['json'],
   reporters: [
     'github-actions',
