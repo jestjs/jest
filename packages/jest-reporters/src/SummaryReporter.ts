@@ -6,13 +6,17 @@
  */
 
 import chalk = require('chalk');
-import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  SnapshotSummary,
+  TestContext,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
-import type {Context, ReporterOnStartOptions} from './types';
+import type {ReporterOnStartOptions} from './types';
 import {getSummary} from './utils';
 
 const TEST_SUMMARY_THRESHOLD = 20;
@@ -79,7 +83,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   override onRunComplete(
-    contexts: Set<Context>,
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
@@ -111,7 +115,7 @@ export default class SummaryReporter extends BaseReporter {
           message += `\n${
             wasInterrupted
               ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(contexts, this._globalConfig)
+              : this._getTestSummary(testContexts, this._globalConfig)
           }`;
         }
         this.log(message);
@@ -188,7 +192,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _getTestSummary(
-    contexts: Set<Context>,
+    contexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {

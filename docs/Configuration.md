@@ -822,73 +822,76 @@ When using multi-project runner, it's recommended to add a `displayName` for eac
 
 Default: `undefined`
 
-Use this configuration option to add custom reporters to Jest. A custom reporter is a class that implements `onRunStart`, `onTestStart`, `onTestResult`, `onRunComplete` methods that will be called when any of those events occurs.
-
-If custom reporters are specified, the default Jest reporters will be overridden. To keep default reporters, `default` can be passed as a module name.
-
-This will override default reporters:
-
-```json
-{
-  "reporters": ["<rootDir>/my-custom-reporter.js"]
-}
-```
-
-This will use custom reporter in addition to default reporters that Jest provides:
-
-```json
-{
-  "reporters": ["default", "<rootDir>/my-custom-reporter.js"]
-}
-```
-
-Additionally, custom reporters can be configured by passing an `options` object as a second argument:
+Use this configuration option to add reporters to Jest. It must be a list of reporter names, additional options can be passed to a reporter using the tuple form:
 
 ```json
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+    ["<rootDir>/custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
   ]
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+#### Default Reporter
 
-Example reporter:
+If custom reporters are specified, the default Jest reporter will be overridden. If you wish to keep it, `'default'` must be passed as a reporters name:
 
-```js title="my-custom-reporter.js"
-class MyCustomReporter {
-  constructor(globalConfig, options) {
-    this._globalConfig = globalConfig;
-    this._options = options;
-  }
-
-  onRunComplete(contexts, results) {
-    console.log('Custom reporter output:');
-    console.log('GlobalConfig: ', this._globalConfig);
-    console.log('Options: ', this._options);
-  }
+```json
+{
+  "reporters": [
+    "default",
+    ["jest-junit", {"outputDirectory": "reports", "outputName": "report.xml"}]
+  ]
 }
-
-module.exports = MyCustomReporter;
-// or export default MyCustomReporter;
 ```
 
-Custom reporters can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
+#### GitHub Actions Reporter
 
-```js
-class MyCustomReporter {
-  // ...
+If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages:
+
+```json
+{
+  "reporters": ["default", "github-actions"]
+}
+```
+
+#### Custom Reporters
+
+:::tip
+
+Hungry for reporters? Take a look at long list of [awesome reporters](https://github.com/jest-community/awesome-jest/blob/main/README.md#reporters) from Awesome Jest.
+
+:::
+
+Custom reporter module must export a class that takes `globalConfig`, `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
+
+```js title="custom-reporter.js"
+class CustomReporter {
+  constructor(globalConfig, reporterOptions, reporterContext) {
+    this._globalConfig = globalConfig;
+    this._options = reporterOptions;
+    this._context = reporterContext;
+  }
+
+  onRunComplete(testContexts, results) {
+    console.log('Custom reporter output:');
+    console.log('global config: ', this._globalConfig);
+    console.log('options for this reporter from Jest config: ', this._options);
+    console.log('reporter context passed from test scheduler: ', this._context);
+  }
+
+  // Optionally, reporters can force Jest to exit with non zero code by returning
+  // an `Error` from `getLastError()` method.
   getLastError() {
     if (this._shouldFail) {
-      return new Error('my-custom-reporter.js reported an error');
+      return new Error('Custom error reported!');
     }
   }
 }
-```
 
-For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)
+module.exports = CustomReporter;
+```
 
 ### `resetMocks` \[boolean]
 

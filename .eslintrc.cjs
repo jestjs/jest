@@ -101,8 +101,6 @@ module.exports = {
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
         'packages/expect-utils/src/utils.ts',
-        'packages/jest-core/src/ReporterDispatcher.ts',
-        'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-haste-map/src/index.ts',

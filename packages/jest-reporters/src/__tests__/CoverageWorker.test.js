@@ -11,7 +11,8 @@ jest.mock('graceful-fs').mock('../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
-const workerOptions = {config, globalConfig, path: 'banana.js'};
+const context = {};
+const workerOptions = {config, context, globalConfig, path: 'banana.js'};
 
 let fs;
 let generateEmptyCoverage;

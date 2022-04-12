@@ -9,6 +9,7 @@ import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -18,7 +19,7 @@ import BaseReporter from './BaseReporter';
 import Status from './Status';
 import getResultHeader from './getResultHeader';
 import getSnapshotStatus from './getSnapshotStatus';
-import type {ReporterOnStartOptions, Test} from './types';
+import type {ReporterOnStartOptions} from './types';
 
 type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;

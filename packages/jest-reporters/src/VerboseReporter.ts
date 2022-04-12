@@ -10,12 +10,12 @@ import type {
   AggregatedResult,
   AssertionResult,
   Suite,
+  Test,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime, specialChars} from 'jest-util';
 import DefaultReporter from './DefaultReporter';
-import type {Test} from './types';
 
 const {ICONS} = specialChars;
 
