@@ -32,7 +32,7 @@ export default {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupFilesAfterEnv: ['<rootDir>/testSetupFile.mjs'],
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotFormat: {
     escapeString: false,
   },
