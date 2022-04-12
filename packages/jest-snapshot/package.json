@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
+    "@babel/core": "^7.11.6",
     "@babel/generator": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/traverse": "^7.7.2",
-    "@babel/types": "^7.0.0",
+    "@babel/types": "^7.3.3",
     "@jest/expect-utils": "^28.0.0-alpha.8",
     "@jest/transform": "^28.0.0-alpha.8",
     "@jest/types": "^28.0.0-alpha.8",
-    "@types/babel__traverse": "^7.0.4",
+    "@types/babel__traverse": "^7.0.6",
     "@types/prettier": "^2.1.5",
     "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
@@ -39,18 +39,18 @@
     "jest-util": "^28.0.0-alpha.8",
     "natural-compare": "^1.4.0",
     "pretty-format": "^28.0.0-alpha.8",
-    "semver": "^7.3.2"
+    "semver": "^7.3.5"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.7.2",
-    "@babel/preset-react": "^7.7.2",
+    "@babel/preset-react": "^7.12.1",
     "@jest/test-utils": "^28.0.0-alpha.8",
     "@types/graceful-fs": "^4.1.3",
     "@types/natural-compare": "^1.4.0",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "prettier": "^2.0.0"
+    "prettier": "^2.1.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
