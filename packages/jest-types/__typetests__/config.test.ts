@@ -5,8 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectError, expectNotAssignable} from 'tsd-lite';
+import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {Config} from '@jest/types';
+
+expectType<number>(() => 'string');
+expectError<() => number>(() => 123);
 
 expectAssignable<Config.InitialOptions>({});
 
