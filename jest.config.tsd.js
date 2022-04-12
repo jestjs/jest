@@ -15,6 +15,7 @@ module.exports = {
     name: 'types',
   },
   modulePathIgnorePatterns,
+  reporters: ['github-actions'],
   roots: ['<rootDir>/packages'],
   runner: 'jest-runner-tsd',
   testMatch: ['**/__typetests__/**/*.ts'],
