@@ -287,29 +287,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:*, @babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.14.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.17.8":
-  version: 7.17.9
-  resolution: "@babel/core@npm:7.17.9"
-  dependencies:
-    "@ampproject/remapping": ^2.1.0
-    "@babel/code-frame": ^7.16.7
-    "@babel/generator": ^7.17.9
-    "@babel/helper-compilation-targets": ^7.17.7
-    "@babel/helper-module-transforms": ^7.17.7
-    "@babel/helpers": ^7.17.9
-    "@babel/parser": ^7.17.9
-    "@babel/template": ^7.16.7
-    "@babel/traverse": ^7.17.9
-    "@babel/types": ^7.17.0
-    convert-source-map: ^1.7.0
-    debug: ^4.1.0
-    gensync: ^1.0.0-beta.2
-    json5: ^2.2.1
-    semver: ^6.3.0
-  checksum: 2d301e4561a170bb584a735ec412de8fdc40b2052e12380d4a5e36781be5af1fd2a60552e7f0764b0a491a242f20105265bd2a10ff57b30c2842684f02dbb5a2
-  languageName: node
-  linkType: hard
-
 "@babel/core@npm:7.12.9":
   version: 7.12.9
   resolution: "@babel/core@npm:7.12.9"
@@ -331,6 +308,29 @@ __metadata:
     semver: ^5.4.1
     source-map: ^0.5.0
   checksum: 4d34eca4688214a4eb6bd5dde906b69a7824f17b931f52cd03628a8ac94d8fbe15565aebffdde106e974c8738cd64ac62c6a6060baa7139a06db1f18c4ff872d
+  languageName: node
+  linkType: hard
+
+"@babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.14.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.17.8":
+  version: 7.17.9
+  resolution: "@babel/core@npm:7.17.9"
+  dependencies:
+    "@ampproject/remapping": ^2.1.0
+    "@babel/code-frame": ^7.16.7
+    "@babel/generator": ^7.17.9
+    "@babel/helper-compilation-targets": ^7.17.7
+    "@babel/helper-module-transforms": ^7.17.7
+    "@babel/helpers": ^7.17.9
+    "@babel/parser": ^7.17.9
+    "@babel/template": ^7.16.7
+    "@babel/traverse": ^7.17.9
+    "@babel/types": ^7.17.0
+    convert-source-map: ^1.7.0
+    debug: ^4.1.0
+    gensync: ^1.0.0-beta.2
+    json5: ^2.2.1
+    semver: ^6.3.0
+  checksum: 2d301e4561a170bb584a735ec412de8fdc40b2052e12380d4a5e36781be5af1fd2a60552e7f0764b0a491a242f20105265bd2a10ff57b30c2842684f02dbb5a2
   languageName: node
   linkType: hard
 
@@ -1634,7 +1634,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:*, @babel/preset-env@npm:^7.1.0, @babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.15.6, @babel/preset-env@npm:^7.16.11":
+"@babel/preset-env@npm:^7.1.0, @babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.15.6, @babel/preset-env@npm:^7.16.11":
   version: 7.16.11
   resolution: "@babel/preset-env@npm:7.16.11"
   dependencies:
@@ -1746,7 +1746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:*, @babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.14.5, @babel/preset-react@npm:^7.16.7":
+"@babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.14.5, @babel/preset-react@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/preset-react@npm:7.16.7"
   dependencies:
@@ -1762,7 +1762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:*, @babel/preset-typescript@npm:^7.0.0, @babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.15.0, @babel/preset-typescript@npm:^7.16.7":
+"@babel/preset-typescript@npm:^7.0.0, @babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.15.0, @babel/preset-typescript@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/preset-typescript@npm:7.16.7"
   dependencies:
@@ -5081,7 +5081,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^27.4.0":
+"@types/jest@npm:^27.4.0":
   version: 27.4.1
   resolution: "@types/jest@npm:27.4.1"
   dependencies:
@@ -5351,12 +5351,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:*":
-  version: 17.0.1
-  resolution: "@types/react-test-renderer@npm:17.0.1"
+"@types/react-test-renderer@npm:17.0.2":
+  version: 17.0.2
+  resolution: "@types/react-test-renderer@npm:17.0.2"
   dependencies:
-    "@types/react": "*"
-  checksum: ecaae8df36cd8cfeb89080d52534856acc3789bad9a6e369ff5119426377c827b4e5b5daa638507f2c1c2fd6c994bf45de288a698143178cd4049c2cd8b77b35
+    "@types/react": ^17
+  checksum: 0be325798b6b38cc31fbb11f2f1e1a5578cc3b23eddf1ddd1ab58ccf50966e8f779383084d8bc3a7db3108ad815af8fbae5c0f54329a88d52200e01547d85c33
   languageName: node
   linkType: hard
 
@@ -6165,11 +6165,11 @@ __metadata:
     "@angular/forms": ^12.0.0
     "@angular/platform-browser": ^12.0.0
     "@angular/platform-browser-dynamic": ^12.0.0
-    "@babel/core": "*"
+    "@babel/core": ^7.11.6
     "@babel/plugin-proposal-decorators": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-typescript": "*"
-    "@types/jest": "*"
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-typescript": ^7.0.0
+    "@types/jest": ^27.4.0
     babel-jest: "*"
     babel-plugin-transform-typescript-metadata: "*"
     core-js: ^3.2.1
@@ -6177,7 +6177,7 @@ __metadata:
     jest-zone-patch: "*"
     rxjs: ^7.5.5
     tslib: ^2.0.0
-    typescript: "*"
+    typescript: ^4.2.4
     zone.js: ~0.11.3
   languageName: unknown
   linkType: soft
@@ -10034,8 +10034,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-async@workspace:examples/async"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
   languageName: unknown
@@ -10045,8 +10045,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-automatic-mocks@workspace:examples/automatic-mocks"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
   languageName: unknown
@@ -10056,15 +10056,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-enzyme@workspace:examples/enzyme"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-react": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-react": ^7.12.1
     babel-jest: "*"
     enzyme: "*"
     enzyme-adapter-react-16: "*"
     jest: "*"
-    react: ^16.14.0
-    react-dom: ^16.14.0
+    react: 17.0.2
+    react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
 
@@ -10072,9 +10072,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-expect-extend@workspace:examples/expect-extend"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-typescript": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-typescript": ^7.0.0
     "@jest/globals": "workspace:*"
     babel-jest: "workspace:*"
     expect: "workspace:*"
@@ -10086,8 +10086,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
   languageName: unknown
@@ -10097,11 +10097,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-jquery@workspace:examples/jquery"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
-    jquery: "*"
+    jquery: ^3.2.1
   languageName: unknown
   linkType: soft
 
@@ -10109,8 +10109,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mock@workspace:examples/module-mock"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
   languageName: unknown
@@ -10120,8 +10120,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-manual-mocks@workspace:examples/manual-mocks"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
     lodash: ^4.17.19
@@ -10132,11 +10132,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-mongodb@workspace:examples/mongodb"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
-    jest-environment-node: "*"
+    jest-environment-node: ^28.0.0-alpha.8
     mongodb: ^4.3.1
     mongodb-memory-server: ^8.3.0
   languageName: unknown
@@ -10146,8 +10146,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-native@workspace:examples/react-native"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
     metro-react-native-babel-preset: 0.67.0
@@ -10161,14 +10161,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react-testing-library@workspace:examples/react-testing-library"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-react": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-react": ^7.12.1
     "@testing-library/react": "*"
     babel-jest: "*"
     jest: "*"
-    react: "*"
-    react-dom: "*"
+    react: 17.0.2
+    react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
 
@@ -10176,13 +10176,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-react@workspace:examples/react"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-react": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-react": ^7.12.1
     babel-jest: "*"
     jest: "*"
-    react: "*"
-    react-dom: "*"
+    react: 17.0.2
+    react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
 
@@ -10190,13 +10190,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-snapshot@workspace:examples/snapshot"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-react": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-react": ^7.12.1
     babel-jest: "*"
     jest: "*"
-    react: "*"
-    react-test-renderer: "*"
+    react: 17.0.2
+    react-test-renderer: 17.0.2
   languageName: unknown
   linkType: soft
 
@@ -10204,8 +10204,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-timer@workspace:examples/timer"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
     babel-jest: "*"
     jest: "*"
   languageName: unknown
@@ -10215,16 +10215,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-typescript@workspace:examples/typescript"
   dependencies:
-    "@babel/core": "*"
-    "@babel/preset-env": "*"
-    "@babel/preset-react": "*"
-    "@babel/preset-typescript": "*"
-    "@types/jest": "*"
+    "@babel/core": ^7.11.6
+    "@babel/preset-env": ^7.1.0
+    "@babel/preset-react": ^7.12.1
+    "@babel/preset-typescript": ^7.0.0
+    "@types/jest": ^27.4.0
     babel-jest: "*"
     jest: "*"
-    react: "*"
-    react-dom: "*"
-    typescript: "*"
+    react: 17.0.2
+    react-dom: ^17.0.1
+    typescript: ^4.2.4
   languageName: unknown
   linkType: soft
 
@@ -13758,7 +13758,7 @@ __metadata:
     graphql: ^16.3.0
     graphql-request: ^4.0.0
     js-yaml: ^4.1.0
-    react: ^17.0.1
+    react: 17.0.2
     react-dom: ^17.0.1
     react-github-btn: ^1.2.0
     react-lite-youtube-embed: ^2.2.1-a
@@ -13860,7 +13860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery@npm:*, jquery@npm:^3.2.1":
+"jquery@npm:^3.2.1":
   version: 3.6.0
   resolution: "jquery@npm:3.6.0"
   checksum: 8fd5fef4aa48fd374ec716dd1c1df1af407814a228e15c1260ca140de3a697c2a77c30c54ff1d238b6a3ab4ddc445ddeef9adce6c6d28e4869d85eb9d3951c0e
@@ -17968,18 +17968,18 @@ __metadata:
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
     "@jest/schemas": ^28.0.0-alpha.3
-    "@types/react": "*"
+    "@types/react": ^17.0.3
     "@types/react-is": ^17.0.0
-    "@types/react-test-renderer": "*"
+    "@types/react-test-renderer": 17.0.2
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     expect: ^28.0.0-alpha.8
     immutable: ^4.0.0
     jest-util: ^28.0.0-alpha.8
-    react: "*"
-    react-dom: "*"
+    react: 17.0.2
+    react-dom: ^17.0.1
     react-is: ^18.0.0
-    react-test-renderer: "*"
+    react-test-renderer: 17.0.2
   languageName: unknown
   linkType: soft
 
@@ -18414,7 +18414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:*, react-dom@npm:^17.0.1":
+"react-dom@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
   dependencies:
@@ -18424,20 +18424,6 @@ __metadata:
   peerDependencies:
     react: 17.0.2
   checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react-dom@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-    scheduler: ^0.19.1
-  peerDependencies:
-    react: ^16.14.0
-  checksum: 5a5c49da0f106b2655a69f96c622c347febcd10532db391c262b26aec225b235357d9da1834103457683482ab1b229af7a50f6927a6b70e53150275e31785544
   languageName: node
   linkType: hard
 
@@ -18760,7 +18746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-test-renderer@npm:*, react-test-renderer@npm:17.0.2":
+"react-test-renderer@npm:17.0.2":
   version: 17.0.2
   resolution: "react-test-renderer@npm:17.0.2"
   dependencies:
@@ -18801,24 +18787,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:*, react@npm:17.0.2, react@npm:^17.0.1":
+"react@npm:17.0.2":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
   languageName: node
   linkType: hard
 
@@ -21650,7 +21625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:*, typescript@npm:^4.2.4":
+"typescript@npm:^4.2.4":
   version: 4.6.3
   resolution: "typescript@npm:4.6.3"
   bin:
@@ -21670,7 +21645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>":
   version: 4.6.3
   resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
   bin:
