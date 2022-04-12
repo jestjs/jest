@@ -44,6 +44,9 @@ export default {
     '/e2e/.*/__tests__',
     '/e2e/global-setup',
     '/e2e/global-teardown',
+    '/e2e/custom-*',
+    '/e2e/test-in-root',
+    '/e2e/run-programmatically-multiple-projects',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
@@ -67,11 +70,11 @@ export default {
   ],
   testTimeout: 70000,
   transform: {
-    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': require.resolve('babel-jest'),
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
+    require.resolve('jest-watch-typeahead/filename'),
+    require.resolve('jest-watch-typeahead/testname'),
   ],
 };
