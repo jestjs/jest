@@ -185,12 +185,6 @@ module.exports = {
       },
     },
     {
-      files: 'packages/jest-types/**/*',
-      rules: {
-        'import/no-extraneous-dependencies': 'off',
-      },
-    },
-    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -247,6 +241,8 @@ module.exports = {
         '**/__tests__/**',
         'e2e/**',
         '**/pretty-format/perf/**',
+        'packages/jest-types/**/*',
+        '.eslintplugin/**',
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
