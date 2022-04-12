@@ -127,8 +127,7 @@ function getPathInModule(
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
-          // we need to make sure resolve ignores `main`
-          {...pkg, main: undefined},
+          pkg,
           subpath,
           createResolveOptions(options.conditions),
         );
