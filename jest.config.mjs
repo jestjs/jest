@@ -32,7 +32,6 @@ export default {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotFormat: {
     escapeString: false,
   },
@@ -66,6 +65,7 @@ export default {
     '/packages/pretty-format/perf/test.js',
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
+  testTimeout: 70000,
   transform: {
     '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
