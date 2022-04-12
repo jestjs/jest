@@ -13,6 +13,7 @@ export default {
     name: 'types',
   },
   modulePathIgnorePatterns: jestConfigBase.modulePathIgnorePatterns,
+  reporters: ['default', 'github-actions'],
   roots: ['<rootDir>/packages'],
   runner: 'jest-runner-tsd',
   testMatch: ['**/__typetests__/**/*.ts'],
