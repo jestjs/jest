@@ -81,6 +81,8 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
+      - name: Check for unmet constraints (fix w/ "yarn constraints --fix")
+        run: yarn constraints
 
   test:
     name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
