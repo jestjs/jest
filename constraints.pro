@@ -23,7 +23,7 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     (
       (WorkspaceIdent = 'example-enzyme'; OtherWorkspaceIdent = 'example-enzyme') ->
-        DependencyIdent \= 'react', DependencyIdent \= 'react-dom'
+        \+ member(DependencyIdent, ['react', 'react-dom'])
       ;
         true
     ).
