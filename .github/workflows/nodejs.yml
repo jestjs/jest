@@ -59,7 +59,7 @@ jobs:
         run: yarn verify-old-ts
 
   lint:
-    name: Running ESLint
+    name: Running Lint
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
