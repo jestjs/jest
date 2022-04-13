@@ -66,6 +66,7 @@
 - `[jest-config, jest-haste-map]` Allow searching for tests in `node_modules` by exposing `retainAllFiles` ([#11084](https://github.com/facebook/jest/pull/11084))
 - `[jest-core]` [**BREAKING**] Exit with status `1` if no tests are found with `--findRelatedTests` flag ([#12487](https://github.com/facebook/jest/pull/12487))
 - `[jest-each]` `%#` is not replaced with index of the test case ([#12517](https://github.com/facebook/jest/pull/12517))
+- `[jest-each]` Fixes error message with incorrect count of missing arguments ([#12464](https://github.com/facebook/jest/pull/12464))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
 - `[jest-environment-jsdom]` Log JSDOM errors more cleanly ([#12386](https://github.com/facebook/jest/pull/12386))
 - `[jest-environment-node]` Add `MessageChannel`, `MessageEvent` to globals ([#12553](https://github.com/facebook/jest/pull/12553))
