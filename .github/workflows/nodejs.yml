@@ -81,8 +81,20 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
-      - name: Check for unmet constraints (fix w/ "yarn constraints --fix")
-        run: yarn constraints
+
+  yarn-validate:
+    name: Validate Yarn constraints
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
+        run: |
+          yarn constraints
 
   test:
     name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
