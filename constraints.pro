@@ -1,10 +1,13 @@
-
-   
 constraints_min_version(1).
 
 % This file is written in Prolog
 % It contains rules that the project must respect.
 % In order to see them in action, run `yarn constraints source`
+% Check with "yarn constraints" (fix w/ "yarn constraints --fix")
+% Yarn Constraints https://yarnpkg.com/features/constraints
+% Reference for other constraints:
+%   https://github.com/babel/babel/blob/main/constraints.pro
+%   https://github.com/yarnpkg/berry/blob/master/constraints.pro
 
 % This rule will enforce that a workspace MUST depend on the same version of a dependency as the one used by the other workspaces
 gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, DependencyType) :-
@@ -18,7 +21,52 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % Get the workspace name
     workspace_ident(WorkspaceCwd, WorkspaceIdent),
     workspace_ident(OtherWorkspaceCwd, OtherWorkspaceIdent),
-  % Ignore enzyme example workspace, enzyme don't support react 17
-    WorkspaceIdent \= 'example-enzyme',
-    OtherWorkspaceIdent \= 'example-enzyme'.
+  % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
+    (
+      (WorkspaceIdent = 'example-enzyme'; OtherWorkspaceIdent = 'example-enzyme') ->
+        DependencyIdent \= 'react', DependencyIdent \= 'react-dom'
+      ;
+        true
+    ).
 
+% Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
+gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, 'devDependencies') :-
+  workspace_has_dependency(WorkspaceCwd, DependencyIdent, _, 'devDependencies'),
+  workspace_has_dependency(WorkspaceCwd, DependencyIdent, _, 'dependencies').
+
+% Enforces the license in all public workspaces while removing it from private workspaces
+gen_enforced_field(WorkspaceCwd, 'license', 'MIT') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'license', null) :-
+  workspace_field(WorkspaceCwd, 'private', true).
+
+% Enforces the repository field for all public workspaces while removing it from private workspaces
+gen_enforced_field(WorkspaceCwd, 'repository.type', 'git') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'repository.url', 'https://github.com/facebook/jest.git') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'repository.directory', WorkspaceCwd) :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'repository', null) :-
+  workspace_field(WorkspaceCwd, 'private', true).
+
+% Enforces 'publishConfig.access' is set to public for public workspaces while removing it from private workspaces
+gen_enforced_field(WorkspaceCwd, 'publishConfig.access', 'public') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'publishConfig.access', null) :-
+  workspace_field(WorkspaceCwd, 'private', true).
+
+% Enforces the engines.node field for public workspace
+gen_enforced_field(WorkspaceCwd, 'engines.node', '^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+
+% Enforces the main and types field to start with ./
+gen_enforced_field(WorkspaceCwd, FieldName, ExpectedValue) :-
+  % Fields the rule applies to
+  member(FieldName, ['main', 'types']),
+  % Get current value
+  workspace_field(WorkspaceCwd, FieldName, CurrentValue),
+  % Must not start with ./ already
+  \+ atom_concat('./', _, CurrentValue),
+  % Store './' + CurrentValue in ExpectedValue
+  atom_concat('./', CurrentValue, ExpectedValue).
