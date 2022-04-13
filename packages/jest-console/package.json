@@ -25,8 +25,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.0.0-alpha.8",
-    "@types/node": "*"
+    "@jest/test-utils": "^28.0.0-alpha.8"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
