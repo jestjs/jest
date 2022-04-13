@@ -1,8 +1,7 @@
 {
   "name": "example-mongodb",
   "version": "0.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "main": "./index.js",
   "private": true,
   "dependencies": {
     "jest-environment-node": "^28.0.0-alpha.8",

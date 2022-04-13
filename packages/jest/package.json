@@ -31,7 +31,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",
