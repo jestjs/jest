@@ -14,11 +14,4 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
     workspace_has_dependency(OtherWorkspaceCwd, DependencyIdent, DependencyRange2, DependencyType2),
   % Ignore peer dependencies
     DependencyType \= 'peerDependencies',
-    DependencyType2 \= 'peerDependencies',
-  % Ignore devDependencies on other workspaces
-    (
-      (DependencyType = 'devDependencies'; DependencyType2 = 'devDependencies') ->
-        \+ workspace_ident(DependencyCwd, DependencyIdent)
-      ;
-        true
-    ).
+    DependencyType2 \= 'peerDependencies'.
