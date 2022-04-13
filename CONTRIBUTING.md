@@ -137,7 +137,7 @@ Constraints can be checked with `yarn constraints`, and fixed with `yarn constra
 
 - Workspaces must not depend on conflicting ranges of dependencies. Use the `-i,--interactive` flag and select "Reuse" when installing dependencies and you shouldn't ever have to deal with this rule.
 
-- A dependency doesn't appear in both `dependencies` and `devDependencies` of the same workspace
+- A dependency doesn't appear in both `dependencies` and `devDependencies` of the same workspace.
 
 - Workspaces must point our repository through the `repository` field.
 
