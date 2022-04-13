@@ -2743,7 +2743,7 @@ __metadata:
     throat: ^6.0.1
     ts-node: ^10.5.0
     type-fest: ^2.11.2
-    typescript: ^4.2.4
+    typescript: ^4.6.2
     which: ^2.0.1
   languageName: unknown
   linkType: soft
@@ -6170,7 +6170,7 @@ __metadata:
     jest-zone-patch: "*"
     rxjs: ^7.5.5
     tslib: ^2.0.0
-    typescript: ^4.2.4
+    typescript: ^4.6.2
     zone.js: ~0.11.3
   languageName: unknown
   linkType: soft
@@ -10217,7 +10217,7 @@ __metadata:
     jest: ^28.0.0-alpha.8
     react: 17.0.2
     react-dom: ^17.0.1
-    typescript: ^4.2.4
+    typescript: ^4.6.2
   languageName: unknown
   linkType: soft
 
@@ -13097,7 +13097,7 @@ __metadata:
     slash: ^3.0.0
     strip-json-comments: ^3.1.1
     ts-node: ^10.5.0
-    typescript: ^4.2.4
+    typescript: ^4.6.2
   peerDependencies:
     "@types/node": "*"
     ts-node: ">=9.0.0"
@@ -21643,7 +21643,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.2.4":
+"typescript@npm:^4.6.2":
   version: 4.6.3
   resolution: "typescript@npm:4.6.3"
   bin:
@@ -21663,7 +21663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.6.3
   resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
   bin:
