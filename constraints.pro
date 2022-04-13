@@ -2,7 +2,6 @@ constraints_min_version(1).
 
 % This file is written in Prolog
 % It contains rules that the project must respect.
-% In order to see them in action, run `yarn constraints source`
 % Check with "yarn constraints" (fix w/ "yarn constraints --fix")
 % Yarn Constraints https://yarnpkg.com/features/constraints
 % Reference for other constraints:
