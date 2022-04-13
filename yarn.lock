@@ -2682,7 +2682,7 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/dedent": ^0.7.0
     "@types/jest": ^27.4.0
-    "@types/node": ~12.12.0
+    "@types/node": "*"
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
@@ -5203,7 +5203,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:~12.12.0":
+"@types/node@npm:*":
   version: 12.12.70
   resolution: "@types/node@npm:12.12.70"
   checksum: 69c193e0bce8fa914d478f829bd923ee662b220e069a2e00ffbe109f27d0b38fbf2a9fe78c99eb4d4ccb294248ff8de68019a2c7fadb032d301c6feca25f3d22
@@ -5214,13 +5214,6 @@ __metadata:
   version: 12.20.24
   resolution: "@types/node@npm:12.20.24"
   checksum: e7a13460e2f5b0b5a32c0f3af7daf1a05201552a66d542d3cc3b1ea8b52d4730250f9eb1961d755e31cfe5d03c78340911a6242657a0a9a17d6f7e341fc9f366
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^14.0.27":
-  version: 14.18.12
-  resolution: "@types/node@npm:14.18.12"
-  checksum: 8a0273caa0584020adb8802784fc7d4f18f05e6c205335b7f3818a91d6b0c22736b9f51da3428d5bc54076ad47f1a4d6d57990a3ce8489a520ac66b2b3ff24bc
   languageName: node
   linkType: hard
 
@@ -13534,7 +13527,7 @@ __metadata:
     "@jest/types": ^28.0.0-alpha.8
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
-    "@types/node": ^14.0.27
+    "@types/node": "*"
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
