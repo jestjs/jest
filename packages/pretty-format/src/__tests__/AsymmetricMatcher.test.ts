@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AsymmetricMatcher as AbstractAsymmetricMatcher} from 'expect';
 import prettyFormat, {plugins} from '../';
 import type {OptionsReceived} from '../types';
 
@@ -129,6 +130,42 @@ test('stringMatching(regexp) {escapeRegex: true}', () => {
 test('stringNotMatching(string)', () => {
   const result = prettyFormat(expect.not.stringMatching('jest'), options);
   expect(result).toEqual('StringNotMatching /jest/');
+});
+
+test('closeTo(number, precision)', () => {
+  const result = prettyFormat(expect.closeTo(1.2345, 4), options);
+  expect(result).toEqual('NumberCloseTo 1.2345 (4 digits)');
+});
+
+test('notCloseTo(number, precision)', () => {
+  const result = prettyFormat(expect.not.closeTo(1.2345, 1), options);
+  expect(result).toEqual('NumberNotCloseTo 1.2345 (1 digit)');
+});
+
+test('closeTo(number)', () => {
+  const result = prettyFormat(expect.closeTo(1.2345), options);
+  expect(result).toEqual('NumberCloseTo 1.2345 (2 digits)');
+});
+
+test('closeTo(Infinity)', () => {
+  const result = prettyFormat(expect.closeTo(-Infinity), options);
+  expect(result).toEqual('NumberCloseTo -Infinity (2 digits)');
+});
+
+test('closeTo(scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-3, 4), options);
+  expect(result).toEqual('NumberCloseTo 0.00156 (4 digits)');
+});
+
+test('closeTo(very small scientific number)', () => {
+  const result = prettyFormat(expect.closeTo(1.56e-10, 4), options);
+  expect(result).toEqual('NumberCloseTo 1.56e-10 (4 digits)');
+});
+
+test('correctly handles inability to pretty-print matcher', () => {
+  expect(() => prettyFormat(new DummyMatcher(1), options)).toThrow(
+    'Asymmetric matcher DummyMatcher does not implement toAsymmetricMatcher()',
+  );
 });
 
 test('supports multiple nested asymmetric matchers', () => {
@@ -311,3 +348,21 @@ test('min option', () => {
     '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',
   );
 });
+
+class DummyMatcher extends AbstractAsymmetricMatcher<number> {
+  constructor(sample: number) {
+    super(sample);
+  }
+
+  asymmetricMatch(other: number) {
+    return this.sample === other;
+  }
+
+  toString() {
+    return 'DummyMatcher';
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}

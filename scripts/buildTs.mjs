@@ -62,6 +62,13 @@ import {getPackages} from './buildUtils.mjs';
           }
         }
 
+        // dev dep
+        if (pkg.name === 'pretty-format') {
+          if (dep === 'expect') {
+            return false;
+          }
+        }
+
         return true;
       })
       .map(dep =>
@@ -84,7 +91,7 @@ import {getPackages} from './buildUtils.mjs';
       assert.deepStrictEqual(
         references,
         jestDependenciesOfPackage,
-        `Expected declared references to match dependencies in packages ${
+        `Expected declared references to match dependencies in package ${
           pkg.name
         }. Got:\n\n${references.join(
           '\n',
