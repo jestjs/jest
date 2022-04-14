@@ -6,6 +6,7 @@
  */
 
 import prettyFormat, {plugins} from '../';
+import {AsymmetricMatcher as AbstractAsymmetricMatcher} from '../../../expect/src/asymmetricMatchers';
 import type {OptionsReceived} from '../types';
 
 const {AsymmetricMatcher} = plugins;
@@ -159,6 +160,12 @@ test('closeTo(scientific number)', () => {
 test('closeTo(very small scientific number)', () => {
   const result = prettyFormat(expect.closeTo(1.56e-10, 4), options);
   expect(result).toEqual('NumberCloseTo 1.56e-10 (4 digits)');
+});
+
+test('correctly handles inability to pretty-print matcher', () => {
+  expect(() => prettyFormat(new DummyMatcher(1), options)).toThrow(
+    'Asymmetric matcher DummyMatcher does not implement toAsymmetricMatcher()',
+  );
 });
 
 test('supports multiple nested asymmetric matchers', () => {
@@ -341,3 +348,21 @@ test('min option', () => {
     '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',
   );
 });
+
+class DummyMatcher extends AbstractAsymmetricMatcher<number> {
+  constructor(sample: number) {
+    super(sample);
+  }
+
+  asymmetricMatch(other: number) {
+    return this.sample === other;
+  }
+
+  toString() {
+    return 'DummyMatcher';
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}
