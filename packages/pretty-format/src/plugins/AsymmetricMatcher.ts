@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isA} from '@jest/expect-utils';
 import {printListItems, printObjectProperties} from '../collections';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
 
@@ -81,7 +80,7 @@ export const serialize: NewPlugin['serialize'] = (
     );
   }
 
-  if (!isA('Function', val.toAsymmetricMatcher)) {
+  if (typeof val.toAsymmetricMatcher !== 'function') {
     throw new Error(
       `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
     );

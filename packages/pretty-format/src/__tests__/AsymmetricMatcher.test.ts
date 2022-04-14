@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AsymmetricMatcher as AbstractAsymmetricMatcher} from 'expect';
 import prettyFormat, {plugins} from '../';
-import {AsymmetricMatcher as AbstractAsymmetricMatcher} from '../../../expect/src/asymmetricMatchers';
 import type {OptionsReceived} from '../types';
 
 const {AsymmetricMatcher} = plugins;
