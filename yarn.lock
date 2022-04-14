@@ -287,7 +287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:*, @babel/core@npm:^7.0.0, @babel/core@npm:^7.1.0, @babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.14.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.17.8, @babel/core@npm:^7.3.4, @babel/core@npm:^7.7.2, @babel/core@npm:^7.8.0":
+"@babel/core@npm:*, @babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.14.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.17.8":
   version: 7.17.9
   resolution: "@babel/core@npm:7.17.9"
   dependencies:
@@ -1746,7 +1746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:*, @babel/preset-react@npm:^7.0.0, @babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.14.5, @babel/preset-react@npm:^7.16.7, @babel/preset-react@npm:^7.7.2":
+"@babel/preset-react@npm:*, @babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.14.5, @babel/preset-react@npm:^7.16.7":
   version: 7.16.7
   resolution: "@babel/preset-react@npm:7.16.7"
   dependencies:
@@ -2551,7 +2551,7 @@ __metadata:
     "@jest/transform": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
     "@types/exit": ^0.1.30
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
     "@types/rimraf": ^3.0.0
@@ -2665,10 +2665,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/monorepo@workspace:."
   dependencies:
-    "@babel/core": ^7.3.4
+    "@babel/core": ^7.11.6
     "@babel/plugin-transform-modules-commonjs": ^7.1.0
     "@babel/preset-env": ^7.1.0
-    "@babel/preset-react": ^7.0.0
+    "@babel/preset-react": ^7.12.1
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
     "@crowdin/cli": ^3.5.2
@@ -2677,10 +2677,10 @@ __metadata:
     "@microsoft/api-extractor": ^7.19.4
     "@tsconfig/node12": ^1.0.9
     "@tsd/typescript": ~4.6.2
-    "@types/babel__core": ^7.0.0
+    "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
-    "@types/babel__template": ^7.0.0
-    "@types/dedent": 0.7.0
+    "@types/babel__template": ^7.0.2
+    "@types/dedent": ^0.7.0
     "@types/jest": ^27.4.0
     "@types/node": ~12.12.0
     "@types/which": ^2.0.0
@@ -2705,8 +2705,8 @@ __metadata:
     execa: ^5.0.0
     fast-check: ^2.0.0
     find-process: ^1.4.1
-    glob: ^7.1.1
-    globby: ^11.0.0
+    glob: ^7.1.3
+    globby: ^11.0.1
     graceful-fs: ^4.2.9
     isbinaryfile: ^4.0.0
     istanbul-lib-coverage: ^3.0.0
@@ -2732,9 +2732,9 @@ __metadata:
     progress: ^2.0.0
     promise: ^8.0.2
     read-pkg: ^5.2.0
-    resolve: ^1.15.0
+    resolve: ^1.20.0
     rimraf: ^3.0.0
-    semver: ^7.3.2
+    semver: ^7.3.5
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -2771,20 +2771,19 @@ __metadata:
     chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0
     exit: ^0.1.2
-    glob: ^7.1.2
+    glob: ^7.1.3
     graceful-fs: ^4.2.9
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-instrument: ^5.1.0
     istanbul-lib-report: ^3.0.0
     istanbul-lib-source-maps: ^4.0.0
     istanbul-reports: ^3.1.3
-    jest-haste-map: ^28.0.0-alpha.8
     jest-resolve: ^28.0.0-alpha.8
     jest-util: ^28.0.0-alpha.8
     jest-worker: ^28.0.0-alpha.8
     mock-fs: ^5.1.2
     slash: ^3.0.0
-    source-map: ^0.6.0
+    source-map: ^0.6.1
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
@@ -2809,10 +2808,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
   dependencies:
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     callsites: ^3.0.0
     graceful-fs: ^4.2.9
-    source-map: ^0.6.0
+    source-map: ^0.6.1
   languageName: unknown
   linkType: soft
 
@@ -2863,7 +2862,7 @@ __metadata:
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     pretty-format: ^28.0.0-alpha.8
-    semver: ^7.3.2
+    semver: ^7.3.5
   languageName: unknown
   linkType: soft
 
@@ -2871,13 +2870,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
-    "@babel/core": ^7.1.0
+    "@babel/core": ^7.11.6
     "@jest/test-utils": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
-    "@types/babel__core": ^7.1.0
+    "@types/babel__core": ^7.1.14
     "@types/convert-source-map": ^1.5.1
     "@types/fast-json-stable-stringify": ^2.0.0
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
     "@types/write-file-atomic": ^4.0.0
     babel-plugin-istanbul: ^6.1.1
@@ -4790,7 +4789,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:*, @types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:*, @types/babel__core@npm:^7.1.14":
   version: 7.1.19
   resolution: "@types/babel__core@npm:7.1.19"
   dependencies:
@@ -4812,7 +4811,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__template@npm:*, @types/babel__template@npm:^7.0.0, @types/babel__template@npm:^7.0.2":
+"@types/babel__template@npm:*, @types/babel__template@npm:^7.0.2":
   version: 7.4.1
   resolution: "@types/babel__template@npm:7.4.1"
   dependencies:
@@ -4822,7 +4821,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__traverse@npm:*, @types/babel__traverse@npm:^7.0.4, @types/babel__traverse@npm:^7.0.6":
+"@types/babel__traverse@npm:*, @types/babel__traverse@npm:^7.0.6":
   version: 7.14.2
   resolution: "@types/babel__traverse@npm:7.14.2"
   dependencies:
@@ -4857,7 +4856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/co@npm:^4.6.0, @types/co@npm:^4.6.2":
+"@types/co@npm:^4.6.2":
   version: 4.6.3
   resolution: "@types/co@npm:4.6.3"
   checksum: 3c7460bfd3a893bd749a3a3c3cf004cbcac796b67037ad0ed10d26a34a2d495ea632cfd66086cee67e2ade9e738ed144b3ddda5731f1fc225ebfd8a703f6e56e
@@ -4899,7 +4898,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dedent@npm:0.7.0, @types/dedent@npm:^0.7.0":
+"@types/dedent@npm:^0.7.0":
   version: 0.7.0
   resolution: "@types/dedent@npm:0.7.0"
   checksum: b9b7f0c42d99da764be75dd00b2f2be162f5a0ca43aafe0c740efa76b5f37f8a4f4e2ccc84883054e06e05c1169733aa8ee7750da0334c9cba26d9e10ae844f1
@@ -5268,7 +5267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:*, @types/prettier@npm:^2.0.0, @types/prettier@npm:^2.1.5":
+"@types/prettier@npm:*, @types/prettier@npm:^2.1.5":
   version: 2.4.4
   resolution: "@types/prettier@npm:2.4.4"
   checksum: 2c2cc57efd49c7d8907415a72f96c84a6dd8696dd3bf8aa4ca3a667427bebf71cbfbc912673624bdfc935d272d1c008c639cf155f6449315990a4dc110f0d216
@@ -6685,7 +6684,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "babel-jest@workspace:packages/babel-jest"
   dependencies:
-    "@babel/core": ^7.8.0
+    "@babel/core": ^7.11.6
     "@jest/test-utils": ^28.0.0-alpha.8
     "@jest/transform": ^28.0.0-alpha.8
     "@types/babel__core": ^7.1.14
@@ -6775,11 +6774,11 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     "@babel/template": ^7.3.3
     "@babel/types": ^7.3.3
-    "@types/babel__core": ^7.0.0
+    "@types/babel__core": ^7.1.14
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
-    "@types/prettier": ^2.0.0
+    "@types/prettier": ^2.1.5
     babel-plugin-tester: ^10.0.0
     prettier: ^2.1.1
   languageName: unknown
@@ -11281,7 +11280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.1.1, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:^7.2.0":
+"glob@npm:^7.0.0, glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:^7.2.0":
   version: 7.2.0
   resolution: "glob@npm:7.2.0"
   dependencies:
@@ -11340,7 +11339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:^11.0.0, globby@npm:^11.0.1, globby@npm:^11.0.2, globby@npm:^11.0.4, globby@npm:^11.1.0":
+"globby@npm:^11.0.1, globby@npm:^11.0.2, globby@npm:^11.0.4, globby@npm:^11.1.0":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
   dependencies:
@@ -13015,13 +13014,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
-    "@babel/core": ^7.1.0
+    "@babel/core": ^7.11.6
     "@babel/register": ^7.0.0
     "@jest/environment": ^28.0.0-alpha.8
     "@jest/expect": ^28.0.0-alpha.8
     "@jest/test-result": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
-    "@types/co": ^4.6.0
+    "@types/co": ^4.6.2
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
@@ -13079,7 +13078,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
-    "@babel/core": ^7.8.0
+    "@babel/core": ^7.11.6
     "@jest/test-sequencer": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
     "@types/glob": ^7.1.1
@@ -13089,7 +13088,7 @@ __metadata:
     chalk: ^4.0.0
     ci-info: ^3.2.0
     deepmerge: ^4.2.2
-    glob: ^7.1.1
+    glob: ^7.1.3
     graceful-fs: ^4.2.9
     jest-circus: ^28.0.0-alpha.8
     jest-environment-node: ^28.0.0-alpha.8
@@ -13221,7 +13220,7 @@ __metadata:
     "@jest/test-utils": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
     "@types/fb-watchman": ^2.0.0
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
     anymatch: ^3.0.3
@@ -13499,7 +13498,7 @@ __metadata:
     "@jest/types": ^28.0.0-alpha.8
     "@tsd/typescript": ~4.6.2
     "@types/exit": ^0.1.30
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
@@ -13535,7 +13534,7 @@ __metadata:
     "@jest/transform": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
     "@types/glob": ^7.1.1
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/node": ^14.0.27
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
@@ -13590,18 +13589,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
-    "@babel/core": ^7.7.2
+    "@babel/core": ^7.11.6
     "@babel/generator": ^7.7.2
     "@babel/plugin-syntax-typescript": ^7.7.2
     "@babel/preset-flow": ^7.7.2
-    "@babel/preset-react": ^7.7.2
+    "@babel/preset-react": ^7.12.1
     "@babel/traverse": ^7.7.2
-    "@babel/types": ^7.0.0
+    "@babel/types": ^7.3.3
     "@jest/expect-utils": ^28.0.0-alpha.8
     "@jest/test-utils": ^28.0.0-alpha.8
     "@jest/transform": ^28.0.0-alpha.8
     "@jest/types": ^28.0.0-alpha.8
-    "@types/babel__traverse": ^7.0.4
+    "@types/babel__traverse": ^7.0.6
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
     "@types/prettier": ^2.1.5
@@ -13619,9 +13618,9 @@ __metadata:
     jest-message-util: ^28.0.0-alpha.8
     jest-util: ^28.0.0-alpha.8
     natural-compare: ^1.4.0
-    prettier: ^2.0.0
+    prettier: ^2.1.1
     pretty-format: ^28.0.0-alpha.8
-    semver: ^7.3.2
+    semver: ^7.3.5
   languageName: unknown
   linkType: soft
 
@@ -13630,7 +13629,7 @@ __metadata:
   resolution: "jest-util@workspace:packages/jest-util"
   dependencies:
     "@jest/types": ^28.0.0-alpha.8
-    "@types/graceful-fs": ^4.1.2
+    "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
     "@types/picomatch": ^2.2.2
     chalk: ^4.0.0
@@ -13747,7 +13746,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-website@workspace:website"
   dependencies:
-    "@babel/core": ^7.0.0
+    "@babel/core": ^7.11.6
     "@crowdin/cli": ^3.5.2
     "@docusaurus/core": ^2.0.0-beta.17
     "@docusaurus/plugin-client-redirects": ^2.0.0-beta.17
@@ -17939,7 +17938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.0, prettier@npm:^2.0.1, prettier@npm:^2.1.1":
+"prettier@npm:^2.0.1, prettier@npm:^2.1.1":
   version: 2.6.2
   resolution: "prettier@npm:2.6.2"
   bin:
@@ -19424,7 +19423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.15.0, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.3.2":
+"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.3.2":
   version: 1.22.0
   resolution: "resolve@npm:1.22.0"
   dependencies:
@@ -19456,7 +19455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.15.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>":
   version: 1.22.0
   resolution: "resolve@patch:resolve@npm%3A1.22.0#~builtin<compat/resolve>::version=1.22.0&hash=07638b"
   dependencies:

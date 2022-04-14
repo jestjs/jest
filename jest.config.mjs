@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import {createRequire} from 'module';
+const require = createRequire(import.meta.url);
 
 /** @type import('@jest/types').Config.InitialOptions */
-module.exports = {
+export default {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
     '**/packages/*/**/*.ts',
@@ -31,7 +32,6 @@ module.exports = {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotFormat: {
     escapeString: false,
   },
@@ -44,6 +44,9 @@ module.exports = {
     '/e2e/.*/__tests__',
     '/e2e/global-setup',
     '/e2e/global-teardown',
+    '/e2e/custom-*',
+    '/e2e/test-in-root',
+    '/e2e/run-programmatically-multiple-projects',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
@@ -65,12 +68,13 @@ module.exports = {
     '/packages/pretty-format/perf/test.js',
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
+  testTimeout: 70000,
   transform: {
-    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': require.resolve('babel-jest'),
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
+    require.resolve('jest-watch-typeahead/filename'),
+    require.resolve('jest-watch-typeahead/testname'),
   ],
 };

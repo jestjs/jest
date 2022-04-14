@@ -49,17 +49,6 @@ test('config for reporters supports `default`', async () => {
   const numberOfReporters =
     undefinedReportersScheduler._dispatcher._reporters.length;
 
-  const stringDefaultReportersScheduler = await createTestScheduler(
-    makeGlobalConfig({
-      reporters: ['default'],
-    }),
-    {},
-    {},
-  );
-  expect(stringDefaultReportersScheduler._dispatcher._reporters.length).toBe(
-    numberOfReporters,
-  );
-
   const defaultReportersScheduler = await createTestScheduler(
     makeGlobalConfig({
       reporters: [['default', {}]],
@@ -93,7 +82,7 @@ test('config for reporters supports `github-actions`', async () => {
 
   await createTestScheduler(
     makeGlobalConfig({
-      reporters: ['github-actions'],
+      reporters: [['github-actions', {}]],
     }),
     {},
     {},
@@ -102,7 +91,10 @@ test('config for reporters supports `github-actions`', async () => {
 
   await createTestScheduler(
     makeGlobalConfig({
-      reporters: ['default', 'github-actions'],
+      reporters: [
+        ['default', {}],
+        ['github-actions', {}],
+      ],
     }),
     {},
     {},

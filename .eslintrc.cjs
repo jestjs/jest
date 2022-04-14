@@ -101,8 +101,6 @@ module.exports = {
         'packages/expect/src/print.ts',
         'packages/expect/src/toThrowMatchers.ts',
         'packages/expect-utils/src/utils.ts',
-        'packages/jest-core/src/ReporterDispatcher.ts',
-        'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-haste-map/src/index.ts',
@@ -187,12 +185,6 @@ module.exports = {
       },
     },
     {
-      files: 'packages/jest-types/**/*',
-      rules: {
-        'import/no-extraneous-dependencies': 'off',
-      },
-    },
-    {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -249,6 +241,8 @@ module.exports = {
         '**/__tests__/**',
         'e2e/**',
         '**/pretty-format/perf/**',
+        'packages/jest-types/**/*',
+        '.eslintplugin/**',
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
@@ -375,7 +369,6 @@ module.exports = {
     'no-bitwise': 'warn',
     'no-caller': 'error',
     'no-case-declarations': 'off',
-    'no-catch-shadow': 'error',
     'no-class-assign': 'warn',
     'no-cond-assign': 'off',
     'no-confusing-arrow': 'off',

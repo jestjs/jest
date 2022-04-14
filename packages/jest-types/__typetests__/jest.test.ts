@@ -7,7 +7,7 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, ModuleMocker, SpyInstance, fn, spyOn} from 'jest-mock';
+import type {Mock, ModuleMocker, SpyInstance} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
