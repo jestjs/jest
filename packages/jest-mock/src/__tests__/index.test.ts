@@ -30,6 +30,17 @@ describe('moduleMocker', () => {
       expect(metadata.name).toBe('x');
     });
 
+    it('does not return broken name property', () => {
+      class By {
+        static name() {
+          return 'this is not a name';
+        }
+      }
+      const metadata = moduleMocker.getMetadata(By);
+      expect(typeof By.name).toBe('function');
+      expect(metadata).not.toHaveProperty('name');
+    });
+
     it('mocks constant values', () => {
       const metadata = moduleMocker.getMetadata(Symbol.for('bowties.are.cool'));
       expect(metadata.value).toEqual(Symbol.for('bowties.are.cool'));
