@@ -8,7 +8,7 @@
 import {execFile} from 'child_process';
 import {promisify} from 'util';
 
-export default async function isWatchmanInstalled() {
+export default async function isWatchmanInstalled(): Promise<boolean> {
   try {
     await promisify(execFile)('watchman', ['--version']);
     return true;

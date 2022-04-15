@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import isWatchmanInstalled from '../isWatchmanInstalled';
 import {execFile} from 'child_process';
+import isWatchmanInstalled from '../isWatchmanInstalled';
 
 jest.mock('child_process');
 
