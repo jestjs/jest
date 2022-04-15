@@ -972,7 +972,10 @@ export class ModuleMocker {
       return metadata;
     } else if (type === 'function') {
       // @ts-expect-error component is a function so it has a name
-      metadata.name = component.name;
+      if (typeof component.name === 'string') {
+        // @ts-expect-error component is a function so it has a name
+        metadata.name = component.name;
+      }
       if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation() as T;
       }
