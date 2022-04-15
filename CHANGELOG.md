@@ -74,6 +74,7 @@
 - `[jest-environment-node]` Add `structuredClone` to globals ([#12631](https://github.com/facebook/jest/pull/12631))
 - `[@jest/expect-utils]` [**BREAKING**] Fix false positives when looking for `undefined` prop ([#8923](https://github.com/facebook/jest/pull/8923))
 - `[jest-haste-map]` Don't use partial results if file crawl errors ([#12420](https://github.com/facebook/jest/pull/12420))
+- `[jest-haste-map]` Make watchman existence check lazy+async ([#12675](https://github.com/facebook/jest/pull/12675))
 - `[jest-jasmine2, jest-types]` [**BREAKING**] Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 - `[jest-jasmine2]` Do not set `duration` to `0` for skipped tests ([#12518](https://github.com/facebook/jest/pull/12518))
 - `[jest-matcher-utils]` Pass maxWidth to `pretty-format` to avoid printing every element in arrays by default ([#12402](https://github.com/facebook/jest/pull/12402))
