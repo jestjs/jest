@@ -90,6 +90,7 @@
 - `[*]` [**BREAKING**] Drop support for `typescript@3.8`, minimum version is now `4.3` ([#11142](https://github.com/facebook/jest/pull/11142), [#12648](https://github.com/facebook/jest/pull/12648))
 - `[*]` Bundle all `.d.ts` files into a single `index.d.ts` per module ([#12345](https://github.com/facebook/jest/pull/12345))
 - `[*]` Use `globalThis` instead of `global` ([#12447](https://github.com/facebook/jest/pull/12447))
+- `[*]` Allow updated (Meta) copyright headers through lint ([#12677](https://github.com/facebook/jest/pull/12677))
 - `[babel-jest]` [**BREAKING**] Only export `createTransformer` ([#12407](https://github.com/facebook/jest/pull/12407))
 - `[docs]` Add note about not mixing `done()` with Promises ([#11077](https://github.com/facebook/jest/pull/11077))
 - `[docs, examples]` Update React examples to match with the new React guidelines for code examples ([#12217](https://github.com/facebook/jest/pull/12217))
