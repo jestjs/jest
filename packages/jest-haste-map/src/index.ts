@@ -7,7 +7,6 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
@@ -26,6 +25,7 @@ import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
+import isWatchmanInstalled from './lib/isWatchmanInstalled';
 import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
@@ -124,14 +124,6 @@ const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
 
-const canUseWatchman = ((): boolean => {
-  try {
-    execSync('watchman --version', {stdio: ['ignore']});
-    return true;
-  } catch {}
-  return false;
-})();
-
 function invariant(condition: unknown, message?: string): asserts condition {
   if (!condition) {
     throw new Error(message);
@@ -221,6 +213,7 @@ export default class HasteMap extends EventEmitter {
   private _cachePath: string;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
+  private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
   private _worker: WorkerInterface | null;
@@ -763,11 +756,10 @@ export default class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  private _crawl(hasteMap: InternalHasteMap) {
+  private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl =
-      canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
@@ -811,7 +803,7 @@ export default class HasteMap extends EventEmitter {
   /**
    * Watch mode
    */
-  private _watch(hasteMap: InternalHasteMap): Promise<void> {
+  private async _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
       return Promise.resolve();
     }
@@ -822,12 +814,11 @@ export default class HasteMap extends EventEmitter {
     this._options.retainAllFiles = true;
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher =
-      canUseWatchman && this._options.useWatchman
-        ? WatchmanWatcher
-        : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
+    const Watcher = (await this._shouldUseWatchman())
+      ? WatchmanWatcher
+      : FSEventsWatcher.isSupported()
+      ? FSEventsWatcher
+      : NodeWatcher;
 
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
@@ -1108,6 +1099,16 @@ export default class HasteMap extends EventEmitter {
       ignoreMatched ||
       (!this._options.retainAllFiles && filePath.includes(NODE_MODULES))
     );
+  }
+
+  private async _shouldUseWatchman(): Promise<boolean> {
+    if (!this._options.useWatchman) {
+      return false;
+    }
+    if (!this._isWatchmanInstalledPromise) {
+      this._isWatchmanInstalledPromise = isWatchmanInstalled();
+    }
+    return this._isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {
