@@ -6,12 +6,8 @@
  */
 
 import type {DependencyExtractor} from '../types';
-import isRegExpSupported from './isRegExpSupported';
 
-// Negative look behind is only supported in Node 9+
-const NOT_A_DOT = isRegExpSupported('(?<!\\.\\s*)')
-  ? '(?<!\\.\\s*)'
-  : '(?:^|[^.]\\s*)';
+const NOT_A_DOT = '(?<!\\.\\s*)';
 const CAPTURE_STRING_LITERAL = (pos: number) =>
   `([\`'"])([^'"\`]*?)(?:\\${pos})`;
 const WORD_SEPARATOR = '\\b';

@@ -105,6 +105,7 @@
 - `[@jest/core]` Use `index.ts` instead of `jest.ts` as main export ([#12329](https://github.com/facebook/jest/pull/12329))
 - `[jest-environment-jsdom]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
 - `[jest-environment-node]` [**BREAKING**] Migrate to ESM ([#12340](https://github.com/facebook/jest/pull/12340))
+- `[jest-haste-map]` Remove legacy `isRegExpSupported` ([#12676](https://github.com/facebook/jest/pull/12676))
 - `[@jest/fake-timers]` Update `@sinonjs/fake_timers` to v9 ([#12357](https://github.com/facebook/jest/pull/12357))
 - `[jest-jasmine2, jest-runtime]` [**BREAKING**] Use `Symbol` to pass `jest.setTimeout` value instead of `jasmine` specific logic ([#12124](https://github.com/facebook/jest/pull/12124))
 - `[jest-phabricator]` [**BREAKING**] Migrate to ESM ([#12341](https://github.com/facebook/jest/pull/12341))

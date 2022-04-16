@@ -6,9 +6,6 @@
  */
 
 import {extractor} from '../dependencyExtractor';
-import isRegExpSupported from '../isRegExpSupported';
-
-const COMMENT_NO_NEG_LB = isRegExpSupported('(?<!\\.\\s*)') ? '' : '//';
 
 describe('dependencyExtractor', () => {
   it('should not extract dependencies inside comments', () => {
@@ -65,8 +62,8 @@ describe('dependencyExtractor', () => {
       }, depDefault from 'dep4';
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . import ('inv1');
-      ${COMMENT_NO_NEG_LB} foo . export ('inv2');
+      foo . import ('inv1');
+      foo . export ('inv2');
     `;
     expect(extractor.extract(code)).toEqual(
       new Set(['dep1', 'dep2', 'dep3', 'dep4']),
@@ -114,8 +111,8 @@ describe('dependencyExtractor', () => {
       }, depDefault from 'dep4';
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . export ('inv1');
-      ${COMMENT_NO_NEG_LB} foo . export ('inv2');
+      foo . export ('inv1');
+      foo . export ('inv2');
     `;
     expect(extractor.extract(code)).toEqual(
       new Set(['dep1', 'dep2', 'dep3', 'dep4']),
@@ -137,8 +134,8 @@ describe('dependencyExtractor', () => {
       }, depDefault from 'dep4';
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . export ('inv1');
-      ${COMMENT_NO_NEG_LB} foo . export ('inv2');
+      foo . export ('inv1');
+      foo . export ('inv2');
     `;
     expect(extractor.extract(code)).toEqual(
       new Set(['dep1', 'dep2', 'dep3', 'dep4']),
@@ -164,7 +161,7 @@ describe('dependencyExtractor', () => {
       if (await import(\`dep3\`)) {}
 
       // Bad
-      ${COMMENT_NO_NEG_LB} await foo . import('inv1')
+      await foo . import('inv1')
       await ximport('inv2');
       importx('inv3');
       import('inv4', 'inv5');
@@ -182,7 +179,7 @@ describe('dependencyExtractor', () => {
       if (require(\`dep3\`).cond) {}
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . require('inv1')
+      foo . require('inv1')
       xrequire('inv2');
       requirex('inv3');
       require('inv4', 'inv5');
@@ -202,7 +199,7 @@ describe('dependencyExtractor', () => {
         .requireActual('dep4');
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . jest.requireActual('inv1')
+      foo . jest.requireActual('inv1')
       xjest.requireActual('inv2');
       jest.requireActualx('inv3');
       jest.requireActual('inv4', 'inv5');
@@ -224,7 +221,7 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . jest.requireMock('inv1')
+      foo . jest.requireMock('inv1')
       xjest.requireMock('inv2');
       jest.requireMockx('inv3');
       jest.requireMock('inv4', 'inv5');
@@ -246,7 +243,7 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . jest.genMockFromModule('inv1')
+      foo . jest.genMockFromModule('inv1')
       xjest.genMockFromModule('inv2');
       jest.genMockFromModulex('inv3');
       jest.genMockFromModule('inv4', 'inv5');
@@ -268,7 +265,7 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      ${COMMENT_NO_NEG_LB} foo . jest.createMockFromModule('inv1')
+     foo . jest.createMockFromModule('inv1')
       xjest.createMockFromModule('inv2');
       jest.createMockFromModulex('inv3');
       jest.createMockFromModule('inv4', 'inv5');
