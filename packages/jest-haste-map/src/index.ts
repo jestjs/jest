@@ -17,7 +17,7 @@ import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {requireOrImportModule} from 'jest-util';
-import {Worker} from 'jest-worker';
+import {JestWorkerFarm, WorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -108,7 +108,7 @@ type Watcher = {
   close(): Promise<void>;
 };
 
-type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
+type HasteWorker = typeof import('./worker');
 
 export {default as ModuleMap} from './ModuleMap';
 export type {SerializableModuleMap} from './types';
@@ -223,7 +223,7 @@ export default class HasteMap extends EventEmitter {
   private _console: Console;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
-  private _worker: WorkerInterface | null;
+  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
     if (config.haste.hasteMapModulePath) {
@@ -727,9 +727,7 @@ export default class HasteMap extends EventEmitter {
   private _cleanup() {
     const worker = this._worker;
 
-    // @ts-expect-error
-    if (worker && typeof worker.end === 'function') {
-      // @ts-expect-error
+    if (worker && 'end' in worker && typeof worker.end === 'function') {
       worker.end();
     }
 
@@ -746,17 +744,18 @@ export default class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
+  private _getWorker(options?: {
+    forceInBand: boolean;
+  }): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        // @ts-expect-error: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), {
+        this._worker = new WorkerFarm(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
-        }) as WorkerInterface;
+        }) as JestWorkerFarm<HasteWorker>;
       }
     }
 

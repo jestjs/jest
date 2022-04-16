@@ -8,7 +8,7 @@
 import EventEmitter from 'events';
 import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
-let Farm;
+let createWorkerFarm;
 let mockForkedProcesses;
 
 function mockBuildForkedProcess() {
@@ -49,7 +49,7 @@ describe('Jest Worker Integration', () => {
       },
     }));
 
-    Farm = require('../index').Worker;
+    createWorkerFarm = require('../').createWorkerFarm;
   });
 
   afterEach(() => {
@@ -57,7 +57,7 @@ describe('Jest Worker Integration', () => {
   });
 
   it('calls a single method from the worker', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -70,7 +70,7 @@ describe('Jest Worker Integration', () => {
   });
 
   it('distributes sequential calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -89,7 +89,7 @@ describe('Jest Worker Integration', () => {
   });
 
   it('schedules the task on the first available child processes if the scheduling policy is in-order', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
       workerSchedulingPolicy: 'in-order',
@@ -119,7 +119,7 @@ describe('Jest Worker Integration', () => {
   });
 
   it('distributes concurrent calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -146,7 +146,7 @@ describe('Jest Worker Integration', () => {
   });
 
   it('sticks parallel calls to children', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       computeWorkerKey: () => '1234567890abcdef',
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,

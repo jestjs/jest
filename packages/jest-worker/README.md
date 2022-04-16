@@ -4,7 +4,7 @@ Module for executing heavy tasks under forked processes in parallel, by providin
 
 The module works by providing an absolute path of the module to be loaded in all forked processes. All methods are exposed on the parent process as promises, so they can be `await`'ed. Child (worker) methods can either be synchronous or asynchronous.
 
-The module also implements support for bound workers. Binding a worker means that, based on certain parameters, the same task will always be executed by the same worker. The way bound workers work is by using the returned string of the `computeWorkerKey` method. If the string was used before for a task, the call will be queued to the related worker that processed the task earlier; if not, it will be executed by the first available worker, then sticked to the worker that executed it; so the next time it will be processed by the same worker. If you have no preference on the worker executing the task, but you have defined a `computeWorkerKey` method because you want _some_ of the tasks to be sticked, you can return `null` from it.
+The module also implements support for bound workers. Binding a worker means that, based on certain parameters, the same task will always be executed by the same worker. The way bound workers work is by using the returned string of the `computeWorkerKey()` method. If the string was used before for a task, the call will be queued to the related worker that processed the task earlier; if not, it will be executed by the first available worker, then sticked to the worker that executed it; so the next time it will be processed by the same worker. If you have no preference on the worker executing the task, but you have defined a `computeWorkerKey()` method because you want _some_ of the tasks to be sticked, you can return `null` from it.
 
 The list of exposed methods can be explicitly provided via the `exposedMethods` option. If it is not provided, it will be obtained by requiring the child module into the main process, and analyzed via reflection. Check the "minimal example" section for a valid one.
 
@@ -12,52 +12,65 @@ The list of exposed methods can be explicitly provided via the `exposedMethods` 
 
 ```sh
 yarn add jest-worker
+# or
+npm install jest-worker
 ```
 
 ## Example
 
 This example covers the minimal usage:
 
-### File `parent.js`
+#### File `parent.ts`
 
-```js
-import {Worker as JestWorker} from 'jest-worker';
+```ts
+// import {fileURLToPath} from 'url';
+import {type JestWorkerFarm, createWorkerFarm} from 'jest-worker';
+
+const workerPath = require.resolve('./worker');
+// const workerPath = fileURLToPath(new URL('./worker.cjs', import.meta.url));
+
+type WorkerType = typeof import('./worker');
 
 async function main() {
-  const worker = new JestWorker(require.resolve('./worker'));
-  const result = await worker.hello('Alice'); // "Hello, Alice"
+  const workerFarm = await createWorkerFarm<WorkerType>(workerPath);
+  // or via type annotation
+  // const workerFarm: JestWorkerFarm<WorkerType> = await createWorkerFarm(workerPath);
+
+  console.log(await workerFarm.ahoy('Alice')); // 'Ahoy, Alice!'
+
+  workerFarm.end();
 }
 
 main();
 ```
 
-### File `worker.js`
+#### File `worker.ts`
 
-```js
-export function hello(param) {
-  return `Hello, ${param}`;
+```ts
+export function ahoy(name: string): string {
+  return `Ahoy, ${name}!`;
 }
 ```
 
-## Experimental worker
+## Worker threads
 
-Node shipped with [`worker_threads`](https://nodejs.org/api/worker_threads.html), a "threading API" that uses `SharedArrayBuffers` to communicate between the main process and its child threads. This feature can significantly improve the communication time between parent and child processes in `jest-worker`.
+Node ships with [`worker_threads`](https://nodejs.org/api/worker_threads.html), a "threading API" that uses `SharedArrayBuffers` to communicate between the main process and its child threads. This feature can significantly improve the communication time between parent and child processes in `jest-worker`.
 
-To use `worker_threads` instead of default `child_process` you have to pass `enableWorkerThreads: true` when instantiating the worker.
+To use `worker_threads` instead of default `child_process` you have to pass `enableWorkerThreads: true` when creating a worker farm.
 
 ## API
 
-The `Worker` export is a constructor that is initialized by passing the worker path, plus an options object.
+The `createWorkerFarm()` is a factory function that takes two arguments: a path to worker module and an options object.
 
 ### `workerPath: string` (required)
 
-Node module name or absolute path of the file to be loaded in the child processes. Use `require.resolve` to transform a relative path into an absolute one.
+Node module name or absolute path of the file to be loaded in the child processes. Use `require.resolve()` or `new URL()` to transform a relative path into an absolute one.
 
 ### `options: Object` (optional)
 
 #### `computeWorkerKey: (method: string, ...args: Array<unknown>) => string | null` (optional)
 
-Every time a method exposed via the API is called, `computeWorkerKey` is also called in order to bound the call to a worker. This is useful for workers that are able to cache the result or part of it. You bound calls to a worker by making `computeWorkerKey` return the same identifier for all different calls. If you do not want to bind the call to any worker, return `null`.
+Every time a method exposed via the API is called, `computeWorkerKey()` is also called in order to bound the call to a worker. This is useful for workers that are able to cache the result or part of it. You bound calls to a worker by making `computeWorkerKey()` return the same identifier for all different calls. If you do not want to bind the call to any worker, return `null`.
 
 The callback you provide is called with the method name, plus all the rest of the arguments of the call. Thus, you have full control to decide what to return. Check a practical example on bound workers under the "bound worker usage" section.
 
@@ -73,7 +86,7 @@ List of method names that can be called on the child processes from the parent p
 
 #### `forkOptions: ForkOptions` (optional)
 
-Allow customizing all options passed to `child_process.fork`. By default, some values are set (`cwd`, `env` and `execArgv`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options).
+Allow customizing all options passed to `child_process.fork()`. By default, some values are set (`cwd`, `env` and `execArgv`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options).
 
 #### `maxRetries: number` (optional)
 
@@ -89,7 +102,7 @@ The `resourceLimits` option which will be passed to `worker_threads` workers.
 
 #### `setupArgs: Array<unknown>` (optional)
 
-The arguments that will be passed to the `setup` method during initialization.
+The arguments that will be passed to the `setup()` method during initialization.
 
 #### `taskQueue: TaskQueue` (optional)
 
@@ -111,7 +124,7 @@ Specifies the policy how tasks are assigned to workers if multiple workers are _
 
 Tasks are always assigned to the first free worker as soon as tasks start to queue up. The scheduling policy does not define the task scheduling which is always first-in, first-out.
 
-## JestWorker
+## `JestWorker` instance
 
 ### Methods
 
@@ -127,7 +140,7 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 
 #### `end()`
 
-Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
+Finishes the workers by killing all workers.
 
 Returns a Promise that resolves with `{ forceExited: boolean }` once all workers are dead. If `forceExited` is `true`, at least one of the workers did not exit gracefully, which likely happened because it executed a leaky task that left handles open. This should be avoided, force exiting workers is a last resort to prevent creating lots of orphans.
 
@@ -148,19 +161,19 @@ The child process can define two special methods (both of them can be asynchrono
 - `setup()`: If defined, it's executed before the first call to any method in the child.
 - `teardown()`: If defined, it's executed when the farm ends.
 
-# More examples
+## More examples
 
-## Standard usage
+### Basic usage
 
-This example covers the standard usage:
+This example covers the basic usage:
 
-### File `parent.js`
+#### File `parent.js`
 
 ```js
-import {Worker as JestWorker} from 'jest-worker';
+import {createWorker} from 'jest-worker';
 
 async function main() {
-  const myWorker = new JestWorker(require.resolve('./worker'), {
+  const myWorker = await createWorker(require.resolve('./worker'), {
     exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
@@ -178,14 +191,14 @@ async function main() {
 main();
 ```
 
-### File `worker.js`
+#### File `worker.js`
 
 ```js
 export function foo(param) {
   return `Hello from foo: ${param}`;
 }
 
-export function bar(param) {
+export async function bar(param) {
   return `Hello from bar: ${param}`;
 }
 
@@ -194,17 +207,17 @@ export function getWorkerId() {
 }
 ```
 
-## Bound worker usage:
+### Bound worker usage:
 
 This example covers the usage with a `computeWorkerKey` method:
 
-### File `parent.js`
+#### File `parent.js`
 
 ```js
-import {Worker as JestWorker} from 'jest-worker';
+import {createWorker} from 'jest-worker';
 
 async function main() {
-  const myWorker = new JestWorker(require.resolve('./worker'), {
+  const myWorker = await createWorker(require.resolve('./worker'), {
     computeWorkerKey: (method, filename) => filename,
   });
 
@@ -228,20 +241,20 @@ async function main() {
 main();
 ```
 
-### File `worker.js`
+#### File `worker.js`
 
 ```js
 import babel from '@babel/core';
 
 const cache = Object.create(null);
 
-export function transform(filename) {
+export async function transform(filename) {
   if (cache[filename]) {
     return cache[filename];
   }
 
-  // jest-worker can handle both immediate results and thenables. If a
-  // thenable is returned, it will be await'ed until it resolves.
+  // `jest-worker` can handle both immediate results and thenables.
+  // If a thenable is returned, it will be await'ed until it resolves.
   return babel.transformFileAsync(filename).then(result => {
     cache[filename] = result;
 

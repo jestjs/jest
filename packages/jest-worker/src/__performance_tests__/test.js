@@ -11,7 +11,7 @@ const assert = require('assert');
 const {performance} = require('perf_hooks');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-const JestWorker = require('../../build').Worker;
+const {createWorkerFarm} = require('jest-worker');
 
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000
@@ -20,7 +20,7 @@ assert(process.argv[3], 'Pass the number of iterations');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const method = process.argv[2];
-const calls = +process.argv[3];
+const calls = Number(process.argv[3]);
 const threads = 6;
 const iterations = 10;
 
@@ -95,11 +95,14 @@ function testJestWorker() {
       }
     }
 
-    const farm = new JestWorker(require.resolve('./workers/jest_worker'), {
-      exposedMethods: [method],
-      forkOptions: {execArgv: []},
-      numWorkers: threads,
-    });
+    const farm = await createWorkerFarm(
+      require.resolve('./workers/jest_worker'),
+      {
+        exposedMethods: [method],
+        forkOptions: {execArgv: []},
+        numWorkers: threads,
+      },
+    );
 
     farm.getStdout().pipe(process.stdout);
     farm.getStderr().pipe(process.stderr);

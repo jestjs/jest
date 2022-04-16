@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {writeFileSync} from 'graceful-fs';
 import LeakDetector from 'jest-leak-detector';
-import {Worker} from '../../build/index';
+import {JestWorkerFarm, createWorkerFarm} from 'jest-worker';
 
 describe('WorkerThreads leaks', () => {
   let workerFile!: string;
@@ -18,9 +18,9 @@ describe('WorkerThreads leaks', () => {
     writeFileSync(workerFile, 'module.exports.fn = () => {};');
   });
 
-  let worker!: Worker;
-  beforeEach(() => {
-    worker = new Worker(workerFile, {
+  let worker!: JestWorkerFarm<{fn(): void}>;
+  beforeEach(async () => {
+    worker = await createWorkerFarm(workerFile, {
       enableWorkerThreads: true,
       exposedMethods: ['fn'],
     });
@@ -48,9 +48,9 @@ describe('Worker leaks', () => {
     writeFileSync(workerFile, 'module.exports.fn = (obj) => [obj];');
   });
 
-  let worker!: Worker;
-  beforeEach(() => {
-    worker = new Worker(workerFile, {
+  let worker!: JestWorkerFarm<{fn(): void}>;
+  beforeEach(async () => {
+    worker = await createWorkerFarm(workerFile, {
       enableWorkerThreads: false,
       exposedMethods: ['fn'],
     });

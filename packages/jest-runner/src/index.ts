@@ -16,16 +16,12 @@ import type {
 } from '@jest/test-result';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
-import {PromiseWithCustomMessage, Worker} from 'jest-worker';
+import {PromiseWithCustomMessage, createWorkerFarm} from 'jest-worker';
 import runTest from './runTest';
-import type {SerializableResolver, worker} from './testWorker';
+import type {SerializableResolver} from './testWorker';
 import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
 
-const TEST_WORKER_PATH = require.resolve('./testWorker');
-
-interface WorkerInterface extends Worker {
-  worker: typeof worker;
-}
+type TestWorker = typeof import('./testWorker');
 
 export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
@@ -103,13 +99,16 @@ export default class TestRunner extends EmittingTestRunner {
       }
     }
 
-    const worker = new Worker(TEST_WORKER_PATH, {
-      exposedMethods: ['worker'],
-      forkOptions: {stdio: 'pipe'},
-      maxRetries: 3,
-      numWorkers: this._globalConfig.maxWorkers,
-      setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
-    }) as WorkerInterface;
+    const worker = await createWorkerFarm<TestWorker>(
+      require.resolve('./testWorker'),
+      {
+        exposedMethods: ['worker'],
+        forkOptions: {stdio: 'pipe'},
+        maxRetries: 3,
+        numWorkers: this._globalConfig.maxWorkers,
+        setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
+      },
+    );
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
     if (worker.getStderr()) worker.getStderr().pipe(process.stderr);

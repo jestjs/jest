@@ -8,18 +8,18 @@
 'use strict';
 
 let Farm;
+let WorkerFarm;
 let WorkerPool;
-let Queue;
 
 beforeEach(() => {
   jest.mock('../Farm', () => {
-    const fakeClass = jest.fn(() => ({
+    const fakeFarm = jest.fn(() => ({
       doWork: jest.fn().mockResolvedValue(42),
     }));
 
     return {
       __esModule: true,
-      default: fakeClass,
+      default: fakeFarm,
     };
   });
 
@@ -52,8 +52,8 @@ beforeEach(() => {
     virtual: true,
   });
 
-  Farm = require('..').Worker;
-  Queue = require('../Farm').default;
+  Farm = require('../Farm').default;
+  WorkerFarm = require('../WorkerFarm').default;
   WorkerPool = require('../WorkerPool').default;
 });
 
@@ -61,15 +61,8 @@ afterEach(() => {
   jest.resetModules();
 });
 
-it('makes a non-existing relative worker throw', () => {
-  expect(() => {
-    // eslint-disable-next-line no-new
-    new Farm('./relative/worker-module.js');
-  }).toThrow("'workerPath' must be absolute");
-});
-
-it('exposes the right API using default working', () => {
-  const farm = new Farm('/tmp/baz.js', {
+it('exposes the right API using default WorkerPool', () => {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
   });
@@ -78,7 +71,7 @@ it('exposes the right API using default working', () => {
   expect(typeof farm.bar).toBe('function');
 });
 
-it('exposes the right API using passed worker', () => {
+it('exposes the right API using passed WorkerPool', () => {
   const WorkerPool = jest.fn(() => ({
     createWorker: jest.fn(),
     end: jest.fn(),
@@ -87,7 +80,7 @@ it('exposes the right API using passed worker', () => {
     send: jest.fn(),
   }));
 
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     WorkerPool,
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
@@ -97,34 +90,26 @@ it('exposes the right API using passed worker', () => {
   expect(typeof farm.bar).toBe('function');
 });
 
-it('breaks if any of the forbidden methods is tried to be exposed', () => {
-  expect(
-    () => new Farm('/tmp/baz.js', {exposedMethods: ['getStdout']}),
-  ).toThrow();
-
-  expect(
-    () => new Farm('/tmp/baz.js', {exposedMethods: ['getStderr']}),
-  ).toThrow();
-
-  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow();
-});
-
 it('works with minimal options', () => {
-  const farm1 = new Farm('/fake-worker.js');
+  const farm1 = new WorkerFarm('/fake-worker.js', {
+    exposedMethods: ['methodA', 'methodB'],
+  });
 
-  expect(Queue).toHaveBeenCalledTimes(1);
+  expect(Farm).toHaveBeenCalledTimes(1);
   expect(WorkerPool).toHaveBeenCalledTimes(1);
   expect(typeof farm1.methodA).toBe('function');
   expect(typeof farm1.methodB).toBe('function');
   expect(typeof farm1._shouldNotExist).not.toBe('function');
 
-  const farm2 = new Farm('/fake-worker-with-default-method.js');
+  const farm2 = new WorkerFarm('/fake-worker-with-default-method.js', {
+    exposedMethods: ['default'],
+  });
 
   expect(typeof farm2.default).toBe('function');
 });
 
 it('does not let make calls after the farm is ended', () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
   });
@@ -141,7 +126,7 @@ it('does not let make calls after the farm is ended', () => {
 });
 
 it('does not let end the farm after it is ended', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
   });
@@ -158,7 +143,7 @@ it('does not let end the farm after it is ended', async () => {
 });
 
 it('calls doWork', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 1,
   });
@@ -169,7 +154,7 @@ it('calls doWork', async () => {
 });
 
 it('calls getStderr and getStdout from worker', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 1,
   });

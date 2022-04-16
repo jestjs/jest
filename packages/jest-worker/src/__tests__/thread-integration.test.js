@@ -10,7 +10,7 @@
 import EventEmitter from 'events';
 import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
-let Farm;
+let createWorkerFarm;
 let mockForkedProcesses;
 
 function mockBuildForkedProcess() {
@@ -56,7 +56,7 @@ describe('Jest Worker Process Integration', () => {
       };
     });
 
-    Farm = require('../index').Worker;
+    createWorkerFarm = require('../').createWorkerFarm;
   });
 
   afterEach(() => {
@@ -64,7 +64,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('calls a single method from the worker', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
@@ -78,7 +78,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('distributes sequential calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
@@ -98,7 +98,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('schedules the task on the first available child processes if the scheduling policy is in-order', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
@@ -129,7 +129,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('schedules the task on the first available child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
@@ -149,7 +149,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('distributes concurrent calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
@@ -177,7 +177,7 @@ describe('Jest Worker Process Integration', () => {
   });
 
   it('sticks parallel calls to children', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = await createWorkerFarm('/tmp/baz.js', {
       computeWorkerKey: () => '1234567890abcdef',
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],

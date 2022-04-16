@@ -26,10 +26,12 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import {Worker} from 'jest-worker';
+import {JestWorkerFarm, createWorkerFarm} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
-import type {CoverageWorker, ReporterContext} from './types';
+import type {ReporterContext} from './types';
+
+type CoverageWorker = typeof import('./CoverageWorker');
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -143,16 +145,21 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker: CoverageWorker | Worker;
+    let worker:
+      | JestWorkerFarm<CoverageWorker>
+      | typeof import('./CoverageWorker');
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./CoverageWorker');
     } else {
-      worker = new Worker(require.resolve('./CoverageWorker'), {
-        exposedMethods: ['worker'],
-        maxRetries: 2,
-        numWorkers: this._globalConfig.maxWorkers,
-      });
+      worker = await createWorkerFarm<CoverageWorker>(
+        require.resolve('./CoverageWorker'),
+        {
+          exposedMethods: ['worker'],
+          maxRetries: 2,
+          numWorkers: this._globalConfig.maxWorkers,
+        },
+      );
     }
 
     const instrumentation = files.map(async fileObj => {

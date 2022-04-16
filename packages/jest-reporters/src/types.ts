@@ -13,14 +13,11 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {worker} from './CoverageWorker';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
   showStatus: boolean;
 };
-
-export type CoverageWorker = {worker: typeof worker};
 
 export interface Reporter {
   readonly onTestResult?: (
