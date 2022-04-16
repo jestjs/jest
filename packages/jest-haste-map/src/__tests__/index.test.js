@@ -13,9 +13,11 @@ function mockHashContents(contents) {
   return crypto.createHash('sha1').update(contents).digest('hex');
 }
 
-jest.mock('child_process', () => ({
-  // If this does not throw, we'll use the (mocked) watchman crawler
-  execSync() {},
+const mockIsWatchmanInstalled = jest.fn().mockResolvedValue(true);
+
+jest.mock('../lib/isWatchmanInstalled', () => ({
+  __esModule: true,
+  default: mockIsWatchmanInstalled,
 }));
 
 jest.mock('jest-worker', () => ({
@@ -612,6 +614,8 @@ describe('HasteMap', () => {
         });
       });
 
+      mockIsWatchmanInstalled.mockClear();
+
       const hasteMap = await HasteMap.create({
         ...defaultConfig,
         computeSha1: true,
@@ -620,6 +624,10 @@ describe('HasteMap', () => {
       });
 
       const data = (await hasteMap.build()).__hasteMapForTest;
+
+      expect(mockIsWatchmanInstalled).toHaveBeenCalledTimes(
+        useWatchman ? 1 : 0,
+      );
 
       expect(data.files).toEqual(
         createMap({

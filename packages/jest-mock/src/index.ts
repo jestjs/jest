@@ -971,8 +971,12 @@ export class ModuleMocker {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
-      // @ts-expect-error component is a function so it has a name
-      metadata.name = component.name;
+      // @ts-expect-error component is a function so it has a name, but not
+      // necessarily a string: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name#function_names_in_classes
+      const componentName = component.name;
+      if (typeof componentName === 'string') {
+        metadata.name = componentName;
+      }
       if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation() as T;
       }

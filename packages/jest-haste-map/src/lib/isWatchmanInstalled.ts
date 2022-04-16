@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function isRegExpSupported(value: string): boolean {
+import {execFile} from 'child_process';
+import {promisify} from 'util';
+
+export default async function isWatchmanInstalled(): Promise<boolean> {
   try {
-    // eslint-disable-next-line no-new
-    new RegExp(value);
+    await promisify(execFile)('watchman', ['--version']);
     return true;
   } catch {
     return false;
