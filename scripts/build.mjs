@@ -25,7 +25,7 @@ import glob from 'glob';
 import fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
-import transformOptions from '../babel.config.cjs';
+import transformOptions from '../babel.config.mjs';
 import {
   OK,
   PACKAGES_DIR,
