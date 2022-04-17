@@ -11,11 +11,20 @@ import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
 } from './generateEmptyCoverage';
-import type {ReporterContextSerialized} from './types';
+import type {ReporterContext} from './types';
+
+type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
+
+type CoverageReporterSerializedContext = {
+  [K in keyof Pick<
+    ReporterContext,
+    'changedFiles' | 'sourcesRelatedToTestsInChangedFiles'
+  >]: SerializeSet<ReporterContext[K]>;
+};
 
 export type CoverageWorkerData = {
   config: Config.ProjectConfig;
-  context: ReporterContextSerialized;
+  context: CoverageReporterSerializedContext;
   globalConfig: Config.GlobalConfig;
   path: string;
 };
