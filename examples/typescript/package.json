@@ -18,8 +18,5 @@
   },
   "scripts": {
     "test": "jest"
-  },
-  "jest": {
-    "testEnvironment": "jsdom"
   }
 }

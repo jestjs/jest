@@ -11,5 +11,9 @@ module.exports = {
   // The test environment that will be used for testing
   testEnvironment: './mongo-environment.js',
 
+  transform: {
+    '\\.js$': [require.resolve('babel-jest'), {cwd: __dirname}],
+  },
+
   transformIgnorePatterns: ['/node_modules/', '/packages/'],
 };
