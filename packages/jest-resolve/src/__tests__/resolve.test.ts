@@ -37,6 +37,8 @@ beforeEach(() => {
   userResolver.mockClear();
   userResolverAsync.async.mockClear();
   mockResolveSync.mockClear();
+
+  Resolver.clearDefaultResolverCache();
 });
 
 describe('isCoreModule', () => {
@@ -249,6 +251,52 @@ describe('findNodeModule', () => {
           './node_modules/exports/some-other-directory/file.js',
         ),
       );
+    });
+  });
+
+  describe('self-reference', () => {
+    const selfRefRoot = path.resolve(__dirname, '../__mocks__/self-ref');
+
+    test('supports self-reference', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(selfRefRoot, './foo/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(path.resolve(selfRefRoot, './foo/file.js'));
+    });
+
+    test('supports nested self-reference', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(selfRefRoot, './foo/nested/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(path.resolve(selfRefRoot, './foo/file.js'));
+    });
+
+    test('fails if own pkg.json with different name', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(
+          selfRefRoot,
+          './foo/nested-with-own-pkg/index.js',
+        ),
+        conditions: [],
+      });
+
+      expect(result).toEqual(null);
+    });
+
+    test('fails if own pkg.json with no exports', () => {
+      const result = Resolver.findNodeModule('foo-no-exports', {
+        basedir: path.resolve(
+          selfRefRoot,
+          './foo/nested-with-no-exports/index.js',
+        ),
+        conditions: [],
+      });
+
+      expect(result).toEqual(null);
     });
   });
 });
