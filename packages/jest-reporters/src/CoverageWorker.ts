@@ -15,11 +15,13 @@ import type {ReporterContext} from './types';
 
 type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
 
+type CoverageReporterContext = Pick<
+  ReporterContext,
+  'changedFiles' | 'sourcesRelatedToTestsInChangedFiles'
+>;
+
 type CoverageReporterSerializedContext = {
-  [K in keyof Pick<
-    ReporterContext,
-    'changedFiles' | 'sourcesRelatedToTestsInChangedFiles'
-  >]: SerializeSet<ReporterContext[K]>;
+  [K in keyof CoverageReporterContext]: SerializeSet<ReporterContext[K]>;
 };
 
 export type CoverageWorkerData = {
