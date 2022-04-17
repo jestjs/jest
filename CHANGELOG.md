@@ -40,6 +40,7 @@
 - `[jest-reporters]` Add GitHub Actions reporter ([#11320](https://github.com/facebook/jest/pull/11320), [#12658](https://github.com/facebook/jest/pull/12658)
 - `[jest-reporters]` Pass `reporterContext` to custom reporter constructors as third argument ([#12657](https://github.com/facebook/jest/pull/12657))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
+- `[jest-resolve]` Support package self-reference ([#12682](https://github.com/facebook/jest/pull/12682))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
 - `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
