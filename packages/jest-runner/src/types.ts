@@ -44,15 +44,15 @@ export type TestRunnerOptions = {
   serial: boolean;
 };
 
-// make sure all props here are present in the type below it as well
 export type TestRunnerContext = {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
 
+type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
+
 export type TestRunnerSerializedContext = {
-  changedFiles?: Array<string>;
-  sourcesRelatedToTestsInChangedFiles?: Array<string>;
+  [K in keyof TestRunnerContext]: SerializeSet<TestRunnerContext[K]>;
 };
 
 export type UnsubscribeFn = () => void;
