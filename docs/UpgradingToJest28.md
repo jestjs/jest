@@ -123,7 +123,7 @@ The constructor of [test environment](Configuration.md#testenvironment-string) c
 
 ### `jsdom`
 
-If you are using JSDOM [test environment](Configuration.md#testenvironment-string), `jest-environment-jsdom` package now must be installed additionally:
+If you are using JSDOM [test environment](Configuration.md#testenvironment-string), `jest-environment-jsdom` package now must be installed separately:
 
 ```bash npm2yarn
 npm install --save-dev jest-environment-jsdom
@@ -131,7 +131,7 @@ npm install --save-dev jest-environment-jsdom
 
 ## Test Runner
 
-If you are using Jasmine [test runner](Configuration.md#testrunner-string), `jest-jasmine2` package now must be installed additionally:
+If you are using Jasmine [test runner](Configuration.md#testrunner-string), `jest-jasmine2` package now must be installed separately:
 
 ```bash npm2yarn
 npm install --save-dev jest-jasmine2
