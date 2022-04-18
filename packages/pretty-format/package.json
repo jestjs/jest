@@ -28,8 +28,8 @@
   "devDependencies": {
     "@types/react": "^17.0.3",
     "@types/react-is": "^17.0.0",
-    "expect": "^28.0.0-alpha.8",
     "@types/react-test-renderer": "17.0.2",
+    "expect": "^28.0.0-alpha.8",
     "immutable": "^4.0.0",
     "jest-util": "^28.0.0-alpha.8",
     "react": "17.0.2",
