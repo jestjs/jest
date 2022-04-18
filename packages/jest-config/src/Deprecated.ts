@@ -94,6 +94,12 @@ const deprecatedOptions: DeprecatedOptions = {
   )}.
 
   Please update your configuration.`,
+
+  timers: (_options: {timers?: string}) => `  Option ${chalk.bold(
+    '"timers"',
+  )} was replaced by ${chalk.bold('"fakeTimers"')}.
+
+  Please update your configuration.`,
 };
 
 export default deprecatedOptions;

@@ -54,7 +54,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -67,7 +67,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe throws error when there are no arguments for given headings 1`] = `
@@ -129,7 +129,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -142,7 +142,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe.only throws error when there are no arguments for given headings 1`] = `
@@ -204,7 +204,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -217,7 +217,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fdescribe throws error when there are no arguments for given headings 1`] = `
@@ -279,7 +279,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -292,7 +292,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fit throws error when there are no arguments for given headings 1`] = `
@@ -354,7 +354,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -367,7 +367,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it throws error when there are no arguments for given headings 1`] = `
@@ -429,7 +429,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -442,7 +442,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it.only throws error when there are no arguments for given headings 1`] = `
@@ -504,7 +504,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -517,7 +517,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test throws error when there are no arguments for given headings 1`] = `
@@ -579,7 +579,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -592,7 +592,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are no arguments for given headings 1`] = `
@@ -654,7 +654,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -667,7 +667,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are no arguments for given headings 1`] = `
@@ -729,7 +729,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -742,7 +742,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are no arguments for given headings 1`] = `
@@ -804,7 +804,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -817,7 +817,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.only throws error when there are no arguments for given headings 1`] = `

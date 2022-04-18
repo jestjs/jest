@@ -346,7 +346,7 @@ test('resolves projects and their <rootDir> properly', () => {
       },
     }),
     'project1.conf.json': JSON.stringify({
-      name: 'project1',
+      id: 'project1',
       rootDir: './project1',
       // root dir should be this project's directory
       setupFiles: ['<rootDir>/project1_setup.js'],
@@ -358,7 +358,7 @@ test('resolves projects and their <rootDir> properly', () => {
     'project2/__tests__/test.test.js':
       "test('project2', () => expect(globalThis.project2).toBe(true))",
     'project2/project2.conf.json': JSON.stringify({
-      name: 'project2',
+      id: 'project2',
       rootDir: '../', // root dir is set to the top level
       setupFiles: ['<rootDir>/project2/project2_setup.js'], // rootDir shold be of the
       testEnvironment: 'node',
@@ -450,7 +450,7 @@ test('Does transform files with the corresponding project transformer', () => {
       };`,
     'project1/transformer.js': `
       module.exports = {
-        process: () => 'module.exports = "PROJECT1";',
+        process: () => ({code: 'module.exports = "PROJECT1";'}),
         getCacheKey: () => 'PROJECT1_CACHE_KEY',
       }
     `,
@@ -465,7 +465,7 @@ test('Does transform files with the corresponding project transformer', () => {
       };`,
     'project2/transformer.js': `
       module.exports = {
-        process: () => 'module.exports = "PROJECT2";',
+        process: () => ({code: 'module.exports = "PROJECT2";'}),
         getCacheKey: () => 'PROJECT2_CACHE_KEY',
       }
     `,
@@ -514,13 +514,13 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
 
     expect(configs).toHaveLength(2);
 
-    const [{name: name1}, {name: name2}] = configs;
+    const [{id: id1}, {id: id2}] = configs;
 
-    expect(name1).toEqual(expect.any(String));
-    expect(name2).toEqual(expect.any(String));
-    expect(name1).toHaveLength(32);
-    expect(name2).toHaveLength(32);
-    expect(name1).not.toEqual(name2);
+    expect(id1).toEqual(expect.any(String));
+    expect(id2).toEqual(expect.any(String));
+    expect(id1).toHaveLength(32);
+    expect(id2).toHaveLength(32);
+    expect(id1).not.toEqual(id2);
 
     const {stderr} = runJest(DIR, [
       '--no-watchman',
@@ -557,13 +557,13 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
 
     expect(configs).toHaveLength(2);
 
-    const [{name: name1}, {name: name2}] = configs;
+    const [{id: id1}, {id: id2}] = configs;
 
-    expect(name1).toEqual(expect.any(String));
-    expect(name2).toEqual(expect.any(String));
-    expect(name1).toHaveLength(32);
-    expect(name2).toHaveLength(32);
-    expect(name1).not.toEqual(name2);
+    expect(id1).toEqual(expect.any(String));
+    expect(id2).toEqual(expect.any(String));
+    expect(id1).toHaveLength(32);
+    expect(id2).toHaveLength(32);
+    expect(id1).not.toEqual(id2);
 
     const {stderr} = runJest(DIR, ['--no-watchman', '-w=2']);
 

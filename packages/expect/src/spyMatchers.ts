@@ -64,7 +64,8 @@ const isEqualValue = (expected: unknown, received: unknown): boolean =>
 const isEqualCall = (
   expected: Array<unknown>,
   received: Array<unknown>,
-): boolean => isEqualValue(expected, received);
+): boolean =>
+  received.length === expected.length && isEqualValue(expected, received);
 
 const isEqualReturn = (expected: unknown, result: any): boolean =>
   result.type === 'return' && isEqualValue(expected, result.value);

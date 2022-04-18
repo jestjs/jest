@@ -37,6 +37,8 @@ beforeEach(() => {
   userResolver.mockClear();
   userResolverAsync.async.mockClear();
   mockResolveSync.mockClear();
+
+  Resolver.clearDefaultResolverCache();
 });
 
 describe('isCoreModule', () => {
@@ -251,6 +253,52 @@ describe('findNodeModule', () => {
       );
     });
   });
+
+  describe('self-reference', () => {
+    const selfRefRoot = path.resolve(__dirname, '../__mocks__/self-ref');
+
+    test('supports self-reference', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(selfRefRoot, './foo/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(path.resolve(selfRefRoot, './foo/file.js'));
+    });
+
+    test('supports nested self-reference', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(selfRefRoot, './foo/nested/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(path.resolve(selfRefRoot, './foo/file.js'));
+    });
+
+    test('fails if own pkg.json with different name', () => {
+      const result = Resolver.findNodeModule('foo', {
+        basedir: path.resolve(
+          selfRefRoot,
+          './foo/nested-with-own-pkg/index.js',
+        ),
+        conditions: [],
+      });
+
+      expect(result).toEqual(null);
+    });
+
+    test('fails if own pkg.json with no exports', () => {
+      const result = Resolver.findNodeModule('foo-no-exports', {
+        basedir: path.resolve(
+          selfRefRoot,
+          './foo/nested-with-no-exports/index.js',
+        ),
+        conditions: [],
+      });
+
+      expect(result).toEqual(null);
+    });
+  });
 });
 
 describe('findNodeModuleAsync', () => {
@@ -398,6 +446,21 @@ describe('resolveModule', () => {
     const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
     expect(resolvedWithSlash).toBe(fooSlashIndex);
     expect(resolvedWithSlash).toBe(resolvedWithDot);
+  });
+
+  it('custom resolver can resolve node modules', () => {
+    userResolver.mockImplementation(() => 'module');
+
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+      resolver: require.resolve('../__mocks__/userResolver'),
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    resolver.resolveModule(src, 'fs');
+
+    expect(userResolver).toHaveBeenCalled();
+    expect(userResolver.mock.calls[0][0]).toBe('fs');
   });
 });
 

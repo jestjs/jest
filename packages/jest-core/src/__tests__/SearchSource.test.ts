@@ -57,13 +57,13 @@ const initSearchSource = async (
 };
 
 describe('SearchSource', () => {
-  const name = 'SearchSource';
+  const id = 'SearchSource';
   let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
     beforeEach(async () => {
       searchSource = await initSearchSource({
-        name,
+        id,
         rootDir: '.',
         roots: [],
       });
@@ -76,7 +76,7 @@ describe('SearchSource', () => {
         return;
       }
       const searchSource = await initSearchSource({
-        name,
+        id,
         rootDir: '.',
         roots: [],
         testMatch: undefined,
@@ -113,8 +113,8 @@ describe('SearchSource', () => {
 
     it('finds tests matching a pattern via testRegex', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
-        name,
         rootDir,
         testMatch: undefined,
         testRegex: 'not-really-a-test',
@@ -127,8 +127,8 @@ describe('SearchSource', () => {
 
     it('finds tests matching a pattern via testMatch', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
-        name,
         rootDir,
         testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
         testRegex: '',
@@ -141,8 +141,8 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS regex pattern', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx'],
-        name,
         rootDir,
         testMatch: undefined,
         testRegex: 'test.jsx?',
@@ -155,8 +155,8 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS glob pattern', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx'],
-        name,
         rootDir,
         testMatch: ['**/test.js?(x)'],
         testRegex: '',
@@ -169,8 +169,8 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS with overriding glob patterns', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx'],
-        name,
         rootDir,
         testMatch: [
           '**/*.js?(x)',
@@ -188,7 +188,7 @@ describe('SearchSource', () => {
 
     it('finds tests with default file extensions using testRegex', async () => {
       const paths = await getTestPaths({
-        name,
+        id,
         rootDir,
         testMatch: undefined,
         testRegex,
@@ -201,7 +201,7 @@ describe('SearchSource', () => {
 
     it('finds tests with default file extensions using testMatch', async () => {
       const paths = await getTestPaths({
-        name,
+        id,
         rootDir,
         testMatch,
         testRegex: '',
@@ -214,7 +214,7 @@ describe('SearchSource', () => {
 
     it('finds tests with parentheses in their rootDir when using testMatch', async () => {
       const paths = await getTestPaths({
-        name,
+        id,
         rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
         testMatch: ['<rootDir>**/__testtests__/**/*'],
         testRegex: undefined,
@@ -226,8 +226,8 @@ describe('SearchSource', () => {
 
     it('finds tests with similar but custom file extensions', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx'],
-        name,
         rootDir,
         testMatch,
       });
@@ -239,8 +239,8 @@ describe('SearchSource', () => {
 
     it('finds tests with totally custom foobar file extensions', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'foobar'],
-        name,
         rootDir,
         testMatch,
       });
@@ -252,8 +252,8 @@ describe('SearchSource', () => {
 
     it('finds tests with many kinds of file extensions', async () => {
       const paths = await getTestPaths({
+        id,
         moduleFileExtensions: ['js', 'jsx'],
-        name,
         rootDir,
         testMatch,
       });
@@ -265,7 +265,7 @@ describe('SearchSource', () => {
 
     it('finds tests using a regex only', async () => {
       const paths = await getTestPaths({
-        name,
+        id,
         rootDir,
         testMatch: undefined,
         testRegex,
@@ -278,7 +278,7 @@ describe('SearchSource', () => {
 
     it('finds tests using a glob only', async () => {
       const paths = await getTestPaths({
-        name,
+        id,
         rootDir,
         testMatch,
         testRegex: '',
@@ -294,7 +294,7 @@ describe('SearchSource', () => {
     beforeEach(async () => {
       searchSource = await initSearchSource(
         {
-          name,
+          id,
           rootDir: '.',
           roots: [],
         },
@@ -385,7 +385,7 @@ describe('SearchSource', () => {
             'haste_impl.js',
           ),
         },
-        name: 'SearchSource-findRelatedTests-tests',
+        id: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
     });
@@ -432,8 +432,8 @@ describe('SearchSource', () => {
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(async () => {
       searchSource = await initSearchSource({
+        id,
         moduleFileExtensions: ['js', 'jsx', 'foobar'],
-        name,
         rootDir,
         testMatch,
       });
@@ -484,7 +484,7 @@ describe('SearchSource', () => {
         return;
       }
       searchSource = await initSearchSource({
-        name,
+        id,
         rootDir: '.',
         roots: ['/foo/bar/prefix'],
       });
@@ -509,7 +509,7 @@ describe('SearchSource', () => {
             '../../../jest-haste-map/src/__tests__/haste_impl.js',
           ),
         },
-        name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
+        id: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
         rootDir,
       });
     });

@@ -71,7 +71,7 @@ export interface Jest {
    */
   autoMockOn(): Jest;
   /**
-   * Clears the `mock.calls`, `mock.instances` and `mock.results` properties of
+   * Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of
    * all mocks. Equivalent to calling `.mockClear()` on every mocked function.
    */
   clearAllMocks(): Jest;
@@ -140,7 +140,7 @@ export interface Jest {
    * need access to the real current time, you can invoke this function.
    *
    * @remarks
-   * Only available when using 'modern' fake timers implementation.
+   * Not available when using legacy fake timers implementation.
    */
   getRealSystemTime(): number;
   /**
@@ -236,7 +236,7 @@ export interface Jest {
    * Exhausts tasks queued by `setImmediate()`.
    *
    * @remarks
-   * Not available when using 'modern' timers implementation.
+   * Only available when using legacy fake timers implementation.
    */
   runAllImmediates(): void;
   /**
@@ -272,7 +272,7 @@ export interface Jest {
    * as they would have done without the call to `jest.setSystemTime()`.
    *
    * @remarks
-   * Only available when using 'modern' fake timers implementation.
+   * Not available when using legacy fake timers implementation.
    */
   setSystemTime(now?: number | Date): void;
   /**
@@ -302,11 +302,20 @@ export interface Jest {
    */
   unmock(moduleName: string): Jest;
   /**
-   * Instructs Jest to use fake versions of the standard timer functions.
+   * Instructs Jest to use fake versions of the global date, performance,
+   * time and timer APIs. Fake timers implementation is backed by
+   * [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
+   *
+   * @remarks
+   * Calling `jest.useFakeTimers()` once again in the same test file would reinstall
+   * fake timers using the provided options.
    */
-  useFakeTimers(implementation?: 'modern' | 'legacy'): Jest;
+  useFakeTimers(
+    fakeTimersConfig?: Config.FakeTimersConfig | Config.LegacyFakeTimersConfig,
+  ): Jest;
   /**
-   * Instructs Jest to use the real versions of the standard timer functions.
+   * Instructs Jest to restore the original implementations of the global date,
+   * performance, time and timer APIs.
    */
   useRealTimers(): Jest;
 }

@@ -14,6 +14,7 @@ import {
 } from 'resolve.exports';
 import {
   PkgJson,
+  findClosestPackageJson,
   isDirectory,
   isFile,
   readPackageCached,
@@ -36,7 +37,7 @@ interface ResolverOptions {
 }
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
-  Pick<ResolverOptions, 'conditions'>;
+  Pick<ResolverOptions, 'basedir' | 'conditions'>;
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
 export type AsyncResolver = (
@@ -112,6 +113,30 @@ function getPathInModule(
       moduleName = `${moduleName}/${segments.shift()}`;
     }
 
+    // self-reference
+    const closestPackageJson = findClosestPackageJson(options.basedir);
+    if (closestPackageJson) {
+      const pkg = readPackageCached(closestPackageJson);
+
+      if (pkg.name === moduleName && pkg.exports) {
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
+        }
+
+        return pathResolve(dirname(closestPackageJson), resolved);
+      }
+    }
+
     let packageJsonPath = '';
 
     try {
@@ -124,9 +149,6 @@ function getPathInModule(
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
-        // we need to make sure resolve ignores `main`
-        delete pkg.main;
-
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
@@ -135,10 +157,13 @@ function getPathInModule(
           createResolveOptions(options.conditions),
         );
 
-        // TODO: should we throw if not?
-        if (resolved) {
-          return pathResolve(dirname(packageJsonPath), resolved);
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
         }
+
+        return pathResolve(dirname(packageJsonPath), resolved);
       }
     }
   }

@@ -19,6 +19,8 @@ import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
   RuntimeTransformResult,
+  Test,
+  TestContext,
   TestResult,
   V8CoverageResult,
 } from '@jest/test-result';
@@ -27,12 +29,7 @@ import {clearLine, isInteractive} from 'jest-util';
 import {Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
-import type {
-  Context,
-  CoverageReporterOptions,
-  CoverageWorker,
-  Test,
-} from './types';
+import type {CoverageWorker, ReporterContext} from './types';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -44,27 +41,24 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
+  private _context: ReporterContext;
   private _coverageMap: istanbulCoverage.CoverageMap;
   private _globalConfig: Config.GlobalConfig;
   private _sourceMapStore: libSourceMaps.MapStore;
-  private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    options?: CoverageReporterOptions,
-  ) {
+  constructor(globalConfig: Config.GlobalConfig, context: ReporterContext) {
     super();
+    this._context = context;
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
     this._v8CoverageResults = [];
-    this._options = options || {};
   }
 
-  onTestResult(_test: Test, testResult: TestResult): void {
+  override onTestResult(_test: Test, testResult: TestResult): void {
     if (testResult.v8Coverage) {
       this._v8CoverageResults.push(testResult.v8Coverage);
       return;
@@ -75,11 +69,11 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  async onRunComplete(
-    contexts: Set<Context>,
+  override async onRunComplete(
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): Promise<void> {
-    await this._addUntestedFiles(contexts);
+    await this._addUntestedFiles(testContexts);
     const {map, reportContext} = await this._getCoverageResult();
 
     try {
@@ -114,10 +108,12 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(map);
   }
 
-  private async _addUntestedFiles(contexts: Set<Context>): Promise<void> {
+  private async _addUntestedFiles(
+    testContexts: Set<TestContext>,
+  ): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
-    contexts.forEach(context => {
+    testContexts.forEach(context => {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
@@ -175,16 +171,15 @@ export default class CoverageReporter extends BaseReporter {
         try {
           const result = await worker.worker({
             config,
-            globalConfig: this._globalConfig,
-            options: {
-              ...this._options,
+            context: {
               changedFiles:
-                this._options.changedFiles &&
-                Array.from(this._options.changedFiles),
+                this._context.changedFiles &&
+                Array.from(this._context.changedFiles),
               sourcesRelatedToTestsInChangedFiles:
-                this._options.sourcesRelatedToTestsInChangedFiles &&
-                Array.from(this._options.sourcesRelatedToTestsInChangedFiles),
+                this._context.sourcesRelatedToTestsInChangedFiles &&
+                Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
             },
+            globalConfig: this._globalConfig,
             path: filename,
           });
 

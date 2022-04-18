@@ -10,19 +10,19 @@ import type {
   AggregatedResult,
   AssertionResult,
   Suite,
+  Test,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime, specialChars} from 'jest-util';
 import DefaultReporter from './DefaultReporter';
-import type {Test} from './types';
 
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
-  protected _globalConfig: Config.GlobalConfig;
+  protected override _globalConfig: Config.GlobalConfig;
 
-  static readonly filename = __filename;
+  static override readonly filename = __filename;
 
   constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
@@ -31,7 +31,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   // Verbose mode is for debugging. Buffering of output is undesirable.
   // See https://github.com/facebook/jest/issues/8208
-  protected __wrapStdio(
+  protected override __wrapStdio(
     stream: NodeJS.WritableStream | NodeJS.WriteStream,
   ): void {
     const write = stream.write.bind(stream);
@@ -71,7 +71,7 @@ export default class VerboseReporter extends DefaultReporter {
     return root;
   }
 
-  onTestResult(
+  override onTestResult(
     test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,

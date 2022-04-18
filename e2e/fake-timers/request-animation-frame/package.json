@@ -1,0 +1,6 @@
+{
+  "name": "request-animation-frame",
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}

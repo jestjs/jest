@@ -94,11 +94,11 @@ export const setMatchers = (
           return `${this.inverse ? 'not.' : ''}${key}`;
         }
 
-        getExpectedType() {
+        override getExpectedType() {
           return 'any';
         }
 
-        toAsymmetricMatcher() {
+        override toAsymmetricMatcher() {
           return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
         }
       }

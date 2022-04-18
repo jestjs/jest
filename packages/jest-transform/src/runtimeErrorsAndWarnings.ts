@@ -19,9 +19,9 @@ export const makeInvalidReturnValueError = (): string =>
   chalk.red(
     [
       chalk.bold(`${BULLET}Invalid return value:`),
-      "  Code transformer's `process` function must return a string or an object",
-      '  with `code` key containing a string. If `processAsync` function is implemented,',
-      '  it must return a Promise resolving to one of these values.',
+      "  Code transformer's `process` method must return an object containing `code` key ",
+      '  with processed string. If `processAsync` method is implemented it must return ',
+      '  a Promise resolving to an object containing `code` key with processed string.',
       '',
     ].join('\n') + DOCUMENTATION_NOTE,
   );

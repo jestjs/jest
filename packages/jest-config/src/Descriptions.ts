@@ -13,7 +13,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
   clearMocks:
-    'Automatically clear mock calls, instances and results before every test',
+    'Automatically clear mock calls, instances, contexts and results before every test',
   collectCoverage:
     'Indicates whether the coverage information should be collected while executing the test',
   collectCoverageFrom:
@@ -31,6 +31,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   dependencyExtractor: 'A path to a custom dependency extractor',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
+  fakeTimers: 'The default configuration for fake timers',
   forceCoverageMatch:
     'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
@@ -84,8 +85,6 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   testResultsProcessor:
     'This option allows the use of a custom results processor',
   testRunner: 'This option allows use of a custom test runner',
-  timers:
-    'Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"',
   transform: 'A map from regular expressions to paths to transformers',
   transformIgnorePatterns:
     'An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation',

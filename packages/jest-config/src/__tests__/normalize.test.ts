@@ -66,7 +66,7 @@ afterEach(() => {
   (console.warn as unknown as jest.SpyInstance).mockRestore();
 });
 
-it('picks a name based on the rootDir', async () => {
+it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
   const expected = createHash('md5')
     .update('/root/path/foo')
@@ -78,32 +78,32 @@ it('picks a name based on the rootDir', async () => {
     },
     {} as Config.Argv,
   );
-  expect(options.name).toBe(expected);
+  expect(options.id).toBe(expected);
 });
 
-it('keeps custom project name based on the projects rootDir', async () => {
-  const name = 'test';
+it('keeps custom project id based on the projects rootDir', async () => {
+  const id = 'test';
   const {options} = await normalize(
     {
-      projects: [{name, rootDir: '/path/to/foo'}],
+      projects: [{id, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect(options.projects[0].id).toBe(id);
 });
 
-it('keeps custom names based on the rootDir', async () => {
+it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
-      name: 'custom-name',
+      id: 'custom-id',
       rootDir: '/root/path/foo',
     },
     {} as Config.Argv,
   );
 
-  expect(options.name).toBe('custom-name');
+  expect(options.id).toBe('custom-id');
 });
 
 it('minimal config is stable across runs', async () => {
@@ -307,6 +307,102 @@ function testPathArray(key: string) {
 
 describe('roots', () => {
   testPathArray('roots');
+});
+
+describe('reporters', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+  });
+
+  it('allows empty list', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([]);
+  });
+
+  it('normalizes the path and options object', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [
+          'default',
+          'github-actions',
+          '<rootDir>/custom-reporter.js',
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+          ['jest-junit', {outputName: 'report.xml'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['default', {}],
+      ['github-actions', {}],
+      ['/root/custom-reporter.js', {}],
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+      ['jest-junit', {outputName: 'report.xml'}],
+    ]);
+  });
+
+  it('throws an error if value is neither string nor array', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [123],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if first value in the tuple is not a string', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [[123]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value is missing in the tuple', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter']],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value in the tuple is not an object', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter', true]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('transform', () => {
@@ -1668,6 +1764,8 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
@@ -1929,6 +2027,24 @@ describe('testURL', () => {
       {
         rootDir: '/root/',
         testURL: 'https://jestjs.io/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+});
+
+describe('timers', () => {
+  beforeEach(() => {
+    jest.mocked(console.warn).mockImplementation(() => {});
+  });
+
+  it('logs a deprecation warning when `timers` is used', async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        timers: 'real',
       },
       {} as Config.Argv,
     );
