@@ -13,10 +13,9 @@ See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md) for the
 
 ## Compatibility
 
-The lowest supported versions are:
+The supported Node versions are 12.13, 14.15, 16.13 and above.
 
-- Node 12.13, 14.15, 16.13 or above
-- TypeScript 4.3
+If you plan to use type definitions of Jest (or any of its packages), make sure to install TypeScript version 4.3 or above.
 
 ## Configuration Options
 
