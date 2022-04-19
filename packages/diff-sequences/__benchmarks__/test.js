@@ -5,19 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Make sure to run node with --expose-gc option!
+/**
+ * To start the test, build the repo and run:
+ *   node --expose-gc test.js
+ */
 
-// The times are reliable if about 1% relative mean error if you run it:
+/**
+ * The times are reliable if about 1% relative mean error if you run it:
+ *   - immediately after restart
+ *   - with 100% battery charge
+ *   - not connected to network
+ */
 
-// * immediately after restart
-// * with 100% battery charge
-// * not connected to network
-
-/* eslint import/no-extraneous-dependencies: "off" */
+'use strict';
 
 const Benchmark = require('benchmark');
 const diffBaseline = require('diff').diffLines;
-const diffImproved = require('../build/index.js').default;
+const diffImproved = require('../').default;
 
 const testBaseline = (a, b) => {
   const benchmark = new Benchmark({
@@ -162,6 +166,10 @@ const testLength = n => {
     getItems(n, i => `x${i}`),
   ); // simulate TDD
 };
+
+if (!globalThis.gc) {
+  throw new Error('GC not present, start with: node --expose-gc test.js');
+}
 
 writeHeading2();
 
