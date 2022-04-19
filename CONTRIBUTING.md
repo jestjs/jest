@@ -129,6 +129,18 @@ Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
+## Checking Constraints
+
+We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/facebook/jest/blob/main/constraints.pro) and their purposes are documented with comments.
+
+Constraints can be checked with `yarn constraints`, and fixed with `yarn constraints --fix`. Generally speaking:
+
+- Workspaces must not depend on conflicting ranges of dependencies. Use the `-i,--interactive` flag and select "Reuse" when installing dependencies and you shouldn't ever have to deal with this rule.
+
+- A dependency doesn't appear in both `dependencies` and `devDependencies` of the same workspace.
+
+- Workspaces must point our repository through the `repository` field.
+
 ##### Using jest-circus
 
 There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situations like this, set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.

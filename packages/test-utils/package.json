@@ -2,7 +2,6 @@
   "name": "@jest/test-utils",
   "version": "28.0.0-alpha.8",
   "private": true,
-  "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
