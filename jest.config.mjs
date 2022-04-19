@@ -48,6 +48,7 @@ export default {
     '/e2e/custom-*',
     '/e2e/test-in-root',
     '/e2e/run-programmatically-multiple-projects',
+    '/e2e/multi-project-babel',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
