@@ -2719,7 +2719,7 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/dedent": ^0.7.0
     "@types/jest": ^27.4.0
-    "@types/node": "*"
+    "@types/node": ~12.12.0
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
@@ -5249,7 +5249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:~12.12.0":
   version: 12.12.70
   resolution: "@types/node@npm:12.12.70"
   checksum: 69c193e0bce8fa914d478f829bd923ee662b220e069a2e00ffbe109f27d0b38fbf2a9fe78c99eb4d4ccb294248ff8de68019a2c7fadb032d301c6feca25f3d22
