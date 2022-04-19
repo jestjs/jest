@@ -17,6 +17,9 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % Ignore peer dependencies
     DependencyType \= 'peerDependencies',
     DependencyType2 \= 'peerDependencies',
+  % Ignore *
+    DependencyRange \= '*',
+    DependencyRange2 \= '*',
   % Get the workspace name
     workspace_ident(WorkspaceCwd, WorkspaceIdent),
     workspace_ident(OtherWorkspaceCwd, OtherWorkspaceIdent),

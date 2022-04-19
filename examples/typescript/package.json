@@ -13,8 +13,8 @@
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.0.0",
     "@types/jest": "^27.4.0",
-    "babel-jest": "^28.0.0-alpha.8",
-    "jest": "^28.0.0-alpha.8"
+    "babel-jest": "*",
+    "jest": "*"
   },
   "scripts": {
     "test": "jest"
