@@ -45,7 +45,13 @@ const setupTransform = (config, rootDir) => {
       path.resolve(rootDir, transform[regex]),
     ]);
   }
-  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
+  return [
+    [
+      '^.+\\.[jt]sx?$',
+      require.resolve('babel-jest'),
+      {configFile: require.resolve('../../../../babel.config')},
+    ],
+  ];
 };
 
 module.exports = async function createRuntime(filename, projectConfig) {
