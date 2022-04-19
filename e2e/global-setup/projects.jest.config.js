@@ -15,6 +15,12 @@ module.exports = {
       globalSetup: '<rootDir>/setup.js',
       rootDir: path.resolve(__dirname, './project-1'),
       testMatch: ['<rootDir>/**/*.test.js'],
+      transform: {
+        '\\.[jt]sx?$': [
+          require.resolve('babel-jest'),
+          {configFile: require.resolve('./babel.config')},
+        ],
+      },
       transformIgnorePatterns: ['/node_modules/', '/packages/'],
     },
     {
@@ -22,6 +28,12 @@ module.exports = {
       globalSetup: '<rootDir>/setup.js',
       rootDir: path.resolve(__dirname, './project-2'),
       testMatch: ['<rootDir>/**/*.test.js'],
+      transform: {
+        '\\.[jt]sx?$': [
+          require.resolve('babel-jest'),
+          {configFile: require.resolve('./babel.config')},
+        ],
+      },
       transformIgnorePatterns: ['/node_modules/', '/packages/'],
     },
   ],
