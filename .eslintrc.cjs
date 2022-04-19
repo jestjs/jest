@@ -237,10 +237,10 @@ module.exports = {
     },
     {
       files: [
-        'website/**',
-        '**/__tests__/**',
         'e2e/**',
-        '**/pretty-format/perf/**',
+        'website/**',
+        '**/__benchmarks__/**',
+        '**/__tests__/**',
         'packages/jest-types/**/*',
         '.eslintplugin/**',
       ],
@@ -263,6 +263,7 @@ module.exports = {
     {
       files: [
         'scripts/*',
+        'packages/*/__benchmarks__/test.js',
         'packages/jest-cli/src/init/index.ts',
         'packages/jest-repl/src/cli/runtime-cli.ts',
       ],
@@ -274,14 +275,10 @@ module.exports = {
       files: [
         'e2e/**',
         'examples/**',
-        'scripts/*',
         'website/**',
         '**/__mocks__/**',
         '**/__tests__/**',
         '**/__typetests__/**',
-        '**/__performance_tests__/**',
-        'packages/diff-sequences/perf/index.js',
-        'packages/pretty-format/perf/test.js',
       ],
       rules: {
         '@typescript-eslint/no-unused-vars': 'off',

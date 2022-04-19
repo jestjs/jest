@@ -5,12 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+'use strict';
+
 const util = require('util');
 const chalk = require('chalk');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
 const {formatTime} = require('jest-util');
-const prettyFormat = require('../build');
+const prettyFormat = require('../build').format;
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 const worldGeoJson = require('./world.geo.json');
 
