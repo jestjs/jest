@@ -10145,7 +10145,7 @@ __metadata:
     jest: "workspace:*"
     metro-react-native-babel-preset: 0.67.0
     react: 17.0.2
-    react-native: 0.68.0
+    react-native: 0.68.1
     react-test-renderer: 17.0.2
   languageName: unknown
   linkType: soft
@@ -18564,18 +18564,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-codegen@npm:*":
-  version: 0.0.14
-  resolution: "react-native-codegen@npm:0.0.14"
-  dependencies:
-    "@babel/parser": ^7.14.0
-    flow-parser: ^0.121.0
-    jscodeshift: ^0.13.1
-    nullthrows: ^1.1.1
-  checksum: 2e22f472e504b035a032fcb4c13412ecd60971cb2f11a161c674219f379afcc8098103503dc5f394ac92e8f6cbd2dce68ad3d8b7eb5cb1cd01a4e548063cf97c
-  languageName: node
-  linkType: hard
-
 "react-native-codegen@npm:^0.0.13":
   version: 0.0.13
   resolution: "react-native-codegen@npm:0.0.13"
@@ -18588,18 +18576,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gradle-plugin@npm:^0.0.5":
-  version: 0.0.5
-  resolution: "react-native-gradle-plugin@npm:0.0.5"
-  dependencies:
-    react-native-codegen: "*"
-  checksum: ee14e5abc692fadb66527334e00ce57bfb7371fae82711f3a1c658c8896e93daee17019e533b1eb0323606f812fa5c645e67348f4169ecc0cb9fa3de3706b5e6
+"react-native-gradle-plugin@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "react-native-gradle-plugin@npm:0.0.6"
+  checksum: 185ad348931ef4f58065b50bbf80558af668b1ef11c31067aab7f1cd85b18809a62fcf0b7a18444726dacd098042771a570c0ac76bb8976c3ccbe7c86cff0e11
   languageName: node
   linkType: hard
 
-"react-native@npm:0.68.0":
-  version: 0.68.0
-  resolution: "react-native@npm:0.68.0"
+"react-native@npm:0.68.1":
+  version: 0.68.1
+  resolution: "react-native@npm:0.68.1"
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": ^7.0.3
@@ -18624,26 +18610,26 @@ __metadata:
     promise: ^8.0.3
     react-devtools-core: ^4.23.0
     react-native-codegen: ^0.0.13
-    react-native-gradle-plugin: ^0.0.5
+    react-native-gradle-plugin: ^0.0.6
     react-refresh: ^0.4.0
     react-shallow-renderer: 16.14.1
     regenerator-runtime: ^0.13.2
     scheduler: ^0.20.2
     stacktrace-parser: ^0.1.3
-    use-subscription: ^1.0.0
+    use-subscription: ">=1.0.0 <1.6.0"
     whatwg-fetch: ^3.0.0
     ws: ^6.1.4
   peerDependencies:
     react: 17.0.2
   bin:
     react-native: cli.js
-  checksum: 2232376ac65e63c8b2895b6fcb84299dd42ef6502b0d2d26a64758f4de871c64f261e116b6a0930a0e6b3320a68d46cbbe4daa5eb50fd517d90aa0eb451b189c
+  checksum: 72916e7ac092ca68702254d2a80db80b340e735f1ea654d5146e54037cf20410c182477d1c7f59dd4c6d854472a67b5ed6c279640d515235998717ba12757a39
   languageName: node
   linkType: hard
 
-"react-native@patch:react-native@npm:0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 0.68.0
-  resolution: "react-native@patch:react-native@npm%3A0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::version=0.68.0&hash=c5a757&locator=%40jest%2Fmonorepo%40workspace%3A."
+"react-native@patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 0.68.1
+  resolution: "react-native@patch:react-native@npm%3A0.68.1#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::version=0.68.1&hash=c5a757&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": ^7.0.3
@@ -18668,20 +18654,20 @@ __metadata:
     promise: ^8.0.3
     react-devtools-core: ^4.23.0
     react-native-codegen: ^0.0.13
-    react-native-gradle-plugin: ^0.0.5
+    react-native-gradle-plugin: ^0.0.6
     react-refresh: ^0.4.0
     react-shallow-renderer: 16.14.1
     regenerator-runtime: ^0.13.2
     scheduler: ^0.20.2
     stacktrace-parser: ^0.1.3
-    use-subscription: ^1.0.0
+    use-subscription: ">=1.0.0 <1.6.0"
     whatwg-fetch: ^3.0.0
     ws: ^6.1.4
   peerDependencies:
     react: 17.0.2
   bin:
     react-native: cli.js
-  checksum: 14f503f007e6372c9c31c397df1cc6ecc581a597a8752009721402c132905aa9381d1bb5459da8862dde498348eb0c18a9e93ce1ee911a4947ff01cc5df9928d
+  checksum: a1d1ab50269a9b83eb2bcae2b5889cf657a48d9b42f1ea9bc05ae575fca10b1c34e226affbc792e336b2a4b1fc4299030ee7e6b9cdcc25e12990379b18d0bed6
   languageName: node
   linkType: hard
 
@@ -22169,7 +22155,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-subscription@npm:^1.0.0":
+"use-subscription@npm:>=1.0.0 <1.6.0":
   version: 1.5.1
   resolution: "use-subscription@npm:1.5.1"
   dependencies:

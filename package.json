@@ -166,7 +166,7 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native": "patch:react-native@npm:0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch"
+    "react-native": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch"
   },
   "packageManager": "yarn@3.2.0"
 }
