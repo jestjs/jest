@@ -5,8 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Typical tests: node --expose-gc test.js empty 100000
-//                node --expose-gc test.js loadTest 10000
+/**
+ * To start the test, build the repo and run:
+ *   node --expose-gc test.js empty 100000
+ *   node --expose-gc test.js loadTest 10000
+ */
 
 'use strict';
 

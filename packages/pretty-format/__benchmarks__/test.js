@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * To start the test, build the repo and run:
+ *   node test.js
+ */
+
 'use strict';
 
 const util = require('util');

@@ -5,13 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// To start the test: node --expose-gc test.js
+/**
+ * To start the test, build the repo and run:
+ *   node --expose-gc test.js
+ */
 
-// The times are reliable if about 1% relative mean error if you run it:
-
-// * immediately after restart
-// * with 100% battery charge
-// * not connected to network
+/**
+ * The times are reliable if about 1% relative mean error if you run it:
+ *   - immediately after restart
+ *   - with 100% battery charge
+ *   - not connected to network
+ */
 
 'use strict';
 
