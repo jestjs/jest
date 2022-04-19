@@ -2616,6 +2616,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/environment@npm:^27.5.1":
+  version: 27.5.1
+  resolution: "@jest/environment@npm:27.5.1"
+  dependencies:
+    "@jest/fake-timers": ^27.5.1
+    "@jest/types": ^27.5.1
+    "@types/node": "*"
+    jest-mock: ^27.5.1
+  checksum: 2a9e18c35a015508dbec5b90b21c150230fa6c1c8cb8fabe029d46ee2ca4c40eb832fb636157da14c66590d0a4c8a2c053226b041f54a44507d6f6a89abefd66
+  languageName: node
+  linkType: hard
+
 "@jest/expect-utils@^28.0.0-alpha.8, @jest/expect-utils@workspace:packages/expect-utils":
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
@@ -2651,6 +2663,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/fake-timers@npm:^27.5.1":
+  version: 27.5.1
+  resolution: "@jest/fake-timers@npm:27.5.1"
+  dependencies:
+    "@jest/types": ^27.5.1
+    "@sinonjs/fake-timers": ^8.0.1
+    "@types/node": "*"
+    jest-message-util: ^27.5.1
+    jest-mock: ^27.5.1
+    jest-util: ^27.5.1
+  checksum: 02a0561ed2f4586093facd4ae500b74694f187ac24d4a00e949a39a1c5325bca8932b4fcb0388a2c5ed0656506fc1cf51fd3e32cdd48cea7497ad9c6e028aba8
+  languageName: node
+  linkType: hard
+
 "@jest/globals@^28.0.0-alpha.8, @jest/globals@workspace:packages/jest-globals":
   version: 0.0.0-use.local
   resolution: "@jest/globals@workspace:packages/jest-globals"
@@ -2660,6 +2686,17 @@ __metadata:
     "@jest/types": ^28.0.0-alpha.8
   languageName: unknown
   linkType: soft
+
+"@jest/globals@npm:*":
+  version: 27.5.1
+  resolution: "@jest/globals@npm:27.5.1"
+  dependencies:
+    "@jest/environment": ^27.5.1
+    "@jest/types": ^27.5.1
+    expect: ^27.5.1
+  checksum: 087f97047e9dcf555f76fe2ce54aee681e005eaa837a0c0c2d251df6b6412c892c9df54cb871b180342114389a5ff895a4e52e6e6d3d0015bf83c02a54f64c3c
+  languageName: node
+  linkType: hard
 
 "@jest/monorepo@workspace:.":
   version: 0.0.0-use.local
@@ -4465,6 +4502,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinonjs/fake-timers@npm:^8.0.1":
+  version: 8.1.0
+  resolution: "@sinonjs/fake-timers@npm:8.1.0"
+  dependencies:
+    "@sinonjs/commons": ^1.7.0
+  checksum: 09b5a158ce013a6c37613258bad79ca4efeb99b1f59c41c73cca36cac00b258aefcf46eeea970fccf06b989414d86fe9f54c1102272c0c3bdd51a313cea80949
+  languageName: node
+  linkType: hard
+
 "@sinonjs/fake-timers@npm:^9.1.1":
   version: 9.1.1
   resolution: "@sinonjs/fake-timers@npm:9.1.1"
@@ -6163,10 +6209,10 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     "@babel/preset-typescript": ^7.0.0
     "@types/jest": ^27.4.0
-    babel-jest: ^28.0.0-alpha.8
+    babel-jest: "*"
     babel-plugin-transform-typescript-metadata: "*"
     core-js: ^3.2.1
-    jest: ^28.0.0-alpha.8
+    jest: "*"
     jest-zone-patch: "*"
     rxjs: ^7.5.5
     tslib: ^2.0.0
@@ -10029,8 +10075,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10040,8 +10086,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10052,10 +10098,10 @@ __metadata:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
-    babel-jest: ^28.0.0-alpha.8
+    babel-jest: "*"
     enzyme: "*"
     enzyme-adapter-react-16: "*"
-    jest: ^28.0.0-alpha.8
+    jest: "*"
     react: ^16.14.0
     react-dom: ^16.14.0
   languageName: unknown
@@ -10068,10 +10114,10 @@ __metadata:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
     "@babel/preset-typescript": ^7.0.0
-    "@jest/globals": ^28.0.0-alpha.8
-    babel-jest: ^28.0.0-alpha.8
-    expect: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    "@jest/globals": "*"
+    babel-jest: "*"
+    expect: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10081,8 +10127,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10092,8 +10138,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     jquery: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -10104,8 +10150,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10115,8 +10161,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     lodash: ^4.17.19
   languageName: unknown
   linkType: soft
@@ -10127,9 +10173,9 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
-    jest-environment-node: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
+    jest-environment-node: "*"
     mongodb: ^4.3.1
     mongodb-memory-server: ^8.3.0
   languageName: unknown
@@ -10141,8 +10187,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     metro-react-native-babel-preset: 0.67.0
     react: 17.0.2
     react-native: 0.68.0
@@ -10158,8 +10204,8 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
     "@testing-library/react": "*"
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     react: 17.0.2
     react-dom: ^17.0.1
   languageName: unknown
@@ -10172,8 +10218,8 @@ __metadata:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     react: 17.0.2
     react-dom: ^17.0.1
   languageName: unknown
@@ -10186,8 +10232,8 @@ __metadata:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     react: 17.0.2
     react-test-renderer: 17.0.2
   languageName: unknown
@@ -10199,8 +10245,8 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.1.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
   languageName: unknown
   linkType: soft
 
@@ -10213,8 +10259,8 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     "@babel/preset-typescript": ^7.0.0
     "@types/jest": ^27.4.0
-    babel-jest: ^28.0.0-alpha.8
-    jest: ^28.0.0-alpha.8
+    babel-jest: "*"
+    jest: "*"
     react: 17.0.2
     react-dom: ^17.0.1
     typescript: ^4.6.2
@@ -10291,6 +10337,18 @@ __metadata:
     tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
+
+"expect@npm:*, expect@npm:^27.5.1":
+  version: 27.5.1
+  resolution: "expect@npm:27.5.1"
+  dependencies:
+    "@jest/types": ^27.5.1
+    jest-get-type: ^27.5.1
+    jest-matcher-utils: ^27.5.1
+    jest-message-util: ^27.5.1
+  checksum: b2c66beb52de53ef1872165aace40224e722bca3c2274c54cfa74b6d617d55cf0ccdbf36783ccd64dbea501b280098ed33fd0b207d4f15bc03cd3c7a24364a6a
+  languageName: node
+  linkType: hard
 
 "express@npm:^4.17.3":
   version: 4.17.3
@@ -13316,7 +13374,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-matcher-utils@npm:^27.0.0":
+"jest-matcher-utils@npm:^27.0.0, jest-matcher-utils@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-matcher-utils@npm:27.5.1"
   dependencies:
@@ -13374,6 +13432,16 @@ __metadata:
     tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
+
+"jest-mock@npm:^27.5.1":
+  version: 27.5.1
+  resolution: "jest-mock@npm:27.5.1"
+  dependencies:
+    "@jest/types": ^27.5.1
+    "@types/node": "*"
+  checksum: f5b5904bb1741b4a1687a5f492535b7b1758dc26534c72a5423305f8711292e96a601dec966df81bb313269fb52d47227e29f9c2e08324d79529172f67311be0
+  languageName: node
+  linkType: hard
 
 "jest-phabricator@workspace:packages/jest-phabricator":
   version: 0.0.0-use.local
