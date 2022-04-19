@@ -26,9 +26,14 @@ export interface Options
   isInternalModule?: boolean;
 }
 
+// `babel` and `@jridgewell/trace-mapping` disagrees
+interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
+  version: number;
+}
+
 export type TransformedSource = {
   code: string;
-  map?: EncodedSourceMap | string | null;
+  map?: FixedRawSourceMap | string | null;
 };
 
 export type TransformResult = TransformTypes.TransformResult;
