@@ -6812,13 +6812,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-replace-ts-export-assignment@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "babel-plugin-replace-ts-export-assignment@npm:0.0.2"
-  checksum: da749130fe0479cd9da73f8b3aafc62e05885b12732ce0e25976a7138dad1688a03366791b12633afdd8a702e2018ec01764c4ddb0ed0dbc3783b7e75b1b148a
-  languageName: node
-  linkType: hard
-
 "babel-plugin-syntax-trailing-function-commas@npm:^7.0.0-beta.0":
   version: 7.0.0-beta.0
   resolution: "babel-plugin-syntax-trailing-function-commas@npm:7.0.0-beta.0"
@@ -15033,24 +15026,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"metro-babel-register@npm:0.67.0":
-  version: 0.67.0
-  resolution: "metro-babel-register@npm:0.67.0"
-  dependencies:
-    "@babel/core": ^7.14.0
-    "@babel/plugin-proposal-nullish-coalescing-operator": ^7.0.0
-    "@babel/plugin-proposal-optional-chaining": ^7.0.0
-    "@babel/plugin-syntax-class-properties": ^7.0.0
-    "@babel/plugin-transform-flow-strip-types": ^7.0.0
-    "@babel/plugin-transform-modules-commonjs": ^7.0.0
-    "@babel/preset-typescript": ^7.15.0
-    "@babel/register": ^7.0.0
-    babel-plugin-replace-ts-export-assignment: ^0.0.2
-    escape-string-regexp: ^1.0.5
-  checksum: 4aabb6884db027326ca97e8c9f3943e9af9f455439fa7e361002e3c5b5c3600e9f4aae141018bebec7a242f6950f822945fd464fa6f14c134f893d6542afc081
-  languageName: node
-  linkType: hard
-
 "metro-babel-transformer@npm:0.67.0":
   version: 0.67.0
   resolution: "metro-babel-transformer@npm:0.67.0"
@@ -18624,50 +18599,6 @@ __metadata:
   bin:
     react-native: cli.js
   checksum: 72916e7ac092ca68702254d2a80db80b340e735f1ea654d5146e54037cf20410c182477d1c7f59dd4c6d854472a67b5ed6c279640d515235998717ba12757a39
-  languageName: node
-  linkType: hard
-
-"react-native@patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 0.68.1
-  resolution: "react-native@patch:react-native@npm%3A0.68.1#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch::version=0.68.1&hash=c5a757&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@jest/create-cache-key-function": ^27.0.1
-    "@react-native-community/cli": ^7.0.3
-    "@react-native-community/cli-platform-android": ^7.0.1
-    "@react-native-community/cli-platform-ios": ^7.0.1
-    "@react-native/assets": 1.0.0
-    "@react-native/normalize-color": 2.0.0
-    "@react-native/polyfills": 2.0.0
-    abort-controller: ^3.0.0
-    anser: ^1.4.9
-    base64-js: ^1.1.2
-    deprecated-react-native-prop-types: ^2.3.0
-    event-target-shim: ^5.0.1
-    hermes-engine: ~0.11.0
-    invariant: ^2.2.4
-    jsc-android: ^250230.2.1
-    metro-react-native-babel-transformer: 0.67.0
-    metro-runtime: 0.67.0
-    metro-source-map: 0.67.0
-    nullthrows: ^1.1.1
-    pretty-format: ^26.5.2
-    promise: ^8.0.3
-    react-devtools-core: ^4.23.0
-    react-native-codegen: ^0.0.13
-    react-native-gradle-plugin: ^0.0.6
-    react-refresh: ^0.4.0
-    react-shallow-renderer: 16.14.1
-    regenerator-runtime: ^0.13.2
-    scheduler: ^0.20.2
-    stacktrace-parser: ^0.1.3
-    use-subscription: ">=1.0.0 <1.6.0"
-    whatwg-fetch: ^3.0.0
-    ws: ^6.1.4
-  peerDependencies:
-    react: 17.0.2
-  bin:
-    react-native: cli.js
-  checksum: a1d1ab50269a9b83eb2bcae2b5889cf657a48d9b42f1ea9bc05ae575fca10b1c34e226affbc792e336b2a4b1fc4299030ee7e6b9cdcc25e12990379b18d0bed6
   languageName: node
   linkType: hard
 
