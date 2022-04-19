@@ -8,6 +8,6 @@
     "testRegex": "fails"
   },
   "dependencies": {
-    "typescript": "^3.7.4"
+    "typescript": "^4.6.2"
   }
 }

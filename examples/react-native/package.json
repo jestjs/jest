@@ -8,13 +8,13 @@
   },
   "dependencies": {
     "react": "17.0.2",
-    "react-native": "0.68.0"
+    "react-native": "0.68.1"
   },
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "babel-jest": "*",
-    "jest": "*",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.1.0",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*",
     "metro-react-native-babel-preset": "0.67.0",
     "react-test-renderer": "17.0.2"
   }

@@ -9,9 +9,8 @@ import * as crypto from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import slash = require('slash');
-import type {AggregatedResult, Test} from '@jest/test-result';
+import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
 import HasteMap from 'jest-haste-map';
-import type {Context} from 'jest-runtime';
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -39,10 +38,10 @@ export type ShardOptions = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<Context, Cache> = new Map();
+  private _cache: Map<TestContext, Cache> = new Map();
 
-  _getCachePath(context: Context): string {
-    const {config} = context;
+  _getCachePath(testContext: TestContext): string {
+    const {config} = testContext;
     const HasteMapClass = HasteMap.getStatic(config);
     return HasteMapClass.getCacheFilePath(
       config.cacheDirectory,
