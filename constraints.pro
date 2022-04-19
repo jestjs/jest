@@ -17,12 +17,20 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % Ignore peer dependencies
     DependencyType \= 'peerDependencies',
     DependencyType2 \= 'peerDependencies',
-  % Ignore *
-    DependencyRange \= '*',
-    DependencyRange2 \= '*',
+  % Ignore workspace:*: we use both `workspace:*` and real version such as `^28.0.0-alpha.8` to reference package in monorepo
+  % TODO: in the future we should make it consistent and remove this ignore
+    DependencyRange \= 'workspace:*',
+    DependencyRange2 \= 'workspace:*',
   % Get the workspace name
     workspace_ident(WorkspaceCwd, WorkspaceIdent),
     workspace_ident(OtherWorkspaceCwd, OtherWorkspaceIdent),
+  % @types/node in the root need to stay on ~12.12.0
+    (
+      (WorkspaceIdent = '@jest/monorepo'; OtherWorkspaceIdent = '@jest/monorepo') ->
+        DependencyIdent \= '@types/node'
+      ;
+        true
+    ),
   % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     (
       (WorkspaceIdent = 'example-enzyme'; OtherWorkspaceIdent = 'example-enzyme') ->
