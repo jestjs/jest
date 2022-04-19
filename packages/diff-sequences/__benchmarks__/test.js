@@ -17,7 +17,7 @@
 
 const Benchmark = require('benchmark');
 const diffBaseline = require('diff').diffLines;
-const diffImproved = require('../build/index.js').default;
+const diffImproved = require('../').default;
 
 const testBaseline = (a, b) => {
   const benchmark = new Benchmark({

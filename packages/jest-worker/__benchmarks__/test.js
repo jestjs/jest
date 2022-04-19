@@ -13,7 +13,7 @@
 const assert = require('assert');
 const {performance} = require('perf_hooks');
 const workerFarm = require('worker-farm');
-const JestWorker = require('../build').Worker;
+const JestWorker = require('../').Worker;
 
 assert(process.argv[2], 'Pass a child method name');
 assert(process.argv[3], 'Pass the number of iterations');
