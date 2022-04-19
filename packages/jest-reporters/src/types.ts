@@ -55,11 +55,6 @@ export type ReporterContext = {
   startRun?: (globalConfig: Config.GlobalConfig) => unknown;
 };
 
-export type ReporterContextSerialized = {
-  changedFiles?: Array<string>;
-  sourcesRelatedToTestsInChangedFiles?: Array<string>;
-};
-
 export type SummaryOptions = {
   currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;

@@ -33,7 +33,11 @@ import type {
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
+import type {
+  RuntimeTransformResult,
+  TestContext,
+  V8CoverageResult,
+} from '@jest/test-result';
 import {
   CallerTransformOptions,
   ScriptTransformer,
@@ -57,9 +61,6 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import type {Context} from './types';
-
-export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
@@ -332,7 +333,7 @@ export default class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<Context> {
+  ): Promise<TestContext> {
     createDirectory(config.cacheDirectory);
     const instance = await Runtime.createHasteMap(config, {
       console: options.console,

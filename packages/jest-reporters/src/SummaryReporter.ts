@@ -192,7 +192,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _getTestSummary(
-    contexts: Set<TestContext>,
+    testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {
@@ -227,8 +227,8 @@ export default class SummaryReporter extends BaseReporter {
     }
 
     const contextInfo =
-      contexts.size > 1
-        ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+      testContexts.size > 1
+        ? chalk.dim(' in ') + testContexts.size + chalk.dim(' projects')
         : '';
 
     return (

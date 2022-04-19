@@ -5,16 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * To start the test, build the repo and run:
+ *   node --expose-gc test.js empty 100000
+ *   node --expose-gc test.js loadTest 10000
+ */
+
 'use strict';
 
 const assert = require('assert');
 const {performance} = require('perf_hooks');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-const {createWorkerFarm} = require('jest-worker');
+const {createWorkerFarm} = require('../');
 
-// Typical tests: node --expose-gc test.js empty 100000
-//                node --expose-gc test.js loadTest 10000
 assert(process.argv[2], 'Pass a child method name');
 assert(process.argv[3], 'Pass the number of iterations');
 
@@ -130,7 +133,7 @@ function profileEnd(x) {
 
 async function main() {
   if (!globalThis.gc) {
-    console.warn('GC not present, start with node --expose-gc');
+    throw new Error('GC not present, start with node --expose-gc');
   }
 
   const wFResults = [];

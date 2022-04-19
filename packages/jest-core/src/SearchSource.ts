@@ -8,13 +8,12 @@
 import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
-import type {Test} from '@jest/test-result';
+import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
 import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
-import type {Context} from 'jest-runtime';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
@@ -41,7 +40,7 @@ const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
     });
 };
 
-const toTests = (context: Context, tests: Array<string>) =>
+const toTests = (context: TestContext, tests: Array<string>) =>
   tests.map(path => ({
     context,
     duration: undefined,
@@ -56,11 +55,11 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 };
 
 export default class SearchSource {
-  private _context: Context;
+  private _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
   private _testPathCases: TestPathCases = [];
 
-  constructor(context: Context) {
+  constructor(context: TestContext) {
     const {config} = context;
     this._context = context;
     this._dependencyResolver = null;

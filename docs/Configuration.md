@@ -856,6 +856,16 @@ If included in the list, the built-in GitHub Actions Reporter will annotate chan
 }
 ```
 
+#### Summary Reporter
+
+Summary reporter prints out summary of all tests. It is a part of default reporter, hence it will be enabled if `'default'` is included in the list. For instance, you might want to use it as stand-alone reporter instead of the default one, or together with [Silent Reporter](https://github.com/rickhanlonii/jest-silent-reporter):
+
+```json
+{
+  "reporters": ["jest-silent-reporter", "summary"]
+}
+```
+
 #### Custom Reporters
 
 :::tip

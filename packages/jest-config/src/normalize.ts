@@ -433,7 +433,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       normalizedReporterConfig[0],
     );
 
-    if (!['default', 'github-actions'].includes(reporterPath)) {
+    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: options.rootDir,
       });

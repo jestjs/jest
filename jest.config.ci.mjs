@@ -20,5 +20,6 @@ export default {
       'jest-silent-reporter',
       {showPaths: true, showWarnings: true, useDots: true},
     ],
+    'summary',
   ],
 };
