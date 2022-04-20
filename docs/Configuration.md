@@ -1108,12 +1108,6 @@ If you want a path to be [relative to the root directory of your project](#rootd
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
 
-:::info
-
-`setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`.
-
-:::
-
 Example `setupFilesAfterEnv` array in a jest.config.js:
 
 ```js
