@@ -30,6 +30,8 @@ const denyList = new Set([
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
+  // if env is loaded within a jest test
+  'jest-symbol-do-not-touch',
 ]);
 
 const nodeGlobals = new Map(
