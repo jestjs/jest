@@ -26,7 +26,7 @@ export interface Options
   isInternalModule?: boolean;
 }
 
-// `babel` and `@jridgewell/trace-mapping` disagrees
+// `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
 interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
