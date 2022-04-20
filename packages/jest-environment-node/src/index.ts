@@ -30,12 +30,27 @@ const denyList = new Set([
   'Buffer',
   'ArrayBuffer',
   'Uint8Array',
+  // if env is loaded within a jest test
+  'jest-symbol-do-not-touch',
 ]);
 
-const nodeGlobals = new Set(
-  Object.getOwnPropertyNames(globalThis).filter(
-    global => !denyList.has(global),
-  ),
+const nodeGlobals = new Map(
+  Object.getOwnPropertyNames(globalThis)
+    .filter(global => !denyList.has(global))
+    .map(nodeGlobalsKey => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        globalThis,
+        nodeGlobalsKey,
+      );
+
+      if (!descriptor) {
+        throw new Error(
+          `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
+        );
+      }
+
+      return [nodeGlobalsKey, descriptor];
+    }),
 );
 
 export default class NodeEnvironment implements JestEnvironment<Timer> {
@@ -55,10 +70,34 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     ));
 
     const contextGlobals = new Set(Object.getOwnPropertyNames(global));
-    for (const nodeGlobalsKey of nodeGlobals) {
+    for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        // @ts-expect-error
-        global[nodeGlobalsKey] = globalThis[nodeGlobalsKey];
+        Object.defineProperty(global, nodeGlobalsKey, {
+          configurable: descriptor.configurable,
+          enumerable: descriptor.enumerable,
+          get() {
+            // @ts-expect-error
+            const val = globalThis[nodeGlobalsKey];
+
+            // override lazy getter
+            Object.defineProperty(global, nodeGlobalsKey, {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              value: val,
+              writable: descriptor.writable,
+            });
+            return val;
+          },
+          set(val) {
+            // override lazy getter
+            Object.defineProperty(global, nodeGlobalsKey, {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              value: val,
+              writable: true,
+            });
+          },
+        });
       }
     }
 
