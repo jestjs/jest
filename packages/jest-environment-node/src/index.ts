@@ -57,8 +57,16 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     const contextGlobals = new Set(Object.getOwnPropertyNames(global));
     for (const nodeGlobalsKey of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        // @ts-expect-error
-        global[nodeGlobalsKey] = globalThis[nodeGlobalsKey];
+        Object.defineProperty(global, nodeGlobalsKey, {
+          enumerable: false,
+          get() {
+            // @ts-expect-error
+            return globalThis[nodeGlobalsKey];
+          },
+          set(val) {
+            global[val] = val;
+          },
+        });
       }
     }
 
