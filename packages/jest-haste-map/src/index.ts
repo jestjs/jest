@@ -16,7 +16,7 @@ import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {requireOrImportModule} from 'jest-util';
-import {JestWorkerFarm, WorkerFarm} from 'jest-worker';
+import {JestWorkerFarm, createWorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -573,16 +573,26 @@ export default class HasteMap extends EventEmitter {
     // reading them if they aren't important (node_modules).
     if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
-        return this._getWorker(workerOptions)
-          .getSha1({
-            computeDependencies: this._options.computeDependencies,
-            computeSha1,
-            dependencyExtractor: this._options.dependencyExtractor,
-            filePath,
-            hasteImplModulePath: this._options.hasteImplModulePath,
-            rootDir,
-          })
-          .then(workerReply, workerError);
+        const workerReplyPromise = (async () => {
+          try {
+            const workerFarm = await this._getWorker(workerOptions);
+
+            const workerMetadata = await workerFarm.getSha1({
+              computeDependencies: this._options.computeDependencies,
+              computeSha1,
+              dependencyExtractor: this._options.dependencyExtractor,
+              filePath,
+              hasteImplModulePath: this._options.hasteImplModulePath,
+              rootDir,
+            });
+
+            workerReply(workerMetadata);
+          } catch (error) {
+            workerError(error);
+          }
+        })();
+
+        return workerReplyPromise;
       }
 
       return null;
@@ -649,16 +659,26 @@ export default class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)
-      .worker({
-        computeDependencies: this._options.computeDependencies,
-        computeSha1,
-        dependencyExtractor: this._options.dependencyExtractor,
-        filePath,
-        hasteImplModulePath: this._options.hasteImplModulePath,
-        rootDir,
-      })
-      .then(workerReply, workerError);
+    const workerReplyPromise = (async () => {
+      try {
+        const workerFarm = await this._getWorker(workerOptions);
+
+        const workerMetadata = await workerFarm.worker({
+          computeDependencies: this._options.computeDependencies,
+          computeSha1,
+          dependencyExtractor: this._options.dependencyExtractor,
+          filePath,
+          hasteImplModulePath: this._options.hasteImplModulePath,
+          rootDir,
+        });
+
+        workerReply(workerMetadata);
+      } catch (error) {
+        workerError(error);
+      }
+    })();
+
+    return workerReplyPromise;
   }
 
   private _buildHasteMap(data: {
@@ -740,18 +760,21 @@ export default class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private _getWorker(options?: {
+  private async _getWorker(options?: {
     forceInBand: boolean;
-  }): JestWorkerFarm<HasteWorker> | HasteWorker {
+  }): Promise<JestWorkerFarm<HasteWorker> | HasteWorker> {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        this._worker = new WorkerFarm(require.resolve('./worker'), {
-          exposedMethods: ['getSha1', 'worker'],
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as JestWorkerFarm<HasteWorker>;
+        this._worker = await createWorkerFarm<HasteWorker>(
+          require.resolve('./worker'),
+          {
+            exposedMethods: ['getSha1', 'worker'],
+            maxRetries: 3,
+            numWorkers: this._options.maxWorkers,
+          },
+        );
       }
     }
 
