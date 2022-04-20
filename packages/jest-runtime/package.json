@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "28.0.0-alpha.9",
+  "version": "28.0.0-alpha.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,10 +19,10 @@
   "dependencies": {
     "@jest/environment": "^28.0.0-alpha.9",
     "@jest/fake-timers": "^28.0.0-alpha.9",
-    "@jest/globals": "^28.0.0-alpha.9",
-    "@jest/source-map": "^28.0.0-alpha.9",
+    "@jest/globals": "^28.0.0-alpha.10",
+    "@jest/source-map": "^28.0.0-alpha.10",
     "@jest/test-result": "^28.0.0-alpha.9",
-    "@jest/transform": "^28.0.0-alpha.9",
+    "@jest/transform": "^28.0.0-alpha.10",
     "@jest/types": "^28.0.0-alpha.9",
     "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
@@ -35,7 +35,7 @@
     "jest-mock": "^28.0.0-alpha.9",
     "jest-regex-util": "^28.0.0-alpha.6",
     "jest-resolve": "^28.0.0-alpha.9",
-    "jest-snapshot": "^28.0.0-alpha.9",
+    "jest-snapshot": "^28.0.0-alpha.10",
     "jest-util": "^28.0.0-alpha.9",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0"
@@ -45,7 +45,7 @@
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",
     "@types/node": "*",
-    "jest-environment-node": "^28.0.0-alpha.9"
+    "jest-environment-node": "^28.0.0-alpha.10"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
