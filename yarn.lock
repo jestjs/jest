@@ -2787,7 +2787,7 @@ __metadata:
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
-    v8-to-istanbul: "jridgewell/v8-to-istanbul#trace-mapping"
+    v8-to-istanbul: "istanbuljs/v8-to-istanbul#master"
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -22240,14 +22240,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@jridgewell/v8-to-istanbul#trace-mapping":
+"v8-to-istanbul@istanbuljs/v8-to-istanbul#master":
   version: 8.1.1
-  resolution: "v8-to-istanbul@https://github.com/jridgewell/v8-to-istanbul.git#commit=c673bff63e9a44da46511d6d485924132f5657ae"
+  resolution: "v8-to-istanbul@https://github.com/istanbuljs/v8-to-istanbul.git#commit=dd37cb950ada91c3177643e1985150f5add29f63"
   dependencies:
     "@jridgewell/trace-mapping": ^0.3.7
     "@types/istanbul-lib-coverage": ^2.0.1
     convert-source-map: ^1.6.0
-  checksum: a58dadd0390d11864408b6bb4a67674c05c707a40fa2cc941d62d47e235f55abb31e30b8fd354b6d47c77a51cda9bebbc79bfad46ebecdb72b57a2e016211a77
+  checksum: 09dec6f5baac1e28cb9b7653f709ae3dfc3f3e16a56ee4f802cbe63103618442a909f6f63ff2dee3169df50e28d7f6ea8c61769e5e1ca8752e2f159d62288987
   languageName: node
   linkType: hard
 
