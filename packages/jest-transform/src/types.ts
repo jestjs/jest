@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {RawSourceMap} from 'source-map';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Config, TransformTypes} from '@jest/types';
 
 export interface ShouldInstrumentOptions
@@ -26,8 +26,8 @@ export interface Options
   isInternalModule?: boolean;
 }
 
-// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+// `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
+interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 

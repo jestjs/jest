@@ -5,13 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * To start the test, build the repo and run:
+ *   node test.js
+ */
+
+'use strict';
+
 const util = require('util');
 const chalk = require('chalk');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
 const {formatTime} = require('jest-util');
-const prettyFormat = require('../build');
-const ReactTestComponent = require('../build/plugins/ReactTestComponent');
+const prettyFormat = require('../').format;
+const {ReactTestComponent} = require('../').plugins;
 const worldGeoJson = require('./world.geo.json');
 
 const NANOSECONDS = 1000000000;

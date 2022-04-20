@@ -11,17 +11,13 @@ import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-provider-v8');
 
-// https://github.com/nodejs/node/issues/42638
-const nodeOptions =
-  typeof fetch === 'undefined' ? '' : '--no-experimental-fetch';
-
 test('prints coverage with missing sourcemaps', () => {
   const sourcemapDir = path.join(DIR, 'no-sourcemap');
 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8'],
-    {nodeOptions, stripAnsi: true},
+    {stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
@@ -34,7 +30,7 @@ test('prints coverage with empty sourcemaps', () => {
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8'],
-    {nodeOptions, stripAnsi: true},
+    {stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
@@ -47,7 +43,7 @@ test('prints correct coverage report, if a CJS module is put under test without 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {nodeOptions, stripAnsi: true},
+    {stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
@@ -60,7 +56,7 @@ test('prints correct coverage report, if a TS module is transpiled by Babel to C
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {nodeOptions, stripAnsi: true},
+    {stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
@@ -76,7 +72,7 @@ onNodeVersions('>=12.16.0', () => {
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
       {
-        nodeOptions: `${nodeOptions} --experimental-vm-modules --no-warnings`,
+        nodeOptions: '--experimental-vm-modules --no-warnings',
         stripAnsi: true,
       },
     );
@@ -92,7 +88,7 @@ onNodeVersions('>=12.16.0', () => {
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
       {
-        nodeOptions: `${nodeOptions} --experimental-vm-modules --no-warnings`,
+        nodeOptions: '--experimental-vm-modules --no-warnings',
         stripAnsi: true,
       },
     );

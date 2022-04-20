@@ -81,7 +81,7 @@
     "throat": "^6.0.1",
     "ts-node": "^10.5.0",
     "type-fest": "^2.11.2",
-    "typescript": "^4.2.4",
+    "typescript": "^4.6.2",
     "which": "^2.0.1"
   },
   "scripts": {
@@ -106,7 +106,6 @@
     "test-types": "yarn jest --config jest.config.tsd.mjs",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
     "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.mjs",
-    "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
@@ -167,7 +166,7 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native": "patch:react-native@npm:0.68.0#.yarn/patches/react-native-npm-0.68.0-9eb3ecb60a.patch"
+    "react-native@0.68.1": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch"
   },
   "packageManager": "yarn@3.2.0"
 }

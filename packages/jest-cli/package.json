@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "28.0.0-alpha.8",
+  "version": "28.0.0-alpha.11",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -13,16 +13,16 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^28.0.0-alpha.8",
-    "@jest/test-result": "^28.0.0-alpha.8",
-    "@jest/types": "^28.0.0-alpha.8",
+    "@jest/core": "^28.0.0-alpha.11",
+    "@jest/test-result": "^28.0.0-alpha.9",
+    "@jest/types": "^28.0.0-alpha.9",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
     "import-local": "^3.0.2",
-    "jest-config": "^28.0.0-alpha.8",
-    "jest-util": "^28.0.0-alpha.8",
-    "jest-validate": "^28.0.0-alpha.8",
+    "jest-config": "^28.0.0-alpha.11",
+    "jest-util": "^28.0.0-alpha.9",
+    "jest-validate": "^28.0.0-alpha.9",
     "prompts": "^2.0.1",
     "yargs": "^17.3.1"
   },
@@ -48,7 +48,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest",
+    "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-cli"
   },
   "bugs": {

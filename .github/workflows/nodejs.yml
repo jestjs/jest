@@ -59,7 +59,7 @@ jobs:
         run: yarn verify-old-ts
 
   lint:
-    name: Running ESLint
+    name: Running Lint
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
@@ -82,12 +82,26 @@ jobs:
       - name: check copyright headers
         run: yarn check-copyright-headers
 
+  yarn-validate:
+    name: Validate Yarn constraints
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
+        run: |
+          yarn constraints
+
   test:
     name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
+        node-version: [12.x, 14.x, 16.x, 17.x, 18.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}

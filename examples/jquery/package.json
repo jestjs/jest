@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "name": "example-jquery",
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "babel-jest": "*",
-    "jest": "*"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.1.0",
+    "babel-jest": "workspace:*",
+    "jest": "workspace:*"
   },
   "dependencies": {
-    "jquery": "*"
+    "jquery": "^3.2.1"
   },
   "scripts": {
     "test": "jest"

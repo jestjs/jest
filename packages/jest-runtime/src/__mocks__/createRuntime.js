@@ -37,7 +37,7 @@ const setupModuleNameMapper = (config, rootDir) => {
   return [];
 };
 
-const setupTransform = (config, rootDir) => {
+const setupTransform = (config, rootDir, cwd) => {
   if (config?.transform) {
     const transform = config.transform;
     return Object.keys(transform).map(regex => [
@@ -45,28 +45,22 @@ const setupTransform = (config, rootDir) => {
       path.resolve(rootDir, transform[regex]),
     ]);
   }
-  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
+  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest'), {root: cwd}]];
 };
 
 module.exports = async function createRuntime(filename, projectConfig) {
   const rootDir = path.resolve(path.dirname(filename), 'test_root');
+  const cwd = path.resolve(__dirname, '../../../..');
 
   const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
-  const transform = setupTransform(projectConfig, rootDir);
+  const transform = setupTransform(projectConfig, rootDir, cwd);
 
   projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
-    cwd: path.resolve(__dirname, '..', '..', '..', '..'),
+    cwd,
     haste: {
-      hasteImplModulePath: path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'jest-haste-map',
-        'src',
-        '__tests__',
-        'haste_impl.js',
+      hasteImplModulePath: require.resolve(
+        '../../../jest-haste-map/src/__tests__/haste_impl.js',
       ),
     },
     id: `Runtime-${filename.replace(/\W/, '-')}.tests`,

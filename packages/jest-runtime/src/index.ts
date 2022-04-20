@@ -27,6 +27,7 @@ import stripBOM = require('strip-bom');
 import type {
   Jest,
   JestEnvironment,
+  JestImportMeta,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
@@ -499,8 +500,18 @@ export default class Runtime {
 
             return this.linkAndEvaluateModule(module);
           },
-          initializeImportMeta(meta: ImportMeta) {
+          initializeImportMeta: (meta: JestImportMeta) => {
             meta.url = pathToFileURL(modulePath).href;
+
+            let jest = this.jestObjectCaches.get(modulePath);
+
+            if (!jest) {
+              jest = this._createJestObjectFor(modulePath);
+
+              this.jestObjectCaches.set(modulePath, jest);
+            }
+
+            meta.jest = jest;
           },
         });
 
@@ -625,6 +636,7 @@ export default class Runtime {
             return this.linkAndEvaluateModule(module);
           },
           initializeImportMeta(meta: ImportMeta) {
+            // no `jest` here as it's not loaded in a file
             meta.url = specifier;
           },
         });

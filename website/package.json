@@ -36,7 +36,7 @@
     "@docusaurus/remark-plugin-npm2yarn": "^2.0.0-beta.17",
     "clsx": "^1.1.1",
     "globby": "^11.0.1",
-    "react": "^17.0.1",
+    "react": "17.0.2",
     "react-dom": "^17.0.1",
     "react-github-btn": "^1.2.0",
     "react-lite-youtube-embed": "^2.2.1-a",

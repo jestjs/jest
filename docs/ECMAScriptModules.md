@@ -23,7 +23,7 @@ With the warnings out of the way, this is how you activate ESM support in your t
 
 ## Differences between ESM and CommonJS
 
-Most of the differences are explained in [Node's documentation](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs), but in addition to the things mentioned there, Jest injects a special variable into all executed files - the [`jest` object](JestObjectAPI.md). To access this object in ESM, you need to import it from the `@jest/globals` module.
+Most of the differences are explained in [Node's documentation](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs), but in addition to the things mentioned there, Jest injects a special variable into all executed files - the [`jest` object](JestObjectAPI.md). To access this object in ESM, you need to import it from the `@jest/globals` module or use `import.meta`.
 
 ```js
 import {jest} from '@jest/globals';
@@ -31,6 +31,11 @@ import {jest} from '@jest/globals';
 jest.useFakeTimers();
 
 // etc.
+
+// alternatively
+import.meta.jest.useFakeTimers();
+
+// jest === import.meta.jest => true
 ```
 
 Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.

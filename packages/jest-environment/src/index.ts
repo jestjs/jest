@@ -28,6 +28,10 @@ export type ModuleWrapper = (
   ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
+export interface JestImportMeta extends ImportMeta {
+  jest: Jest;
+}
+
 export interface JestEnvironmentConfig {
   projectConfig: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;

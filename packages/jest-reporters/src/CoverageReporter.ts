@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk = require('chalk');
 import glob = require('glob');
 import * as fs from 'graceful-fs';
@@ -14,7 +15,6 @@ import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
-import type {RawSourceMap} from 'source-map';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
@@ -30,12 +30,6 @@ import {Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
 import type {CoverageWorker, ReporterContext} from './types';
-
-// This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
-  version: number;
-  file?: string;
-}
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -150,6 +144,8 @@ export default class CoverageReporter extends BaseReporter {
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
+        // @ts-expect-error: option does not exist on the node 12 types
+        forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,
       });
@@ -437,7 +433,7 @@ export default class CoverageReporter extends BaseReporter {
         mergedCoverages.result.map(async res => {
           const fileTransform = fileTransforms.get(res.url);
 
-          let sourcemapContent: FixedRawSourceMap | undefined = undefined;
+          let sourcemapContent: EncodedSourceMap | undefined = undefined;
 
           if (
             fileTransform?.sourceMapPath &&
@@ -467,8 +463,6 @@ export default class CoverageReporter extends BaseReporter {
           converter.applyCoverage(res.functions);
 
           const istanbulData = converter.toIstanbul();
-
-          converter.destroy();
 
           return istanbulData;
         }),
