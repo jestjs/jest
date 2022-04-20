@@ -77,7 +77,16 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
           enumerable: descriptor.enumerable,
           get() {
             // @ts-expect-error
-            return globalThis[nodeGlobalsKey];
+            const val = globalThis[nodeGlobalsKey];
+
+            // override lazy getter
+            Object.defineProperty(global, nodeGlobalsKey, {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              value: val,
+              writable: descriptor.writable,
+            });
+            return val;
           },
           set(val) {
             // override lazy getter
