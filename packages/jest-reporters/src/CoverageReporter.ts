@@ -450,8 +450,7 @@ export default class CoverageReporter extends BaseReporter {
                   originalSource: fileTransform.originalCode,
                   source: fileTransform.code,
                   sourceMap: {
-                    // remove `as any` after https://github.com/istanbuljs/v8-to-istanbul/pull/186 is released
-                    sourcemap: {file: res.url, ...sourcemapContent} as any,
+                    sourcemap: {file: res.url, ...sourcemapContent},
                   },
                 }
               : {source: fs.readFileSync(res.url, 'utf8')},
