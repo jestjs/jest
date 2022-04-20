@@ -110,11 +110,14 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
-export {default as ModuleMap} from './ModuleMap';
-export type {SerializableModuleMap} from './types';
-export type {IModuleMap} from './types';
 export type {default as FS} from './HasteFS';
-export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
+export {default as ModuleMap} from './ModuleMap';
+export type {
+  ChangeEvent,
+  HasteMap as HasteMapObject,
+  IModuleMap,
+  SerializableModuleMap,
+} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -435,7 +438,7 @@ export default class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
     try {
       const read = this._options.resetCache ? this._createEmptyMap : this.read;
-      hasteMap = await read.call(this);
+      hasteMap = read.call(this);
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -684,7 +687,7 @@ export default class HasteMap extends EventEmitter {
       this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
     }
 
-    const promises = [];
+    const promises: Array<Promise<void>> = [];
     for (const relativeFilePath of filesToProcess.keys()) {
       if (
         this._options.skipPackageJson &&
@@ -755,7 +758,11 @@ export default class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  private async _crawl(hasteMap: InternalHasteMap) {
+  private async _crawl(hasteMap: InternalHasteMap): Promise<{
+    changedFiles?: FileData | undefined;
+    removedFiles: FileData;
+    hasteMap: InternalHasteMap;
+  }> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
