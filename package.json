@@ -165,7 +165,8 @@
   "resolutions": {
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
-    "jest-environment-node": "workspace:*"
+    "jest-environment-node": "workspace:*",
+    "react-native@0.68.1": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch"
   },
   "packageManager": "yarn@3.2.0"
 }
