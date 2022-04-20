@@ -101,7 +101,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
+        node-version: [12.x, 14.x, 16.x, 17.x, 18.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
