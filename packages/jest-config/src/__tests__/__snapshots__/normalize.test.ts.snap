@@ -1,22 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>"preprocessorIgnorePatterns"</> was replaced by <bold>"transformIgnorePatterns"</>, which support multiple preprocessors.</>
-<yellow></>
-<yellow>  Jest now treats your current configuration as:</>
-<yellow>  {</>
-<yellow>    <bold>"transformIgnorePatterns"</>: <bold>["bar/baz", "qux/quux"]</></>
-<yellow>  }</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>"
-`;
-
 exports[`displayName generates a default color for the runner jest-runner 1`] = `"yellow"`;
 
 exports[`displayName generates a default color for the runner jest-runner-eslint 1`] = `"magenta"`;
@@ -132,7 +115,29 @@ exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
 <red></>"
 `;
 
-exports[`extraGlobals logs a deprecation warning when \`extraGlobals\` is used 1`] = `
+exports[`logs a deprecation warning when 'browser' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"browser"</> has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'extraGlobals' option is passed 1`] = `
 [MockFunction] {
   "calls": Array [
     Array [
@@ -156,13 +161,158 @@ exports[`extraGlobals logs a deprecation warning when \`extraGlobals\` is used 1
 }
 `;
 
-exports[`moduleLoader logs a deprecation warning when \`moduleLoader\` is used 1`] = `
+exports[`logs a deprecation warning when 'moduleLoader' option is passed 1`] = `
 [MockFunction] {
   "calls": Array [
     Array [
       "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
 <yellow>  Option <bold>"moduleLoader"</> was replaced by <bold>"runtime"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'preprocessorIgnorePatterns' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"preprocessorIgnorePatterns"</> was replaced by <bold>"transformIgnorePatterns"</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'scriptPreprocessor' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"scriptPreprocessor"</> was replaced by <bold>"transform"</>, which support multiple preprocessors.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'setupTestFrameworkScriptFile' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"setupTestFrameworkScriptFile"</> was replaced by configuration <bold>"setupFilesAfterEnv"</>, which supports multiple paths.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'testPathDirs' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"testPathDirs"</> was replaced by <bold>"roots"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow>  </>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'testURL' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"testURL"</> was replaced by passing the URL via <bold>"testEnvironmentOptions.url"</>.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration</>
+<yellow></>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'timers' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>"timers"</> was replaced by <bold>"fakeTimers"</>.</>
 <yellow></>
 <yellow>  Please update your configuration.</>
 <yellow></>
@@ -288,29 +438,6 @@ exports[`runner throw error when a runner is not found 1`] = `
 <red></>"
 `;
 
-exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
-"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>"setupTestFrameworkScriptFile"</> was replaced by configuration <bold>"setupFilesAfterEnv"</>, which supports multiple paths.</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>"
-`;
-
-exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
-<red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
-`;
-
 exports[`testEnvironment throws on invalid environment names 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
@@ -343,54 +470,6 @@ exports[`testTimeout should throw an error if timeout is a negative number 1`] =
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration</>
 <red></>"
-`;
-
-exports[`testURL logs a deprecation warning when \`testURL\` is used 1`] = `
-[MockFunction] {
-  "calls": Array [
-    Array [
-      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>"testURL"</> was replaced by passing the URL via <bold>"testEnvironmentOptions.url"</>.</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>",
-    ],
-  ],
-  "results": Array [
-    Object {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
-`;
-
-exports[`timers logs a deprecation warning when \`timers\` is used 1`] = `
-[MockFunction] {
-  "calls": Array [
-    Array [
-      "<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>"timers"</> was replaced by <bold>"fakeTimers"</>.</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>",
-    ],
-  ],
-  "results": Array [
-    Object {
-      "type": "return",
-      "value": undefined,
-    },
-  ],
-}
 `;
 
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
