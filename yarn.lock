@@ -2758,7 +2758,7 @@ __metadata:
     "@jest/test-utils": ^28.0.0-alpha.9
     "@jest/transform": ^28.0.0-alpha.10
     "@jest/types": ^28.0.0-alpha.9
-    "@jridgewell/trace-mapping": ^0.3.4
+    "@jridgewell/trace-mapping": ^0.3.7
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
@@ -2787,7 +2787,7 @@ __metadata:
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
-    v8-to-istanbul: ^8.1.0
+    v8-to-istanbul: ^9.0.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -2808,7 +2808,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/source-map@workspace:packages/jest-source-map"
   dependencies:
-    "@jridgewell/trace-mapping": ^0.3.4
+    "@jridgewell/trace-mapping": ^0.3.7
     "@types/graceful-fs": ^4.1.3
     callsites: ^3.0.0
     graceful-fs: ^4.2.9
@@ -2872,7 +2872,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@jest/test-utils": ^28.0.0-alpha.9
     "@jest/types": ^28.0.0-alpha.9
-    "@jridgewell/trace-mapping": ^0.3.4
+    "@jridgewell/trace-mapping": ^0.3.7
     "@types/babel__core": ^7.1.14
     "@types/convert-source-map": ^1.5.1
     "@types/fast-json-stable-stringify": ^2.0.0
@@ -2950,13 +2950,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/trace-mapping@npm:^0.3.0, @jridgewell/trace-mapping@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "@jridgewell/trace-mapping@npm:0.3.4"
+"@jridgewell/trace-mapping@npm:^0.3.0, @jridgewell/trace-mapping@npm:^0.3.7":
+  version: 0.3.7
+  resolution: "@jridgewell/trace-mapping@npm:0.3.7"
   dependencies:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
-  checksum: ab8bce84bbbc8c34f3ba8325ed926f8f2d3098983c10442a80c55764c4eb6e47d5b92d8ff20a0dd868c3e76a3535651fd8a0138182c290dbfc8396195685c37b
+  checksum: c08f5344568e1396fc377c95054b126620380a87e8992d77526f73b9627e56930a1a76ee95d31266d388ed052f6f97c64911c2aa49283d37547f51c342dfc9b8
   languageName: node
   linkType: hard
 
@@ -22240,14 +22240,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "v8-to-istanbul@npm:8.1.1"
+"v8-to-istanbul@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "v8-to-istanbul@npm:9.0.0"
   dependencies:
+    "@jridgewell/trace-mapping": ^0.3.7
     "@types/istanbul-lib-coverage": ^2.0.1
     convert-source-map: ^1.6.0
-    source-map: ^0.7.3
-  checksum: 54ce92bec2727879626f623d02c8d193f0c7e919941fa373ec135189a8382265117f5316ea317a1e12a5f9c13d84d8449052a731fe3306fa4beaafbfa4cab229
+  checksum: d8ed2c39ba657dfd851a3c7b3f2b87e5b96c9face806ecfe5b627abe53b0c86f264f51425c591e451405b739e3f8a6728da59670f081790990710e813d8d3440
   languageName: node
   linkType: hard
 
