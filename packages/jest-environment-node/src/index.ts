@@ -32,10 +32,23 @@ const denyList = new Set([
   'Uint8Array',
 ]);
 
-const nodeGlobals = new Set(
-  Object.getOwnPropertyNames(globalThis).filter(
-    global => !denyList.has(global),
-  ),
+const nodeGlobals = new Map(
+  Object.getOwnPropertyNames(globalThis)
+    .filter(global => !denyList.has(global))
+    .map(nodeGlobalsKey => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        globalThis,
+        nodeGlobalsKey,
+      );
+
+      if (!descriptor) {
+        throw new Error(
+          `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
+        );
+      }
+
+      return [nodeGlobalsKey, descriptor];
+    }),
 );
 
 export default class NodeEnvironment implements JestEnvironment<Timer> {
@@ -55,15 +68,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     ));
 
     const contextGlobals = new Set(Object.getOwnPropertyNames(global));
-    for (const nodeGlobalsKey of nodeGlobals) {
+    for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        const descriptor = Object.getOwnPropertyDescriptor(
-          globalThis,
-          nodeGlobalsKey,
-        );
-        if (!descriptor) {
-          throw new Error(`No property descriptor for ${nodeGlobalsKey}`);
-        }
         Object.defineProperty(global, nodeGlobalsKey, {
           configurable: descriptor.configurable,
           enumerable: descriptor.enumerable,
