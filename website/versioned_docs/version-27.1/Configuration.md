@@ -930,16 +930,16 @@ jest.setTimeout(10000); // in milliseconds
 // you can even use the setup/teardown methods
 beforeAll(() => {
   // your code
-})
+});
 beforeEach(() => {
   // your code
-})
+});
 afterEach(() => {
   // your code
-})
+});
 afterAll(() => {
   // your code
-})
+});
 ```
 
 ### `slowTestThreshold` \[number]
