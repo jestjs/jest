@@ -1950,6 +1950,10 @@ describe('shards', () => {
 });
 
 describe('logs a deprecation warning', () => {
+  beforeEach(() => {
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+  });
+
   test("when 'browser' option is passed", async () => {
     await normalize(
       {
