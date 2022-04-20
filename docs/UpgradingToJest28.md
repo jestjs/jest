@@ -30,7 +30,7 @@ The `extraGlobals` option was renamed to [`sandboxInjectedGlobals`](Configuratio
 
 ### `timers`
 
-The `timers` option was renamed to [`fakeTimers`](Configuration.md#faketimers-object). See [Fake Timers](#fake-timers) section bellow for details.
+The `timers` option was renamed to [`fakeTimers`](Configuration.md#faketimers-object). See [Fake Timers](#fake-timers) section below for details.
 
 ### `testURL`
 
