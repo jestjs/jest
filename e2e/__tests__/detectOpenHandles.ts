@@ -11,6 +11,10 @@ function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
 
+beforeAll(() => {
+  jest.retryTimes(3);
+});
+
 it('prints message about flag on slow tests', async () => {
   const run = runContinuous('detect-open-handles', ['outside']);
   await run.waitUntil(({stderr}) =>
