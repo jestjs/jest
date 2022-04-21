@@ -108,6 +108,17 @@ it('does not report timeouts using unref', () => {
   expect(textAfterTest).toBe('');
 });
 
+it('does not report child_process using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'child_process',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
 it('prints out info about open handlers from inside tests', async () => {
   const run = runContinuous('detect-open-handles', [
     'inside',
