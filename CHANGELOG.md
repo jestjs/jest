@@ -94,6 +94,7 @@
 - `[@jest/reporters]` Move missing icon file which is needed for `NotifyReporter` class. ([#12593](https://github.com/facebook/jest/pull/12593))
 - `[@jest/reporters]` Update `v8-to-istanbul` ([#12697](https://github.com/facebook/jest/pull/12697))
 - `[jest-resolver]` Call custom resolver with core node.js modules ([#12654](https://github.com/facebook/jest/pull/12654))
+- `[jest-runner]` Correctly resolve `source-map-support` ([#12706](https://github.com/facebook/jest/pull/12706))
 - `[jest-worker]` Fix `Farm` execution results memory leak ([#12497](https://github.com/facebook/jest/pull/12497))
 
 ### Chore & Maintenance
