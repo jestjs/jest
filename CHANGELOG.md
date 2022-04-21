@@ -75,6 +75,7 @@
 - `[jest-config]` [**BREAKING**] Add `mjs` and `cjs` to default `moduleFileExtensions` config ([#12578](https://github.com/facebook/jest/pull/12578))
 - `[jest-config, jest-haste-map]` Allow searching for tests in `node_modules` by exposing `retainAllFiles` ([#11084](https://github.com/facebook/jest/pull/11084))
 - `[jest-core]` [**BREAKING**] Exit with status `1` if no tests are found with `--findRelatedTests` flag ([#12487](https://github.com/facebook/jest/pull/12487))
+- `[jest-core]` Do not report unref-ed subprocesses as open handles ([#12705](https://github.com/facebook/jest/pull/12705))
 - `[jest-each]` `%#` is not replaced with index of the test case ([#12517](https://github.com/facebook/jest/pull/12517))
 - `[jest-each]` Fixes error message with incorrect count of missing arguments ([#12464](https://github.com/facebook/jest/pull/12464))
 - `[jest-environment-jsdom]` Make `jsdom` accessible to extending environments again ([#12232](https://github.com/facebook/jest/pull/12232))
