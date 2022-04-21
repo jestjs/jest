@@ -9,7 +9,11 @@ import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {AsyncResolver, JestResolver, SyncResolver} from 'jest-resolve';
 
 type PackageJson = Record<string, unknown>;
-type PackageFilter = (pkg: PackageJson, dir: string) => PackageJson;
+type PackageFilter = (
+  pkg: PackageJson,
+  file: string,
+  dir: string,
+) => PackageJson;
 type PathFilter = (
   pkg: PackageJson,
   path: string,
