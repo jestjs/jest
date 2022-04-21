@@ -65,6 +65,7 @@ describe('Test Retries', () => {
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
     }
+
     expect(jsonResult.numPassedTests).toBe(0);
     expect(jsonResult.numFailedTests).toBe(1);
     expect(jsonResult.numPendingTests).toBe(0);
