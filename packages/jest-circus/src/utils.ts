@@ -355,7 +355,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
-    retryReasons: test.retryReasons,
+    retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     status,
     testPath: Array.from(testPath),
   };
@@ -477,7 +477,7 @@ export const parseSingleTestResult = (
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: 0,
-    retryReasons: testResult.retryReasons,
+    retryReasons: Array.from(testResult.retryReasons),
     status,
     title: testResult.testPath[testResult.testPath.length - 1],
   };

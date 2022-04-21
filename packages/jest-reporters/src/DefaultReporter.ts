@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {deserialize} from 'v8';
 import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
@@ -199,8 +198,7 @@ export default class DefaultReporter extends BaseReporter {
           this.log(
             `${chalk.reset.inverse.bold.redBright(` RETRY ${index + 1} `)}\n`,
           );
-          // eslint-disable-next-line no-console
-          console.log(deserialize(retryReasons));
+          this.log(retryReasons);
           this.log('\n');
         });
       }
