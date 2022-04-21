@@ -2118,14 +2118,8 @@ export default class Runtime {
       return jestObject;
     };
 
-    const retryTimes = (
-      numTestRetries: number,
-      options?: {
-        logErrorsBeforeRetry?: boolean;
-      },
-    ) => {
+    const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
       this._environment.global[retryTimesSymbol] = numTestRetries;
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[logErrorsBeforeRetrySymbol] =
         options?.logErrorsBeforeRetry;
 
