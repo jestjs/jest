@@ -6,7 +6,6 @@
  */
 
 import type {Circus} from '@jest/types';
-import type {Expect} from 'expect';
 
 export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
@@ -23,7 +22,6 @@ declare global {
       [RETRY_TIMES]: string;
       [TEST_TIMEOUT_SYMBOL]: number;
       [LOG_ERRORS_BEFORE_RETRY]: boolean;
-      expect: Expect;
     }
   }
 }

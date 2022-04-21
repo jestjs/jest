@@ -22,7 +22,6 @@
 - `[jest-core, jest-watcher]` [**BREAKING**] Move `TestWatcher` class to `jest-watcher` package ([#12652](https://github.com/facebook/jest/pull/12652))
 - `[jest-core]` Allow using Summary Reporter as stand-alone reporter ([#12687](https://github.com/facebook/jest/pull/12687))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade jsdom to 19.0.0 ([#12290](https://github.com/facebook/jest/pull/12290))
-- `[expect]` [**BREAKING**] Migrate to ESM ([#12344](https://github.com/facebook/jest/pull/12344))
 - `[jest-environment-jsdom]` [**BREAKING**] Add default `browser` condition to `exportConditions` for `jsdom` environment ([#11924](https://github.com/facebook/jest/pull/11924))
 - `[jest-environment-jsdom]` [**BREAKING**] Pass global config to Jest environment constructor for `jsdom` environment ([#12461](https://github.com/facebook/jest/pull/12461))
 - `[jest-environment-jsdom]` [**BREAKING**] Second argument `context` to constructor is mandatory ([#12469](https://github.com/facebook/jest/pull/12469))

@@ -14,7 +14,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {deserialize} from 'jest-serializer';
+import {deserialize, } from 'v8';
 import {clearLine, isInteractive} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import Status from './Status';
