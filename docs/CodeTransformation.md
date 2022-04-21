@@ -33,19 +33,20 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
-interface TransformOptions<OptionType = unknown> {
+interface TransformOptions<TransformerConfig = unknown> {
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
   instrument: boolean;
-  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: Map<string, string>;
-  config: Config.ProjectConfig;
-  /** A stringified version of the configuration - useful in cache busting */
+  /** Jest configuration of currently running project. */
+  config: ProjectConfig;
+  /** Stringified version of the `config` - useful in cache busting. */
   configString: string;
-  /** the options passed through Jest's config by the user */
-  transformerConfig: OptionType;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig: TransformerConfig;
 }
 
 type TransformedSource = {
@@ -53,70 +54,70 @@ type TransformedSource = {
   map?: RawSourceMap | string | null;
 };
 
-interface SyncTransformer<OptionType = unknown> {
+interface SyncTransformer<TransformerConfig = unknown> {
   canInstrument?: boolean;
 
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
-interface AsyncTransformer<OptionType = unknown> {
+interface AsyncTransformer<TransformerConfig = unknown> {
   canInstrument?: boolean;
 
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
-type Transformer<OptionType = unknown> =
-  | SyncTransformer<OptionType>
-  | AsyncTransformer<OptionType>;
+type Transformer<TransformerConfig = unknown> =
+  | SyncTransformer<TransformerConfig>
+  | AsyncTransformer<TransformerConfig>;
 
 type TransformerCreator<
-  X extends Transformer<OptionType>,
-  OptionType = unknown,
-> = (options?: OptionType) => X;
+  X extends Transformer<TransformerConfig>,
+  TransformerConfig = unknown,
+> = (transformerConfig?: TransformerConfig) => X;
 
 type TransformerFactory<X extends Transformer> = {
   createTransformer: TransformerCreator<X>;
