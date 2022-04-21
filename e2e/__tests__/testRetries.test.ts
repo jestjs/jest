@@ -31,16 +31,14 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stdout.includes(logErrorsBeforeRetryErrorMessage)).toBe(
-      false,
-    );
+    expect(result.stdout).not.toContain(logErrorsBeforeRetryErrorMessage);
   });
 
   it('logs error(s) before retry', () => {
     const result = runJest('test-retries', ['logErrorsBeforeRetries.test.js']);
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
-    expect(result.stdout.includes(logErrorsBeforeRetryErrorMessage)).toBe(true);
+    expect(result.stdout).toContain(logErrorsBeforeRetryErrorMessage);
   });
 
   it('reporter shows more than 1 invocation if test is retried', () => {
