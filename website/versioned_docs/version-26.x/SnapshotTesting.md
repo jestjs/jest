@@ -14,7 +14,7 @@ A similar approach can be taken when it comes to testing your React components. 
 ```tsx
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
+import Link from '../Link';
 
 it('renders correctly', () => {
   const tree = renderer
@@ -137,6 +137,8 @@ it('renders correctly', () => {
 ```
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
+
+The writing of snapshots into your source code is performed via [prettier](https://www.npmjs.com/package/prettier). If you're not already using it in your project but want to use inline snapshots, you'll just need to install it under your `devDependencies`.
 
 ### Property Matchers
 

@@ -57,11 +57,10 @@ export default function getResultHeader(
 
   const projectDisplayName =
     projectConfig && projectConfig.displayName
-      ? printDisplayName(projectConfig) + ' '
+      ? `${printDisplayName(projectConfig)} `
       : '';
 
-  return (
-    `${status} ${projectDisplayName}${fileLink}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
-  );
+  return `${status} ${projectDisplayName}${fileLink}${
+    testDetail.length ? ` (${testDetail.join(', ')})` : ''
+  }`;
 }

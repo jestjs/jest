@@ -100,9 +100,9 @@ jest --update-snapshot --detectOpenHandles
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -234,7 +234,7 @@ Run all tests affected by file changes in the last commit made. Behaves similarl
 
 ### `--listTests`
 
-Lists all tests as JSON that Jest will run given the arguments, and exits. This can be used together with `--findRelatedTests` to know which tests Jest will run.
+Lists all test files that Jest will run given the arguments, and exits.
 
 ### `--logHeapUsage`
 
@@ -330,6 +330,10 @@ Note that `column` is 0-indexed while `line` is not.
   "line": 5
 }
 ```
+
+### `--testMatch glob1 ... globN`
+
+The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
 
 ### `--testNamePattern=<regex>`
 

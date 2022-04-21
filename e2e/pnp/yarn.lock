@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
+  version: 6
 
 "foo@portal:./lib::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.0-use.local

@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {HasteMapObject} from 'jest-haste-map';
-import Runtime, {Context} from 'jest-runtime';
+import Runtime from 'jest-runtime';
 
 export default function createContext(
   config: Config.ProjectConfig,
   {hasteFS, moduleMap}: HasteMapObject,
-): Context {
+): TestContext {
   return {
     config,
     hasteFS,

@@ -43,6 +43,7 @@ const _runTestsForDescribeBlock = async (
   }
 
   // Tests that fail and are retried we run after other tests
+  // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
@@ -141,7 +142,7 @@ const _callCircusHook = async ({
   hook,
   test,
   describeBlock,
-  testContext,
+  testContext = {},
 }: {
   hook: Circus.Hook;
   describeBlock?: Circus.DescribeBlock;
@@ -157,7 +158,7 @@ const _callCircusHook = async ({
       timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
   }
 };
@@ -180,7 +181,7 @@ const _callCircusTest = async (
       timeout,
     });
     await dispatch({name: 'test_fn_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
   }
 };

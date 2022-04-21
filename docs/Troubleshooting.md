@@ -140,7 +140,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `globalThis.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
@@ -162,6 +162,8 @@ Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecommen
 
 In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
+<!-- TODO: Use `npm2yarn` after https://github.com/facebook/docusaurus/pull/6005 is merged -->
+
 ```bash
 # Using Jest CLI
 jest --runInBand
@@ -179,6 +181,18 @@ jest --maxWorkers=4
 # Using yarn test (e.g. with create-react-app)
 yarn test --maxWorkers=4
 ```
+
+If you use GitHub Actions, you can use [`github-actions-cpu-cores`](https://github.com/SimenB/github-actions-cpu-cores) to detect number of CPUs, and pass that to Jest.
+
+```yaml
+- name: Get number of CPU cores
+  id: cpu-cores
+  uses: SimenB/github-actions-cpu-cores@v1
+- name: run tests
+  run: yarn jest --max-workers ${{ steps.cpu-cores.outputs.count }}
+```
+
+Another thing you can do is use the [`shard`](CLI.md#--shard) flag to parallelize the test run across multiple machines.
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 

@@ -26,6 +26,7 @@
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
     {"path": "../jest-watcher"},
+    {"path": "../pretty-format"},
     {"path": "../test-utils"}
   ]
 }

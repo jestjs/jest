@@ -47,13 +47,12 @@ const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors']
       );
 
       expectedAssertionsNumberError!.message =
-        matcherHint('.assertions', '', String(expectedAssertionsNumber), {
+        `${matcherHint('.assertions', '', expectedAssertionsNumber.toString(), {
           isDirectExpectCall: true,
-        }) +
-        '\n\n' +
-        `Expected ${numOfAssertionsExpected} to be called but received ` +
-        RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
-        '.';
+        })}\n\n` +
+        `Expected ${numOfAssertionsExpected} to be called but received ${RECEIVED_COLOR(
+          pluralize('assertion call', assertionCalls || 0),
+        )}.`;
 
       result.push({
         actual: assertionCalls.toString(),
@@ -65,12 +64,12 @@ const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors']
       const expected = EXPECTED_COLOR('at least one assertion');
       const received = RECEIVED_COLOR('received none');
 
-      isExpectingAssertionsError!.message =
-        matcherHint('.hasAssertions', '', '', {
-          isDirectExpectCall: true,
-        }) +
-        '\n\n' +
-        `Expected ${expected} to be called but ${received}.`;
+      isExpectingAssertionsError!.message = `${matcherHint(
+        '.hasAssertions',
+        '',
+        '',
+        {isDirectExpectCall: true},
+      )}\n\nExpected ${expected} to be called but ${received}.`;
 
       result.push({
         actual: 'none',

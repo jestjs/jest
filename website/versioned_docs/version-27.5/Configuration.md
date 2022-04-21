@@ -80,9 +80,9 @@ module.exports = {
 };
 ```
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -140,7 +140,7 @@ Default: `"/tmp/<path>"`
 
 The directory where Jest should store its cached dependency information.
 
-Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
+Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem churn that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 ### `clearMocks` \[boolean]
 
@@ -844,7 +844,7 @@ module.exports = (request, options) => {
 };
 ```
 
-While Jest does not support [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points) (beyond `main`), Jest will provide `conditions` as an option when calling custom resolvers, which can be used to implement support for `exports` in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS. Additionally, custom test environments can specify an `exportConditions` method which returns an array of conditions that will be passed along with Jest's defaults.
+Jest currently only supports the "main" (`.`) subpath from [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points). However, since Jest provides `conditions` as an option when calling custom resolvers, full support for `exports` can be implemented in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS. Additionally, custom test environments can specify an `exportConditions` method which returns an array of conditions that will be passed along with Jest's defaults.
 
 ### `restoreMocks` \[boolean]
 
@@ -890,14 +890,14 @@ _Note: The `runner` property value can omit the `jest-runner-` prefix of the pac
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 
 ```ts
-async runTests(
+async function runTests(
   tests: Array<Test>,
   watcher: TestWatcher,
   onStart: OnTestStart,
   onResult: OnTestSuccess,
   onFailure: OnTestFailure,
   options: TestRunnerOptions,
-): Promise<void>
+): Promise<void>;
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
@@ -944,7 +944,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 Default: `undefined`
 
-Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 
 ```json
 {
@@ -1014,11 +1014,11 @@ Example serializer module:
 // my-serializer-module
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return 'Pretty foo: ' + printer(val.foo);
+    return `Pretty foo: ${printer(val.foo)}`;
   },
 
   test(val) {
-    return val && val.hasOwnProperty('foo');
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
   },
 };
 ```

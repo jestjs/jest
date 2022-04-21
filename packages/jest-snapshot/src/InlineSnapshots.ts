@@ -14,7 +14,6 @@ import type {
   BuiltInParserName as PrettierParserName,
 } from 'prettier';
 import semver = require('semver');
-import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
@@ -47,7 +46,7 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: Config.Path,
+  prettierPath: string,
 ): void {
   let prettier: Prettier | null = null;
   if (prettierPath) {
@@ -72,7 +71,7 @@ export function saveInlineSnapshots(
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Config.Path,
+  sourceFilePath: string,
   prettier?: Prettier,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
@@ -362,7 +361,7 @@ const createFormattingParser =
     return ast;
   };
 
-const simpleDetectParser = (filePath: Config.Path): PrettierParserName => {
+const simpleDetectParser = (filePath: string): PrettierParserName => {
   const extname = path.extname(filePath);
   if (/\.tsx?$/.test(extname)) {
     return 'typescript';

@@ -9,10 +9,17 @@ const chalk = require('chalk');
 const Immutable = require('immutable');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {stringify} = require('jest-matcher-utils');
-const jestExpect = require('../');
+const {expect: jestExpect} = require('../');
 const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
+
+jestExpect.extend({
+  optionalFn(fn) {
+    const pass = fn === undefined || typeof fn === 'function';
+    return {message: () => 'expect either a function or undefined', pass};
+  },
+});
 
 beforeAll(() => {
   chalk.enabled = true;
@@ -441,6 +448,40 @@ describe('.toStrictEqual()', () => {
       Uint8Array.from([9, 3]).buffer,
     );
   });
+
+  it('fails for missing keys even if backed by an asymmetric matcher accepting them', () => {
+    // issue 12463
+    expect({a: 1}).not.toStrictEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).not.toStrictEqual({a: 1});
+    expect([1]).not.toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).not.toStrictEqual([1]);
+  });
+
+  it('passes if keys are present and asymmetric matcher accept them', () => {
+    // issue 12463
+    // with a proper function
+    expect({a: 1, b: () => {}}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: () => {},
+    });
+    expect([1, () => {}]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, () => {}]);
+    // with undefined
+    expect({a: 1, b: undefined}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: undefined,
+    });
+    expect([1, undefined]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, undefined]);
+  });
   /* eslint-enable */
 });
 
@@ -848,6 +889,45 @@ describe('.toEqual()', () => {
       // eslint-disable-next-line no-sparse-arrays
       [, , 1, undefined, ,], // same length but hole replaced by undefined
     ],
+    // issue 12463 - "matcher" vs "proper function"
+    [
+      {a: 1, b: () => {}},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: () => {}},
+    ],
+    [
+      [1, () => {}],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, () => {}],
+    ],
+    // issue 12463 - "matcher" vs "undefined"
+    [
+      {a: 1, b: undefined},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: undefined},
+    ],
+    [
+      [1, undefined],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, undefined],
+    ],
+    // issue 12463 - "matcher" vs "missing"
+    [{a: 1}, {a: 1, b: jestExpect.optionalFn()}],
+    [{a: 1, b: jestExpect.optionalFn()}, {a: 1}],
+    [[1], [1, jestExpect.optionalFn()]],
+    [[1, jestExpect.optionalFn()], [1]],
   ].forEach(([a, b]) => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
@@ -1883,7 +1963,6 @@ describe('.toHaveProperty()', () => {
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
-    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [{a: {b: [{c: [{d: 1}]}]}}, 'a.b[0].c[0].d', 1],
     [{a: {b: [{c: {d: [{e: 1}, {f: 2}]}}]}}, 'a.b[0].c.d[1].f', 2],
@@ -1927,7 +2006,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
+    [{a: {}}, 'a.b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

@@ -16,7 +16,7 @@ type RunnerUpdateFunction = (failure?: AssertionLocation) => void;
 const {ARROW, CLEAR} = specialChars;
 
 function describeKey(key: string, description: string) {
-  return `${chalk.dim(ARROW + 'Press')} ${key} ${chalk.dim(description)}`;
+  return `${chalk.dim(`${ARROW}Press`)} ${key} ${chalk.dim(description)}`;
 }
 
 const TestProgressLabel = chalk.bold('Interactive Test Progress');
@@ -109,7 +109,7 @@ export default class FailedTestsInteractiveMode {
       describeKey('Enter', 'to return to watch mode.'),
     ];
 
-    this._pipe.write(messages.join('\n') + '\n');
+    this._pipe.write(`${messages.join('\n')}\n`);
   }
 
   private _drawUIDoneWithSkipped() {
@@ -119,7 +119,7 @@ export default class FailedTestsInteractiveMode {
 
     if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('test', this._skippedNum) + ' skipped',
+        `${pluralize('test', this._skippedNum)} skipped`,
       );
 
       stats = `${stats}, ${skippedText}`;
@@ -147,7 +147,7 @@ export default class FailedTestsInteractiveMode {
 
     if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('test', this._skippedNum) + ' skipped',
+        `${pluralize('test', this._skippedNum)} skipped`,
       );
 
       stats = `${stats}, ${skippedText}`;

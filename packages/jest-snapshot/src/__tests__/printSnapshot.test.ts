@@ -19,7 +19,12 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
-import jestSnapshot = require('../index');
+import {
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../index';
 import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
@@ -132,13 +137,6 @@ expect.addSnapshotSerializer({
   },
 });
 
-const {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} = jestSnapshot;
-
 describe('chalk', () => {
   // Because these tests give code coverage of get functions
   // and give confidence that the escape sequences are correct,
@@ -179,8 +177,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground1 + aOpenBackground1 + '-');
-    expect(formatted).toMatch(bOpenForeground1 + bOpenBackground1 + '+');
+    expect(formatted).toMatch(`${aOpenForeground1 + aOpenBackground1}-`);
+    expect(formatted).toMatch(`${bOpenForeground1 + bOpenBackground1}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -191,8 +189,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground2 + aOpenBackground2 + '-');
-    expect(formatted).toMatch(bOpenForeground2 + bOpenBackground2 + '+');
+    expect(formatted).toMatch(`${aOpenForeground2 + aOpenBackground2}-`);
+    expect(formatted).toMatch(`${bOpenForeground2 + bOpenBackground2}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -203,8 +201,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground3 + aOpenBackground3 + '-');
-    expect(formatted).toMatch(bOpenForeground3 + bOpenBackground3 + '+');
+    expect(formatted).toMatch(`${aOpenForeground3 + aOpenBackground3}-`);
+    expect(formatted).toMatch(`${bOpenForeground3 + bOpenBackground3}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -466,7 +464,7 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: fullTestName => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
@@ -608,7 +606,7 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: fullTestName => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
@@ -947,7 +945,7 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsUnified if either string is longer than max.
       const lessChange = chalk.inverse('single ');
       const less = 'single line';
-      const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
+      const more = `multi line${'\n123456789'.repeat(2000)}`; // 10 + 20K chars
 
       test('both are less', () => {
         const less2 = 'multi\nline';
@@ -980,9 +978,9 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsRaw if either string is longer than max.
       const lessChange = chalk.inverse('no');
       const less = 'no numbers';
-      const more = 'many numbers' + ' 123456789'.repeat(2000); // 12 + 20K chars
-      const lessQuoted = '"' + less + '"';
-      const moreQuoted = '"' + more + '"';
+      const more = `many numbers${' 123456789'.repeat(2000)}`; // 12 + 20K chars
+      const lessQuoted = `"${less}"`;
+      const moreQuoted = `"${more}"`;
 
       test('both are less', () => {
         const lessQuoted2 = '"0 numbers"';

@@ -13,7 +13,7 @@ import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
-  escapePathForRegex(path.sep + '__mocks__' + path.sep),
+  escapePathForRegex(`${path.sep}__mocks__${path.sep}`),
 );
 
 const cachedRegexes = new Map<string, RegExp>();
@@ -31,7 +31,7 @@ const getRegex = (regexStr: string) => {
 };
 
 export default function shouldInstrument(
-  filename: Config.Path,
+  filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {

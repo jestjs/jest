@@ -16,9 +16,6 @@ import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
 
-// TODO: remove export in Jest 28
-export {resolveTestEnvironment as getTestEnvironment} from 'jest-resolve';
-
 export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
@@ -28,7 +25,7 @@ export {default as descriptions} from './Descriptions';
 export {constants};
 
 type ReadConfig = {
-  configPath: Config.Path | null | undefined;
+  configPath: string | null | undefined;
   globalConfig: Config.GlobalConfig;
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
@@ -36,15 +33,15 @@ type ReadConfig = {
 
 export async function readConfig(
   argv: Config.Argv,
-  packageRootOrConfig: Config.Path | Config.InitialOptions,
+  packageRootOrConfig: string | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigDirname?: Config.Path | null,
+  parentConfigDirname?: string | null,
   projectIndex = Infinity,
-  skipMultipleConfigWarning = false,
+  skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   let rawOptions: Config.InitialOptions;
   let configPath = null;
@@ -81,7 +78,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       argv.config,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
@@ -89,7 +86,7 @@ export async function readConfig(
     configPath = resolveConfigPath(
       packageRootOrConfig,
       process.cwd(),
-      skipMultipleConfigWarning,
+      skipMultipleConfigError,
     );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
@@ -120,6 +117,7 @@ const groupOptions = (
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
+    ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
@@ -156,6 +154,7 @@ const groupOptions = (
     reporters: options.reporters,
     rootDir: options.rootDir,
     runTestsByPath: options.runTestsByPath,
+    shard: options.shard,
     silent: options.silent,
     skipFilter: options.skipFilter,
     snapshotFormat: options.snapshotFormat,
@@ -186,21 +185,20 @@ const groupOptions = (
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
     extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
-    extraGlobals: options.extraGlobals,
+    fakeTimers: options.fakeTimers,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
     globalSetup: options.globalSetup,
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    id: options.id,
     injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
-    moduleLoader: options.moduleLoader,
     moduleNameMapper: options.moduleNameMapper,
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
-    name: options.name,
     prettierPath: options.prettierPath,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
@@ -209,6 +207,8 @@ const groupOptions = (
     rootDir: options.rootDir,
     roots: options.roots,
     runner: options.runner,
+    runtime: options.runtime,
+    sandboxInjectedGlobals: options.sandboxInjectedGlobals,
     setupFiles: options.setupFiles,
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
@@ -224,8 +224,6 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
-    testURL: options.testURL,
-    timers: options.timers,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
@@ -280,7 +278,7 @@ This usually means that your ${chalk.bold(
 // (and only) project.
 export async function readConfigs(
   argv: Config.Argv,
-  projectPaths: Array<Config.Path>,
+  projectPaths: Array<string>,
 ): Promise<{
   globalConfig: Config.GlobalConfig;
   configs: Array<Config.ProjectConfig>;
@@ -290,7 +288,7 @@ export async function readConfigs(
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: Config.Path | null | undefined;
+  let configPath: string | null | undefined;
 
   if (projectPaths.length === 1) {
     const parsedConfig = await readConfig(argv, projects[0]);

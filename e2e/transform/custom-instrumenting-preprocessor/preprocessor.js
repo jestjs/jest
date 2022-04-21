@@ -8,12 +8,12 @@
 module.exports = {
   canInstrument: true,
   process(src, filename, options) {
-    src = `${src};\nglobal.__PREPROCESSED__ = true;`;
+    let code = `${src};\nglobalThis.__PREPROCESSED__ = true;`;
 
     if (options.instrument) {
-      src = `${src};\nglobal.__INSTRUMENTED__ = true;`;
+      code = `${src};\nglobalThis.__INSTRUMENTED__ = true;`;
     }
 
-    return src;
+    return {code};
   },
 };

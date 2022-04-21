@@ -5,25 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
-
-try {
-  require('async_hooks');
-} catch (e: any) {
-  if (e.code === 'MODULE_NOT_FOUND') {
-    // eslint-disable-next-line jest/no-focused-tests
-    fit('skip test for unsupported nodes', () => {
-      console.warn('Skipping test for node ' + process.version);
-    });
-  } else {
-    throw e;
-  }
-}
 
 function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
+
+beforeAll(() => {
+  jest.retryTimes(3);
+});
 
 it('prints message about flag on slow tests', async () => {
   const run = runContinuous('detect-open-handles', ['outside']);
@@ -81,16 +71,14 @@ it('does not report crypto random data', () => {
   expect(textAfterTest).toBe('');
 });
 
-onNodeVersions('>=12', () => {
-  it('does not report ELD histograms', () => {
-    const {stderr} = runJest('detect-open-handles', [
-      'histogram',
-      '--detectOpenHandles',
-    ]);
-    const textAfterTest = getTextAfterTest(stderr);
+it('does not report ELD histograms', () => {
+  const {stderr} = runJest('detect-open-handles', [
+    'histogram',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
 
-    expect(textAfterTest).toBe('');
-  });
+  expect(textAfterTest).toBe('');
 });
 
 describe('notify', () => {
@@ -109,17 +97,15 @@ describe('notify', () => {
   });
 });
 
-onNodeVersions('>=12', () => {
-  it('does not report timeouts using unref', () => {
-    // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-    const {stderr} = runJest('detect-open-handles', [
-      'unref',
-      '--detectOpenHandles',
-    ]);
-    const textAfterTest = getTextAfterTest(stderr);
+it('does not report timeouts using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'unref',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
 
-    expect(textAfterTest).toBe('');
-  });
+  expect(textAfterTest).toBe('');
 });
 
 it('prints out info about open handlers from inside tests', async () => {

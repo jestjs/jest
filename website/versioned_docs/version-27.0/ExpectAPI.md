@@ -9,9 +9,9 @@ For additional Jest matchers maintained by the Jest Community check out [`jest-e
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -70,11 +70,15 @@ test('numeric ranges', () => {
 _Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
   }
 }
 ```
@@ -169,6 +173,7 @@ expect.extend({
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
@@ -178,6 +183,7 @@ expect.extend({
             expand: this.expand,
           });
           return (
+            // eslint-disable-next-line prefer-template
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -417,7 +423,7 @@ describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
 For example, let's say that we have a function `doAsync` that receives two callbacks `callback1` and `callback2`, it will asynchronously call both of them in an unknown order. We can test this with:
 
 ```js
-test('doAsync calls both callbacks', async () => {
+test('doAsync calls both callbacks', () => {
   expect.assertions(2);
   function callback1(data) {
     expect(data).toBeTruthy();
@@ -731,7 +737,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -1123,6 +1129,8 @@ test('the flavor list contains lime', () => {
   expect(getAllFlavors()).toContain('lime');
 });
 ```
+
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
 
 ### `.toContainEqual(item)`
 

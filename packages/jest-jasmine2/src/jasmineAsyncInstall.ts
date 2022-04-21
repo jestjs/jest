@@ -100,7 +100,7 @@ function promisifyLifeCycleFunction(
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -108,7 +108,7 @@ function promisifyIt(
   jasmine: Jasmine,
 ) {
   return function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn?: (done: DoneFn) => void | PromiseLike<void>,
     timeout?: number,
   ): Spec {
@@ -183,7 +183,7 @@ function promisifyIt(
 
 function makeConcurrent(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -191,7 +191,7 @@ function makeConcurrent(
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
@@ -212,7 +212,7 @@ function makeConcurrent(
           `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
-    } catch (error: unknown) {
+    } catch (error) {
       promise = Promise.reject(error);
     }
     // Avoid triggering the uncaught promise rejection handler in case the test errors before
@@ -230,7 +230,7 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();

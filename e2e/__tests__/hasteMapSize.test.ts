@@ -24,10 +24,10 @@ afterEach(() => cleanup(DIR));
 const options = {
   extensions: ['js'],
   forceNodeFilesystemAPI: true,
+  id: 'tmp',
   ignorePattern: / ^/,
   maxWorkers: 2,
   mocksPattern: '',
-  name: 'tmp',
   platforms: [],
   retainAllFiles: true,
   rootDir: DIR,
@@ -37,13 +37,13 @@ const options = {
 };
 
 test('reports the correct file size', async () => {
-  const hasteMap = new HasteMap(options);
+  const hasteMap = await HasteMap.create(options);
   const hasteFS = (await hasteMap.build()).hasteFS;
   expect(hasteFS.getSize(path.join(DIR, 'file.js'))).toBe(5);
 });
 
 test('updates the file size when a file changes', async () => {
-  const hasteMap = new HasteMap({...options, watch: true});
+  const hasteMap = await HasteMap.create({...options, watch: true});
   await hasteMap.build();
 
   writeFiles(DIR, {

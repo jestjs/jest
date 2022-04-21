@@ -3,7 +3,7 @@
 import utils from '../utils';
 
 test('implementation created by automock', () => {
-  expect(utils.authorize('wizzard')).toBeUndefined();
+  expect(utils.authorize('wizard')).toBeUndefined();
   expect(utils.isAuthorized()).toBeUndefined();
 });
 

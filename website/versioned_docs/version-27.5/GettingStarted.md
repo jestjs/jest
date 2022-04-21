@@ -122,23 +122,6 @@ module.exports = {
 
 </details>
 
-<details><summary markdown="span"><strong>Babel 6 support</strong></summary>
-
-Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
-
-```
-"dependencies": {
-  "babel-core": "^6.26.3",
-  "babel-jest": "^23.6.0",
-  "babel-preset-env": "^1.7.0",
-  "jest": "^24.0.0"
-}
-```
-
-While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
-
-</details>
-
 ### Using webpack
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
@@ -146,6 +129,8 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 ### Using parcel
 
 Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
+
+### Using TypeScript
 
 ### Using TypeScript via Babel
 
@@ -172,6 +157,10 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 ### Using TypeScript via ts-jest
 
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
+
+```bash
+yarn add --dev ts-jest
+```
 
 You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
 

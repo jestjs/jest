@@ -14,7 +14,7 @@ A similar approach can be taken when it comes to testing your React components. 
 ```tsx
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
+import Link from '../Link';
 
 it('renders correctly', () => {
   const tree = renderer
@@ -133,6 +133,8 @@ it('renders correctly', () => {
 ```
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
+
+By default, Jest handles the writing of snapshots into your source code. However, if you're using [prettier](https://www.npmjs.com/package/prettier) in your project, Jest will detect this and delegate the work to prettier instead (including honoring your configuration).
 
 ### Property Matchers
 
