@@ -804,30 +804,42 @@ By default, each test file gets its own independent module registry. Enabling `r
 
 Default: `undefined`
 
-This option allows the use of a custom resolver. This resolver must be a node module that exports _either_:
+This option allows the use of a custom resolver. This resolver must be a module that exports _either_:
 
 1. a function expecting a string as the first argument for the path to resolve and an options object as the second argument. The function should either return a path to the module that should be resolved or throw an error if the module can't be found. _or_
 2. an object containing `async` and/or `sync` properties. The `sync` property should be a function with the shape explained above, and the `async` property should also be a function that accepts the same arguments, but returns a promise which resolves with the path to the module or rejects with an error.
 
 The options object provided to resolvers has the shape:
 
-```json
-{
-  "basedir": string,
-  "conditions": [string],
-  "defaultResolver": "function(request, options) -> string",
-  "extensions": [string],
-  "moduleDirectory": [string],
-  "paths": [string],
-  "packageFilter": "function(pkg, pkgdir)",
-  "pathFilter": "function(pkg, path, relativePath)",
-  "rootDir": [string]
-}
+```ts
+type PackageJson = Record<string, unknown>;
+
+type ResolverOptions = {
+  /** Directory to begin resolving from. */
+  basedir: string;
+  browser?: boolean;
+  /** List of export conditions. */
+  conditions?: Array<string>;
+  /** Instance of default resolver. */
+  defaultResolver: (path: string, options: ResolverOptions) => string;
+  /** List of file extensions to search in order. */
+  extensions?: Array<string>;
+  /** List of directory names to be looked up for modules recursively. */
+  moduleDirectory?: Array<string>;
+  /** List of `require.paths` to use if nothing is found in `node_modules`. */
+  paths?: Array<string>;
+  /** Allows transforming parsed `package.json` contents. */
+  packageFilter?: (pkg: PackageJson, file: string, dir: string) => PackageJson;
+  /** Allows transforms a path within a package. */
+  pathFilter?: (pkg: PackageJson, path: string, relativePath: string) => string;
+  /** Current root directory. */
+  rootDir?: string;
+};
 ```
 
 :::tip
 
-The `defaultResolver` passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom synchronous one, e.g. `(request, options)` and returns a string or throws.
+The `defaultResolver` passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom synchronous one, e.g. `(path, options)` and returns a string or throws.
 
 :::
 
@@ -835,10 +847,7 @@ For example, if you want to respect Browserify's [`"browser"` field](https://git
 
 ```json
 {
-  ...
-  "jest": {
-    "resolver": "<rootDir>/resolver.js"
-  }
+  "resolver": "<rootDir>/resolver.js"
 }
 ```
 
@@ -850,19 +859,8 @@ module.exports = browserResolve.sync;
 
 By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
 
-```json
-{
-  ...
-  "jest": {
-    "resolver": "my-module-resolve"
-  }
-}
-```
-
 ```js
-// my-module-resolve package
-
-module.exports = (request, options) => {
+module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(request, {
     ...options,

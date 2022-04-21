@@ -24,7 +24,7 @@ import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
-type FindNodeModuleConfig = {
+export type FindNodeModuleConfig = {
   basedir: string;
   browser?: boolean;
   conditions?: Array<string>;
@@ -858,7 +858,7 @@ Please check your configuration for these entries:
 
 type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
 type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
-type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
+export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
 function loadResolver(
   resolver: string | undefined | null,
