@@ -58,7 +58,7 @@
 - `[jest-test-result]` Add duration property to JSON test output ([#12518](https://github.com/facebook/jest/pull/12518))
 - `[jest-watcher]` [**BREAKING**] Make `PatternPrompt` class to take `entityName` as third constructor parameter instead of `this._entityName` ([#12591](https://github.com/facebook/jest/pull/12591))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
-- `[jest-worker]` [**BREAKING**] Default to advanced serialization when using child process workers ([#10983] (https://github.com/facebook/jest/pull/10983))
+- `[jest-worker]` [**BREAKING**] Default to advanced serialization when using child process workers ([#10983](https://github.com/facebook/jest/pull/10983))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
 
 ### Fixes
@@ -94,6 +94,7 @@
 - `[@jest/reporters]` Move missing icon file which is needed for `NotifyReporter` class. ([#12593](https://github.com/facebook/jest/pull/12593))
 - `[@jest/reporters]` Update `v8-to-istanbul` ([#12697](https://github.com/facebook/jest/pull/12697))
 - `[jest-resolver]` Call custom resolver with core node.js modules ([#12654](https://github.com/facebook/jest/pull/12654))
+- `[jest-runner]` Correctly resolve `source-map-support` ([#12706](https://github.com/facebook/jest/pull/12706))
 - `[jest-worker]` Fix `Farm` execution results memory leak ([#12497](https://github.com/facebook/jest/pull/12497))
 
 ### Chore & Maintenance
