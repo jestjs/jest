@@ -206,8 +206,8 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_retry': {
       const logErrorsBeforeRetry: boolean =
-        // @ts-expect-error
-        globalThis[LOG_ERRORS_BEFORE_RETRY] || false;
+        // eslint-disable-next-line no-restricted-globals
+        global[LOG_ERRORS_BEFORE_RETRY] || false;
       if (logErrorsBeforeRetry) {
         event.test.retryReasons.push(...event.test.errors);
       }
