@@ -79,7 +79,7 @@ const defaultResolver: SyncResolver = (path, options) => {
     return pnpResolver(path, options);
   }
 
-  // @ts-expect-error: TODO packageFilter typings should be fixed in @types/resolve
+  // @ts-expect-error: TODO remove after merging https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59990
   const resolveOptions: UpstreamResolveOptionsWithConditions = {
     ...options,
     isDirectory,
