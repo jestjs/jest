@@ -58,7 +58,7 @@
 - `[jest-test-result]` Add duration property to JSON test output ([#12518](https://github.com/facebook/jest/pull/12518))
 - `[jest-watcher]` [**BREAKING**] Make `PatternPrompt` class to take `entityName` as third constructor parameter instead of `this._entityName` ([#12591](https://github.com/facebook/jest/pull/12591))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
-- `[jest-worker]` [**BREAKING**] Default to advanced serialization when using child process workers ([#10983] (https://github.com/facebook/jest/pull/10983))
+- `[jest-worker]` [**BREAKING**] Default to advanced serialization when using child process workers ([#10983](https://github.com/facebook/jest/pull/10983))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
 
 ### Fixes
