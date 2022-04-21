@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {deserialize} from 'v8';
 import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
@@ -14,7 +15,6 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {deserialize, } from 'v8';
 import {clearLine, isInteractive} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import Status from './Status';

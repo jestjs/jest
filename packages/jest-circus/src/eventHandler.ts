@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {serialize} from 'v8';
 import type {Circus} from '@jest/types';
-import {serialize} from 'jest-serializer';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -206,7 +206,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       break;
     }
     case 'test_retry': {
-      const logErrorsBeforeRetry = global[LOG_ERRORS_BEFORE_RETRY] || false;
+      const logErrorsBeforeRetry = globalThis[LOG_ERRORS_BEFORE_RETRY] || false;
       if (logErrorsBeforeRetry) {
         event.test.retryReasons.push(serialize(event.test.errors));
       }
