@@ -32,7 +32,7 @@ import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
 import VALID_CONFIG from './ValidConfig';
 import {getDisplayNameColor} from './color';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
+import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
@@ -327,51 +327,13 @@ const normalizeUnmockedModulePathPatterns = (
     replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
 
-const normalizePreprocessor = (
-  options: Config.InitialOptionsWithRootDir,
-): Config.InitialOptionsWithRootDir => {
-  if (options.scriptPreprocessor && options.transform) {
-    throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
-        'transform',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`,
-    );
-  }
-
-  if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
-    throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
-        'transformIgnorePatterns',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'transformIgnorePatterns',
-  )}.`,
-    );
-  }
-
-  if (options.scriptPreprocessor) {
-    options.transform = {
-      '.*': options.scriptPreprocessor,
-    };
-  }
-
-  if (options.preprocessorIgnorePatterns) {
-    options.transformIgnorePatterns = options.preprocessorIgnorePatterns;
-  }
-
-  delete options.scriptPreprocessor;
-  delete options.preprocessorIgnorePatterns;
-  return options;
-};
-
 const normalizeMissingOptions = (
   options: Config.InitialOptionsWithRootDir,
   configPath: string | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
-  if (!options.name) {
-    options.name = createHash('md5')
+  if (!options.id) {
+    options.id = createHash('md5')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -433,7 +395,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
       normalizedReporterConfig[0],
     );
 
-    if (reporterPath !== DEFAULT_REPORTER_LABEL) {
+    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
         basedir: options.rootDir,
       });
@@ -573,13 +535,11 @@ export default async function normalize(
     ],
   });
 
-  let options = normalizePreprocessor(
-    normalizeReporters(
-      normalizeMissingOptions(
-        normalizeRootDir(setFromArgv(initialOptions, argv)),
-        configPath,
-        projectIndex,
-      ),
+  let options = normalizeReporters(
+    normalizeMissingOptions(
+      normalizeRootDir(setFromArgv(initialOptions, argv)),
+      configPath,
+      projectIndex,
     ),
   );
 
@@ -591,22 +551,6 @@ export default async function normalize(
     options.setupFilesAfterEnv = [];
   }
 
-  if (
-    options.setupTestFrameworkScriptFile &&
-    options.setupFilesAfterEnv.length > 0
-  ) {
-    throw createConfigError(`  Options: ${chalk.bold(
-      'setupTestFrameworkScriptFile',
-    )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'setupFilesAfterEnv',
-  )}.`);
-  }
-
-  if (options.setupTestFrameworkScriptFile) {
-    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
-  }
-
   options.testEnvironment = resolveTestEnvironment({
     requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
@@ -614,11 +558,6 @@ export default async function normalize(
       options.testEnvironment ||
       require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
-
-  if (!options.roots && options.testPathDirs) {
-    options.roots = options.testPathDirs;
-    delete options.testPathDirs;
-  }
 
   if (!options.roots) {
     options.roots = [options.rootDir];
@@ -980,6 +919,7 @@ export default async function normalize(
       case 'expand':
       case 'extensionsToTreatAsEsm':
       case 'globals':
+      case 'fakeTimers':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
@@ -988,7 +928,7 @@ export default async function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'name':
+      case 'id':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':
@@ -1014,7 +954,6 @@ export default async function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'timers':
       case 'useStderr':
       case 'verbose':
       case 'watch':

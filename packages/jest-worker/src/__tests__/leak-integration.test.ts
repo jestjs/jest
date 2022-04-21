@@ -53,6 +53,8 @@ describe('Worker leaks', () => {
     worker = new Worker(workerFile, {
       enableWorkerThreads: false,
       exposedMethods: ['fn'],
+      // @ts-expect-error: option does not exist on the node 12 types
+      forkOptions: {serialization: 'json'},
     });
   });
   afterEach(async () => {

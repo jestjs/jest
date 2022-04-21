@@ -9,6 +9,7 @@ import chalk = require('chalk');
 import {getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -18,7 +19,7 @@ import BaseReporter from './BaseReporter';
 import Status from './Status';
 import getResultHeader from './getResultHeader';
 import getSnapshotStatus from './getSnapshotStatus';
-import type {ReporterOnStartOptions, Test} from './types';
+import type {ReporterOnStartOptions} from './types';
 
 type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;
@@ -127,22 +128,22 @@ export default class DefaultReporter extends BaseReporter {
     }
   }
 
-  onRunStart(
+  override onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ): void {
     this._status.runStarted(aggregatedResults, options);
   }
 
-  onTestStart(test: Test): void {
+  override onTestStart(test: Test): void {
     this._status.testStarted(test.path, test.context.config);
   }
 
-  onTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
+  override onTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
     this._status.addTestCaseResult(test, testCaseResult);
   }
 
-  onRunComplete(): void {
+  override onRunComplete(): void {
     this.forceFlushBufferedOutput();
     this._status.runFinished();
     process.stdout.write = this._out;
@@ -150,7 +151,7 @@ export default class DefaultReporter extends BaseReporter {
     clearLine(process.stderr);
   }
 
-  onTestResult(
+  override onTestResult(
     test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,

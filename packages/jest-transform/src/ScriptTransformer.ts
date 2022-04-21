@@ -42,6 +42,7 @@ import type {
   TransformResult,
   TransformedSource,
   Transformer,
+  TransformerFactory,
 } from './types';
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
@@ -70,6 +71,13 @@ async function waitForPromiseWithCleanup(
   } finally {
     cleanup();
   }
+}
+
+// type predicate
+function isTransformerFactory<X extends Transformer>(
+  t: Transformer | TransformerFactory<X>,
+): t is TransformerFactory<X> {
+  return typeof (t as TransformerFactory<X>).createTransformer === 'function';
 }
 
 class ScriptTransformer {
@@ -203,7 +211,7 @@ class ScriptTransformer {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
-      `jest-transform-cache-${this._config.name}`,
+      `jest-transform-cache-${this._config.id}`,
       VERSION,
     );
     // Create sub folders based on the cacheKey to avoid creating one
@@ -259,14 +267,13 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer = await requireOrImportModule(
-            transformPath,
-          );
+          let transformer: Transformer | TransformerFactory<Transformer> =
+            await requireOrImportModule(transformPath);
 
           if (!transformer) {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
-          if (typeof transformer.createTransformer === 'function') {
+          if (isTransformerFactory(transformer)) {
             transformer = transformer.createTransformer(transformerConfig);
           }
           if (
@@ -372,9 +379,7 @@ class ScriptTransformer {
     };
 
     if (transformer && shouldCallTransform) {
-      if (typeof processed === 'string') {
-        transformed.code = processed;
-      } else if (processed != null && typeof processed.code === 'string') {
+      if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
         throw new Error(makeInvalidReturnValueError());
@@ -476,7 +481,7 @@ class ScriptTransformer {
       };
     }
 
-    let processed = null;
+    let processed: TransformedSource | null = null;
 
     let shouldCallTransform = false;
 

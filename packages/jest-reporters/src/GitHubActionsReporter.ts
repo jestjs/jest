@@ -6,9 +6,12 @@
  */
 
 import stripAnsi = require('strip-ansi');
-import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  TestContext,
+  TestResult,
+} from '@jest/test-result';
 import BaseReporter from './BaseReporter';
-import type {Context} from './types';
 
 const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
 
@@ -23,8 +26,10 @@ function replaceEntities(s: string): string {
 }
 
 export default class GitHubActionsReporter extends BaseReporter {
-  onRunComplete(
-    _contexts?: Set<Context>,
+  static readonly filename = __filename;
+
+  override onRunComplete(
+    _testContexts?: Set<TestContext>,
     aggregatedResults?: AggregatedResult,
   ): void {
     const messages = getMessages(aggregatedResults?.testResults);
@@ -48,7 +53,7 @@ function getMessages(results: Array<TestResult> | undefined) {
       .filter((m): m is RegExpExecArray => m !== null)
       .map(
         ([message, line, col]) =>
-          `::error file=${testFilePath},line=${line},col=${col}::${message}`,
+          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
       ),
   );
 }

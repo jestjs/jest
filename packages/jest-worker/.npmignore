@@ -1,6 +1,6 @@
 **/__mocks__/**
 **/__tests__/**
-**/__performance_tests__/**
+__benchmarks__
 __typetests__
 src
 tsconfig.json

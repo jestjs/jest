@@ -1,8 +1,8 @@
 **/__mocks__/**
 **/__tests__/**
+__benchmarks__
 __typetests__
 src
-perf
 tsconfig.json
 tsconfig.tsbuildinfo
 api-extractor.json

@@ -13,8 +13,8 @@ import type {
   OnTestStart,
   OnTestSuccess,
   TestRunnerContext,
-  TestWatcher,
 } from 'jest-runner';
+import type {TestWatcher} from 'jest-watcher';
 
 export default class BaseTestRunner {
   private _globalConfig: Config.GlobalConfig;

@@ -224,6 +224,10 @@ This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, 
 
 Show the help information, similar to this page.
 
+### `--ignoreProjects <project1> ... <projectN>`
+
+Ignore the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
+
 ### `--init`
 
 Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
@@ -258,7 +262,7 @@ Run all tests affected by file changes in the last commit made. Behaves similarl
 
 ### `--listTests`
 
-Lists all tests as JSON that Jest will run given the arguments, and exits. This can be used together with `--findRelatedTests` to know which tests Jest will run.
+Lists all test files that Jest will run given the arguments, and exits.
 
 ### `--logHeapUsage`
 
@@ -332,7 +336,7 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--selectProjects <project1> ... <projectN>`
 
-Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
+Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 

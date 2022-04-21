@@ -5,6 +5,6 @@
     "outDir": "build"
   },
   "include": ["./src/**/*"],
-  "exclude": ["./**/__performance_tests__/**/*", "./**/__tests__/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [{"path": "../jest-leak-detector"}]
 }

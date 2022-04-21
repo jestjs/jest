@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "devDependencies": {
-    "@babel/core": "^7.3.4",
+    "@babel/core": "^7.11.6",
     "@babel/plugin-transform-modules-commonjs": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@crowdin/cli": "^3.5.2",
@@ -15,10 +15,10 @@
     "@microsoft/api-extractor": "^7.19.4",
     "@tsconfig/node12": "^1.0.9",
     "@tsd/typescript": "~4.6.2",
-    "@types/babel__core": "^7.0.0",
+    "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
-    "@types/babel__template": "^7.0.0",
-    "@types/dedent": "0.7.0",
+    "@types/babel__template": "^7.0.2",
+    "@types/dedent": "^0.7.0",
     "@types/jest": "^27.4.0",
     "@types/node": "~12.12.0",
     "@types/which": "^2.0.0",
@@ -43,8 +43,8 @@
     "execa": "^5.0.0",
     "fast-check": "^2.0.0",
     "find-process": "^1.4.1",
-    "glob": "^7.1.1",
-    "globby": "^11.0.0",
+    "glob": "^7.1.3",
+    "globby": "^11.0.1",
     "graceful-fs": "^4.2.9",
     "isbinaryfile": "^4.0.0",
     "istanbul-lib-coverage": "^3.0.0",
@@ -70,9 +70,9 @@
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "read-pkg": "^5.2.0",
-    "resolve": "^1.15.0",
+    "resolve": "^1.20.0",
     "rimraf": "^3.0.0",
-    "semver": "^7.3.2",
+    "semver": "^7.3.5",
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
@@ -81,37 +81,36 @@
     "throat": "^6.0.1",
     "ts-node": "^10.5.0",
     "type-fest": "^2.11.2",
-    "typescript": "^4.2.4",
+    "typescript": "^4.6.2",
     "which": "^2.0.1"
   },
   "scripts": {
     "build-clean": "rimraf './packages/*/build' './packages/*/dist' './packages/*/tsconfig.tsbuildinfo' './packages/*/api-extractor.json' './api-extractor.json'",
     "build": "yarn build:js && yarn build:ts && yarn bundle:ts",
-    "build:js": "node ./scripts/build.js",
-    "build:ts": "node ./scripts/buildTs.js",
-    "bundle:ts": "node ./scripts/bundleTs.js",
-    "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
+    "build:js": "node ./scripts/build.mjs",
+    "build:ts": "node ./scripts/buildTs.mjs",
+    "bundle:ts": "node ./scripts/bundleTs.mjs",
+    "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.mjs",
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
-    "clean-e2e": "node ./scripts/cleanE2e.js",
+    "clean-e2e": "node ./scripts/cleanE2e.mjs",
     "crowdin:upload": "echo 'Uploading sources to Crowdin' && crowdin upload sources --config ./crowdin.yaml",
     "crowdin:download": "echo 'Downloading translations from Crowdin' && crowdin download --config ./crowdin.yaml",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-jasmine": "JEST_JASMINE=1 yarn jest",
-    "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
+    "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.mjs",
     "jest-coverage": "yarn jest --coverage",
-    "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
-    "lint:prettier": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --write",
-    "lint:prettier:ci": "prettier '**/*.{json,md,yml,yaml}' 'website/**/*.{css,js}' --check",
-    "remove-examples": "node ./scripts/remove-examples.js",
-    "test-types": "yarn jest --config jest.config.tsd.js",
+    "lint": "eslint . --cache --ext js,jsx,cjs,mjs,ts,tsx,md",
+    "lint:prettier": "prettier . \"!**/*.{js,jsx,cjs,mjs,ts,tsx}\" --write",
+    "lint:prettier:ci": "prettier . \"!**/*.{js,jsx,cjs,mjs,ts,tsx}\" --check",
+    "remove-examples": "node ./scripts/remove-examples.mjs",
+    "test-types": "yarn jest --config jest.config.tsd.mjs",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
-    "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.js",
-    "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
+    "test-ci-partial:parallel": "yarn jest --color --config jest.config.ci.mjs",
     "test-leak": "yarn jest -i --detectLeaks --color jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
-    "verify-old-ts": "node ./scripts/verifyOldTs.js",
-    "verify-pnp": "node ./scripts/verifyPnP.js",
-    "watch": "yarn build:js && node ./scripts/watch.js",
+    "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
+    "verify-pnp": "node ./scripts/verifyPnP.mjs",
+    "watch": "yarn build:js && node ./scripts/watch.mjs",
     "watch:ts": "yarn build:ts --watch"
   },
   "workspaces": [
@@ -130,6 +129,12 @@
         "files": "website/**/*.js",
         "options": {
           "trailingComma": "es5"
+        }
+      },
+      {
+        "files": "lerna.json",
+        "options": {
+          "parser": "json-stringify"
         }
       },
       {
@@ -158,12 +163,10 @@
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "resolutions": {
-    "@jest/create-cache-key-function": "workspace:*",
-    "@testing-library/dom/pretty-format": "26.6.1",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native": "patch:react-native@0.67.2#./patches/react-native.patch"
+    "react-native@0.68.1": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch"
   },
   "packageManager": "yarn@3.2.0"
 }

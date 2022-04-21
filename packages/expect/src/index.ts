@@ -49,6 +49,7 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
+export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
   AsymmetricMatchers,
   BaseExpect,

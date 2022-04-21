@@ -54,9 +54,10 @@ export const validateTemplateTableArguments = (
   headings: Array<string>,
   data: TemplateData,
 ): void => {
-  const missingData = data.length % headings.length;
+  const incompleteData = data.length % headings.length;
+  const missingData = headings.length - incompleteData;
 
-  if (missingData > 0) {
+  if (incompleteData > 0) {
     throw new Error(
       `Not enough arguments supplied for given headings:\n${EXPECTED_COLOR(
         headings.join(' | '),

@@ -8,15 +8,22 @@
 import runJest from '../runJest';
 
 describe('enableGlobally', () => {
-  test('enables fake timers from Jest config', () => {
+  test('enables legacy fake timers from Jest config', () => {
     const result = runJest('fake-timers-legacy/enable-globally');
     expect(result.exitCode).toBe(0);
   });
 });
 
+describe('legacyFakeTimers', () => {
+  test('toggles legacy fake timers from Jest config', () => {
+    const result = runJest('fake-timers-legacy/enable-legacy-fake-timers');
+    expect(result.exitCode).toBe(0);
+  });
+});
+
 describe('useFakeTimers', () => {
-  test('enables fake timers from Jest object', () => {
-    const result = runJest('fake-timers-legacy/use-fake-timers');
+  test('enables legacy fake timers from Jest object', () => {
+    const result = runJest('fake-timers-legacy/use-legacy-fake-timers');
     expect(result.exitCode).toBe(0);
   });
 });
@@ -42,7 +49,7 @@ describe('setImmediate', () => {
 describe('useRealTimers', () => {
   test('restores timers to the native implementation', () => {
     const result = runJest('fake-timers-legacy/use-real-timers');
-    expect(result.stdout).toMatch('API is not mocked with fake timers.');
+    expect(result.stdout).toMatch('APIs are not mocked with fake timers.');
     expect(result.exitCode).toBe(0);
   });
 });

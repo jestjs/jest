@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test} from '@jest/test-result';
-import type {Context} from 'jest-runtime';
+import type {Test, TestContext} from '@jest/test-result';
 
 export type Stats = {
   roots: number;
@@ -17,7 +16,7 @@ export type Stats = {
 };
 
 export type TestRunData = Array<{
-  context: Context;
+  context: TestContext;
   matches: {
     allTests: number;
     tests: Array<Test>;

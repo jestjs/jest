@@ -1,6 +1,6 @@
 {
   "name": "only-package-json",
   "dependencies": {
-    "typescript": "*"
+    "typescript": "^4.6.2"
   }
 }

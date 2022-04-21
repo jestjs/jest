@@ -30,7 +30,7 @@ type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: string;
-  context?: TestRunnerSerializedContext;
+  context: TestRunnerSerializedContext;
 };
 
 // Make sure uncaught errors are logged before we exit.
@@ -59,9 +59,9 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
 
 const resolvers = new Map<string, Resolver>();
 const getResolver = (config: Config.ProjectConfig) => {
-  const resolver = resolvers.get(config.name);
+  const resolver = resolvers.get(config.id);
   if (!resolver) {
-    throw new Error(`Cannot find resolver for: ${config.name}`);
+    throw new Error(`Cannot find resolver for: ${config.id}`);
   }
   return resolver;
 };
@@ -77,7 +77,7 @@ export function setup(setupData: {
     const moduleMap = HasteMap.getStatic(config).getModuleMapFromJSON(
       serializableModuleMap,
     );
-    resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
+    resolvers.set(config.id, Runtime.createResolver(config, moduleMap));
   }
 }
 
@@ -97,7 +97,7 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config),
-      context && {
+      {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
         sourcesRelatedToTestsInChangedFiles:

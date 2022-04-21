@@ -7,6 +7,5 @@
 
 export {default as SearchSource} from './SearchSource';
 export {createTestScheduler} from './TestScheduler';
-export {default as TestWatcher} from './TestWatcher';
 export {runCLI} from './cli';
 export {default as getVersion} from './version';

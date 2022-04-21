@@ -11,6 +11,10 @@ function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
 
+beforeAll(() => {
+  jest.retryTimes(3);
+});
+
 it('prints message about flag on slow tests', async () => {
   const run = runContinuous('detect-open-handles', ['outside']);
   await run.waitUntil(({stderr}) =>
@@ -97,6 +101,17 @@ it('does not report timeouts using unref', () => {
   // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
   const {stderr} = runJest('detect-open-handles', [
     'unref',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+it('does not report child_process using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'child_process',
     '--detectOpenHandles',
   ]);
   const textAfterTest = getTextAfterTest(stderr);

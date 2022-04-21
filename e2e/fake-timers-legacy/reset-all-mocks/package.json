@@ -1,7 +1,9 @@
 {
   "name": "reset-all-mocks",
   "jest": {
-    "resetMocks": false,
-    "timers": "legacy"
+    "fakeTimers": {
+      "legacyFakeTimers": true
+    },
+    "resetMocks": false
   }
 }

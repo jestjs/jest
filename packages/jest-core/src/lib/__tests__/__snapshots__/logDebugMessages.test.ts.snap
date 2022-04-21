@@ -13,9 +13,13 @@ exports[`prints the config object 1`] = `
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "extensionsToTreatAsEsm": [],
+    "fakeTimers": {
+      "enableGlobally": false
+    },
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
+    "id": "test_name",
     "injectGlobals": true,
     "moduleDirectories": [],
     "moduleFileExtensions": [
@@ -24,7 +28,6 @@ exports[`prints the config object 1`] = `
     "moduleNameMapper": [],
     "modulePathIgnorePatterns": [],
     "modulePaths": [],
-    "name": "test_name",
     "prettierPath": "prettier",
     "resetMocks": false,
     "resetModules": false,
@@ -52,7 +55,6 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "timers": "real",
     "transform": [],
     "transformIgnorePatterns": [],
     "watchPathIgnorePatterns": []

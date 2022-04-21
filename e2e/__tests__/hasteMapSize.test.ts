@@ -24,10 +24,10 @@ afterEach(() => cleanup(DIR));
 const options = {
   extensions: ['js'],
   forceNodeFilesystemAPI: true,
+  id: 'tmp',
   ignorePattern: / ^/,
   maxWorkers: 2,
   mocksPattern: '',
-  name: 'tmp',
   platforms: [],
   retainAllFiles: true,
   rootDir: DIR,

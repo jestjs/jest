@@ -1,6 +1,9 @@
 {
   "name": "use-real-timers-legacy",
   "jest": {
-    "timers": "legacy"
+    "fakeTimers": {
+      "enableGlobally": true,
+      "legacyFakeTimers": true
+    }
   }
 }

@@ -1,6 +1,9 @@
 {
   "name": "enable-globally-legacy",
   "jest": {
-    "timers": "legacy"
+    "fakeTimers": {
+      "enableGlobally": true,
+      "legacyFakeTimers": true
+    }
   }
 }

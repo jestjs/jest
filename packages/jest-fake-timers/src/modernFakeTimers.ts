@@ -7,31 +7,30 @@
 
 import {
   FakeTimerWithContext,
+  FakeMethod as FakeableAPI,
   InstalledClock,
+  FakeTimerInstallOpts as SinonFakeTimersConfig,
   withGlobal,
 } from '@sinonjs/fake-timers';
-import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {Config} from '@jest/types';
+import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _config: StackTraceConfig;
+  private _config: Config.ProjectConfig;
   private _fakingTime: boolean;
   private _global: typeof globalThis;
   private _fakeTimers: FakeTimerWithContext;
-  private _maxLoops: number;
 
   constructor({
     global,
     config,
-    maxLoops,
   }: {
     global: typeof globalThis;
-    config: StackTraceConfig;
-    maxLoops?: number;
+    config: Config.ProjectConfig;
   }) {
     this._global = global;
     this._config = config;
-    this._maxLoops = maxLoops || 100000;
 
     this._fakingTime = false;
     this._fakeTimers = withGlobal(global);
@@ -93,20 +92,16 @@ export default class FakeTimers {
     }
   }
 
-  useFakeTimers(): void {
-    if (!this._fakingTime) {
-      const toFake = Object.keys(this._fakeTimers.timers) as Array<
-        keyof FakeTimerWithContext['timers']
-      >;
-
-      this._clock = this._fakeTimers.install({
-        loopLimit: this._maxLoops,
-        now: Date.now(),
-        toFake,
-      });
-
-      this._fakingTime = true;
+  useFakeTimers(fakeTimersConfig?: Config.FakeTimersConfig): void {
+    if (this._fakingTime) {
+      this._clock.uninstall();
     }
+
+    this._clock = this._fakeTimers.install(
+      this._toSinonFakeTimersConfig(fakeTimersConfig),
+    );
+
+    this._fakingTime = true;
   }
 
   reset(): void {
@@ -138,10 +133,10 @@ export default class FakeTimers {
   private _checkFakeTimers() {
     if (!this._fakingTime) {
       this._global.console.warn(
-        'A function to advance timers was called but the timers API is not ' +
-          'mocked with fake timers. Call `jest.useFakeTimers()` in this test or ' +
-          'enable fake timers globally by setting `"timers": "fake"` in the ' +
-          `configuration file\nStack Trace:\n${formatStackTrace(
+        'A function to advance timers was called but the timers APIs are not replaced ' +
+          'with fake timers. Call `jest.useFakeTimers()` in this test file or enable ' +
+          "fake timers for all tests by setting 'fakeTimers': {'enableGlobally': true} " +
+          `in Jest configuration file.\nStack Trace:\n${formatStackTrace(
             new Error().stack!,
             this._config,
             {noStackTrace: false},
@@ -150,5 +145,36 @@ export default class FakeTimers {
     }
 
     return this._fakingTime;
+  }
+
+  private _toSinonFakeTimersConfig(
+    fakeTimersConfig: Config.FakeTimersConfig = {},
+  ): SinonFakeTimersConfig {
+    fakeTimersConfig = {
+      ...this._config.fakeTimers,
+      ...fakeTimersConfig,
+    } as Config.FakeTimersConfig;
+
+    const advanceTimeDelta =
+      typeof fakeTimersConfig.advanceTimers === 'number'
+        ? fakeTimersConfig.advanceTimers
+        : undefined;
+
+    const toFake = new Set(
+      Object.keys(this._fakeTimers.timers) as Array<FakeableAPI>,
+    );
+
+    fakeTimersConfig.doNotFake?.forEach(nameOfFakeableAPI => {
+      toFake.delete(nameOfFakeableAPI);
+    });
+
+    return {
+      advanceTimeDelta,
+      loopLimit: fakeTimersConfig.timerLimit || 100_000,
+      now: fakeTimersConfig.now ?? Date.now(),
+      shouldAdvanceTime: Boolean(fakeTimersConfig.advanceTimers),
+      shouldClearNativeTimers: true,
+      toFake: Array.from(toFake),
+    };
   }
 }

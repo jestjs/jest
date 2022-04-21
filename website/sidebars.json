@@ -32,7 +32,8 @@
       "tutorial-react",
       "tutorial-react-native",
       "testing-frameworks"
-    ]
+    ],
+    "Upgrade Guides": ["upgrading-to-jest28"]
   },
   "api": [
     "api",
