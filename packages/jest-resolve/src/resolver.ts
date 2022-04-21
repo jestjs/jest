@@ -26,7 +26,6 @@ import type {ResolverConfig} from './types';
 
 export type FindNodeModuleConfig = {
   basedir: string;
-  browser?: boolean;
   conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
@@ -124,7 +123,6 @@ export default class Resolver {
     try {
       return resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
@@ -167,7 +165,6 @@ export default class Resolver {
     try {
       const result = await resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,

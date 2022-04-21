@@ -932,7 +932,6 @@ type PackageJson = Record<string, unknown>;
 type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
-  browser?: boolean;
   /** List of export conditions. */
   conditions?: Array<string>;
   /** Instance of default resolver. */

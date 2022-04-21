@@ -22,7 +22,6 @@ const asyncResolver: AsyncResolver = async (path, options) => {
   expectType<string>(path);
 
   expectType<string>(options.basedir);
-  expectType<boolean | undefined>(options.browser);
   expectType<Array<string> | undefined>(options.conditions);
   expectType<SyncResolver>(options.defaultResolver);
   expectType<Array<string> | undefined>(options.extensions);
@@ -44,7 +43,6 @@ const syncResolver: SyncResolver = (path, options) => {
   expectType<string>(path);
 
   expectType<string>(options.basedir);
-  expectType<boolean | undefined>(options.browser);
   expectType<Array<string> | undefined>(options.conditions);
   expectType<SyncResolver>(options.defaultResolver);
   expectType<Array<string> | undefined>(options.extensions);
