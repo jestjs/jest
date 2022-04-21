@@ -10,7 +10,7 @@ let i = 0;
 jest.retryTimes(3, {logErrorsBeforeRetry: true});
 it('retryTimes set', () => {
   i++;
-  if (i === 2) {
+  if (i === 3) {
     expect(true).toBeTruthy();
   } else {
     expect(true).toBeFalsy();
