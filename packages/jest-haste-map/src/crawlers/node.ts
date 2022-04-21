@@ -71,7 +71,9 @@ function find(
     fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
-        callback(result);
+        if (activeCalls === 0) {
+          callback(result);
+        }
         return;
       }
       entries.forEach(entry => {
@@ -150,7 +152,7 @@ function findNative(
       args.push('-o');
     }
     args.push('-iname');
-    args.push('*.' + ext);
+    args.push(`*.${ext}`);
   });
   if (extensions.length) {
     args.push(')');

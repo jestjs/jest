@@ -132,9 +132,7 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
 
   do {
     const beforeEachForCurrentBlock = [];
-    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
-    let hook: Circus.Hook;
-    for (hook of block.hooks) {
+    for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -165,7 +163,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setTimeout, clearTimeout} = global;
+const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
@@ -173,7 +171,7 @@ function checkIsError(error: unknown): error is Error {
 
 export const callAsyncCircusFn = (
   testOrHook: Circus.TestEntry | Circus.Hook,
-  testContext: Circus.TestContext | undefined,
+  testContext: Circus.TestContext,
   {isHook, timeout}: {isHook: boolean; timeout: number},
 ): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
@@ -201,8 +199,9 @@ export const callAsyncCircusFn = (
             'Expected done to be called once, but it was called multiple times.';
 
           if (reason) {
-            errorAtDone.message +=
-              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+            errorAtDone.message += ` Reason: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
           }
           reject(errorAtDone);
           throw errorAtDone;
@@ -232,9 +231,7 @@ export const callAsyncCircusFn = (
 
           // Consider always throwing, regardless if `reason` is set or not
           if (completed && reason) {
-            errorAsErrorObject.message =
-              'Caught error after test environment was torn down\n\n' +
-              errorAsErrorObject.message;
+            errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
             throw errorAsErrorObject;
           }

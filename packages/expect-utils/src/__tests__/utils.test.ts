@@ -19,6 +19,7 @@ import {
 describe('getPath()', () => {
   test('property exists', () => {
     expect(getPath({a: {b: {c: 5}}}, 'a.b.c')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: {c: 5},
       traversedPath: ['a', 'b', 'c'],
@@ -26,6 +27,7 @@ describe('getPath()', () => {
     });
 
     expect(getPath({a: {b: {c: {d: 1}}}}, 'a.b.c.d')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: {d: 1},
       traversedPath: ['a', 'b', 'c', 'd'],
@@ -35,6 +37,7 @@ describe('getPath()', () => {
 
   test('property doesnt exist', () => {
     expect(getPath({a: {b: {}}}, 'a.b.c')).toEqual({
+      endPropIsDefined: false,
       hasEndProp: false,
       lastTraversedObject: {},
       traversedPath: ['a', 'b'],
@@ -44,6 +47,7 @@ describe('getPath()', () => {
 
   test('property exist but undefined', () => {
     expect(getPath({a: {b: {c: undefined}}}, 'a.b.c')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: {c: undefined},
       traversedPath: ['a', 'b', 'c'],
@@ -62,12 +66,14 @@ describe('getPath()', () => {
     }
 
     expect(getPath(new A(), 'a')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: new A(),
       traversedPath: ['a'],
       value: 'a',
     });
     expect(getPath(new A(), 'b.c')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: {c: 'c'},
       traversedPath: ['b', 'c'],
@@ -81,6 +87,7 @@ describe('getPath()', () => {
     A.prototype.a = 'a';
 
     expect(getPath(new A(), 'a')).toEqual({
+      endPropIsDefined: true,
       hasEndProp: true,
       lastTraversedObject: new A(),
       traversedPath: ['a'],
@@ -99,6 +106,7 @@ describe('getPath()', () => {
 
   test('empty object at the end', () => {
     expect(getPath({a: {b: {c: {}}}}, 'a.b.c.d')).toEqual({
+      endPropIsDefined: false,
       hasEndProp: false,
       lastTraversedObject: {},
       traversedPath: ['a', 'b', 'c'],
@@ -412,6 +420,49 @@ describe('iterableEquality', () => {
         new Map([['one', new Set([1, 2])]]),
       ),
     ).toBe(false);
+  });
+
+  test('returns true when given iterator within equal objects', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns false when given iterator within inequal objects', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [1],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+
+    expect(iterableEquality(a, b)).toBe(false);
+  });
+
+  test('returns false when given iterator within inequal nested objects', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: {
+        b: [1],
+      },
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: {
+        b: [],
+      },
+    };
+
+    expect(iterableEquality(a, b)).toBe(false);
   });
 
   test('returns true when given circular Set shape', () => {

@@ -127,9 +127,12 @@ export default class Farm {
     // Reference the task object outside so it won't be retained by onEnd,
     // and other properties of the task object, such as task.request can be
     // garbage collected.
-    const taskOnEnd = task.onEnd;
+    let taskOnEnd: OnEnd | null = task.onEnd;
     const onEnd: OnEnd = (error, result) => {
-      taskOnEnd(error, result);
+      if (taskOnEnd) {
+        taskOnEnd(error, result);
+      }
+      taskOnEnd = null;
 
       this._unlock(workerId);
       this._process(workerId);

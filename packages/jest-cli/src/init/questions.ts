@@ -43,7 +43,7 @@ const defaultQuestions: Array<PromptObject> = [
   {
     initial: false,
     message:
-      'Automatically clear mock calls, instances and results before every test?',
+      'Automatically clear mock calls, instances, contexts and results before every test?',
     name: 'clearMocks',
     type: 'confirm',
   },

@@ -20,7 +20,7 @@ interface RunResult extends ExecaReturnValue {
 }
 export const run = (
   cmd: string,
-  cwd?: Config.Path,
+  cwd?: string,
   env?: Record<string, string>,
 ): RunResult => {
   const args = cmd.split(/\s/).slice(1);
@@ -44,10 +44,7 @@ export const run = (
   return result;
 };
 
-export const runYarnInstall = (
-  cwd: Config.Path,
-  env?: Record<string, string>,
-) => {
+export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
   let exists = true;
 
@@ -60,7 +57,7 @@ export const runYarnInstall = (
   return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
 };
 
-export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
+export const linkJestPackage = (packageName: string, cwd: string) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
@@ -182,7 +179,7 @@ const DEFAULT_PACKAGE_JSON: JestPackageJson = {
 };
 
 export const createEmptyPackage = (
-  directory: Config.Path,
+  directory: string,
   packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
   const packageJsonWithDefaults = {

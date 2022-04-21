@@ -53,9 +53,9 @@ module.exports = {
 };
 ```
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -119,7 +119,7 @@ Default: `"/tmp/<path>"`
 
 The directory where Jest should store its cached dependency information.
 
-Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
+Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem churn that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 ### `clearMocks` \[boolean]
 
@@ -777,14 +777,14 @@ _Note: The `runner` property value can omit the `jest-runner-` prefix of the pac
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 
 ```ts
-async runTests(
+async function runTests(
   tests: Array<Test>,
   watcher: TestWatcher,
   onStart: OnTestStart,
   onResult: OnTestSuccess,
   onFailure: OnTestFailure,
   options: TestRunnerOptions,
-): Promise<void>
+): Promise<void>;
 ```
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
@@ -860,11 +860,11 @@ Example serializer module:
 // my-serializer-module
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
-    return 'Pretty foo: ' + printer(val.foo);
+    return `Pretty foo: ${printer(val.foo)}`;
   },
 
   test(val) {
-    return val && val.hasOwnProperty('foo');
+    return val && Object.prototype.hasOwnProperty.call(val, 'foo');
   },
 };
 ```

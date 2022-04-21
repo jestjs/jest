@@ -75,18 +75,13 @@ const printAnnotation = (
     const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
     const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
 
-    aRest =
-      aAnnotationPadding + '  ' + aIndicator + ' ' + aCountPadding + aCount;
-    bRest =
-      bAnnotationPadding + '  ' + bIndicator + ' ' + bCountPadding + bCount;
+    aRest = `${aAnnotationPadding}  ${aIndicator} ${aCountPadding}${aCount}`;
+    bRest = `${bAnnotationPadding}  ${bIndicator} ${bCountPadding}${bCount}`;
   }
 
-  return (
-    aColor(aIndicator + ' ' + aAnnotation + aRest) +
-    '\n' +
-    bColor(bIndicator + ' ' + bAnnotation + bRest) +
-    '\n\n'
-  );
+  const a = `${aIndicator} ${aAnnotation}${aRest}`;
+  const b = `${bIndicator} ${bAnnotation}${bRest}`;
+  return `${aColor(a)}\n${bColor(b)}\n\n`;
 };
 
 export const printDiffLines = (

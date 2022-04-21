@@ -25,6 +25,7 @@ export type {
   Status,
   Suite,
   Test,
+  TestContext,
   TestEvents,
   TestFileEvent,
   TestResult,

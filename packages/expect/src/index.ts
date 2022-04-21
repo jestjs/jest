@@ -49,7 +49,16 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
-export type {Expect, MatcherState, Matchers} from './types';
+export {AsymmetricMatcher} from './asymmetricMatchers';
+export type {
+  AsymmetricMatchers,
+  BaseExpect,
+  Expect,
+  MatcherFunction,
+  MatcherFunctionWithState,
+  MatcherState,
+  Matchers,
+} from './types';
 
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
@@ -72,7 +81,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   };
 };
 
-const getPromiseMatcher = (name: string, matcher: any) => {
+const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher(name, true);
   } else if (
@@ -181,8 +190,12 @@ const makeResolveMatcher =
         ),
       reason => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(reason)}`;
         return Promise.reject(outerErr);
@@ -228,8 +241,12 @@ const makeRejectMatcher =
     return actualWrapper.then(
       result => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         return Promise.reject(outerErr);
@@ -356,9 +373,8 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = <T extends MatcherState = MatcherState>(
-  matchers: MatchersObject<T>,
-): void => setMatchers(matchers, false, expect);
+expect.extend = (matchers: MatchersObject) =>
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -424,7 +440,6 @@ setMatchers(matchers, true, expect);
 setMatchers(spyMatchers, true, expect);
 setMatchers(toThrowMatchers, true, expect);
 
-expect.addSnapshotSerializer = () => void 0;
 expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;

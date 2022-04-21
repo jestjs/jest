@@ -25,7 +25,7 @@ test('--showConfig outputs config info and exits', () => {
     '--showConfig',
     '--no-cache',
     // Make the snapshot flag stable on CI.
-    '--updateSnapshot',
+    '--ci',
   ]);
 
   stdout = stdout
@@ -33,7 +33,7 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
     .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
     .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
-    .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
+    .replace(/"id": "(.+)"/g, '"id": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')

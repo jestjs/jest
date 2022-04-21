@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 
-const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
+const MOCKS_PATTERN = `${path.sep}__mocks__${path.sep}`;
 
 const getMockName = (filePath: string): string => {
   const mockPath = filePath.split(MOCKS_PATTERN)[1];

@@ -9,9 +9,9 @@ For additional Jest matchers maintained by the Jest Community check out [`jest-e
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -67,17 +67,25 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+:::note
+
+In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+
 declare global {
   namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
   }
 }
 ```
+
+:::
 
 #### Async Matchers
 
@@ -169,6 +177,7 @@ expect.extend({
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
@@ -178,6 +187,7 @@ expect.extend({
             expand: this.expand,
           });
           return (
+            // eslint-disable-next-line prefer-template
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -705,7 +715,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -794,7 +804,11 @@ test('drinkEach drinks each drink', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveReturned()`
 
@@ -893,7 +907,11 @@ test('drink returns expected nth calls', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveLength(number)`
 
@@ -1158,6 +1176,8 @@ test('the flavor list contains lime', () => {
 });
 ```
 
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
+
 ### `.toContainEqual(item)`
 
 Use `.toContainEqual` when you want to check that an item with a specific structure and values is contained in an array. For testing the items in the array, this matcher recursively checks the equality of all fields, rather than checking for object identity.
@@ -1197,7 +1217,11 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-> Note: `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+:::tip
+
+`.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+
+:::
 
 If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
 
@@ -1332,7 +1356,11 @@ test('throws on octopus', () => {
 });
 ```
 
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+:::tip
+
+You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
+:::
 
 You can provide an optional argument to test that a specific error is thrown:
 

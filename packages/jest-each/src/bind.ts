@@ -7,7 +7,7 @@
  */
 
 import type {Global} from '@jest/types';
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString} from 'jest-util';
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
 import {
@@ -37,10 +37,11 @@ export default function bind<EachCallback extends Global.TestCallback>(
     ...taggedTemplateData: Global.TemplateData
   ) =>
     function eachBind(
-      title: string,
+      title: Global.BlockNameLike,
       test: Global.EachTestFn<EachCallback>,
       timeout?: number,
     ): void {
+      title = convertDescriptorToString(title);
       try {
         const tests = isArrayTable(taggedTemplateData)
           ? buildArrayTests(title, table)

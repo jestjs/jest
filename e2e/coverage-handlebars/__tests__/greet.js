@@ -7,7 +7,7 @@
 const greet = require('../greet.hbs');
 
 test('am', () => {
-  expect(greet({am: true, name: 'Joe'})).toEqual(
+  expect(greet({am: true, name: 'Joe'}).replace(/\r\n/g, '\n')).toEqual(
     '<p>Good\n  morning\nJoe!</p>\n',
   );
 });

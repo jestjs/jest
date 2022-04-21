@@ -55,7 +55,7 @@ export default async function runGlobalHook({
               );
             }
 
-            await globalModule(globalConfig);
+            await globalModule(globalConfig, projectConfig);
           },
         );
       } catch (error) {

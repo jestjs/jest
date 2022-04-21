@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
@@ -23,7 +21,7 @@ export default class LeakDetector {
       throw new TypeError(
         [
           'Primitives cannot leak memory.',
-          'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
+          `You passed a ${typeof value}: <${prettyFormat(value)}>`,
         ].join(' '),
       );
     }
@@ -63,7 +61,8 @@ export default class LeakDetector {
   }
 
   private _runGarbageCollector() {
-    const isGarbageCollectorHidden = !global.gc;
+    // @ts-expect-error
+    const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.
     setFlagsFromString('--expose-gc');

@@ -142,7 +142,6 @@ describe('Custom Reporters Integration', () => {
       'package.json': JSON.stringify({
         jest: {
           reporters: ['default', '<rootDir>/reporter.js'],
-          testEnvironment: 'node',
         },
       }),
       'reporter.js': `
@@ -167,7 +166,6 @@ describe('Custom Reporters Integration', () => {
         'package.json': JSON.stringify({
           jest: {
             reporters: ['default', '<rootDir>/reporter.mjs'],
-            testEnvironment: 'node',
           },
         }),
         'reporter.mjs': `

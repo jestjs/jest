@@ -184,3 +184,27 @@ it('allows overriding existing extension', () => {
 
   jestExpect('foo').toAllowOverridingExistingMatcher();
 });
+
+it('throws descriptive errors for invalid matchers', () => {
+  expect(() =>
+    jestExpect.extend({
+      default: undefined,
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "undefined"',
+  );
+  expect(() =>
+    jestExpect.extend({
+      default: 42,
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "number"',
+  );
+  expect(() =>
+    jestExpect.extend({
+      default: 'foobar',
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "string"',
+  );
+});

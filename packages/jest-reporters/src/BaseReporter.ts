@@ -7,11 +7,13 @@
 
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
+  TestContext,
   TestResult,
 } from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
-import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
+import type {Reporter, ReporterOnStartOptions} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 
@@ -19,7 +21,7 @@ export default class BaseReporter implements Reporter {
   private _error?: Error;
 
   log(message: string): void {
-    process.stderr.write(message + '\n');
+    process.stderr.write(`${message}\n`);
   }
 
   onRunStart(
@@ -40,7 +42,7 @@ export default class BaseReporter implements Reporter {
   onTestStart(_test?: Test): void {}
 
   onRunComplete(
-    _contexts?: Set<Context>,
+    _testContexts?: Set<TestContext>,
     _aggregatedResults?: AggregatedResult,
   ): Promise<void> | void {}
 

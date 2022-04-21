@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import chalk = require('chalk');
 import {getObjectSubset} from '@jest/expect-utils';
 import {
@@ -225,13 +223,9 @@ export const printPropertiesAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    printExpected(properties) +
-    '\n' +
-    printLabel(bAnnotation) +
-    printReceived(received)
-  );
+  return `${printLabel(aAnnotation) + printExpected(properties)}\n${printLabel(
+    bAnnotation,
+  )}${printReceived(received)}`;
 };
 
 const MAX_DIFF_STRING_LENGTH = 20000;
@@ -280,18 +274,14 @@ export const printSnapshotAndReceived = (
         ) {
           const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
           const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
-          aQuoted = '"' + joinDiffs(diffs, DIFF_DELETE, hasCommon) + '"';
-          bQuoted = '"' + joinDiffs(diffs, DIFF_INSERT, hasCommon) + '"';
+          aQuoted = `"${joinDiffs(diffs, DIFF_DELETE, hasCommon)}"`;
+          bQuoted = `"${joinDiffs(diffs, DIFF_INSERT, hasCommon)}"`;
         }
 
         const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-        return (
-          printLabel(aAnnotation) +
-          aColor(aQuoted) +
-          '\n' +
-          printLabel(bAnnotation) +
-          bColor(bQuoted)
-        );
+        return `${printLabel(aAnnotation) + aColor(aQuoted)}\n${printLabel(
+          bAnnotation,
+        )}${bColor(bQuoted)}`;
       }
 
       // Else either string is multiline, so display as unquoted strings.
@@ -333,11 +323,7 @@ export const printSnapshotAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    aColor(a) +
-    '\n' +
-    printLabel(bAnnotation) +
-    bColor(b)
-  );
+  return `${printLabel(aAnnotation) + aColor(a)}\n${printLabel(
+    bAnnotation,
+  )}${bColor(b)}`;
 };

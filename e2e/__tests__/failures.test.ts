@@ -94,7 +94,7 @@ test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
 
   expect(stderr).toMatch(
-    /Error: Caught error after test environment was torn down/,
+    /Error(WithStack)?: Caught error after test environment was torn down/,
   );
   expect(stderr).toMatch(/Failed: "fail async"/);
 });

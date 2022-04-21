@@ -241,8 +241,6 @@ it('returns results immediately when function is synchronous', () => {
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
-  jest.useRealTimers();
-
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
