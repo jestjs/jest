@@ -111,16 +111,14 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     this.moduleMocker = new ModuleMocker(global as any);
 
-    const timerConfig = {
-      idToRef: (id: number) => id,
-      refToId: (ref: number) => ref,
-    };
-
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
       global: global as unknown as typeof globalThis,
       moduleMocker: this.moduleMocker,
-      timerConfig,
+      timerConfig: {
+        idToRef: (id: number) => id,
+        refToId: (ref: number) => ref,
+      },
     });
 
     this.fakeTimersModern = new ModernFakeTimers({

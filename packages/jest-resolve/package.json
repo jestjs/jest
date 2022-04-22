@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "28.0.0-alpha.7",
+  "version": "28.0.0-alpha.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,17 +19,19 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
-    "jest-haste-map": "^28.0.0-alpha.7",
+    "jest-haste-map": "^28.0.0-alpha.11",
     "jest-pnp-resolver": "^1.2.2",
-    "jest-util": "^28.0.0-alpha.7",
-    "jest-validate": "^28.0.0-alpha.7",
+    "jest-util": "^28.0.0-alpha.9",
+    "jest-validate": "^28.0.0-alpha.9",
     "resolve": "^1.20.0",
     "resolve.exports": "^1.1.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {
+    "@tsd/typescript": "~4.6.2",
     "@types/graceful-fs": "^4.1.3",
-    "@types/resolve": "^1.20.0"
+    "@types/resolve": "^1.20.0",
+    "tsd-lite": "^0.5.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"

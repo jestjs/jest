@@ -7,4 +7,6 @@
 
 'use strict';
 
-module.exports.process = () => "throw new Error('preprocessor must not run.');";
+module.exports.process = () => ({
+  code: "throw new Error('preprocessor must not run.');",
+});

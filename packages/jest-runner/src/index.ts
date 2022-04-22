@@ -14,19 +14,12 @@ import type {
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
-import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
+import type {TestWatcher} from 'jest-watcher';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
-import type {
-  OnTestFailure,
-  OnTestStart,
-  OnTestSuccess,
-  TestRunnerContext,
-  TestRunnerOptions,
-  TestWatcher,
-} from './types';
+import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
@@ -34,54 +27,31 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
+export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
+  JestTestRunner,
+  UnsubscribeFn,
 } from './types';
 
-export default class TestRunner {
-  private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _context: TestRunnerContext;
-  private readonly eventEmitter = new Emittery<TestEvents>();
-  readonly __PRIVATE_UNSTABLE_API_supportsEventEmitters__: boolean = true;
-
-  readonly isSerial?: boolean;
-
-  constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
-    this._globalConfig = globalConfig;
-    this._context = context || {};
-  }
+export default class TestRunner extends EmittingTestRunner {
+  readonly #eventEmitter = new Emittery<TestEvents>();
 
   async runTests(
     tests: Array<Test>,
     watcher: TestWatcher,
-    onStart: OnTestStart | undefined,
-    onResult: OnTestSuccess | undefined,
-    onFailure: OnTestFailure | undefined,
     options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
-      ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
-      : this._createParallelTestRun(
-          tests,
-          watcher,
-          onStart,
-          onResult,
-          onFailure,
-        ));
+      ? this.#createInBandTestRun(tests, watcher)
+      : this.#createParallelTestRun(tests, watcher));
   }
 
-  private async _createInBandTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-    onStart?: OnTestStart,
-    onResult?: OnTestSuccess,
-    onFailure?: OnTestFailure,
-  ) {
+  async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
     return tests.reduce(
@@ -92,28 +62,15 @@ export default class TestRunner {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
-              // Remove `if(onStart)` in Jest 27
-              if (onStart) {
-                await onStart(test);
-
-                return runTest(
-                  test.path,
-                  this._globalConfig,
-                  test.context.config,
-                  test.context.resolver,
-                  this._context,
-                  undefined,
-                );
-              }
 
               // `deepCyclicCopy` used here to avoid mem-leak
               const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this.eventEmitter.emit(
+                this.#eventEmitter.emit(
                   eventName,
                   deepCyclicCopy(args, {keepPrototype: false}),
                 );
 
-              await this.eventEmitter.emit('test-file-start', [test]);
+              await this.#eventEmitter.emit('test-file-start', [test]);
 
               return runTest(
                 test.path,
@@ -124,39 +81,22 @@ export default class TestRunner {
                 sendMessageToJest,
               );
             })
-            .then(result => {
-              if (onResult) {
-                return onResult(test, result);
-              }
-
-              return this.eventEmitter.emit('test-file-success', [
-                test,
-                result,
-              ]);
-            })
-            .catch(err => {
-              if (onFailure) {
-                return onFailure(test, err);
-              }
-
-              return this.eventEmitter.emit('test-file-failure', [test, err]);
-            }),
+            .then(
+              result =>
+                this.#eventEmitter.emit('test-file-success', [test, result]),
+              error =>
+                this.#eventEmitter.emit('test-file-failure', [test, error]),
+            ),
         ),
       Promise.resolve(),
     );
   }
 
-  private async _createParallelTestRun(
-    tests: Array<Test>,
-    watcher: TestWatcher,
-    onStart?: OnTestStart,
-    onResult?: OnTestSuccess,
-    onFailure?: OnTestFailure,
-  ) {
+  async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {
-      if (!resolvers.has(test.context.config.name)) {
-        resolvers.set(test.context.config.name, {
+      if (!resolvers.has(test.context.config.id)) {
+        resolvers.set(test.context.config.id, {
           config: test.context.config,
           serializableModuleMap: test.context.moduleMap.toJSON(),
         });
@@ -165,14 +105,11 @@ export default class TestRunner {
 
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      forkOptions: {stdio: 'pipe'},
+      // @ts-expect-error: option does not exist on the node 12 types
+      forkOptions: {serialization: 'json', stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
-      setupArgs: [
-        {
-          serializableResolvers: Array.from(resolvers.values()),
-        },
-      ],
+      setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
     }) as WorkerInterface;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
@@ -188,12 +125,7 @@ export default class TestRunner {
           return Promise.reject();
         }
 
-        // Remove `if(onStart)` in Jest 27
-        if (onStart) {
-          await onStart(test);
-        } else {
-          await this.eventEmitter.emit('test-file-start', [test]);
-        }
+        await this.#eventEmitter.emit('test-file-start', [test]);
 
         const promise = worker.worker({
           config: test.context.config,
@@ -212,9 +144,9 @@ export default class TestRunner {
 
         if (promise.UNSTABLE_onCustomMessage) {
           // TODO: Get appropriate type for `onCustomMessage`
-          promise.UNSTABLE_onCustomMessage(([event, payload]: any) => {
-            this.eventEmitter.emit(event, payload);
-          });
+          promise.UNSTABLE_onCustomMessage(([event, payload]: any) =>
+            this.#eventEmitter.emit(event, payload),
+          );
         }
 
         return promise;
@@ -230,21 +162,11 @@ export default class TestRunner {
 
     const runAllTests = Promise.all(
       tests.map(test =>
-        runTestInWorker(test)
-          .then(result => {
-            if (onResult) {
-              return onResult(test, result);
-            }
-
-            return this.eventEmitter.emit('test-file-success', [test, result]);
-          })
-          .catch(error => {
-            if (onFailure) {
-              return onFailure(test, error);
-            }
-
-            return this.eventEmitter.emit('test-file-failure', [test, error]);
-          }),
+        runTestInWorker(test).then(
+          result =>
+            this.#eventEmitter.emit('test-file-success', [test, result]),
+          error => this.#eventEmitter.emit('test-file-failure', [test, error]),
+        ),
       ),
     );
 
@@ -268,8 +190,8 @@ export default class TestRunner {
   on<Name extends keyof TestEvents>(
     eventName: Name,
     listener: (eventData: TestEvents[Name]) => void | Promise<void>,
-  ): Emittery.UnsubscribeFn {
-    return this.eventEmitter.on(eventName, listener);
+  ): UnsubscribeFn {
+    return this.#eventEmitter.on(eventName, listener);
   }
 }
 

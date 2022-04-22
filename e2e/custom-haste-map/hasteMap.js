@@ -109,7 +109,7 @@ class HasteMap {
   constructor(options) {
     this._cachePath = HasteMap.getCacheFilePath(
       options.cacheDirectory,
-      options.name,
+      options.id,
     );
   }
 
@@ -120,8 +120,8 @@ class HasteMap {
     };
   }
 
-  static getCacheFilePath(tmpdir, name) {
-    return path.join(tmpdir, name);
+  static getCacheFilePath(tmpdir, id) {
+    return path.join(tmpdir, id);
   }
 
   getCacheFilePath() {

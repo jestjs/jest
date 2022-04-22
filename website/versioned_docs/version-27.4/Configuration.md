@@ -918,8 +918,6 @@ If you want a path to be [relative to the root directory of your project](#rootd
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
 
-_Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`._
-
 Example `setupFilesAfterEnv` array in a jest.config.js:
 
 ```js
@@ -932,6 +930,20 @@ Example `jest.setup.js` file
 
 ```js
 jest.setTimeout(10000); // in milliseconds
+
+// you can even use the setup/teardown methods
+beforeAll(() => {
+  // your code
+});
+beforeEach(() => {
+  // your code
+});
+afterEach(() => {
+  // your code
+});
+afterAll(() => {
+  // your code
+});
 ```
 
 ### `slowTestThreshold` \[number]

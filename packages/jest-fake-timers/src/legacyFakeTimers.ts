@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
+/* eslint-disable local/prefer-spread-eventually */
 
-import util = require('util');
+import {promisify} from 'util';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
-import type {ModuleMocker} from 'jest-mock';
+import type {
+  FunctionLike,
+  Mock,
+  ModuleMocker,
+  UnknownFunction,
+} from 'jest-mock';
 import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
@@ -29,16 +34,27 @@ type Timer = {
 };
 
 type TimerAPI = {
-  cancelAnimationFrame: FakeTimersGlobal['cancelAnimationFrame'];
+  cancelAnimationFrame: typeof globalThis.cancelAnimationFrame;
   clearImmediate: typeof globalThis.clearImmediate;
   clearInterval: typeof globalThis.clearInterval;
   clearTimeout: typeof globalThis.clearTimeout;
   nextTick: typeof process.nextTick;
-
-  requestAnimationFrame: FakeTimersGlobal['requestAnimationFrame'];
+  requestAnimationFrame: typeof globalThis.requestAnimationFrame;
   setImmediate: typeof globalThis.setImmediate;
   setInterval: typeof globalThis.setInterval;
   setTimeout: typeof globalThis.setTimeout;
+};
+
+type FakeTimerAPI = {
+  cancelAnimationFrame: Mock<FakeTimers['_fakeClearTimer']>;
+  clearImmediate: Mock<FakeTimers['_fakeClearImmediate']>;
+  clearInterval: Mock<FakeTimers['_fakeClearTimer']>;
+  clearTimeout: Mock<FakeTimers['_fakeClearTimer']>;
+  nextTick: Mock<FakeTimers['_fakeNextTick']>;
+  requestAnimationFrame: Mock<FakeTimers['_fakeRequestAnimationFrame']>;
+  setImmediate: Mock<FakeTimers['_fakeSetImmediate']>;
+  setInterval: Mock<FakeTimers['_fakeSetInterval']>;
+  setTimeout: Mock<FakeTimers['_fakeSetTimeout']>;
 };
 
 type TimerConfig<Ref> = {
@@ -48,19 +64,12 @@ type TimerConfig<Ref> = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-type GlobalThis = typeof globalThis;
-
-interface FakeTimersGlobal extends GlobalThis {
-  cancelAnimationFrame: (handle: number) => void;
-  requestAnimationFrame: (callback: (time: number) => void) => number;
-}
-
-export default class FakeTimers<TimerRef> {
+export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
   private _config: StackTraceConfig;
   private _disposed?: boolean;
-  private _fakeTimerAPIs!: TimerAPI;
-  private _global: FakeTimersGlobal;
+  private _fakeTimerAPIs!: FakeTimerAPI;
+  private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private _maxLoops: number;
   private _moduleMocker: ModuleMocker;
@@ -78,7 +87,7 @@ export default class FakeTimers<TimerRef> {
     config,
     maxLoops,
   }: {
-    global: FakeTimersGlobal;
+    global: typeof globalThis;
     moduleMocker: ModuleMocker;
     timerConfig: TimerConfig<TimerRef>;
     config: StackTraceConfig;
@@ -390,49 +399,43 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _checkFakeTimers() {
+    // @ts-expect-error: condition always returns 'true'
     if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
       this._global.console.warn(
-        'A function to advance timers was called but the timers API is not ' +
-          'mocked with fake timers. Call `jest.useFakeTimers()` in this ' +
-          'test or enable fake timers globally by setting ' +
-          '`"timers": "fake"` in ' +
-          'the configuration file. This warning is likely a result of a ' +
-          'default configuration change in Jest 15.\n\n' +
-          'Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n' +
-          `Stack Trace:\n${formatStackTrace(new Error().stack!, this._config, {
-            noStackTrace: false,
-          })}`,
+        'A function to advance timers was called but the timers APIs are not mocked ' +
+          'with fake timers. Call `jest.useFakeTimers({legacyFakeTimers: true})` ' +
+          'in this test file or enable fake timers for all tests by setting ' +
+          "{'enableGlobally': true, 'legacyFakeTimers': true} in " +
+          `Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
       );
     }
   }
 
   private _createMocks() {
-    const fn = (impl: Function) =>
-      // @ts-expect-error TODO: figure out better typings here
-      this._moduleMocker.fn().mockImplementation(impl);
+    const fn = <T extends FunctionLike = UnknownFunction>(implementation?: T) =>
+      this._moduleMocker.fn(implementation);
 
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
-    // @ts-expect-error TODO: figure out better typings here
-    promisifiableFakeSetTimeout[util.promisify.custom] = (
+    // @ts-expect-error: no index
+    promisifiableFakeSetTimeout[promisify.custom] = (
       delay?: number,
       arg?: unknown,
     ) =>
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 
-    // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
       cancelAnimationFrame: fn(this._fakeClearTimer.bind(this)),
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
       clearInterval: fn(this._fakeClearTimer.bind(this)),
       clearTimeout: fn(this._fakeClearTimer.bind(this)),
       nextTick: fn(this._fakeNextTick.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       requestAnimationFrame: fn(this._fakeRequestAnimationFrame.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setInterval: fn(this._fakeSetInterval.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setTimeout: promisifiableFakeSetTimeout,
     };
   }
@@ -451,7 +454,7 @@ export default class FakeTimers<TimerRef> {
     );
   }
 
-  private _fakeNextTick(callback: Callback, ...args: Array<any>) {
+  private _fakeNextTick(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return;
     }
@@ -480,7 +483,7 @@ export default class FakeTimers<TimerRef> {
     }, 1000 / 60);
   }
 
-  private _fakeSetImmediate(callback: Callback, ...args: Array<any>) {
+  private _fakeSetImmediate(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return null;
     }
@@ -508,7 +511,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetInterval(
     callback: Callback,
     intervalDelay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;
@@ -533,7 +536,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetTimeout(
     callback: Callback,
     delay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;

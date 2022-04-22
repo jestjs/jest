@@ -13,6 +13,7 @@ import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
   Test,
+  TestContext,
   TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
@@ -21,13 +22,11 @@ import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
-import type {Context} from 'jest-runtime';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
-import {JestHook, JestHookEmitter} from 'jest-watcher';
+import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
-import type TestWatcher from './TestWatcher';
 import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
@@ -137,7 +136,7 @@ export default async function runJest({
   filter,
 }: {
   globalConfig: Config.GlobalConfig;
-  contexts: Array<Context>;
+  contexts: Array<TestContext>;
   outputStream: NodeJS.WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
@@ -280,11 +279,10 @@ export default async function runJest({
     }
   }
 
-  const scheduler = await createTestScheduler(
-    globalConfig,
-    {startRun},
-    testSchedulerContext,
-  );
+  const scheduler = await createTestScheduler(globalConfig, {
+    startRun,
+    ...testSchedulerContext,
+  });
 
   const results = await scheduler.scheduleTests(allTests, testWatcher);
 

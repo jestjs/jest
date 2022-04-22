@@ -112,7 +112,7 @@ export type MockedClass<T extends ClassLike> = MockInstance<
   prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
 } & T;
 
-type UnknownFunction = (...args: Array<unknown>) => unknown;
+export type UnknownFunction = (...args: Array<unknown>) => unknown;
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -201,6 +201,10 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
    * List of all the object instances that have been instantiated from the mock.
    */
   instances: Array<ReturnType<T>>;
+  /**
+   * List of all the function contexts that have been applied to calls to the mock.
+   */
+  contexts: Array<ThisParameterType<T>>;
   /**
    * List of the call order indexes of the mock. Jest is indexing the order of
    * invocations of all mocks in a test file. The index is starting with `1`.
@@ -569,6 +573,7 @@ export class ModuleMocker {
   private _defaultMockState(): MockFunctionState {
     return {
       calls: [],
+      contexts: [],
       instances: [],
       invocationCallOrder: [],
       results: [],
@@ -636,6 +641,7 @@ export class ModuleMocker {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
+        mockState.contexts.push(this);
         mockState.calls.push(args);
         // Create and record an "incomplete" mock result immediately upon
         // calling rather than waiting for the mock to return. This avoids
@@ -965,8 +971,12 @@ export class ModuleMocker {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
-      // @ts-expect-error component is a function so it has a name
-      metadata.name = component.name;
+      // @ts-expect-error component is a function so it has a name, but not
+      // necessarily a string: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name#function_names_in_classes
+      const componentName = component.name;
+      if (typeof componentName === 'string') {
+        metadata.name = componentName;
+      }
       if (this.isMockFunction(component)) {
         metadata.mockImpl = component.getMockImplementation() as T;
       }

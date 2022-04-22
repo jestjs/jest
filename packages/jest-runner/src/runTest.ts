@@ -79,7 +79,7 @@ async function runTestInternal(
   globalConfig: Config.GlobalConfig,
   projectConfig: Config.ProjectConfig,
   resolver: Resolver,
-  context?: TestRunnerContext,
+  context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
@@ -188,13 +188,13 @@ async function runTestInternal(
     transformer,
     cacheFS,
     {
-      changedFiles: context?.changedFiles,
+      changedFiles: context.changedFiles,
       collectCoverage: globalConfig.collectCoverage,
       collectCoverageFrom: globalConfig.collectCoverageFrom,
       collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
       coverageProvider: globalConfig.coverageProvider,
       sourcesRelatedToTestsInChangedFiles:
-        context?.sourcesRelatedToTestsInChangedFiles,
+        context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
   );
@@ -236,7 +236,6 @@ async function runTestInternal(
   runtime
     .requireInternalModule<typeof import('source-map-support')>(
       require.resolve('source-map-support'),
-      'source-map-support',
     )
     .install(sourcemapOptions);
 
@@ -363,7 +362,7 @@ export default async function runTest(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  context?: TestRunnerContext,
+  context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(

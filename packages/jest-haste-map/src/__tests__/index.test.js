@@ -13,9 +13,11 @@ function mockHashContents(contents) {
   return crypto.createHash('sha1').update(contents).digest('hex');
 }
 
-jest.mock('child_process', () => ({
-  // If this does not throw, we'll use the (mocked) watchman crawler
-  execSync() {},
+const mockIsWatchmanInstalled = jest.fn().mockResolvedValue(true);
+
+jest.mock('../lib/isWatchmanInstalled', () => ({
+  __esModule: true,
+  default: mockIsWatchmanInstalled,
 }));
 
 jest.mock('jest-worker', () => ({
@@ -206,8 +208,8 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
+      id: 'haste-map-test',
       maxWorkers: 1,
-      name: 'haste-map-test',
       platforms: ['ios', 'android'],
       resetCache: false,
       rootDir: path.join('/', 'project'),
@@ -300,11 +302,11 @@ describe('HasteMap', () => {
     const HasteMap = require('../').default;
     const hasteMap1 = await HasteMap.create({
       ...defaultConfig,
-      name: '@scoped/package',
+      id: '@scoped/package',
     });
     const hasteMap2 = await HasteMap.create({
       ...defaultConfig,
-      name: '-scoped-package',
+      id: '-scoped-package',
     });
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
@@ -612,6 +614,8 @@ describe('HasteMap', () => {
         });
       });
 
+      mockIsWatchmanInstalled.mockClear();
+
       const hasteMap = await HasteMap.create({
         ...defaultConfig,
         computeSha1: true,
@@ -620,6 +624,10 @@ describe('HasteMap', () => {
       });
 
       const data = (await hasteMap.build()).__hasteMapForTest;
+
+      expect(mockIsWatchmanInstalled).toHaveBeenCalledTimes(
+        useWatchman ? 1 : 0,
+      );
 
       expect(data.files).toEqual(
         createMap({

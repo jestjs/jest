@@ -24,9 +24,8 @@ import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
-type FindNodeModuleConfig = {
+export type FindNodeModuleConfig = {
   basedir: string;
-  browser?: boolean;
   conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
@@ -124,7 +123,6 @@ export default class Resolver {
     try {
       return resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
@@ -167,7 +165,6 @@ export default class Resolver {
     try {
       const result = await resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
@@ -218,7 +215,8 @@ export default class Resolver {
     // dependency graph because we don't have to look at modules that may not
     // exist and aren't mocked.
     const resolveNodeModule = (name: string, throwIfNotFound = false) => {
-      if (this.isCoreModule(name)) {
+      // Only skip default resolver
+      if (this.isCoreModule(name) && !this._options.resolver) {
         return name;
       }
 
@@ -292,7 +290,8 @@ export default class Resolver {
     // dependency graph because we don't have to look at modules that may not
     // exist and aren't mocked.
     const resolveNodeModule = async (name: string, throwIfNotFound = false) => {
-      if (this.isCoreModule(name)) {
+      // Only skip default resolver
+      if (this.isCoreModule(name) && !this._options.resolver) {
         return name;
       }
 
@@ -858,7 +857,7 @@ Please check your configuration for these entries:
 
 type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
 type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
-type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
+export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
 function loadResolver(
   resolver: string | undefined | null,

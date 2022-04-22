@@ -66,7 +66,8 @@ expectType<Mock<(e: any) => never>>(
 );
 expectError(fn('moduleName'));
 
-const mockFn = fn((a: string, b?: number) => true);
+declare const mockFnImpl: (this: Date, a: string, b?: number) => boolean;
+const mockFn = fn(mockFnImpl);
 const mockAsyncFn = fn(async (p: boolean) => 'value');
 
 expectType<boolean>(mockFn('one', 2));
@@ -134,6 +135,8 @@ if (returnValue.type === 'return') {
 if (returnValue.type === 'throw') {
   expectType<unknown>(returnValue.value);
 }
+
+expectType<Array<Date>>(mockFn.mock.contexts);
 
 expectType<Mock<(a: string, b?: number | undefined) => boolean>>(
   mockFn.mockClear(),

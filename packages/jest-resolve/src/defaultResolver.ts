@@ -13,30 +13,47 @@ import {
   resolve as resolveExports,
 } from 'resolve.exports';
 import {
-  PkgJson,
+  PackageJson,
+  findClosestPackageJson,
   isDirectory,
   isFile,
   readPackageCached,
   realpathSync,
 } from './fileWalkers';
 
-// copy from `resolve`'s types so we don't have their types in our definition
-// files
-interface ResolverOptions {
+type ResolverOptions = {
+  /** Directory to begin resolving from. */
   basedir: string;
-  browser?: boolean;
+  /** List of export conditions. */
   conditions?: Array<string>;
+  /** Instance of default resolver. */
   defaultResolver: typeof defaultResolver;
+  /** List of file extensions to search in order. */
   extensions?: Array<string>;
+  /**
+   * List of directory names to be looked up for modules recursively.
+   *
+   * @defaultValue
+   * The default is `['node_modules']`.
+   */
   moduleDirectory?: Array<string>;
+  /**
+   * List of `require.paths` to use if nothing is found in `node_modules`.
+   *
+   * @defaultValue
+   * The default is `undefined`.
+   */
   paths?: Array<string>;
+  /** Allows transforming parsed `package.json` contents. */
+  packageFilter?: (pkg: PackageJson, file: string, dir: string) => PackageJson;
+  /** Allows transforms a path within a package. */
+  pathFilter?: (pkg: PackageJson, path: string, relativePath: string) => string;
+  /** Current root directory. */
   rootDir?: string;
-  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
-  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
-}
+};
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
-  Pick<ResolverOptions, 'conditions'>;
+  Pick<ResolverOptions, 'basedir' | 'conditions'>;
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
 export type AsyncResolver = (
@@ -62,6 +79,7 @@ const defaultResolver: SyncResolver = (path, options) => {
     return pnpResolver(path, options);
   }
 
+  // @ts-expect-error: TODO remove after merging https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59990
   const resolveOptions: UpstreamResolveOptionsWithConditions = {
     ...options,
     isDirectory,
@@ -90,7 +108,7 @@ export default defaultResolver;
  * helper functions
  */
 
-function readPackageSync(_: unknown, file: string): PkgJson {
+function readPackageSync(_: unknown, file: string): PackageJson {
   return readPackageCached(file);
 }
 
@@ -112,6 +130,30 @@ function getPathInModule(
       moduleName = `${moduleName}/${segments.shift()}`;
     }
 
+    // self-reference
+    const closestPackageJson = findClosestPackageJson(options.basedir);
+    if (closestPackageJson) {
+      const pkg = readPackageCached(closestPackageJson);
+
+      if (pkg.name === moduleName && pkg.exports) {
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
+        }
+
+        return pathResolve(dirname(closestPackageJson), resolved);
+      }
+    }
+
     let packageJsonPath = '';
 
     try {
@@ -124,9 +166,6 @@ function getPathInModule(
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
-        // we need to make sure resolve ignores `main`
-        delete pkg.main;
-
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
@@ -135,10 +174,13 @@ function getPathInModule(
           createResolveOptions(options.conditions),
         );
 
-        // TODO: should we throw if not?
-        if (resolved) {
-          return pathResolve(dirname(packageJsonPath), resolved);
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
         }
+
+        return pathResolve(dirname(packageJsonPath), resolved);
       }
     }
   }

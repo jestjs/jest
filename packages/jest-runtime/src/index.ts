@@ -27,13 +27,18 @@ import stripBOM = require('strip-bom');
 import type {
   Jest,
   JestEnvironment,
+  JestImportMeta,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
+import type {
+  RuntimeTransformResult,
+  TestContext,
+  V8CoverageResult,
+} from '@jest/test-result';
 import {
   CallerTransformOptions,
   ScriptTransformer,
@@ -57,9 +62,6 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import type {Context} from './types';
-
-export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
@@ -279,10 +281,9 @@ export default class Runtime {
     this._shouldUnmockTransitiveDependenciesCache = new Map();
     this._transitiveShouldMock = new Map();
 
-    this._fakeTimersImplementation =
-      config.timers === 'legacy'
-        ? this._environment.fakeTimers
-        : this._environment.fakeTimersModern;
+    this._fakeTimersImplementation = config.fakeTimers.legacyFakeTimers
+      ? this._environment.fakeTimers
+      : this._environment.fakeTimersModern;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -333,7 +334,7 @@ export default class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<Context> {
+  ): Promise<TestContext> {
     createDirectory(config.cacheDirectory);
     const instance = await Runtime.createHasteMap(config, {
       console: options.console,
@@ -377,10 +378,10 @@ export default class Runtime {
       forceNodeFilesystemAPI: config.haste.forceNodeFilesystemAPI,
       hasteImplModulePath: config.haste.hasteImplModulePath,
       hasteMapModulePath: config.haste.hasteMapModulePath,
+      id: config.id,
       ignorePattern,
       maxWorkers: options?.maxWorkers || 1,
       mocksPattern: escapePathForRegex(`${path.sep}__mocks__${path.sep}`),
-      name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       resetCache: options?.resetCache,
       retainAllFiles: config.haste.retainAllFiles || false,
@@ -499,8 +500,18 @@ export default class Runtime {
 
             return this.linkAndEvaluateModule(module);
           },
-          initializeImportMeta(meta: ImportMeta) {
+          initializeImportMeta: (meta: JestImportMeta) => {
             meta.url = pathToFileURL(modulePath).href;
+
+            let jest = this.jestObjectCaches.get(modulePath);
+
+            if (!jest) {
+              jest = this._createJestObjectFor(modulePath);
+
+              this.jestObjectCaches.set(modulePath, jest);
+            }
+
+            meta.jest = jest;
           },
         });
 
@@ -625,6 +636,7 @@ export default class Runtime {
             return this.linkAndEvaluateModule(module);
           },
           initializeImportMeta(meta: ImportMeta) {
+            // no `jest` here as it's not loaded in a file
             meta.url = specifier;
           },
         });
@@ -2065,13 +2077,17 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers: Jest['useFakeTimers'] = (type = 'modern') => {
-      if (type === 'legacy') {
+    const useFakeTimers: Jest['useFakeTimers'] = fakeTimersConfig => {
+      fakeTimersConfig = {
+        ...this._config.fakeTimers,
+        ...fakeTimersConfig,
+      } as Config.FakeTimersConfig;
+      if (fakeTimersConfig?.legacyFakeTimers) {
         this._fakeTimersImplementation = this._environment.fakeTimers;
       } else {
         this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
-      this._fakeTimersImplementation!.useFakeTimers();
+      this._fakeTimersImplementation!.useFakeTimers(fakeTimersConfig);
       return jestObject;
     };
     const useRealTimers = () => {
@@ -2097,13 +2113,11 @@ export default class Runtime {
       });
 
     const setTimeout = (timeout: number) => {
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[testTimeoutSymbol] = timeout;
       return jestObject;
     };
 
     const retryTimes = (numTestRetries: number) => {
-      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[retryTimesSymbol] = numTestRetries;
       return jestObject;
     };
@@ -2134,7 +2148,7 @@ export default class Runtime {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
-            'getRealSystemTime is not available when not using modern timers',
+            '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },
@@ -2156,7 +2170,7 @@ export default class Runtime {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
-            'runAllImmediates is not available when using modern timers',
+            '`jest.runAllImmediates()` is only available when using legacy fake timers.',
           );
         }
       },
@@ -2172,7 +2186,7 @@ export default class Runtime {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
-            'setSystemTime is not available when not using modern timers',
+            '`jest.setSystemTime()` is not available when using legacy fake timers.',
           );
         }
       },

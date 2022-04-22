@@ -15,6 +15,6 @@ exports[`processes stack traces and code frames with source maps with coverage 1
       15 | }
       16 |
 
-      at Object.error (lib.ts:14:9)
-      at Object.<anonymous> (__tests__/fails.ts:10:3)"
+      at error (lib.ts:14:9)
+      at Object.<anonymous> (__tests__/fails.ts:10:8)"
 `;
