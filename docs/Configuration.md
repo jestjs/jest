@@ -927,8 +927,6 @@ This option allows the use of a custom resolver. This resolver must be a module 
 The options object provided to resolvers has the shape:
 
 ```ts
-type PackageJson = Record<string, unknown>;
-
 type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
@@ -943,9 +941,9 @@ type ResolverOptions = {
   /** List of `require.paths` to use if nothing is found in `node_modules`. */
   paths?: Array<string>;
   /** Allows transforming parsed `package.json` contents. */
-  packageFilter?: (pkg: PackageJson, file: string, dir: string) => PackageJson;
+  packageFilter?: (pkg: PackageJSON, file: string, dir: string) => PackageJSON;
   /** Allows transforms a path within a package. */
-  pathFilter?: (pkg: PackageJson, path: string, relativePath: string) => string;
+  pathFilter?: (pkg: PackageJSON, path: string, relativePath: string) => string;
   /** Current root directory. */
   rootDir?: string;
 };

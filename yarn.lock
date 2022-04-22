@@ -5373,10 +5373,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/resolve@npm:^1.20.0":
-  version: 1.20.1
-  resolution: "@types/resolve@npm:1.20.1"
-  checksum: d035d5aaadbd455027fa9457a4a263563d49647f088876aebd2b0388d4c35400b85c0382fdc2ec5253c35442abfc2d25431c989345b97fefe26a367811214343
+"@types/resolve@npm:^1.20.2":
+  version: 1.20.2
+  resolution: "@types/resolve@npm:1.20.2"
+  checksum: 61c2cad2499ffc8eab36e3b773945d337d848d3ac6b7b0a87c805ba814bc838ef2f262fc0f109bfd8d2e0898ff8bd80ad1025f9ff64f1f71d3d4294c9f14e5f6
   languageName: node
   linkType: hard
 
@@ -13446,7 +13446,7 @@ __metadata:
   dependencies:
     "@tsd/typescript": ~4.6.2
     "@types/graceful-fs": ^4.1.3
-    "@types/resolve": ^1.20.0
+    "@types/resolve": ^1.20.2
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
     jest-haste-map: ^28.0.0-alpha.11
