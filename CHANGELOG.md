@@ -46,7 +46,7 @@
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
 - `[jest-resolve]` [**BREAKING**] Remove `browser?: boolean` from resolver options, `conditions: ['browser']` should be used instead ([#12707](https://github.com/facebook/jest/pull/12707))
-- `[jest-resolve]` Expose `JestResolver`, `AsyncResolver` and `SyncResolver` types ([#12707](https://github.com/facebook/jest/pull/12707))
+- `[jest-resolve]` Expose `JestResolver`, `AsyncResolver`, `SyncResolver`, `PackageFilter`, `PathFilter` and `PackageJSON` types ([#12707](https://github.com/facebook/jest/pull/12707), ([#12712](https://github.com/facebook/jest/pull/12712))
 - `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
 - `[jest-runner]` Allow passing `testEnvironmentOptions` via docblocks ([#12470](https://github.com/facebook/jest/pull/12470))
 - `[jest-runner]` Exposing `CallbackTestRunner`, `EmittingTestRunner` abstract classes to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646))
