@@ -27,8 +27,13 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
+export type {Test, TestEvents} from '@jest/test-result';
+export type {Config} from '@jest/types';
+export type {TestWatcher} from 'jest-watcher';
 export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
+  CallbackTestRunnerInterface,
+  EmittingTestRunnerInterface,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
