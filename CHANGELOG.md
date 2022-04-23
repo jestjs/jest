@@ -2,7 +2,6 @@
 
 ### Features
 
-- `[jest-reporters]` Fix: trailing slash in matching coverageThreshold key ([#12714](https://github.com/facebook/jest/pull/12714))
 - `[babel-jest]` Export `createTransformer` function ([#12399](https://github.com/facebook/jest/pull/12399))
 - `[expect]` Expose `AsymmetricMatchers`, `MatcherFunction` and `MatcherFunctionWithState` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
 - `[jest-circus, jest-jasmine2]` Allowed classes and functions as `describe` and `it`/`test` names ([#12484](https://github.com/facebook/jest/pull/12484))
@@ -42,6 +41,7 @@
 - `[jest-mock]` Add `contexts` member to mock functions ([#12601](https://github.com/facebook/jest/pull/12601))
 - `[@jest/reporters]` Add GitHub Actions reporter ([#11320](https://github.com/facebook/jest/pull/11320), [#12658](https://github.com/facebook/jest/pull/12658))
 - `[@jest/reporters]` Pass `reporterContext` to custom reporter constructors as third argument ([#12657](https://github.com/facebook/jest/pull/12657))
+- `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve]` Support package self-reference ([#12682](https://github.com/facebook/jest/pull/12682))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
