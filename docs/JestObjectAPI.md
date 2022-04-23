@@ -831,14 +831,23 @@ Example:
 jest.setTimeout(1000); // 1 second
 ```
 
-### `jest.retryTimes()`
+### `jest.retryTimes(numRetries, options)`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner! This must live at the top-level of a test file or in a describe block. Retries _will not_ work if `jest.retryTimes()` is called in a `beforeEach` or a `test` block.
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. `options` are optional. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner! This must live at the top-level of a test file or in a describe block. Retries _will not_ work if `jest.retryTimes()` is called in a `beforeEach` or a `test` block.
 
 Example in a test:
 
 ```js
 jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused the test to fail to the console, providing visibility on why a retry occurred.
+
+```js
+jest.retryTimes(3, {logErrorsBeforeRetry: true});
 test('will fail', () => {
   expect(true).toBe(false);
 });
