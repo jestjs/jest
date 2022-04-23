@@ -163,11 +163,11 @@
     "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
   },
   "resolutions": {
+    "@types/node": "~12.12.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native@0.68.1": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch",
-    "@types/node": "~12.12.0"
+    "react-native@0.68.1": "patch:react-native@npm:0.68.1#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch"
   },
   "packageManager": "yarn@3.2.0"
 }
