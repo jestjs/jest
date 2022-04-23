@@ -10,7 +10,7 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {TEST_TIMEOUT_SYMBOL} from './types';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -205,6 +205,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       break;
     }
     case 'test_retry': {
+      const logErrorsBeforeRetry: boolean =
+        // eslint-disable-next-line no-restricted-globals
+        global[LOG_ERRORS_BEFORE_RETRY] || false;
+      if (logErrorsBeforeRetry) {
+        event.test.retryReasons.push(...event.test.errors);
+      }
       event.test.errors = [];
       break;
     }

@@ -14,6 +14,11 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
+import {
+  formatStackTrace,
+  indentAllLines,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import {clearLine, isInteractive} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import Status from './Status';
@@ -181,10 +186,37 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileHeader(
-    _testPath: string,
+    testPath: string,
     config: Config.ProjectConfig,
     result: TestResult,
   ): void {
+    // log retry errors if any exist
+    result.testResults.forEach(testResult => {
+      const testRetryReasons = testResult.retryReasons;
+      if (testRetryReasons && testRetryReasons.length > 0) {
+        this.log(
+          `${chalk.reset.inverse.bold.yellow(
+            ' LOGGING RETRY ERRORS ',
+          )} ${chalk.bold(testResult.fullName)}`,
+        );
+        testRetryReasons.forEach((retryReasons, index) => {
+          let {message, stack} = separateMessageFromStack(retryReasons);
+          stack = this._globalConfig.noStackTrace
+            ? ''
+            : chalk.dim(
+                formatStackTrace(stack, config, this._globalConfig, testPath),
+              );
+
+          message = indentAllLines(message);
+
+          this.log(
+            `${chalk.reset.inverse.bold.blueBright(` RETRY ${index + 1} `)}\n`,
+          );
+          this.log(`${message}\n${stack}\n`);
+        });
+      }
+    });
+
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
