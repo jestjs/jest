@@ -6,18 +6,21 @@
  */
 
 import {expectType} from 'tsd-lite';
-import type {Test, TestEvents} from '@jest/test-result';
-import type {Config} from '@jest/types';
 import {CallbackTestRunner, EmittingTestRunner} from 'jest-runner';
 import type {
+  CallbackTestRunnerInterface,
+  Config,
+  EmittingTestRunnerInterface,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
+  Test,
+  TestEvents,
   TestRunnerContext,
   TestRunnerOptions,
+  TestWatcher,
   UnsubscribeFn,
 } from 'jest-runner';
-import type {TestWatcher} from 'jest-watcher';
 
 const globalConfig = {} as Config.GlobalConfig;
 const runnerContext = {} as TestRunnerContext;
@@ -45,6 +48,32 @@ const callbackRunner = new CallbackRunner(globalConfig, runnerContext);
 expectType<boolean | undefined>(callbackRunner.isSerial);
 expectType<false>(callbackRunner.supportsEventEmitters);
 
+// CallbackTestRunnerInterface
+
+class CustomCallbackRunner implements CallbackTestRunnerInterface {
+  readonly #maxConcurrency: number;
+  readonly #globalConfig: Config.GlobalConfig;
+
+  constructor(globalConfig: Config.GlobalConfig) {
+    this.#globalConfig = globalConfig;
+    this.#maxConcurrency = globalConfig.maxWorkers;
+  }
+
+  async runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void> {
+    expectType<Config.GlobalConfig>(this.#globalConfig);
+    expectType<number>(this.#maxConcurrency);
+
+    return;
+  }
+}
+
 // EmittingRunner
 
 class EmittingRunner extends EmittingTestRunner {
@@ -71,3 +100,34 @@ const emittingRunner = new EmittingRunner(globalConfig, runnerContext);
 
 expectType<boolean | undefined>(emittingRunner.isSerial);
 expectType<true>(emittingRunner.supportsEventEmitters);
+
+// EmittingTestRunnerInterface
+
+class CustomEmittingRunner implements EmittingTestRunnerInterface {
+  readonly #maxConcurrency: number;
+  readonly #globalConfig: Config.GlobalConfig;
+  readonly supportsEventEmitters = true;
+
+  constructor(globalConfig: Config.GlobalConfig) {
+    this.#globalConfig = globalConfig;
+    this.#maxConcurrency = globalConfig.maxWorkers;
+  }
+
+  async runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void> {
+    expectType<Config.GlobalConfig>(this.#globalConfig);
+    expectType<number>(this.#maxConcurrency);
+
+    return;
+  }
+
+  on<Name extends keyof TestEvents>(
+    eventName: string,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn {
+    return () => {};
+  }
+}

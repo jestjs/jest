@@ -57,6 +57,36 @@ export type TestRunnerSerializedContext = {
 
 export type UnsubscribeFn = () => void;
 
+export interface CallbackTestRunnerInterface {
+  readonly isSerial?: boolean;
+  readonly supportsEventEmitters?: boolean;
+
+  runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+}
+
+export interface EmittingTestRunnerInterface {
+  readonly isSerial?: boolean;
+  readonly supportsEventEmitters: true;
+
+  runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+
+  on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn;
+}
+
 abstract class BaseTestRunner {
   readonly isSerial?: boolean;
   abstract readonly supportsEventEmitters: boolean;
@@ -67,7 +97,10 @@ abstract class BaseTestRunner {
   ) {}
 }
 
-export abstract class CallbackTestRunner extends BaseTestRunner {
+export abstract class CallbackTestRunner
+  extends BaseTestRunner
+  implements CallbackTestRunnerInterface
+{
   readonly supportsEventEmitters = false;
 
   abstract runTests(
@@ -80,7 +113,10 @@ export abstract class CallbackTestRunner extends BaseTestRunner {
   ): Promise<void>;
 }
 
-export abstract class EmittingTestRunner extends BaseTestRunner {
+export abstract class EmittingTestRunner
+  extends BaseTestRunner
+  implements EmittingTestRunnerInterface
+{
   readonly supportsEventEmitters = true;
 
   abstract runTests(

@@ -49,7 +49,7 @@
 - `[jest-resolve]` Expose `JestResolver`, `AsyncResolver`, `SyncResolver`, `PackageFilter`, `PathFilter` and `PackageJSON` types ([#12707](https://github.com/facebook/jest/pull/12707), ([#12712](https://github.com/facebook/jest/pull/12712))
 - `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
 - `[jest-runner]` Allow passing `testEnvironmentOptions` via docblocks ([#12470](https://github.com/facebook/jest/pull/12470))
-- `[jest-runner]` Exposing `CallbackTestRunner`, `EmittingTestRunner` abstract classes to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646))
+- `[jest-runner]` Expose `CallbackTestRunner`, `EmittingTestRunner` abstract classes and `CallbackTestRunnerInterface`, `EmittingTestRunnerInterface` to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646), [#12715](https://github.com/facebook/jest/pull/12715))
 - `[jest-runtime]` [**BREAKING**] `Runtime.createHasteMap` now returns a promise ([#12008](https://github.com/facebook/jest/pull/12008))
 - `[jest-runtime]` Calling `jest.resetModules` function will clear FS and transform cache ([#12531](https://github.com/facebook/jest/pull/12531))
 - `[jest-runtime]` [**BREAKING**] Remove `Context` type export, it must be imported from `@jest/test-result` ([#12685](https://github.com/facebook/jest/pull/12685))
