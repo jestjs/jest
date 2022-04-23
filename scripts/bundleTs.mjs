@@ -39,8 +39,16 @@ const copyrightSnippet = `
 (async () => {
   const packages = getPackages();
 
-  const packagesWithTs = packages.filter(p =>
-    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
+  const isTsPackage = p =>
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
+
+  const hasMoreThanOneDefinitionFile = p =>
+    fs
+      .readdirSync(path.resolve(p.packageDir, 'build'))
+      .filter(f => f.endsWith('.d.ts')).length > 1;
+
+  const packagesToBundle = packages.filter(
+    p => isTsPackage(p) && hasMoreThanOneDefinitionFile(p),
   );
 
   const typesNodeReferenceDirective = '/// <reference types="node" />';
@@ -115,7 +123,7 @@ const copyrightSnippet = `
   let compilerState;
 
   await Promise.all(
-    packagesWithTs.map(async ({packageDir, pkg}) => {
+    packagesToBundle.map(async ({packageDir, pkg}) => {
       const configFile = path.resolve(packageDir, 'api-extractor.json');
 
       await fs.promises.writeFile(
@@ -134,7 +142,7 @@ const copyrightSnippet = `
 
       if (!compilerState) {
         compilerState = CompilerState.create(extractorConfig, {
-          additionalEntryPoints: packagesWithTs.map(({pkg, packageDir}) =>
+          additionalEntryPoints: packagesToBundle.map(({pkg, packageDir}) =>
             path.resolve(packageDir, pkg.types),
           ),
           typescriptCompilerFolder,
