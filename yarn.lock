@@ -5203,24 +5203,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:~12.12.0":
+"@types/node@npm:~12.12.0":
   version: 12.12.70
   resolution: "@types/node@npm:12.12.70"
   checksum: 69c193e0bce8fa914d478f829bd923ee662b220e069a2e00ffbe109f27d0b38fbf2a9fe78c99eb4d4ccb294248ff8de68019a2c7fadb032d301c6feca25f3d22
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:12.20.24":
-  version: 12.20.24
-  resolution: "@types/node@npm:12.20.24"
-  checksum: e7a13460e2f5b0b5a32c0f3af7daf1a05201552a66d542d3cc3b1ea8b52d4730250f9eb1961d755e31cfe5d03c78340911a6242657a0a9a17d6f7e341fc9f366
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^17.0.5":
-  version: 17.0.23
-  resolution: "@types/node@npm:17.0.23"
-  checksum: a3517554737cbb042e76c30d0e5482192ac4d9bea0eeb086e2622d9cabf460a0eb52a696b99fcd18e7fcc93c96db6cc7ae507f6608f256ef0b5c1d8c87a5a470
   languageName: node
   linkType: hard
 
