@@ -36,22 +36,19 @@ const copyrightSnippet = `
  */
 `.trim();
 
+const typesNodeReferenceDirective = '/// <reference types="node" />';
+
 (async () => {
   const packages = getPackages();
 
   const isTsPackage = p =>
     fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
 
-  const hasMoreThanOneDefinitionFile = p =>
-    fs
-      .readdirSync(path.resolve(p.packageDir, 'build'))
-      .filter(f => f.endsWith('.d.ts')).length > 1;
+  const excludedPackages = ['@jest/globals'];
 
   const packagesToBundle = packages.filter(
-    p => isTsPackage(p) && hasMoreThanOneDefinitionFile(p),
+    p => isTsPackage(p) && !excludedPackages.includes(p.pkg.name),
   );
-
-  const typesNodeReferenceDirective = '/// <reference types="node" />';
 
   console.log(chalk.inverse(' Extracting TypeScript definition files '));
 
