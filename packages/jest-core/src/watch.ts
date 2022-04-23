@@ -10,13 +10,13 @@ import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
+import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {
   ChangeEvent as HasteChangeEvent,
   default as HasteMap,
 } from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
-import type {Context} from 'jest-runtime';
 import {
   isInteractive,
   preRunMessage,
@@ -91,7 +91,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 
 export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,

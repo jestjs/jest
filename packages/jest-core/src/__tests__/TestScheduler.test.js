@@ -6,14 +6,29 @@
  *
  */
 
-import {GitHubActionsReporter, SummaryReporter} from '@jest/reporters';
+import {
+  CoverageReporter,
+  DefaultReporter,
+  GitHubActionsReporter,
+  NotifyReporter,
+  SummaryReporter,
+  VerboseReporter,
+} from '@jest/reporters';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
-jest.mock('ci-info', () => ({GITHUB_ACTIONS: true}));
-
-jest.mock('@jest/reporters');
+jest
+  .mock('ci-info', () => ({GITHUB_ACTIONS: true}))
+  .mock('@jest/reporters')
+  .mock(
+    '/custom-reporter.js',
+    () =>
+      jest.fn(() => ({
+        onTestStart() {},
+      })),
+    {virtual: true},
+  );
 
 const mockSerialRunner = {
   isSerial: true,
@@ -38,68 +53,175 @@ beforeEach(() => {
   spyShouldRunInBand.mockClear();
 });
 
-test('config for reporters supports `default`', async () => {
-  const undefinedReportersScheduler = await createTestScheduler(
-    makeGlobalConfig({
-      reporters: undefined,
-    }),
-    {},
-    {},
-  );
-  const numberOfReporters =
-    undefinedReportersScheduler._dispatcher._reporters.length;
+describe('reporters', () => {
+  const CustomReporter = require('/custom-reporter.js');
 
-  const defaultReportersScheduler = await createTestScheduler(
-    makeGlobalConfig({
-      reporters: [['default', {}]],
-    }),
-    {},
-    {},
-  );
-  expect(defaultReportersScheduler._dispatcher._reporters.length).toBe(
-    numberOfReporters,
-  );
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-  const emptyReportersScheduler = await createTestScheduler(
-    makeGlobalConfig({
-      reporters: [],
-    }),
-    {},
-    {},
-  );
-  expect(emptyReportersScheduler._dispatcher._reporters.length).toBe(0);
-});
+  test('works with default value', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: undefined,
+      }),
+      {},
+      {},
+    );
 
-test('config for reporters supports `github-actions`', async () => {
-  await createTestScheduler(
-    makeGlobalConfig({
-      reporters: [],
-    }),
-    {},
-    {},
-  );
-  expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
 
-  await createTestScheduler(
-    makeGlobalConfig({
-      reporters: [['github-actions', {}]],
-    }),
-    {},
-    {},
-  );
-  expect(GitHubActionsReporter).toHaveBeenCalledTimes(1);
+  test('does not enable any reporters, if empty list is passed', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [],
+      }),
+      {},
+      {},
+    );
 
-  await createTestScheduler(
-    makeGlobalConfig({
-      reporters: [
-        ['default', {}],
-        ['github-actions', {}],
-      ],
-    }),
-    {},
-    {},
-  );
-  expect(GitHubActionsReporter).toHaveBeenCalledTimes(2);
+    expect(DefaultReporter).toBeCalledTimes(0);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(0);
+  });
+
+  test('sets up default reporters', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('sets up verbose reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['default', {}]],
+        verbose: true,
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(0);
+    expect(VerboseReporter).toBeCalledTimes(1);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('sets up github actions reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [
+          ['default', {}],
+          ['github-actions', {}],
+        ],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(1);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('sets up notify reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        notify: true,
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(1);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('sets up coverage reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        collectCoverage: true,
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(1);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('allows enabling summary reporter separately', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['summary', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(0);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+  });
+
+  test('sets up custom reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [
+          ['default', {}],
+          ['/custom-reporter.js', {}],
+        ],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toBeCalledTimes(1);
+    expect(VerboseReporter).toBeCalledTimes(0);
+    expect(GitHubActionsReporter).toBeCalledTimes(0);
+    expect(NotifyReporter).toBeCalledTimes(0);
+    expect(CoverageReporter).toBeCalledTimes(0);
+    expect(SummaryReporter).toBeCalledTimes(1);
+    expect(CustomReporter).toBeCalledTimes(1);
+  });
 });
 
 test('.addReporter() .removeReporter()', async () => {
