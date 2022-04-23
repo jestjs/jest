@@ -333,12 +333,13 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('md5')
+    options.id = createHash('sha256')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
       .update(String(projectIndex))
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   if (!options.setupFiles) {
