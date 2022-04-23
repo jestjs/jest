@@ -13,6 +13,7 @@ const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
 const supportedNodeVersion = semver.minVersion(pkg.engines.node).version;
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default {
   babelrcRoots: ['examples/*'],
@@ -22,7 +23,7 @@ export default {
     {
       plugins: [
         path.resolve(
-          path.dirname(fileURLToPath(import.meta.url)),
+          dirname,
           'scripts/babel-plugin-jest-replace-ts-require-assignment.mjs',
         ),
       ],
@@ -42,10 +43,7 @@ export default {
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      'scripts/babel-plugin-jest-require-outside-vm.mjs',
-    ),
+    path.resolve(dirname, 'scripts/babel-plugin-jest-require-outside-vm.mjs'),
   ],
   presets: [
     [
