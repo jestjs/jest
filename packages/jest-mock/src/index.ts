@@ -7,6 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+export type {Mocked} from './types';
+
 export type MockFunctionMetadataType =
   | 'object'
   | 'array'
@@ -97,20 +99,6 @@ export type MaybeMockedDeep<T> = T extends FunctionLike
   : T extends object
   ? MockedObjectDeep<T>
   : T;
-
-export type Mocked<T> = {
-  [P in keyof T]: T[P] extends FunctionLike
-    ? MockInstance<T[P]>
-    : T[P] extends ClassLike
-    ? MockedClass<T[P]>
-    : T[P];
-} & T;
-
-export type MockedClass<T extends ClassLike> = MockInstance<
-  (args: T extends new (...args: infer P) => any ? P : never) => InstanceType<T>
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 

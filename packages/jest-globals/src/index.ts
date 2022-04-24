@@ -9,7 +9,7 @@ import type {Jest} from '@jest/environment';
 import type {JestExpect} from '@jest/expect';
 import type {Global} from '@jest/types';
 
-export declare const jest: Jest;
+declare const jest: Jest;
 
 export declare const expect: JestExpect;
 
@@ -25,6 +25,24 @@ export declare const beforeAll: Global.GlobalAdditions['beforeAll'];
 export declare const beforeEach: Global.GlobalAdditions['beforeEach'];
 export declare const afterEach: Global.GlobalAdditions['afterEach'];
 export declare const afterAll: Global.GlobalAdditions['afterAll'];
+
+declare namespace jest {
+  /**
+   * Wraps class, function, object or module with mock definitions.
+   *
+   * @example
+   *
+   *  jest.mock('../api');
+   *  import * as api from '../api';
+   *
+   *  const mockApi = api as jest.Mocked<typeof api>;
+   *
+   *  mockApi.someMethod.mockImplementation(() => 'test');
+   */
+  type Mocked<T> = import('jest-mock').Mocked<T>;
+}
+
+export {jest};
 
 throw new Error(
   'Do not import `@jest/globals` outside of the Jest test environment',

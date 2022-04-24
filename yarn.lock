@@ -2658,6 +2658,7 @@ __metadata:
     "@jest/environment": ^28.0.0-alpha.11
     "@jest/expect": ^28.0.0-alpha.11
     "@jest/types": ^28.0.0-alpha.9
+    jest-mock: ^28.0.0-alpha.9
   languageName: unknown
   linkType: soft
 

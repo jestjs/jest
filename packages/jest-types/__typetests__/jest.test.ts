@@ -7,7 +7,7 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, ModuleMocker, SpyInstance} from 'jest-mock';
+import type {Mock, Mocked, ModuleMocker, SpyInstance} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -117,7 +117,6 @@ expectError(jest.unmock());
 
 // Mock Functions
 
-expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
 expectType<typeof jest>(jest.clearAllMocks());
 expectError(jest.clearAllMocks('moduleName'));
 
@@ -301,8 +300,16 @@ expectError(jest.useRealTimers(true));
 
 // Misc
 
-expectType<typeof jest>(jest.setTimeout(6000));
-expectError(jest.setTimeout());
+type VoidFn = () => void;
+declare const voidFn: VoidFn;
+
+expectType<Mocked<VoidFn>>(voidFn as jest.Mocked<VoidFn>);
 
 expectType<typeof jest>(jest.retryTimes(3));
+expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
+expectError(jest.retryTimes(3, {logErrorsBeforeRetry: 'all'}));
+expectError(jest.retryTimes({logErrorsBeforeRetry: true}));
 expectError(jest.retryTimes());
+
+expectType<typeof jest>(jest.setTimeout(6000));
+expectError(jest.setTimeout());
