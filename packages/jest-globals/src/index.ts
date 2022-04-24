@@ -35,9 +35,9 @@ declare const jest: Jest;
 
 declare namespace jest {
   /**
-   * Wraps any object type with definitions of Jest mock.
+   * Wraps a class, function or object type with definitions of Jest mock.
    */
-  type Mocked<T> = JestMocked<T>;
+  type Mocked<T extends object> = JestMocked<T>;
   /**
    * Wraps a class type with definitions of Jest mock.
    */

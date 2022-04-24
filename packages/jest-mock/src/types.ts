@@ -19,7 +19,7 @@ export type MockedClass<T extends ClassLike> = MockInstance<
 export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
   MockedObject<T>;
 
-export type MockedObject<T> = {
+type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
@@ -29,7 +29,7 @@ export type MockedObject<T> = {
     : T[K];
 } & T;
 
-export type Mocked<T> = T extends ClassLike
+export type Mocked<T extends object> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunction<T>
