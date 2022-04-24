@@ -9,6 +9,7 @@
 [build.environment]
   NODE_VERSION = "lts/*"
   NODE_OPTIONS = "--max_old_space_size=4096"
+  # default cache
   YARN_GLOBAL_FOLDER  = "/opt/buildhome/.yarn_cache"
 
 [context.production]
