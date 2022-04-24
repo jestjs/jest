@@ -43,6 +43,10 @@ The `testURL` option is removed. Now you should use [`testEnvironmentOptions`](C
 + }
 ```
 
+### Babel config
+
+`babel-jest` now passes `root: config.rootDir` to Babel when resolving configuration. This improves compatibility when using `projects` with differing configuration, but it might mean your babel config isn't picked up in the same way anymore. You can override this option by passing options to `babel-jest` in your [configuration](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
+
 ## Fake Timers
 
 Fake timers were refactored to allow passing options to the underlying [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
@@ -182,7 +186,3 @@ import {jest} from '@jest/globals';
     .mockResolvedValue('default')
     .mockResolvedValueOnce('first call');
 ```
-
-## Babel config
-
-`babel-jest` now passes `root: config.rootDir` to Babel when resolving configuration. This improves compatibility when using `projects` with differing configuration, but it might mean your babel config isn't picked up in the same way anymore. You can override this option by passing options to `babel-jest` in your [configuration](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
