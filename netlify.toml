@@ -10,7 +10,8 @@
   NODE_VERSION = "lts/*"
   NODE_OPTIONS = "--max_old_space_size=4096"
   # default cache
-  YARN_GLOBAL_FOLDER  = "/opt/buildhome/.yarn_cache"
+  YARN_ENABLE_GLOBAL_CACHE = "true"
+  YARN_GLOBAL_FOLDER = "/opt/buildhome/.yarn_cache"
 
 [context.production]
   # Do not build the site if there's no site-related changes
