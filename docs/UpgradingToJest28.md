@@ -7,7 +7,7 @@ Upgrading Jest from v27 to v28? This guide aims to help refactoring your configu
 
 :::info
 
-See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md) for the full list of changes.
+See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2800) for the full list of changes.
 
 :::
 
@@ -42,6 +42,10 @@ The `testURL` option is removed. Now you should use [`testEnvironmentOptions`](C
 +   url: 'https://jestjs.io'
 + }
 ```
+
+### Babel config
+
+`babel-jest` now passes `root: config.rootDir` to Babel when resolving configuration. This improves compatibility when using `projects` with differing configuration, but it might mean your babel config isn't picked up in the same way anymore. You can override this option by passing options to `babel-jest` in your [configuration](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
 
 ## Fake Timers
 
