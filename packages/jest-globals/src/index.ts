@@ -8,8 +8,13 @@
 import type {Jest} from '@jest/environment';
 import type {JestExpect} from '@jest/expect';
 import type {Global} from '@jest/types';
-
-declare const jest: Jest;
+import type {
+  ClassLike,
+  FunctionLike,
+  Mocked as JestMocked,
+  MockedClass as JestMockedClass,
+  MockedFunction as JestMockedFunction,
+} from 'jest-mock';
 
 export declare const expect: JestExpect;
 
@@ -26,20 +31,21 @@ export declare const beforeEach: Global.GlobalAdditions['beforeEach'];
 export declare const afterEach: Global.GlobalAdditions['afterEach'];
 export declare const afterAll: Global.GlobalAdditions['afterAll'];
 
+declare const jest: Jest;
+
 declare namespace jest {
   /**
-   * Wraps class, function, object or module with mock definitions.
-   *
-   * @example
-   *
-   *  jest.mock('../api');
-   *  import * as api from '../api';
-   *
-   *  const mockApi = api as jest.Mocked<typeof api>;
-   *
-   *  mockApi.someMethod.mockImplementation(() => 'test');
+   * Wraps any object type with definitions of Jest mock.
    */
-  type Mocked<T> = import('jest-mock').Mocked<T>;
+  type Mocked<T> = JestMocked<T>;
+  /**
+   * Wraps a class type with definitions of Jest mock.
+   */
+  type MockedClass<T extends ClassLike> = JestMockedClass<T>;
+  /**
+   * Wraps a function type with definitions of Jest mock.
+   */
+  type MockedFunction<T extends FunctionLike> = JestMockedFunction<T>;
 }
 
 export {jest};

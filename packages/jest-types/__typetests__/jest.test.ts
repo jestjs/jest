@@ -7,7 +7,14 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, Mocked, ModuleMocker, SpyInstance} from 'jest-mock';
+import type {
+  Mock,
+  Mocked,
+  MockedClass,
+  MockedFunction,
+  ModuleMocker,
+  SpyInstance,
+} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -298,12 +305,25 @@ expectError(jest.useFakeTimers('modern'));
 expectType<typeof jest>(jest.useRealTimers());
 expectError(jest.useRealTimers(true));
 
+// Mock
+
+type SomeFn = () => void;
+declare const voidFn: SomeFn;
+
+expectType<Mocked<SomeFn>>(voidFn as jest.Mocked<SomeFn>);
+
+class SomeClass {
+  constructor() {}
+  someMethod() {}
+}
+
+expectType<MockedClass<typeof SomeClass>>(
+  SomeClass as jest.MockedClass<typeof SomeClass>,
+);
+
+expectType<MockedFunction<SomeFn>>(voidFn as jest.MockedFunction<SomeFn>);
+
 // Misc
-
-type VoidFn = () => void;
-declare const voidFn: VoidFn;
-
-expectType<Mocked<VoidFn>>(voidFn as jest.Mocked<VoidFn>);
 
 expectType<typeof jest>(jest.retryTimes(3));
 expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));

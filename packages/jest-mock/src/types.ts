@@ -10,15 +10,16 @@ import type {MockInstance} from './index';
 type ClassLike = {new (...args: any): any};
 type FunctionLike = (...args: any) => any;
 
-type MockedClass<T extends ClassLike> = MockInstance<
+export type MockedClass<T extends ClassLike> = MockInstance<
   (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
 > & {
   prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
 } & MockedObject<T>;
 
-type MockedFunction<T extends FunctionLike> = MockInstance<T> & MockedObject<T>;
+export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
+  MockedObject<T>;
 
-type MockedObject<T> = {
+export type MockedObject<T> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike

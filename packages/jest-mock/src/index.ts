@@ -7,7 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
-export type {Mocked} from './types';
+export type {Mocked, MockedClass} from './types';
 
 export type MockFunctionMetadataType =
   | 'object'
