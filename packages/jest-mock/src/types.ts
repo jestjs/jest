@@ -5,16 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {MockInstance} from './index';
-
-type ClassLike = {new (...args: any): any};
-type FunctionLike = (...args: any) => any;
+import type {ClassLike, FunctionLike, MockInstance} from './index';
 
 export type MockedClass<T extends ClassLike> = MockInstance<
   (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & MockedObject<T>;
+> &
+  MockedObject<T>;
 
 export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
   MockedObject<T>;
