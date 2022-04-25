@@ -111,9 +111,7 @@ jobs:
     steps:
       - name: Set git config
         shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
+        run: git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -144,9 +142,7 @@ jobs:
     steps:
       - name: Set git config
         shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
+        run: git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v3
       - name: Use Node.js LTS
