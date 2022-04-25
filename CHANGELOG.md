@@ -67,6 +67,7 @@
 
 ### Fixes
 
+- `[*]` Use `sha256` instead of `md5` as hashing algortihm for compatibility with FIPS systems ([#12722](https://github.com/facebook/jest/pull/12722))
 - `[babel-jest]` [**BREAKING**] Pass `rootDir` as `root` in Babel's options ([#12689](https://github.com/facebook/jest/pull/12689))
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[expect]` Throw useful error if `expect.extend` is called with invalid matchers ([#12488](https://github.com/facebook/jest/pull/12488))

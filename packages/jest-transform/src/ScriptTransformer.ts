@@ -116,19 +116,21 @@ class ScriptTransformer {
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey) {
-      return createHash('md5')
+      return createHash('sha256')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
-        .digest('hex');
+        .digest('hex')
+        .substring(0, 32);
     }
 
-    return createHash('md5')
+    return createHash('sha256')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
       .update(filename)
       .update(CACHE_VERSION)
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   private _getCacheKey(
@@ -869,7 +871,10 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -885,7 +890,10 @@ function readCodeCacheFile(cachePath: string): string | null {
     return null;
   }
   const code = content.substring(33);
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   if (checksum === content.substring(0, 32)) {
     return code;
   }
