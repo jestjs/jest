@@ -81,7 +81,7 @@ describe('extractMetadata', () => {
 
   it('accepts a custom dependency extractor', async () => {
     expect(
-      await worker({
+      await extractMetadata({
         computeDependencies: true,
         dependencyExtractor: path.join(__dirname, 'dependencyExtractor.js'),
         filePath: path.join('/project', 'fruits', 'Pear.js'),
