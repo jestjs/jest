@@ -1292,7 +1292,6 @@ When adding additional code transformers, this will overwrite the default config
 
 :::
 
-
 ### `transformIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `["/node_modules/", "\\.pnp\\.[^\\\/]+$"]`
