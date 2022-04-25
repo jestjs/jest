@@ -17,7 +17,7 @@ abstract class BaseWatchPlugin implements WatchPlugin {
   protected _stdin: NodeJS.ReadStream;
   protected _stdout: NodeJS.WriteStream;
 
-  constructor({
+  protected constructor({
     stdin,
     stdout,
   }: {
