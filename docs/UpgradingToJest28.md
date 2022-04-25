@@ -47,6 +47,10 @@ The `testURL` option is removed. Now you should use [`testEnvironmentOptions`](C
 
 `babel-jest` now passes `root: config.rootDir` to Babel when resolving configuration. This improves compatibility when using `projects` with differing configuration, but it might mean your babel config isn't picked up in the same way anymore. You can override this option by passing options to `babel-jest` in your [configuration](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
 
+## `expect`
+
+In versions prior to Jest 28, `toHaveProperty` checked for equality instead if existence, which means that e.g. `expect({}).toHaveProperty('a', undefined)` is a passing test. This has been changed in Jest 28 to fail.
+
 ## Fake Timers
 
 Fake timers were refactored to allow passing options to the underlying [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
