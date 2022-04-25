@@ -132,7 +132,11 @@
         }
       },
       {
-        "files": "lerna.json",
+        "files": [
+          "lerna.json",
+          "website/sidebars.json",
+          "website/versioned_sidebars/*.json"
+        ],
         "options": {
           "parser": "json-stringify"
         }
