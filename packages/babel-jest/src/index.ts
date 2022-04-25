@@ -78,7 +78,7 @@ function getCacheKeyFromConfig(
 
   const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
 
-  return createHash('md5')
+  return createHash('sha256')
     .update(THIS_FILE)
     .update('\0', 'utf8')
     .update(JSON.stringify(babelOptions.options))
@@ -98,7 +98,8 @@ function getCacheKeyFromConfig(
     .update(process.env.BABEL_ENV || '')
     .update('\0', 'utf8')
     .update(process.version)
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function loadBabelConfig(

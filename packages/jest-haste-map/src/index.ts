@@ -298,7 +298,10 @@ export default class HasteMap extends EventEmitter {
   }
 
   private async setupCachePath(options: Options): Promise<void> {
-    const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
+    const rootDirHash = createHash('sha256')
+      .update(options.rootDir)
+      .digest('hex')
+      .substring(0, 32);
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -344,8 +347,11 @@ export default class HasteMap extends EventEmitter {
     id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('md5').update(extra.join(''));
-    return path.join(tmpdir, `${id.replace(/\W/g, '-')}-${hash.digest('hex')}`);
+    const hash = createHash('sha256').update(extra.join(''));
+    return path.join(
+      tmpdir,
+      `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
+    );
   }
 
   static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
