@@ -23,7 +23,7 @@ describe('FailedTestsInteractiveMode', () => {
 
       expect(mockWrite).toHaveBeenCalledWith(
         `${chalk.bold('Watch Usage')}\n${chalk.dim(
-          ARROW + 'Press',
+          `${ARROW}Press`,
         )} Enter ${chalk.dim('to return to watch mode.')}\n`,
       );
     });

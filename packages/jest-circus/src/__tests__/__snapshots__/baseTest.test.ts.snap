@@ -33,6 +33,24 @@ run_finish
 unhandledErrors: 0"
 `;
 
+exports[`function descriptors 1`] = `
+"start_describe_definition: describer
+add_test: One
+finish_describe_definition: describer
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: describer
+test_start: One
+test_fn_start: One
+test_fn_success: One
+test_done: One
+run_describe_finish: describer
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`simple test 1`] = `
 "start_describe_definition: describe
 add_hook: beforeEach

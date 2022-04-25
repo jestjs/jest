@@ -9,7 +9,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -38,11 +38,13 @@ const jestAdapter = async (
     testPath,
   });
 
-  if (config.timers === 'fake' || config.timers === 'modern') {
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimersModern!.useFakeTimers();
-  } else if (config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      // during setup, this cannot be null (and it's fine to explode if it is)
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   globals.beforeEach(() => {
@@ -57,7 +59,10 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'legacy') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
@@ -101,7 +106,7 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult,
-  snapshotState: SnapshotStateType,
+  snapshotState: SnapshotState,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
@@ -128,4 +133,4 @@ const _addSnapshotData = (
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 };
 
-export = jestAdapter;
+export default jestAdapter;

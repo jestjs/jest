@@ -138,11 +138,10 @@ describe('Custom Reporters Integration', () => {
 
   test('prints reporter errors', () => {
     writeFiles(DIR, {
-      '__tests__/test.test.js': `test('test', () => {});`,
+      '__tests__/test.test.js': "test('test', () => {});",
       'package.json': JSON.stringify({
         jest: {
           reporters: ['default', '<rootDir>/reporter.js'],
-          testEnvironment: 'node',
         },
       }),
       'reporter.js': `
@@ -163,11 +162,10 @@ describe('Custom Reporters Integration', () => {
   onNodeVersions('>=12.17.0', () => {
     test('supports reporter written in ESM', () => {
       writeFiles(DIR, {
-        '__tests__/test.test.js': `test('test', () => {});`,
+        '__tests__/test.test.js': "test('test', () => {});",
         'package.json': JSON.stringify({
           jest: {
             reporters: ['default', '<rootDir>/reporter.mjs'],
-            testEnvironment: 'node',
           },
         }),
         'reporter.mjs': `

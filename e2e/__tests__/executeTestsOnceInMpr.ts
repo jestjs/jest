@@ -33,13 +33,13 @@ test('Tests are executed only once even in an MPR', () => {
 
   /* eslint-disable sort-keys */
   writeFiles(DIR, {
-    'foo/folder/my-test-bar.js': `test('bar', () => console.log('Bar!'));`,
+    'foo/folder/my-test-bar.js': "test('bar', () => console.log('Bar!'));",
     'foo/folder/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/directory/my-test-baz.js': `test('baz', () => console.log('Baz!'));`,
+    'foo/directory/my-test-baz.js': "test('baz', () => console.log('Baz!'));",
     'foo/directory/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/whatever/my-test-qux.js': `test('qux', () => console.log('Qux!'));`,
+    'foo/whatever/my-test-qux.js': "test('qux', () => console.log('Qux!'));",
     'foo/whatever/package.json': JSON.stringify(childConfig, null, 2),
 
     'package.json': JSON.stringify(config, null, 2),

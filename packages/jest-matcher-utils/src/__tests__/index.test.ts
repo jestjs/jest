@@ -97,6 +97,23 @@ describe('stringify()', () => {
     expect(stringify(big)).toBe(prettyFormat(big, {maxDepth: 1, min: true}));
     expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
   });
+
+  test('reduces maxWidth if stringifying very large arrays', () => {
+    const big: any = [];
+    const small: any = [];
+    const testString = Array(1000).join('x');
+
+    for (let i = 0; i < 100; i += 1) {
+      big[i] = testString;
+    }
+
+    for (let i = 0; i < 3; i += 1) {
+      small[i] = testString;
+    }
+
+    expect(stringify(big)).toBe(prettyFormat(big, {maxWidth: 5, min: true}));
+    expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
+  });
 });
 
 describe('ensureNumbers()', () => {

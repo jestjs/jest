@@ -16,8 +16,8 @@ export default function handleDeprecationWarnings(
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
         chalk.red('There are deprecation warnings.\n'),
-        chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to continue.'),
-        chalk.dim(' \u203A Press ') + 'Esc' + chalk.dim(' to exit.'),
+        `${chalk.dim(' \u203A Press ')}Enter${chalk.dim(' to continue.')}`,
+        `${chalk.dim(' \u203A Press ')}Esc${chalk.dim(' to exit.')}`,
       ];
 
       pipe.write(messages.join('\n'));

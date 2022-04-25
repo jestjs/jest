@@ -25,7 +25,7 @@ export default function getSnapshotStatus(
   if (snapshot.added) {
     statuses.push(
       SNAPSHOT_ADDED(
-        ARROW + pluralize('snapshot', snapshot.added) + ' written.',
+        `${ARROW + pluralize('snapshot', snapshot.added)} written.`,
       ),
     );
   }
@@ -33,7 +33,7 @@ export default function getSnapshotStatus(
   if (snapshot.updated) {
     statuses.push(
       SNAPSHOT_UPDATED(
-        ARROW + pluralize('snapshot', snapshot.updated) + ' updated.',
+        `${ARROW + pluralize('snapshot', snapshot.updated)} updated.`,
       ),
     );
   }
@@ -41,7 +41,7 @@ export default function getSnapshotStatus(
   if (snapshot.unmatched) {
     statuses.push(
       FAIL_COLOR(
-        ARROW + pluralize('snapshot', snapshot.unmatched) + ' failed.',
+        `${ARROW + pluralize('snapshot', snapshot.unmatched)} failed.`,
       ),
     );
   }
@@ -50,14 +50,14 @@ export default function getSnapshotStatus(
     if (afterUpdate) {
       statuses.push(
         SNAPSHOT_UPDATED(
-          ARROW + pluralize('snapshot', snapshot.unchecked) + ' removed.',
+          `${ARROW + pluralize('snapshot', snapshot.unchecked)} removed.`,
         ),
       );
     } else {
       statuses.push(
-        SNAPSHOT_OUTDATED(
-          ARROW + pluralize('snapshot', snapshot.unchecked) + ' obsolete',
-        ) + '.',
+        `${SNAPSHOT_OUTDATED(
+          `${ARROW + pluralize('snapshot', snapshot.unchecked)} obsolete`,
+        )}.`,
       );
     }
 
@@ -67,7 +67,7 @@ export default function getSnapshotStatus(
   }
 
   if (snapshot.fileDeleted) {
-    statuses.push(SNAPSHOT_UPDATED(ARROW + 'snapshot file removed.'));
+    statuses.push(SNAPSHOT_UPDATED(`${ARROW}snapshot file removed.`));
   }
 
   return statuses;

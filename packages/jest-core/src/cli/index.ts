@@ -9,14 +9,14 @@ import chalk = require('chalk');
 import exit = require('exit');
 import rimraf = require('rimraf');
 import {CustomConsole} from '@jest/console';
-import type {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
-import Runtime, {Context} from 'jest-runtime';
+import Runtime from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
-import TestWatcher from '../TestWatcher';
+import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
@@ -36,7 +36,7 @@ type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
-  projects: Array<Config.Path>,
+  projects: Array<string>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
@@ -71,17 +71,24 @@ export async function runCLI(
     exit(0);
   }
 
-  let configsOfProjectsToRun = configs;
-  if (argv.selectProjects) {
-    const namesMissingWarning = getProjectNamesMissingWarning(configs);
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(configs, {
+    ignoreProjects: argv.ignoreProjects,
+    selectProjects: argv.selectProjects,
+  });
+  if (argv.selectProjects || argv.ignoreProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs, {
+      ignoreProjects: argv.ignoreProjects,
+      selectProjects: argv.selectProjects,
+    });
     if (namesMissingWarning) {
       outputStream.write(namesMissingWarning);
     }
-    configsOfProjectsToRun = getConfigsOfProjectsToRun(
-      argv.selectProjects,
-      configs,
+    outputStream.write(
+      getSelectProjectsMessage(configsOfProjectsToRun, {
+        ignoreProjects: argv.ignoreProjects,
+        selectProjects: argv.selectProjects,
+      }),
     );
-    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
   await _run10000(
@@ -134,7 +141,7 @@ const buildContextsAndHasteMaps = async (
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
+      const hasteMapInstance = await Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
         maxWorkers: Math.max(
           1,
@@ -175,7 +182,7 @@ const _run10000 = async (
       filterSetupPromise = (async () => {
         try {
           await rawFilter.setup();
-        } catch (err: unknown) {
+        } catch (err) {
           return err;
         }
         return undefined;
@@ -220,7 +227,7 @@ const _run10000 = async (
 };
 
 const runWatch = async (
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -258,7 +265,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

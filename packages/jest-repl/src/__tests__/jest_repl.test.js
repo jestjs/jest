@@ -9,7 +9,7 @@
 import {spawnSync} from 'child_process';
 import path from 'path';
 
-const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
+const JEST_RUNTIME = require.resolve('../../bin/jest-repl.js');
 
 describe('Repl', () => {
   describe('cli', () => {

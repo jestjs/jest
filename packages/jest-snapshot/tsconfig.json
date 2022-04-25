@@ -8,6 +8,7 @@
   "exclude": ["./**/__mocks__/**/*", "./**/__tests__/**/*"],
   "references": [
     {"path": "../expect"},
+    {"path": "../expect-utils"},
     {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
     {"path": "../jest-haste-map"},

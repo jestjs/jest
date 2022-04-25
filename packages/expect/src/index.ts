@@ -8,6 +8,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {
   any,
@@ -24,7 +25,6 @@ import {
   stringNotMatching,
 } from './asymmetricMatchers';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
-import {equals} from './jasmineUtils';
 import {
   INTERNAL_MATCHER_FLAG,
   getMatchers,
@@ -41,17 +41,26 @@ import type {
   AsyncExpectationResult,
   Expect,
   ExpectationResult,
-  MatcherState as JestMatcherState,
-  Matchers as MatcherInterface,
+  MatcherState,
   MatchersObject,
   PromiseMatcherFn,
   RawMatcherFn,
   SyncExpectationResult,
   ThrowingMatcherFn,
 } from './types';
-import {iterableEquality, subsetEquality} from './utils';
 
-class JestAssertionError extends Error {
+export {AsymmetricMatcher} from './asymmetricMatchers';
+export type {
+  AsymmetricMatchers,
+  BaseExpect,
+  Expect,
+  MatcherFunction,
+  MatcherFunctionWithState,
+  MatcherState,
+  Matchers,
+} from './types';
+
+export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
@@ -64,7 +73,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
   return function (
-    this: JestMatcherState,
+    this: MatcherState,
     received: any,
     testNameOrInlineSnapshot?: string,
   ) {
@@ -72,7 +81,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   };
 };
 
-const getPromiseMatcher = (name: string, matcher: any) => {
+const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher(name, true);
   } else if (
@@ -85,7 +94,7 @@ const getPromiseMatcher = (name: string, matcher: any) => {
   return null;
 };
 
-const expect: any = (actual: any, ...rest: Array<any>) => {
+export const expect: Expect = (actual: any, ...rest: Array<any>) => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -181,9 +190,13 @@ const makeResolveMatcher =
         ),
       reason => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
-          `Received promise rejected instead of resolved\n` +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
+          'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(reason)}`;
         return Promise.reject(outerErr);
       },
@@ -228,9 +241,13 @@ const makeRejectMatcher =
     return actualWrapper.then(
       result => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
-          `Received promise resolved instead of rejected\n` +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
+          'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         return Promise.reject(outerErr);
       },
@@ -253,7 +270,7 @@ const makeThrowingMatcher = (
     let throws = true;
     const utils = {...matcherUtils, iterableEquality, subsetEquality};
 
-    const matcherContext: JestMatcherState = {
+    const matcherContext: MatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -356,9 +373,8 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = <T extends JestMatcherState = JestMatcherState>(
-  matchers: MatchersObject<T>,
-): void => setMatchers(matchers, false, expect);
+expect.extend = (matchers: MatchersObject) =>
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -395,7 +411,7 @@ const _validateResult = (result: any) => {
   }
 };
 
-function assertions(expected: number) {
+function assertions(expected: number): void {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, assertions);
@@ -406,7 +422,7 @@ function assertions(expected: number) {
     expectedAssertionsNumberError: error,
   });
 }
-function hasAssertions(...args: Array<any>) {
+function hasAssertions(...args: Array<unknown>): void {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -420,22 +436,14 @@ function hasAssertions(...args: Array<any>) {
 }
 
 // add default jest matchers
-setMatchers(matchers, true, expect as Expect);
-setMatchers(spyMatchers, true, expect as Expect);
-setMatchers(toThrowMatchers, true, expect as Expect);
+setMatchers(matchers, true, expect);
+setMatchers(spyMatchers, true, expect);
+setMatchers(toThrowMatchers, true, expect);
 
-expect.addSnapshotSerializer = () => void 0;
 expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-const expectExport = expect as Expect;
-
-declare namespace expectExport {
-  export type MatcherState = JestMatcherState;
-  export interface Matchers<R, T = unknown> extends MatcherInterface<R, T> {}
-}
-
-export = expectExport;
+export default expect;

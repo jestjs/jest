@@ -8,6 +8,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
+import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnJasmine();
@@ -19,6 +20,7 @@ describe('Test Retries', () => {
     'e2e/test-retries/',
     outputFileName,
   );
+  const logErrorsBeforeRetryErrorMessage = 'LOGGING RETRY ERRORS';
 
   afterAll(() => {
     fs.unlinkSync(outputFilePath);
@@ -29,6 +31,15 @@ describe('Test Retries', () => {
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
+    expect(result.stderr).not.toContain(logErrorsBeforeRetryErrorMessage);
+  });
+
+  it('logs error(s) before retry', () => {
+    const result = runJest('test-retries', ['logErrorsBeforeRetries.test.js']);
+    expect(result.exitCode).toEqual(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
+    expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
   it('reporter shows more than 1 invocation if test is retried', () => {

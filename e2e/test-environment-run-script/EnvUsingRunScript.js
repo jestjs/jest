@@ -8,7 +8,7 @@
 
 module.exports = class Env {
   constructor() {
-    this.global = global;
+    this.global = globalThis;
     this.moduleMocker = {};
   }
 };

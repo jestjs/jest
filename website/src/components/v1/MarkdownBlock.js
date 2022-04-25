@@ -11,7 +11,7 @@ import Link from '@docusaurus/Link';
 import Translate, {translate} from '@docusaurus/Translate';
 
 const renderers = {
-  link: ({node: _node, ...props}) => <Link {...props} />,
+  a: ({node: _node, ...props}) => <Link {...props} />,
 };
 
 /*
@@ -36,7 +36,7 @@ export default function MarkdownBlock({children}) {
   return (
     <div>
       <span>
-        <ReactMarkdown renderers={renderers}>{markdown}</ReactMarkdown>
+        <ReactMarkdown components={renderers}>{markdown}</ReactMarkdown>
       </span>
     </div>
   );

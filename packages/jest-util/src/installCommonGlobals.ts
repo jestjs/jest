@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
-const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
+const DTRACE = Object.keys(globalThis).filter(key => key.startsWith('DTRACE'));
 
 export default function installCommonGlobals(
   globalObject: typeof globalThis,
@@ -58,7 +58,7 @@ export default function installCommonGlobals(
     // @ts-expect-error: no index
     globalObject[dtrace] = function (...args: Array<any>) {
       // @ts-expect-error: no index
-      return global[dtrace].apply(this, args);
+      return globalThis[dtrace].apply(this, args);
     };
   });
 

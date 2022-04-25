@@ -26,11 +26,9 @@ export const printReceivedStringContainExpectedSubstring = (
   length: number, // not end
 ): string =>
   RECEIVED_COLOR(
-    '"' +
-      printSubstring(received.slice(0, start)) +
-      INVERTED_COLOR(printSubstring(received.slice(start, start + length))) +
-      printSubstring(received.slice(start + length)) +
-      '"',
+    `"${printSubstring(received.slice(0, start))}${INVERTED_COLOR(
+      printSubstring(received.slice(start, start + length)),
+    )}${printSubstring(received.slice(start + length))}"`,
   );
 
 export const printReceivedStringContainExpectedResult = (
@@ -53,14 +51,12 @@ export const printReceivedArrayContainExpectedItem = (
   index: number,
 ): string =>
   RECEIVED_COLOR(
-    '[' +
-      received
-        .map((item, i) => {
-          const stringified = stringify(item);
-          return i === index ? INVERTED_COLOR(stringified) : stringified;
-        })
-        .join(', ') +
-      ']',
+    `[${received
+      .map((item, i) => {
+        const stringified = stringify(item);
+        return i === index ? INVERTED_COLOR(stringified) : stringified;
+      })
+      .join(', ')}]`,
   );
 
 export const printCloseTo = (
@@ -94,17 +90,17 @@ export const printCloseTo = (
 export const printExpectedConstructorName = (
   label: string,
   expected: Function,
-): string => printConstructorName(label, expected, false, true) + '\n';
+): string => `${printConstructorName(label, expected, false, true)}\n`;
 
 export const printExpectedConstructorNameNot = (
   label: string,
   expected: Function,
-): string => printConstructorName(label, expected, true, true) + '\n';
+): string => `${printConstructorName(label, expected, true, true)}\n`;
 
 export const printReceivedConstructorName = (
   label: string,
   received: Function,
-): string => printConstructorName(label, received, false, false) + '\n';
+): string => `${printConstructorName(label, received, false, false)}\n`;
 
 // Do not call function if received is equal to expected.
 export const printReceivedConstructorNameNot = (
@@ -116,14 +112,12 @@ export const printReceivedConstructorNameNot = (
   expected.name.length !== 0 &&
   typeof received.name === 'string' &&
   received.name.length !== 0
-    ? printConstructorName(label, received, true, false) +
-      ` ${
+    ? `${printConstructorName(label, received, true, false)} ${
         Object.getPrototypeOf(received) === expected
           ? 'extends'
           : 'extends … extends'
-      } ${EXPECTED_COLOR(expected.name)}` +
-      '\n'
-    : printConstructorName(label, received, false, false) + '\n';
+      } ${EXPECTED_COLOR(expected.name)}\n`
+    : `${printConstructorName(label, received, false, false)}\n`;
 
 const printConstructorName = (
   label: string,

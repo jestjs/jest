@@ -70,7 +70,7 @@ const each = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ): ReturnType<typeof install> =>
-  install(global as unknown as Global, table, ...data);
+  install(globalThis as unknown as Global, table, ...data);
 
 each.withGlobal =
   (g: Global) =>

@@ -48,6 +48,7 @@ const _runTestsForDescribeBlock = async (
 
   if (describeBlock.errors.length === 0) {
   // Tests that fail and are retried we run after other tests
+    
    const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
     const deferredRetryTests = [];
     for (const child of describeBlock.children) {
@@ -142,7 +143,7 @@ const _callCircusHook = async ({
   hook,
   test,
   describeBlock,
-  testContext,
+  testContext = {},
 }: {
   hook: Circus.Hook;
   describeBlock?: Circus.DescribeBlock;
@@ -158,7 +159,7 @@ const _callCircusHook = async ({
       timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
   }
 };
@@ -170,14 +171,13 @@ const _callCircusTest = async (
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
- 
   try {
     await callAsyncCircusFn(test, testContext, {
       isHook: false,
       timeout,
     });
     await dispatch({name: 'test_fn_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
   }
 };

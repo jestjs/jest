@@ -12,9 +12,11 @@ type Process = NodeJS.Process;
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
 export type BlockName = Global.BlockName;
+export type BlockNameLike = Global.BlockNameLike;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
+export type TestNameLike = Global.TestNameLike;
 export type TestFn = Global.TestFn;
 export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
@@ -180,6 +182,7 @@ export type TestResult = {
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
+  retryReasons: Array<FormattedError>;
   testPath: Array<TestName | BlockName>;
 };
 
@@ -233,6 +236,7 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
+  retryReasons: Array<TestError>;
   fn: TestFn;
   invocations: number;
   mode: TestMode;

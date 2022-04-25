@@ -6,9 +6,8 @@
  */
 
 import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
 
-export default function createDirectory(path: Config.Path): void {
+export default function createDirectory(path: string): void {
   try {
     fs.mkdirSync(path, {recursive: true});
   } catch (e: any) {

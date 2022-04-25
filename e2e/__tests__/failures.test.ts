@@ -20,8 +20,6 @@ function cleanStderr(stderr: string) {
     .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
-const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-
 beforeAll(() => {
   runYarnInstall(dir);
 });
@@ -37,18 +35,6 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['assertionCount.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
-
-  if (nodeMajorVersion < 12) {
-    const lineEntry = '(__tests__/duringTests.test.js:43:8)';
-
-    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
-
-    stderr = stderr.replace(
-      `at Object.<anonymous>.done ${lineEntry}`,
-      `at Object.<anonymous> ${lineEntry}`,
-    );
-  }
-
   expect(cleanStderr(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throwObjectWithStackProp.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
@@ -108,7 +94,7 @@ test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
 
   expect(stderr).toMatch(
-    /Error: Caught error after test environment was torn down/,
+    /Error(WithStack)?: Caught error after test environment was torn down/,
   );
   expect(stderr).toMatch(/Failed: "fail async"/);
 });

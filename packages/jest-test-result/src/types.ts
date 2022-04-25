@@ -50,7 +50,7 @@ export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
   AssertionResult,
-  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title'
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
 > & {
   failureMessages: AssertionResult['failureMessages'] | null;
 };
@@ -119,7 +119,7 @@ export type TestResult = {
     updated: number;
   };
   testExecError?: SerializableError;
-  testFilePath: Config.Path;
+  testFilePath: string;
   testResults: Array<AssertionResult>;
   v8Coverage?: V8CoverageResult;
 };
@@ -183,12 +183,12 @@ export type SnapshotSummary = {
 };
 
 export type Test = {
-  context: Context;
+  context: TestContext;
   duration?: number;
-  path: Config.Path;
+  path: string;
 };
 
-type Context = {
+export type TestContext = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
@@ -200,7 +200,7 @@ export type TestEvents = {
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];
-  'test-case-result': [Config.Path, AssertionResult];
+  'test-case-result': [string, AssertionResult];
 };
 
 export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (

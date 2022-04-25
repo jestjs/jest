@@ -17,7 +17,7 @@ function getGlobal(): typeof globalThis {
 beforeEach(() => {
   fake = jest.fn();
   // @ts-expect-error
-  global.DTRACE_NET_SERVER_CONNECTION = fake;
+  globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
 
   installCommonGlobals = require('../installCommonGlobals').default;
 });
