@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-serializer]` Remove deprecated module from source tree ([#12735](https://github.com/facebook/jest/pull/12735))
+
 ### Performance
 
 ## 28.0.0
