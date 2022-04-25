@@ -71,3 +71,92 @@ test('beforeAll is executed correctly', () => {
 
   expect(stdout).toMatchSnapshot();
 });
+
+test('a failing beforeAll should skip other beforeAll hooks', () => {
+  const {stdout} = runTest(`
+    describe('test suite beforeAll', () => {
+    beforeAll(() => {
+        console.log('> beforeAll 1 runs')
+        throw new Error('> beforeAll 1 error');
+    });
+    beforeAll(() => {
+        console.log('> beforeAll 2 runs')
+    });
+    test('test 1', () => {
+        console.log('> the test ran')
+    });
+});
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('a failing beforeAll should skip all beforeEach and afterEach hooks', () => {
+  const {stdout} = runTest(`
+    describe('test suite beforeAll', () => {
+    beforeAll(() => {
+        console.log('> beforeAll 1 runs')
+        throw new Error('> beforeAll 1 error');
+    });
+    beforeEach(() => {
+        console.log('> beforeEach 1 runs')
+    });
+    afterEach(() => {
+        console.log('> afterEach 1 runs')
+    });
+    test('test 1', () => {
+        console.log('> the test ran')
+    });
+});
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('all afterEach hooks should still be called even if an a beforeEach hook fails and an afterEach hook fails', () => {
+  const {stdout} = runTest(`
+    describe('test suite beforeAll', () => {
+    beforeEach(() => {
+        console.log('> beforeEach 1 runs')
+        throw new Error('> beforeEach 1 error');
+    });
+    afterEach(() => {
+        console.log('> afterEach 1 runs')
+        throw new Error('> afterEach 1 error');
+    });
+    afterEach(() => {
+        console.log('> afterEach 2 runs')
+    });
+    test('test 1', () => {
+        console.log('> the test ran')
+    });
+});
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('a failing beforeAll should skip any nested describe blocks', () => {
+  const {stdout} = runTest(`
+    describe('test suite beforeAll', () => {
+    beforeAll(() => {
+        console.log('> beforeAll 1 runs')
+        throw new Error('beforeAll 1 error');
+    });
+    describe('test suite nested', () => {
+      beforeAll(() => {
+          console.log('> beforeAll 2 runs')
+          throw new Error('beforeAll 2 error');
+      });
+      test('test 1', () => {
+          console.log('> test 1 ran')
+      });
+    })
+    test('test 2', () => {
+        console.log('> test 2 ran')
+    });
+});
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
