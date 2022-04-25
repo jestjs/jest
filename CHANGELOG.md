@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[jest-serializer]` Remove deprecated module from source tree ([#12735](https://github.com/facebook/jest/pull/12735))
+- `[expect]` add missing dependency `jest-util` ([#12744](https://github.com/facebook/jest/pull/12744))
 
 ### Performance
 
