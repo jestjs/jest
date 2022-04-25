@@ -576,7 +576,7 @@ export default async function normalize(
       options.testRunner = require.resolve('jest-jasmine2');
     } catch (error: any) {
       if (error.code === 'MODULE_NOT_FOUND') {
-        createConfigError(
+        throw createConfigError(
           'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
         );
       }
