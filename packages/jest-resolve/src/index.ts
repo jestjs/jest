@@ -12,6 +12,7 @@ export type {
   SyncResolver,
   PackageFilter,
   PathFilter,
+  ResolverOptions,
 } from './defaultResolver';
 export type {
   FindNodeModuleConfig,

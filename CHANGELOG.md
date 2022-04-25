@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-resolve]` Expose `ResolverOptions` type ([#12736](https://github.com/facebook/jest/pull/12736))
+
 ### Fixes
 
 ### Chore & Maintenance
