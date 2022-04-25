@@ -44,7 +44,6 @@ import type {
   ModuleMapData,
   ModuleMetaData,
   SerializableModuleMap,
-  WorkerMetadata,
 } from './types';
 import {FSEventsWatcher} from './watchers/FSEventsWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
@@ -93,7 +92,7 @@ type InternalOptions = {
   hasteImplModulePath?: string;
   id: string;
   ignorePattern?: HasteRegExp;
-  maxWorkers: number;
+  metadataExtractor: MetadataExtractor;
   mocksPattern: RegExp | null;
   platforms: Array<string>;
   resetCache?: boolean;
@@ -751,26 +750,14 @@ export default class HasteMap extends EventEmitter {
     writeFileSync(this._cachePath, serialize(hasteMap));
   }
 
-  /**
-   * Creates workers or parses files and extracts metadata in-process.
-   */
-  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
-    if (!this._worker) {
-      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        // @ts-expect-error: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), {
-          exposedMethods: ['getSha1', 'worker'],
-          // @ts-expect-error: option does not exist on the node 12 types
-          forkOptions: {serialization: 'json'},
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as WorkerInterface;
-      }
+  private _getMetadataExtractor(
+    options = {forceInBand: false},
+  ): MetadataExtractor {
+    if (!this._metadataExtractorInitialized) {
+      this._options.metadataExtractor.setup(options);
     }
 
-    return this._worker;
+    return this._options.metadataExtractor;
   }
 
   private async _crawl(hasteMap: InternalHasteMap) {
