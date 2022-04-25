@@ -38,15 +38,18 @@ const _runTestsForDescribeBlock = async (
 
   if (!isSkipped) {
     for (const hook of beforeAll) {
+      if (describeBlock.errors.length > 0) {
+        // discontinue running beforeAll hooks on failure
+        break;
+      }
       await _callCircusHook({describeBlock, hook});
     }
   }
-
+if (describeBlock.errors.length === 0){
   // Tests that fail and are retried we run after other tests
   // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
-
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
@@ -54,31 +57,26 @@ const _runTestsForDescribeBlock = async (
         break;
       }
       case 'test': {
-        const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child, isSkipped);
-
-        if (
-          hasErrorsBeforeTestRun === false &&
-          retryTimes > 0 &&
-          child.errors.length > 0
-        ) {
+        await _runTest(child);
+        if (retryTimes > 0 && child.errors.length > 0) {
           deferredRetryTests.push(child);
         }
         break;
+        }
       }
     }
-  }
+     // Re-run failed tests n-times if configured
+     for (const test of deferredRetryTests) {
+      let numRetriesAvailable = retryTimes;
 
-  // Re-run failed tests n-times if configured
-  for (const test of deferredRetryTests) {
-    let numRetriesAvailable = retryTimes;
+      while (numRetriesAvailable > 0 && test.errors.length > 0) {
+        // Clear errors so retries occur
+        await dispatch({name: 'test_retry', test});
 
-    while (numRetriesAvailable > 0 && test.errors.length > 0) {
-      // Clear errors so retries occur
-      await dispatch({name: 'test_retry', test});
-
-      await _runTest(test, isSkipped);
-      numRetriesAvailable--;
+        await _runTest(test);
+        numRetriesAvailable--;
+      }
+  
     }
   }
 
@@ -118,7 +116,7 @@ const _runTest = async (
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -126,7 +124,9 @@ const _runTest = async (
     await _callCircusHook({hook, test, testContext});
   }
 
-  await _callCircusTest(test, testContext);
+  if (test.errors.length === 0) {
+    await _callCircusTest(test, testContext);
+  }
 
   for (const hook of afterEach) {
     await _callCircusHook({hook, test, testContext});
@@ -171,9 +171,7 @@ const _callCircusTest = async (
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
-  if (test.errors.length) {
-    return; // We don't run the test if there's already an error in before hooks.
-  }
+ 
 
   try {
     await callAsyncCircusFn(test, testContext, {
