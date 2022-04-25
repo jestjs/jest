@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "28.0.0-alpha.9",
+  "version": "28.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/schemas": "^28.0.0-alpha.3",
+    "@jest/schemas": "^28.0.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "react-is": "^18.0.0"
@@ -29,9 +29,9 @@
     "@types/react": "^17.0.3",
     "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "17.0.2",
-    "expect": "^28.0.0-alpha.9",
+    "expect": "^28.0.0",
     "immutable": "^4.0.0",
-    "jest-util": "^28.0.0-alpha.9",
+    "jest-util": "^28.0.0",
     "react": "17.0.2",
     "react-dom": "^17.0.1",
     "react-test-renderer": "17.0.2"

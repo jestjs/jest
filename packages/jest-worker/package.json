@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "28.0.0-alpha.11",
+  "version": "28.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -25,7 +25,7 @@
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",
-    "jest-leak-detector": "^28.0.0-alpha.9",
+    "jest-leak-detector": "^28.0.0",
     "worker-farm": "^1.6.0"
   },
   "engines": {
