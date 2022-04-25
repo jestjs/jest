@@ -12,7 +12,11 @@ import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
 import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
-import type { ExtractedFileMetaData } from './types';
+import type {
+  ExtractMetadataDefinition,
+  ExtractedFileMetaData,
+  HasteImpl,
+} from './types';
 
 
 const PACKAGE_JSON = `${path.sep}package.json`;
