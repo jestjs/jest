@@ -16,8 +16,8 @@ import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {requireOrImportModule} from 'jest-util';
-import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
+import JestWorkerMetadataExtractor from './JetWorkerMetadataExtractor';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
 import {nodeCrawl} from './crawlers/node';
@@ -32,24 +32,24 @@ import type {
   CrawlerOptions,
   DependencyExtractor,
   EventsQueue,
+  ExtractedFileMetaData,
   FileData,
   FileMetaData,
   HasteMapStatic,
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
+  MetadataExtractor,
   MockData,
   ModuleMapData,
   ModuleMetaData,
   SerializableModuleMap,
-  WorkerMetadata,
 } from './types';
 import {FSEventsWatcher} from './watchers/FSEventsWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
 import NodeWatcher from './watchers/NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
-import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -67,7 +67,8 @@ type Options = {
   hasteMapModulePath?: string;
   id: string;
   ignorePattern?: HasteRegExp;
-  maxWorkers: number;
+  maxWorkers: MetadataExtractor;
+  metadataExtractor?: MetadataExtractor;
   mocksPattern?: string;
   platforms: Array<string>;
   resetCache?: boolean;
@@ -91,7 +92,7 @@ type InternalOptions = {
   hasteImplModulePath?: string;
   id: string;
   ignorePattern?: HasteRegExp;
-  maxWorkers: number;
+  metadataExtractor: MetadataExtractor;
   mocksPattern: RegExp | null;
   platforms: Array<string>;
   resetCache?: boolean;
@@ -108,13 +109,18 @@ type Watcher = {
   close(): Promise<void>;
 };
 
-type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
-
 export {default as ModuleMap} from './ModuleMap';
 export type {SerializableModuleMap} from './types';
 export type {IModuleMap} from './types';
 export type {default as FS} from './HasteFS';
-export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
+export type {
+  ChangeEvent,
+  HasteMap as HasteMapObject,
+  MetadataExtractor,
+  ExtractMetadataDefinition,
+  ExtractedFileMetaData,
+} from './types';
+export {extractMetadata, getSha1} from './worker';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -209,14 +215,14 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *
  */
 export default class HasteMap extends EventEmitter {
-  private _buildPromise: Promise<InternalHasteMapObject> | null;
+  private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath: string;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
-  private _watchers: Array<Watcher>;
-  private _worker: WorkerInterface | null;
+  private _watchers: Array<Watcher> = [];
+  private _metadataExtractorInitialized = false;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
     if (config.haste.hasteMapModulePath) {
@@ -252,7 +258,9 @@ export default class HasteMap extends EventEmitter {
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       id: options.id,
-      maxWorkers: options.maxWorkers,
+      metadataExtractor:
+        options.metadataExtractor ??
+        new JestWorkerMetadataExtractor({maxWorkers: options.maxWorkers}),
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
         : null,
@@ -292,9 +300,6 @@ export default class HasteMap extends EventEmitter {
     }
 
     this._cachePath = '';
-    this._buildPromise = null;
-    this._watchers = [];
-    this._worker = null;
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -535,7 +540,7 @@ export default class HasteMap extends EventEmitter {
     const computeSha1 = this._options.computeSha1 && !fileMetadata[H.SHA1];
 
     // Callback called when the response from the worker is successful.
-    const workerReply = (metadata: WorkerMetadata) => {
+    const workerReply = (metadata: ExtractedFileMetaData) => {
       // `1` for truthy values instead of `true` to save cache space.
       fileMetadata[H.VISITED] = 1;
 
@@ -576,7 +581,7 @@ export default class HasteMap extends EventEmitter {
     // reading them if they aren't important (node_modules).
     if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
-        return this._getWorker(workerOptions)
+        return this._getMetadataExtractor(workerOptions)
           .getSha1({
             computeDependencies: this._options.computeDependencies,
             computeSha1,
@@ -652,8 +657,8 @@ export default class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)
-      .worker({
+    return this.__getMetadataExtractor(workerOptions)
+      .extractMetadata({
         computeDependencies: this._options.computeDependencies,
         computeSha1,
         dependencyExtractor: this._options.dependencyExtractor,
@@ -724,15 +729,13 @@ export default class HasteMap extends EventEmitter {
   }
 
   private _cleanup() {
-    const worker = this._worker;
+    const metadataExtractor = this._options.metadataExtractor;
 
-    // @ts-expect-error
-    if (worker && typeof worker.end === 'function') {
-      // @ts-expect-error
-      worker.end();
+    if (metadataExtractor != null) {
+      metadataExtractor.end();
     }
 
-    this._worker = null;
+    this._metadataExtractorInitialized = false;
   }
 
   /**
@@ -742,26 +745,14 @@ export default class HasteMap extends EventEmitter {
     writeFileSync(this._cachePath, serialize(hasteMap));
   }
 
-  /**
-   * Creates workers or parses files and extracts metadata in-process.
-   */
-  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
-    if (!this._worker) {
-      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        // @ts-expect-error: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), {
-          exposedMethods: ['getSha1', 'worker'],
-          // @ts-expect-error: option does not exist on the node 12 types
-          forkOptions: {serialization: 'json'},
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as WorkerInterface;
-      }
+  private _getMetadataExtractor(
+    options = {forceInBand: false},
+  ): MetadataExtractor {
+    if (!this._metadataExtractorInitialized) {
+      this._options.metadataExtractor.setup(options);
     }
 
-    return this._worker;
+    return this._options.metadataExtractor;
   }
 
   private async _crawl(hasteMap: InternalHasteMap) {

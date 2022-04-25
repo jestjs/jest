@@ -22,12 +22,13 @@ jest.mock('../lib/isWatchmanInstalled', () => ({
 
 jest.mock('jest-worker', () => ({
   Worker: jest.fn(worker => {
-    mockWorker = jest.fn((...args) => require(worker).worker(...args));
-    mockEnd = jest.fn();
+    mockWorkerExtractMetadata = jest.fn((...args) =>
+      require(worker).extractMetadata(...args),
+    );
 
     return {
       end: mockEnd,
-      worker: mockWorker,
+      extractMetadata: mockWorkerExtractMetadata,
     };
   }),
 }));
@@ -154,7 +155,7 @@ let HasteMap;
 let mockClocks;
 let mockEmitters;
 let mockEnd;
-let mockWorker;
+let mockWorkerExtractMetadata;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
@@ -232,6 +233,7 @@ describe('HasteMap', () => {
 
   it('creates valid cache file paths', () => {
     jest.resetModules();
+    jest.clearAllMocks();
     HasteMap = require('../').default;
 
     expect(
@@ -1281,9 +1283,9 @@ describe('HasteMap', () => {
 
     expect(jestWorker.mock.calls.length).toBe(1);
 
-    expect(mockWorker.mock.calls.length).toBe(5);
+    expect(mockWorkerExtractMetadata.mock.calls.length).toBe(5);
 
-    expect(mockWorker.mock.calls).toEqual([
+    expect(mockWorkerExtractMetadata.mock.calls).toEqual([
       [
         {
           computeDependencies: true,
@@ -1337,6 +1339,74 @@ describe('HasteMap', () => {
     ]);
 
     expect(mockEnd).toBeCalled();
+  });
+
+  it('uses the provided metadata extractor', async () => {
+    const mockMetadataExtractor = {
+      end: jest.fn().mockName('metadataExtractor.end'),
+      extractMetadata: jest
+        .fn()
+        .mockName('metadataExtractor.extractMetadata')
+        .mockReturnValue(Promise.resolve({})),
+      getSha1: jest.fn().mockName('metadataExtractor.getSha1'),
+      setup: jest.fn().mockName('metadataExtractor.setup'),
+    };
+
+    const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
+    const {__hasteMapForTest: data} = await new HasteMap({
+      ...defaultConfig,
+      dependencyExtractor,
+      hasteImplModulePath: undefined,
+      metadataExtractor: mockMetadataExtractor,
+    }).build();
+
+    expect(mockMetadataExtractor.setup).toHaveBeenCalledWith({
+      forceInBand: false,
+    });
+
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Banana.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Pear.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Strawberry.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', '__mocks__', 'Pear.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'vegetables', 'Melon.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+
+    expect(mockMetadataExtractor.extractMetadata).toHaveBeenCalledTimes(5);
+    expect(mockMetadataExtractor.end).toHaveBeenCalled();
   });
 
   it('tries to crawl using node as a fallback', async () => {
