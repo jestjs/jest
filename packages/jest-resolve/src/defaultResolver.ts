@@ -51,7 +51,7 @@ export type PathFilter = (
   relativePath: string,
 ) => string;
 
-type ResolverOptions = {
+export type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
