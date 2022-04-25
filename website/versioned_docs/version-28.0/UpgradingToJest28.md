@@ -157,6 +157,10 @@ npm install --save-dev jest-jasmine2
   }
 ```
 
+## `package.json` `exports`
+
+Jest now includes full support for [package `exports`](https://nodejs.org/api/packages.html#exports), which might mean that files you import are not resolved correctly. Additionally, Jest now supplies more conditions. `jest-environment-node` has `node` and `node-addons`, while `jest-environment-jsdom` has `browser`. As a result, you might e.g. get browser code which assumes ESM, when Jest provides `['require', 'browser']`. You can either report a bug to the library (or Jest, the implementation is new and might have bugs!) or override the conditions Jest passes.
+
 ## TypeScript
 
 :::info
