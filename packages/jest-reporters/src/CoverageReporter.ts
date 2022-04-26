@@ -273,7 +273,8 @@ export default class CoverageReporter extends BaseReporter {
           // See https://github.com/facebook/jest/issues/12703
           const resolvedThresholdGroup = path.resolve(thresholdGroup);
           const suffix =
-            thresholdGroup.endsWith(path.sep) &&
+            (thresholdGroup.endsWith(path.sep) ||
+              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
             !resolvedThresholdGroup.endsWith(path.sep)
               ? path.sep
               : '';
