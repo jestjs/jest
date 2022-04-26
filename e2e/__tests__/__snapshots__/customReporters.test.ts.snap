@@ -27,7 +27,11 @@ Object {
     "called": true,
     "path": false,
   },
-  "options": Object {
+  "reporterContext": Object {
+    "firstRun": true,
+    "previousSuccess": true,
+  },
+  "reporterOptions": Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
@@ -55,7 +59,11 @@ Object {
     "called": true,
     "path": false,
   },
-  "options": Object {
+  "reporterContext": Object {
+    "firstRun": true,
+    "previousSuccess": true,
+  },
+  "reporterOptions": Object {
     "christoph": "pojer",
     "dmitrii": "abramov",
     "hello": "world",
@@ -97,7 +105,11 @@ Object {
     "called": true,
     "path": false,
   },
-  "options": Object {},
+  "reporterContext": Object {
+    "firstRun": true,
+    "previousSuccess": true,
+  },
+  "reporterOptions": Object {},
 }
 `;
 
@@ -146,7 +158,11 @@ exports[`Custom Reporters Integration valid array format for adding reporters 1`
         "called": true,
         "path": false
     },
-    "options": {
+    "reporterContext": {
+        "firstRun": true,
+        "previousSuccess": true
+    },
+    "reporterOptions": {
         "Aaron Abramov": "Awesome"
     }
 }"

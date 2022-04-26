@@ -9,7 +9,6 @@ import * as path from 'path';
 
 export const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 export const DEFAULT_JS_PATTERN = '\\.[jt]sx?$';
-export const DEFAULT_REPORTER_LABEL = 'default';
 export const PACKAGE_JSON = 'package.json';
 export const JEST_CONFIG_BASE_NAME = 'jest.config';
 export const JEST_CONFIG_EXT_CJS = '.cjs';

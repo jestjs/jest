@@ -8,6 +8,7 @@
 import {dirname, resolve} from 'path';
 import * as fs from 'graceful-fs';
 import {tryRealpath} from 'jest-util';
+import type {PackageJSON} from './types';
 
 export function clearFsCache(): void {
   checkedPaths.clear();
@@ -71,17 +72,15 @@ function realpathCached(path: string): string {
   return result;
 }
 
-export type PkgJson = Record<string, unknown>;
-
-const packageContents = new Map<string, PkgJson>();
-export function readPackageCached(path: string): PkgJson {
+const packageContents = new Map<string, PackageJSON>();
+export function readPackageCached(path: string): PackageJSON {
   let result = packageContents.get(path);
 
   if (result != null) {
     return result;
   }
 
-  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PkgJson;
+  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PackageJSON;
 
   packageContents.set(path, result);
 

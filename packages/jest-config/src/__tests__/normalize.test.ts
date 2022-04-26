@@ -66,44 +66,45 @@ afterEach(() => {
   (console.warn as unknown as jest.SpyInstance).mockRestore();
 });
 
-it('picks a name based on the rootDir', async () => {
+it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = createHash('md5')
+  const expected = createHash('sha256')
     .update('/root/path/foo')
     .update(String(Infinity))
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
   const {options} = await normalize(
     {
       rootDir,
     },
     {} as Config.Argv,
   );
-  expect(options.name).toBe(expected);
+  expect(options.id).toBe(expected);
 });
 
-it('keeps custom project name based on the projects rootDir', async () => {
-  const name = 'test';
+it('keeps custom project id based on the projects rootDir', async () => {
+  const id = 'test';
   const {options} = await normalize(
     {
-      projects: [{name, rootDir: '/path/to/foo'}],
+      projects: [{id, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].name).toBe(name);
+  expect(options.projects[0].id).toBe(id);
 });
 
-it('keeps custom names based on the rootDir', async () => {
+it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
-      name: 'custom-name',
+      id: 'custom-id',
       rootDir: '/root/path/foo',
     },
     {} as Config.Argv,
   );
 
-  expect(options.name).toBe('custom-name');
+  expect(options.id).toBe('custom-id');
 });
 
 it('minimal config is stable across runs', async () => {
@@ -309,6 +310,102 @@ describe('roots', () => {
   testPathArray('roots');
 });
 
+describe('reporters', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+  });
+
+  it('allows empty list', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([]);
+  });
+
+  it('normalizes the path and options object', async () => {
+    const {options} = await normalize(
+      {
+        reporters: [
+          'default',
+          'github-actions',
+          '<rootDir>/custom-reporter.js',
+          ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+          ['jest-junit', {outputName: 'report.xml'}],
+        ],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([
+      ['default', {}],
+      ['github-actions', {}],
+      ['/root/custom-reporter.js', {}],
+      ['/root/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+      ['jest-junit', {outputName: 'report.xml'}],
+    ]);
+  });
+
+  it('throws an error if value is neither string nor array', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [123],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if first value in the tuple is not a string', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [[123]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value is missing in the tuple', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter']],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws an error if second value in the tuple is not an object', async () => {
+    expect.assertions(1);
+    await expect(
+      normalize(
+        {
+          reporters: [['some-reporter', true]],
+          rootDir: '/root/',
+        },
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
@@ -422,45 +519,6 @@ describe('setupFilesAfterEnv', () => {
     );
 
     expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
-  });
-});
-
-describe('setupTestFrameworkScriptFile', () => {
-  let Resolver;
-
-  beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
-      name.startsWith('/') ? name : `/root/path/foo${path.sep}${name}`,
-    );
-  });
-
-  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', async () => {
-    await normalize(
-      {
-        rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: 'bar/baz',
-      },
-      {} as Config.Argv,
-    );
-
-    expect(
-      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
-    ).toMatchSnapshot();
-  });
-
-  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', async () => {
-    await expect(
-      normalize(
-        {
-          rootDir: '/root/path/foo',
-          setupFilesAfterEnv: ['bar/baz'],
-          setupTestFrameworkScriptFile: 'bar/baz',
-        },
-        {} as Config.Argv,
-      ),
-    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -828,45 +886,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(customJSPattern);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-  });
-});
-
-describe('Upgrade help', () => {
-  beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
-
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
-      if (name == 'bar/baz') {
-        return '/node_modules/bar/baz';
-      }
-      return findNodeModule(name);
-    });
-  });
-
-  it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', async () => {
-    const {options: options, hasDeprecationWarnings} = await normalize(
-      {
-        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
-        rootDir: '/root/path/foo',
-        scriptPreprocessor: 'bar/baz',
-      },
-      {} as Config.Argv,
-    );
-
-    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz', {}]]);
-    expect(options.transformIgnorePatterns).toEqual([
-      joinForPattern('bar', 'baz'),
-      joinForPattern('qux', 'quux'),
-    ]);
-
-    expect(options).not.toHaveProperty('scriptPreprocessor');
-    expect(options).not.toHaveProperty('preprocessorIgnorePatterns');
-    expect(hasDeprecationWarnings).toBeTruthy();
-
-    expect(
-      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
-    ).toMatchSnapshot();
   });
 });
 
@@ -1668,6 +1687,8 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
@@ -1919,30 +1940,34 @@ describe('updateSnapshot', () => {
   });
 });
 
-describe('testURL', () => {
+describe('shards', () => {
+  it('should be object if defined', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      shard: '1/2',
+    } as Config.Argv);
+
+    expect(options.shard).toEqual({shardCount: 2, shardIndex: 1});
+  });
+});
+
+describe('logs a deprecation warning', () => {
   beforeEach(() => {
-    jest.mocked(console.warn).mockImplementation(() => {});
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
   });
 
-  it('logs a deprecation warning when `testURL` is used', async () => {
+  test("when 'browser' option is passed", async () => {
     await normalize(
       {
+        browser: true,
         rootDir: '/root/',
-        testURL: 'https://jestjs.io/',
       },
       {} as Config.Argv,
     );
 
     expect(console.warn).toMatchSnapshot();
   });
-});
 
-describe('extraGlobals', () => {
-  beforeEach(() => {
-    jest.mocked(console.warn).mockImplementation(() => {});
-  });
-
-  it('logs a deprecation warning when `extraGlobals` is used', async () => {
+  test("when 'extraGlobals' option is passed", async () => {
     await normalize(
       {
         extraGlobals: ['Math'],
@@ -1953,14 +1978,8 @@ describe('extraGlobals', () => {
 
     expect(console.warn).toMatchSnapshot();
   });
-});
 
-describe('moduleLoader', () => {
-  beforeEach(() => {
-    jest.mocked(console.warn).mockImplementation(() => {});
-  });
-
-  it('logs a deprecation warning when `moduleLoader` is used', async () => {
+  test("when 'moduleLoader' option is passed", async () => {
     await normalize(
       {
         moduleLoader: '<rootDir>/runtime.js',
@@ -1971,14 +1990,76 @@ describe('moduleLoader', () => {
 
     expect(console.warn).toMatchSnapshot();
   });
-});
 
-describe('shards', () => {
-  it('should be object if defined', async () => {
-    const {options} = await normalize({rootDir: '/root/'}, {
-      shard: '1/2',
-    } as Config.Argv);
+  test("when 'preprocessorIgnorePatterns' option is passed", async () => {
+    await normalize(
+      {
+        preprocessorIgnorePatterns: ['/node_modules/'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
 
-    expect(options.shard).toEqual({shardCount: 2, shardIndex: 1});
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'scriptPreprocessor' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        scriptPreprocessor: 'preprocessor.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'setupTestFrameworkScriptFile' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        setupTestFrameworkScriptFile: 'setup.js',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'testPathDirs' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        testPathDirs: ['<rootDir>'],
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'testURL' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        testURL: 'https://jestjs.io',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'timers' option is passed", async () => {
+    await normalize(
+      {
+        rootDir: '/root/',
+        timers: 'real',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
   });
 });

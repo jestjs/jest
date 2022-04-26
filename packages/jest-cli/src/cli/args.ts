@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
@@ -68,6 +69,13 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.ignoreProjects && argv.ignoreProjects.length === 0) {
+    throw new Error(
+      'The --ignoreProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --ignoreProjects my-first-project my-second-project',
+    );
+  }
+
   if (
     argv.config &&
     !isJSONString(argv.config) &&
@@ -95,7 +103,7 @@ export const usage =
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
-export const options = {
+export const options: {[key: string]: Options} = {
   all: {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
@@ -154,7 +162,7 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls, instances and results before every test. ' +
+      'Automatically clear mock calls, instances, contexts and results before every test. ' +
       'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
@@ -300,6 +308,13 @@ export const options = {
     description:
       'A JSON string with map of variables for the haste module system',
     type: 'string',
+  },
+  ignoreProjects: {
+    description:
+      'Ignore the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
   },
   init: {
     description: 'Generate a basic configuration file',
@@ -502,7 +517,7 @@ export const options = {
   },
   selectProjects: {
     description:
-      'Run only the tests of the specified projects.' +
+      'Run the tests of the specified projects.' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',
@@ -622,12 +637,6 @@ export const options = {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
   },
-  timers: {
-    description:
-      'Setting this value to fake allows the use of fake timers ' +
-      'for functions such as setTimeout.',
-    type: 'string',
-  },
   transform: {
     description:
       'A JSON string which maps from regular expressions to paths ' +
@@ -695,4 +704,4 @@ export const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-} as const;
+};

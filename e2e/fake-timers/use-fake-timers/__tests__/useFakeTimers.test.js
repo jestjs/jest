@@ -8,7 +8,7 @@
 'use strict';
 
 test('fake timers with number argument', () => {
-  jest.useFakeTimers('modern');
+  jest.useFakeTimers();
 
   jest.setSystemTime(0);
 
@@ -20,7 +20,7 @@ test('fake timers with number argument', () => {
 });
 
 test('fake timers with Date argument', () => {
-  jest.useFakeTimers('modern');
+  jest.useFakeTimers();
 
   jest.setSystemTime(new Date(0));
 

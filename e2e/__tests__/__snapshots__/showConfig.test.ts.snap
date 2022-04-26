@@ -16,6 +16,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
       "extensionsToTreatAsEsm": [],
+      "fakeTimers": {
+        "enableGlobally": false
+      },
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
@@ -24,12 +27,15 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "forceNodeFilesystemAPI": true,
         "throwOnModuleCollision": false
       },
+      "id": "[md5 hash]",
       "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
       "moduleFileExtensions": [
         "js",
+        "mjs",
+        "cjs",
         "jsx",
         "ts",
         "tsx",
@@ -38,7 +44,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleNameMapper": [],
       "modulePathIgnorePatterns": [],
-      "name": "[md5 hash]",
       "prettierPath": "prettier",
       "resetMocks": false,
       "resetModules": false,
@@ -66,7 +71,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "testRegex": [],
       "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
-      "timers": "real",
       "transform": [
         [
           "\\\\.[jt]sx?$",

@@ -69,7 +69,7 @@ export interface HookBase {
 export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn, TestNameLike>;
-  failing: Omit<ItBase, 'each' | 'failing'>;
+  failing(testName: TestNameLike, fn: TestFn, timeout?: number): void;
 }
 
 export interface It extends ItBase {
@@ -124,5 +124,5 @@ export interface GlobalAdditions extends TestFrameworkGlobals {
 export interface Global
   extends GlobalAdditions,
     Omit<typeof globalThis, keyof GlobalAdditions> {
-  [extras: string]: unknown;
+  [extras: PropertyKey]: unknown;
 }

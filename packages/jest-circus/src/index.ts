@@ -117,24 +117,34 @@ const test: Global.It = (() => {
     testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, undefined, fn, test, timeout);
+  ): void => _addTest(testName, undefined, false, fn, test, timeout);
   const skip = (
     testName: Circus.TestNameLike,
     fn?: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'skip', fn, skip, timeout);
+  ): void => _addTest(testName, 'skip', false, fn, skip, timeout);
   const only = (
     testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'only', fn, test.only, timeout);
+  ): void => _addTest(testName, 'only', false, fn, test.only, timeout);
+  const concurrentTest = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, true, fn, concurrentTest, timeout);
+  const concurrentOnly = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
-  const bindFailing = (mode: Circus.TestMode) => {
+  const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
     const failing = (
       testName: Circus.TestNameLike,
       fn?: Circus.TestFn,
       timeout?: number,
-    ): void => _addTest(testName, mode, fn, failing, timeout, true);
+    ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
     return failing;
   };
 
@@ -145,12 +155,13 @@ const test: Global.It = (() => {
         test.todo,
       );
     }
-    return _addTest(testName, 'todo', () => {}, test.todo);
+    return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 
   const _addTest = (
     testName: Circus.TestNameLike,
     mode: Circus.TestMode,
+    concurrent: boolean,
     fn: Circus.TestFn | undefined,
     testFn: (
       testName: Circus.TestNameLike,
@@ -183,6 +194,7 @@ const test: Global.It = (() => {
 
     return dispatchSync({
       asyncError,
+      concurrent,
       failing: failing === undefined ? false : failing,
       fn,
       mode,
@@ -196,12 +208,18 @@ const test: Global.It = (() => {
   only.each = bindEach(only);
   skip.each = bindEach(skip);
 
-  only.failing = bindFailing('only');
-  skip.failing = bindFailing('skip');
+  concurrentTest.each = bindEach(concurrentTest, false);
+  concurrentOnly.each = bindEach(concurrentOnly, false);
 
-  test.failing = bindFailing();
+  only.failing = bindFailing(false, 'only');
+  skip.failing = bindFailing(false, 'skip');
+
+  test.failing = bindFailing(false);
   test.only = only;
   test.skip = skip;
+  test.concurrent = concurrentTest;
+  concurrentTest.only = concurrentOnly;
+  concurrentTest.skip = skip;
 
   return test;
 })();

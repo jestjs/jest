@@ -7,13 +7,12 @@
 
 import type {
   AggregatedResult,
-  SerializableError,
+  Test,
   TestCaseResult,
+  TestContext,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import type Resolver from 'jest-resolve';
 import type {worker} from './CoverageWorker';
 
 export type ReporterOnStartOptions = {
@@ -21,40 +20,7 @@ export type ReporterOnStartOptions = {
   showStatus: boolean;
 };
 
-export type Context = {
-  config: Config.ProjectConfig;
-  hasteFS: HasteFS;
-  moduleMap: ModuleMap;
-  resolver: Resolver;
-};
-
-export type Test = {
-  context: Context;
-  duration?: number;
-  path: string;
-};
-
 export type CoverageWorker = {worker: typeof worker};
-
-export type CoverageReporterOptions = {
-  changedFiles?: Set<string>;
-  sourcesRelatedToTestsInChangedFiles?: Set<string>;
-};
-
-export type CoverageReporterSerializedOptions = {
-  changedFiles?: Array<string>;
-  sourcesRelatedToTestsInChangedFiles?: Array<string>;
-};
-
-export type OnTestStart = (test: Test) => Promise<void>;
-export type OnTestFailure = (
-  test: Test,
-  error: SerializableError,
-) => Promise<unknown>;
-export type OnTestSuccess = (
-  test: Test,
-  result: TestResult,
-) => Promise<unknown>;
 
 export interface Reporter {
   readonly onTestResult?: (
@@ -78,30 +44,23 @@ export interface Reporter {
   readonly onTestStart?: (test: Test) => Promise<void> | void;
   readonly onTestFileStart?: (test: Test) => Promise<void> | void;
   readonly onRunComplete: (
-    contexts: Set<Context>,
+    testContexts: Set<TestContext>,
     results: AggregatedResult,
   ) => Promise<void> | void;
   readonly getLastError: () => Error | void;
 }
+
+export type ReporterContext = {
+  firstRun: boolean;
+  previousSuccess: boolean;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
+  startRun?: (globalConfig: Config.GlobalConfig) => unknown;
+};
 
 export type SummaryOptions = {
   currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;
-};
-
-export type TestRunnerOptions = {
-  serial: boolean;
-};
-
-export type TestRunData = Array<{
-  context: Context;
-  matches: {allTests: number; tests: Array<Test>; total: number};
-}>;
-
-export type TestSchedulerContext = {
-  firstRun: boolean;
-  previousSuccess: boolean;
-  changedFiles?: Set<string>;
 };

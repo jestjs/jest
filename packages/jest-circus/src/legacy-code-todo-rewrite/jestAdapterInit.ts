@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {JestExpect, jestExpect} from '@jest/expect';
 import {
@@ -16,7 +15,6 @@ import {
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
-import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
@@ -63,8 +61,7 @@ export const initialize = async ({
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
-
-  const mutex = throat(globalConfig.maxConcurrency);
+  getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
 
   // @ts-expect-error
   const globalsObject: Global.TestFrameworkGlobals = {
@@ -75,45 +72,6 @@ export const initialize = async ({
     xit: globals.it.skip,
     xtest: globals.it.skip,
   };
-
-  globalsObject.test.concurrent = (test => {
-    const concurrent = (
-      testName: Global.TestNameLike,
-      testFn: Global.ConcurrentTestFn,
-      timeout?: number,
-    ) => {
-      // For concurrent tests we first run the function that returns promise, and then register a
-      // normal test that will be waiting on the returned promise (when we start the test, the promise
-      // will already be in the process of execution).
-      // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
-      // that will result in this test to be skipped, so we'll be executing the promise function anyway,
-      // even if it ends up being skipped.
-      const promise = mutex(() => testFn());
-      // Avoid triggering the uncaught promise rejection handler in case the test errors before
-      // being awaited on.
-      promise.catch(() => {});
-      globalsObject.test(testName, () => promise, timeout);
-    };
-
-    const only = (
-      testName: Global.TestNameLike,
-      testFn: Global.ConcurrentTestFn,
-      timeout?: number,
-    ) => {
-      const promise = mutex(() => testFn());
-      // eslint-disable-next-line jest/no-focused-tests
-      test.only(testName, () => promise, timeout);
-    };
-
-    concurrent.only = only;
-    concurrent.skip = test.skip;
-
-    concurrent.each = bind(test, false);
-    concurrent.skip.each = bind(test.skip, false);
-    only.each = bind(test.only, false);
-
-    return concurrent;
-  })(globalsObject.test);
 
   addEventHandler(eventHandler);
 
@@ -220,6 +178,7 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: 0,
+        retryReasons: testResult.retryReasons,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
       };

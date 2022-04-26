@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import throat from 'throat';
 import type {Circus} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 import {dispatch, getState} from './state';
@@ -21,7 +22,7 @@ import {
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
   await dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock);
+  await _runTestsForDescribeBlock(rootDescribeBlock, true);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -31,6 +32,7 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
+  isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
@@ -40,6 +42,24 @@ const _runTestsForDescribeBlock = async (
   if (!isSkipped) {
     for (const hook of beforeAll) {
       await _callCircusHook({describeBlock, hook});
+    }
+  }
+
+  if (isRootBlock) {
+    const concurrentTests = collectConcurrentTests(describeBlock);
+    const mutex = throat(getState().maxConcurrency);
+    for (const test of concurrentTests) {
+      try {
+        const promise = mutex(test.fn);
+        // Avoid triggering the uncaught promise rejection handler in case the
+        // test errors before being awaited on.
+        promise.catch(() => {});
+        test.fn = () => promise;
+      } catch (err) {
+        test.fn = () => {
+          throw err;
+        };
+      }
     }
   }
 
@@ -91,6 +111,30 @@ const _runTestsForDescribeBlock = async (
 
   await dispatch({describeBlock, name: 'run_describe_finish'});
 };
+
+function collectConcurrentTests(
+  describeBlock: Circus.DescribeBlock,
+): Array<Omit<Circus.TestEntry, 'fn'> & {fn: Circus.ConcurrentTestFn}> {
+  if (describeBlock.mode === 'skip') {
+    return [];
+  }
+  const {hasFocusedTests, testNamePattern} = getState();
+  return describeBlock.children.flatMap(child => {
+    switch (child.type) {
+      case 'describeBlock':
+        return collectConcurrentTests(child);
+      case 'test':
+        const skip =
+          !child.concurrent ||
+          child.mode === 'skip' ||
+          (hasFocusedTests && child.mode !== 'only') ||
+          (testNamePattern && !testNamePattern.test(getTestID(child)));
+        return skip
+          ? []
+          : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];
+    }
+  });
+}
 
 const _runTest = async (
   test: Circus.TestEntry,

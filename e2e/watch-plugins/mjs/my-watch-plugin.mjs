@@ -6,8 +6,7 @@
  */
 class MyWatchPlugin {
   // Add hooks to Jest lifecycle events
-  apply(jestHooks) {
-  }
+  apply(jestHooks) {}
 
   // Get the prompt information for interactive plugins
   getUsageInfo(globalConfig) {
@@ -15,8 +14,7 @@ class MyWatchPlugin {
   }
 
   // Executed when the key from `getUsageInfo` is input
-  run(globalConfig, updateConfigAndRun) {
-  }
+  run(globalConfig, updateConfigAndRun) {}
 }
 
 export default MyWatchPlugin;

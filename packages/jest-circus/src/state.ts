@@ -27,6 +27,7 @@ const createState = (): Circus.State => {
     hasFocusedTests: false,
     hasStarted: false,
     includeTestLocationInResult: false,
+    maxConcurrency: 5,
     parentProcess: null,
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     testNamePattern: null,

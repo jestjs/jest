@@ -11,16 +11,25 @@ import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
 } from './generateEmptyCoverage';
-import type {CoverageReporterSerializedOptions} from './types';
+import type {ReporterContext} from './types';
 
-export type CoverageWorkerData = {
-  globalConfig: Config.GlobalConfig;
-  config: Config.ProjectConfig;
-  path: string;
-  options?: CoverageReporterSerializedOptions;
+type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
+
+type CoverageReporterContext = Pick<
+  ReporterContext,
+  'changedFiles' | 'sourcesRelatedToTestsInChangedFiles'
+>;
+
+type CoverageReporterSerializedContext = {
+  [K in keyof CoverageReporterContext]: SerializeSet<ReporterContext[K]>;
 };
 
-export type {CoverageWorkerResult};
+export type CoverageWorkerData = {
+  config: Config.ProjectConfig;
+  context: CoverageReporterSerializedContext;
+  globalConfig: Config.GlobalConfig;
+  path: string;
+};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -32,15 +41,15 @@ export function worker({
   config,
   globalConfig,
   path,
-  options,
+  context,
 }: CoverageWorkerData): Promise<CoverageWorkerResult | null> {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
     globalConfig,
     config,
-    options?.changedFiles && new Set(options.changedFiles),
-    options?.sourcesRelatedToTestsInChangedFiles &&
-      new Set(options.sourcesRelatedToTestsInChangedFiles),
+    context.changedFiles && new Set(context.changedFiles),
+    context.sourcesRelatedToTestsInChangedFiles &&
+      new Set(context.sourcesRelatedToTestsInChangedFiles),
   );
 }

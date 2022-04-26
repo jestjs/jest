@@ -6,13 +6,17 @@
  */
 
 import chalk = require('chalk');
-import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  SnapshotSummary,
+  TestContext,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
-import type {Context, ReporterOnStartOptions} from './types';
+import type {ReporterOnStartOptions} from './types';
 import {getSummary} from './utils';
 
 const TEST_SUMMARY_THRESHOLD = 20;
@@ -70,7 +74,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  onRunStart(
+  override onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ): void {
@@ -78,8 +82,8 @@ export default class SummaryReporter extends BaseReporter {
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
+  override onRunComplete(
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
@@ -111,7 +115,7 @@ export default class SummaryReporter extends BaseReporter {
           message += `\n${
             wasInterrupted
               ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(contexts, this._globalConfig)
+              : this._getTestSummary(testContexts, this._globalConfig)
           }`;
         }
         this.log(message);
@@ -188,7 +192,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _getTestSummary(
-    contexts: Set<Context>,
+    testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {
@@ -223,8 +227,8 @@ export default class SummaryReporter extends BaseReporter {
     }
 
     const contextInfo =
-      contexts.size > 1
-        ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+      testContexts.size > 1
+        ? chalk.dim(' in ') + testContexts.size + chalk.dim(' projects')
         : '';
 
     return (

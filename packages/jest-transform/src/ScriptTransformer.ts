@@ -42,6 +42,7 @@ import type {
   TransformResult,
   TransformedSource,
   Transformer,
+  TransformerFactory,
 } from './types';
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
@@ -70,6 +71,13 @@ async function waitForPromiseWithCleanup(
   } finally {
     cleanup();
   }
+}
+
+// type predicate
+function isTransformerFactory<X extends Transformer>(
+  t: Transformer | TransformerFactory<X>,
+): t is TransformerFactory<X> {
+  return typeof (t as TransformerFactory<X>).createTransformer === 'function';
 }
 
 class ScriptTransformer {
@@ -108,19 +116,21 @@ class ScriptTransformer {
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey) {
-      return createHash('md5')
+      return createHash('sha256')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
-        .digest('hex');
+        .digest('hex')
+        .substring(0, 32);
     }
 
-    return createHash('md5')
+    return createHash('sha256')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
       .update(filename)
       .update(CACHE_VERSION)
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   private _getCacheKey(
@@ -203,7 +213,7 @@ class ScriptTransformer {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
-      `jest-transform-cache-${this._config.name}`,
+      `jest-transform-cache-${this._config.id}`,
       VERSION,
     );
     // Create sub folders based on the cacheKey to avoid creating one
@@ -259,14 +269,13 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer = await requireOrImportModule(
-            transformPath,
-          );
+          let transformer: Transformer | TransformerFactory<Transformer> =
+            await requireOrImportModule(transformPath);
 
           if (!transformer) {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
-          if (typeof transformer.createTransformer === 'function') {
+          if (isTransformerFactory(transformer)) {
             transformer = transformer.createTransformer(transformerConfig);
           }
           if (
@@ -372,9 +381,7 @@ class ScriptTransformer {
     };
 
     if (transformer && shouldCallTransform) {
-      if (typeof processed === 'string') {
-        transformed.code = processed;
-      } else if (processed != null && typeof processed.code === 'string') {
+      if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
         throw new Error(makeInvalidReturnValueError());
@@ -476,7 +483,7 @@ class ScriptTransformer {
       };
     }
 
-    let processed = null;
+    let processed: TransformedSource | null = null;
 
     let shouldCallTransform = false;
 
@@ -759,7 +766,10 @@ class ScriptTransformer {
         }
       },
       {
-        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
+        // Exclude `mjs` extension when addHook because pirates don't support hijack es module
+        exts: this._config.moduleFileExtensions
+          .filter(ext => ext !== 'mjs')
+          .map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {
@@ -861,7 +871,10 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -877,7 +890,10 @@ function readCodeCacheFile(cachePath: string): string | null {
     return null;
   }
   const code = content.substring(33);
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   if (checksum === content.substring(0, 32)) {
     return code;
   }

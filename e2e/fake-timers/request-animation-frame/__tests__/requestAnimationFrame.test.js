@@ -10,7 +10,8 @@
 'use strict';
 
 test('requestAnimationFrame test', () => {
-  jest.useFakeTimers('modern');
+  jest.useFakeTimers();
+
   let frameTimestamp = -1;
   requestAnimationFrame(timestamp => {
     frameTimestamp = timestamp;

@@ -7,7 +7,6 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
@@ -26,6 +25,7 @@ import {watchmanCrawl} from './crawlers/watchman';
 import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
+import isWatchmanInstalled from './lib/isWatchmanInstalled';
 import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
@@ -65,10 +65,10 @@ type Options = {
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
   hasteMapModulePath?: string;
+  id: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
   mocksPattern?: string;
-  name: string;
   platforms: Array<string>;
   resetCache?: boolean;
   retainAllFiles: boolean;
@@ -89,10 +89,10 @@ type InternalOptions = {
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
+  id: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
   mocksPattern: RegExp | null;
-  name: string;
   platforms: Array<string>;
   resetCache?: boolean;
   retainAllFiles: boolean;
@@ -123,14 +123,6 @@ const PACKAGE_JSON = `${path.sep}package.json`;
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-const canUseWatchman = ((): boolean => {
-  try {
-    execSync('watchman --version', {stdio: ['ignore']});
-    return true;
-  } catch {}
-  return false;
-})();
 
 function invariant(condition: unknown, message?: string): asserts condition {
   if (!condition) {
@@ -221,6 +213,7 @@ export default class HasteMap extends EventEmitter {
   private _cachePath: string;
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
+  private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
   private _worker: WorkerInterface | null;
@@ -258,11 +251,11 @@ export default class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
+      id: options.id,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
         : null,
-      name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
@@ -305,7 +298,10 @@ export default class HasteMap extends EventEmitter {
   }
 
   private async setupCachePath(options: Options): Promise<void> {
-    const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
+    const rootDirHash = createHash('sha256')
+      .update(options.rootDir)
+      .digest('hex')
+      .substring(0, 32);
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -329,9 +325,9 @@ export default class HasteMap extends EventEmitter {
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
-      `haste-map-${this._options.name}-${rootDirHash}`,
+      `haste-map-${this._options.id}-${rootDirHash}`,
       VERSION,
-      this._options.name,
+      this._options.id,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
@@ -348,13 +344,13 @@ export default class HasteMap extends EventEmitter {
 
   static getCacheFilePath(
     tmpdir: string,
-    name: string,
+    id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('md5').update(extra.join(''));
+    const hash = createHash('sha256').update(extra.join(''));
     return path.join(
       tmpdir,
-      `${name.replace(/\W/g, '-')}-${hash.digest('hex')}`,
+      `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
     );
   }
 
@@ -757,6 +753,8 @@ export default class HasteMap extends EventEmitter {
         // @ts-expect-error: assignment of a worker with custom properties.
         this._worker = new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
+          // @ts-expect-error: option does not exist on the node 12 types
+          forkOptions: {serialization: 'json'},
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
         }) as WorkerInterface;
@@ -766,11 +764,10 @@ export default class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  private _crawl(hasteMap: InternalHasteMap) {
+  private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl =
-      canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
@@ -814,7 +811,7 @@ export default class HasteMap extends EventEmitter {
   /**
    * Watch mode
    */
-  private _watch(hasteMap: InternalHasteMap): Promise<void> {
+  private async _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
       return Promise.resolve();
     }
@@ -825,12 +822,11 @@ export default class HasteMap extends EventEmitter {
     this._options.retainAllFiles = true;
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher =
-      canUseWatchman && this._options.useWatchman
-        ? WatchmanWatcher
-        : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
+    const Watcher = (await this._shouldUseWatchman())
+      ? WatchmanWatcher
+      : FSEventsWatcher.isSupported()
+      ? FSEventsWatcher
+      : NodeWatcher;
 
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
@@ -1111,6 +1107,16 @@ export default class HasteMap extends EventEmitter {
       ignoreMatched ||
       (!this._options.retainAllFiles && filePath.includes(NODE_MODULES))
     );
+  }
+
+  private async _shouldUseWatchman(): Promise<boolean> {
+    if (!this._options.useWatchman) {
+      return false;
+    }
+    if (!this._isWatchmanInstalledPromise) {
+      this._isWatchmanInstalledPromise = isWatchmanInstalled();
+    }
+    return this._isWatchmanInstalledPromise;
   }
 
   private _createEmptyMap(): InternalHasteMap {
