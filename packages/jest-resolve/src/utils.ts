@@ -98,7 +98,7 @@ export const resolveTestEnvironment = ({
   testEnvironment: string;
   requireResolveFunction: (moduleName: string) => string;
 }): string => {
-  // we don't want to resolve the actual `jsdom` env if `jest-environment-jsdom` is not installed
+  // we don't want to resolve the actual `jsdom` module if `jest-environment-jsdom` is not installed, but `jsdom` package is
   if (filePath === 'jsdom') {
     filePath = 'jest-environment-jsdom';
   }
