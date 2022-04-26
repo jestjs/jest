@@ -49,7 +49,19 @@ The `testURL` option is removed. Now you should use [`testEnvironmentOptions`](C
 
 ## `expect`
 
-In versions prior to Jest 28, `toHaveProperty` checked for equality instead if existence, which means that e.g. `expect({}).toHaveProperty('a', undefined)` is a passing test. This has been changed in Jest 28 to fail.
+In versions prior to Jest 28, `toHaveProperty` checked for equality instead of existence, which means that e.g. `expect({}).toHaveProperty('a', undefined)` is a passing test. This has been changed in Jest 28 to fail.
+
+Additionally, if you import `expect` directly, it has been changed from default export to a named export.
+
+```diff
+- import expect from 'expect';
++ import {expect} from 'expect';
+```
+
+```diff
+- const expect = require('expect');
++ const {expect} = require('expect');
+```
 
 ## Fake Timers
 
