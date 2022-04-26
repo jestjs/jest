@@ -7,7 +7,7 @@
 ### Fixes
 
 - `[jest-circus]` Improve `test.concurrent` ([#12748](https://github.com/facebook/jest/pull/12748))
-- `[jest-resolve]` Correctly throw an error if jsdom env is used, but not installed ([#12749](https://github.com/facebook/jest/pull/12749))
+- `[jest-resolve]` Correctly throw an error if `jsdom` env is used, but not installed ([#12749](https://github.com/facebook/jest/pull/12749))
 
 ### Chore & Maintenance
 
