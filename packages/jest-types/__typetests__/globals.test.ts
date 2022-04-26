@@ -135,6 +135,24 @@ expectType<void>(test.skip.each(list)(function named() {}, fn));
 expectType<void>(test.skip.each(list)(class {}, fn));
 expectType<void>(test.skip.each(list)(class Named {}, fn));
 
+expectType<void>(test.failing(123, fn));
+expectType<void>(test.failing(() => {}, fn));
+expectType<void>(test.failing(function named() {}, fn));
+expectType<void>(test.failing(class {}, fn));
+expectType<void>(test.failing(class Named {}, fn));
+
+expectType<void>(test.skip.failing(123, fn));
+expectType<void>(test.skip.failing(() => {}, fn));
+expectType<void>(test.skip.failing(function named() {}, fn));
+expectType<void>(test.skip.failing(class {}, fn));
+expectType<void>(test.skip.failing(class Named {}, fn));
+
+expectType<void>(test.only.failing(123, fn));
+expectType<void>(test.only.failing(() => {}, fn));
+expectType<void>(test.only.failing(function named() {}, fn));
+expectType<void>(test.only.failing(class {}, fn));
+expectType<void>(test.only.failing(class Named {}, fn));
+
 expectType<void>(
   test.each`
     a    | b    | expected

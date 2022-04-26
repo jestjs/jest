@@ -69,13 +69,13 @@ export interface HookBase {
 export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn, TestNameLike>;
+  failing: Omit<ItBase, 'each' | 'failing'>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
   todo: (testName: TestNameLike) => void;
-  failing: ItBase;
 }
 
 export interface ItConcurrentBase {
