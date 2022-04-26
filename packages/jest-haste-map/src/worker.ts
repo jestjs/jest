@@ -111,9 +111,7 @@ export async function extractMetadata(
 export async function getSha1(
   data: ExtractMetadataDefinition,
 ): Promise<ExtractedFileMetaData> {
-  const sha1 = data.computeSha1
-    ? sha1hex(fs.readFileSync(data.filePath))
-    : null;
+  const sha1 = data.computeSha1;
 
   return {
     dependencies: undefined,
