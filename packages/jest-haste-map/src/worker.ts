@@ -13,6 +13,7 @@ import blacklist from './blacklist';
 import H from './constants';
 import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
 import type {
+  DependencyExtractor,
   ExtractMetadataDefinition,
   ExtractedFileMetaData,
   HasteImpl,
@@ -107,7 +108,9 @@ export async function extractMetadata(
   return {dependencies, id, module, sha1};
 }
 
-export async function getSha1(data: WorkerMessage): Promise<WorkerMetadata> {
+export async function getSha1(
+  data: ExtractMetadataDefinition,
+): Promise<ExtractedFileMetaData> {
   const sha1 = data.computeSha1
     ? sha1hex(fs.readFileSync(data.filePath))
     : null;
