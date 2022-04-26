@@ -56,6 +56,7 @@ export const makeDescribe = (
 export const makeTest = (
   fn: Circus.TestFn,
   mode: Circus.TestMode,
+  concurrent: boolean,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
@@ -63,6 +64,7 @@ export const makeTest = (
 ): Circus.TestEntry => ({
   type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
+  concurrent,
   duration: null,
   errors: [],
   fn,
@@ -128,6 +130,11 @@ type TestHooks = {
 
 export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
   const result: TestHooks = {afterEach: [], beforeEach: []};
+  if (test.concurrent) {
+    // *Each hooks are not run for concurrent tests
+    return result;
+  }
+
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
