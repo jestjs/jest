@@ -5,10 +5,13 @@ exports[`works with all statuses 1`] = `
   ✓ passes
   ✕ fails
   ✓ failing failes = passes
+  ✓ failing failes = passes with test syntax
   ✕ failing passes = fails
   ○ skipped skips
   ○ skipped skipped failing 1
   ○ skipped skipped failing 2
+  ○ skipped skipped failing with different syntax
+  ○ skipped skipped failing with another different syntax
   ✎ todo todo
 
   ● fails
@@ -37,14 +40,52 @@ exports[`works with only mode 1`] = `
 "FAIL __tests__/worksWithOnlyMode.test.js
   block with only, should pass
     ✓ failing failes = passes, should pass
-    ○ skipped failing test
-    ○ skipped passing test
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
   block with only, should fail
     ✕ failing passes = fails, should fail
-    ○ skipped failing test
-    ○ skipped passing test
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
+  block with only in other it, should skip
+    ✕ failing test
+    ○ skipped failing passes = fails, should fail but skipped
+    ○ skipped passing test but skipped
+  block with only with different syntax, should fail
+    ✕ failing passes = fails, should fail 1
+    ✕ failing passes = fails, should fail 2
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
 
   ● block with only, should fail › failing passes = fails, should fail
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+
+
+  ● block with only in other it, should skip › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      41 |   // eslint-disable-next-line jest/no-focused-tests
+      42 |   it.only('failing test', () => {
+    > 43 |     expect(10).toBe(101);
+         |                ^
+      44 |   });
+      45 |
+      46 |   it('passing test but skipped', () => {
+
+      at Object.toBe (__tests__/worksWithOnlyMode.test.js:43:16)
+
+  ● block with only with different syntax, should fail › failing passes = fails, should fail 1
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+
+
+  ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
 `;

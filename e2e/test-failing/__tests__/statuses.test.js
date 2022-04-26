@@ -23,14 +23,26 @@ it.failing('failing failes = passes', () => {
   expect(10).toBe(101);
 });
 
+test.failing('failing failes = passes with test syntax', () => {
+  expect(10).toBe(101);
+});
+
 it.skip.failing('skipped failing 1', () => {
   expect(10).toBe(10);
 });
 
-it.skip.failing('skipped failing 2', () => {
+test.skip.failing('skipped failing 2', () => {
   expect(10).toBe(101);
 });
 
 it.failing('failing passes = fails', () => {
+  expect(10).toBe(10);
+});
+
+xit.failing('skipped failing with different syntax', () => {
+  expect(10).toBe(10);
+});
+
+xtest.failing('skipped failing with another different syntax', () => {
   expect(10).toBe(10);
 });
