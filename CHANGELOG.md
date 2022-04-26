@@ -6,7 +6,9 @@
 
 ### Fixes
 
-- `[expect]` add missing dependency `jest-util` ([#12744](https://github.com/facebook/jest/pull/12744))
+- `[jest-circus]` Improve `test.concurrent` ([#12748](https://github.com/facebook/jest/pull/12748))
+- `[jest-resolve]` Correctly throw an error if `jsdom` test environment is used, but not installed ([#12749](https://github.com/facebook/jest/pull/12749))
+- `[expect]` Add missing dependency `jest-util` ([#12744](https://github.com/facebook/jest/pull/12744))
 
 ### Chore & Maintenance
 

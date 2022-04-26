@@ -117,17 +117,27 @@ const test: Global.It = (() => {
     testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, undefined, fn, test, timeout);
+  ): void => _addTest(testName, undefined, false, fn, test, timeout);
   const skip = (
     testName: Circus.TestNameLike,
     fn?: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'skip', fn, skip, timeout);
+  ): void => _addTest(testName, 'skip', false, fn, skip, timeout);
   const only = (
     testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'only', fn, test.only, timeout);
+  ): void => _addTest(testName, 'only', false, fn, test.only, timeout);
+  const concurrentTest = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, true, fn, concurrentTest, timeout);
+  const concurrentOnly = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
   test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
@@ -136,12 +146,13 @@ const test: Global.It = (() => {
         test.todo,
       );
     }
-    return _addTest(testName, 'todo', () => {}, test.todo);
+    return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 
   const _addTest = (
     testName: Circus.TestNameLike,
     mode: Circus.TestMode,
+    concurrent: boolean,
     fn: Circus.TestFn | undefined,
     testFn: (
       testName: Circus.TestNameLike,
@@ -173,6 +184,7 @@ const test: Global.It = (() => {
 
     return dispatchSync({
       asyncError,
+      concurrent,
       fn,
       mode,
       name: 'add_test',
@@ -184,9 +196,14 @@ const test: Global.It = (() => {
   test.each = bindEach(test);
   only.each = bindEach(only);
   skip.each = bindEach(skip);
+  concurrentTest.each = bindEach(concurrentTest, false);
+  concurrentOnly.each = bindEach(concurrentOnly, false);
 
   test.only = only;
   test.skip = skip;
+  test.concurrent = concurrentTest;
+  concurrentTest.only = concurrentOnly;
+  concurrentTest.skip = skip;
 
   return test;
 })();
