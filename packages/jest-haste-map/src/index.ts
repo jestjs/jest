@@ -657,7 +657,7 @@ export default class HasteMap extends EventEmitter {
       }
     }
 
-    return this.__getMetadataExtractor(workerOptions)
+    return this._getMetadataExtractor(workerOptions)
       .extractMetadata({
         computeDependencies: this._options.computeDependencies,
         computeSha1,
