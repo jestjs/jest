@@ -161,6 +161,7 @@ let getCacheFilePath;
 describe('HasteMap', () => {
   beforeEach(() => {
     jest.resetModules();
+    jest.clearAllMocks();
 
     mockEmitters = Object.create(null);
     mockFs = object({
