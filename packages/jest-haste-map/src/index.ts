@@ -67,8 +67,8 @@ type Options = {
   hasteMapModulePath?: string;
   id: string;
   ignorePattern?: HasteRegExp;
-  maxWorkers: MetadataExtractor;
-  metadataExtractor?: MetadataExtractor;
+  maxWorkers: number;
+  metadataExtractor: MetadataExtractor;
   mocksPattern?: string;
   platforms: Array<string>;
   resetCache?: boolean;
