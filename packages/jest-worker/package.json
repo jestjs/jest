@@ -22,10 +22,12 @@
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@tsd/typescript": "~4.6.2",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",
     "jest-leak-detector": "^28.0.0",
+    "tsd-lite": "^0.5.1",
     "worker-farm": "^1.6.0"
   },
   "engines": {
