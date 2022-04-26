@@ -41,6 +41,7 @@
 - `[jest-watcher]` [**BREAKING**] Make `PatternPrompt` class to take `entityName` as third constructor parameter instead of `this._entityName` ([#12591](https://github.com/facebook/jest/pull/12591))
 - `[jest-worker]` [**BREAKING**] Allow only absolute `workerPath` ([#12343](https://github.com/facebook/jest/pull/12343))
 - `[pretty-format]` New `maxWidth` parameter ([#12402](https://github.com/facebook/jest/pull/12402))
+- `[jest-circus]` Add `failing` test modifier that inverts the behaviour of tests ([#12484](https://github.com/facebook/jest/pull/12484))
 
 ### Fixes
 
