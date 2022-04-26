@@ -18,6 +18,7 @@ export type TestMode = BlockMode;
 export type TestName = Global.TestName;
 export type TestNameLike = Global.TestNameLike;
 export type TestFn = Global.TestFn;
+export type ConcurrentTestFn = Global.ConcurrentTestFn;
 export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
@@ -71,6 +72,7 @@ export type SyncEvent =
       testName: TestName;
       fn: TestFn;
       mode?: TestMode;
+      concurrent: boolean;
       timeout: number | undefined;
     }
   | {
@@ -216,6 +218,7 @@ export type State = {
   testTimeout: number;
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
+  maxConcurrency: number;
 };
 
 export type DescribeBlock = {
@@ -239,6 +242,7 @@ export type TestEntry = {
   fn: TestFn;
   invocations: number;
   mode: TestMode;
+  concurrent: boolean;
   name: TestName;
   parent: DescribeBlock;
   startedAt?: number | null;
