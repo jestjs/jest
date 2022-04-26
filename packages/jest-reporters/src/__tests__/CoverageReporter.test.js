@@ -312,11 +312,11 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test/': {
-            statements: 100,
-          },
           './path-test-files/': {
             statements: 50,
+          },
+          './path-test/': {
+            statements: 100,
           },
           global: {
             statements: 100,
@@ -376,10 +376,10 @@ describe('onRunComplete', () => {
       {
         collectCoverage: true,
         coverageThreshold: {
-          './path-test/100pc_coverage_file.js': {
+          './path-test-files/100pc_coverage_file.js': {
             statements: 100,
           },
-          './path-test-files/100pc_coverage_file.js': {
+          './path-test/100pc_coverage_file.js': {
             statements: 100,
           },
           global: {
