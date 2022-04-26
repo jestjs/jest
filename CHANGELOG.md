@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Improve `test.concurrent` ([#12748](https://github.com/facebook/jest/pull/12748))
+
 ### Chore & Maintenance
 
 - `[jest-serializer]` Remove deprecated module from source tree ([#12735](https://github.com/facebook/jest/pull/12735))
