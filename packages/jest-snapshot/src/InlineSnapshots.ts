@@ -46,6 +46,7 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
+  rootDir: string,
   prettierPath: string | null,
 ): void {
   let prettier: Prettier | null = null;
@@ -64,6 +65,7 @@ export function saveInlineSnapshots(
     saveSnapshotsForFile(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
+      rootDir,
       prettier && semver.gte(prettier.version, '1.5.0') ? prettier : undefined,
     );
   }
@@ -72,6 +74,7 @@ export function saveInlineSnapshots(
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: string,
+  rootDir: string,
   prettier: Prettier | undefined,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
@@ -96,7 +99,7 @@ const saveSnapshotsForFile = (
     filename: sourceFilePath,
     plugins,
     presets,
-    root: path.dirname(sourceFilePath),
+    root: rootDir,
   });
   if (!ast) {
     throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);

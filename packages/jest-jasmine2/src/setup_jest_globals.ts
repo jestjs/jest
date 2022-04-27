@@ -104,12 +104,13 @@ export default async function setupJestGlobals({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const {prettierPath, snapshotFormat} = config;
+  const {prettierPath, rootDir, snapshotFormat} = config;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     prettierPath,
+    rootDir,
     snapshotFormat,
     updateSnapshot,
   });
