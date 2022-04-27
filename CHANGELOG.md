@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-worker]` Add `JestWorkerFarm` helper type ([#12753](https://github.com/facebook/jest/pull/12753))
+
 ### Fixes
 
 ### Chore & Maintenance
