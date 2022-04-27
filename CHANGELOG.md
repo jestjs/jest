@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
+- `[docs]` Fix typo in `--shard` CLI docs ([#12761](https://github.com/facebook/jest/pull/12761))
 
 ### Chore & Maintenance
 
