@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[*]` Lower node 16 requirement to 16.10 from 16.13 due to upstream bug that causes memory and speed issues ([#9999](https://github.com/facebook/jest/pull/12736))
+- `[*]` Lower node 16 requirement to 16.10 from 16.13 due to upstream bug that causes memory and speed issues ([#12754](https://github.com/facebook/jest/pull/12754))
 
 ### Chore & Maintenance
 
