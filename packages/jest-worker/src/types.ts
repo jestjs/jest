@@ -9,9 +9,25 @@ import type {ForkOptions} from 'child_process';
 import type {EventEmitter} from 'events';
 import type {ResourceLimits} from 'worker_threads';
 
-export type FunctionLike = (
-  ...args: Array<unknown>
-) => unknown | Promise<unknown>;
+type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
+type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
+
+type FunctionLike = (args: any) => unknown;
+
+type MethodLikeKeys<T> = {
+  [K in keyof T]: T[K] extends FunctionLike ? K : never;
+}[keyof T];
+
+type Promisify<T extends FunctionLike> = ReturnType<T> extends Promise<infer R>
+  ? (...args: Parameters<T>) => Promise<R>
+  : (...args: Parameters<T>) => Promise<ReturnType<T>>;
+
+export type WorkerModule<T> = {
+  [K in keyof T as Extract<
+    ExcludeReservedKeys<K>,
+    MethodLikeKeys<T>
+  >]: T[K] extends FunctionLike ? Promisify<T[K]> : never;
+};
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
@@ -91,7 +107,7 @@ export interface TaskQueue {
 
 export type WorkerSchedulingPolicy = 'round-robin' | 'in-order';
 
-export type FarmOptions = {
+export type WorkerFarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
   enableWorkerThreads?: boolean;
   exposedMethods?: ReadonlyArray<string>;
