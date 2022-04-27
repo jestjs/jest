@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[*]` Lower Node 16 requirement to 16.10 from 16.13 due to a [Node bug](https://github.com/nodejs/node/issues/40014) that causes memory and performance issues ([#12754](https://github.com/facebook/jest/pull/12754))
+- `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
 
 ### Chore & Maintenance
 
@@ -45,7 +46,7 @@
 - `[jest-config]` [**BREAKING**] Rename `moduleLoader` to `runtime` ([#10817](https://github.com/facebook/jest/pull/10817))
 - `[jest-config]` [**BREAKING**] Rename `extraGlobals` to `sandboxInjectedGlobals` ([#10817](https://github.com/facebook/jest/pull/10817))
 - `[jest-config]` [**BREAKING**] Throw an error instead of showing a warning if multiple configs are used ([#12510](https://github.com/facebook/jest/pull/12510))
-- `[jest-config]` [**BREAKING**] Do not normalize long deprecated configuration options `preprocessorIgnorePatterns`,`scriptPreprocessor`, `setupTestFrameworkScriptFile` and `testPathDirs` ([#1251270110](https://github.com/facebook/jest/pull/12701))
+- `[jest-config]` [**BREAKING**] Do not normalize long deprecated configuration options `preprocessorIgnorePatterns`, `scriptPreprocessor`, `setupTestFrameworkScriptFile` and `testPathDirs` ([#12701](https://github.com/facebook/jest/pull/12701))
 - `[jest-cli, jest-core]` Add `--ignoreProjects` CLI argument to ignore test suites by project name ([#12620](https://github.com/facebook/jest/pull/12620))
 - `[jest-core]` Pass project config to `globalSetup`/`globalTeardown` function as second argument ([#12440](https://github.com/facebook/jest/pull/12440))
 - `[jest-core]` Stabilize test runners with event emitters ([#12641](https://github.com/facebook/jest/pull/12641))
@@ -72,7 +73,6 @@
 - `[jest-mock]` Add `contexts` member to mock functions ([#12601](https://github.com/facebook/jest/pull/12601))
 - `[@jest/reporters]` Add GitHub Actions reporter ([#11320](https://github.com/facebook/jest/pull/11320), [#12658](https://github.com/facebook/jest/pull/12658))
 - `[@jest/reporters]` Pass `reporterContext` to custom reporter constructors as third argument ([#12657](https://github.com/facebook/jest/pull/12657))
-- `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
 - `[jest-resolve]` [**BREAKING**] Add support for `package.json` `exports` ([#11961](https://github.com/facebook/jest/pull/11961), [#12373](https://github.com/facebook/jest/pull/12373))
 - `[jest-resolve]` Support package self-reference ([#12682](https://github.com/facebook/jest/pull/12682))
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
