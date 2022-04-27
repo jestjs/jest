@@ -731,9 +731,9 @@ test.each`
 });
 ```
 
-### `test.failing(name, fn)`
+### `test.failing(name, fn, timeout)`
 
-Also under the alias: `it.failing(name, fn)`
+Also under the alias: `it.failing(name, fn, timeout)`
 
 :::note
 
@@ -761,9 +761,9 @@ test.failing('it is equal', () => {
 });
 ```
 
-### `test.only.failing(name, fn)`
+### `test.only.failing(name, fn, timeout)`
 
-Also under the aliases: `it.only.failing(name, fn)`, `fit.failing(name, fn)`
+Also under the aliases: `it.only.failing(name, fn, timeout)`, `fit.failing(name, fn, timeout)`
 
 :::note
 
@@ -773,9 +773,9 @@ This is only available with the default [jest-circus](https://github.com/faceboo
 
 Use `test.only.failing` if you want to only run a specific failing test.
 
-### `test.skip.failing(name, fn)`
+### `test.skip.failing(name, fn, timeout)`
 
-Also under the aliases: `it.skip.failing(name, fn)`, `xit.failing(name, fn)`, `xtest.failing(name, fn)`
+Also under the aliases: `it.skip.failing(name, fn, timeout)`, `xit.failing(name, fn, timeout)`, `xtest.failing(name, fn, timeout)`
 
 :::note
 
