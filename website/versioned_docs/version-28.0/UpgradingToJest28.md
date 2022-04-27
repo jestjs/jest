@@ -13,7 +13,7 @@ See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2800) fo
 
 ## Compatibility
 
-The supported Node versions are 12.13, 14.15, 16.13 and above.
+The supported Node versions are 12.13, 14.15, 16.10 and above.
 
 If you plan to use type definitions of Jest (or any of its packages), make sure to install TypeScript version 4.3 or above.
 

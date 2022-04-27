@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[*]` Lower node 16 requirement to 16.10 from 16.13 due to upstream bug that causes memory and speed issues ([#9999](https://github.com/facebook/jest/pull/12736))
+
 ### Chore & Maintenance
 
 ### Performance
