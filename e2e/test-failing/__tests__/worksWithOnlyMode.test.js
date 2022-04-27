@@ -6,7 +6,7 @@
  */
 
 describe('block with only, should pass', () => {
-  it.only.failing('failing failes = passes, should pass', () => {
+  it.only.failing('failing fails = passes, should pass', () => {
     expect(10).toBe(101);
   });
 

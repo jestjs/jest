@@ -733,7 +733,7 @@ test.each`
 
 ### `test.failing(name, fn)`
 
-Also under the aliases: `it.failing(name, fn)`
+Also under the alias: `it.failing(name, fn)`
 
 :::note
 
@@ -772,7 +772,6 @@ This is only available with the default [jest-circus](https://github.com/faceboo
 :::
 
 Use `test.only.failing` if you want to only run a specific failing test.
-
 
 ### `test.skip.failing(name, fn)`
 

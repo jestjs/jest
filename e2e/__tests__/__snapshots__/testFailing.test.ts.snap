@@ -4,8 +4,8 @@ exports[`works with all statuses 1`] = `
 "FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
-  ✓ failing failes = passes
-  ✓ failing failes = passes with test syntax
+  ✓ failing fails = passes
+  ✓ failing fails = passes with test syntax
   ✕ failing passes = fails
   ○ skipped skips
   ○ skipped skipped failing 1
@@ -39,7 +39,7 @@ exports[`works with all statuses 1`] = `
 exports[`works with only mode 1`] = `
 "FAIL __tests__/worksWithOnlyMode.test.js
   block with only, should pass
-    ✓ failing failes = passes, should pass
+    ✓ failing fails = passes, should pass
     ○ skipped failing test but skipped
     ○ skipped passing test but skipped
   block with only, should fail
@@ -94,8 +94,8 @@ exports[`works with skip mode 1`] = `
 "FAIL __tests__/worksWithSkipMode.test.js
   block with only, should pass
     ✕ failing test
-    ✓ failing failes = passes
-    ○ skipped skipped failing failes = passes, should pass
+    ✓ failing fails = passes
+    ○ skipped skipped failing fails = passes, should pass
     ○ skipped passing test
   block with only, should fail
     ✓ passing test

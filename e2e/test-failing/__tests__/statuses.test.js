@@ -19,11 +19,11 @@ it.skip('skips', () => {
 
 it.todo('todo');
 
-it.failing('failing failes = passes', () => {
+it.failing('failing fails = passes', () => {
   expect(10).toBe(101);
 });
 
-test.failing('failing failes = passes with test syntax', () => {
+test.failing('failing fails = passes with test syntax', () => {
   expect(10).toBe(101);
 });
 

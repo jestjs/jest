@@ -6,7 +6,7 @@
  */
 
 describe('block with only, should pass', () => {
-  it.skip.failing('skipped failing failes = passes, should pass', () => {
+  it.skip.failing('skipped failing fails = passes, should pass', () => {
     expect(10).toBe(101);
   });
 
@@ -18,7 +18,7 @@ describe('block with only, should pass', () => {
     expect(10).toBe(10);
   });
 
-  it.failing('failing failes = passes', () => {
+  it.failing('failing fails = passes', () => {
     expect(10).toBe(101);
   });
 });
