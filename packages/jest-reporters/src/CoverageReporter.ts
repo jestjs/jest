@@ -273,7 +273,16 @@ export default class CoverageReporter extends BaseReporter {
         const pathOrGlobMatches = thresholdGroups.reduce<
           Array<[string, string]>
         >((agg, thresholdGroup) => {
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+          // Preserve trailing slash, but not required if root dir
+          // See https://github.com/facebook/jest/issues/12703
+          const resolvedThresholdGroup = path.resolve(thresholdGroup);
+          const suffix =
+            (thresholdGroup.endsWith(path.sep) ||
+              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
+            !resolvedThresholdGroup.endsWith(path.sep)
+              ? path.sep
+              : '';
+          const absoluteThresholdGroup = `${resolvedThresholdGroup}${suffix}`;
 
           // The threshold group might be a path:
 

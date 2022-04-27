@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
+
 ### Chore & Maintenance
 
 ### Performance
