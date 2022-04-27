@@ -13677,6 +13677,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
+    "@tsd/typescript": ~4.6.2
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
@@ -13684,6 +13685,7 @@ __metadata:
     jest-leak-detector: ^28.0.1
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
+    tsd-lite: ^0.5.1
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
