@@ -63,8 +63,8 @@ const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
-const indentAllLines = (lines: string, indent: string) =>
-  lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
+export const indentAllLines = (lines: string): string =>
+  lines.replace(NOT_EMPTY_LINE_REGEXP, MESSAGE_INDENT);
 
 const trim = (string: string) => (string || '').trim();
 
@@ -86,7 +86,7 @@ const getRenderedCallsite = (
     {highlightCode: true},
   );
 
-  renderedCallsite = indentAllLines(renderedCallsite, MESSAGE_INDENT);
+  renderedCallsite = indentAllLines(renderedCallsite);
 
   renderedCallsite = `\n${renderedCallsite}\n`;
   return renderedCallsite;
@@ -157,7 +157,7 @@ export const formatExecError = (
 
   message = checkForCommonEnvironmentErrors(message);
 
-  message = indentAllLines(message, MESSAGE_INDENT);
+  message = indentAllLines(message);
 
   stack =
     stack && !options.noStackTrace
@@ -360,7 +360,7 @@ export const formatResultsErrors = (
             formatStackTrace(stack, config, options, testPath),
           )}\n`;
 
-      message = indentAllLines(message, MESSAGE_INDENT);
+      message = indentAllLines(message);
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +

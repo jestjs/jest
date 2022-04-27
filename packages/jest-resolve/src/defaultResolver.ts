@@ -13,15 +13,45 @@ import {
   resolve as resolveExports,
 } from 'resolve.exports';
 import {
-  PackageJson,
   findClosestPackageJson,
   isDirectory,
   isFile,
   readPackageCached,
   realpathSync,
 } from './fileWalkers';
+import type {PackageJSON} from './types';
 
-type ResolverOptions = {
+/**
+ * Allows transforming parsed `package.json` contents.
+ *
+ * @param pkg - Parsed `package.json` contents.
+ * @param file - Path to `package.json` file.
+ * @param dir - Directory that contains the `package.json`.
+ *
+ * @returns Transformed `package.json` contents.
+ */
+export type PackageFilter = (
+  pkg: PackageJSON,
+  file: string,
+  dir: string,
+) => PackageJSON;
+
+/**
+ * Allows transforming a path within a package.
+ *
+ * @param pkg - Parsed `package.json` contents.
+ * @param path - Path being resolved.
+ * @param relativePath - Path relative from the `package.json` location.
+ *
+ * @returns Relative path that will be joined from the `package.json` location.
+ */
+export type PathFilter = (
+  pkg: PackageJSON,
+  path: string,
+  relativePath: string,
+) => string;
+
+export type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
@@ -45,9 +75,9 @@ type ResolverOptions = {
    */
   paths?: Array<string>;
   /** Allows transforming parsed `package.json` contents. */
-  packageFilter?: (pkg: PackageJson, file: string, dir: string) => PackageJson;
+  packageFilter?: PackageFilter;
   /** Allows transforms a path within a package. */
-  pathFilter?: (pkg: PackageJson, path: string, relativePath: string) => string;
+  pathFilter?: PathFilter;
   /** Current root directory. */
   rootDir?: string;
 };
@@ -79,7 +109,6 @@ const defaultResolver: SyncResolver = (path, options) => {
     return pnpResolver(path, options);
   }
 
-  // @ts-expect-error: TODO remove after merging https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59990
   const resolveOptions: UpstreamResolveOptionsWithConditions = {
     ...options,
     isDirectory,
@@ -108,7 +137,7 @@ export default defaultResolver;
  * helper functions
  */
 
-function readPackageSync(_: unknown, file: string): PackageJson {
+function readPackageSync(_: unknown, file: string): PackageJSON {
   return readPackageCached(file);
 }
 

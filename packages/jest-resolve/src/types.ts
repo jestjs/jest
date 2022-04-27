@@ -21,3 +21,11 @@ type ModuleNameMapperConfig = {
   regex: RegExp;
   moduleName: string | Array<string>;
 };
+
+// https://github.com/Microsoft/TypeScript/issues/3496#issuecomment-128553540
+type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>;
+interface JSONObject {
+  [key: string]: JSONValue;
+}
+
+export type PackageJSON = JSONObject;

@@ -2,8 +2,39 @@
 
 ### Features
 
+- `[jest-worker]` Add `JestWorkerFarm` helper type ([#12753](https://github.com/facebook/jest/pull/12753))
+
+### Fixes
+
+- `[*]` Lower Node 16 requirement to 16.10 from 16.13 due to a [Node bug](https://github.com/nodejs/node/issues/40014) that causes memory and performance issues ([#12754](https://github.com/facebook/jest/pull/12754))
+
+### Chore & Maintenance
+
+### Performance
+
+## 28.0.1
+
+### Features
+
+- `[jest-resolve]` Expose `ResolverOptions` type ([#12736](https://github.com/facebook/jest/pull/12736))
+
+### Fixes
+
+- `[expect]` Add missing dependency `jest-util` ([#12744](https://github.com/facebook/jest/pull/12744))
+- `[jest-circus]` Improve `test.concurrent` ([#12748](https://github.com/facebook/jest/pull/12748))
+- `[jest-resolve]` Correctly throw an error if `jsdom` test environment is used, but not installed ([#12749](https://github.com/facebook/jest/pull/12749))
+
+### Chore & Maintenance
+
+- `[jest-serializer]` Remove deprecated module from source tree ([#12735](https://github.com/facebook/jest/pull/12735))
+
+## 28.0.0
+
+### Features
+
 - `[babel-jest]` Export `createTransformer` function ([#12399](https://github.com/facebook/jest/pull/12399))
 - `[expect]` Expose `AsymmetricMatchers`, `MatcherFunction` and `MatcherFunctionWithState` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
+- `[jest-circus]` Support error logging before retry ([#12201](https://github.com/facebook/jest/pull/12201))
 - `[jest-circus, jest-jasmine2]` Allowed classes and functions as `describe` and `it`/`test` names ([#12484](https://github.com/facebook/jest/pull/12484))
 - `[jest-cli, jest-config]` [**BREAKING**] Remove `testURL` config, use `testEnvironmentOptions.url` instead ([#10797](https://github.com/facebook/jest/pull/10797))
 - `[jest-cli, jest-core]` Add `--shard` parameter for distributed parallel test execution ([#12546](https://github.com/facebook/jest/pull/12546))
@@ -47,10 +78,11 @@
 - `[jest-resolve, jest-runtime]` Add support for `data:` URI import and mock ([#12392](https://github.com/facebook/jest/pull/12392))
 - `[jest-resolve, jest-runtime]` Add support for async resolver ([#11540](https://github.com/facebook/jest/pull/11540))
 - `[jest-resolve]` [**BREAKING**] Remove `browser?: boolean` from resolver options, `conditions: ['browser']` should be used instead ([#12707](https://github.com/facebook/jest/pull/12707))
-- `[jest-resolve]` Expose `JestResolver`, `AsyncResolver` and `SyncResolver` types ([#12707](https://github.com/facebook/jest/pull/12707))
+- `[jest-resolve]` Expose `JestResolver`, `AsyncResolver`, `SyncResolver`, `PackageFilter`, `PathFilter` and `PackageJSON` types ([#12707](https://github.com/facebook/jest/pull/12707), ([#12712](https://github.com/facebook/jest/pull/12712))
 - `[jest-runner]` Allow `setupFiles` module to export an async function ([#12042](https://github.com/facebook/jest/pull/12042))
 - `[jest-runner]` Allow passing `testEnvironmentOptions` via docblocks ([#12470](https://github.com/facebook/jest/pull/12470))
-- `[jest-runner]` Exposing `CallbackTestRunner`, `EmittingTestRunner` abstract classes to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646))
+- `[jest-runner]` Expose `CallbackTestRunner`, `EmittingTestRunner` abstract classes and `CallbackTestRunnerInterface`, `EmittingTestRunnerInterface` to help typing third party runners ([#12646](https://github.com/facebook/jest/pull/12646), [#12715](https://github.com/facebook/jest/pull/12715))
+- `[jest-runner]` Lock version of `source-map-support` to 0.5.13 ([#12720](https://github.com/facebook/jest/pull/12720))
 - `[jest-runtime]` [**BREAKING**] `Runtime.createHasteMap` now returns a promise ([#12008](https://github.com/facebook/jest/pull/12008))
 - `[jest-runtime]` Calling `jest.resetModules` function will clear FS and transform cache ([#12531](https://github.com/facebook/jest/pull/12531))
 - `[jest-runtime]` [**BREAKING**] Remove `Context` type export, it must be imported from `@jest/test-result` ([#12685](https://github.com/facebook/jest/pull/12685))
@@ -66,6 +98,7 @@
 
 ### Fixes
 
+- `[*]` Use `sha256` instead of `md5` as hashing algortihm for compatibility with FIPS systems ([#12722](https://github.com/facebook/jest/pull/12722))
 - `[babel-jest]` [**BREAKING**] Pass `rootDir` as `root` in Babel's options ([#12689](https://github.com/facebook/jest/pull/12689))
 - `[expect]` Move typings of `.not`, `.rejects` and `.resolves` modifiers outside of `Matchers` interface ([#12346](https://github.com/facebook/jest/pull/12346))
 - `[expect]` Throw useful error if `expect.extend` is called with invalid matchers ([#12488](https://github.com/facebook/jest/pull/12488))

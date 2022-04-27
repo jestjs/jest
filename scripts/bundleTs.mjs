@@ -36,14 +36,19 @@ const copyrightSnippet = `
  */
 `.trim();
 
+const typesNodeReferenceDirective = '/// <reference types="node" />';
+
+const excludedPackages = new Set(['@jest/globals']);
+
 (async () => {
   const packages = getPackages();
 
-  const packagesWithTs = packages.filter(p =>
-    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
-  );
+  const isTsPackage = p =>
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
 
-  const typesNodeReferenceDirective = '/// <reference types="node" />';
+  const packagesToBundle = packages.filter(
+    p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
+  );
 
   console.log(chalk.inverse(' Extracting TypeScript definition files '));
 
@@ -115,7 +120,7 @@ const copyrightSnippet = `
   let compilerState;
 
   await Promise.all(
-    packagesWithTs.map(async ({packageDir, pkg}) => {
+    packagesToBundle.map(async ({packageDir, pkg}) => {
       const configFile = path.resolve(packageDir, 'api-extractor.json');
 
       await fs.promises.writeFile(
@@ -134,7 +139,7 @@ const copyrightSnippet = `
 
       if (!compilerState) {
         compilerState = CompilerState.create(extractorConfig, {
-          additionalEntryPoints: packagesWithTs.map(({pkg, packageDir}) =>
+          additionalEntryPoints: packagesToBundle.map(({pkg, packageDir}) =>
             path.resolve(packageDir, pkg.types),
           ),
           typescriptCompilerFolder,

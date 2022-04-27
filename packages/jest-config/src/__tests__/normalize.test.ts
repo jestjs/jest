@@ -68,10 +68,11 @@ afterEach(() => {
 
 it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = createHash('md5')
+  const expected = createHash('sha256')
     .update('/root/path/foo')
     .update(String(Infinity))
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
   const {options} = await normalize(
     {
       rootDir,

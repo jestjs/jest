@@ -24,6 +24,7 @@ export type AssertionResult = {
   invocations?: number;
   location?: Callsite | null;
   numPassingAsserts: number;
+  retryReasons?: Array<string>;
   status: Status;
   title: string;
 };

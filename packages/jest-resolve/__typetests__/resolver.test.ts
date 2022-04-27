@@ -6,19 +6,57 @@
  */
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
-import type {AsyncResolver, JestResolver, SyncResolver} from 'jest-resolve';
+import type {
+  AsyncResolver,
+  JestResolver,
+  PackageFilter,
+  PackageJSON,
+  PathFilter,
+  ResolverOptions,
+  SyncResolver,
+} from 'jest-resolve';
 
-type PackageJson = Record<string, unknown>;
-type PackageFilter = (
-  pkg: PackageJson,
-  file: string,
-  dir: string,
-) => PackageJson;
-type PathFilter = (
-  pkg: PackageJson,
+// PackageJSON
+
+expectAssignable<PackageJSON>({
+  caption: 'test',
+  count: 100,
+  isTest: true,
+  location: {name: 'test', start: [1, 2], valid: false, x: 10, y: 20},
+  values: [0, 10, 20, {x: 1, y: 2}, true, 'test', ['a', 'b']],
+});
+
+expectError<PackageJSON>({
+  filter: () => {},
+});
+
+// PackageFilter
+
+const packageFilter = (pkg: PackageJSON, file: string, dir: string) => pkg;
+
+expectAssignable<PackageFilter>(packageFilter);
+
+// PathFilter
+
+const pathFilter = (pkg: PackageJSON, path: string, relativePath: string) =>
+  relativePath;
+
+expectAssignable<PathFilter>(pathFilter);
+
+// ResolverOptions
+
+function customSyncResolver(path: string, options: ResolverOptions): string {
+  return path;
+}
+expectAssignable<SyncResolver>(customSyncResolver);
+
+async function customAsyncResolver(
   path: string,
-  relativePath: string,
-) => string;
+  options: ResolverOptions,
+): Promise<string> {
+  return path;
+}
+expectAssignable<AsyncResolver>(customAsyncResolver);
 
 // AsyncResolver
 

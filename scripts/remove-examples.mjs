@@ -5,19 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createRequire} from 'module';
-import {dirname, resolve} from 'path';
+import path from 'path';
 import {fileURLToPath} from 'url';
 import fs from 'graceful-fs';
 import rimraf from 'rimraf';
-const require = createRequire(import.meta.url);
+import config from '../jest.config.mjs';
 
-const configFile = require.resolve('../jest.config');
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const config = require(configFile);
+const configFile = path.resolve(dirname, '../jest.config.mjs');
 
 delete config.projects;
 
-fs.writeFileSync(configFile, `module.exports = ${JSON.stringify(config)};\n`);
+fs.writeFileSync(
+  configFile,
+  `export default ${JSON.stringify(config, null, 2)};\n`,
+);
 
-rimraf.sync(resolve(dirname(fileURLToPath(import.meta.url)), '../examples/'));
+rimraf.sync(path.resolve(dirname, '../examples/'));

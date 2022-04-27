@@ -49,9 +49,10 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   ]
     .reduce(
       (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('md5'),
+      createHash('sha256'),
     )
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
@@ -61,7 +62,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
     const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
 
-    return createHash('md5')
+    return createHash('sha256')
       .update(globalCacheKey)
       .update('\0', 'utf8')
       .update(sourceText)
@@ -69,7 +70,8 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
       .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   };
 }
 
