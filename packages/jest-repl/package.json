@@ -40,7 +40,7 @@
     "jest-runtime": "./bin/jest-runtime-cli.js"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
