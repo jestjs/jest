@@ -241,6 +241,7 @@ function isDomNode(obj: any): boolean {
 // SENTINEL constants are from https://github.com/facebook/immutable-js
 const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
 export function isImmutableUnorderedKeyed(maybeKeyed: any) {
@@ -256,5 +257,12 @@ export function isImmutableUnorderedSet(maybeSet: any) {
     maybeSet &&
     maybeSet[IS_SET_SENTINEL] &&
     !maybeSet[IS_ORDERED_SENTINEL]
+  );
+}
+
+export function isImmutableList(maybeList: any) {
+  return !!(
+    maybeList &&
+    maybeList[IS_LIST_SENTINEL]
   );
 }
