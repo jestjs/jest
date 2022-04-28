@@ -362,7 +362,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  "passthrough-preprocessor" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -375,7 +375,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  "passthrough-preprocessor" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -388,7 +388,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  "passthrough-preprocessor" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -401,7 +401,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  "passthrough-preprocessor" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -414,7 +414,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  "passthrough-preprocessor-fruits-banana-js" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -427,7 +427,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  "passthrough-preprocessor-fruits-avocado-js" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -440,7 +440,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  "passthrough-preprocessor-fruits-kiwi-js" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
@@ -453,7 +453,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  "passthrough-preprocessor-fruits-grapefruit-js" </>
 <red>  should return an object or a Promise resolving to an object. The object </>
 <red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>Upgrading Guide:</></>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
 <red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
