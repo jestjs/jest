@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
+- `[@jest/transform]` Throw better error if an invalid return value if encountered ([#12764](https://github.com/facebook/jest/pull/12764))
 
 ### Chore & Maintenance
 

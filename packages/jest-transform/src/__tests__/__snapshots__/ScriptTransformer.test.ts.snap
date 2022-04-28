@@ -358,9 +358,12 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 1`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -368,9 +371,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 2`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -378,9 +384,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 3`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -388,9 +397,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 4`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -398,9 +410,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 1`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-banana-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -408,9 +423,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 2`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-avocado-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -418,9 +436,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 3`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-kiwi-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -428,9 +449,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 4`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-grapefruit-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
