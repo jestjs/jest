@@ -14,7 +14,9 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold(
 )}
   https://jestjs.io/docs/code-transformation
 `;
-const UPGRADE_NOTE = `  ${chalk.bold('Upgrading Guide:')}
+const UPGRADE_NOTE = `  ${chalk.bold(
+  'This error may be caused by a breaking change in Jest 28:',
+)}
   https://jestjs.io/docs/upgrading-to-jest28#transformer
 `;
 
