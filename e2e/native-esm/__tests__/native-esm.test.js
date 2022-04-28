@@ -194,6 +194,15 @@ test('can mock module', async () => {
   expect(importedMock.foo).toEqual('bar');
 });
 
+test('can mock transitive module', async () => {
+  jestObject.unstable_mockModule('../index.js', () => ({foo: 'bar'}));
+
+  const importedMock = await import('../reexport.js');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toEqual('bar');
+});
+
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
 });
