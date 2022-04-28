@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Fix typo in `--shard` CLI docs ([#12761](https://github.com/facebook/jest/pull/12761))
+
 ### Performance
 
 ## 28.0.2

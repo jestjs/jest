@@ -350,7 +350,7 @@ The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount
 
 `shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
 
-When `shard` is specified the configured [`testSquencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
+When `shard` is specified the configured [`testSequencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
 
 For example, to split the suite into three shards, each running one third of the tests:
 
