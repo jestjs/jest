@@ -384,7 +384,9 @@ class ScriptTransformer {
       if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
-        throw new Error(makeInvalidReturnValueError());
+        const transformPath = this._getTransformPath(filename);
+        invariant(transformPath);
+        throw new Error(makeInvalidReturnValueError(transformPath));
       }
     }
 
