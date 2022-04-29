@@ -813,11 +813,7 @@ export default async function normalize(
       case 'testRegex':
         {
           const option = oldOptions[key];
-          value = option
-            ? (Array.isArray(option) ? option : [option]).map(
-                replacePathSepForRegex,
-              )
-            : [];
+          value = option ? (Array.isArray(option) ? option : [option]) : [];
         }
         break;
       case 'moduleFileExtensions': {

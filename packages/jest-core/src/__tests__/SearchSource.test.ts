@@ -11,7 +11,7 @@ import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
 import Runtime from 'jest-runtime';
-import SearchSource, {SearchResult} from '../SearchSource';
+import SearchSource from '../SearchSource';
 
 jest.setTimeout(15000);
 
@@ -84,6 +84,19 @@ describe('SearchSource', () => {
       });
 
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      expect(searchSource.isTestFilePath(path)).toEqual(true);
+    });
+
+    it('supports win32 separators via testRegex', async () => {
+      const searchSource = await initSearchSource({
+        id,
+        rootDir: '.',
+        roots: [],
+        testMatch: undefined,
+        testRegex: '__tests__/[\\w-]+\\.test\\.tsx?$',
+      });
+
+      const path: string = '__tests__\\my.test.tsx';
       expect(searchSource.isTestFilePath(path)).toEqual(true);
     });
 

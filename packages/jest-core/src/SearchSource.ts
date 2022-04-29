@@ -26,18 +26,25 @@ export type SearchResult = {
   total?: number;
 };
 
+function normalizePosix(filePath: string) {
+  return filePath.replace(/\\/g, '/');
+}
+
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
-  return (path: string) =>
-    regexes.some(regex => {
-      const result = regex.test(path);
+  return (pathLocal: string) => {
+    const replacedPath = normalizePosix(pathLocal);
+
+    return regexes.some(regex => {
+      const result = regex.test(replacedPath);
 
       // prevent stateful regexes from breaking, just in case
       regex.lastIndex = 0;
 
       return result;
     });
+  };
 };
 
 const toTests = (context: TestContext, tests: Array<string>) =>
@@ -297,10 +304,6 @@ export default class SearchSource {
   public filterPathsWin32(paths: Array<string>): Array<string> {
     const allFiles = this._context.hasteFS.getAllFiles();
     const options = {nocase: true, windows: false};
-
-    function normalizePosix(filePath: string) {
-      return filePath.replace(/\\/g, '/');
-    }
 
     paths = paths
       .map(p => {

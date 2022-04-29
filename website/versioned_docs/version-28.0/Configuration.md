@@ -1415,20 +1415,16 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `testRegex` \[string | array&lt;string&gt;]
 
-Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
+Default: `[]`
 
-The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
 
-The following is a visualization of the default regex:
+Example:
 
-```bash
-├── __tests__
-│   └── component.spec.js # test
-│   └── anything # test
-├── package.json # not test
-├── foo.test.js # test
-├── bar.spec.jsx # test
-└── component.js # not test
+```json
+{
+  "testRegex": ["(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$"]
+}
 ```
 
 :::info
