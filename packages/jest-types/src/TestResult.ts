@@ -5,33 +5,41 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export type Milliseconds = number;
-
-type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled';
-
-type Callsite = {
-  column: number;
-  line: number;
-};
-
 // this is here to make it possible to avoid huge dependency trees just for types
-export type AssertionResult = {
-  ancestorTitles: Array<string>;
-  duration?: Milliseconds | null;
-  failureDetails: Array<unknown>;
-  failureMessages: Array<string>;
-  fullName: string;
-  invocations?: number;
-  location?: Callsite | null;
-  numPassingAsserts: number;
-  retryReasons?: Array<string>;
-  status: Status;
-  title: string;
-};
+export declare namespace TestResult {
+  export type Milliseconds = number;
 
-export type SerializableError = {
-  code?: unknown;
-  message: string;
-  stack: string | null | undefined;
-  type?: string;
-};
+  export type Status =
+    | 'passed'
+    | 'failed'
+    | 'skipped'
+    | 'pending'
+    | 'todo'
+    | 'disabled';
+
+  export type Callsite = {
+    column: number;
+    line: number;
+  };
+
+  export type AssertionResult = {
+    ancestorTitles: Array<string>;
+    duration?: Milliseconds | null;
+    failureDetails: Array<unknown>;
+    failureMessages: Array<string>;
+    fullName: string;
+    invocations?: number;
+    location?: Callsite | null;
+    numPassingAsserts: number;
+    retryReasons?: Array<string>;
+    status: Status;
+    title: string;
+  };
+
+  export type SerializableError = {
+    code?: unknown;
+    message: string;
+    stack: string | null | undefined;
+    type?: string;
+  };
+}

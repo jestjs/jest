@@ -6,8 +6,10 @@
  */
 
 // this is here to make it possible to avoid huge dependency trees just for types
-export type TransformResult = {
-  code: string;
-  originalCode: string;
-  sourceMapPath: string | null;
-};
+export declare namespace Transform {
+  export type TransformResult = {
+    code: string;
+    originalCode: string;
+    sourceMapPath: string | null;
+  };
+}
