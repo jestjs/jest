@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "28.0.2",
+  "version": "28.0.3",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -15,7 +15,7 @@
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^28.0.2",
     "@jest/test-result": "^28.0.2",
-    "@jest/transform": "^28.0.2",
+    "@jest/transform": "^28.0.3",
     "@jest/types": "^28.0.2",
     "@jridgewell/trace-mapping": "^0.3.7",
     "@types/node": "*",
@@ -47,7 +47,7 @@
     "@types/istanbul-lib-source-maps": "^4.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node-notifier": "^8.0.0",
-    "jest-resolve": "^28.0.2",
+    "jest-resolve": "^28.0.3",
     "mock-fs": "^5.1.2",
     "strip-ansi": "^6.0.0"
   },
