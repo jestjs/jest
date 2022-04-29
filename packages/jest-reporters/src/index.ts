@@ -5,17 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getResultHeader from './getResultHeader';
-import getSnapshotStatus from './getSnapshotStatus';
-import getSnapshotSummary from './getSnapshotSummary';
-import {
-  formatTestPath,
-  getSummary,
-  printDisplayName,
-  relativePath,
-  trimAndFormatPath,
-} from './utils';
-
 export type {
   AggregatedResult,
   SnapshotSummary,
@@ -38,13 +27,4 @@ export type {
   ReporterContext,
   SummaryOptions,
 } from './types';
-export const utils = {
-  formatTestPath,
-  getResultHeader,
-  getSnapshotStatus,
-  getSnapshotSummary,
-  getSummary,
-  printDisplayName,
-  relativePath,
-  trimAndFormatPath,
-};
+export * as utils from './utils';
