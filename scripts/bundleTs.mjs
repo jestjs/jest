@@ -38,7 +38,7 @@ const copyrightSnippet = `
 
 const typesNodeReferenceDirective = '/// <reference types="node" />';
 
-const excludedPackages = new Set(['@jest/globals', '@jest/types']);
+const excludedPackages = new Set(['@jest/globals']);
 
 (async () => {
   const packages = getPackages();
