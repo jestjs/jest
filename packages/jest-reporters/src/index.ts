@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import * as utils from './utils';
 
 export type {
   AggregatedResult,
@@ -27,4 +28,4 @@ export type {
   ReporterContext,
   SummaryOptions,
 } from './types';
-export * as utils from './utils';
+export {utils};
