@@ -33,6 +33,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   global: Win;
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['browser'];
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -109,6 +110,20 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       return originalRemoveListener.apply(this, args);
     };
 
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(item => typeof item === 'string')
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
+    }
+
     this.moduleMocker = new ModuleMocker(global as any);
 
     this.fakeTimers = new LegacyFakeTimers({
@@ -158,7 +173,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   }
 
   exportConditions(): Array<string> {
-    return ['browser'];
+    return this.customExportConditions;
   }
 
   getVmContext(): Context | null {
