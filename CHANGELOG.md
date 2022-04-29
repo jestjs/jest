@@ -4,15 +4,22 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 28.0.3
+
+### Fixes
+
 - `[jest-config]` Normalize `reporters` option defined in presets ([#12769](https://github.com/facebook/jest/pull/12769))
 - `[@jest/reporters]` Fix trailing slash in matching `coverageThreshold` key ([#12714](https://github.com/facebook/jest/pull/12714))
+- `[jest-resolve]` Fix (experimental) ESM module mocking for re-exports ([#12766](https://github.com/facebook/jest/pull/12766))
 - `[@jest/transform]` Throw better error if an invalid return value if encountered ([#12764](https://github.com/facebook/jest/pull/12764))
 
 ### Chore & Maintenance
 
 - `[docs]` Fix typo in `--shard` CLI docs ([#12761](https://github.com/facebook/jest/pull/12761))
-
-### Performance
 
 ## 28.0.2
 
