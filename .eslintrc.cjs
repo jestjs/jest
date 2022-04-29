@@ -383,7 +383,7 @@ module.exports = {
     'no-dupe-args': 'error',
     'no-dupe-class-members': 'error',
     'no-dupe-keys': 'error',
-    'no-duplicate-case': 'warn',
+    'no-duplicate-case': 'error',
     'no-else-return': 'off',
     'no-empty': 'off',
     'no-empty-character-class': 'warn',

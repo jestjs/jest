@@ -1416,6 +1416,55 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
   },
 );
 
+describe("preset with 'reporters' option", () => {
+  beforeEach(() => {
+    const Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name === 'with-reporters/jest-preset') {
+        return '/node_modules/with-reporters/jest-preset.json';
+      }
+
+      return `/node_modules/${name}`;
+    });
+    jest.doMock(
+      '/node_modules/with-reporters/jest-preset.json',
+      () => ({
+        reporters: ['default'],
+      }),
+      {virtual: true},
+    );
+  });
+
+  afterEach(() => {
+    jest.dontMock('/node_modules/with-reporters/jest-preset.json');
+  });
+
+  test("normalizes 'reporters' option defined in preset", async () => {
+    const {options} = await normalize(
+      {
+        preset: 'with-reporters',
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([['default', {}]]);
+  });
+
+  test("overrides 'reporters' option defined in preset", async () => {
+    const {options} = await normalize(
+      {
+        preset: 'with-reporters',
+        reporters: ['summary'],
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.reporters).toEqual([['summary', {}]]);
+  });
+});
+
 describe('runner', () => {
   let Resolver;
   beforeEach(() => {
