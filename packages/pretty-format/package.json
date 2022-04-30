@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "28.0.1",
+  "version": "28.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/schemas": "^28.0.0",
+    "@jest/schemas": "^28.0.2",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "react-is": "^18.0.0"
@@ -29,15 +29,15 @@
     "@types/react": "^17.0.3",
     "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "17.0.2",
-    "expect": "^28.0.1",
+    "expect": "^28.0.2",
     "immutable": "^4.0.0",
-    "jest-util": "^28.0.1",
+    "jest-util": "^28.0.2",
     "react": "17.0.2",
     "react-dom": "^17.0.1",
     "react-test-renderer": "17.0.2"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

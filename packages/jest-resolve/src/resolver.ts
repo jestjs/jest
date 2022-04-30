@@ -590,7 +590,8 @@ export default class Resolver {
       moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '');
+      (mockPath ? mockPath + sep : '') +
+      (stringifiedOptions ? stringifiedOptions + sep : '');
 
     this._moduleIDCache.set(key, id);
     return id;

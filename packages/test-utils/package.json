@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "28.0.1",
+  "version": "28.0.2",
   "private": true,
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -12,17 +12,17 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.0.1",
+    "@jest/types": "^28.0.2",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "^28.0.1",
+    "pretty-format": "^28.0.2",
     "semver": "^7.3.5"
   },
   "devDependencies": {
     "@types/semver": "^7.1.0"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   }
 }

@@ -375,14 +375,19 @@ const normalizeRootDir = (
   };
 };
 
-const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
-  const reporters = options.reporters;
+const normalizeReporters = ({
+  reporters,
+  rootDir,
+}: Config.InitialOptionsWithRootDir):
+  | Array<Config.ReporterConfig>
+  | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
-    return options;
+    return undefined;
   }
 
   validateReporters(reporters);
-  options.reporters = reporters.map(reporterConfig => {
+
+  return reporters.map(reporterConfig => {
     const normalizedReporterConfig: Config.ReporterConfig =
       typeof reporterConfig === 'string'
         ? // if reporter config is a string, we wrap it in an array
@@ -392,13 +397,13 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
         : reporterConfig;
 
     const reporterPath = replaceRootDirInPath(
-      options.rootDir,
+      rootDir,
       normalizedReporterConfig[0],
     );
 
     if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
-        basedir: options.rootDir,
+        basedir: rootDir,
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
@@ -410,8 +415,6 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
     }
     return normalizedReporterConfig;
   });
-
-  return options;
 };
 
 const buildTestPathPattern = (argv: Config.Argv): string => {
@@ -536,12 +539,10 @@ export default async function normalize(
     ],
   });
 
-  let options = normalizeReporters(
-    normalizeMissingOptions(
-      normalizeRootDir(setFromArgv(initialOptions, argv)),
-      configPath,
-      projectIndex,
-    ),
+  let options = normalizeMissingOptions(
+    normalizeRootDir(setFromArgv(initialOptions, argv)),
+    configPath,
+    projectIndex,
   );
 
   if (options.preset) {
@@ -749,6 +750,9 @@ export default async function normalize(
             ];
           });
         break;
+      case 'reporters':
+        value = normalizeReporters(oldOptions);
+        break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
@@ -938,7 +942,6 @@ export default async function normalize(
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
-      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'restoreMocks':

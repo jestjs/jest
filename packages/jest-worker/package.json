@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "28.0.1",
+  "version": "28.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,14 +22,16 @@
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@tsd/typescript": "~4.6.2",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",
-    "jest-leak-detector": "^28.0.1",
+    "jest-leak-detector": "^28.0.2",
+    "tsd-lite": "^0.5.1",
     "worker-farm": "^1.6.0"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"
