@@ -581,7 +581,7 @@ export default class HasteMap extends EventEmitter {
     // reading them if they aren't important (node_modules).
     if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
-        return this._getMetadataExtrator(workerOptions)
+        return this._getMetadataExtractor(workerOptions)
           .getSha1({
             computeDependencies: this._options.computeDependencies,
             computeSha1,
