@@ -37,15 +37,15 @@ declare namespace jest {
   /**
    * Wraps a class, function or object type with definitions of Jest mock.
    */
-  type Mocked<T extends object> = JestMocked<T>;
+  export type Mocked<T extends object> = JestMocked<T>;
   /**
    * Wraps a class type with definitions of Jest mock.
    */
-  type MockedClass<T extends ClassLike> = JestMockedClass<T>;
+  export type MockedClass<T extends ClassLike> = JestMockedClass<T>;
   /**
    * Wraps a function type with definitions of Jest mock.
    */
-  type MockedFunction<T extends FunctionLike> = JestMockedFunction<T>;
+  export type MockedFunction<T extends FunctionLike> = JestMockedFunction<T>;
 }
 
 export {jest};
