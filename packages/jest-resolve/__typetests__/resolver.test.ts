@@ -12,6 +12,7 @@ import type {
   PackageFilter,
   PackageJSON,
   PathFilter,
+  ResolverOptions,
   SyncResolver,
 } from 'jest-resolve';
 
@@ -41,6 +42,21 @@ const pathFilter = (pkg: PackageJSON, path: string, relativePath: string) =>
   relativePath;
 
 expectAssignable<PathFilter>(pathFilter);
+
+// ResolverOptions
+
+function customSyncResolver(path: string, options: ResolverOptions): string {
+  return path;
+}
+expectAssignable<SyncResolver>(customSyncResolver);
+
+async function customAsyncResolver(
+  path: string,
+  options: ResolverOptions,
+): Promise<string> {
+  return path;
+}
+expectAssignable<AsyncResolver>(customAsyncResolver);
 
 // AsyncResolver
 

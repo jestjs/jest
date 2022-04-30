@@ -122,7 +122,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'add_test': {
       const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
-      const {asyncError, fn, mode, testName: name, timeout} = event;
+      const {asyncError, fn, mode, testName: name, timeout, concurrent} = event;
 
       if (currentlyRunningTest) {
         currentlyRunningTest.errors.push(
@@ -143,6 +143,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       const test = makeTest(
         fn,
         mode,
+        concurrent,
         name,
         currentDescribeBlock,
         timeout,

@@ -46,7 +46,7 @@
     "glob": "^7.1.3",
     "globby": "^11.0.1",
     "graceful-fs": "^4.2.9",
-    "isbinaryfile": "^4.0.0",
+    "isbinaryfile": "^5.0.0",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.3",
@@ -57,7 +57,7 @@
     "jest-runner-tsd": "^3.0.0",
     "jest-silent-reporter": "^0.5.0",
     "jest-snapshot": "workspace:*",
-    "jest-watch-typeahead": "^1.0.0",
+    "jest-watch-typeahead": "^1.1.0",
     "jquery": "^3.2.1",
     "js-yaml": "^4.1.0",
     "lerna": "^4.0.0",
@@ -132,7 +132,11 @@
         }
       },
       {
-        "files": "lerna.json",
+        "files": [
+          "lerna.json",
+          "website/sidebars.json",
+          "website/versioned_sidebars/*.json"
+        ],
         "options": {
           "parser": "json-stringify"
         }
@@ -160,7 +164,7 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "resolutions": {
     "@types/node": "~12.12.0",

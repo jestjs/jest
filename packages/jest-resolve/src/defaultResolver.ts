@@ -37,7 +37,7 @@ export type PackageFilter = (
 ) => PackageJSON;
 
 /**
- * Allows transforms a path within a package.
+ * Allows transforming a path within a package.
  *
  * @param pkg - Parsed `package.json` contents.
  * @param path - Path being resolved.
@@ -51,7 +51,7 @@ export type PathFilter = (
   relativePath: string,
 ) => string;
 
-type ResolverOptions = {
+export type ResolverOptions = {
   /** Directory to begin resolving from. */
   basedir: string;
   /** List of export conditions. */
@@ -92,15 +92,6 @@ export type AsyncResolver = (
 ) => Promise<string>;
 
 export type Resolver = SyncResolver | AsyncResolver;
-
-// https://github.com/facebook/jest/pull/10617
-declare global {
-  namespace NodeJS {
-    export interface ProcessVersions {
-      pnp?: any;
-    }
-  }
-}
 
 const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only

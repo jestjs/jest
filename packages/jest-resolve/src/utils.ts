@@ -98,6 +98,11 @@ export const resolveTestEnvironment = ({
   testEnvironment: string;
   requireResolveFunction: (moduleName: string) => string;
 }): string => {
+  // we don't want to resolve the actual `jsdom` module if `jest-environment-jsdom` is not installed, but `jsdom` package is
+  if (filePath === 'jsdom') {
+    filePath = 'jest-environment-jsdom';
+  }
+
   try {
     return resolveWithPrefix(undefined, {
       filePath,
@@ -108,7 +113,7 @@ export const resolveTestEnvironment = ({
       rootDir,
     });
   } catch (error: any) {
-    if (filePath === 'jsdom' || filePath === 'jest-environment-jsdom') {
+    if (filePath === 'jest-environment-jsdom') {
       error.message +=
         '\n\nAs of Jest 28 "jest-environment-jsdom" is no longer shipped by default, make sure to install it separately.';
     }

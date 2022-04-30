@@ -59,6 +59,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   fakeTimersModern: ModernFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['node', 'node-addons'];
 
   // while `context` is unused, it should always be passed
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
@@ -111,6 +112,20 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
 
     installCommonGlobals(global, projectConfig.globals);
 
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(item => typeof item === 'string')
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
+    }
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
@@ -157,7 +172,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   }
 
   exportConditions(): Array<string> {
-    return ['node', 'node-addons'];
+    return this.customExportConditions;
   }
 
   getVmContext(): Context | null {

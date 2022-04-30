@@ -14,16 +14,24 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold(
 )}
   https://jestjs.io/docs/code-transformation
 `;
+const UPGRADE_NOTE = `  ${chalk.bold(
+  'This error may be caused by a breaking change in Jest 28:',
+)}
+  https://jestjs.io/docs/upgrading-to-jest28#transformer
+`;
 
-export const makeInvalidReturnValueError = (): string =>
+export const makeInvalidReturnValueError = (transformPath: string): string =>
   chalk.red(
     [
       chalk.bold(`${BULLET}Invalid return value:`),
-      "  Code transformer's `process` method must return an object containing `code` key ",
-      '  with processed string. If `processAsync` method is implemented it must return ',
-      '  a Promise resolving to an object containing `code` key with processed string.',
+      '  `process()` or/and `processAsync()` method of code transformer found at ',
+      `  "${slash(transformPath)}" `,
+      '  should return an object or a Promise resolving to an object. The object ',
+      '  must have `code` property with a string of processed code.',
       '',
-    ].join('\n') + DOCUMENTATION_NOTE,
+    ].join('\n') +
+      UPGRADE_NOTE +
+      DOCUMENTATION_NOTE,
   );
 
 export const makeInvalidSourceMapWarning = (
