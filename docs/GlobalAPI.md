@@ -19,13 +19,7 @@ import TOCInline from '@theme/TOCInline';
 
 Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
-
-:::note
-
-The default timeout is 5 seconds.
-
-:::
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
 This is often useful if you want to clean up some global setup state that is shared across tests.
 
