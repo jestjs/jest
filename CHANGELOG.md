@@ -2,9 +2,13 @@
 
 ### Features
 
+- `[jest-environment-node, jest-environment-jsdom]` Allow specifying `customExportConditions` ([#12774](https://github.com/facebook/jest/pull/12774))
+
 ### Fixes
 
 ### Chore & Maintenance
+
+- `[@jest-reporters]` Move helper functions from `utils.ts` into separate files ([#12782](https://github.com/facebook/jest/pull/12782))
 
 ### Performance
 
