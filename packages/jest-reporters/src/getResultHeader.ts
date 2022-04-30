@@ -10,7 +10,8 @@ import terminalLink = require('terminal-link');
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime} from 'jest-util';
-import {formatTestPath, printDisplayName} from './utils';
+import formatTestPath from './formatTestPath';
+import printDisplayName from './printDisplayName';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the

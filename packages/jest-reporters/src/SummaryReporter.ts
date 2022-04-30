@@ -16,8 +16,8 @@ import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
+import getSummary from './getSummary';
 import type {ReporterOnStartOptions} from './types';
-import {getSummary} from './utils';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 
