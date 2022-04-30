@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-circus]` Add `failing` test modifier that inverts the behaviour of tests ([#12484](https://github.com/facebook/jest/pull/12484))
+- `[jest-circus]` Add `failing` test modifier that inverts the behaviour of tests ([#12610](https://github.com/facebook/jest/pull/12610))
 - `[jest-environment-node, jest-environment-jsdom]` Allow specifying `customExportConditions` ([#12774](https://github.com/facebook/jest/pull/12774))
 
 ### Fixes
