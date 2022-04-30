@@ -238,7 +238,7 @@ function isDomNode(obj: any): boolean {
   );
 }
 
-// SENTINEL constants are from https://github.com/facebook/immutable-js
+// SENTINEL constants are from https://github.com/immutable-js/immutable-js/tree/main/src/predicates
 const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
