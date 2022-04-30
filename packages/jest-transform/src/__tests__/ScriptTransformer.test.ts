@@ -1109,11 +1109,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1154,11 +1154,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1199,11 +1199,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1237,11 +1237,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
@@ -1273,11 +1273,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
@@ -1309,11 +1309,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
