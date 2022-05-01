@@ -291,9 +291,10 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     return 'string';
   }
 }
+
 class CloseTo extends AsymmetricMatcher<number> {
   private precision: number;
-  constructor(sample: number, precision: number = 2, inverse: boolean = false) {
+  constructor(sample: number, precision = 2, inverse = false) {
     if (!isA('Number', sample)) {
       throw new Error('Expected is not a Number');
     }
@@ -311,7 +312,7 @@ class CloseTo extends AsymmetricMatcher<number> {
     if (!isA('Number', other)) {
       return false;
     }
-    let result: boolean = false;
+    let result = false;
     if (other === Infinity && this.sample === Infinity) {
       result = true; // Infinity - Infinity is NaN
     } else if (other === -Infinity && this.sample === -Infinity) {
