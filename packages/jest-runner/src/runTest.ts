@@ -6,9 +6,9 @@
  *
  */
 
+import sourcemapSupport = require('@cspotcode/source-map-support');
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import sourcemapSupport = require('@cspotcode/source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
