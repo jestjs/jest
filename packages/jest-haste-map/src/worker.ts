@@ -13,6 +13,7 @@ import blacklist from './blacklist';
 import H from './constants';
 import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
 import type {
+  DependencyExtractor,
   ExtractMetadataDefinition,
   ExtractedFileMetaData,
   HasteImpl,
