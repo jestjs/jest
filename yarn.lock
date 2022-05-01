@@ -1883,6 +1883,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cspotcode/source-map-support@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@cspotcode/source-map-support@npm:0.8.0"
+  dependencies:
+    "@jridgewell/trace-mapping": 0.3.9
+  checksum: 4e4585361d3e8c7512f660496119e34e9fe048af32c82937726cc352a85fcac825819cddd8dd392cd3fcc463f25516493ae2c7b11b16ee8731c7880e2bf1c2b1
+  languageName: node
+  linkType: hard
+
 "@docsearch/css@npm:3.0.0":
   version: 3.0.0
   resolution: "@docsearch/css@npm:3.0.0"
@@ -2940,6 +2949,16 @@ __metadata:
   version: 1.4.11
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.11"
   checksum: 3b2afaf8400fb07a36db60e901fcce6a746cdec587310ee9035939d89878e57b2dec8173b0b8f63176f647efa352294049a53c49739098eb907ff81fec2547c8
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:0.3.9":
+  version: 0.3.9
+  resolution: "@jridgewell/trace-mapping@npm:0.3.9"
+  dependencies:
+    "@jridgewell/resolve-uri": ^3.0.3
+    "@jridgewell/sourcemap-codec": ^1.4.10
+  checksum: d89597752fd88d3f3480845691a05a44bd21faac18e2185b6f436c3b0fd0c5a859fbbd9aaa92050c4052caf325ad3e10e2e1d1b64327517471b7d51babc0ddef
   languageName: node
   linkType: hard
 
@@ -5447,15 +5466,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: b9bbb2b5c5ead2fb884bb019f61a014e37410bddd295de28184e1b2e71ee6b04120c5ba7b9954617f0bdf962c13d06249ce65004490889c747c80d3f628ea842
-  languageName: node
-  linkType: hard
-
-"@types/source-map-support@npm:^0.5.0":
-  version: 0.5.4
-  resolution: "@types/source-map-support@npm:0.5.4"
-  dependencies:
-    source-map: ^0.6.0
-  checksum: 160ff77e8a101b18d9915cb5320fd73d484679aef8518ce007b9b5988e333631778730196c4bb15517ff881bee805663fd8640c0ce2ebfab65f061103c452369
   languageName: node
   linkType: hard
 
@@ -13449,6 +13459,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
+    "@cspotcode/source-map-support": 0.8.0
     "@jest/console": ^28.0.2
     "@jest/environment": ^28.0.2
     "@jest/test-result": ^28.0.2
@@ -13458,7 +13469,6 @@ __metadata:
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
     emittery: ^0.10.2
     graceful-fs: ^4.2.9
@@ -13473,7 +13483,6 @@ __metadata:
     jest-util: ^28.0.2
     jest-watcher: ^28.0.2
     jest-worker: ^28.0.2
-    source-map-support: 0.5.13
     throat: ^6.0.1
     tsd-lite: ^0.5.1
   languageName: unknown
@@ -20239,16 +20248,6 @@ __metadata:
     source-map-url: ^0.4.0
     urix: ^0.1.0
   checksum: c73fa44ac00783f025f6ad9e038ab1a2e007cd6a6b86f47fe717c3d0765b4a08d264f6966f3bd7cd9dbcd69e4832783d5472e43247775b2a550d6f2155d24bae
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:0.5.13":
-  version: 0.5.13
-  resolution: "source-map-support@npm:0.5.13"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: 933550047b6c1a2328599a21d8b7666507427c0f5ef5eaadd56b5da0fd9505e239053c66fe181bf1df469a3b7af9d775778eee283cbb7ae16b902ddc09e93a97
   languageName: node
   linkType: hard
 

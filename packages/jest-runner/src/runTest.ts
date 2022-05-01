@@ -8,7 +8,7 @@
 
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import sourcemapSupport = require('source-map-support');
+import sourcemapSupport = require('@cspotcode/source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
@@ -234,8 +234,8 @@ async function runTestInternal(
 
   // For tests
   runtime
-    .requireInternalModule<typeof import('source-map-support')>(
-      require.resolve('source-map-support'),
+    .requireInternalModule<typeof import('@cspotcode/source-map-support')>(
+      require.resolve('@cspotcode/source-map-support'),
     )
     .install(sourcemapOptions);
 
