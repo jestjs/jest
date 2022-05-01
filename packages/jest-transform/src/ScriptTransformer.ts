@@ -469,7 +469,7 @@ class ScriptTransformer {
     const {transformer, transformerConfig = {}} =
       this._getTransformer(filename) || {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
-    const sourceMapPath: string = `${cacheFilePath}.map`;
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -528,7 +528,7 @@ class ScriptTransformer {
       content,
       options,
     );
-    const sourceMapPath: string = `${cacheFilePath}.map`;
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -829,7 +829,7 @@ export async function createTranspilingRequire(
 
   return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
-    applyInteropRequireDefault: boolean = false,
+    applyInteropRequireDefault = false,
   ) {
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
