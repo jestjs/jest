@@ -33,7 +33,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   global: Win;
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
-  customExportConditions = ['browser'];
+  customExportConditions = ['node', 'node-addons'];
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
