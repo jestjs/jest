@@ -10,7 +10,6 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
-import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {
