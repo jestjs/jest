@@ -109,8 +109,6 @@ type Watcher = {
   close(): Promise<void>;
 };
 
-type HasteWorker = typeof import('./worker');
-
 export type {default as FS} from './HasteFS';
 export {default as ModuleMap} from './ModuleMap';
 export type {
