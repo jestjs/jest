@@ -13549,6 +13549,7 @@ __metadata:
     "@jest/test-utils": ^28.0.2
     "@jest/transform": ^28.0.3
     "@jest/types": ^28.0.2
+    "@tsd/typescript": ~4.6.2
     "@types/babel__traverse": ^7.0.6
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
@@ -13570,6 +13571,7 @@ __metadata:
     prettier: ^2.1.1
     pretty-format: ^28.0.2
     semver: ^7.3.5
+    tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
 
