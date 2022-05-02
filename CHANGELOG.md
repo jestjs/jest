@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Lists ([#12763](https://github.com/facebook/jest/pull/12763))
+- `[jest-core]` Do not collect `SIGNREQUEST` as open handles ([#12789](https://github.com/facebook/jest/pull/12789))
 
 ### Chore & Maintenance
 
