@@ -152,7 +152,7 @@ test('that the failureDetails property is set', () => {
             "matcherName": "",
             "message": "Error",
             "passed": false,
-            "stack": "Error: 
+            "stack": "Error
           at <stacktrace>",
           },
         ],
