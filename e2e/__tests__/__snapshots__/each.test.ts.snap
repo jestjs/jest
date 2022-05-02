@@ -158,7 +158,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       14 |
       15 | it.each([
 
-      at toBe (__tests__/failure.test.js:12:16)
+      at __tests__/failure.test.js:12:16
 
   ● array table fails on all rows expected 1 == 2
 
@@ -175,7 +175,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       21 |
       22 | it.each\`
 
-      at toBe (__tests__/failure.test.js:19:16)
+      at __tests__/failure.test.js:19:16
 
   ● array table fails on all rows expected 3 == 4
 
@@ -192,7 +192,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       21 |
       22 | it.each\`
 
-      at toBe (__tests__/failure.test.js:19:16)
+      at __tests__/failure.test.js:19:16
 
   ● template table fails on one row expected: true == false
 
@@ -209,7 +209,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       31 | );
       32 |
 
-      at toBe (__tests__/failure.test.js:29:18)
+      at __tests__/failure.test.js:29:18
 
   ● template table fails on all rows expected: 1 == 2
 
@@ -226,7 +226,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       42 | );
       43 |
 
-      at toBe (__tests__/failure.test.js:40:18)
+      at __tests__/failure.test.js:40:18
 
   ● template table fails on all rows expected: 3 == 4
 
@@ -243,7 +243,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       42 | );
       43 |
 
-      at toBe (__tests__/failure.test.js:40:18)
+      at __tests__/failure.test.js:40:18
 
   ● The word red contains the letter 'z'
 
@@ -260,7 +260,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at toBe (__tests__/failure.test.js:47:28)
+      at __tests__/failure.test.js:47:28
 
   ● The word green contains the letter 'z'
 
@@ -277,7 +277,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at toBe (__tests__/failure.test.js:47:28)
+      at __tests__/failure.test.js:47:28
 
   ● The word bean contains the letter 'z'
 
@@ -294,7 +294,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at toBe (__tests__/failure.test.js:47:28)
+      at __tests__/failure.test.js:47:28
 
   ● template table describe fails on all rows expected "a" == "b" › fails
 
@@ -311,7 +311,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       61 |   },
       62 | );
 
-      at Object.toBe (__tests__/failure.test.js:59:20)
+      at Object.<anonymous> (__tests__/failure.test.js:59:20)
 
   ● template table describe fails on all rows expected "c" == "d" › fails
 
@@ -328,7 +328,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       61 |   },
       62 | );
 
-      at Object.toBe (__tests__/failure.test.js:59:20)
+      at Object.<anonymous> (__tests__/failure.test.js:59:20)
 
   ● array table describe fails on all rows expected a == b › fails
 
@@ -345,7 +345,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       73 |   },
       74 | );
 
-      at Object.toBe (__tests__/failure.test.js:71:20)
+      at Object.<anonymous> (__tests__/failure.test.js:71:20)
 
   ● array table describe fails on all rows expected c == d › fails
 
@@ -362,5 +362,5 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       73 |   },
       74 | );
 
-      at Object.toBe (__tests__/failure.test.js:71:20)"
+      at Object.<anonymous> (__tests__/failure.test.js:71:20)"
 `;

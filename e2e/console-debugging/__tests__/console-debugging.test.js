@@ -20,7 +20,7 @@ test('verbose mode prints console output synchronously', () => {
     "  console.log
         test
 
-          at Object.log (__tests__/console-debugging.test.js:17:11)
+          at Object.<anonymous> (__tests__/console-debugging.test.js:17:11)
 
     "
   `);

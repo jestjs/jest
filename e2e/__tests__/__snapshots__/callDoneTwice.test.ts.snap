@@ -14,7 +14,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       12 |
       13 |   it('should fail inside a promise', done => {
 
-      at Object.done (__tests__/index.test.js:10:5)
+      at Object.<anonymous> (__tests__/index.test.js:10:5)
 
   ● \`done()\` called more than once › should fail inside a promise
 
@@ -28,7 +28,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       19 |       .catch(err => err);
       20 |   });
 
-      at done (__tests__/index.test.js:17:9)
+      at __tests__/index.test.js:17:9
 
   ● multiple \`done()\` inside beforeEach › should fail
 
@@ -42,7 +42,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       28 |
       29 |   it('should fail', () => {
 
-      at Object.done (__tests__/index.test.js:26:5)
+      at Object.<anonymous> (__tests__/index.test.js:26:5)
 
   ● multiple \`done()\` inside afterEach › should fail
 
@@ -56,7 +56,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       39 |
       40 |   it('should fail', () => {
 
-      at Object.done (__tests__/index.test.js:37:5)
+      at Object.<anonymous> (__tests__/index.test.js:37:5)
 
   ● multiple \`done()\` inside beforeAll › should fail
 
@@ -70,7 +70,7 @@ exports[`\`done()\` should not be called more than once 1`] = `
       50 |
       51 |   it('should fail', () => {
 
-      at Object.done (__tests__/index.test.js:48:5)
+      at Object.<anonymous> (__tests__/index.test.js:48:5)
 
 
   ● Test suite failed to run
@@ -85,5 +85,5 @@ exports[`\`done()\` should not be called more than once 1`] = `
       61 |
       62 |   it('should fail', () => {
 
-      at Object.done (__tests__/index.test.js:59:5)"
+      at Object.<anonymous> (__tests__/index.test.js:59:5)"
 `;

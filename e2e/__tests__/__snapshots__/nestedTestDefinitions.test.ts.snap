@@ -17,7 +17,7 @@ exports[`print correct error message with nested test definitions inside describ
       18 |     });
       19 |   });
 
-      at Object.test (__tests__/nestedTestWithinDescribe.js:16:5)"
+      at Object.<anonymous> (__tests__/nestedTestWithinDescribe.js:16:5)"
 `;
 
 exports[`print correct error message with nested test definitions outside describe 1`] = `
@@ -36,5 +36,5 @@ exports[`print correct error message with nested test definitions outside descri
       17 |   });
       18 | });
 
-      at Object.test (__tests__/nestedTestOutsideDescribe.js:15:3)"
+      at Object.<anonymous> (__tests__/nestedTestOutsideDescribe.js:15:3)"
 `;

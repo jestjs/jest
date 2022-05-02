@@ -11,7 +11,7 @@ exports[`errors if describe returns a Promise 1`] = `
       13 |   return Promise.resolve();
       14 | });
 
-      at Object.describe (__tests__/describeReturnPromise.test.js:11:1)"
+      at Object.<anonymous> (__tests__/describeReturnPromise.test.js:11:1)"
 `;
 
 exports[`errors if describe returns something 1`] = `
@@ -25,5 +25,5 @@ exports[`errors if describe returns something 1`] = `
       13 |   return 42;
       14 | });
 
-      at Object.describe (__tests__/describeReturnSomething.test.js:11:1)"
+      at Object.<anonymous> (__tests__/describeReturnSomething.test.js:11:1)"
 `;

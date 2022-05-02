@@ -21,8 +21,8 @@ exports[`prints out info about open handlers 1`] = `
          |     ^
       15 |
 
-      at Object.listen (server.js:14:5)
-      at Object.require (__tests__/outside.js:8:1)"
+      at Object.<anonymous> (server.js:14:5)
+      at Object.<anonymous> (__tests__/outside.js:8:1)"
 `;
 
 exports[`prints out info about open handlers from inside tests 1`] = `
@@ -38,7 +38,7 @@ exports[`prints out info about open handlers from inside tests 1`] = `
       11 | });
       12 |
 
-      at Object.setTimeout (__tests__/inside.js:9:3)"
+      at Object.<anonymous> (__tests__/inside.js:9:3)"
 `;
 
 exports[`prints out info about open handlers from lifecycle functions with a \`done\` callback 1`] = `
@@ -54,7 +54,7 @@ exports[`prints out info about open handlers from lifecycle functions with a \`d
       11 | });
       12 |
 
-      at setTimeout (__tests__/in-done-lifecycle.js:9:3)"
+      at Object.<anonymous> (__tests__/in-done-lifecycle.js:9:3)"
 `;
 
 exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
@@ -70,5 +70,5 @@ exports[`prints out info about open handlers from tests with a \`done\` callback
       11 |   done();
       12 | });
 
-      at Object.setTimeout (__tests__/in-done-function.js:9:3)"
+      at Object.<anonymous> (__tests__/in-done-function.js:9:3)"
 `;

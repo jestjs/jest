@@ -16,7 +16,7 @@ exports[`can press "u" to update snapshots: test results 1`] = `
     > 1 | test('bar', () => { expect('bar').toMatchSnapshot(); });
         |                                   ^
 
-      at Object.toMatchSnapshot (__tests__/bar.spec.js:1:35)
+      at Object.<anonymous> (__tests__/bar.spec.js:1:35)
 
  › 1 snapshot failed.
 Snapshot Summary
