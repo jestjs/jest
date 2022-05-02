@@ -2606,6 +2606,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
+    immutable: ^4.0.0
     jest-get-type: ^28.0.2
     jest-matcher-utils: ^28.0.2
   languageName: unknown

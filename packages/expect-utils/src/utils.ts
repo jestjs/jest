@@ -10,6 +10,7 @@ import {isPrimitive} from 'jest-get-type';
 import {
   equals,
   isA,
+  isImmutableList,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
 } from './jasmineUtils';
@@ -254,10 +255,12 @@ export const iterableEquality = (
     return false;
   }
 
-  const aEntries = Object.entries(a);
-  const bEntries = Object.entries(b);
-  if (!equals(aEntries, bEntries)) {
-    return false;
+  if (!isImmutableList(a)) {
+    const aEntries = Object.entries(a);
+    const bEntries = Object.entries(b);
+    if (!equals(aEntries, bEntries)) {
+      return false;
+    }
   }
 
   // Remove the first value from the stack of traversed values.
