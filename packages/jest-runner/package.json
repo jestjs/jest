@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@cspotcode/source-map-support": "0.8.0",
+    "@cspotcode/source-map-support": "^0.8.1",
     "@jest/console": "^28.0.2",
     "@jest/environment": "^28.0.2",
     "@jest/test-result": "^28.0.2",
