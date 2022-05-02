@@ -1883,12 +1883,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cspotcode/source-map-support@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@cspotcode/source-map-support@npm:0.8.0"
+"@cspotcode/source-map-support@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@cspotcode/source-map-support@npm:0.8.1"
   dependencies:
     "@jridgewell/trace-mapping": 0.3.9
-  checksum: 4e4585361d3e8c7512f660496119e34e9fe048af32c82937726cc352a85fcac825819cddd8dd392cd3fcc463f25516493ae2c7b11b16ee8731c7880e2bf1c2b1
+  checksum: 5718f267085ed8edb3e7ef210137241775e607ee18b77d95aa5bd7514f47f5019aa2d82d96b3bf342ef7aa890a346fa1044532ff7cc3009e7d24fce3ce6200fa
   languageName: node
   linkType: hard
 
@@ -13449,7 +13449,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
-    "@cspotcode/source-map-support": 0.8.0
+    "@cspotcode/source-map-support": ^0.8.1
     "@jest/console": ^28.0.2
     "@jest/environment": ^28.0.2
     "@jest/test-result": ^28.0.2
