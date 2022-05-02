@@ -50,7 +50,7 @@ export type HasteMapStatic<S = SerializableModuleMap> = {
 
 export type IgnoreMatcher = (item: string) => boolean;
 
-export type WorkerMessage = {
+export type ExtractMetadataDefinition = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor?: string | null;
@@ -60,12 +60,35 @@ export type WorkerMessage = {
   retainAllFiles?: boolean;
 };
 
-export type WorkerMetadata = {
+export type ExtractedFileMetaData = {
   dependencies: Array<string> | undefined | null;
   id: string | undefined | null;
   module: ModuleMetaData | undefined | null;
   sha1: string | undefined | null;
 };
+
+export type MetadataExtractorOptions = {
+  forceInBand: boolean;
+};
+
+export interface MetadataExtractor {
+  /**
+   * Called before either `extractMetadata` or `getSha1` is called.
+   */
+  setup(options: MetadataExtractorOptions): void;
+
+  extractMetadata(
+    data: ExtractMetadataDefinition,
+  ): Promise<ExtractedFileMetaData>;
+
+  getSha1(data: ExtractMetadataDefinition): Promise<ExtractedFileMetaData>;
+
+  /**
+   * Called when the extractor is no longer in use to allow releasing resources.
+   * Called even if `setup` was never called.
+   */
+  end(): void;
+}
 
 export type CrawlerOptions = {
   computeSha1: boolean;
