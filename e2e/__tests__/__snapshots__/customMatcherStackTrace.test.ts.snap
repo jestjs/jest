@@ -16,7 +16,7 @@ exports[`custom async matchers 1`] = `
       13 | function toThrowCustomAsyncMatcherError() {
       14 |   const message = () =>
 
-      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:16)"
+      at Object.<anonymous> (__tests__/asynchronous.test.js:11:16)"
 `;
 
 exports[`works with custom matchers 1`] = `
@@ -38,10 +38,10 @@ exports[`works with custom matchers 1`] = `
       47 |
       48 |     // This expecation fails due to an error we throw (intentionally)
 
-      at Error (__tests__/sync.test.js:45:13)
-      at baz (__tests__/sync.test.js:43:23)
-      at bar (__tests__/sync.test.js:42:23)
-      at foo (__tests__/sync.test.js:52:7)
-      at Object.callback (__tests__/sync.test.js:11:18)
-      at Object.toCustomMatch (__tests__/sync.test.js:53:8)"
+      at baz (__tests__/sync.test.js:45:13)
+      at bar (__tests__/sync.test.js:43:23)
+      at foo (__tests__/sync.test.js:42:23)
+      at callback (__tests__/sync.test.js:52:7)
+      at Object.toCustomMatch (__tests__/sync.test.js:11:18)
+      at Object.<anonymous> (__tests__/sync.test.js:53:8)"
 `;

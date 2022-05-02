@@ -7,12 +7,12 @@ exports[`console printing 1`] = `
     console.log
       This is a log message.
 
-      at Object.log (__tests__/console.test.js:10:11)
+      at Object.<anonymous> (__tests__/console.test.js:10:11)
 
     console.info
       This is an info message.
 
-      at Object.info (__tests__/console.test.js:12:11)
+      at Object.<anonymous> (__tests__/console.test.js:12:11)
 
     console.warn
       This is a warning message.
@@ -25,7 +25,7 @@ exports[`console printing 1`] = `
       16 |   console.error('This is an error message.');
       17 | });
 
-      at Object.warn (__tests__/console.test.js:14:11)
+      at Object.<anonymous> (__tests__/console.test.js:14:11)
 
     console.error
       This is an error message.
@@ -37,7 +37,7 @@ exports[`console printing 1`] = `
       17 | });
       18 |
 
-      at Object.error (__tests__/console.test.js:16:11)"
+      at Object.<anonymous> (__tests__/console.test.js:16:11)"
 `;
 
 exports[`console printing 2`] = `
@@ -52,12 +52,12 @@ exports[`console printing with --verbose 1`] = `
 "  console.log
     This is a log message.
 
-      at Object.log (__tests__/console.test.js:10:11)
+      at Object.<anonymous> (__tests__/console.test.js:10:11)
 
   console.info
     This is an info message.
 
-      at Object.info (__tests__/console.test.js:12:11)
+      at Object.<anonymous> (__tests__/console.test.js:12:11)
 
   console.warn
     This is a warning message.
@@ -70,7 +70,7 @@ exports[`console printing with --verbose 1`] = `
       16 |   console.error('This is an error message.');
       17 | });
 
-      at Object.warn (__tests__/console.test.js:14:11)
+      at Object.<anonymous> (__tests__/console.test.js:14:11)
 
   console.error
     This is an error message.
@@ -82,7 +82,7 @@ exports[`console printing with --verbose 1`] = `
       17 | });
       18 |
 
-      at Object.error (__tests__/console.test.js:16:11)
+      at Object.<anonymous> (__tests__/console.test.js:16:11)
 "
 `;
 
@@ -149,22 +149,22 @@ exports[`respects --noStackTrace 1`] = `
 "  console.log
     This is a log message.
 
-      at Object.log (__tests__/console.test.js:10:11)
+      at Object.<anonymous> (__tests__/console.test.js:10:11)
 
   console.info
     This is an info message.
 
-      at Object.info (__tests__/console.test.js:12:11)
+      at Object.<anonymous> (__tests__/console.test.js:12:11)
 
   console.warn
     This is a warning message.
 
-      at Object.warn (__tests__/console.test.js:14:11)
+      at Object.<anonymous> (__tests__/console.test.js:14:11)
 
   console.error
     This is an error message.
 
-      at Object.error (__tests__/console.test.js:16:11)
+      at Object.<anonymous> (__tests__/console.test.js:16:11)
 "
 `;
 
@@ -185,22 +185,22 @@ exports[`respects noStackTrace in config 1`] = `
 "  console.log
     This is a log message.
 
-      at Object.log (__tests__/console.test.js:10:11)
+      at Object.<anonymous> (__tests__/console.test.js:10:11)
 
   console.info
     This is an info message.
 
-      at Object.info (__tests__/console.test.js:12:11)
+      at Object.<anonymous> (__tests__/console.test.js:12:11)
 
   console.warn
     This is a warning message.
 
-      at Object.warn (__tests__/console.test.js:14:11)
+      at Object.<anonymous> (__tests__/console.test.js:14:11)
 
   console.error
     This is an error message.
 
-      at Object.error (__tests__/console.test.js:16:11)
+      at Object.<anonymous> (__tests__/console.test.js:16:11)
 "
 `;
 

@@ -30,7 +30,7 @@ exports[`chai assertion errors should display properly 1`] = `
       15 |
       16 |   it('should', () => {
 
-      at Object.equal (__tests__/chai_assertion.js:13:35)
+      at Object.<anonymous> (__tests__/chai_assertion.js:13:35)
 
   ● chai.js assertion library test › should
 
@@ -60,7 +60,7 @@ exports[`chai assertion errors should display properly 1`] = `
       22 |
       23 |   it('assert', () => {
 
-      at Object.equal (__tests__/chai_assertion.js:20:25)
+      at Object.<anonymous> (__tests__/chai_assertion.js:20:25)
 
   ● chai.js assertion library test › assert
 
@@ -90,5 +90,5 @@ exports[`chai assertion errors should display properly 1`] = `
       26 | });
       27 |
 
-      at Object.strictEqual (__tests__/chai_assertion.js:24:17)"
+      at Object.<anonymous> (__tests__/chai_assertion.js:24:17)"
 `;

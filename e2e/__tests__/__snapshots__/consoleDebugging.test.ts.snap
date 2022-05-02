@@ -4,7 +4,7 @@ exports[`console debugging with --verbose 1`] = `
 "  console.log
     test
 
-      at Object.log (__tests__/console-debugging.test.js:17:11)
+      at Object.<anonymous> (__tests__/console-debugging.test.js:17:11)
 "
 `;
 
