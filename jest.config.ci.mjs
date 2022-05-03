@@ -5,13 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jest from 'jest';
 import jestConfigBase from './jest.config.mjs';
 
-const baseConfig = await jestConfigBase;
-
-export default jest.defineConfig({
-  ...baseConfig,
+export default {
+  ...jestConfigBase,
   coverageReporters: ['json'],
   reporters: [
     'github-actions',
@@ -25,4 +22,4 @@ export default jest.defineConfig({
     ],
     'summary',
   ],
-});
+};
