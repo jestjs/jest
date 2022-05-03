@@ -41,14 +41,10 @@ const mockExample = new MockExampleClass('c') as Mocked<
 
 const zz = mockExample.methodB.mock.calls[0];
 
-/// mocks function
+// mocks function
 
 function someFunction(a: number, b?: string): boolean {
   return true;
-}
-
-async function someAsyncFunction(a: Array<boolean>): Promise<string> {
-  return 'true';
 }
 
 const mockFunction = someFunction as Mocked<typeof someFunction>;
@@ -62,16 +58,45 @@ if (mockFunctionResult.type === 'return') {
   expectType<boolean>(mockFunctionResult.value);
 }
 
+// mocks async function
+
+async function someAsyncFunction(a: Array<boolean>): Promise<string> {
+  return 'true';
+}
+
 const mockAsyncFunction = someAsyncFunction as Mocked<typeof someAsyncFunction>;
 
 expectType<Array<boolean>>(mockAsyncFunction.mock.calls[0][0]);
-// expectError(mockAsyncFunction.mock.calls[0][1]);
 
 const mockAsyncFunctionResult = mockAsyncFunction.mock.results[0];
 
 if (mockAsyncFunctionResult.type === 'return') {
   expectType<Promise<string>>(mockAsyncFunctionResult.value);
 }
+
+// mocks function object
+
+type SomeFunctionObject = {
+  (a: number, b: string): void;
+  one: {
+    (oneA: number, oneB?: boolean): boolean;
+    more: {
+      time: {
+        (time: number): void;
+      };
+    };
+  };
+};
+
+declare const someFunctionObject: SomeFunctionObject;
+
+someFunctionObject.one.more.time(12);
+
+const mockFunctionObject = someFunctionObject as Mocked<
+  typeof someFunctionObject
+>;
+
+mockFunctionObject.one.more.time.mock;
 
 // mocks object
 
