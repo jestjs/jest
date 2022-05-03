@@ -2,9 +2,9 @@
 
 This package contains shared types of Jest's packages.
 
-If you're a user of Jest and looking for types, you could import `@jest/globals`:
+If you are looking for types of [Jest globals](https://jestjs.io/docs/api), you can import them from `@jest/globals` package:
 
-```typescript
+```ts
 import { describe, it, expect } from '@jest/globals';
 
 describe('my tests', () => {
