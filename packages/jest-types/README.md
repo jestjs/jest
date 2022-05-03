@@ -14,4 +14,4 @@ describe('my tests', () => {
 });
 ```
 
-If you prefer to omit imports, similar result can be achieved installing the [@types/jest](https://npmjs.com/package/@types/jest) package. Note that this is third party library maintained at [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jest) and may not cover latest Jest features.
+If you prefer to omit imports, a similar result can be achieved installing the [@types/jest](https://npmjs.com/package/@types/jest) package. Note that this is a third party library maintained at [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jest) and may not cover the latest Jest features.
