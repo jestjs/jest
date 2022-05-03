@@ -21,8 +21,11 @@ export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
+export {default as defineConfig} from './defineConfig';
 export {default as descriptions} from './Descriptions';
 export {constants};
+
+export type {JestConfig} from './defineConfig';
 
 type ReadConfig = {
   configPath: string | null | undefined;

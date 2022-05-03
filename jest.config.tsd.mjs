@@ -5,16 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import jest from 'jest';
 import jestConfigBase from './jest.config.mjs';
 
-export default {
+const {modulePathIgnorePatterns} = await jestConfigBase;
+
+export default jest.defineConfig({
   displayName: {
     color: 'blue',
     name: 'types',
   },
-  modulePathIgnorePatterns: jestConfigBase.modulePathIgnorePatterns,
+  modulePathIgnorePatterns,
   reporters: ['default', 'github-actions'],
   roots: ['<rootDir>/packages'],
   runner: 'jest-runner-tsd',
   testMatch: ['**/__typetests__/**/*.ts'],
-};
+});

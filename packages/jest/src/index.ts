@@ -12,4 +12,7 @@ export {
   runCLI,
 } from '@jest/core';
 
+export {defineConfig} from 'jest-config';
+export type {JestConfig} from 'jest-config';
+
 export {run} from 'jest-cli';

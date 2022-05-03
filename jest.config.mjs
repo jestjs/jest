@@ -7,9 +7,9 @@
 
 import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
+import jest from 'jest';
 
-/** @type import('@jest/types').Config.InitialOptions */
-export default {
+export default jest.defineConfig({
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
     '**/packages/*/**/*.ts',
@@ -77,4 +77,4 @@ export default {
     require.resolve('jest-watch-typeahead/filename'),
     require.resolve('jest-watch-typeahead/testname'),
   ],
-};
+});
