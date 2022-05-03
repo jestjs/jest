@@ -5,7 +5,7 @@ This package contains shared types of Jest's packages.
 If you are looking for types of [Jest globals](https://jestjs.io/docs/api), you can import them from `@jest/globals` package:
 
 ```ts
-import { describe, expect, it } from '@jest/globals';
+import {describe, expect, it} from '@jest/globals';
 
 describe('my tests', () => {
   it('works', () => {
@@ -20,7 +20,7 @@ Another use-case for `@types/jest` is a typed Jest config as those types are not
 
 ```ts
 // jest.config.ts
-import { Config } from '@jest/types';
+import {Config} from '@jest/types';
 
 const config: Config.InitialOptions = {
   // some typed config
