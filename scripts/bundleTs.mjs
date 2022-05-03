@@ -167,7 +167,7 @@ const excludedPackages = new Set(['@jest/globals']);
       let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
       rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
-      rimraf.sync(path.resolve(packageDir, 'dist/'));
+      rimraf.sync(path.resolve(packageDir, 'dist/**/*'));
       // this is invalid now, so remove it to not confuse `tsc`
       rimraf.sync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'));
 
