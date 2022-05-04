@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {JestConfig, defineConfig} from 'jest';
+import {JestConfig, defineConfig} from 'jest-config';
 
 async function getVerbose() {
   return true;
