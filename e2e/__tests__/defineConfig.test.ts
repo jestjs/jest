@@ -9,7 +9,6 @@ import * as path from 'path';
 import execa = require('execa');
 import {existsSync} from 'graceful-fs';
 import {onNodeVersions} from '@jest/test-utils';
-import {runYarnInstall} from '../Utils';
 import {getConfig} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../define-config');
@@ -31,29 +30,9 @@ onNodeVersions('>=12.16.0', () => {
   });
 });
 
-describe('typescript', () => {
-  beforeAll(async () => {
-    // the typescript config test needs `jest-config` to be built
-    const cwd = path.resolve(__dirname, '../../');
-    const typesPackageDirectory = 'packages/jest-config';
+test.skip('works with async function config exported from TS file', () => {
+  const {configs, globalConfig} = getConfig(path.join(DIR, 'ts'));
 
-    const indexDTsFile = path.resolve(
-      cwd,
-      typesPackageDirectory,
-      'build/index.d.ts',
-    );
-
-    if (!existsSync(indexDTsFile)) {
-      await execa('tsc', ['-b', typesPackageDirectory], {cwd});
-    }
-  }, 360_000);
-
-  test('works with async function config exported from TS file', () => {
-    runYarnInstall(path.join(DIR, 'ts'));
-
-    const {configs, globalConfig} = getConfig(path.join(DIR, 'ts'));
-
-    expect(configs[0].displayName?.name).toBe('ts-async-function-config');
-    expect(globalConfig.verbose).toBe(true);
-  });
+  expect(configs[0].displayName?.name).toBe('ts-async-function-config');
+  expect(globalConfig.verbose).toBe(true);
 });
