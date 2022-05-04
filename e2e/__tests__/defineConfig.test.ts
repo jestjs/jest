@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
 import {runYarnInstall} from '../Utils';
-import runJest, {getConfig} from '../runJest';
+import {getConfig} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../define-config');
 
@@ -30,6 +30,8 @@ onNodeVersions('>=12.16.0', () => {
 });
 
 test('works with async function config exported from TS file', () => {
+  runYarnInstall(path.join(DIR, 'ts'));
+
   const {configs, globalConfig} = getConfig(path.join(DIR, 'ts'));
 
   expect(configs[0].displayName?.name).toBe('ts-async-function-config');
