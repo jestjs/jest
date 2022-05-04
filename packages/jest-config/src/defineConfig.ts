@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 export type JestConfig = Config.InitialOptions;
 
 /**
- * Type helper that provides the correct typings for your Jest configuration.
+ * Type helper that provides the type definitions for your Jest configuration.
  */
 export default async function defineConfig(
   jestConfig: JestConfig | (() => JestConfig) | (() => Promise<JestConfig>),

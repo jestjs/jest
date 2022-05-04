@@ -3,9 +3,94 @@ id: configuration
 title: Configuring Jest
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-```json
+The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
+
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|cjs|mjs|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+
+:::note
+
+Keep in mind that the resulting configuration object must always be JSON-serializable.
+
+:::
+
+The configuration file should simply export an object or a function returning an object:
+
+```js title="jest.config.js"
+module.exports = {
+  verbose: true,
+};
+
+// or async function
+module.exports = async () => {
+  return {
+    verbose: true,
+  };
+};
+```
+
+Optionally you can use `defineConfig()` helper for type definitions and autocompletion:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js title="jest.config.js"
+const {defineConfig} = require('jest');
+
+module.exports = defineConfig({
+  verbose: true,
+});
+
+// or async function
+module.exports = defineConfig(async () => {
+  const verbose = await asyncGetVerbose();
+
+  return {verbose};
+});
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts title="jest.config.ts"
+import {JestConfig, defineConfig} from 'jest';
+
+export default defineConfig({
+  verbose: true,
+});
+
+// or async function
+export default defineConfig(async () => {
+  const verbose: JestConfig['verbose'] = await asyncGetVerbose();
+
+  return {verbose};
+});
+```
+
+</TabItem>
+</Tabs>
+
+:::tip
+
+Jest requires [`ts-node`](https://github.com/TypeStrong/ts-node) to be able to read TypeScript configuration files. Make sure it is installed in your project.
+
+:::
+
+The configuration can be stored in a JSON file as a plain object:
+
+```json title="jest.config.json"
+{
+  "bail": 1,
+  "verbose": true
+}
+```
+
+Alternatively Jest's configuration can be defined through the `"jest"` key in the `package.json` of your project:
+
+```json title="package.json"
 {
   "name": "my-project",
   "jest": {
@@ -14,67 +99,14 @@ Jest's configuration can be defined in the `package.json` file of your project, 
 }
 ```
 
-Or through JavaScript:
-
-```js title="jest.config.js"
-// Sync object
-/** @type {import('@jest/types').Config.InitialOptions} */
-const config = {
-  verbose: true,
-};
-
-module.exports = config;
-
-// Or async function
-module.exports = async () => {
-  return {
-    verbose: true,
-  };
-};
-```
-
-Or through TypeScript (if `ts-node` is installed):
-
-```ts title="jest.config.ts"
-import type {Config} from '@jest/types';
-
-// Sync object
-const config: Config.InitialOptions = {
-  verbose: true,
-};
-export default config;
-
-// Or async function
-export default async (): Promise<Config.InitialOptions> => {
-  return {
-    verbose: true,
-  };
-};
-```
-
-Please keep in mind that the resulting configuration must be JSON-serializable.
-
-When using the `--config` option, the JSON file must not contain a "jest" key:
-
-```json
-{
-  "bail": 1,
-  "verbose": true
-}
-```
-
 ## Options
-
-These options let you control Jest's behavior in your `package.json` file. The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
-
-### Defaults
 
 You can retrieve Jest's default options to expand them if needed:
 
 ```js title="jest.config.js"
 const {defaults} = require('jest-config');
+
 module.exports = {
-  // ...
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
   // ...
 };
