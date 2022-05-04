@@ -8,45 +8,30 @@
 import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
 import {runYarnInstall} from '../Utils';
-import runJest from '../runJest';
+import runJest, {getConfig} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../define-config');
 
 test('works with object config exported from CJS file', () => {
-  const {stdout, exitCode} = runJest(path.join(DIR, 'cjs'), ['--showConfig'], {
-    stripAnsi: true,
-  });
+  const {configs, globalConfig} = getConfig(path.join(DIR, 'cjs'));
 
-  expect(exitCode).toBe(0);
-  expect(stdout).toMatch('"name": "cjs-object-config"');
-  expect(stdout).toMatch('"verbose": true');
+  expect(configs[0].displayName?.name).toBe('cjs-object-config');
+  expect(globalConfig.verbose).toBe(true);
 });
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
 onNodeVersions('>=12.16.0', () => {
   test('works with function config exported from ESM file', () => {
-    const {stdout, exitCode} = runJest(
-      path.join(DIR, 'esm'),
-      ['--showConfig'],
-      {
-        stripAnsi: true,
-      },
-    );
+    const {configs, globalConfig} = getConfig(path.join(DIR, 'esm'));
 
-    expect(exitCode).toBe(0);
-    expect(stdout).toMatch('"name": "esm-function-config"');
-    expect(stdout).toMatch('"verbose": true');
+    expect(configs[0].displayName?.name).toBe('esm-function-config');
+    expect(globalConfig.verbose).toBe(true);
   });
 });
 
 test('works with async function config exported from TS file', () => {
-  runYarnInstall(path.join(DIR, 'ts'));
+  const {configs, globalConfig} = getConfig(path.join(DIR, 'ts'));
 
-  const {stdout, exitCode} = runJest(path.join(DIR, 'ts'), ['--showConfig'], {
-    stripAnsi: true,
-  });
-
-  expect(exitCode).toBe(0);
-  expect(stdout).toMatch('"name": "ts-async-function-config"');
-  expect(stdout).toMatch('"verbose": true');
+  expect(configs[0].displayName?.name).toBe('ts-async-function-config');
+  expect(globalConfig.verbose).toBe(true);
 });
