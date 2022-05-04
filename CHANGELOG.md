@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest, jest-config]` Add `defineConfig()` type helper and expose `JestConfig` type ([#12801](https://github.com/facebook/jest/pull/12801))
 - `[jest-environment-node, jest-environment-jsdom]` Allow specifying `customExportConditions` ([#12774](https://github.com/facebook/jest/pull/12774))
 
 ### Fixes
