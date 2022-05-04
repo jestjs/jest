@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
+import {runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../define-config');
@@ -39,6 +40,8 @@ onNodeVersions('>=12.16.0', () => {
 });
 
 test('works with async function config exported from TS file', () => {
+  runYarnInstall(path.join(DIR, 'ts'));
+
   const {stdout, exitCode} = runJest(path.join(DIR, 'ts'), ['--showConfig'], {
     stripAnsi: true,
   });
