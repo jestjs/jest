@@ -33,9 +33,9 @@ onNodeVersions('>=12.16.0', () => {
 
 describe('typescript', () => {
   beforeAll(async () => {
-    // the typescript config test needs `@jest/types` to be built
+    // the typescript config test needs `jest-config` to be built
     const cwd = path.resolve(__dirname, '../../');
-    const typesPackageDirectory = 'packages/jest-types';
+    const typesPackageDirectory = 'packages/jest-config';
 
     const indexDTsFile = path.resolve(
       cwd,
