@@ -38,7 +38,7 @@ onNodeVersions('>=12.16.0', () => {
   });
 });
 
-test.skip('works with async function config exported from TS file', () => {
+test('works with async function config exported from TS file', () => {
   const {stdout, exitCode} = runJest(path.join(DIR, 'ts'), ['--showConfig'], {
     stripAnsi: true,
   });
