@@ -207,14 +207,13 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with the "filtered" property. Especially useful when used in conjunction with a testing infrastructure to filter known broken, e.g.
 
 ```js title="my-filter.js"
-module.exports = (testPaths) => {
-  const allowedPaths = testPaths.filter(filteringFunction) // ["path1.spec.js", "path2.spec.js", etc]
+module.exports = testPaths => {
+  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
   return {
-      filtered : allowedPaths,
-   }
-}
+    filtered: allowedPaths,
+  };
+};
 ```
-
 
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
