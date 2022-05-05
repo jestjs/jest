@@ -7,7 +7,14 @@
 
 ### Fixes
 
+- `[expect]` Adjust typings of `lastCalledWith`, `nthCalledWith`, `toBeCalledWith` matchers to allow a case there a mock was called with no arguments ([#12807](https://github.com/facebook/jest/pull/12807))
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS Lists ([#12763](https://github.com/facebook/jest/pull/12763))
+- `[jest-core]` Do not collect `SIGNREQUEST` as open handles ([#12789](https://github.com/facebook/jest/pull/12789))
+
 ### Chore & Maintenance
+
+- `[@jest-reporters]` Move helper functions from `utils.ts` into separate files ([#12782](https://github.com/facebook/jest/pull/12782))
+- `[jest-resolve]` Replace `process.versions.pnp` type declaration with `@types/pnpapi` devDependency ([#12783](https://github.com/facebook/jest/pull/12783))
 
 ### Performance
 
