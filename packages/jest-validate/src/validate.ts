@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ValidationOptions} from './types';
 import defaultConfig from './defaultConfig';
+import type {ValidationOptions} from './types';
 import {ValidationError} from './utils';
 
 let hasDeprecationWarnings = false;
@@ -57,7 +57,7 @@ const _validate = (
           throw new ValidationError(
             'Validation Error',
             `${key} has to be of type string or number`,
-            `maxWorkers=50% or\nmaxWorkers=3`,
+            'maxWorkers=50% or\nmaxWorkers=3',
           );
         }
       }
@@ -70,11 +70,7 @@ const _validate = (
         options.error(key, config[key], exampleConfig[key], options, path);
       }
     } else if (
-      shouldSkipValidationForPath(
-        path,
-        key,
-        options.recursiveDenylist || options.recursiveBlacklist,
-      )
+      shouldSkipValidationForPath(path, key, options.recursiveDenylist)
     ) {
       // skip validating unknown options inside blacklisted paths
     } else {
@@ -85,12 +81,8 @@ const _validate = (
     if (
       options.recursive &&
       !Array.isArray(exampleConfig[key]) &&
-      (options.recursiveDenylist || options.recursiveBlacklist) &&
-      !shouldSkipValidationForPath(
-        path,
-        key,
-        options.recursiveDenylist || options.recursiveBlacklist,
-      )
+      options.recursiveDenylist &&
+      !shouldSkipValidationForPath(path, key, options.recursiveDenylist)
     ) {
       _validate(config[key], exampleConfig[key], options, [...path, key]);
     }
@@ -112,7 +104,7 @@ const validate = (
   // Preserve default denylist entries even with user-supplied denylist
   const combinedDenylist: Array<string> = [
     ...(defaultConfig.recursiveDenylist || []),
-    ...(options.recursiveDenylist || options.recursiveBlacklist || []),
+    ...(options.recursiveDenylist || []),
   ];
 
   const defaultedOptions: ValidationOptions = Object.assign({

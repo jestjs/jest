@@ -7,7 +7,6 @@
  */
 
 import assert from 'assert';
-import {onNodeVersions} from '@jest/test-utils';
 import fc from 'fast-check';
 import expect from '..';
 import {
@@ -58,20 +57,18 @@ describe('toStrictEqual', () => {
     );
   });
 
-  onNodeVersions('>=9', () => {
-    it('should be equivalent to Node deepStrictEqual', () => {
-      fc.assert(
-        fc.property(
-          fc.anything(anythingSettings),
-          fc.anything(anythingSettings),
-          (a, b) => {
-            expect(safeExpectStrictEqual(a, b)).toBe(
-              safeAssertDeepStrictEqual(a, b),
-            );
-          },
-        ),
-        assertSettings,
-      );
-    });
+  it('should be equivalent to Node deepStrictEqual', () => {
+    fc.assert(
+      fc.property(
+        fc.anything(anythingSettings),
+        fc.anything(anythingSettings),
+        (a, b) => {
+          expect(safeExpectStrictEqual(a, b)).toBe(
+            safeAssertDeepStrictEqual(a, b),
+          );
+        },
+      ),
+      assertSettings,
+    );
   });
 });

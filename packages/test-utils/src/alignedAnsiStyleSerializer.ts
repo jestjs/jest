@@ -7,9 +7,9 @@
 
 import ansiRegex = require('ansi-regex');
 import style = require('ansi-styles');
-import prettyFormat = require('pretty-format');
+import type {NewPlugin} from 'pretty-format';
 
-export const alignedAnsiStyleSerializer: prettyFormat.NewPlugin = {
+export const alignedAnsiStyleSerializer: NewPlugin = {
   serialize(val: string): string {
     // Return the string itself, not escaped nor enclosed in double quote marks.
     return val.replace(ansiRegex(), match => {

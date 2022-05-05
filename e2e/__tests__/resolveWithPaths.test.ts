@@ -6,8 +6,8 @@
  */
 
 import {resolve} from 'path';
-import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const workdirNodeModules = resolve(
   __dirname,

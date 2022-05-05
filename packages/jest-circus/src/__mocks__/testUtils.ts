@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {createHash} from 'crypto';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {createHash} from 'crypto';
-import * as fs from 'graceful-fs';
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
 
 const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
 const CIRCUS_RUN_PATH = require
@@ -31,7 +31,10 @@ interface Result extends ExecaSyncReturnValue {
 }
 
 export const runTest = (source: string) => {
-  const filename = createHash('md5').update(source).digest('hex');
+  const filename = createHash('sha256')
+    .update(source)
+    .digest('hex')
+    .substring(0, 32);
   const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `

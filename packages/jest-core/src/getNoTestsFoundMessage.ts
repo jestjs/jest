@@ -6,27 +6,39 @@
  */
 
 import type {Config} from '@jest/types';
-import type {TestRunData} from './types';
 import getNoTestFound from './getNoTestFound';
-import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
-import getNoTestFoundVerbose from './getNoTestFoundVerbose';
 import getNoTestFoundFailed from './getNoTestFoundFailed';
 import getNoTestFoundPassWithNoTests from './getNoTestFoundPassWithNoTests';
+import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
+import getNoTestFoundVerbose from './getNoTestFoundVerbose';
+import type {TestRunData} from './types';
 
 export default function getNoTestsFoundMessage(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
-): string {
+): {exitWith0: boolean; message: string} {
+  const exitWith0 =
+    globalConfig.passWithNoTests ||
+    globalConfig.lastCommit ||
+    globalConfig.onlyChanged;
+
   if (globalConfig.onlyFailures) {
-    return getNoTestFoundFailed();
+    return {exitWith0, message: getNoTestFoundFailed(globalConfig)};
   }
   if (globalConfig.onlyChanged) {
-    return getNoTestFoundRelatedToChangedFiles(globalConfig);
+    return {
+      exitWith0,
+      message: getNoTestFoundRelatedToChangedFiles(globalConfig),
+    };
   }
   if (globalConfig.passWithNoTests) {
-    return getNoTestFoundPassWithNoTests();
+    return {exitWith0, message: getNoTestFoundPassWithNoTests()};
   }
-  return testRunData.length === 1 || globalConfig.verbose
-    ? getNoTestFoundVerbose(testRunData, globalConfig)
-    : getNoTestFound(testRunData, globalConfig);
+  return {
+    exitWith0,
+    message:
+      testRunData.length === 1 || globalConfig.verbose
+        ? getNoTestFoundVerbose(testRunData, globalConfig, exitWith0)
+        : getNoTestFound(testRunData, globalConfig, exitWith0),
+  };
 }

@@ -9,7 +9,6 @@ import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
@@ -90,9 +89,12 @@ export default class ChildProcessWorker implements WorkerInterface {
         ...process.env,
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         ...forceColor,
-      } as NodeJS.ProcessEnv,
+      },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      // default to advanced serialization in order to match worker threads
+      // @ts-expect-error: option does not exist on the node 12 types
+      serialization: 'advanced',
       silent: true,
       ...this._options.forkOptions,
     });
@@ -135,7 +137,9 @@ export default class ChildProcessWorker implements WorkerInterface {
     // coming from the child. This avoids code duplication related with cleaning
     // the queue, and scheduling the next call.
     if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
+      const error = new Error(
+        `Jest worker encountered ${this._retries} child process exceptions, exceeding retry limit`,
+      );
 
       this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
@@ -172,7 +176,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         if (error != null && typeof error === 'object') {
           const extra = error;
           // @ts-expect-error: no index
-          const NativeCtor = global[response[1]];
+          const NativeCtor = globalThis[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
           error = new Ctor(response[2]);
@@ -188,7 +192,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         break;
 
       case PARENT_MESSAGE_SETUP_ERROR:
-        error = new Error('Error when calling setup: ' + response[2]);
+        error = new Error(`Error when calling setup: ${response[2]}`);
 
         error.type = response[1];
         error.stack = response[3];
@@ -199,13 +203,14 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
-        throw new TypeError('Unexpected response from worker: ' + response[0]);
+        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 
-  private _onExit(exitCode: number) {
+  private _onExit(exitCode: number | null) {
     if (
       exitCode !== 0 &&
+      exitCode !== null &&
       exitCode !== SIGTERM_EXIT_CODE &&
       exitCode !== SIGKILL_EXIT_CODE
     ) {
@@ -237,7 +242,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._request = request;
     this._retries = 0;
-    this._child.send(request);
+    this._child.send(request, () => {});
   }
 
   waitForExit(): Promise<void> {

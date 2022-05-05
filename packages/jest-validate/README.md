@@ -11,45 +11,48 @@ npm install --save jest-validate
 ```js
 import {validate} from 'jest-validate';
 
-validate((config: Object), (options: ValidationOptions)); // => {hasDeprecationWarnings: boolean, isValid: boolean}
+validate(config, validationOptions); // => {hasDeprecationWarnings: boolean, isValid: boolean}
 ```
 
 Where `ValidationOptions` are:
 
-```js
+```ts
 type ValidationOptions = {
-  blacklist?: Array<string>,
-  comment?: string,
-  condition?: (option: any, validOption: any) => boolean,
+  comment?: string;
+  condition?: (option: unknown, validOption: unknown) => boolean;
   deprecate?: (
-    config: Object,
+    config: Record<string, unknown>,
     option: string,
-    deprecatedOptions: Object,
+    deprecatedOptions: DeprecatedOptions,
     options: ValidationOptions,
-  ) => true,
-  deprecatedConfig?: {[key: string]: Function},
+  ) => boolean;
+  deprecatedConfig?: DeprecatedOptions;
   error?: (
     option: string,
-    received: any,
-    defaultValue: any,
+    received: unknown,
+    defaultValue: unknown,
     options: ValidationOptions,
-  ) => void,
-  exampleConfig: Object,
-  recursive?: boolean,
-  title?: Title,
+    path?: Array<string>,
+  ) => void;
+  exampleConfig: Record<string, unknown>;
+  recursive?: boolean;
+  recursiveBlacklist?: Array<string>;
+  recursiveDenylist?: Array<string>;
+  title?: Title;
   unknown?: (
-    config: Object,
-    exampleConfig: Object,
+    config: Record<string, unknown>,
+    exampleConfig: Record<string, unknown>,
     option: string,
     options: ValidationOptions,
-  ) => void,
+    path?: Array<string>,
+  ) => void;
 };
 
-type Title = {|
-  deprecation?: string,
-  error?: string,
-  warning?: string,
-|};
+type Title = {
+  deprecation?: string;
+  error?: string;
+  warning?: string;
+};
 ```
 
 `exampleConfig` is the only option required.

@@ -3,5 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build"
-  }
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
+  "references": [{"path": "../jest-leak-detector"}]
 }

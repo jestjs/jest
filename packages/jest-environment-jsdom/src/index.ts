@@ -5,13 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
-import type {Config, Global} from '@jest/types';
-import {installCommonGlobals} from 'jest-util';
-import {ModuleMocker} from 'jest-mock';
+import type {Context} from 'vm';
+import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
-import {JSDOM, VirtualConsole} from 'jsdom';
+import type {Global} from '@jest/types';
+import {ModuleMocker} from 'jest-mock';
+import {installCommonGlobals} from 'jest-util';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
@@ -22,37 +26,59 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment {
+export default class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
-  errorEventListener: ((event: Event & {error: Error}) => void) | null;
+  private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['browser'];
 
-  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      runScripts: 'dangerously',
-      url: config.testURL,
-      virtualConsole: new VirtualConsole().sendTo(options.console || console),
-      ...config.testEnvironmentOptions,
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
+    const {projectConfig} = config;
+
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    virtualConsole.on('jsdomError', error => {
+      context.console.error(error);
     });
-    const global = (this.global = (this.dom.window.document
-      .defaultView as unknown) as Win);
+
+    this.dom = new JSDOM(
+      typeof projectConfig.testEnvironmentOptions.html === 'string'
+        ? projectConfig.testEnvironmentOptions.html
+        : '<!DOCTYPE html>',
+      {
+        pretendToBeVisual: true,
+        resources:
+          typeof projectConfig.testEnvironmentOptions.userAgent === 'string'
+            ? new ResourceLoader({
+                userAgent: projectConfig.testEnvironmentOptions.userAgent,
+              })
+            : undefined,
+        runScripts: 'dangerously',
+        url: 'http://localhost/',
+        virtualConsole,
+        ...projectConfig.testEnvironmentOptions,
+      },
+    );
+    const global = (this.global = this.dom.window.document
+      .defaultView as unknown as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // In the `jsdom@16`, ArrayBuffer was not added to Window, ref: https://github.com/jsdom/jsdom/commit/3a4fd6258e6b13e9cf8341ddba60a06b9b5c7b5b
-    // Install ArrayBuffer to Window to fix it. Make sure the test is passed, ref: https://github.com/facebook/jest/pull/7626
-    global.ArrayBuffer = ArrayBuffer;
+    // for "universal" code (code should use `globalThis`)
+    global.global = global as any;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global as any, config.globals);
+    installCommonGlobals(global as any, projectConfig.globals);
+
+    // TODO: remove this ASAP, but it currently causes tests to run really slow
+    global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
@@ -84,21 +110,36 @@ class JSDOMEnvironment implements JestEnvironment {
       return originalRemoveListener.apply(this, args);
     };
 
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(item => typeof item === 'string')
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
+    }
+
     this.moduleMocker = new ModuleMocker(global as any);
 
-    const timerConfig = {
-      idToRef: (id: number) => id,
-      refToId: (ref: number) => ref,
-    };
-
     this.fakeTimers = new LegacyFakeTimers({
-      config,
-      global,
+      config: projectConfig,
+      global: global as unknown as typeof globalThis,
       moduleMocker: this.moduleMocker,
-      timerConfig,
+      timerConfig: {
+        idToRef: (id: number) => id,
+        refToId: (ref: number) => ref,
+      },
     });
 
-    this.fakeTimersModern = new ModernFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({
+      config: projectConfig,
+      global: global as unknown as typeof globalThis,
+    });
   }
 
   async setup(): Promise<void> {}
@@ -114,9 +155,14 @@ class JSDOMEnvironment implements JestEnvironment {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
-      // Dispose "document" to prevent "load" event from triggering.
-      Object.defineProperty(this.global, 'document', {value: null});
       this.global.close();
+
+      // Dispose "document" to prevent "load" event from triggering.
+
+      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
+      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
+      // document should be accessible within disconnectedCallback.
+      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error
@@ -126,11 +172,8 @@ class JSDOMEnvironment implements JestEnvironment {
     this.fakeTimersModern = null;
   }
 
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.dom) {
-      return script.runInContext(this.dom.getInternalVMContext());
-    }
-    return null;
+  exportConditions(): Array<string> {
+    return this.customExportConditions;
   }
 
   getVmContext(): Context | null {
@@ -141,4 +184,4 @@ class JSDOMEnvironment implements JestEnvironment {
   }
 }
 
-export = JSDOMEnvironment;
+export const TestEnvironment = JSDOMEnvironment;

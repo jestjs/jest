@@ -7,23 +7,23 @@
  *
  */
 
-import Runtime = require('jest-runtime');
 import yargs = require('yargs');
-import {validateCLIOptions} from 'jest-validate';
-import {deprecationEntries} from 'jest-config';
 import type {Config} from '@jest/types';
+import {deprecationEntries} from 'jest-config';
+import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
+import {run as runtimeCLI} from './runtime-cli';
+import {VERSION} from './version';
 
-const {version: VERSION} = require('../../package.json');
+const REPL_SCRIPT = require.resolve('./repl');
 
-const REPL_SCRIPT = require.resolve('./repl.js');
-
-export = function (): void {
-  const argv = <Config.Argv>yargs.usage(args.usage).options(args.options).argv;
+export function run(): Promise<void> {
+  const argv = yargs.usage(args.usage).options(args.options)
+    .argv as Config.Argv;
 
   validateCLIOptions(argv, {...args.options, deprecationEntries});
 
   argv._ = [REPL_SCRIPT];
 
-  Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
-};
+  return runtimeCLI(argv, [`Jest REPL v${VERSION}`]);
+}

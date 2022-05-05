@@ -70,3 +70,29 @@ it('works like micromatch with empty globs', () => {
     micromatch(['some-module.test.js'], globs).length > 0,
   );
 });
+
+it('works like micromatch with pure negated extglobs', () => {
+  const globs = ['**/*.js', '!(some-module.test.js)'];
+  const matcher = globsToMatcher(globs);
+
+  expect(matcher('some-module.js')).toBe(
+    micromatch(['some-module.js'], globs).length > 0,
+  );
+
+  expect(matcher('some-module.test.js')).toBe(
+    micromatch(['some-module.test.js'], globs).length > 0,
+  );
+});
+
+it('works like micromatch with negated extglobs', () => {
+  const globs = ['**/*.js', '!(tests|coverage)/*.js'];
+  const matcher = globsToMatcher(globs);
+
+  expect(matcher('some-module.js')).toBe(
+    micromatch(['some-module.js'], globs).length > 0,
+  );
+
+  expect(matcher('tests/some-module.test.js')).toBe(
+    micromatch(['tests/some-module.test.js'], globs).length > 0,
+  );
+});

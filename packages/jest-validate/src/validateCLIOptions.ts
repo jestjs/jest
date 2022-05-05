@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import chalk = require('chalk');
 import camelcase = require('camelcase');
+import chalk = require('chalk');
 import type {Options} from 'yargs';
-import {ValidationError, createDidYouMeanMessage, format} from './utils';
-import {deprecationWarning} from './deprecated';
+import type {Config} from '@jest/types';
 import defaultConfig from './defaultConfig';
+import {deprecationWarning} from './deprecated';
 import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';
+import {ValidationError, createDidYouMeanMessage, format} from './utils';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
-  https://jestjs.io/docs/en/cli.html
+  https://jestjs.io/docs/cli
 `;
 
 const createCLIValidationError = (
@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://jestjs.io/docs/en/cli.html\n`;
+    '  https://jestjs.io/docs/cli\n';
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -35,13 +35,13 @@ const createCLIValidationError = (
       unrecognized.length > 1
         ? createDidYouMeanMessage(unrecognized, Array.from(allowedOptions))
         : '';
-    message =
-      `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
-      (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');
+    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.${
+      didYouMeanMessage ? ` ${didYouMeanMessage}` : ''
+    }`;
   } else {
     title += 's';
     message =
-      `  Following options were not recognized:\n` +
+      '  Following options were not recognized:\n' +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 
@@ -78,7 +78,7 @@ export default function validateCLIOptions(
   );
   const unrecognizedOptions = Object.keys(argv).filter(
     arg =>
-      !allowedOptions.has(camelcase(arg)) &&
+      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
       (!rawArgv.length || rawArgv.includes(arg)),
     [],

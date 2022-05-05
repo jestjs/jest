@@ -6,6 +6,6 @@
  */
 'use strict';
 
-console.log(global.window ? 'WINDOW' : 'NO WINDOW');
+console.log(globalThis.window ? 'WINDOW' : 'NO WINDOW');
 
 test('stub', () => expect(1).toBe(1));

@@ -7,8 +7,8 @@
  */
 
 import chalk = require('chalk');
-import pretty = require('pretty-format');
 import type {Global} from '@jest/types';
+import {format as pretty} from 'pretty-format';
 
 type TemplateData = Global.TemplateData;
 
@@ -50,20 +50,19 @@ const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
-export const validateTemplateTableHeadings = (
+export const validateTemplateTableArguments = (
   headings: Array<string>,
   data: TemplateData,
 ): void => {
-  const missingData = data.length % headings.length;
+  const incompleteData = data.length % headings.length;
+  const missingData = headings.length - incompleteData;
 
-  if (missingData > 0) {
+  if (incompleteData > 0) {
     throw new Error(
-      'Not enough arguments supplied for given headings:\n' +
-        EXPECTED_COLOR(headings.join(' | ')) +
-        '\n\n' +
-        'Received:\n' +
-        RECEIVED_COLOR(pretty(data)) +
-        '\n\n' +
+      `Not enough arguments supplied for given headings:\n${EXPECTED_COLOR(
+        headings.join(' | '),
+      )}\n\n` +
+        `Received:\n${RECEIVED_COLOR(pretty(data))}\n\n` +
         `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
           'argument',
           missingData,
@@ -74,3 +73,26 @@ export const validateTemplateTableHeadings = (
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
+
+const START_OF_LINE = '^';
+const NEWLINE = '\\n';
+const HEADING = '\\s*[^\\s]+\\s*';
+const PIPE = '\\|';
+const REPEATABLE_HEADING = `(${PIPE}${HEADING})*`;
+const HEADINGS_FORMAT = new RegExp(
+  START_OF_LINE + NEWLINE + HEADING + REPEATABLE_HEADING + NEWLINE,
+  'g',
+);
+
+export const extractValidTemplateHeadings = (headings: string): string => {
+  const matches = headings.match(HEADINGS_FORMAT);
+  if (matches === null) {
+    throw new Error(
+      `Table headings do not conform to expected format:\n\n${EXPECTED_COLOR(
+        'heading1 | headingN',
+      )}\n\nReceived:\n\n${RECEIVED_COLOR(pretty(headings))}`,
+    );
+  }
+
+  return matches[0];
+};

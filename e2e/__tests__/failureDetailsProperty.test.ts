@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isJestCircusRun} from '@jest/test-utils';
+import {isJestJasmineRun} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const removeStackTraces = (stdout: string) =>
@@ -24,59 +24,7 @@ test('that the failureDetails property is set', () => {
 
   const output = JSON.parse(removeStackTraces(stdout));
 
-  if (isJestCircusRun()) {
-    expect(output).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          Object {
-            "matcherResult": Object {
-              "actual": true,
-              "expected": false,
-              "name": "toBe",
-              "pass": false,
-            },
-          },
-        ],
-        Array [
-          Object {
-            "matcherResult": Object {
-              "actual": true,
-              "expected": false,
-              "name": "toBe",
-              "pass": false,
-            },
-          },
-        ],
-        Array [
-          Object {
-            "matcherResult": Object {
-              "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
-      }",
-              "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
-      }",
-              "name": "toMatchInlineSnapshot",
-              "pass": false,
-            },
-          },
-        ],
-        Array [
-          Object {},
-        ],
-        Array [
-          Object {
-            "message": "expect(received).rejects.toThrowError()
-
-      Received promise resolved instead of rejected
-      Resolved to value: 1",
-          },
-        ],
-      ]
-    `);
-  } else {
+  if (isJestJasmineRun()) {
     expect(output).toMatchInlineSnapshot(`
       Array [
         Array [
@@ -86,6 +34,10 @@ test('that the failureDetails property is set', () => {
               "matcherResult": Object {
                 "actual": true,
                 "expected": false,
+                "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
                 "name": "toBe",
                 "pass": false,
               },
@@ -111,6 +63,10 @@ test('that the failureDetails property is set', () => {
               "matcherResult": Object {
                 "actual": true,
                 "expected": false,
+                "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
                 "name": "toBe",
                 "pass": false,
               },
@@ -135,13 +91,25 @@ test('that the failureDetails property is set', () => {
             "error": Object {
               "matcherResult": Object {
                 "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
+        "p1": "hello",
+        "p2": "world",
       }",
                 "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
+        "p1": "hello",
+        "p2": "sunshine",
       }",
+                "message": "expect(received).toMatchInlineSnapshot(snapshot)
+
+      Snapshot name: \`my test a snapshot failure 1\`
+
+      - Snapshot  - 1
+      + Received  + 1
+
+        Object {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
+        }",
                 "name": "toMatchInlineSnapshot",
                 "pass": false,
               },
@@ -156,9 +124,9 @@ test('that the failureDetails property is set', () => {
       + Received  + 1
 
         Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
             "passed": false,
             "stack": "Error: expect(received).toMatchInlineSnapshot(snapshot)
@@ -169,9 +137,9 @@ test('that the failureDetails property is set', () => {
       + Received  + 1
 
         Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }
           at <stacktrace>",
           },
@@ -209,6 +177,78 @@ test('that the failureDetails property is set', () => {
       Received promise resolved instead of rejected
       Resolved to value: 1
           at <stacktrace>",
+          },
+        ],
+      ]
+    `);
+  } else {
+    expect(output).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          Object {
+            "matcherResult": Object {
+              "actual": true,
+              "expected": false,
+              "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
+              "name": "toBe",
+              "pass": false,
+            },
+          },
+        ],
+        Array [
+          Object {
+            "matcherResult": Object {
+              "actual": true,
+              "expected": false,
+              "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
+              "name": "toBe",
+              "pass": false,
+            },
+          },
+        ],
+        Array [
+          Object {
+            "matcherResult": Object {
+              "actual": "Object {
+        "p1": "hello",
+        "p2": "world",
+      }",
+              "expected": "Object {
+        "p1": "hello",
+        "p2": "sunshine",
+      }",
+              "message": "expect(received).toMatchInlineSnapshot(snapshot)
+
+      Snapshot name: \`my test a snapshot failure 1\`
+
+      - Snapshot  - 1
+      + Received  + 1
+
+        Object {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
+        }",
+              "name": "toMatchInlineSnapshot",
+              "pass": false,
+            },
+          },
+        ],
+        Array [
+          Object {},
+        ],
+        Array [
+          Object {
+            "message": "expect(received).rejects.toThrowError()
+
+      Received promise resolved instead of rejected
+      Resolved to value: 1",
           },
         ],
       ]

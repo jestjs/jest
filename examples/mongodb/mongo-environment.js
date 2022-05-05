@@ -1,5 +1,5 @@
 // mongo-environment.js
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').default;
 
 const path = require('path');
 
@@ -29,8 +29,8 @@ class MongoEnvironment extends NodeEnvironment {
     await super.teardown();
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 }
 

@@ -8,9 +8,11 @@
 const path = require('path');
 
 module.exports = {
-  process(src, filename, config, options) {
-    return `
-      module.exports = '${path.basename(filename)}';
-    `;
+  process(src, filename) {
+    const code = `
+    module.exports = '${path.basename(filename)}';
+  `;
+
+    return {code};
   },
 };

@@ -10,14 +10,14 @@ import {createContext, runInContext} from 'vm';
 let installCommonGlobals: typeof import('../installCommonGlobals').default;
 let fake: jest.Mock;
 
-function getGlobal(): NodeJS.Global {
+function getGlobal(): typeof globalThis {
   return runInContext('this', createContext());
 }
 
 beforeEach(() => {
   fake = jest.fn();
   // @ts-expect-error
-  global.DTRACE_NET_SERVER_CONNECTION = fake;
+  globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
 
   installCommonGlobals = require('../installCommonGlobals').default;
 });

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getType = require('jest-get-type');
+import {getType} from 'jest-get-type';
 
 const supportTypes = ['map', 'array', 'object'];
 

@@ -6,13 +6,16 @@
  */
 
 import chalk = require('chalk');
-
 import colorize from './colorize';
 
 const DOTS = '...';
 const ENTER = '⏎';
 
-export default (testName: string, pattern: string, width: number): string => {
+export default function formatTestNameByPattern(
+  testName: string,
+  pattern: string,
+  width: number,
+): string {
   const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
 
   let regexp;
@@ -55,4 +58,4 @@ export default (testName: string, pattern: string, width: number): string => {
   }
 
   return `${chalk.dim(slicedTestName)}${chalk.reset(DOTS)}`;
-};
+}

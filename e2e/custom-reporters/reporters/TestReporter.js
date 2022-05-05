@@ -15,8 +15,9 @@
  * to get the output.
  */
 class TestReporter {
-  constructor(globalConfig, options) {
-    this._options = options;
+  constructor(globalConfig, reporterOptions, reporterContext) {
+    this._context = reporterContext;
+    this._options = reporterOptions;
 
     /**
      * statsCollected property
@@ -30,7 +31,8 @@ class TestReporter {
       onRunStart: {},
       onTestResult: {times: 0},
       onTestStart: {},
-      options,
+      reporterContext,
+      reporterOptions,
     };
   }
 
@@ -66,7 +68,7 @@ class TestReporter {
     onRunStart.options = typeof options;
   }
 
-  onRunComplete(contexts, results) {
+  onRunComplete(testContexts, results) {
     const onRunComplete = this._statsCollected.onRunComplete;
 
     onRunComplete.called = true;
@@ -75,9 +77,9 @@ class TestReporter {
     onRunComplete.numFailedTests = results.numFailedTests;
     onRunComplete.numTotalTests = results.numTotalTests;
 
-    if (this._statsCollected.options.maxWorkers) {
+    if (this._statsCollected.reporterOptions.maxWorkers) {
       // Since it's a different number on different machines.
-      this._statsCollected.options.maxWorkers = '<<REPLACED>>';
+      this._statsCollected.reporterOptions.maxWorkers = '<<REPLACED>>';
     }
     // The Final Call
     process.stdout.write(JSON.stringify(this._statsCollected, null, 4));

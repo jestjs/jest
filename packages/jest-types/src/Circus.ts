@@ -12,15 +12,18 @@ type Process = NodeJS.Process;
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
 export type BlockName = Global.BlockName;
+export type BlockNameLike = Global.BlockNameLike;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
+export type TestNameLike = Global.TestNameLike;
 export type TestFn = Global.TestFn;
+export type ConcurrentTestFn = Global.ConcurrentTestFn;
 export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, unknown>;
+export type TestContext = Global.TestContext;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -28,6 +31,7 @@ export type Hook = {
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
+  seenDone: boolean;
   timeout: number | undefined | null;
 };
 
@@ -68,6 +72,7 @@ export type SyncEvent =
       testName: TestName;
       fn: TestFn;
       mode?: TestMode;
+      concurrent: boolean;
       timeout: number | undefined;
     }
   | {
@@ -179,6 +184,7 @@ export type TestResult = {
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
+  retryReasons: Array<FormattedError>;
   testPath: Array<TestName | BlockName>;
 };
 
@@ -212,6 +218,7 @@ export type State = {
   testTimeout: number;
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
+  maxConcurrency: number;
 };
 
 export type DescribeBlock = {
@@ -231,13 +238,16 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
+  retryReasons: Array<TestError>;
   fn: TestFn;
   invocations: number;
   mode: TestMode;
+  concurrent: boolean;
   name: TestName;
   parent: DescribeBlock;
   startedAt?: number | null;
   duration?: number | null;
+  seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
 };

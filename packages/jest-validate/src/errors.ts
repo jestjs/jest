@@ -6,10 +6,10 @@
  */
 
 import chalk = require('chalk');
-import getType = require('jest-get-type');
-import {ERROR, ValidationError, formatPrettyObject} from './utils';
+import {getType} from 'jest-get-type';
 import {getValues} from './condition';
 import type {ValidationOptions} from './types';
+import {ERROR, ValidationError, formatPrettyObject} from './utils';
 
 export const errorMessage = (
   option: string,
@@ -24,7 +24,7 @@ export const errorMessage = (
   );
 
   const message = `  Option ${chalk.bold(
-    `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
+    `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
   )} must be of type:
     ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
   but instead received:

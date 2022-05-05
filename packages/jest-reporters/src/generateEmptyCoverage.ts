@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
-import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
-import {ScriptTransformer, shouldInstrument} from '@jest/transform';
 import type {V8Coverage} from 'collect-v8-coverage';
+import * as fs from 'graceful-fs';
+import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
+import {readInitialCoverage} from 'istanbul-lib-instrument';
+import {createScriptTransformer, shouldInstrument} from '@jest/transform';
+import type {Config} from '@jest/types';
 
 type SingleV8Coverage = V8Coverage[number];
 
@@ -24,14 +24,14 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default function (
+export default async function generateEmptyCoverage(
   source: string,
-  filename: Config.Path,
+  filename: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  changedFiles?: Set<Config.Path>,
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
-): CoverageWorkerResult | null {
+  changedFiles?: Set<string>,
+  sourcesRelatedToTestsInChangedFiles?: Set<string>,
+): Promise<CoverageWorkerResult | null> {
   const coverageOptions = {
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
@@ -66,11 +66,19 @@ export default function (
       };
     }
 
+    const scriptTransformer = await createScriptTransformer(config);
+
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code} = new ScriptTransformer(config).transformSource(
+    const {code} = await scriptTransformer.transformSourceAsync(
       filename,
       source,
-      true,
+      {
+        instrument: true,
+        supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
+        supportsStaticESM: true,
+        supportsTopLevelAwait: true,
+      },
     );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);

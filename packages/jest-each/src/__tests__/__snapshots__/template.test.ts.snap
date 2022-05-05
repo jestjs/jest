@@ -5,6 +5,42 @@ exports[`jest-each .describe throws an error when called with an empty string 1`
 "
 `;
 
+exports[`jest-each .describe throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .describe throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .describe throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
+`;
+
 exports[`jest-each .describe throws error when there are fewer arguments than headings over multiple rows 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
@@ -18,7 +54,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -31,7 +67,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe throws error when there are no arguments for given headings 1`] = `
@@ -42,6 +78,42 @@ exports[`jest-each .describe throws error when there are no arguments for given 
 exports[`jest-each .describe.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .describe.only throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .describe.only throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .describe.only throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .describe.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -57,7 +129,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -70,7 +142,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .describe.only throws error when there are no arguments for given headings 1`] = `
@@ -81,6 +153,42 @@ exports[`jest-each .describe.only throws error when there are no arguments for g
 exports[`jest-each .fdescribe throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .fdescribe throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .fdescribe throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .fdescribe throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .fdescribe throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -96,7 +204,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -109,7 +217,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fdescribe throws error when there are no arguments for given headings 1`] = `
@@ -120,6 +228,42 @@ exports[`jest-each .fdescribe throws error when there are no arguments for given
 exports[`jest-each .fit throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .fit throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .fit throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .fit throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .fit throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -135,7 +279,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -148,7 +292,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .fit throws error when there are no arguments for given headings 1`] = `
@@ -159,6 +303,42 @@ exports[`jest-each .fit throws error when there are no arguments for given headi
 exports[`jest-each .it throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .it throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .it throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .it throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .it throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -174,7 +354,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -187,7 +367,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it throws error when there are no arguments for given headings 1`] = `
@@ -198,6 +378,42 @@ exports[`jest-each .it throws error when there are no arguments for given headin
 exports[`jest-each .it.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .it.only throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .it.only throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .it.only throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .it.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -213,7 +429,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -226,7 +442,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .it.only throws error when there are no arguments for given headings 1`] = `
@@ -237,6 +453,42 @@ exports[`jest-each .it.only throws error when there are no arguments for given h
 exports[`jest-each .test throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .test throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .test throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -252,7 +504,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -265,7 +517,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test throws error when there are no arguments for given headings 1`] = `
@@ -276,6 +528,42 @@ exports[`jest-each .test throws error when there are no arguments for given head
 exports[`jest-each .test.concurrent throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .test.concurrent throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -291,7 +579,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -304,7 +592,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent throws error when there are no arguments for given headings 1`] = `
@@ -315,6 +603,42 @@ exports[`jest-each .test.concurrent throws error when there are no arguments for
 exports[`jest-each .test.concurrent.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .test.concurrent.only throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent.only throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent.only throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -330,7 +654,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -343,7 +667,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.only throws error when there are no arguments for given headings 1`] = `
@@ -354,6 +678,42 @@ exports[`jest-each .test.concurrent.only throws error when there are no argument
 exports[`jest-each .test.concurrent.skip throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .test.concurrent.skip throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent.skip throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.concurrent.skip throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -369,7 +729,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -382,7 +742,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.concurrent.skip throws error when there are no arguments for given headings 1`] = `
@@ -393,6 +753,42 @@ exports[`jest-each .test.concurrent.skip throws error when there are no argument
 exports[`jest-each .test.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
+`;
+
+exports[`jest-each .test.only throws error when there are additional words in first column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a is the left | b    | expected</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.only throws error when there are additional words in last column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b    | expected value</>
+<red>          "</>"
+`;
+
+exports[`jest-each .test.only throws error when there are additional words in second column heading 1`] = `
+"Table headings do not conform to expected format:
+
+<green>heading1 | headingN</>
+
+Received:
+
+<red>"</>
+<red>          a    | b is the right | expected</>
+<red>          "</>"
 `;
 
 exports[`jest-each .test.only throws error when there are fewer arguments than headings over multiple rows 1`] = `
@@ -408,7 +804,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row 1`] = `
@@ -421,7 +817,7 @@ Received:
 <red>  1,</>
 <red>]</>
 
-Missing <red>2</> arguments"
+Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.only throws error when there are no arguments for given headings 1`] = `

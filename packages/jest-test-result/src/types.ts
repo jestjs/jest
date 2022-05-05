@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {V8Coverage} from 'collect-v8-coverage';
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
-import type {V8Coverage} from 'collect-v8-coverage';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
 
 export interface RuntimeTransformResult extends TransformTypes.TransformResult {
-  // TODO: Make mandatory in Jest 27
-  wrapperLength?: number;
+  wrapperLength: number;
 }
 
 export type V8CoverageResult = Array<{
@@ -49,7 +50,7 @@ export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
   AssertionResult,
-  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title'
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
 > & {
   failureMessages: AssertionResult['failureMessages'] | null;
 };
@@ -76,6 +77,10 @@ export type AggregatedResultWithoutCoverage = {
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
   coverageMap?: CoverageMap | null;
 };
+
+export type TestResultsProcessor = (
+  results: AggregatedResult,
+) => AggregatedResult;
 
 export type Suite = {
   title: string;
@@ -113,12 +118,8 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
-  // TODO - Remove in Jest 26
-  sourceMaps?: {
-    [sourcePath: string]: string;
-  };
   testExecError?: SerializableError;
-  testFilePath: Config.Path;
+  testFilePath: string;
   testResults: Array<AssertionResult>;
   v8Coverage?: V8CoverageResult;
 };
@@ -180,3 +181,29 @@ export type SnapshotSummary = {
   unmatched: number;
   updated: number;
 };
+
+export type Test = {
+  context: TestContext;
+  duration?: number;
+  path: string;
+};
+
+export type TestContext = {
+  config: Config.ProjectConfig;
+  hasteFS: HasteFS;
+  moduleMap: ModuleMap;
+  resolver: Resolver;
+};
+
+// Typings for `sendMessageToJest` events
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [string, AssertionResult];
+};
+
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
+) => unknown;

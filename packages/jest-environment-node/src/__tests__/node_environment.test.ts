@@ -5,33 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import NodeEnvironment = require('../');
-import {makeProjectConfig} from '../../../../TestUtils';
-
-const isTextEncoderDefined = typeof TextEncoder === 'function';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import NodeEnvironment from '../';
 
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {
-    const env1 = new NodeEnvironment(makeProjectConfig());
-    const env2 = new NodeEnvironment(makeProjectConfig());
+    const testEnvConfig = {
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    };
+    const env1 = new NodeEnvironment(testEnvConfig);
+    const env2 = new NodeEnvironment(testEnvConfig);
 
     expect(env1.global.process).not.toBe(env2.global.process);
   });
 
   it('exposes process.on', () => {
-    const env1 = new NodeEnvironment(makeProjectConfig());
+    const env1 = new NodeEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     expect(env1.global.process.on).not.toBe(null);
   });
 
   it('exposes global.global', () => {
-    const env1 = new NodeEnvironment(makeProjectConfig());
+    const env1 = new NodeEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     expect(env1.global.global).toBe(env1.global);
   });
 
   it('should configure setTimeout/setInterval to use the node api', () => {
-    const env1 = new NodeEnvironment(makeProjectConfig());
+    const env1 = new NodeEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     env1.fakeTimers!.useFakeTimers();
 
@@ -39,7 +50,6 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      // @ts-expect-error
       expect(timer.id).not.toBeUndefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
@@ -47,14 +57,15 @@ describe('NodeEnvironment', () => {
   });
 
   it('has modern fake timers implementation', () => {
-    const env = new NodeEnvironment(makeProjectConfig());
+    const env = new NodeEnvironment({
+      globalConfig: makeGlobalConfig(),
+      projectConfig: makeProjectConfig(),
+    });
 
     expect(env.fakeTimersModern).toBeDefined();
   });
 
-  if (isTextEncoderDefined) {
-    test('TextEncoder references the same global Uint8Array constructor', () => {
-      expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
-    });
-  }
+  test('TextEncoder references the same global Uint8Array constructor', () => {
+    expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
+  });
 });

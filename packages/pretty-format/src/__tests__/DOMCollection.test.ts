@@ -8,10 +8,10 @@
  */
 /* eslint-env browser*/
 
-import prettyFormat from '../';
+import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {DOMCollection, DOMElement} = prettyFormat.plugins;
+const {DOMCollection, DOMElement} = plugins;
 
 setPrettyPrint([DOMCollection, DOMElement]);
 
@@ -35,9 +35,10 @@ describe('DOMCollection plugin for object properties', () => {
     el.setAttribute('name1', 'value1');
     el.setAttribute('name2', 'value2');
 
-    expect(
-      el.attributes,
-    ).toPrettyPrintTo('{"name1": "value1", "name2": "value2"}', {min: true});
+    expect(el.attributes).toPrettyPrintTo(
+      '{"name1": "value1", "name2": "value2"}',
+      {min: true},
+    );
   });
 });
 
@@ -124,8 +125,6 @@ describe('DOMCollection plugin for list items', () => {
     expect(select.options).toPrettyPrintTo(expectedHTMLOptionsCollection);
   });
 
-  // When Jest upgrades to a version of jsdom later than 12.2.0,
-  // the class name might become HTMLFormControlsCollection
   const expectedHTMLFormControlsCollection = [
     'HTMLCollection [',
     '  <select>',

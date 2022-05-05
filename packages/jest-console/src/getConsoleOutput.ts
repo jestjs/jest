@@ -6,30 +6,21 @@
  */
 
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {
   StackTraceConfig,
   StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
-import type {Config} from '@jest/types';
 import type {ConsoleBuffer} from './types';
 
-export default (
-  // TODO: remove in 27
-  root: string,
-  // TODO: this is covered by GlobalConfig, switch over in 27
-  verbose: boolean,
+export default function getConsoleOutput(
   buffer: ConsoleBuffer,
-  // TODO: make mandatory and take Config.ProjectConfig in 27
-  config: StackTraceConfig = {
-    rootDir: root,
-    testMatch: [],
-  },
-  // TODO: make mandatory in 27
-  globalConfig?: Config.GlobalConfig,
-): string => {
-  const TITLE_INDENT = verbose ? '  ' : '    ';
-  const CONSOLE_INDENT = TITLE_INDENT + '  ';
+  config: StackTraceConfig,
+  globalConfig: Config.GlobalConfig,
+): string {
+  const TITLE_INDENT = globalConfig.verbose ? ' '.repeat(2) : ' '.repeat(4);
+  const CONSOLE_INDENT = TITLE_INDENT + ' '.repeat(2);
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {
     message = message
@@ -37,7 +28,7 @@ export default (
       .map(line => CONSOLE_INDENT + line)
       .join('\n');
 
-    let typeMessage = 'console.' + type;
+    let typeMessage = `console.${type}`;
     let noStackTrace = true;
     let noCodeFrame = true;
 
@@ -60,17 +51,12 @@ export default (
 
     const formattedStackTrace = formatStackTrace(origin, config, options);
 
-    return (
-      output +
-      TITLE_INDENT +
-      chalk.dim(typeMessage) +
-      '\n' +
-      message.trimRight() +
-      '\n' +
-      chalk.dim(formattedStackTrace.trimRight()) +
-      '\n\n'
-    );
+    return `${
+      output + TITLE_INDENT + chalk.dim(typeMessage)
+    }\n${message.trimRight()}\n${chalk.dim(
+      formattedStackTrace.trimRight(),
+    )}\n\n`;
   }, '');
 
-  return logEntries.trimRight() + '\n';
-};
+  return `${logEntries.trimRight()}\n`;
+}

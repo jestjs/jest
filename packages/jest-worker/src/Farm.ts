@@ -5,47 +5,40 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
+import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
-  FarmOptions,
   OnCustomMessage,
   OnEnd,
   OnStart,
   PromiseWithCustomMessage,
   QueueChildMessage,
-  QueueItem,
+  TaskQueue,
+  WorkerCallback,
+  WorkerFarmOptions,
   WorkerInterface,
+  WorkerSchedulingPolicy,
 } from './types';
 
 export default class Farm {
-  private _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private _cacheKeys: Record<string, WorkerInterface>;
-  private _callback: Function;
-  private _last: Array<QueueItem>;
-  private _locks: Array<boolean>;
-  private _numOfWorkers: number;
-  private _offset: number;
-  private _queue: Array<QueueItem | null>;
+  private readonly _computeWorkerKey: WorkerFarmOptions['computeWorkerKey'];
+  private readonly _workerSchedulingPolicy: WorkerSchedulingPolicy;
+  private readonly _cacheKeys: Record<string, WorkerInterface> =
+    Object.create(null);
+  private readonly _locks: Array<boolean> = [];
+  private _offset = 0;
+  private readonly _taskQueue: TaskQueue;
 
   constructor(
-    numOfWorkers: number,
-    callback: Function,
-    computeWorkerKey?: FarmOptions['computeWorkerKey'],
+    private _numOfWorkers: number,
+    private _callback: WorkerCallback,
+    options: WorkerFarmOptions = {},
   ) {
-    this._cacheKeys = Object.create(null);
-    this._callback = callback;
-    this._last = [];
-    this._locks = [];
-    this._numOfWorkers = numOfWorkers;
-    this._offset = 0;
-    this._queue = [];
-
-    if (computeWorkerKey) {
-      this._computeWorkerKey = computeWorkerKey;
-    }
+    this._computeWorkerKey = options.computeWorkerKey;
+    this._workerSchedulingPolicy =
+      options.workerSchedulingPolicy ?? 'round-robin';
+    this._taskQueue = options.taskQueue ?? new FifoQueue();
   }
 
   doWork(
@@ -66,7 +59,14 @@ export default class Farm {
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(
-      (resolve, reject) => {
+      // Bind args to this function so it won't reference to the parent scope.
+      // This prevents a memory leak in v8, because otherwise the function will
+      // retain args for the closure.
+      ((
+        args: Array<unknown>,
+        resolve: (value: unknown) => void,
+        reject: (reason?: any) => void,
+      ) => {
         const computeWorkerKey = this._computeWorkerKey;
         const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
 
@@ -96,11 +96,12 @@ export default class Farm {
         const task = {onCustomMessage, onEnd, onStart, request};
 
         if (worker) {
-          this._enqueue(task, worker.getWorkerId());
+          this._taskQueue.enqueue(task, worker.getWorkerId());
+          this._process(worker.getWorkerId());
         } else {
           this._push(task);
         }
-      },
+      }).bind(null, args),
     );
 
     promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
@@ -108,31 +109,30 @@ export default class Farm {
     return promise;
   }
 
-  private _getNextTask(workerId: number): QueueChildMessage | null {
-    let queueHead = this._queue[workerId];
-
-    while (queueHead && queueHead.task.request[1]) {
-      queueHead = queueHead.next || null;
-    }
-
-    this._queue[workerId] = queueHead;
-
-    return queueHead && queueHead.task;
-  }
-
   private _process(workerId: number): Farm {
     if (this._isLocked(workerId)) {
       return this;
     }
 
-    const task = this._getNextTask(workerId);
+    const task = this._taskQueue.dequeue(workerId);
 
     if (!task) {
       return this;
     }
 
-    const onEnd = (error: Error | null, result: unknown) => {
-      task.onEnd(error, result);
+    if (task.request[1]) {
+      throw new Error('Queue implementation returned processed task');
+    }
+
+    // Reference the task object outside so it won't be retained by onEnd,
+    // and other properties of the task object, such as task.request can be
+    // garbage collected.
+    let taskOnEnd: OnEnd | null = task.onEnd;
+    const onEnd: OnEnd = (error, result) => {
+      if (taskOnEnd) {
+        taskOnEnd(error, result);
+      }
+      taskOnEnd = null;
 
       this._unlock(workerId);
       this._process(workerId);
@@ -152,33 +152,28 @@ export default class Farm {
     return this;
   }
 
-  private _enqueue(task: QueueChildMessage, workerId: number): Farm {
-    const item = {next: null, task};
+  private _push(task: QueueChildMessage): Farm {
+    this._taskQueue.enqueue(task);
 
-    if (task.request[1]) {
-      return this;
+    const offset = this._getNextWorkerOffset();
+    for (let i = 0; i < this._numOfWorkers; i++) {
+      this._process((offset + i) % this._numOfWorkers);
+
+      if (task.request[1]) {
+        break;
+      }
     }
-
-    if (this._queue[workerId]) {
-      this._last[workerId].next = item;
-    } else {
-      this._queue[workerId] = item;
-    }
-
-    this._last[workerId] = item;
-    this._process(workerId);
 
     return this;
   }
 
-  private _push(task: QueueChildMessage): Farm {
-    for (let i = 0; i < this._numOfWorkers; i++) {
-      this._enqueue(task, (this._offset + i) % this._numOfWorkers);
+  private _getNextWorkerOffset(): number {
+    switch (this._workerSchedulingPolicy) {
+      case 'in-order':
+        return 0;
+      case 'round-robin':
+        return this._offset++;
     }
-
-    this._offset++;
-
-    return this;
   }
 
   private _lock(workerId: number): void {

@@ -365,7 +365,7 @@ exports[`options omitAnnotationLines true diffStringsUnified and includeChangeCo
 
 exports[`options omitAnnotationLines true diffStringsUnified empty strings 1`] = ``;
 
-exports[`options trailingSpaceFormatter diffDefault default no color 1`] = `
+exports[`options trailingSpaceFormatter diff default no color 1`] = `
 <g>- Expected</>
 <r>+ Received</>
 
@@ -376,7 +376,7 @@ exports[`options trailingSpaceFormatter diffDefault default no color 1`] = `
 <r>+ insert 1 trailing space: </>
 `;
 
-exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
+exports[`options trailingSpaceFormatter diff middle dot 1`] = `
 <g>- Expected</>
 <r>+ Received</>
 
@@ -387,7 +387,7 @@ exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
 <r>+ insert 1 trailing space:·</>
 `;
 
-exports[`options trailingSpaceFormatter diffDefault yellowish common 1`] = `
+exports[`options trailingSpaceFormatter diff yellowish common 1`] = `
 <g>- Expected</>
 <r>+ Received</>
 

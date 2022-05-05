@@ -9,7 +9,7 @@ import runJest from '../runJest';
 
 test("`require.main` on using `--resetModules='true'` should not be undefined", () => {
   const {exitCode} = runJest('require-main-reset-modules', [
-    `--resetModules='true'`,
+    "--resetModules='true'",
     'resetModulesFlag',
   ]);
   expect(exitCode).toBe(0);

@@ -5,25 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-import {bind as bindEach} from 'jest-each';
-import {formatExecError} from 'jest-message-util';
-import {ErrorWithStack, isPromise} from 'jest-util';
 import type {Circus, Global} from '@jest/types';
+import {bind as bindEach} from 'jest-each';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
+
+export {setState, getState, resetState} from './state';
+export {default as run} from './run';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
 type DescribeFn = (
-  blockName: Circus.BlockName,
+  blockName: Circus.BlockNameLike,
   blockFn: Circus.BlockFn,
 ) => void;
 
 const describe = (() => {
-  const describe = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const describe = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, describe);
-  const only = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const only = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, only, 'only');
-  const skip = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
+  const skip = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, skip, 'skip');
 
   describe.each = bindEach(describe, false);
@@ -39,19 +40,27 @@ const describe = (() => {
 
 const _dispatchDescribe = (
   blockFn: Circus.BlockFn,
-  blockName: Circus.BlockName,
+  blockName: Circus.BlockNameLike,
   describeFn: DescribeFn,
   mode?: Circus.BlockMode,
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
-    asyncError.message = `Missing second argument. It must be a callback function.`;
+    asyncError.message =
+      'Missing second argument. It must be a callback function.';
     throw asyncError;
   }
   if (typeof blockFn !== 'function') {
     asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
+  try {
+    blockName = convertDescriptorToString(blockName);
+  } catch (error) {
+    asyncError.message = (error as Error).message;
+    throw asyncError;
+  }
+
   dispatchSync({
     asyncError,
     blockName,
@@ -60,34 +69,15 @@ const _dispatchDescribe = (
   });
   const describeReturn = blockFn();
 
-  // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+      describeFn,
     );
   } else if (describeReturn !== undefined) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'A "describe" callback must not return a value.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'A "describe" callback must not return a value.',
+      describeFn,
     );
   }
 
@@ -124,37 +114,48 @@ const afterAll: THook = (fn, timeout) =>
 
 const test: Global.It = (() => {
   const test = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, undefined, fn, test, timeout);
+  ): void => _addTest(testName, undefined, false, fn, test, timeout);
   const skip = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn?: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'skip', fn, skip, timeout);
+  ): void => _addTest(testName, 'skip', false, fn, skip, timeout);
   const only = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     fn: Circus.TestFn,
     timeout?: number,
-  ): void => _addTest(testName, 'only', fn, test.only, timeout);
+  ): void => _addTest(testName, 'only', false, fn, test.only, timeout);
+  const concurrentTest = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, true, fn, concurrentTest, timeout);
+  const concurrentOnly = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
-  test.todo = (testName: Circus.TestName, ...rest: Array<any>): void => {
+  test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
       throw new ErrorWithStack(
         'Todo must be called with only a description.',
         test.todo,
       );
     }
-    return _addTest(testName, 'todo', () => {}, test.todo);
+    return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 
   const _addTest = (
-    testName: Circus.TestName,
+    testName: Circus.TestNameLike,
     mode: Circus.TestMode,
+    concurrent: boolean,
     fn: Circus.TestFn | undefined,
     testFn: (
-      testName: Circus.TestName,
+      testName: Circus.TestNameLike,
       fn: Circus.TestFn,
       timeout?: number,
     ) => void,
@@ -162,11 +163,13 @@ const test: Global.It = (() => {
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
 
-    if (typeof testName !== 'string') {
-      asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
-
+    try {
+      testName = convertDescriptorToString(testName);
+    } catch (error) {
+      asyncError.message = (error as Error).message;
       throw asyncError;
     }
+
     if (fn === undefined) {
       asyncError.message =
         'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
@@ -181,6 +184,7 @@ const test: Global.It = (() => {
 
     return dispatchSync({
       asyncError,
+      concurrent,
       fn,
       mode,
       name: 'add_test',
@@ -192,9 +196,14 @@ const test: Global.It = (() => {
   test.each = bindEach(test);
   only.each = bindEach(only);
   skip.each = bindEach(skip);
+  concurrentTest.each = bindEach(concurrentTest, false);
+  concurrentOnly.each = bindEach(concurrentOnly, false);
 
   test.only = only;
   test.skip = skip;
+  test.concurrent = concurrentTest;
+  concurrentTest.only = concurrentOnly;
+  concurrentTest.skip = skip;
 
   return test;
 })();

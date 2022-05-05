@@ -25,7 +25,7 @@ Object {
         "loc": Object {
           "end": Object {
             "column": 1,
-            "line": 12,
+            "line": 11,
           },
           "start": Object {
             "column": 58,
@@ -45,7 +45,7 @@ Object {
       "0": Object {
         "end": Object {
           "column": 2,
-          "line": 12,
+          "line": 11,
         },
         "start": Object {
           "column": 0,
@@ -55,21 +55,21 @@ Object {
       "1": Object {
         "end": Object {
           "column": 41,
-          "line": 10,
+          "line": 9,
         },
         "start": Object {
           "column": 34,
-          "line": 10,
+          "line": 9,
         },
       },
       "2": Object {
         "end": Object {
           "column": 33,
-          "line": 11,
+          "line": 10,
         },
         "start": Object {
           "column": 2,
-          "line": 11,
+          "line": 10,
         },
       },
     },

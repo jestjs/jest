@@ -4,7 +4,12 @@
     "transformIgnorePatterns": [
       "/node_modules/",
       "<rootDir>/__tests__",
-      "<rootDir>/ignored/"
+      "<rootDir>/ignored/",
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
     ],
     "transform": {
       "\\.js$": "<rootDir>/preprocessor.js"

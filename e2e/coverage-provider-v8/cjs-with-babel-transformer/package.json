@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/*.ts"
+    ]
+  }
+}

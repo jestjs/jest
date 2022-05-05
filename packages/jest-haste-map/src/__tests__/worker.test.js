@@ -10,9 +10,8 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-
-import {getSha1, worker} from '../worker';
 import H from '../constants';
+import {getSha1, worker} from '../worker';
 
 jest.mock('graceful-fs', () => {
   const path = require('path');
@@ -29,14 +28,7 @@ jest.mock('graceful-fs', () => {
         // Strawberry!
       `,
     [path.join('/project', 'fruits', 'apple.png')]: Buffer.from([
-      137,
-      80,
-      78,
-      71,
-      13,
-      10,
-      26,
-      10,
+      137, 80, 78, 71, 13, 10, 26, 10,
     ]),
     [path.join('/project', 'package.json')]: `
         {
@@ -150,7 +142,7 @@ describe('worker', () => {
       error = err;
     }
 
-    expect(error.message).toEqual(`Cannot read path '/kiwi.js'.`);
+    expect(error.message).toEqual("Cannot read path '/kiwi.js'.");
   });
 
   it('simply computes SHA-1s when requested (works well with binary data)', async () => {

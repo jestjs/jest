@@ -6,8 +6,11 @@
  */
 
 import type {Circus} from '@jest/types';
-import {TEST_TIMEOUT_SYMBOL} from './types';
-
+import {
+  injectGlobalErrorHandlers,
+  restoreGlobalErrorHandlers,
+} from './globalErrorHandlers';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -16,22 +19,15 @@ import {
   makeDescribe,
   makeTest,
 } from './utils';
-import {
-  injectGlobalErrorHandlers,
-  restoreGlobalErrorHandlers,
-} from './globalErrorHandlers';
 
-// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
-const eventHandler: Circus.EventHandler = (
-  event: Circus.Event,
-  state: Circus.State,
-): void => {
+const eventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
       break;
     }
     case 'hook_start': {
+      event.hook.seenDone = false;
       break;
     }
     case 'start_describe_definition': {
@@ -54,7 +50,7 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
-      invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
+      invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
@@ -80,6 +76,7 @@ const eventHandler: Circus.EventHandler = (
       }
       if (
         !state.hasFocusedTests &&
+        currentDescribeBlock.mode !== 'skip' &&
         currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
@@ -113,12 +110,19 @@ const eventHandler: Circus.EventHandler = (
       }
       const parent = currentDescribeBlock;
 
-      currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
+      currentDescribeBlock.hooks.push({
+        asyncError,
+        fn,
+        parent,
+        seenDone: false,
+        timeout,
+        type,
+      });
       break;
     }
     case 'add_test': {
       const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
-      const {asyncError, fn, mode, testName: name, timeout} = event;
+      const {asyncError, fn, mode, testName: name, timeout, concurrent} = event;
 
       if (currentlyRunningTest) {
         currentlyRunningTest.errors.push(
@@ -139,12 +143,13 @@ const eventHandler: Circus.EventHandler = (
       const test = makeTest(
         fn,
         mode,
+        concurrent,
         name,
         currentDescribeBlock,
         timeout,
         asyncError,
       );
-      if (test.mode === 'only') {
+      if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);
@@ -188,6 +193,10 @@ const eventHandler: Circus.EventHandler = (
       event.test.invocations += 1;
       break;
     }
+    case 'test_fn_start': {
+      event.test.seenDone = false;
+      break;
+    }
     case 'test_fn_failure': {
       const {
         error,
@@ -197,13 +206,21 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'test_retry': {
+      const logErrorsBeforeRetry: boolean =
+        // eslint-disable-next-line no-restricted-globals
+        global[LOG_ERRORS_BEFORE_RETRY] || false;
+      if (logErrorsBeforeRetry) {
+        event.test.retryReasons.push(...event.test.errors);
+      }
       event.test.errors = [];
       break;
     }
     case 'run_start': {
       state.hasStarted = true;
+      /* eslint-disable no-restricted-globals */
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      /* eslint-enable */
       break;
     }
     case 'run_finish': {

@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
-import type {TestResult} from '@jest/test-result';
-import type {TestFileEvent} from 'jest-runner';
-import type {RuntimeType as Runtime} from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {TestFileEvent, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type Runtime from 'jest-runtime';
+import type {SnapshotState} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -23,35 +22,29 @@ const jestAdapter = async (
   testPath: string,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
-  const {
-    initialize,
-    runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
-    FRAMEWORK_INITIALIZER,
-  );
-
-  const getPrettier = () =>
-    config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('@babel/traverse').default;
+  const {initialize, runAndTransformResultsToJestFormat} =
+    runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+      FRAMEWORK_INITIALIZER,
+    );
 
   const {globals, snapshotState} = await initialize({
     config,
     environment,
-    getBabelTraverse,
-    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     sendMessageToJest,
-    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake' || config.timers === 'legacy') {
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimers!.useFakeTimers();
-  } else if (config.timers === 'modern') {
-    environment.fakeTimersModern!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      // during setup, this cannot be null (and it's fine to explode if it is)
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   globals.beforeEach(() => {
@@ -66,7 +59,10 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
@@ -78,8 +74,7 @@ const jestAdapter = async (
   });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -87,9 +82,7 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
@@ -113,7 +106,7 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult,
-  snapshotState: SnapshotStateType,
+  snapshotState: SnapshotState,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
@@ -140,4 +133,4 @@ const _addSnapshotData = (
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
 };
 
-export = jestAdapter;
+export default jestAdapter;

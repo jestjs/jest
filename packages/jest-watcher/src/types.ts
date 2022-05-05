@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 
 type TestSuiteInfo = {
   config: Config.ProjectConfig;
@@ -17,7 +17,7 @@ type TestSuiteInfo = {
 export type JestHookExposedFS = {
   projects: Array<{
     config: Config.ProjectConfig;
-    testPaths: Array<Config.Path>;
+    testPaths: Array<string>;
   }>;
 };
 
@@ -56,6 +56,8 @@ export type AllowedConfigOptions = Partial<
     | 'collectCoverageOnlyFrom'
     | 'coverageDirectory'
     | 'coverageReporters'
+    | 'findRelatedTests'
+    | 'nonFlagArgs'
     | 'notify'
     | 'notifyMode'
     | 'onlyFailures'
@@ -81,6 +83,7 @@ export interface WatchPlugin {
 }
 export interface WatchPluginClass {
   new (options: {
+    config: Record<string, unknown>;
     stdin: NodeJS.ReadStream;
     stdout: NodeJS.WriteStream;
   }): WatchPlugin;

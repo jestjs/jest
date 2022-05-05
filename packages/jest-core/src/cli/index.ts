@@ -5,38 +5,38 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import type {AggregatedResult} from '@jest/test-result';
-import {CustomConsole} from '@jest/console';
-import {createDirectory, preRunMessage} from 'jest-util';
-import {readConfigs} from 'jest-config';
-import Runtime = require('jest-runtime');
-import type {ChangedFilesPromise} from 'jest-changed-files';
-import HasteMap = require('jest-haste-map');
 import chalk = require('chalk');
-import rimraf = require('rimraf');
 import exit = require('exit');
-import type {Filter} from '../types';
-import createContext from '../lib/create_context';
-import getChangedFilesPromise from '../getChangedFilesPromise';
+import rimraf = require('rimraf');
+import {CustomConsole} from '@jest/console';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {ChangedFilesPromise} from 'jest-changed-files';
+import {readConfigs} from 'jest-config';
+import type HasteMap from 'jest-haste-map';
+import Runtime from 'jest-runtime';
+import {createDirectory, preRunMessage} from 'jest-util';
+import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
-import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
-import runJest from '../runJest';
-import TestWatcher from '../TestWatcher';
-import watch from '../watch';
-import pluralize from '../pluralize';
-import logDebugMessages from '../lib/log_debug_messages';
+import getChangedFilesPromise from '../getChangedFilesPromise';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
 import getSelectProjectsMessage from '../getSelectProjectsMessage';
+import createContext from '../lib/createContext';
+import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
+import logDebugMessages from '../lib/logDebugMessages';
+import pluralize from '../pluralize';
+import runJest from '../runJest';
+import type {Filter} from '../types';
+import watch from '../watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
-  projects: Array<Config.Path>,
+  projects: Array<string>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
@@ -71,17 +71,24 @@ export async function runCLI(
     exit(0);
   }
 
-  let configsOfProjectsToRun = configs;
-  if (argv.selectProjects) {
-    const namesMissingWarning = getProjectNamesMissingWarning(configs);
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(configs, {
+    ignoreProjects: argv.ignoreProjects,
+    selectProjects: argv.selectProjects,
+  });
+  if (argv.selectProjects || argv.ignoreProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs, {
+      ignoreProjects: argv.ignoreProjects,
+      selectProjects: argv.selectProjects,
+    });
     if (namesMissingWarning) {
       outputStream.write(namesMissingWarning);
     }
-    configsOfProjectsToRun = getConfigsOfProjectsToRun(
-      argv.selectProjects,
-      configs,
+    outputStream.write(
+      getSelectProjectsMessage(configsOfProjectsToRun, {
+        ignoreProjects: argv.ignoreProjects,
+        selectProjects: argv.selectProjects,
+      }),
     );
-    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
   await _run10000(
@@ -89,7 +96,9 @@ export async function runCLI(
     configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
-    r => (results = r),
+    r => {
+      results = r;
+    },
   );
 
   if (argv.watch || argv.watchAll) {
@@ -132,7 +141,7 @@ const buildContextsAndHasteMaps = async (
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
+      const hasteMapInstance = await Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
         maxWorkers: Math.max(
           1,
@@ -166,7 +175,7 @@ const _run10000 = async (
   let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const rawFilter = require(globalConfig.filter);
-    let filterSetupPromise: Promise<Error | undefined> | undefined;
+    let filterSetupPromise: Promise<unknown | undefined> | undefined;
     if (rawFilter.setup) {
       // Wrap filter setup Promise to avoid "uncaught Promise" error.
       // If an error is returned, we surface it in the return value.
@@ -218,7 +227,7 @@ const _run10000 = async (
 };
 
 const runWatch = async (
-  contexts: Array<Runtime.Context>,
+  contexts: Array<TestContext>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -256,7 +265,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Runtime.Context>,
+  contexts: Array<TestContext>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 const dir = path.resolve(__dirname, '../custom-test-sequencer');
 
 test('run prioritySequence first sync', () => {
@@ -58,4 +58,24 @@ test('run prioritySequence first async', () => {
     './d.test.js',
     './e.test.js',
   ]);
+});
+
+test('run failed tests async', () => {
+  const result = runJest(
+    dir,
+    [
+      '--onlyFailures',
+      '-i',
+      '--config',
+      JSON.stringify({
+        testSequencer: '<rootDir>/testSequencerAsync.js',
+      }),
+    ],
+    {},
+  );
+  expect(result.exitCode).toBe(0);
+  const sequence = extractSummary(result.stderr)
+    .rest.replace(/PASS /g, '')
+    .split('\n');
+  expect(sequence).toEqual(['./c.test.js', './d.test.js']);
 });

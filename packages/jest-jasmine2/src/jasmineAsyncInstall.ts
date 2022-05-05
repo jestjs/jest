@@ -10,14 +10,14 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
+import type {Config, Global} from '@jest/types';
 import isError from './isError';
-import type {Jasmine} from './types';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
+import type {Jasmine} from './types';
 
 function isPromise(obj: any): obj is PromiseLike<unknown> {
   return obj && typeof obj.then === 'function';
@@ -44,11 +44,24 @@ function promisifyLifeCycleFunction(
       return originalFn.call(env);
     }
 
-    const hasDoneCallback = typeof fn === 'function' && fn.length > 0;
+    if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, fn, timeout);
+    }
+
+    const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
-      // Jasmine will handle it
-      return originalFn.call(env, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestLifecycleWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
+      return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
     const extraError = new Error();
@@ -87,7 +100,7 @@ function promisifyLifeCycleFunction(
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -95,7 +108,7 @@ function promisifyIt(
   jasmine: Jasmine,
 ) {
   return function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn?: (done: DoneFn) => void | PromiseLike<void>,
     timeout?: number,
   ): Spec {
@@ -106,10 +119,24 @@ function promisifyIt(
       return spec;
     }
 
+    if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, specName, fn, timeout);
+    }
+
     const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
-      return originalFn.call(env, specName, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestTestWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
+      return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
     const extraError = new Error();
@@ -156,7 +183,7 @@ function promisifyIt(
 
 function makeConcurrent(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -164,8 +191,8 @@ function makeConcurrent(
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
-    specName: string,
-    fn: Global.TestFn,
+    specName: Global.TestNameLike,
+    fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
     let promise: Promise<unknown> = Promise.resolve();
@@ -188,6 +215,9 @@ function makeConcurrent(
     } catch (error) {
       promise = Promise.reject(error);
     }
+    // Avoid triggering the uncaught promise rejection handler in case the test errors before
+    // being awaited on.
+    promise.catch(() => {});
 
     return spec;
   };
@@ -200,7 +230,7 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();

@@ -5,7 +5,7 @@
 
 <hr />
 
-[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each) [![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21) [![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/facebook/jest/blob/master/LICENSE)
+[![version](https://img.shields.io/npm/v/jest-each.svg?style=flat-square)](https://www.npmjs.com/package/jest-each) [![downloads](https://img.shields.io/npm/dm/jest-each.svg?style=flat-square)](http://npm-stat.com/charts.html?package=jest-each&from=2017-03-21) [![MIT License](https://img.shields.io/npm/l/jest-each.svg?style=flat-square)](https://github.com/facebook/jest/blob/main/LICENSE)
 
 A parameterised testing library for [Jest](https://jestjs.io/) inspired by [mocha-each](https://github.com/ryym/mocha-each).
 
@@ -41,6 +41,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - `%o` - Object.
   - `%#` - Index of the test case.
   - `%%` - single percent sign ('%'). This does not consume an argument.
+- Unique test titles by injecting properties of test case object
 - 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
 
 ---
@@ -118,6 +119,10 @@ const each = require('jest-each').default;
     - `%o` - Object.
     - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
+  - Or generate unique test titles by injecting properties of test case object with `$variable`
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+    - You can use `$#` to inject the index of the test case
+    - You cannot use `$variable` with the `printf` formatting except for `%%`
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each([parameters]).describe(name, suiteFn)`
@@ -140,6 +145,10 @@ const each = require('jest-each').default;
     - `%o` - Object.
     - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
+  - Or generate unique test titles by injecting properties of test case object with `$variable`
+    - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+    - You can use `$#` to inject the index of the test case
+    - You cannot use `$variable` with the `printf` formatting except for `%%`
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 
 ### Usage
@@ -154,6 +163,16 @@ each([
   [1, 2, 3],
   [2, 1, 3],
 ]).test('returns the result of adding %d to %d', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
+```
+
+```js
+each([
+  {a: 1, b: 1, expected: 2},
+  {a: 1, b: 2, expected: 3},
+  {a: 2, b: 1, expected: 3},
+]).test('returns the result of adding $a to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -278,6 +297,28 @@ each([
 });
 ```
 
+```js
+each([
+  {a: 1, b: 1, expected: 2},
+  {a: 1, b: 2, expected: 3},
+  {a: 2, b: 1, expected: 3},
+]).describe('.add($a, $b)', ({a, b, expected}) => {
+  test(`returns ${expected}`, () => {
+    expect(a + b).toBe(expected);
+  });
+
+  test('does not mutate first arg', () => {
+    a + b;
+    expect(a).toBe(a);
+  });
+
+  test('does not mutate second arg', () => {
+    a + b;
+    expect(b).toBe(b);
+  });
+});
+```
+
 #### `.describe.only(name, fn)`
 
 Aliases: `.fdescribe(name, fn)`
@@ -338,6 +379,7 @@ each`
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+  - You can use `$#` to inject the index of the table row.
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each[tagged template].describe(name, suiteFn)`

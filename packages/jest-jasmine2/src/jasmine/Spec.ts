@@ -31,23 +31,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import type {Config} from '@jest/types';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
-
+import type {Circus} from '@jest/types';
+import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
+import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
   Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
-import assertionErrorMessage from '../assertionErrorMessage';
 import type {QueueableFn, default as queueRunner} from '../queueRunner';
 import type {AssertionErrorWithStack} from '../types';
 
 export type Attributes = {
   id: string;
   resultCallback: (result: Spec['result']) => void;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure: unknown;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
   queueableFn: QueueableFn;
   beforeAndAfterFns: () => {
     befores: Array<QueueableFn>;
@@ -65,7 +65,7 @@ export type SpecResult = {
   fullName: string;
   duration?: Milliseconds;
   failedExpectations: Array<FailedAssertion>;
-  testPath: Config.Path;
+  testPath: string;
   passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   pendingReason: string;
   status: Status;
@@ -110,7 +110,7 @@ export default class Spec {
   constructor(attrs: Attributes) {
     this.resultCallback = attrs.resultCallback || function () {};
     this.id = attrs.id;
-    this.description = attrs.description || '';
+    this.description = convertDescriptorToString(attrs.description);
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
       attrs.beforeAndAfterFns ||

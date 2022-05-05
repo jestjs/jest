@@ -31,22 +31,43 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import type {Jasmine, SpecDefinitionsFn} from '../types';
-import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
 import ReportDispatcher from './ReportDispatcher';
 import Spec from './Spec';
-import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
+import createSpy from './createSpy';
+import SpyRegistry from './spyRegistry';
+
+const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      [testTimeoutSymbol]: number;
+    }
+  }
+}
 
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
-  j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
+  Object.defineProperty(j$, '_DEFAULT_TIMEOUT_INTERVAL', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      // eslint-disable-next-line no-restricted-globals
+      return global[testTimeoutSymbol] || createOptions.testTimeout || 5000;
+    },
+    set(value) {
+      // eslint-disable-next-line no-restricted-globals
+      global[testTimeoutSymbol] = value;
+    },
+  });
 
-  j$.getEnv = function (options?: Record<string, unknown>) {
-    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
+  j$.getEnv = function () {
+    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env());
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };

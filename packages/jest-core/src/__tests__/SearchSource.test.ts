@@ -7,10 +7,10 @@
  */
 
 import * as path from 'path';
-import Runtime = require('jest-runtime');
-import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
+import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
+import {normalize} from 'jest-config';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
@@ -31,63 +31,60 @@ jest.mock('graceful-fs', () => {
 });
 
 const rootDir = path.resolve(__dirname, 'test_root');
-const testRegex = path.sep + '__testtests__' + path.sep;
+const testRegex = `${path.sep}__testtests__${path.sep}`;
 const testMatch = ['**/__testtests__/**/*'];
 const maxWorkers = 1;
 
 const toPaths = (tests: Array<Test>) => tests.map(({path}) => path);
 
-let findMatchingTests: (config: Config.ProjectConfig) => Promise<SearchResult>;
+const initSearchSource = async (
+  initialOptions: Config.InitialOptions,
+  options: {
+    contextFiles?: Array<string>;
+  } = {},
+) => {
+  const {options: config} = await normalize(initialOptions, {} as Config.Argv);
+  const context = await Runtime.createContext(config, {
+    maxWorkers,
+    watchman: false,
+  });
+  if (options.contextFiles) {
+    jest
+      .spyOn(context.hasteFS, 'getAllFiles')
+      .mockReturnValue(options.contextFiles);
+  }
+  return new SearchSource(context);
+};
 
 describe('SearchSource', () => {
-  const name = 'SearchSource';
+  const id = 'SearchSource';
   let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
-    let config;
-
-    beforeEach(() => {
-      config = normalize(
-        {
-          name,
-          rootDir: '.',
-          roots: [],
-        },
-        {} as Config.Argv,
-      ).options;
-      return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-        },
-      );
+    beforeEach(async () => {
+      searchSource = await initSearchSource({
+        id,
+        rootDir: '.',
+        roots: [],
+      });
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
     // infinite recursion.
-    it('supports ../ paths and unix separators via testRegex', () => {
-      if (process.platform !== 'win32') {
-        config = normalize(
-          {
-            name,
-            rootDir: '.',
-            roots: [],
-            testMatch: undefined,
-            testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
-          },
-          {} as Config.Argv,
-        ).options;
-        return Runtime.createContext(config, {
-          maxWorkers,
-          watchman: false,
-        }).then(context => {
-          searchSource = new SearchSource(context);
-
-          const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-          expect(searchSource.isTestFilePath(path)).toEqual(true);
-        });
-      } else {
-        return undefined;
+    it('supports ../ paths and unix separators via testRegex', async () => {
+      if (process.platform === 'win32') {
+        return;
       }
+      const searchSource = await initSearchSource({
+        id,
+        rootDir: '.',
+        roots: [],
+        testMatch: undefined,
+        testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+      });
+
+      const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      expect(searchSource.isTestFilePath(path)).toEqual(true);
     });
 
     it('supports unix separators', () => {
@@ -105,300 +102,259 @@ describe('SearchSource', () => {
     });
   });
 
-  describe('testPathsMatching', () => {
-    beforeEach(() => {
-      findMatchingTests = (config: Config.ProjectConfig) =>
-        Runtime.createContext(config, {
-          maxWorkers,
-          watchman: false,
-        }).then(context => new SearchSource(context).findMatchingTests());
-    });
-
-    it('finds tests matching a pattern via testRegex', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx', 'txt'],
-          name,
-          rootDir,
-          testMatch: undefined,
-          testRegex: 'not-really-a-test',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests)
-          .map(absPath => path.relative(rootDir, absPath))
-          .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+  describe('getTestPaths', () => {
+    const getTestPaths = async (initialOptions: Config.InitialOptions) => {
+      const searchSource = await initSearchSource(initialOptions);
+      const {tests: paths} = await searchSource.getTestPaths({
+        testPathPattern: '',
       });
-    });
+      return paths.map(({path: p}) => path.relative(rootDir, p)).sort();
+    };
 
-    it('finds tests matching a pattern via testMatch', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx', 'txt'],
-          name,
-          rootDir,
-          testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
-          testRegex: '',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests)
-          .map(absPath => path.relative(rootDir, absPath))
-          .sort();
-        expect(relPaths).toEqual(
-          [
-            path.normalize('.hiddenFolder/not-really-a-test.txt'),
-            path.normalize('__testtests__/not-really-a-test.txt'),
-          ].sort(),
-        );
+    it('finds tests matching a pattern via testRegex', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx', 'txt'],
+        rootDir,
+        testMatch: undefined,
+        testRegex: 'not-really-a-test',
       });
+      expect(paths).toEqual([
+        path.normalize('.hiddenFolder/not-really-a-test.txt'),
+        path.normalize('__testtests__/not-really-a-test.txt'),
+      ]);
     });
 
-    it('finds tests matching a JS regex pattern', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx'],
-          name,
-          rootDir,
-          testMatch: undefined,
-          testRegex: 'test.jsx?',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
+    it('finds tests matching a pattern via testMatch', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx', 'txt'],
+        rootDir,
+        testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
+        testRegex: '',
       });
+      expect(paths).toEqual([
+        path.normalize('.hiddenFolder/not-really-a-test.txt'),
+        path.normalize('__testtests__/not-really-a-test.txt'),
+      ]);
     });
 
-    it('finds tests matching a JS glob pattern', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx'],
-          name,
-          rootDir,
-          testMatch: ['**/test.js?(x)'],
-          testRegex: '',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
+    it('finds tests matching a JS regex pattern', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx'],
+        rootDir,
+        testMatch: undefined,
+        testRegex: 'test.jsx?',
       });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
     });
 
-    it('finds tests matching a JS with overriding glob patterns', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a JS glob pattern', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx'],
+        rootDir,
+        testMatch: ['**/test.js?(x)'],
+        testRegex: '',
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests matching a JS with overriding glob patterns', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx'],
+        rootDir,
+        testMatch: [
+          '**/*.js?(x)',
+          '!**/test.js?(x)',
+          '**/test.js',
+          '!**/test.js',
+        ],
+        testRegex: '',
+      });
+      expect(paths).toEqual([
+        path.normalize('module.jsx'),
+        path.normalize('noTests.js'),
+      ]);
+    });
+
+    it('finds tests with default file extensions using testRegex', async () => {
+      const paths = await getTestPaths({
+        id,
+        rootDir,
+        testMatch: undefined,
+        testRegex,
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests with default file extensions using testMatch', async () => {
+      const paths = await getTestPaths({
+        id,
+        rootDir,
+        testMatch,
+        testRegex: '',
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests with parentheses in their rootDir when using testMatch', async () => {
+      const paths = await getTestPaths({
+        id,
+        rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
+        testMatch: ['<rootDir>**/__testtests__/**/*'],
+        testRegex: undefined,
+      });
+      expect(paths).toEqual([
+        expect.stringContaining(path.normalize('__testtests__/test.js')),
+      ]);
+    });
+
+    it('finds tests with similar but custom file extensions', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx'],
+        rootDir,
+        testMatch,
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests with totally custom foobar file extensions', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'foobar'],
+        rootDir,
+        testMatch,
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.foobar'),
+        path.normalize('__testtests__/test.js'),
+      ]);
+    });
+
+    it('finds tests with many kinds of file extensions', async () => {
+      const paths = await getTestPaths({
+        id,
+        moduleFileExtensions: ['js', 'jsx'],
+        rootDir,
+        testMatch,
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests using a regex only', async () => {
+      const paths = await getTestPaths({
+        id,
+        rootDir,
+        testMatch: undefined,
+        testRegex,
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+
+    it('finds tests using a glob only', async () => {
+      const paths = await getTestPaths({
+        id,
+        rootDir,
+        testMatch,
+        testRegex: '',
+      });
+      expect(paths).toEqual([
+        path.normalize('__testtests__/test.js'),
+        path.normalize('__testtests__/test.jsx'),
+      ]);
+    });
+  });
+
+  describe('filterPathsWin32', () => {
+    beforeEach(async () => {
+      searchSource = await initSearchSource(
         {
-          moduleFileExtensions: ['js', 'jsx'],
-          name,
-          rootDir,
-          testMatch: [
-            '**/*.js?(x)',
-            '!**/test.js?(x)',
-            '**/test.js',
-            '!**/test.js',
+          id,
+          rootDir: '.',
+          roots: [],
+        },
+        {
+          contextFiles: [
+            path.resolve('packages/lib/my-lib.ts'),
+            path.resolve('packages/@core/my-app.ts'),
+            path.resolve('packages/+cli/my-cli.ts'),
+            path.resolve('packages/.hidden/my-app-hidden.ts'),
+            path.resolve('packages/programs (x86)/my-program.ts'),
           ],
-          testRegex: '',
         },
-        {} as Config.Argv,
       );
-
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('module.jsx'),
-          path.normalize('no_tests.js'),
-        ]);
-      });
     });
 
-    it('finds tests with default file extensions using testRegex', () => {
-      const {options: config} = normalize(
-        {
-          name,
-          rootDir,
-          testMatch: undefined,
-          testRegex,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow a simple match', async () => {
+      const result = searchSource.filterPathsWin32(['packages/lib/my-lib.ts']);
+      expect(result).toEqual([path.resolve('packages/lib/my-lib.ts')]);
     });
-
-    it('finds tests with default file extensions using testMatch', () => {
-      const {options: config} = normalize(
-        {
-          name,
-          rootDir,
-          testMatch,
-          testRegex: '',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow to match a file inside a hidden directory', async () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/.hidden/my-app-hidden.ts',
+      ]);
+      expect(result).toEqual([
+        path.resolve('packages/.hidden/my-app-hidden.ts'),
+      ]);
     });
-
-    it('finds tests with parentheses in their rootDir when using testMatch', () => {
-      const {options: config} = normalize(
-        {
-          name,
-          rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
-          testMatch: ['<rootDir>**/__testtests__/**/*'],
-          testRegex: undefined,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          expect.stringContaining(path.normalize('__testtests__/test.js')),
-        ]);
-      });
+    it('should allow to match a file inside a directory prefixed with a "@"', async () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/@core/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
     });
-
-    it('finds tests with similar but custom file extensions', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx'],
-          name,
-          rootDir,
-          testMatch,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow to match a file inside a directory prefixed with a "+"', async () => {
+      const result = searchSource.filterPathsWin32(['packages/+cli/my-cli.ts']);
+      expect(result).toEqual([path.resolve('packages/+cli/my-cli.ts')]);
     });
-
-    it('finds tests with totally custom foobar file extensions', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'foobar'],
-          name,
-          rootDir,
-          testMatch,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.foobar'),
-          path.normalize('__testtests__/test.js'),
-        ]);
-      });
+    it('should allow an @(pattern)', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/@(@core)/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
     });
-
-    it('finds tests with many kinds of file extensions', () => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx'],
-          name,
-          rootDir,
-          testMatch,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow a +(pattern)', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/+(@core)/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
     });
-
-    it('finds tests using a regex only', () => {
-      const {options: config} = normalize(
-        {
-          name,
-          rootDir,
-          testMatch: undefined,
-          testRegex,
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow for (pattern) in file path', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/programs (x86)/my-program.ts',
+      ]);
+      expect(result).toEqual([
+        path.resolve('packages/programs (x86)/my-program.ts'),
+      ]);
     });
-
-    it('finds tests using a glob only', () => {
-      const {options: config} = normalize(
-        {
-          name,
-          rootDir,
-          testMatch,
-          testRegex: '',
-        },
-        {} as Config.Argv,
-      );
-      return findMatchingTests(config).then(data => {
-        const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath),
-        );
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
+    it('should allow no results found', () => {
+      const result = searchSource.filterPathsWin32(['not/exists']);
+      expect(result).toHaveLength(0);
     });
   });
 
@@ -415,60 +371,55 @@ describe('SearchSource', () => {
     );
     const rootPath = path.join(rootDir, 'root.js');
 
-    beforeEach(done => {
-      const {options: config} = normalize(
-        {
-          haste: {
-            hasteImplModulePath: path.join(
-              __dirname,
-              '..',
-              '..',
-              '..',
-              'jest-haste-map',
-              'src',
-              '__tests__',
-              'haste_impl.js',
-            ),
-          },
-          name: 'SearchSource-findRelatedTests-tests',
-          rootDir,
+    beforeEach(async () => {
+      searchSource = await initSearchSource({
+        haste: {
+          hasteImplModulePath: path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'jest-haste-map',
+            'src',
+            '__tests__',
+            'haste_impl.js',
+          ),
         },
-        {} as Config.Argv,
-      );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+        id: 'SearchSource-findRelatedTests-tests',
+        rootDir,
+      });
     });
 
-    it('makes sure a file is related to itself', () => {
-      const data = searchSource.findRelatedTests(new Set([rootPath]), false);
+    it('makes sure a file is related to itself', async () => {
+      const data = await searchSource.findRelatedTests(
+        new Set([rootPath]),
+        false,
+      );
       expect(toPaths(data.tests)).toEqual([rootPath]);
     });
 
-    it('finds tests that depend directly on the path', () => {
+    it('finds tests that depend directly on the path', async () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
-      const data = searchSource.findRelatedTests(new Set([filePath]), false);
+      const data = await searchSource.findRelatedTests(
+        new Set([filePath]),
+        false,
+      );
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
         file2Path,
-        loggingDep,
         rootPath,
       ]);
     });
 
-    it('excludes untested files from coverage', () => {
+    it('excludes untested files from coverage', async () => {
       const unrelatedFile = path.join(rootDir, 'JSONFile.json');
       const regular = path.join(rootDir, 'RegularModule.js');
       const requireRegular = path.join(rootDir, 'RequireRegularMode.js');
 
-      const data = searchSource.findRelatedTests(
+      const data = await searchSource.findRelatedTests(
         new Set([regular, requireRegular, unrelatedFile]),
         true,
       );
@@ -479,57 +430,48 @@ describe('SearchSource', () => {
   });
 
   describe('findRelatedTestsFromPattern', () => {
-    beforeEach(done => {
-      const {options: config} = normalize(
-        {
-          moduleFileExtensions: ['js', 'jsx', 'foobar'],
-          name,
-          rootDir,
-          testMatch,
-        },
-        {} as Config.Argv,
-      );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+    beforeEach(async () => {
+      searchSource = await initSearchSource({
+        id,
+        moduleFileExtensions: ['js', 'jsx', 'foobar'],
+        rootDir,
+        testMatch,
+      });
     });
 
-    it('returns empty search result for empty input', () => {
-      const input: Array<Config.Path> = [];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+    it('returns empty search result for empty input', async () => {
+      const input: Array<string> = [];
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('returns empty search result for invalid input', () => {
+    it('returns empty search result for invalid input', async () => {
       const input = ['non-existend.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('returns empty search result if no related tests were found', () => {
+    it('returns empty search result if no related tests were found', async () => {
       const input = ['no_tests.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('finds tests for a single file', () => {
+    it('finds tests for a single file', async () => {
       const input = ['packages/jest-core/src/__tests__/test_root/module.jsx'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
       ]);
     });
 
-    it('finds tests for multiple files', () => {
+    it('finds tests for multiple files', async () => {
       const input = [
         'packages/jest-core/src/__tests__/test_root/module.jsx',
         'packages/jest-core/src/__tests__/test_root/module.foobar',
       ];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.foobar'),
         path.join(rootDir, '__testtests__', 'test.js'),
@@ -538,24 +480,18 @@ describe('SearchSource', () => {
     });
 
     it('does not mistake roots folders with prefix names', async () => {
-      if (process.platform !== 'win32') {
-        const config = normalize(
-          {
-            name,
-            rootDir: '.',
-            roots: ['/foo/bar/prefix'],
-          },
-          {} as Config.Argv,
-        ).options;
-
-        searchSource = new SearchSource(
-          await Runtime.createContext(config, {maxWorkers, watchman: false}),
-        );
-
-        const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
-        const data = searchSource.findTestsByPaths(input);
-        expect(data.tests).toEqual([]);
+      if (process.platform === 'win32') {
+        return;
       }
+      searchSource = await initSearchSource({
+        id,
+        rootDir: '.',
+        roots: ['/foo/bar/prefix'],
+      });
+
+      const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
+      const data = searchSource.findTestsByPaths(input);
+      expect(data.tests).toEqual([]);
     });
   });
 
@@ -566,54 +502,48 @@ describe('SearchSource', () => {
     );
 
     beforeEach(async () => {
-      const {options: config} = normalize(
-        {
-          haste: {
-            hasteImplModulePath: path.resolve(
-              __dirname,
-              '../../../jest-haste-map/src/__tests__/haste_impl.js',
-            ),
-          },
-          name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
-          rootDir,
+      searchSource = await initSearchSource({
+        haste: {
+          hasteImplModulePath: path.resolve(
+            __dirname,
+            '../../../jest-haste-map/src/__tests__/haste_impl.js',
+          ),
         },
-        {} as Config.Argv,
-      );
-      const context = await Runtime.createContext(config, {
-        maxWorkers,
-        watchman: false,
+        id: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
+        rootDir,
       });
-      searchSource = new SearchSource(context);
     });
 
-    it('return empty set if no SCM', () => {
+    it('return empty set if no SCM', async () => {
       const requireRegularModule = path.join(
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
-        changedFiles: new Set([requireRegularModule]),
-        repos: {
-          git: new Set(),
-          hg: new Set(),
-        },
-      });
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
+          changedFiles: new Set([requireRegularModule]),
+          repos: {
+            git: new Set(),
+            hg: new Set(),
+          },
+        });
       expect(sources).toEqual([]);
     });
 
-    it('return sources required by tests', () => {
+    it('return sources required by tests', async () => {
       const regularModule = path.join(rootDir, 'RegularModule.js');
       const requireRegularModule = path.join(
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
-        changedFiles: new Set([requireRegularModule]),
-        repos: {
-          git: new Set('/path/to/git'),
-          hg: new Set(),
-        },
-      });
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
+          changedFiles: new Set([requireRegularModule]),
+          repos: {
+            git: new Set('/path/to/git'),
+            hg: new Set(),
+          },
+        });
       expect(sources).toEqual([regularModule]);
     });
   });

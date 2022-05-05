@@ -6,8 +6,8 @@
  *
  */
 
-import runJest from '../runJest';
 import {replaceTime} from '../Utils';
+import runJest from '../runJest';
 
 test('should work without error', () => {
   const output = runJest('dom-diffing');

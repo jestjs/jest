@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat = require('pretty-format');
 import type {FailedAssertion} from '@jest/test-result';
+import {format as prettyFormat} from 'pretty-format';
 
 function messageFormatter({error, message, passed}: Options) {
   if (passed) {
@@ -43,7 +43,7 @@ function stackFormatter(
   }
 
   if (options.error) {
-    if (options.error.stack) {
+    if (typeof options.error.stack === 'string') {
       return options.error.stack;
     }
 
@@ -53,7 +53,7 @@ function stackFormatter(
   }
 
   if (initError) {
-    return errorMessage.trimRight() + '\n\n' + initError.stack;
+    return `${errorMessage.trimRight()}\n\n${initError.stack}`;
   }
 
   return new Error(errorMessage).stack;

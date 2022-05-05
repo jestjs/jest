@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -18,7 +18,7 @@ const hasteImplModulePath = path
 
 beforeEach(() => {
   cleanup(tempDir);
-  createEmptyPackage(tempDir);
+  createEmptyPackage(tempDir, {});
 });
 
 // This test case is checking that when having both
@@ -64,10 +64,12 @@ test('does not require project modules from inside node_modules', () => {
           if (!threw) {
             throw new Error('It used the wrong invariant module!');
           }
-          return script.replace(
-            'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
-            ''
-          );
+          return {
+            code: script.replace(
+              'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
+              '',
+            ),
+          };
         },
       };
     `,

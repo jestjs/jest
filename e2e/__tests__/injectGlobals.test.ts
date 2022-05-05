@@ -5,17 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import * as path from 'path';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
-import {json as runJest} from '../runJest';
 import {
   cleanup,
   createEmptyPackage,
   extractSummary,
   writeFiles,
 } from '../Utils';
+import {json as runJest} from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'injectGlobalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
@@ -50,8 +49,8 @@ test.each`
   const {json, stderr, exitCode} = runJest(DIR, args);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
   expect(json.numPassedTests).toBe(1);
 });

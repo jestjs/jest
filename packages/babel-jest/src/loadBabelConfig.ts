@@ -6,4 +6,4 @@
  */
 
 // this is a separate file so it can be mocked in tests
-export {loadPartialConfig} from '@babel/core';
+export {loadPartialConfig, loadPartialConfigAsync} from '@babel/core';

@@ -1,21 +1,38 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.6.0",
-  "main": "build/jest.js",
-  "types": "build/jest.d.ts",
+  "version": "28.0.3",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/jest": "./bin/jest.js"
+  },
   "dependencies": {
-    "@jest/core": "^26.6.0",
+    "@jest/core": "^28.0.3",
     "import-local": "^3.0.2",
-    "jest-cli": "^26.6.0"
+    "jest-cli": "^28.0.3"
+  },
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
   },
   "bin": "./bin/jest.js",
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",
@@ -47,6 +64,5 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

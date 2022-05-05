@@ -7,22 +7,38 @@
  */
 
 import {createHash} from 'crypto';
-import {relative} from 'path';
-/* eslint-disable-next-line no-restricted-imports */
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
+import {relative} from 'path';
 import type {Config} from '@jest/types';
 
-type CacheKeyOptions = {
+type OldCacheKeyOptions = {
   config: Config.ProjectConfig;
   instrument: boolean;
 };
 
-type GetCacheKeyFunction = (
+// Should mirror `import('@jest/transform').TransformOptions`
+type NewCacheKeyOptions = {
+  config: Config.ProjectConfig;
+  configString: string;
+  instrument: boolean;
+};
+
+type OldGetCacheKeyFunction = (
   fileData: string,
-  filePath: Config.Path,
+  filePath: string,
   configStr: string,
-  options: CacheKeyOptions,
+  options: OldCacheKeyOptions,
 ) => string;
+
+// Should mirror `import('@jest/transform').Transformer['getCacheKey']`
+type NewGetCacheKeyFunction = (
+  sourceText: string,
+  sourcePath: string,
+  options: NewCacheKeyOptions,
+) => string;
+
+type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
 function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   return [
@@ -33,27 +49,35 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   ]
     .reduce(
       (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('md5'),
+      createHash('sha256'),
     )
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
-  return (src, file, _configString, options) => {
-    const {config, instrument} = options;
-    return createHash('md5')
+  return (sourceText, sourcePath, configString, options) => {
+    // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
+    // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
+    const inferredOptions = options || configString;
+    const {config, instrument} = inferredOptions;
+
+    return createHash('sha256')
       .update(globalCacheKey)
       .update('\0', 'utf8')
-      .update(src)
+      .update(sourceText)
       .update('\0', 'utf8')
-      .update(config.rootDir ? relative(config.rootDir, file) : '')
+      .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   };
 }
 
-export default (
+export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
-): GetCacheKeyFunction => getCacheKeyFunction(getGlobalCacheKey(files, values));
+): GetCacheKeyFunction {
+  return getCacheKeyFunction(getGlobalCacheKey(files, values));
+}

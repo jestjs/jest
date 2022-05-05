@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
+/* eslint-disable local/prefer-spread-eventually */
 
-import util = require('util');
-import type {ModuleMocker} from 'jest-mock';
+import {promisify} from 'util';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {
+  FunctionLike,
+  Mock,
+  ModuleMocker,
+  UnknownFunction,
+} from 'jest-mock';
 import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
@@ -29,14 +34,27 @@ type Timer = {
 };
 
 type TimerAPI = {
-  clearImmediate: typeof global.clearImmediate;
-  clearInterval: typeof global.clearInterval;
-  clearTimeout: typeof global.clearTimeout;
+  cancelAnimationFrame: typeof globalThis.cancelAnimationFrame;
+  clearImmediate: typeof globalThis.clearImmediate;
+  clearInterval: typeof globalThis.clearInterval;
+  clearTimeout: typeof globalThis.clearTimeout;
   nextTick: typeof process.nextTick;
+  requestAnimationFrame: typeof globalThis.requestAnimationFrame;
+  setImmediate: typeof globalThis.setImmediate;
+  setInterval: typeof globalThis.setInterval;
+  setTimeout: typeof globalThis.setTimeout;
+};
 
-  setImmediate: typeof global.setImmediate;
-  setInterval: typeof global.setInterval;
-  setTimeout: typeof global.setTimeout;
+type FakeTimerAPI = {
+  cancelAnimationFrame: Mock<FakeTimers['_fakeClearTimer']>;
+  clearImmediate: Mock<FakeTimers['_fakeClearImmediate']>;
+  clearInterval: Mock<FakeTimers['_fakeClearTimer']>;
+  clearTimeout: Mock<FakeTimers['_fakeClearTimer']>;
+  nextTick: Mock<FakeTimers['_fakeNextTick']>;
+  requestAnimationFrame: Mock<FakeTimers['_fakeRequestAnimationFrame']>;
+  setImmediate: Mock<FakeTimers['_fakeSetImmediate']>;
+  setInterval: Mock<FakeTimers['_fakeSetInterval']>;
+  setTimeout: Mock<FakeTimers['_fakeSetTimeout']>;
 };
 
 type TimerConfig<Ref> = {
@@ -46,12 +64,12 @@ type TimerConfig<Ref> = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-export default class FakeTimers<TimerRef> {
+export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
   private _config: StackTraceConfig;
   private _disposed?: boolean;
-  private _fakeTimerAPIs!: TimerAPI;
-  private _global: NodeJS.Global;
+  private _fakeTimerAPIs!: FakeTimerAPI;
+  private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private _maxLoops: number;
   private _moduleMocker: ModuleMocker;
@@ -69,7 +87,7 @@ export default class FakeTimers<TimerRef> {
     config,
     maxLoops,
   }: {
-    global: NodeJS.Global;
+    global: typeof globalThis;
     moduleMocker: ModuleMocker;
     timerConfig: TimerConfig<TimerRef>;
     config: StackTraceConfig;
@@ -84,10 +102,12 @@ export default class FakeTimers<TimerRef> {
 
     // Store original timer APIs for future reference
     this._timerAPIs = {
+      cancelAnimationFrame: global.cancelAnimationFrame,
       clearImmediate: global.clearImmediate,
       clearInterval: global.clearInterval,
       clearTimeout: global.clearTimeout,
       nextTick: global.process && global.process.nextTick,
+      requestAnimationFrame: global.requestAnimationFrame,
       setImmediate: global.setImmediate,
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
@@ -126,7 +146,9 @@ export default class FakeTimers<TimerRef> {
         break;
       }
 
-      if (!this._cancelledTicks.hasOwnProperty(tick.uuid)) {
+      if (
+        !Object.prototype.hasOwnProperty.call(this._cancelledTicks, tick.uuid)
+      ) {
         // Callback may throw, so update the map prior calling.
         this._cancelledTicks[tick.uuid] = true;
         tick.callback();
@@ -135,9 +157,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' ticks, and there are still more! ' +
+        `Ran ${this._maxLoops} ticks, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -157,9 +177,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' immediates, and there are still more! Assuming ' +
+        `Ran ${this._maxLoops} immediates, and there are still more! Assuming ` +
           "we've hit an infinite recursion and bailing out...",
       );
     }
@@ -205,9 +223,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -274,9 +290,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -317,10 +331,29 @@ export default class FakeTimers<TimerRef> {
 
   useRealTimers(): void {
     const global = this._global;
-    setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
+
+    if (typeof global.cancelAnimationFrame === 'function') {
+      setGlobal(
+        global,
+        'cancelAnimationFrame',
+        this._timerAPIs.cancelAnimationFrame,
+      );
+    }
+    if (typeof global.clearImmediate === 'function') {
+      setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
+    }
     setGlobal(global, 'clearInterval', this._timerAPIs.clearInterval);
     setGlobal(global, 'clearTimeout', this._timerAPIs.clearTimeout);
-    setGlobal(global, 'setImmediate', this._timerAPIs.setImmediate);
+    if (typeof global.requestAnimationFrame === 'function') {
+      setGlobal(
+        global,
+        'requestAnimationFrame',
+        this._timerAPIs.requestAnimationFrame,
+      );
+    }
+    if (typeof global.setImmediate === 'function') {
+      setGlobal(global, 'setImmediate', this._timerAPIs.setImmediate);
+    }
     setGlobal(global, 'setInterval', this._timerAPIs.setInterval);
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
@@ -331,10 +364,28 @@ export default class FakeTimers<TimerRef> {
     this._createMocks();
 
     const global = this._global;
-    setGlobal(global, 'clearImmediate', this._fakeTimerAPIs.clearImmediate);
+    if (typeof global.cancelAnimationFrame === 'function') {
+      setGlobal(
+        global,
+        'cancelAnimationFrame',
+        this._fakeTimerAPIs.cancelAnimationFrame,
+      );
+    }
+    if (typeof global.clearImmediate === 'function') {
+      setGlobal(global, 'clearImmediate', this._fakeTimerAPIs.clearImmediate);
+    }
     setGlobal(global, 'clearInterval', this._fakeTimerAPIs.clearInterval);
     setGlobal(global, 'clearTimeout', this._fakeTimerAPIs.clearTimeout);
-    setGlobal(global, 'setImmediate', this._fakeTimerAPIs.setImmediate);
+    if (typeof global.requestAnimationFrame === 'function') {
+      setGlobal(
+        global,
+        'requestAnimationFrame',
+        this._fakeTimerAPIs.requestAnimationFrame,
+      );
+    }
+    if (typeof global.setImmediate === 'function') {
+      setGlobal(global, 'setImmediate', this._fakeTimerAPIs.setImmediate);
+    }
     setGlobal(global, 'setInterval', this._fakeTimerAPIs.setInterval);
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
@@ -348,47 +399,43 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _checkFakeTimers() {
+    // @ts-expect-error: condition always returns 'true'
     if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
       this._global.console.warn(
-        `A function to advance timers was called but the timers API is not ` +
-          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
-          `test or enable fake timers globally by setting ` +
-          `\`"timers": "fake"\` in ` +
-          `the configuration file. This warning is likely a result of a ` +
-          `default configuration change in Jest 15.\n\n` +
-          `Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15.html\n` +
-          `Stack Trace:\n` +
-          formatStackTrace(new Error().stack!, this._config, {
-            noStackTrace: false,
-          }),
+        'A function to advance timers was called but the timers APIs are not mocked ' +
+          'with fake timers. Call `jest.useFakeTimers({legacyFakeTimers: true})` ' +
+          'in this test file or enable fake timers for all tests by setting ' +
+          "{'enableGlobally': true, 'legacyFakeTimers': true} in " +
+          `Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
       );
     }
   }
 
   private _createMocks() {
-    const fn = (impl: Function) =>
-      // @ts-expect-error TODO: figure out better typings here
-      this._moduleMocker.fn().mockImplementation(impl);
+    const fn = <T extends FunctionLike = UnknownFunction>(implementation?: T) =>
+      this._moduleMocker.fn(implementation);
 
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
-    // @ts-expect-error TODO: figure out better typings here
-    promisifiableFakeSetTimeout[util.promisify.custom] = (
+    // @ts-expect-error: no index
+    promisifiableFakeSetTimeout[promisify.custom] = (
       delay?: number,
       arg?: unknown,
     ) =>
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 
-    // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
+      cancelAnimationFrame: fn(this._fakeClearTimer.bind(this)),
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
       clearInterval: fn(this._fakeClearTimer.bind(this)),
       clearTimeout: fn(this._fakeClearTimer.bind(this)),
       nextTick: fn(this._fakeNextTick.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
+      requestAnimationFrame: fn(this._fakeRequestAnimationFrame.bind(this)),
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setInterval: fn(this._fakeSetInterval.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setTimeout: promisifiableFakeSetTimeout,
     };
   }
@@ -407,7 +454,7 @@ export default class FakeTimers<TimerRef> {
     );
   }
 
-  private _fakeNextTick(callback: Callback, ...args: Array<any>) {
+  private _fakeNextTick(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return;
     }
@@ -421,7 +468,7 @@ export default class FakeTimers<TimerRef> {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (!cancelledTicks.hasOwnProperty(uuid)) {
+      if (!Object.prototype.hasOwnProperty.call(cancelledTicks, uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
         callback.apply(null, args);
@@ -429,7 +476,14 @@ export default class FakeTimers<TimerRef> {
     });
   }
 
-  private _fakeSetImmediate(callback: Callback, ...args: Array<any>) {
+  private _fakeRequestAnimationFrame(callback: Callback) {
+    return this._fakeSetTimeout(() => {
+      // TODO: Use performance.now() once it's mocked
+      callback(this._now);
+    }, 1000 / 60);
+  }
+
+  private _fakeSetImmediate(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return null;
     }
@@ -457,7 +511,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetInterval(
     callback: Callback,
     intervalDelay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;
@@ -482,7 +536,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetTimeout(
     callback: Callback,
     delay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;
@@ -526,9 +580,8 @@ export default class FakeTimers<TimerRef> {
 
     switch (timer.type) {
       case 'timeout':
-        const callback = timer.callback;
         this._timers.delete(timerHandle);
-        callback();
+        timer.callback();
         break;
 
       case 'interval':
@@ -537,7 +590,7 @@ export default class FakeTimers<TimerRef> {
         break;
 
       default:
-        throw new Error('Unexpected timer type: ' + timer.type);
+        throw new Error(`Unexpected timer type: ${timer.type}`);
     }
   }
 }

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import throat from 'throat';
 import type {Circus} from '@jest/types';
-import {RETRY_TIMES} from './types';
-
 import {dispatch, getState} from './state';
+import {RETRY_TIMES} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -21,7 +21,7 @@ import {
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
   await dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock);
+  await _runTestsForDescribeBlock(rootDescribeBlock, true);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -31,15 +31,39 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
+  isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
-  for (const hook of beforeAll) {
-    await _callCircusHook({describeBlock, hook});
+  const isSkipped = describeBlock.mode === 'skip';
+
+  if (!isSkipped) {
+    for (const hook of beforeAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
+  }
+
+  if (isRootBlock) {
+    const concurrentTests = collectConcurrentTests(describeBlock);
+    const mutex = throat(getState().maxConcurrency);
+    for (const test of concurrentTests) {
+      try {
+        const promise = mutex(test.fn);
+        // Avoid triggering the uncaught promise rejection handler in case the
+        // test errors before being awaited on.
+        promise.catch(() => {});
+        test.fn = () => promise;
+      } catch (err) {
+        test.fn = () => {
+          throw err;
+        };
+      }
+    }
   }
 
   // Tests that fail and are retried we run after other tests
+  // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
@@ -51,7 +75,7 @@ const _runTestsForDescribeBlock = async (
       }
       case 'test': {
         const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child);
+        await _runTest(child, isSkipped);
 
         if (
           hasErrorsBeforeTestRun === false &&
@@ -73,24 +97,54 @@ const _runTestsForDescribeBlock = async (
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
 
-      await _runTest(test);
+      await _runTest(test, isSkipped);
       numRetriesAvailable--;
     }
   }
 
-  for (const hook of afterAll) {
-    await _callCircusHook({describeBlock, hook});
+  if (!isSkipped) {
+    for (const hook of afterAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
   }
 
   await dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
-const _runTest = async (test: Circus.TestEntry): Promise<void> => {
+function collectConcurrentTests(
+  describeBlock: Circus.DescribeBlock,
+): Array<Omit<Circus.TestEntry, 'fn'> & {fn: Circus.ConcurrentTestFn}> {
+  if (describeBlock.mode === 'skip') {
+    return [];
+  }
+  const {hasFocusedTests, testNamePattern} = getState();
+  return describeBlock.children.flatMap(child => {
+    switch (child.type) {
+      case 'describeBlock':
+        return collectConcurrentTests(child);
+      case 'test':
+        const skip =
+          !child.concurrent ||
+          child.mode === 'skip' ||
+          (hasFocusedTests && child.mode !== 'only') ||
+          (testNamePattern && !testNamePattern.test(getTestID(child)));
+        return skip
+          ? []
+          : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];
+    }
+  });
+}
+
+const _runTest = async (
+  test: Circus.TestEntry,
+  parentSkipped: boolean,
+): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
   const {hasFocusedTests, testNamePattern} = getState();
 
   const isSkipped =
+    parentSkipped ||
     test.mode === 'skip' ||
     (hasFocusedTests && test.mode !== 'only') ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));
@@ -132,7 +186,7 @@ const _callCircusHook = async ({
   hook,
   test,
   describeBlock,
-  testContext,
+  testContext = {},
 }: {
   hook: Circus.Hook;
   describeBlock?: Circus.DescribeBlock;
@@ -159,7 +213,7 @@ const _callCircusTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
-  invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
+  invariant(test.fn, "Tests with no 'fn' should have 'mode' set to 'skipped'");
 
   if (test.errors.length) {
     return; // We don't run the test if there's already an error in before hooks.

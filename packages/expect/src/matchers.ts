@@ -8,7 +8,18 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import getType = require('jest-get-type');
+import {
+  arrayBufferEquality,
+  equals,
+  getObjectSubset,
+  getPath,
+  iterableEquality,
+  pathAsArray,
+  sparseArrayEquality,
+  subsetEquality,
+  typeEquality,
+} from '@jest/expect-utils';
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
@@ -27,7 +38,6 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import type {MatcherState, MatchersObject} from './types';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -38,15 +48,7 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
-  getObjectSubset,
-  getPath,
-  iterableEquality,
-  sparseArrayEquality,
-  subsetEquality,
-  typeEquality,
-} from './utils';
-import {equals} from './jasmineUtils';
+import type {MatchersObject} from './types';
 
 // Omit colon and one or more spaces, so can call getLabelPrinter.
 const EXPECTED_LABEL = 'Expected';
@@ -61,6 +63,7 @@ const toStrictEqualTesters = [
   iterableEquality,
   typeEquality,
   sparseArrayEquality,
+  arrayBufferEquality,
 ];
 
 type ContainIterable =
@@ -71,7 +74,7 @@ type ContainIterable =
   | HTMLCollectionOf<any>;
 
 const matchers: MatchersObject = {
-  toBe(this: MatcherState, received: unknown, expected: unknown) {
+  toBe(received: unknown, expected: unknown) {
     const matcherName = 'toBe';
     const options: MatcherHintOptions = {
       comment: 'Object.is equality',
@@ -83,6 +86,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}`
@@ -101,12 +105,13 @@ const matchers: MatchersObject = {
           }
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             (deepEqualityName !== null
-              ? DIM_COLOR(
+              ? `${DIM_COLOR(
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
-                ) + '\n\n'
+                )}\n\n`
               : '') +
             printDiffOrStringify(
               expected,
@@ -124,12 +129,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toBeCloseTo(
-    this: MatcherState,
-    received: number,
-    expected: number,
-    precision: number = 2,
-  ) {
+  toBeCloseTo(received: number, expected: number, precision = 2) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const isNot = this.isNot;
@@ -176,15 +176,16 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
           (receivedDiff === 0
             ? ''
             : `Received:     ${printReceived(received)}\n` +
-              '\n' +
-              printCloseTo(receivedDiff, expectedDiff, precision, isNot))
+              `\n${printCloseTo(receivedDiff, expectedDiff, precision, isNot)}`)
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
@@ -195,7 +196,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeDefined(this: MatcherState, received: unknown, expected: void) {
+  toBeDefined(received: unknown, expected: void) {
     const matcherName = 'toBeDefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -206,6 +207,7 @@ const matchers: MatchersObject = {
     const pass = received !== void 0;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -213,7 +215,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeFalsy(this: MatcherState, received: unknown, expected: void) {
+  toBeFalsy(received: unknown, expected: void) {
     const matcherName = 'toBeFalsy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -224,6 +226,7 @@ const matchers: MatchersObject = {
     const pass = !received;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -231,11 +234,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThan(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeGreaterThan(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeGreaterThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -247,6 +246,7 @@ const matchers: MatchersObject = {
     const pass = received > expected;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} > ${printExpected(expected)}\n` +
@@ -255,11 +255,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThanOrEqual(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeGreaterThanOrEqual(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeGreaterThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -271,6 +267,7 @@ const matchers: MatchersObject = {
     const pass = received >= expected;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
@@ -279,7 +276,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+  toBeInstanceOf(received: any, expected: Function) {
     const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -300,6 +297,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorNameNot('Expected constructor', expected) +
@@ -312,11 +310,11 @@ const matchers: MatchersObject = {
               )
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorName('Expected constructor', expected) +
-          (getType.isPrimitive(received) ||
-          Object.getPrototypeOf(received) === null
+          (isPrimitive(received) || Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`
@@ -330,11 +328,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThan(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeLessThan(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeLessThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -346,6 +340,7 @@ const matchers: MatchersObject = {
     const pass = received < expected;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} < ${printExpected(expected)}\n` +
@@ -354,11 +349,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThanOrEqual(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeLessThanOrEqual(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeLessThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -370,6 +361,7 @@ const matchers: MatchersObject = {
     const pass = received <= expected;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} <= ${printExpected(expected)}\n` +
@@ -378,7 +370,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(this: MatcherState, received: any, expected: void) {
+  toBeNaN(received: any, expected: void) {
     const matcherName = 'toBeNaN';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -389,6 +381,7 @@ const matchers: MatchersObject = {
     const pass = Number.isNaN(received);
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -396,7 +389,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNull(this: MatcherState, received: unknown, expected: void) {
+  toBeNull(received: unknown, expected: void) {
     const matcherName = 'toBeNull';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -407,6 +400,7 @@ const matchers: MatchersObject = {
     const pass = received === null;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -414,7 +408,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeTruthy(this: MatcherState, received: unknown, expected: void) {
+  toBeTruthy(received: unknown, expected: void) {
     const matcherName = 'toBeTruthy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -425,6 +419,7 @@ const matchers: MatchersObject = {
     const pass = !!received;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -432,7 +427,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeUndefined(this: MatcherState, received: unknown, expected: void) {
+  toBeUndefined(received: unknown, expected: void) {
     const matcherName = 'toBeUndefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -443,6 +438,7 @@ const matchers: MatchersObject = {
     const pass = received === void 0;
 
     const message = () =>
+      // eslint-disable-next-line prefer-template
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
@@ -450,11 +446,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContain(
-    this: MatcherState,
-    received: ContainIterable | string,
-    expected: unknown,
-  ) {
+  toContain(received: ContainIterable | string, expected: unknown) {
     const matcherName = 'toContain';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -474,6 +466,25 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received === 'string') {
+      const wrongTypeErrorMessage = `${EXPECTED_COLOR(
+        'expected',
+      )} value must be a string if ${RECEIVED_COLOR(
+        'received',
+      )} value is a string`;
+
+      if (typeof expected !== 'string') {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, received, String(expected), options),
+            wrongTypeErrorMessage,
+            // eslint-disable-next-line prefer-template
+            printWithType('Expected', expected, printExpected) +
+              '\n' +
+              printWithType('Received', received, printReceived),
+          ),
+        );
+      }
+
       const index = received.indexOf(String(expected));
       const pass = index !== -1;
 
@@ -485,6 +496,7 @@ const matchers: MatchersObject = {
         const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
         return (
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
@@ -515,6 +527,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
+        // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
@@ -537,11 +550,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContainEqual(
-    this: MatcherState,
-    received: ContainIterable,
-    expected: unknown,
-  ) {
+  toContainEqual(received: ContainIterable, expected: unknown) {
     const matcherName = 'toContainEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -571,6 +580,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
+        // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
@@ -587,7 +597,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toEqual(this: MatcherState, received: unknown, expected: unknown) {
+  toEqual(received: unknown, expected: unknown) {
     const matcherName = 'toEqual';
     const options: MatcherHintOptions = {
       comment: 'deep equality',
@@ -599,6 +609,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
@@ -606,6 +617,7 @@ const matchers: MatchersObject = {
             ? `Received:     ${printReceived(received)}`
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printDiffOrStringify(
@@ -622,7 +634,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toHaveLength(this: MatcherState, received: any, expected: number) {
+  toHaveLength(received: any, expected: number) {
     const matcherName = 'toHaveLength';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -657,6 +669,7 @@ const matchers: MatchersObject = {
       );
 
       return (
+        // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
@@ -677,7 +690,6 @@ const matchers: MatchersObject = {
   },
 
   toHaveProperty(
-    this: MatcherState,
     received: object,
     expectedPath: string | Array<string>,
     expectedValue?: unknown,
@@ -715,7 +727,7 @@ const matchers: MatchersObject = {
 
     const expectedPathLength =
       typeof expectedPath === 'string'
-        ? expectedPath.split('.').length
+        ? pathAsArray(expectedPath).length
         : expectedPath.length;
 
     if (expectedPathType === 'array' && expectedPathLength === 0) {
@@ -729,77 +741,57 @@ const matchers: MatchersObject = {
     }
 
     const result = getPath(received, expectedPath);
-    const {lastTraversedObject, hasEndProp} = result;
+    const {lastTraversedObject, endPropIsDefined, hasEndProp, value} = result;
     const receivedPath = result.traversedPath;
     const hasCompletePath = receivedPath.length === expectedPathLength;
     const receivedValue = hasCompletePath ? result.value : lastTraversedObject;
 
-    const pass = hasValue
-      ? equals(result.value, expectedValue, [iterableEquality])
-      : Boolean(hasEndProp); // theoretically undefined if empty path
-    // Remove type cast if we rewrite getPath as iterative algorithm.
-
-    // Delete this unique report if future breaking change
-    // removes the edge case that expected value undefined
-    // also matches absence of a property with the key path.
-    if (pass && !hasCompletePath) {
-      const message = () =>
-        matcherHint(matcherName, undefined, expectedArgument, options) +
-        '\n\n' +
-        `Expected path: ${printExpected(expectedPath)}\n` +
-        `Received path: ${printReceived(
-          expectedPathType === 'array' || receivedPath.length === 0
-            ? receivedPath
-            : receivedPath.join('.'),
-        )}\n\n` +
-        `Expected value: not ${printExpected(expectedValue)}\n` +
-        `Received value:     ${printReceived(receivedValue)}\n\n` +
-        DIM_COLOR(
-          'Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value',
-        );
-
-      return {message, pass};
-    }
+    const pass =
+      hasValue && endPropIsDefined
+        ? equals(value, expectedValue, [iterableEquality])
+        : Boolean(hasEndProp);
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, expectedArgument, options) +
           '\n\n' +
           (hasValue
             ? `Expected path: ${printExpected(expectedPath)}\n\n` +
-              `Expected value: not ${printExpected(expectedValue)}` +
-              (stringify(expectedValue) !== stringify(receivedValue)
-                ? `\nReceived value:     ${printReceived(receivedValue)}`
-                : '')
+              `Expected value: not ${printExpected(expectedValue)}${
+                stringify(expectedValue) !== stringify(receivedValue)
+                  ? `\nReceived value:     ${printReceived(receivedValue)}`
+                  : ''
+              }`
             : `Expected path: not ${printExpected(expectedPath)}\n\n` +
               `Received value: ${printReceived(receivedValue)}`)
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, expectedArgument, options) +
           '\n\n' +
           `Expected path: ${printExpected(expectedPath)}\n` +
           (hasCompletePath
-            ? '\n' +
-              printDiffOrStringify(
+            ? `\n${printDiffOrStringify(
                 expectedValue,
                 receivedValue,
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
                 isExpand(this.expand),
-              )
+              )}`
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
                   ? receivedPath
                   : receivedPath.join('.'),
-              )}\n\n` +
-              (hasValue
-                ? `Expected value: ${printExpected(expectedValue)}\n`
-                : '') +
-              `Received value: ${printReceived(receivedValue)}`);
+              )}\n\n${
+                hasValue
+                  ? `Expected value: ${printExpected(expectedValue)}\n`
+                  : ''
+              }Received value: ${printReceived(receivedValue)}`);
 
     return {message, pass};
   },
 
-  toMatch(this: MatcherState, received: string, expected: string | RegExp) {
+  toMatch(received: string, expected: string | RegExp) {
     const matcherName = 'toMatch';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -839,7 +831,8 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           typeof expected === 'string'
-            ? matcherHint(matcherName, undefined, undefined, options) +
+            ? // eslint-disable-next-line prefer-template
+              matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected substring: not ${printExpected(expected)}\n` +
               `Received string:        ${printReceivedStringContainExpectedSubstring(
@@ -847,7 +840,8 @@ const matchers: MatchersObject = {
                 received.indexOf(expected),
                 expected.length,
               )}`
-            : matcherHint(matcherName, undefined, undefined, options) +
+            : // eslint-disable-next-line prefer-template
+              matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected pattern: not ${printExpected(expected)}\n` +
               `Received string:      ${printReceivedStringContainExpectedResult(
@@ -864,6 +858,7 @@ const matchers: MatchersObject = {
           const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
           return (
+            // eslint-disable-next-line prefer-template
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             `${printLabel(labelExpected)}${printExpected(expected)}\n` +
@@ -874,7 +869,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(this: MatcherState, received: object, expected: object) {
+  toMatchObject(received: object, expected: object) {
     const matcherName = 'toMatchObject';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -905,6 +900,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}` +
@@ -912,6 +908,7 @@ const matchers: MatchersObject = {
             ? `\nReceived:     ${printReceived(received)}`
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printDiffOrStringify(
@@ -925,7 +922,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
+  toStrictEqual(received: unknown, expected: unknown) {
     const matcherName = 'toStrictEqual';
     const options: MatcherHintOptions = {
       comment: 'deep equality',
@@ -937,6 +934,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
@@ -944,6 +942,7 @@ const matchers: MatchersObject = {
             ? `Received:     ${printReceived(received)}`
             : '')
       : () =>
+          // eslint-disable-next-line prefer-template
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printDiffOrStringify(

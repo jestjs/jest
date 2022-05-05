@@ -8,8 +8,8 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import type {Color} from '../types';
 import {color} from '../entry';
+import type {Color} from '../types';
 
 jest.mock('some-module', () => ({} as Partial<{}>), {virtual: true});
 

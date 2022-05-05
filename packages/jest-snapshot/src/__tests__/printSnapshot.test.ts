@@ -8,17 +8,7 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
-import format = require('pretty-format');
-
-import jestSnapshot = require('../index');
-import {
-  getReceivedColorForChalkInstance,
-  getSnapshotColorForChalkInstance,
-  noColor,
-  printPropertiesAndReceived,
-  printSnapshotAndReceived,
-} from '../printSnapshot';
-import {serialize} from '../utils';
+import format from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -29,33 +19,47 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
+import {
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../index';
+import {
+  getReceivedColorForChalkInstance,
+  getSnapshotColorForChalkInstance,
+  noColor,
+  printPropertiesAndReceived,
+  printSnapshotAndReceived,
+} from '../printSnapshot';
+import {serialize} from '../utils';
 
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;
 const bOpenForeground1 = styles.cyan.open;
 const bOpenBackground1 = styles.bgWhiteBright.open;
 
-const aOpenForeground2 = styles.color.ansi256.ansi256(aForeground2);
-const bOpenForeground2 = styles.color.ansi256.ansi256(bForeground2);
-const aOpenBackground2 = styles.bgColor.ansi256.ansi256(aBackground2);
-const bOpenBackground2 = styles.bgColor.ansi256.ansi256(bBackground2);
+const aOpenForeground2 = styles.color.ansi256(aForeground2);
+const bOpenForeground2 = styles.color.ansi256(bForeground2);
+const aOpenBackground2 = styles.bgColor.ansi256(aBackground2);
+const bOpenBackground2 = styles.bgColor.ansi256(bBackground2);
 
-const aOpenForeground3 = styles.color.ansi16m.rgb(
+const aOpenForeground3 = styles.color.ansi16m(
   aForeground3[0],
   aForeground3[1],
   aForeground3[2],
 );
-const bOpenForeground3 = styles.color.ansi16m.rgb(
+const bOpenForeground3 = styles.color.ansi16m(
   bForeground3[0],
   bForeground3[1],
   bForeground3[2],
 );
-const aOpenBackground3 = styles.bgColor.ansi16m.rgb(
+const aOpenBackground3 = styles.bgColor.ansi16m(
   aBackground3[0],
   aBackground3[1],
   aBackground3[2],
 );
-const bOpenBackground3 = styles.bgColor.ansi16m.rgb(
+const bOpenBackground3 = styles.bgColor.ansi16m(
   bBackground3[0],
   bBackground3[1],
   bBackground3[2],
@@ -133,13 +137,6 @@ expect.addSnapshotSerializer({
   },
 });
 
-const {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} = jestSnapshot;
-
 describe('chalk', () => {
   // Because these tests give code coverage of get functions
   // and give confidence that the escape sequences are correct,
@@ -157,7 +154,7 @@ describe('chalk', () => {
     return [
       aColor(`- delete 1${changeLineTrailingSpaceColor(' ')}`),
       cColor(`  common 2${commonLineTrailingSpaceColor('  ')}`),
-      bColor(`+ insert 0`),
+      bColor('+ insert 0'),
     ].join('\n');
   };
 
@@ -180,8 +177,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground1 + aOpenBackground1 + '-');
-    expect(formatted).toMatch(bOpenForeground1 + bOpenBackground1 + '+');
+    expect(formatted).toMatch(`${aOpenForeground1 + aOpenBackground1}-`);
+    expect(formatted).toMatch(`${bOpenForeground1 + bOpenBackground1}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -192,8 +189,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground2 + aOpenBackground2 + '-');
-    expect(formatted).toMatch(bOpenForeground2 + bOpenBackground2 + '+');
+    expect(formatted).toMatch(`${aOpenForeground2 + aOpenBackground2}-`);
+    expect(formatted).toMatch(`${bOpenForeground2 + bOpenBackground2}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -204,8 +201,8 @@ describe('chalk', () => {
     const converted = convertAnsi(formatted);
 
     expect(converted).toBe(expected1);
-    expect(formatted).toMatch(aOpenForeground3 + aOpenBackground3 + '-');
-    expect(formatted).toMatch(bOpenForeground3 + bOpenBackground3 + '+');
+    expect(formatted).toMatch(`${aOpenForeground3 + aOpenBackground3}-`);
+    expect(formatted).toMatch(`${bOpenForeground3 + bOpenBackground3}+`);
     expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
     expect(formatted).toMatch(chalkInstance.bgYellow('  '));
   });
@@ -467,7 +464,7 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: fullTestName => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
@@ -609,7 +606,7 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => fullTestName + ' 1',
+            fail: fullTestName => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
@@ -948,7 +945,7 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsUnified if either string is longer than max.
       const lessChange = chalk.inverse('single ');
       const less = 'single line';
-      const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
+      const more = `multi line${'\n123456789'.repeat(2000)}`; // 10 + 20K chars
 
       test('both are less', () => {
         const less2 = 'multi\nline';
@@ -981,9 +978,9 @@ describe('printSnapshotAndReceived', () => {
       // Do not call diffStringsRaw if either string is longer than max.
       const lessChange = chalk.inverse('no');
       const less = 'no numbers';
-      const more = 'many numbers' + ' 123456789'.repeat(2000); // 12 + 20K chars
-      const lessQuoted = '"' + less + '"';
-      const moreQuoted = '"' + more + '"';
+      const more = `many numbers${' 123456789'.repeat(2000)}`; // 12 + 20K chars
+      const lessQuoted = `"${less}"`;
+      const moreQuoted = `"${more}"`;
 
       test('both are less', () => {
         const lessQuoted2 = '"0 numbers"';
@@ -1333,7 +1330,7 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
         '<img src="test.png" alt="John &quot;ShotGun&quot; Nelson" />',
@@ -1346,10 +1343,10 @@ describe('printSnapshotAndReceived', () => {
         'printWidth: 80',
         '                                                                                | printWidth',
         '=====================================input======================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\'>',
         '',
         '=====================================output=====================================',
-        `<img src="test.png" alt='John "ShotGun" Nelson' />`,
+        '<img src="test.png" alt=\'John "ShotGun" Nelson\' />',
         '',
         '================================================================================',
       ].join('\n');

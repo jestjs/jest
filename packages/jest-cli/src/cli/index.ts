@@ -6,24 +6,24 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {AggregatedResult} from '@jest/test-result';
-import {clearLine, tryRealpath} from 'jest-util';
-import {validateCLIOptions} from 'jest-validate';
-import {deprecationEntries} from 'jest-config';
-import {getVersion, runCLI} from '@jest/core';
 import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
+import {getVersion, runCLI} from '@jest/core';
+import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {deprecationEntries} from 'jest-config';
+import {clearLine, tryRealpath} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import init from '../init';
 import * as args from './args';
 
 export async function run(
   maybeArgv?: Array<string>,
-  project?: Config.Path,
+  project?: string,
 ): Promise<void> {
   try {
-    const argv: Config.Argv = buildArgv(maybeArgv);
+    const argv = await buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -34,10 +34,10 @@ export async function run(
 
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
-  } catch (error) {
+  } catch (error: any) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    if (error.stack) {
+    if (error?.stack) {
       console.error(chalk.red(error.stack));
     } else {
       console.error(chalk.red(error));
@@ -48,14 +48,15 @@ export async function run(
   }
 }
 
-export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
+export async function buildArgv(
+  maybeArgv?: Array<string>,
+): Promise<Config.Argv> {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Config.Argv | Array<string> =
-    maybeArgv || process.argv.slice(2);
-  const argv: Config.Argv = yargs(rawArgv)
+  const rawArgv: Array<string> = maybeArgv || process.argv.slice(2);
+  const argv: Config.Argv = await yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -82,12 +83,9 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
     },
     {$0: argv.$0, _: argv._},
   );
-};
+}
 
-const getProjectListFromCLIArgs = (
-  argv: Config.Argv,
-  project?: Config.Path,
-) => {
+const getProjectListFromCLIArgs = (argv: Config.Argv, project?: string) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {
@@ -126,8 +124,9 @@ const readResultsAndExit = (
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
       console.warn(
-        chalk.bold('Force exiting Jest: ') +
-          'Have you considered using `--detectOpenHandles` to detect ' +
+        `${chalk.bold(
+          'Force exiting Jest: ',
+        )}Have you considered using \`--detectOpenHandles\` to detect ` +
           'async operations that kept running after all tests finished?',
       );
     }

@@ -10,11 +10,10 @@ jest.mock('graceful-fs', () => ({
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as path from 'path';
 import assert = require('assert');
-import * as fs from 'graceful-fs';
+import * as path from 'path';
 import chalk = require('chalk');
-
+import * as fs from 'graceful-fs';
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
@@ -81,9 +80,9 @@ test('getSnapshotData() throws when no snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     chalk.red(
       `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
-        `Jest 19 introduced versioned snapshots to ensure all developers on ` +
-        `a project are using the same version of Jest. ` +
-        `Please update all snapshots during this upgrade of Jest.\n\n`,
+        'Jest 19 introduced versioned snapshots to ensure all developers on ' +
+        'a project are using the same version of Jest. ' +
+        'Please update all snapshots during this upgrade of Jest.\n\n',
     ) + SNAPSHOT_VERSION_WARNING,
   );
 });
@@ -98,16 +97,14 @@ test('getSnapshotData() throws for older snapshot version', () => {
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
-    chalk.red(
+    `${chalk.red(
       `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
-        `file associated with this test is outdated. The snapshot file ` +
-        `version ensures that all developers on a project are using ` +
-        `the same version of Jest. ` +
-        `Please update all snapshots during this upgrade of Jest.\n\n`,
-    ) +
-      `Expected: v${SNAPSHOT_VERSION}\n` +
-      `Received: v0.99\n\n` +
-      SNAPSHOT_VERSION_WARNING,
+        'file associated with this test is outdated. The snapshot file ' +
+        'version ensures that all developers on a project are using ' +
+        'the same version of Jest. ' +
+        'Please update all snapshots during this upgrade of Jest.',
+    )}\n\nExpected: v${SNAPSHOT_VERSION}\n` +
+      `Received: v0.99\n\n${SNAPSHOT_VERSION_WARNING}`,
   );
 });
 
@@ -121,16 +118,14 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
-    chalk.red(
+    `${chalk.red(
       `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
-        `snapshot file indicates that this project is meant to be used ` +
-        `with a newer version of Jest. ` +
-        `The snapshot file version ensures that all developers on a project ` +
-        `are using the same version of Jest. ` +
-        `Please update your version of Jest and re-run the tests.\n\n`,
-    ) +
-      `Expected: v${SNAPSHOT_VERSION}\n` +
-      `Received: v2`,
+        'snapshot file indicates that this project is meant to be used ' +
+        'with a newer version of Jest. ' +
+        'The snapshot file version ensures that all developers on a project ' +
+        'are using the same version of Jest. ' +
+        'Please update your version of Jest and re-run the tests.',
+    )}\n\nExpected: v${SNAPSHOT_VERSION}\nReceived: v2`,
   );
 });
 
@@ -179,10 +174,10 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // @ts-expect-error
-  const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
+  // @ts-expect-error: used in `eval`
+  const exports = {};
   // eslint-disable-next-line no-eval
-  const readData = eval('var exports = {}; ' + writtenData + ' exports');
+  const readData = eval(`var exports = {}; ${writtenData} exports`);
   expect(readData).toEqual({key: data});
   const snapshotData = readData.key;
   expect(data).toEqual(snapshotData);
@@ -232,7 +227,7 @@ describe('ExtraLineBreaks', () => {
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
 
-    expect(added).toBe('\n' + expected + '\n');
+    expect(added).toBe(`\n${expected}\n`);
     expect(removed).toBe(expected);
   });
 
@@ -242,7 +237,7 @@ describe('ExtraLineBreaks', () => {
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
 
-    expect(added).toBe('\n' + expected + '\n');
+    expect(added).toBe(`\n${expected}\n`);
     expect(removed).toBe(expected);
   });
 
@@ -252,7 +247,7 @@ describe('ExtraLineBreaks', () => {
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
 
-    expect(added).toBe('\n' + expected + '\n');
+    expect(added).toBe(`\n${expected}\n`);
     expect(removed).toBe(expected);
   });
 
@@ -262,7 +257,7 @@ describe('ExtraLineBreaks', () => {
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
 
-    expect(added).toBe('\n' + expected + '\n');
+    expect(added).toBe(`\n${expected}\n`);
     expect(removed).toBe(expected);
   });
 });

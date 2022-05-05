@@ -6,9 +6,9 @@
  *
  */
 
-import JasmineReporter from '../reporter';
-import {SuiteResult} from '../jasmine/Suite';
 import {SpecResult} from '../jasmine/Spec';
+import {SuiteResult} from '../jasmine/Suite';
+import JasmineReporter from '../reporter';
 
 describe('Jasmine2Reporter', () => {
   let reporter: JasmineReporter;
