@@ -9,6 +9,7 @@
 - `[expect]` Adjust typings of `lastCalledWith`, `nthCalledWith`, `toBeCalledWith` matchers to allow a case there a mock was called with no arguments ([#12807](https://github.com/facebook/jest/pull/12807))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Lists ([#12763](https://github.com/facebook/jest/pull/12763))
 - `[jest-core]` Do not collect `SIGNREQUEST` as open handles ([#12789](https://github.com/facebook/jest/pull/12789))
+- `[jest-runtime]` Keep the original appearance in the vm.script code-coverage. ([#10645](https://github.com/facebook/jest/pull/10645))
 
 ### Chore & Maintenance
 
@@ -727,7 +728,6 @@
 - `[jest-config]` Simplify transform RegExp ([#10207](https://github.com/facebook/jest/pull/10207))
 - `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
 - `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
-- `[jest-runtime]` Keep the original appearance in the vm.script code-coverage. ([#10645](https://github.com/facebook/jest/pull/10645))
 - `[@jest/types]` Add missing values for `timers` ([#10632](https://github.com/facebook/jest/pull/10632))
 
 ### Chore & Maintenance
