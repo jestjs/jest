@@ -39,12 +39,12 @@ exports[`works with all statuses 1`] = `
 exports[`works with concurrent and only mode 1`] = `
 "FAIL __tests__/worksWithConcurrentOnlyMode.test.js
   block with concurrent
-    ✕ failing passes = failes
+    ✕ failing passes = fails
     ✓ failing fails = passes
     ○ skipped skipped failing test
     ○ skipped skipped failing fails
 
-  ● block with concurrent › failing passes = failes
+  ● block with concurrent › failing passes = fails
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
 `;
@@ -53,7 +53,7 @@ exports[`works with concurrent mode 1`] = `
 "FAIL __tests__/worksWithConcurrentMode.test.js
   block with concurrent
     ✕ failing test
-    ✕ failing passes = failes
+    ✕ failing passes = fails
     ✓ failing fails = passes
     ○ skipped skipped failing fails
 
@@ -70,11 +70,11 @@ exports[`works with concurrent mode 1`] = `
          |                ^
       11 |   });
       12 |
-      13 |   it.concurrent.failing('failing passes = failes', () => {
+      13 |   it.concurrent.failing('failing passes = fails', () => {
 
       at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
 
-  ● block with concurrent › failing passes = failes
+  ● block with concurrent › failing passes = fails
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
 `;

@@ -10,7 +10,7 @@ describe('block with concurrent', () => {
     expect(10).toBe(101);
   });
 
-  it.concurrent.failing('failing passes = failes', () => {
+  it.concurrent.failing('failing passes = fails', () => {
     expect(10).toBe(10);
   });
 
