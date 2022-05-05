@@ -140,11 +140,14 @@ The constructor of [test environment](Configuration.md#testenvironment-string) c
 +     const config = projectConfig;
 ```
 
-In addition, test environments `"jest-environment-node"` is now exporting it's environment with a default export, instead of simply exporting the class directly:
+In addition, test environments are now exported with the name `TestEnvironment`, instead of simply exporting the class directly:
 
 ```diff
-- const NodeEnvironment = require('jest-environment-node');
-+ const NodeEnvironment = require('jest-environment-node').default;
+- const TestEnvironment = require('jest-environment-node');
++ const { TestEnvironment } = require('jest-environment-node');
+
+- const TestEnvironment = require('jest-environment-jsdom');
++ const { TestEnvironment } = require('jest-environment-jsdom');
 ```
 
 ### `jsdom`
