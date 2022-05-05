@@ -747,6 +747,8 @@ Use `test.failing` when you are writing a test and expecting it to fail. These t
 
 You can use this type of tests i.e. when writing code in a BDD way. In that case the tests will not show up as failing until they pass. Then you can just remove the `failing` modifier to make them pass.
 
+It can also be a nice way to contribute failing tests to a project, even if you don't know how to fix the bug.
+
 :::
 
 Example:
