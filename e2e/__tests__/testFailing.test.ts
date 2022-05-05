@@ -6,8 +6,12 @@
  */
 
 import * as path from 'path';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
+
+skipSuiteOnJasmine();
+
 const dir = path.resolve(__dirname, '../test-failing');
 
 test('works with all statuses', () => {
