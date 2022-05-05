@@ -220,6 +220,8 @@ const test: Global.It = (() => {
   test.concurrent = concurrentTest;
   concurrentTest.only = concurrentOnly;
   concurrentTest.skip = skip;
+  concurrentTest.failing = bindFailing(true);
+  concurrentOnly.failing = bindFailing(true, 'only');
 
   return test;
 })();

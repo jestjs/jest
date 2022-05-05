@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
-import runJest from '../runJest';
+import runJest, {json as runWithJson} from '../runJest';
 
 skipSuiteOnJasmine();
 
@@ -30,6 +30,20 @@ test('works with only mode', () => {
 
 test('works with skip mode', () => {
   const result = runJest(dir, ['worksWithSkipMode.test.js']);
+  expect(result.exitCode).toBe(1);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+});
+
+test('works with concurrent mode', () => {
+  const result = runWithJson(dir, ['worksWithConcurrentMode.test.js']);
+  expect(result.exitCode).toBe(1);
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
+});
+
+test('works with concurrent and only mode', () => {
+  const result = runWithJson(dir, ['worksWithConcurrentOnlyMode.test.js']);
   expect(result.exitCode).toBe(1);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
