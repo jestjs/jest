@@ -644,7 +644,7 @@ Returns the number of fake timers still left to run.
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
 
-To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](API.md#testname-fn-timeout).
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 
