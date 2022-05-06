@@ -2703,7 +2703,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^3.0.0
+    jest-runner-tsd: ^3.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^1.1.0
@@ -8356,27 +8356,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest-runner@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "create-jest-runner@npm:0.9.0"
+"create-jest-runner@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "create-jest-runner@npm:0.11.0"
   dependencies:
     chalk: ^4.1.0
-    jest-worker: ^27.0.6
+    jest-worker: ^28.0.2
     throat: ^6.0.1
   peerDependencies:
-    "@jest/test-result": ^27.0.0
-    "@jest/types": ^27.0.0
-    jest-runner: ^27.0.0
+    "@jest/test-result": ^28.0.0
+    jest-runner: ^28.0.0
   peerDependenciesMeta:
     "@jest/test-result":
-      optional: true
-    "@jest/types":
       optional: true
     jest-runner:
       optional: true
   bin:
     create-jest-runner: generator/index.js
-  checksum: 50948976f47b36a675d9e1407443d4cbf16277d84a701e8b4c15739f39a190b8ea350203e5eab8e956fc56f02af30a1002cc36058408ddddf1f22d0d52c240a3
+  checksum: 2ff2ff4f747c695a04c5ab3106b99a7bf4c6ddd567aad7af11d336a90105b2459ec1d31a6ac7b020ec32a0329843ea696e5706be8502e1c9fd5e50f21b099748
   languageName: node
   linkType: hard
 
@@ -13432,17 +13429,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "jest-runner-tsd@npm:3.0.0"
+"jest-runner-tsd@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "jest-runner-tsd@npm:3.0.1"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
-    create-jest-runner: ^0.9.0
+    create-jest-runner: ^0.11.0
     tsd-lite: ^0.5.0
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 33f7145d7dc983ccfa9706e9926c57d30957265bf3c2171a8ecca5bfd7f3ab06b4dd668edcf02b0bd7f356020c4999d16d76aa666eed5b64da8d73ef7b12a061
+  checksum: 8613e3feefdfc6d34a91fc73306b56b95c491e1723135a8db044797aa4eb5d7f75bc86bca20a458f5b402124c3db03769cc5001f88a49d6f3d4294530392cfc8
   languageName: node
   linkType: hard
 
@@ -13703,7 +13700,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-worker@^28.1.0, jest-worker@workspace:packages/jest-worker":
+"jest-worker@^28.0.2, jest-worker@^28.1.0, jest-worker@workspace:packages/jest-worker":
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
@@ -13731,7 +13728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^27.0.2, jest-worker@npm:^27.0.6, jest-worker@npm:^27.4.5, jest-worker@npm:^27.5.1":
+"jest-worker@npm:^27.0.2, jest-worker@npm:^27.4.5, jest-worker@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-worker@npm:27.5.1"
   dependencies:
