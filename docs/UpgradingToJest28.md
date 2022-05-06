@@ -144,10 +144,10 @@ In addition, test environments are now exported with the name `TestEnvironment`,
 
 ```diff
 - const TestEnvironment = require('jest-environment-node');
-+ const { TestEnvironment } = require('jest-environment-node');
++ const {TestEnvironment} = require('jest-environment-node');
 
 - const TestEnvironment = require('jest-environment-jsdom');
-+ const { TestEnvironment } = require('jest-environment-jsdom');
++ const {TestEnvironment} = require('jest-environment-jsdom');
 ```
 
 ### `jsdom`
