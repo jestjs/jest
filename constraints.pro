@@ -26,7 +26,9 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
     % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     'react', 'react-dom',
     % @types/node in the root need to stay on ~12.12.0
-    '@types/node'
+    '@types/node',
+    % upgrading the entire repository is a breaking change
+    'glob'
   ]).
 
 % Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
