@@ -74,6 +74,7 @@ export type SyncEvent =
       mode?: TestMode;
       concurrent: boolean;
       timeout: number | undefined;
+      failing: boolean;
     }
   | {
       // Any unhandled error that happened outside of test/hooks (unless it is
@@ -250,4 +251,5 @@ export type TestEntry = {
   seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
+  failing: boolean;
 };

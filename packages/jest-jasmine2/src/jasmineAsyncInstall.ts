@@ -223,6 +223,11 @@ function makeConcurrent(
   };
   // each is binded after the function is made concurrent, so for now it is made noop
   concurrentFn.each = () => () => {};
+  concurrentFn.failing = () => () => {
+    throw new Error(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+    );
+  };
   return concurrentFn;
 }
 
