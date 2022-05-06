@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
@@ -40,6 +38,7 @@ import type {
   HasteMap as InternalHasteMapObject,
   MockData,
   ModuleMapData,
+  ModuleMapItem,
   ModuleMetaData,
   SerializableModuleMap,
   WorkerMetadata,
@@ -212,14 +211,14 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *
  */
 export default class HasteMap extends EventEmitter {
-  private _buildPromise: Promise<InternalHasteMapObject> | null;
-  private _cachePath: string;
+  private _buildPromise: Promise<InternalHasteMapObject> | null = null;
+  private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
-  private _watchers: Array<Watcher>;
-  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null;
+  private _watchers: Array<Watcher> = [];
+  private _worker: JestWorkerFarm<HasteWorker> | HasteWorker | null = null;
 
   static getStatic(config: Config.ProjectConfig): HasteMapStatic {
     if (config.haste.hasteMapModulePath) {
@@ -244,10 +243,7 @@ export default class HasteMap extends EventEmitter {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || tmpdir(),
-      computeDependencies:
-        options.computeDependencies === undefined
-          ? true
-          : options.computeDependencies,
+      computeDependencies: options.computeDependencies ?? true,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
       enableSymlinks: options.enableSymlinks || false,
@@ -266,7 +262,7 @@ export default class HasteMap extends EventEmitter {
       roots: Array.from(new Set(options.roots)),
       skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
-      useWatchman: options.useWatchman == null ? true : options.useWatchman,
+      useWatchman: options.useWatchman ?? true,
       watch: !!options.watch,
     };
     this._console = options.console || globalThis.console;
@@ -293,11 +289,6 @@ export default class HasteMap extends EventEmitter {
           'Set either `enableSymlinks` to false or `useWatchman` to false.',
       );
     }
-
-    this._cachePath = '';
-    this._buildPromise = null;
-    this._watchers = [];
-    this._worker = null;
   }
 
   private async setupCachePath(options: Options): Promise<void> {
@@ -444,7 +435,7 @@ export default class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
     try {
       const read = this._options.resetCache ? this._createEmptyMap : this.read;
-      hasteMap = await read.call(this);
+      hasteMap = read.call(this);
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -466,7 +457,7 @@ export default class HasteMap extends EventEmitter {
     const setModule = (id: string, module: ModuleMetaData) => {
       let moduleMap = map.get(id);
       if (!moduleMap) {
-        moduleMap = Object.create(null) as {};
+        moduleMap = Object.create(null) as ModuleMapItem;
         map.set(id, moduleMap);
       }
       const platform =
@@ -646,7 +637,7 @@ export default class HasteMap extends EventEmitter {
         const moduleId = fileMetadata[H.ID];
         let modulesByPlatform = map.get(moduleId);
         if (!modulesByPlatform) {
-          modulesByPlatform = Object.create(null) as {};
+          modulesByPlatform = Object.create(null) as ModuleMapItem;
           map.set(moduleId, modulesByPlatform);
         }
         modulesByPlatform[platform] = module;
@@ -729,7 +720,7 @@ export default class HasteMap extends EventEmitter {
   private _cleanup() {
     const worker = this._worker;
 
-    if (worker && 'end' in worker && typeof worker.end === 'function') {
+    if (worker && 'end' in worker) {
       worker.end();
     }
 
@@ -746,11 +737,11 @@ export default class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private _getWorker(options?: {
-    forceInBand: boolean;
-  }): JestWorkerFarm<HasteWorker> | HasteWorker {
+  private _getWorker(
+    options = {forceInBand: false},
+  ): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
-      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
+      if (options.forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
@@ -1070,8 +1061,8 @@ export default class HasteMap extends EventEmitter {
 
     let dedupMap = hasteMap.map.get(moduleName);
 
-    if (dedupMap == null) {
-      dedupMap = Object.create(null) as {};
+    if (!dedupMap) {
+      dedupMap = Object.create(null) as ModuleMapItem;
       hasteMap.map.set(moduleName, dedupMap);
     }
     dedupMap[platform] = uniqueModule;
