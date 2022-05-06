@@ -7,7 +7,6 @@
 
 import throat from 'throat';
 import type {Circus} from '@jest/types';
-import {ErrorWithStack} from 'jest-util';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {
@@ -226,11 +225,10 @@ const _callCircusTest = async (
       timeout,
     });
     if (test.failing) {
+      test.asyncError.message =
+        'Failing test passed even though it was supposed to fail. Remove `.failing` to remove error.';
       await dispatch({
-        error: new ErrorWithStack(
-          'Failing test passed even though it was supposed to fail. Remove `.failing` to remove error.',
-          test.fn,
-        ),
+        error: test.asyncError,
         name: 'test_fn_failure',
         test,
       });

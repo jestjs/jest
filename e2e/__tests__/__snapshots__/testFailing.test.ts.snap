@@ -33,7 +33,17 @@ exports[`works with all statuses 1`] = `
 
   ● failing passes = fails
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      36 | });
+      37 |
+    > 38 | it.failing('failing passes = fails', () => {
+         |    ^
+      39 |   expect(10).toBe(10);
+      40 | });
+      41 |
+
+      at Object.failing (__tests__/statuses.test.js:38:4)"
 `;
 
 exports[`works with concurrent and only mode 1`] = `
@@ -46,7 +56,18 @@ exports[`works with concurrent and only mode 1`] = `
 
   ● block with concurrent › failing passes = fails
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.only.failing('failing passes = fails', () => {
+         |                      ^
+      14 |     expect(10).toBe(10);
+      15 |   });
+      16 |
+
+      at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
+      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
 `;
 
 exports[`works with concurrent mode 1`] = `
@@ -76,7 +97,18 @@ exports[`works with concurrent mode 1`] = `
 
   ● block with concurrent › failing passes = fails
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.failing('failing passes = fails', () => {
+         |                 ^
+      14 |     expect(10).toBe(10);
+      15 |   });
+      16 |
+
+      at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
+      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
 `;
 
 exports[`works with only mode 1`] = `
@@ -103,7 +135,16 @@ exports[`works with only mode 1`] = `
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
+      21 |
+      22 | describe('block with only, should fail', () => {
+    > 23 |   it.only.failing('failing passes = fails, should fail', () => {
+         |           ^
+      24 |     expect(10).toBe(10);
+      25 |   });
+      26 |
 
+      at failing (__tests__/worksWithOnlyMode.test.js:23:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
 
   ● block with only in other it, should skip › failing test
 
@@ -126,11 +167,31 @@ exports[`works with only mode 1`] = `
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
+      50 |
+      51 | describe('block with only with different syntax, should fail', () => {
+    > 52 |   fit.failing('failing passes = fails, should fail 1', () => {
+         |       ^
+      53 |     expect(10).toBe(10);
+      54 |   });
+      55 |
 
+      at failing (__tests__/worksWithOnlyMode.test.js:52:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error."
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      54 |   });
+      55 |
+    > 56 |   test.only.failing('failing passes = fails, should fail 2', () => {
+         |             ^
+      57 |     expect(10).toBe(10);
+      58 |   });
+      59 |
+
+      at failing (__tests__/worksWithOnlyMode.test.js:56:13)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)"
 `;
 
 exports[`works with skip mode 1`] = `
