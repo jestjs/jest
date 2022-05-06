@@ -223,7 +223,6 @@ function makeConcurrent(
   };
   // each is binded after the function is made concurrent, so for now it is made noop
   concurrentFn.each = () => () => {};
-  // "failing" is not implemented in jasmine. It has to be defined because of TS types.
   concurrentFn.failing = () => () => {
     throw new Error(
       'Jest: `failing` tests are only supported in `jest-circus`.',
