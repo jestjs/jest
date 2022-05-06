@@ -25,7 +25,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const e2eNodeModules = glob
   .sync('e2e/*/node_modules/', {cwd: rootDir})
-  .concat(glob.sync('e2e/*/*/node_modules/'))
+  .concat(glob.sync('e2e/*/*/node_modules/', {cwd: rootDir}))
   .filter(dir => !excludedModules.includes(dir))
   .map(dir => resolve(rootDir, dir))
   .sort();
