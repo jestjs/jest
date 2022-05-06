@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import {extractSummary} from '../Utils';
+import {extractSortedSummary} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
@@ -17,6 +17,6 @@ const dir = path.resolve(__dirname, '../test-failing');
 test('throws an error about unsupported modifier', () => {
   const result = runJest(dir);
   expect(result.exitCode).toBe(1);
-  const {rest} = extractSummary(result.stderr);
+  const {rest} = extractSortedSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
