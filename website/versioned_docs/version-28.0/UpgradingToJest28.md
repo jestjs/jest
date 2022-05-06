@@ -140,6 +140,16 @@ The constructor of [test environment](Configuration.md#testenvironment-string) c
 +     const config = projectConfig;
 ```
 
+In addition, test environments are now exported with the name `TestEnvironment`, instead of simply exporting the class directly:
+
+```diff
+- const TestEnvironment = require('jest-environment-node');
++ const {TestEnvironment} = require('jest-environment-node');
+
+- const TestEnvironment = require('jest-environment-jsdom');
++ const {TestEnvironment} = require('jest-environment-jsdom');
+```
+
 ### `jsdom`
 
 If you are using JSDOM [test environment](Configuration.md#testenvironment-string), `jest-environment-jsdom` package now must be installed separately:
