@@ -21,7 +21,7 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % TODO: in the future we should make it consistent and remove this ignore
   DependencyRange \= 'workspace:*',
   DependencyRange2 \= 'workspace:*',
-  % a list of exception to same version rule
+  % A list of exception to same version rule
   \+ member(DependencyIdent, [
     % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     'react', 'react-dom',
