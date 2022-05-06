@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect",
-  "version": "28.0.3",
+  "version": "28.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "expect": "^28.0.2",
-    "jest-snapshot": "^28.0.3"
+    "expect": "^28.1.0",
+    "jest-snapshot": "^28.1.0"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.6.2",
