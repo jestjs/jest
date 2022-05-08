@@ -215,7 +215,6 @@ async function runTestInternal(
   }
 
   const sourcemapOptions: sourcemapSupport.Options = {
-    callsiteFallback: false,
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {

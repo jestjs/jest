@@ -41,7 +41,7 @@ exports[`works with custom matchers 1`] = `
       at baz (__tests__/sync.test.js:45:13)
       at bar (__tests__/sync.test.js:43:23)
       at foo (__tests__/sync.test.js:42:23)
-      at callback (__tests__/sync.test.js:52:7)
+      at __tests__/sync.test.js:52:7
       at Object.toCustomMatch (__tests__/sync.test.js:11:18)
       at Object.<anonymous> (__tests__/sync.test.js:53:8)"
 `;

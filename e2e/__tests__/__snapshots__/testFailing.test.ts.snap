@@ -29,7 +29,7 @@ exports[`works with all statuses 1`] = `
       15 |
       16 | it.skip('skips', () => {
 
-      at Object.toBe (__tests__/statuses.test.js:13:14)
+      at Object.<anonymous> (__tests__/statuses.test.js:13:14)
 
   ● failing passes = fails
 
@@ -43,7 +43,7 @@ exports[`works with all statuses 1`] = `
       40 | });
       41 |
 
-      at Object.failing (__tests__/statuses.test.js:38:4)"
+      at Object.<anonymous> (__tests__/statuses.test.js:38:4)"
 `;
 
 exports[`works with concurrent and only mode 1`] = `
@@ -66,8 +66,8 @@ exports[`works with concurrent and only mode 1`] = `
       15 |   });
       16 |
 
-      at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
+      at __tests__/worksWithConcurrentOnlyMode.test.js:13:22
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
 `;
 
 exports[`works with concurrent mode 1`] = `
@@ -93,7 +93,7 @@ exports[`works with concurrent mode 1`] = `
       12 |
       13 |   it.concurrent.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:10:16)
 
   ● block with concurrent › failing passes = fails
 
@@ -107,8 +107,8 @@ exports[`works with concurrent mode 1`] = `
       15 |   });
       16 |
 
-      at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
+      at __tests__/worksWithConcurrentMode.test.js:13:17
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)"
 `;
 
 exports[`works with only mode 1`] = `
@@ -143,8 +143,8 @@ exports[`works with only mode 1`] = `
       25 |   });
       26 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:23:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
+      at __tests__/worksWithOnlyMode.test.js:23:11
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:22:1)
 
   ● block with only in other it, should skip › failing test
 
@@ -161,7 +161,7 @@ exports[`works with only mode 1`] = `
       45 |
       46 |   it('passing test but skipped', () => {
 
-      at Object.toBe (__tests__/worksWithOnlyMode.test.js:43:16)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:43:16)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 1
 
@@ -175,8 +175,8 @@ exports[`works with only mode 1`] = `
       54 |   });
       55 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:52:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+      at __tests__/worksWithOnlyMode.test.js:52:7
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:51:1)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
@@ -190,8 +190,8 @@ exports[`works with only mode 1`] = `
       58 |   });
       59 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:56:13)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)"
+      at __tests__/worksWithOnlyMode.test.js:56:13
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:51:1)"
 `;
 
 exports[`works with skip mode 1`] = `
@@ -222,5 +222,5 @@ exports[`works with skip mode 1`] = `
       16 |
       17 |   it.skip('passing test', () => {
 
-      at Object.toBe (__tests__/worksWithSkipMode.test.js:14:16)"
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:14:16)"
 `;

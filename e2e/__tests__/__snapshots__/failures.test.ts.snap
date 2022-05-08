@@ -299,7 +299,7 @@ exports[`works with assertions in separate files 1`] = `
       11 | };
       12 |
 
-      at shouldEqual (macros.js:10:15)
+      at Object.<anonymous>.module.exports (macros.js:10:15)
       at Object.<anonymous> (__tests__/testMacro.test.js:13:3)"
 `;
 
