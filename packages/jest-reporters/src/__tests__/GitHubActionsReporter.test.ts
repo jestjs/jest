@@ -116,7 +116,7 @@ describe("passes test case report to '@actions/core'", () => {
     const expectedMessage =
       'ReferenceError: abc is not defined\n' +
       '\n' +
-      '    at Object.abc (__tests__/quick.test.js:25:12)';
+      '    at Object.abc ([broken]__tests__/quick.test.js:25:12)';
 
     expect(errorAnnotation).toBeCalledWith(expectedMessage, {
       file: expect.any(String),

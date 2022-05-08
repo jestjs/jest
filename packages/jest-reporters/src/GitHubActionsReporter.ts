@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// import {relative} from 'path';
 import {
   summary as actionsSummary,
   error as errorAnnotation,
@@ -26,21 +25,17 @@ import {
 import {pluralize} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
-// const ancestrySeparator = ' \u203A ';
+const errorTitleSeparator = ' \u203A ';
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
   override onTestCaseResult(
     test: Test,
-    {failureMessages}: TestCaseResult,
+    {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
     failureMessages.forEach(failureMessage => {
       const {message, stack} = separateMessageFromStack(failureMessage);
-      // const relativePath = relative(test.context.config.rootDir, test.path);
-
-      const rootDir = test.context.config.rootDir;
-      const testPath = test.path;
 
       const stackLines = getStackTraceLines(stack);
       const formattedLines = stackLines.map(line =>
@@ -48,14 +43,14 @@ export default class GitHubActionsReporter extends BaseReporter {
       );
       const topFrame = getTopFrame(stackLines);
 
-      // const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
+      const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
       const errorMessage = stripAnsi([message, ...formattedLines].join('\n'));
 
       errorAnnotation(errorMessage, {
         file: test.path,
         startColumn: topFrame?.column,
         startLine: topFrame?.line,
-        title: `rootDir: ${rootDir} | testPath: ${testPath}`,
+        title: errorTitle,
       });
     });
   }
