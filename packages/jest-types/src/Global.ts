@@ -69,6 +69,7 @@ export interface HookBase {
 export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn, TestNameLike>;
+  failing(testName: TestNameLike, fn: TestFn, timeout?: number): void;
 }
 
 export interface It extends ItBase {
@@ -80,6 +81,7 @@ export interface It extends ItBase {
 export interface ItConcurrentBase {
   (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn, TestNameLike>;
+  failing(testName: TestNameLike, fn: ConcurrentTestFn, timeout?: number): void;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
