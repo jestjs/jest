@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@cspotcode/source-map-support": "^0.8.1",
+    "@cspotcode/source-map-support": "https://github.com/cspotcode/node-source-map-support#fix-function-name-fallbacks",
     "@jest/console": "^28.0.2",
     "@jest/environment": "^28.0.2",
     "@jest/test-result": "^28.0.2",

@@ -1874,21 +1874,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cspotcode/source-map-support@https://github.com/cspotcode/node-source-map-support#fix-function-name-fallbacks":
+  version: 0.8.1
+  resolution: "@cspotcode/source-map-support@https://github.com/cspotcode/node-source-map-support.git#commit=1d674cf3c84dc6fb5e672cb0e03de7662fffad48"
+  dependencies:
+    "@jridgewell/trace-mapping": 0.3.9
+  checksum: 3008e10c0a155223be132cb02d022d7a6796b2357d27211e2d972b11ab93fab8b402250b83f2c9a51a33ab94092592b5e30ac565e9e140a8121ae06695449412
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:0.7.0":
   version: 0.7.0
   resolution: "@cspotcode/source-map-support@npm:0.7.0"
   dependencies:
     "@cspotcode/source-map-consumer": 0.8.0
   checksum: 9faddda7757cd778b5fd6812137b2cc265810043680d6399acc20441668fafcdc874053be9dccd0d9110087287bfad27eb3bf342f72bceca9aa9059f5d0c4be8
-  languageName: node
-  linkType: hard
-
-"@cspotcode/source-map-support@npm:^0.8.1":
-  version: 0.8.1
-  resolution: "@cspotcode/source-map-support@npm:0.8.1"
-  dependencies:
-    "@jridgewell/trace-mapping": 0.3.9
-  checksum: 5718f267085ed8edb3e7ef210137241775e607ee18b77d95aa5bd7514f47f5019aa2d82d96b3bf342ef7aa890a346fa1044532ff7cc3009e7d24fce3ce6200fa
   languageName: node
   linkType: hard
 
@@ -13449,7 +13449,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
-    "@cspotcode/source-map-support": ^0.8.1
+    "@cspotcode/source-map-support": "https://github.com/cspotcode/node-source-map-support#fix-function-name-fallbacks"
     "@jest/console": ^28.0.2
     "@jest/environment": ^28.0.2
     "@jest/test-result": ^28.0.2
