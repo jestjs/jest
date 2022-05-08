@@ -5,28 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  summary as actionsSummary,
-  error as errorAnnotation,
-} from '@actions/core';
-import type {Test, TestCaseResult, TestContext} from '@jest/test-result';
+import type {Test, TestCaseResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
-jest.spyOn(Date, 'now').mockReturnValue(6000);
-
-jest.mock('@actions/core', () => {
-  const addRaw = jest.fn(() => summary);
-  const addTable = jest.fn(() => summary);
-  const write = jest.fn(() => summary);
-
-  const summary = {
-    addRaw,
-    addTable,
-    write,
-  } as unknown as jest.Mocked<typeof actionsSummary>;
-
-  return {error: jest.fn(), summary};
-});
+jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -74,8 +56,6 @@ const testCaseResult = {
   title: 'some test',
 } as TestCaseResult;
 
-const testContexts = new Set<TestContext>();
-
 describe("passes test case report to '@actions/core'", () => {
   test('when expect returns an error', () => {
     reporter.onTestCaseResult(testMeta, {
@@ -83,20 +63,8 @@ describe("passes test case report to '@actions/core'", () => {
       failureMessages: [expectationsErrorMessage],
     });
 
-    const expectedMessage =
-      'expect(received).toBe(expected) // Object.is equality\n' +
-      '\n' +
-      'Expected: 1\n' +
-      'Received: 10\n' +
-      '\n' +
-      '    at Object.toBe (/user/project/__tests__/quick.test.js:20:14)';
-
-    expect(errorAnnotation).toBeCalledWith(expectedMessage, {
-      file: expect.any(String),
-      startColumn: 14,
-      startLine: 20,
-      title: expect.any(String),
-    });
+    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
   test('when a test has reference error', () => {
@@ -108,17 +76,8 @@ describe("passes test case report to '@actions/core'", () => {
       },
     );
 
-    const expectedMessage =
-      'ReferenceError: abc is not defined\n' +
-      '\n' +
-      '    at Object.abc (/user/project/__tests__/quick.test.js:25:12)';
-
-    expect(errorAnnotation).toBeCalledWith(expectedMessage, {
-      file: expect.any(String),
-      startColumn: 12,
-      startLine: 25,
-      title: expect.any(String),
-    });
+    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
   test('when test is wrapped in describe block', () => {
@@ -127,22 +86,14 @@ describe("passes test case report to '@actions/core'", () => {
       ancestorTitles: ['describe'],
     });
 
-    expect(errorAnnotation).toBeCalledWith(expect.any(String), {
-      file: '/user/project/__tests__/quick.test.js',
-      startColumn: 14,
-      startLine: 20,
-      title: 'describe \u203A some test',
-    });
+    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
   test('when test not is wrapped in describe block', () => {
     reporter.onTestCaseResult(testMeta, testCaseResult);
 
-    expect(errorAnnotation).toBeCalledWith(expect.any(String), {
-      file: '/user/project/__tests__/quick.test.js',
-      startColumn: 14,
-      startLine: 20,
-      title: 'some test',
-    });
+    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 });

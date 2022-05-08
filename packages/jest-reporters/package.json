@@ -12,7 +12,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@actions/core": "^1.8.0",
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^28.1.0",
     "@jest/test-result": "^28.1.0",

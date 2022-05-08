@@ -5,24 +5,6 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@actions/core@npm:^1.8.0":
-  version: 1.8.0
-  resolution: "@actions/core@npm:1.8.0"
-  dependencies:
-    "@actions/http-client": ^1.0.11
-  checksum: 0634770fce3fdf56fd76338731921fde67dcea54cba7e5be2398d62445ada2ee8afca6694da1c6f72d9b4d257cbf3ed0dacbd58753adac712e06249f57156cf3
-  languageName: node
-  linkType: hard
-
-"@actions/http-client@npm:^1.0.11":
-  version: 1.0.11
-  resolution: "@actions/http-client@npm:1.0.11"
-  dependencies:
-    tunnel: 0.0.6
-  checksum: 2c72834ec36a121ae95d2cb61fd28234eae2ab265a2aefe857a9eeb788ea77b284ad727ecd3c67fefd1920d5f2800b6c1ba6916b39d44f81f293b4b0020d367c
-  languageName: node
-  linkType: hard
-
 "@algolia/autocomplete-core@npm:1.5.2":
   version: 1.5.2
   resolution: "@algolia/autocomplete-core@npm:1.5.2"
@@ -2757,7 +2739,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
   dependencies:
-    "@actions/core": ^1.8.0
     "@bcoe/v8-coverage": ^0.2.3
     "@jest/console": ^28.1.0
     "@jest/test-result": ^28.1.0
@@ -21482,13 +21463,6 @@ __metadata:
   dependencies:
     safe-buffer: ^5.0.1
   checksum: 05f6510358f8afc62a057b8b692f05d70c1782b70db86d6a1e0d5e28a32389e52fa6e7707b6c5ecccacc031462e4bc35af85ecfe4bbc341767917b7cf6965711
-  languageName: node
-  linkType: hard
-
-"tunnel@npm:0.0.6":
-  version: 0.0.6
-  resolution: "tunnel@npm:0.0.6"
-  checksum: c362948df9ad34b649b5585e54ce2838fa583aa3037091aaed66793c65b423a264e5229f0d7e9a95513a795ac2bd4cb72cda7e89a74313f182c1e9ae0b0994fa
   languageName: node
   linkType: hard
 
