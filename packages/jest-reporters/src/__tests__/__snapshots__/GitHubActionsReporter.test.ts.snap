@@ -1,0 +1,274 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`passes summary report to '@actions/core' when just one snapshot was matched 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**12 tests** ",
+  ],
+  Array [
+    "and matched **1 snapshot** ",
+  ],
+  Array [
+    "in just 2 seconds.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when just one snapshot was matched 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "",
+        "",
+        "<img src="https://img.shields.io/badge/passed-1-brightgreen" alt="1 passed">",
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when just one test suite was ran 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**1 test suite** with totally ",
+  ],
+  Array [
+    "**12 tests** ",
+  ],
+  Array [
+    "in just 1 second.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when just one test suite was ran 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "<img src="https://img.shields.io/badge/passed-1-brightgreen" alt="1 passed">",
+        "<img src="https://img.shields.io/badge/skipped-2-yellow" alt="2 skipped">",
+        "",
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when just one test was ran 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**1 test** ",
+  ],
+  Array [
+    "in just 1 second.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when just one test was ran 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "",
+        "<img src="https://img.shields.io/badge/passed-1-brightgreen" alt="1 passed">",
+        "",
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one snapshot was matched 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**42 test suites** with totally ",
+  ],
+  Array [
+    "**529 tests** ",
+  ],
+  Array [
+    "and matched **85 snapshots** ",
+  ],
+  Array [
+    "in just 5 seconds.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one snapshot was matched 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "",
+        "",
+        "<img src="https://img.shields.io/badge/failed-12-red" alt="12 failed"><br><img src="https://img.shields.io/badge/obsolete-1-yellow" alt="1 obsolete"><br><img src="https://img.shields.io/badge/passed-72-brightgreen" alt="72 passed">",
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one test suite was ran 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**42 test suites** with totally ",
+  ],
+  Array [
+    "**522 tests** ",
+  ],
+  Array [
+    "in just 4 seconds.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one test suite was ran 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "<img src="https://img.shields.io/badge/failed-5-red" alt="5 failed"><br><img src="https://img.shields.io/badge/skipped-13-yellow" alt="13 skipped"><br><img src="https://img.shields.io/badge/passed-24-brightgreen" alt="24 passed">",
+        "",
+        "",
+      ],
+    ],
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one test was ran 1`] = `
+Array [
+  Array [
+    "Jest ran ",
+  ],
+  Array [
+    "**529 tests** ",
+  ],
+  Array [
+    "in just 4 seconds.",
+    true,
+  ],
+]
+`;
+
+exports[`passes summary report to '@actions/core' when more than one test was ran 2`] = `
+Array [
+  Array [
+    Array [
+      Array [
+        Object {
+          "data": "Test Suites",
+          "header": true,
+        },
+        Object {
+          "data": "Tests",
+          "header": true,
+        },
+        Object {
+          "data": "Snapshots",
+          "header": true,
+        },
+      ],
+      Array [
+        "",
+        "<img src="https://img.shields.io/badge/failed-32-red" alt="32 failed"><br><img src="https://img.shields.io/badge/skipped-54-yellow" alt="54 skipped"><br><img src="https://img.shields.io/badge/todo-7-blueviolet" alt="7 todo"><br><img src="https://img.shields.io/badge/passed-436-brightgreen" alt="436 passed">",
+        "",
+      ],
+    ],
+  ],
+]
+`;

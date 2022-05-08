@@ -5,55 +5,132 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {
+  summary as actionsSummary,
+  error as errorAnnotation,
+} from '@actions/core';
 import stripAnsi = require('strip-ansi');
 import type {
   AggregatedResult,
+  Test,
+  TestCaseResult,
   TestContext,
-  TestResult,
 } from '@jest/test-result';
+import {
+  getStackTraceLines,
+  getTopFrame,
+  separateMessageFromStack,
+} from 'jest-message-util';
+import {pluralize} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
-const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
-
-function replaceEntities(s: string): string {
-  // https://github.com/actions/toolkit/blob/b4639928698a6bfe1c4bdae4b2bfdad1cb75016d/packages/core/src/command.ts#L80-L85
-  const substitutions: Array<[RegExp, string]> = [
-    [/%/g, '%25'],
-    [/\r/g, '%0D'],
-    [/\n/g, '%0A'],
-  ];
-  return substitutions.reduce((acc, sub) => acc.replace(...sub), s);
-}
+const ancestrySeparator = ' \u203A ';
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
-  override onRunComplete(
-    _testContexts?: Set<TestContext>,
-    aggregatedResults?: AggregatedResult,
+  override onTestCaseResult(
+    {path: testPath}: Test,
+    {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
-    const messages = getMessages(aggregatedResults?.testResults);
+    failureMessages.forEach(failureMessage => {
+      const {message, stack} = separateMessageFromStack(failureMessage);
+      const stackTraceLines = getStackTraceLines(stack);
+      const topFrame = getTopFrame(stackTraceLines);
 
-    for (const message of messages) {
-      this.log(message);
-    }
+      const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
+      const errorMessage = stripAnsi([message, ...stackTraceLines].join('\n'));
+
+      errorAnnotation(errorMessage, {
+        file: testPath,
+        startColumn: topFrame?.column,
+        startLine: topFrame?.line,
+        title: errorTitle,
+      });
+    });
   }
-}
 
-function getMessages(results: Array<TestResult> | undefined) {
-  if (!results) return [];
+  override async onRunComplete(
+    _testContexts?: Set<TestContext>,
+    result?: AggregatedResult,
+  ): Promise<void> {
+    if (!result?.numTotalTests) return;
 
-  return results.flatMap(({testFilePath, testResults}) =>
-    testResults
-      .filter(r => r.status === 'failed')
-      .flatMap(r => r.failureMessages)
-      .map(m => stripAnsi(m))
-      .map(m => replaceEntities(m))
-      .map(m => lineAndColumnInStackTrace.exec(m))
-      .filter((m): m is RegExpExecArray => m !== null)
-      .map(
-        ([message, line, col]) =>
-          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
-      ),
-  );
+    const summary = actionsSummary.addRaw('Jest ran ');
+    if (result?.numTotalTestSuites) {
+      const suitesCount = pluralize('test suite', result.numTotalTestSuites);
+      summary.addRaw(`**${suitesCount}** with totally `);
+    }
+    if (result?.numTotalTests) {
+      const testsCount = pluralize('test', result.numTotalTests);
+      summary.addRaw(`**${testsCount}** `);
+    }
+    if (result?.snapshot.total) {
+      const snapshotsCount = pluralize('snapshot', result.snapshot.total);
+      summary.addRaw(`and matched **${snapshotsCount}** `);
+    }
+    if (result?.startTime) {
+      const runTime = (Date.now() - result.startTime) / 1000;
+      const duration = pluralize('second', Math.floor(runTime));
+      summary.addRaw(`in just ${duration}.`, true);
+    }
+
+    const shieldColor = {
+      failed: 'red',
+      obsolete: 'yellow',
+      passed: 'brightgreen',
+      skipped: 'yellow',
+      todo: 'blueviolet',
+    };
+
+    type GetBadgeOptions = {
+      status: keyof typeof shieldColor;
+      count?: number;
+    };
+
+    function getBadge({status, count = 0}: GetBadgeOptions) {
+      if (count === 0) return;
+
+      const src = `https://img.shields.io/badge/${status}-${count}-${shieldColor[status]}`;
+      const alt = `${count} ${status}`;
+
+      return `<img src="${src}" alt="${alt}">`;
+    }
+
+    summary.addTable([
+      [
+        {data: 'Test Suites', header: true},
+        {data: 'Tests', header: true},
+        {data: 'Snapshots', header: true},
+      ],
+      [
+        [
+          getBadge({count: result?.numFailedTestSuites, status: 'failed'}),
+          getBadge({count: result?.numPendingTestSuites, status: 'skipped'}),
+          getBadge({count: result?.numPassedTestSuites, status: 'passed'}),
+        ]
+          .filter(shield => shield !== undefined)
+          .join('<br>'),
+
+        [
+          getBadge({count: result?.numFailedTests, status: 'failed'}),
+          getBadge({count: result?.numPendingTests, status: 'skipped'}),
+          getBadge({count: result?.numTodoTests, status: 'todo'}),
+          getBadge({count: result?.numPassedTests, status: 'passed'}),
+        ]
+          .filter(shield => shield !== undefined)
+          .join('<br>'),
+
+        [
+          getBadge({count: result?.snapshot.unmatched, status: 'failed'}),
+          getBadge({count: result?.snapshot.unchecked, status: 'obsolete'}),
+          getBadge({count: result?.snapshot.matched, status: 'passed'}),
+        ]
+          .filter(shield => shield !== undefined)
+          .join('<br>'),
+      ],
+    ]);
+
+    await summary.write();
+  }
 }
