@@ -17,6 +17,7 @@ import type {
   TestContext,
 } from '@jest/test-result';
 import {
+  formatPath,
   getStackTraceLines,
   getTopFrame,
   separateMessageFromStack,
@@ -30,19 +31,22 @@ export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
   override onTestCaseResult(
-    {path: testPath}: Test,
+    test: Test,
     {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
     failureMessages.forEach(failureMessage => {
       const {message, stack} = separateMessageFromStack(failureMessage);
-      const stackTraceLines = getStackTraceLines(stack);
-      const topFrame = getTopFrame(stackTraceLines);
+      const stackLines = getStackTraceLines(stack);
+      const formattedLines = stackLines.map(line =>
+        formatPath(line, test.context.config),
+      );
+      const topFrame = getTopFrame(stackLines);
 
       const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
-      const errorMessage = stripAnsi([message, ...stackTraceLines].join('\n'));
+      const errorMessage = stripAnsi([message, ...formattedLines].join('\n'));
 
       errorAnnotation(errorMessage, {
-        file: testPath,
+        file: test.path,
         startColumn: topFrame?.column,
         startLine: topFrame?.line,
         title: errorTitle,

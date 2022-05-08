@@ -8,6 +8,19 @@ test('quick passing snapshot test', () => {
   expect('some thing').toMatchSnapshot();
 });
 
+let i = 0;
+
+jest.retryTimes(3, {logErrorsBeforeRetry: true});
+
+test('quick retryTimes check', () => {
+  i++;
+  if (i === 3) {
+    expect(true).toBeTruthy();
+  } else {
+    expect(true).toBeFalsy();
+  }
+});
+
 test('quick failing snapshot test', () => {
   expect('another thing').toMatchSnapshot();
 });

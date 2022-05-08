@@ -234,11 +234,11 @@ const removeInternalStackEntries = (
   });
 };
 
-const formatPaths = (
-  config: StackTraceConfig,
-  relativeTestPath: string | null,
+export const formatPath = (
   line: string,
-) => {
+  config: StackTraceConfig,
+  relativeTestPath: string | null = null,
+): string => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -317,7 +317,7 @@ export const formatStackTrace = (
     .filter(Boolean)
     .map(
       line =>
-        STACK_INDENT + formatPaths(config, relativeTestPath, trimPaths(line)),
+        STACK_INDENT + formatPath(trimPaths(line), config, relativeTestPath),
     )
     .join('\n');
 
