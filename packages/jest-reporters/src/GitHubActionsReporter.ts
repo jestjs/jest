@@ -6,6 +6,7 @@
  */
 
 import {relative} from 'path';
+import slash = require('slash');
 import stripAnsi = require('strip-ansi');
 import type {Test, TestCaseResult} from '@jest/test-result';
 import {
@@ -29,16 +30,16 @@ export default class GitHubActionsReporter extends BaseReporter {
 
       const stackLines = getStackTraceLines(stack);
 
-      const relativeTestPath = relative('', test.path);
-      const relativeStackLines = stackLines.map(line =>
+      const relativeTestPath = slash(relative('', test.path));
+      const normalizedStackLines = stackLines.map(line =>
         line.replace(test.path, relativeTestPath),
       );
 
       const topFrame = getTopFrame(stackLines);
 
       const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
-      const errorMessage = escapeSymbols(
-        [message, ...relativeStackLines].join('\n'),
+      const errorMessage = normalizeMessage(
+        [message, ...normalizedStackLines].join('\n'),
       );
 
       this.log(
@@ -49,6 +50,6 @@ export default class GitHubActionsReporter extends BaseReporter {
 }
 
 // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
-function escapeSymbols(input: string): string {
+function normalizeMessage(input: string): string {
   return input.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
 }

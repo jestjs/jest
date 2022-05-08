@@ -238,7 +238,7 @@ const formatPaths = (
   config: StackTraceConfig,
   relativeTestPath: string | null,
   line: string,
-): string => {
+) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
