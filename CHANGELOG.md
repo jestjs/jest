@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS Lists ([#12763](https://github.com/facebook/jest/pull/12763))
+
 ### Chore & Maintenance
 
 - `[@jest-reporters]` Move helper functions from `utils.ts` into separate files ([#12782](https://github.com/facebook/jest/pull/12782))

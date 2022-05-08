@@ -20,6 +20,7 @@
     "jest-get-type": "^28.0.2"
   },
   "devDependencies": {
+    "immutable": "^4.0.0",
     "jest-matcher-utils": "^28.0.2"
   },
   "engines": {

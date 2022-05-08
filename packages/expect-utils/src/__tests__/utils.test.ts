@@ -6,6 +6,7 @@
  *
  */
 
+import {List} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
 import {
   arrayBufferEquality,
@@ -514,6 +515,13 @@ describe('iterableEquality', () => {
     a.set('a', a);
     const b = new Map();
     b.set('a', b);
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable Lists without an OwnerID', () => {
+    const a = List([1, 2, 3]);
+    const b = a.filter(v => v > 0);
 
     expect(iterableEquality(a, b)).toBe(true);
   });
