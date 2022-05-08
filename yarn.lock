@@ -1876,10 +1876,10 @@ __metadata:
 
 "@cspotcode/source-map-support@https://github.com/cspotcode/node-source-map-support#fix-function-name-fallbacks":
   version: 0.8.1
-  resolution: "@cspotcode/source-map-support@https://github.com/cspotcode/node-source-map-support.git#commit=e7819238ab11e038854028df3b45d2846a73afae"
+  resolution: "@cspotcode/source-map-support@https://github.com/cspotcode/node-source-map-support.git#commit=4bfe5cbbb90b012eace6147a9de5f1a587b36ac5"
   dependencies:
     "@jridgewell/trace-mapping": 0.3.9
-  checksum: ac11efe455e0730a855538e1d44c662eb389ec47b5f2a047a6d3d8cf5c4f5e9b120a2acaed85b045053ca290367e7b3e42efe8ebf5e88e5f5eb05e0f0f8b2759
+  checksum: ebf31a9a8b22d6e6f6267fb9cb085779fe2589f7dc2df6ec4aa4a9b482c28af69c398d9c8527ab121256b107a9ee71cab876eafc186a61d21855c6e12896174b
   languageName: node
   linkType: hard
 
