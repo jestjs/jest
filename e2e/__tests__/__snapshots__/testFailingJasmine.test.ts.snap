@@ -14,7 +14,7 @@ exports[`throws an error about unsupported modifier 1`] = `
       24 | });
       25 |
 
-      at Object.failing (__tests__/statuses.test.js:22:4)
+      at Object.<anonymous> (__tests__/statuses.test.js:22:4)
 
 FAIL __tests__/worksWithConcurrentMode.test.js
   ● block with concurrent › failing test
@@ -32,7 +32,7 @@ FAIL __tests__/worksWithConcurrentMode.test.js
       12 |
       13 |   it.concurrent.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:10:16)
 
 FAIL __tests__/worksWithConcurrentOnlyMode.test.js
   ● block with concurrent › skipped failing test
@@ -50,7 +50,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
       12 |
       13 |   it.concurrent.only.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
 
 FAIL __tests__/worksWithOnlyMode.test.js
   ● block with only, should pass › encountered a declaration exception
@@ -65,8 +65,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       11 |   });
       12 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:9:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:9:11)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:8:1)
 
   ● block with only, should fail › encountered a declaration exception
 
@@ -80,8 +80,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       25 |   });
       26 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:23:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:23:11)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:22:1)
 
   ● block with only in other it, should skip › encountered a declaration exception
 
@@ -95,8 +95,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       39 |   });
       40 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:37:6)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:36:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:37:6)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:36:1)
 
   ● block with only with different syntax, should fail › encountered a declaration exception
 
@@ -110,8 +110,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       54 |   });
       55 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:52:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:52:7)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:51:1)
 
 FAIL __tests__/worksWithSkipMode.test.js
   ● block with only, should pass › encountered a declaration exception
@@ -126,8 +126,8 @@ FAIL __tests__/worksWithSkipMode.test.js
       11 |   });
       12 |
 
-      at Suite.failing (__tests__/worksWithSkipMode.test.js:9:11)
-      at Object.describe (__tests__/worksWithSkipMode.test.js:8:1)
+      at Suite.<anonymous> (__tests__/worksWithSkipMode.test.js:9:11)
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:8:1)
 
   ● block with only, should fail › encountered a declaration exception
 
@@ -141,6 +141,6 @@ FAIL __tests__/worksWithSkipMode.test.js
       29 |   });
       30 |
 
-      at Suite.failing (__tests__/worksWithSkipMode.test.js:27:11)
-      at Object.describe (__tests__/worksWithSkipMode.test.js:26:1)"
+      at Suite.<anonymous> (__tests__/worksWithSkipMode.test.js:27:11)
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:26:1)"
 `;
