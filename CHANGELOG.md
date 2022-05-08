@@ -24,7 +24,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Specified documentation about `--filter` CLI docs ([#12799](https://github.com/facebook/jest/pull/12799))
-- `[docs]` Update documentation for usage with Webpack
+- `[docs]` Update documentation for usage with Webpack ([#12823](https://github.com/facebook/jest/pull/12823))
 - `[@jest-reporters]` Move helper functions from `utils.ts` into separate files ([#12782](https://github.com/facebook/jest/pull/12782))
 - `[jest-resolve]` Replace `process.versions.pnp` type declaration with `@types/pnpapi` devDependency ([#12783](https://github.com/facebook/jest/pull/12783))
 
@@ -183,7 +183,7 @@
 - `[docs]` Add clarity for module factory hoisting limitations ([#12453](https://github.com/facebook/jest/pull/12453))
 - `[docs]` Add more information about how code transformers work ([#12407](https://github.com/facebook/jest/pull/12407))
 - `[docs]` Add upgrading guide ([#12633](https://github.com/facebook/jest/pull/12633))
-- `[docs]` Update documentation for usage with Webpack
+- `[docs]` Update documentation for usage with Webpack ([#12823](https://github.com/facebook/jest/pull/12823))
 - `[expect]` [**BREAKING**] Remove support for importing `build/utils` ([#12323](https://github.com/facebook/jest/pull/12323))
 - `[expect]` [**BREAKING**] Migrate to ESM ([#12344](https://github.com/facebook/jest/pull/12344))
 - `[expect]` [**BREAKING**] Snapshot matcher types are moved to `@jest/expect` ([#12404](https://github.com/facebook/jest/pull/12404))
@@ -228,7 +228,7 @@
 ### Chore & Maintenance
 
 - `[*]` Avoid anonymous default exports ([#12313](https://github.com/facebook/jest/pull/12313))
-- `[docs]` Update documentation for usage with Webpack
+- `[docs]` Update documentation for usage with Webpack ([#12823](https://github.com/facebook/jest/pull/12823))
 
 ## 27.5.0
 
@@ -686,7 +686,7 @@
 - `[jest-resolve-dependencies]` Continue dependency resolution if mock dependency can't be found ([#10779](https://github.com/facebook/jest/pull/10779))
 
 ### Chore & Maintenance
-- `[docs]` Update documentation for usage with Webpack
+- `[docs]` Update documentation for usage with Webpack ([#12823](https://github.com/facebook/jest/pull/12823))
 
 ## 26.6.2
 
