@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {relative} from 'path';
 import {
   summary as actionsSummary,
   error as errorAnnotation,
@@ -36,9 +37,11 @@ export default class GitHubActionsReporter extends BaseReporter {
   ): void {
     failureMessages.forEach(failureMessage => {
       const {message, stack} = separateMessageFromStack(failureMessage);
+      const relativePath = relative(test.context.config.rootDir, test.path);
+
       const stackLines = getStackTraceLines(stack);
       const formattedLines = stackLines.map(line =>
-        formatPath(line, test.context.config),
+        formatPath(line, test.context.config, relativePath),
       );
       const topFrame = getTopFrame(stackLines);
 
