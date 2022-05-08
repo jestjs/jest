@@ -1,10 +1,10 @@
-test.todo('one the way');
+test.todo('work in progress example');
 
-test('quick passing test', () => {
+test('passing example', () => {
   expect(10).toBe(10);
 });
 
-test('quick passing snapshot test', () => {
+test('passing snapshot example', () => {
   expect('some thing').toMatchSnapshot();
 });
 
@@ -12,7 +12,7 @@ let i = 0;
 
 jest.retryTimes(3, {logErrorsBeforeRetry: true});
 
-test('quick retryTimes check', () => {
+test('retryTimes example', () => {
   i++;
   if (i === 3) {
     expect(true).toBeTruthy();
@@ -21,20 +21,20 @@ test('quick retryTimes check', () => {
   }
 });
 
-test('quick failing snapshot test', () => {
-  expect('another thing').toMatchSnapshot();
+test('failing snapshot example', () => {
+  expect('nothing').toMatchSnapshot();
 });
 
-test.skip('quick skipped test', () => {
+test.skip('skipped example', () => {
   expect(10).toBe(10);
 });
 
-test('quick failing test', () => {
+test('failing example', () => {
   expect(10).toBe(1);
 });
 
 describe('nested', () => {
-  test('failing test', () => {
+  test('failing example', () => {
     expect(abc).toBe(1);
   });
 });

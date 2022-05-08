@@ -1,9 +1,0 @@
-{
-  "name": "quick",
-  "jest": {
-    "reporters": [
-      "github-actions",
-      "summary"
-    ]
-  }
-}

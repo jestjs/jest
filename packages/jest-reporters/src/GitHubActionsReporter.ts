@@ -18,7 +18,7 @@ import type {
   TestContext,
 } from '@jest/test-result';
 import {
-  // formatPath,
+  formatPath,
   getStackTraceLines,
   getTopFrame,
   separateMessageFromStack,
@@ -43,13 +43,13 @@ export default class GitHubActionsReporter extends BaseReporter {
       const testPath = test.path;
 
       const stackLines = getStackTraceLines(stack);
-      // const formattedLines = stackLines.map(line =>
-      //   formatPath(line, test.context.config, null),
-      // );
+      const formattedLines = stackLines.map(line =>
+        formatPath(line, test.context.config, null),
+      );
       const topFrame = getTopFrame(stackLines);
 
       // const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
-      const errorMessage = stripAnsi([message, ...stackLines].join('\n'));
+      const errorMessage = stripAnsi([message, ...formattedLines].join('\n'));
 
       errorAnnotation(errorMessage, {
         file: test.path,
