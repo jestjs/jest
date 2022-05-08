@@ -28,9 +28,8 @@ export default class GitHubActionsReporter extends BaseReporter {
     failureMessages.forEach(failure => {
       const {message, stack} = separateMessageFromStack(stripAnsi(failure));
 
-      const stackLines = getStackTraceLines(stack);
-
       const relativeTestPath = slash(relative('', test.path));
+      const stackLines = getStackTraceLines(stack);
       const normalizedStackLines = stackLines.map(line =>
         line.replace(test.path, relativeTestPath),
       );
