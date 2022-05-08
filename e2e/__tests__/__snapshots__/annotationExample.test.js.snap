@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`failing snapshot example 1`] = `"some thing"`;
+
+exports[`passing snapshot example 1`] = `"some thing"`;

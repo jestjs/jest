@@ -5,55 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {error as errorAnnotation} from '@actions/core';
 import stripAnsi = require('strip-ansi');
-import type {
-  AggregatedResult,
-  TestContext,
-  TestResult,
-} from '@jest/test-result';
+import type {Test, TestCaseResult} from '@jest/test-result';
+import {
+  // formatPath,
+  getStackTraceLines,
+  getTopFrame,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import BaseReporter from './BaseReporter';
 
-const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
-
-function replaceEntities(s: string): string {
-  // https://github.com/actions/toolkit/blob/b4639928698a6bfe1c4bdae4b2bfdad1cb75016d/packages/core/src/command.ts#L80-L85
-  const substitutions: Array<[RegExp, string]> = [
-    [/%/g, '%25'],
-    [/\r/g, '%0D'],
-    [/\n/g, '%0A'],
-  ];
-  return substitutions.reduce((acc, sub) => acc.replace(...sub), s);
-}
+const errorTitleSeparator = ' \u203A ';
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
-  override onRunComplete(
-    _testContexts?: Set<TestContext>,
-    aggregatedResults?: AggregatedResult,
+  override onTestCaseResult(
+    test: Test,
+    {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
-    const messages = getMessages(aggregatedResults?.testResults);
+    failureMessages.forEach(failureMessage => {
+      const {message, stack} = separateMessageFromStack(failureMessage);
 
-    for (const message of messages) {
-      this.log(message);
-    }
+      const stackLines = getStackTraceLines(stack);
+      // const formattedLines = stackLines.map(line =>
+      //   formatPath(line, test.context.config, null),
+      // );
+      const topFrame = getTopFrame(stackLines);
+
+      const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
+      const errorMessage = stripAnsi([message, ...stackLines].join('\n'));
+
+      errorAnnotation(errorMessage, {
+        file: test.path,
+        startColumn: topFrame?.column,
+        startLine: topFrame?.line,
+        title: errorTitle,
+      });
+    });
   }
-}
-
-function getMessages(results: Array<TestResult> | undefined) {
-  if (!results) return [];
-
-  return results.flatMap(({testFilePath, testResults}) =>
-    testResults
-      .filter(r => r.status === 'failed')
-      .flatMap(r => r.failureMessages)
-      .map(m => stripAnsi(m))
-      .map(m => replaceEntities(m))
-      .map(m => lineAndColumnInStackTrace.exec(m))
-      .filter((m): m is RegExpExecArray => m !== null)
-      .map(
-        ([message, line, col]) =>
-          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
-      ),
-  );
 }
