@@ -18,7 +18,7 @@ import type {
   TestContext,
 } from '@jest/test-result';
 import {
-  formatPath,
+  // formatPath,
   getStackTraceLines,
   getTopFrame,
   separateMessageFromStack,
@@ -26,33 +26,36 @@ import {
 import {pluralize} from 'jest-util';
 import BaseReporter from './BaseReporter';
 
-const ancestrySeparator = ' \u203A ';
+// const ancestrySeparator = ' \u203A ';
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
   override onTestCaseResult(
     test: Test,
-    {failureMessages, ancestorTitles, title}: TestCaseResult,
+    {failureMessages}: TestCaseResult,
   ): void {
     failureMessages.forEach(failureMessage => {
       const {message, stack} = separateMessageFromStack(failureMessage);
       // const relativePath = relative(test.context.config.rootDir, test.path);
 
+      const rootDir = test.context.config.rootDir;
+      const testPath = test.path;
+
       const stackLines = getStackTraceLines(stack);
-      const formattedLines = stackLines.map(line =>
-        formatPath(line, test.context.config, null),
-      );
+      // const formattedLines = stackLines.map(line =>
+      //   formatPath(line, test.context.config, null),
+      // );
       const topFrame = getTopFrame(stackLines);
 
-      const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
-      const errorMessage = stripAnsi([message, ...formattedLines].join('\n'));
+      // const errorTitle = [...ancestorTitles, title].join(ancestrySeparator);
+      const errorMessage = stripAnsi([message, ...stackLines].join('\n'));
 
       errorAnnotation(errorMessage, {
         file: test.path,
         startColumn: topFrame?.column,
         startLine: topFrame?.line,
-        title: errorTitle,
+        title: `rootDir: ${rootDir} | testPath: ${testPath}`,
       });
     });
   }
