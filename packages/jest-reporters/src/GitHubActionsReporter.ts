@@ -35,7 +35,13 @@ export default class GitHubActionsReporter extends BaseReporter {
       const topFrame = getTopFrame(stackLines);
 
       const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
-      const errorMessage = stripAnsi([message, ...stackLines].join('\n'));
+      let errorMessage = stripAnsi([message, ...stackLines].join('\n'));
+
+      const rootDir = test.context.config.rootDir;
+      const testPath = test.path;
+      const cwd = process.cwd();
+
+      errorMessage = `rootDir: ${rootDir} | testPath: ${testPath} | cwd: ${cwd}`;
 
       errorAnnotation(errorMessage, {
         file: test.path,
