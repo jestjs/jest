@@ -13494,7 +13494,6 @@ __metadata:
     jest-util: ^28.1.0
     jest-watcher: ^28.1.0
     jest-worker: ^28.1.0
-    source-map-support: 0.5.13
     throat: ^6.0.1
     tsd-lite: ^0.5.1
   languageName: unknown
@@ -20271,16 +20270,6 @@ __metadata:
     source-map-url: ^0.4.0
     urix: ^0.1.0
   checksum: c73fa44ac00783f025f6ad9e038ab1a2e007cd6a6b86f47fe717c3d0765b4a08d264f6966f3bd7cd9dbcd69e4832783d5472e43247775b2a550d6f2155d24bae
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:0.5.13":
-  version: 0.5.13
-  resolution: "source-map-support@npm:0.5.13"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: 933550047b6c1a2328599a21d8b7666507427c0f5ef5eaadd56b5da0fd9505e239053c66fe181bf1df469a3b7af9d775778eee283cbb7ae16b902ddc09e93a97
   languageName: node
   linkType: hard
 

@@ -37,7 +37,6 @@
     "jest-util": "^28.1.0",
     "jest-watcher": "^28.1.0",
     "jest-worker": "^28.1.0",
-    "source-map-support": "0.5.13",
     "throat": "^6.0.1"
   },
   "devDependencies": {
