@@ -8,6 +8,10 @@
 import type {Test, TestCaseResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
+jest.mock('path', () => ({
+  relative: () => '__tests__/example.test.js',
+}));
+
 jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
 
 afterEach(() => {
@@ -18,7 +22,7 @@ const reporter = new GitHubActionsReporter();
 
 const testMeta = {
   context: {config: {rootDir: '/user/project'}},
-  path: '/user/project/__tests__/quick.test.js',
+  path: '/user/project/__tests__/example.test.js',
 } as Test;
 
 const expectationsErrorMessage =
@@ -26,7 +30,7 @@ const expectationsErrorMessage =
   '\n' +
   'Expected: \x1B[32m1\x1B[39m\n' +
   'Received: \x1B[31m10\x1B[39m\n' +
-  '    at Object.toBe (/user/project/__tests__/quick.test.js:20:14)\n' +
+  '    at Object.toBe (/user/project/__tests__/example.test.js:20:14)\n' +
   '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
   '    at new Promise (<anonymous>)\n' +
   '    at callAsyncCircusFn (/user/project/jest/packages/jest-circus/build/utils.js:259:10)\n' +
@@ -39,7 +43,7 @@ const expectationsErrorMessage =
 
 const referenceErrorMessage =
   'ReferenceError: abc is not defined\n' +
-  '    at Object.abc (/user/project/__tests__/quick.test.js:25:12)\n' +
+  '    at Object.abc (/user/project/__tests__/example.test.js:25:12)\n' +
   '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
   '    at new Promise (<anonymous>)\n' +
   '    at callAsyncCircusFn (/user/project/jest/packages/jest-circus/build/utils.js:259:10)\n' +
@@ -69,7 +73,7 @@ describe("passes test case report to '@actions/core'", () => {
 
   test('when a test has reference error', () => {
     reporter.onTestCaseResult(
-      {...testMeta, path: '/user/project/__tests__/quick.test.js:25:12'},
+      {...testMeta, path: '/user/project/__tests__/example.test.js:25:12'},
       {
         ...testCaseResult,
         failureMessages: [referenceErrorMessage],

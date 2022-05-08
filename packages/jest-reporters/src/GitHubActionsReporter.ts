@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {relative} from 'path';
 import stripAnsi = require('strip-ansi');
 import type {Test, TestCaseResult} from '@jest/test-result';
 import {
-  // formatPath,
   getStackTraceLines,
   getTopFrame,
   separateMessageFromStack,
@@ -28,13 +28,18 @@ export default class GitHubActionsReporter extends BaseReporter {
       const {message, stack} = separateMessageFromStack(stripAnsi(failure));
 
       const stackLines = getStackTraceLines(stack);
-      // const formattedLines = stackLines.map(line =>
-      //   formatPath(line, test.context.config, null),
-      // );
+
+      const relativeTestPath = relative('', test.path);
+      const relativeStackLines = stackLines.map(line =>
+        line.replace(test.path, relativeTestPath),
+      );
+
       const topFrame = getTopFrame(stackLines);
 
       const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
-      const errorMessage = escapeData([message, ...stackLines].join('\n'));
+      const errorMessage = escapeSymbols(
+        [message, ...relativeStackLines].join('\n'),
+      );
 
       this.log(
         `\n::error file=${test.path},line=${topFrame?.line},title=${errorTitle}::${errorMessage}`,
@@ -43,9 +48,7 @@ export default class GitHubActionsReporter extends BaseReporter {
   }
 }
 
-function escapeData(command: string): string {
-  return command
-    .replace(/%/g, '%25')
-    .replace(/\r/g, '%0D')
-    .replace(/\n/g, '%0A');
+// copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
+function escapeSymbols(input: string): string {
+  return input.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
 }

@@ -3,7 +3,7 @@
 exports[`passes test case report to '@actions/core' when a test has reference error 1`] = `
 Array [
   "
-::error file=/user/project/__tests__/quick.test.js:25:12,line=25,title=some test::ReferenceError: abc is not defined%0A%0A    at Object.abc (/user/project/__tests__/quick.test.js:25:12)
+::error file=/user/project/__tests__/example.test.js:25:12,line=25,title=some test::ReferenceError: abc is not defined%0A%0A    at Object.abc (__tests__/example.test.js)
 ",
 ]
 `;
@@ -11,7 +11,7 @@ Array [
 exports[`passes test case report to '@actions/core' when expect returns an error 1`] = `
 Array [
   "
-::error file=/user/project/__tests__/quick.test.js,line=20,title=some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (/user/project/__tests__/quick.test.js:20:14)
+::error file=/user/project/__tests__/example.test.js,line=20,title=some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
 ",
 ]
 `;
@@ -19,7 +19,7 @@ Array [
 exports[`passes test case report to '@actions/core' when test is wrapped in describe block 1`] = `
 Array [
   "
-::error file=/user/project/__tests__/quick.test.js,line=20,title=describe › some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (/user/project/__tests__/quick.test.js:20:14)
+::error file=/user/project/__tests__/example.test.js,line=20,title=describe › some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
 ",
 ]
 `;
@@ -27,7 +27,7 @@ Array [
 exports[`passes test case report to '@actions/core' when test not is wrapped in describe block 1`] = `
 Array [
   "
-::error file=/user/project/__tests__/quick.test.js,line=20,title=some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (/user/project/__tests__/quick.test.js:20:14)
+::error file=/user/project/__tests__/example.test.js,line=20,title=some test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
 ",
 ]
 `;
