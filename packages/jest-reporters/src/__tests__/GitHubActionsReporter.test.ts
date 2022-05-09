@@ -8,7 +8,7 @@
 import type {Test, TestCaseResult, TestResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
-jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
+process.stderr.write = jest.fn();
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -117,19 +117,19 @@ describe('logs error annotation', () => {
   });
 });
 
-describe('logs warning annotation', () => {
+describe('logs warning annotation before logging errors', () => {
   test('when test result includes retry reasons', () => {
     reporter.onTestFileResult(testMeta, {
       testResults: [
         {
           ...testCaseResult,
-          failureMessages: [],
+          failureMessages: [retryErrorMessage],
           retryReasons: [retryErrorMessage],
         },
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
-    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
+    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(2);
+    expect(jest.mocked(process.stderr.write).mock.calls).toMatchSnapshot();
   });
 });
