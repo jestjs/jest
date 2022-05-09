@@ -7,7 +7,7 @@
 
 let i = 0;
 
-jest.retryTimes(3, {logErrorsBeforeRetry: true});
+jest.retryTimes(1, {logErrorsBeforeRetry: true});
 
 describe('nested', () => {
   test('logging retryTimes example', () => {

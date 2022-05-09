@@ -236,7 +236,7 @@ const removeInternalStackEntries = (
 
 export const formatPath = (
   line: string,
-  config: StackTraceConfig = {rootDir: '', testMatch: []},
+  config: StackTraceConfig,
   relativeTestPath: string | null = null,
 ): string => {
   // Extract the file path from the trace line.

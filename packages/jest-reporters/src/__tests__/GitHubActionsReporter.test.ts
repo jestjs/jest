@@ -8,10 +8,6 @@
 import type {Test, TestCaseResult, TestResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
-jest.mock('path', () => ({
-  relative: () => '__tests__/example.test.js',
-}));
-
 jest.spyOn(process.stderr, 'write').mockImplementation(jest.fn());
 
 afterEach(() => {
@@ -22,7 +18,6 @@ const reporter = new GitHubActionsReporter();
 
 const testMeta = {
   context: {config: {rootDir: '/user/project'}},
-  path: '/user/project/__tests__/example.test.js',
 } as Test;
 
 const expectationsErrorMessage =
@@ -58,7 +53,7 @@ const retryErrorMessage =
   'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBeFalsy\x1B[2m()\x1B[22m\n' +
   '\n' +
   'Received: \x1B[31mtrue\x1B[39m\n' +
-  '    at Object.toBeFalsy (/user/project/jest/__tests__/example.test.js:19:20)\n' +
+  '    at Object.toBeFalsy (/user/project/__tests__/example.test.js:19:20)\n' +
   '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
   '    at new Promise (<anonymous>)\n' +
   '    at callAsyncCircusFn (/user/project/jest/packages/jest-circus/build/utils.js:259:10)\n' +

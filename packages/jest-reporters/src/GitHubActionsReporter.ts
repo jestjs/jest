@@ -7,6 +7,7 @@
 
 import stripAnsi = require('strip-ansi');
 import type {Test, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {
   formatPath,
   getStackTraceLines,
@@ -36,7 +37,7 @@ export default class GitHubActionsReporter extends BaseReporter {
 
       result.failureMessages.forEach(failureMessage => {
         this.#createAnnotation({
-          ...this.#getMessageDetails(failureMessage),
+          ...this.#getMessageDetails(failureMessage, test.context.config),
           title,
           type: 'error',
         });
@@ -44,23 +45,23 @@ export default class GitHubActionsReporter extends BaseReporter {
 
       result.retryReasons?.forEach((retryReason, index) => {
         this.#createAnnotation({
-          ...this.#getMessageDetails(retryReason),
-          title: `[RETRY ${index + 1}] ${title} | rootDir ${
-            test.context.config.rootDir
-          }`,
+          ...this.#getMessageDetails(retryReason, test.context.config),
+          title: `[RETRY ${index + 1}] ${title}`,
           type: 'warning',
         });
       });
     });
   }
 
-  #getMessageDetails(failureMessage: string) {
+  #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
     const {message, stack} = separateMessageFromStack(failureMessage);
 
     const stackLines = getStackTraceLines(stack);
     const topFrame = getTopFrame(stackLines);
 
-    const normalizedStackLines = stackLines.map(line => formatPath(line));
+    const normalizedStackLines = stackLines.map(line =>
+      formatPath(line, config),
+    );
     const messageText = [message, ...normalizedStackLines].join('\n');
 
     return {
