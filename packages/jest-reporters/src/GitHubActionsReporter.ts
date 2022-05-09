@@ -21,7 +21,7 @@ export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
   override onTestCaseResult(
-    test: Test,
+    _test: Test,
     {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
     failureMessages.forEach(failureMessage => {
@@ -38,14 +38,14 @@ export default class GitHubActionsReporter extends BaseReporter {
       );
 
       this.log(
-        `\n::error file=${test.path},line=${topFrame?.line},title=${errorTitle}::${errorMessage}`,
+        `\n::error file=${topFrame?.file},line=${topFrame?.line},title=${errorTitle}::${errorMessage}`,
       );
     });
   }
 }
 
-// copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
 function normalizeMessage(input: string): string {
+  // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
   const normalizedInput = input
     .replace(/%/g, '%25')
     .replace(/\r/g, '%0D')
