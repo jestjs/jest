@@ -29,25 +29,25 @@ const titleSeparator = ' \u203A ';
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
-  onTestFileResult(test: Test, {testResults}: TestResult): void {
+  onTestFileResult({context}: Test, {testResults}: TestResult): void {
     testResults.forEach(result => {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
       );
 
-      result.failureMessages.forEach(failureMessage => {
+      result.retryReasons?.forEach((retryReason, index) => {
         this.#createAnnotation({
-          ...this.#getMessageDetails(failureMessage, test.context.config),
-          title,
-          type: 'error',
+          ...this.#getMessageDetails(retryReason, context.config),
+          title: `[RETRY ${index + 1}] ${title}`,
+          type: 'warning',
         });
       });
 
-      result.retryReasons?.forEach((retryReason, index) => {
+      result.failureMessages.forEach(failureMessage => {
         this.#createAnnotation({
-          ...this.#getMessageDetails(retryReason, test.context.config),
-          title: `[RETRY ${index + 1}] ${title}`,
-          type: 'warning',
+          ...this.#getMessageDetails(failureMessage, context.config),
+          title,
+          type: 'error',
         });
       });
     });
