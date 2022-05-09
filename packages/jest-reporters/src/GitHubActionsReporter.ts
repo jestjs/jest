@@ -28,10 +28,9 @@ export default class GitHubActionsReporter extends BaseReporter {
       const {message, stack} = separateMessageFromStack(failureMessage);
 
       const stackLines = getStackTraceLines(stack);
-      const normalizedStackLines = stackLines.map(line => formatPath(line));
-
       const topFrame = getTopFrame(stackLines);
 
+      const normalizedStackLines = stackLines.map(line => formatPath(line));
       const errorTitle = [...ancestorTitles, title].join(errorTitleSeparator);
       const errorMessage = normalizeMessage(
         [message, ...normalizedStackLines].join('\n'),
