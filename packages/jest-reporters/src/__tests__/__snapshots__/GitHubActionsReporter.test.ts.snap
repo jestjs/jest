@@ -28,7 +28,7 @@ exports[`logs warning annotation before logging errors when test result includes
 Array [
   Array [
     "
-::warning file=/user/project/__tests__/example.test.js,line=19,title=[RETRY 1] example test::expect(received).toBeFalsy()%0A%0AReceived: true%0A%0A    at Object.toBeFalsy (__tests__/example.test.js:19:20)
+::warning file=/user/project/__tests__/example.test.js,line=19,title=RETRY 1: example test::expect(received).toBeFalsy()%0A%0AReceived: true%0A%0A    at Object.toBeFalsy (__tests__/example.test.js:19:20)
 ",
   ],
   Array [

@@ -38,7 +38,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       result.retryReasons?.forEach((retryReason, index) => {
         this.#createAnnotation({
           ...this.#getMessageDetails(retryReason, context.config),
-          title: `[RETRY ${index + 1}] ${title}`,
+          title: `RETRY ${index + 1}: ${title}`,
           type: 'warning',
         });
       });
