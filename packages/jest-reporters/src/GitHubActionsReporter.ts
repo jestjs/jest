@@ -28,7 +28,7 @@ const titleSeparator = ' \u203A ';
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
-  onTestFileResult(_test: Test, {testResults}: TestResult): void {
+  onTestFileResult(test: Test, {testResults}: TestResult): void {
     testResults.forEach(result => {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
@@ -45,7 +45,9 @@ export default class GitHubActionsReporter extends BaseReporter {
       result.retryReasons?.forEach((retryReason, index) => {
         this.#createAnnotation({
           ...this.#getMessageDetails(retryReason),
-          title: `[RETRY ${index + 1}] ${title}`,
+          title: `[RETRY ${index + 1}] ${title} | rootDir ${
+            test.context.config.rootDir
+          }`,
           type: 'warning',
         });
       });
