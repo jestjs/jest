@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Test, TestCaseResult} from '@jest/test-result';
+import type {Test, TestCaseResult, TestResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
 jest.mock('path', () => ({
@@ -54,30 +54,53 @@ const referenceErrorMessage =
   '    at _runTestsForDescribeBlock (/user/project/jest/packages/jest-circus/build/run.js:90:9)\n' +
   '    at run (/user/project/jest/packages/jest-circus/build/run.js:31:3)';
 
+const retryErrorMessage =
+  'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoBeFalsy\x1B[2m()\x1B[22m\n' +
+  '\n' +
+  'Received: \x1B[31mtrue\x1B[39m\n' +
+  '    at Object.toBeFalsy (/user/project/jest/__tests__/example.test.js:19:20)\n' +
+  '    at Promise.then.completed (/user/project/jest/packages/jest-circus/build/utils.js:333:28)\n' +
+  '    at new Promise (<anonymous>)\n' +
+  '    at callAsyncCircusFn (/user/project/jest/packages/jest-circus/build/utils.js:259:10)\n' +
+  '    at _callCircusTest (/user/project/jest/packages/jest-circus/build/run.js:276:40)\n' +
+  '    at _runTest (/user/project/jest/packages/jest-circus/build/run.js:208:3)\n' +
+  '    at _runTestsForDescribeBlock (/user/project/jest/packages/jest-circus/build/run.js:96:9)\n' +
+  '    at _runTestsForDescribeBlock (/user/project/jest/packages/jest-circus/build/run.js:90:9)\n' +
+  '    at run (/user/project/jest/packages/jest-circus/build/run.js:31:3)\n' +
+  '    at runAndTransformResultsToJestFormat (/user/project/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:135:21)';
+
 const testCaseResult = {
   ancestorTitles: [] as Array<string>,
   failureMessages: [expectationsErrorMessage],
-  title: 'some test',
+  title: 'example test',
 } as TestCaseResult;
 
-describe("passes test case report to '@actions/core'", () => {
-  test('when expect returns an error', () => {
-    reporter.onTestCaseResult(testMeta, {
-      ...testCaseResult,
-      failureMessages: [expectationsErrorMessage],
-    });
+describe('logs error annotation', () => {
+  test('when an expectation fails to pass', () => {
+    reporter.onTestFileResult(testMeta, {
+      testResults: [
+        {
+          ...testCaseResult,
+          failureMessages: [expectationsErrorMessage],
+        },
+      ],
+    } as TestResult);
 
     expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
   test('when a test has reference error', () => {
-    reporter.onTestCaseResult(
+    reporter.onTestFileResult(
       {...testMeta, path: '/user/project/__tests__/example.test.js:25:12'},
       {
-        ...testCaseResult,
-        failureMessages: [referenceErrorMessage],
-      },
+        testResults: [
+          {
+            ...testCaseResult,
+            failureMessages: [referenceErrorMessage],
+          },
+        ],
+      } as TestResult,
     );
 
     expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
@@ -85,17 +108,31 @@ describe("passes test case report to '@actions/core'", () => {
   });
 
   test('when test is wrapped in describe block', () => {
-    reporter.onTestCaseResult(testMeta, {
-      ...testCaseResult,
-      ancestorTitles: ['describe'],
-    });
+    reporter.onTestFileResult(testMeta, {
+      testResults: [
+        {
+          ...testCaseResult,
+          ancestorTitles: ['describe'],
+        },
+      ],
+    } as TestResult);
 
     expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
+});
 
-  test('when test not is wrapped in describe block', () => {
-    reporter.onTestCaseResult(testMeta, testCaseResult);
+describe('logs warning annotation', () => {
+  test('when test result includes retry reasons', () => {
+    reporter.onTestFileResult(testMeta, {
+      testResults: [
+        {
+          ...testCaseResult,
+          failureMessages: [],
+          retryReasons: [retryErrorMessage],
+        },
+      ],
+    } as TestResult);
 
     expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
