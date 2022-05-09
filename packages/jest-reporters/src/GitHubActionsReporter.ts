@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {relative} from 'path';
-import slash = require('slash');
+// import {relative} from 'path';
+// import slash = require('slash');
 import stripAnsi = require('strip-ansi');
 import type {Test, TestCaseResult} from '@jest/test-result';
 import {
+  formatPath,
   getStackTraceLines,
   getTopFrame,
   separateMessageFromStack,
@@ -28,11 +29,9 @@ export default class GitHubActionsReporter extends BaseReporter {
     failureMessages.forEach(failure => {
       const {message, stack} = separateMessageFromStack(stripAnsi(failure));
 
-      const relativeTestPath = slash(relative('', test.path));
+      // const relativeTestPath = slash(relative('', test.path));
       const stackLines = getStackTraceLines(stack);
-      const normalizedStackLines = stackLines.map(line =>
-        line.replace(test.path, relativeTestPath),
-      );
+      const normalizedStackLines = stackLines.map(line => formatPath(line));
 
       const topFrame = getTopFrame(stackLines);
 
