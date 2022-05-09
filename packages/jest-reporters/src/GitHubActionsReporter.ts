@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// import {relative} from 'path';
-// import slash = require('slash');
 import stripAnsi = require('strip-ansi');
 import type {Test, TestCaseResult} from '@jest/test-result';
 import {
@@ -26,10 +24,9 @@ export default class GitHubActionsReporter extends BaseReporter {
     test: Test,
     {failureMessages, ancestorTitles, title}: TestCaseResult,
   ): void {
-    failureMessages.forEach(failure => {
-      const {message, stack} = separateMessageFromStack(stripAnsi(failure));
+    failureMessages.forEach(failureMessage => {
+      const {message, stack} = separateMessageFromStack(failureMessage);
 
-      // const relativeTestPath = slash(relative('', test.path));
       const stackLines = getStackTraceLines(stack);
       const normalizedStackLines = stackLines.map(line => formatPath(line));
 
@@ -49,5 +46,9 @@ export default class GitHubActionsReporter extends BaseReporter {
 
 // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
 function normalizeMessage(input: string): string {
-  return input.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+  const normalizedInput = input
+    .replace(/%/g, '%25')
+    .replace(/\r/g, '%0D')
+    .replace(/\n/g, '%0A');
+  return stripAnsi(normalizedInput);
 }

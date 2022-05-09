@@ -3,7 +3,7 @@
 exports[`passes test case report to '@actions/core' when a test has reference error 1`] = `
 Array [
   "
-::error file=/user/project/__tests__/example.test.js:25:12,line=25,title=some test::ReferenceError: abc is not defined%0A%0A    at Object.abc (__tests__/example.test.js)
+::error file=/user/project/__tests__/example.test.js:25:12,line=25,title=some test::ReferenceError: abc is not defined%0A%0A    at Object.abc (__tests__/example.test.js:25:12)
 ",
 ]
 `;
