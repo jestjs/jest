@@ -16,8 +16,9 @@ afterAll(() => cleanup(DIR));
 
 test('works with jest.config.ts', () => {
   writeFiles(DIR, {
-    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts':
+      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
     'package.json': '{}',
   });
 
@@ -30,8 +31,9 @@ test('works with jest.config.ts', () => {
 
 test('works with tsconfig.json', () => {
   writeFiles(DIR, {
-    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts':
+      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
     'package.json': '{}',
     'tsconfig.json': '{ "compilerOptions": { "module": "esnext" } }',
   });
@@ -50,7 +52,8 @@ test('traverses directory tree up until it finds jest.config', () => {
     test('giraffe', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,
-    'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
+    'jest.config.ts':
+      "export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};",
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
@@ -61,7 +64,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     {skipPkgJsonCheck: true},
   );
 
-  // Snapshot the console.loged `process.cwd()` and make sure it stays the same
+  // Snapshot the console.logged `process.cwd()` and make sure it stays the same
   expect(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
@@ -72,8 +75,8 @@ test('traverses directory tree up until it finds jest.config', () => {
 
 test('it does type check the config', () => {
   writeFiles(DIR, {
-    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `export default { testTimeout: "10000" }`,
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts': 'export default { testTimeout: "10000" }',
     'package.json': '{}',
   });
 
@@ -84,8 +87,8 @@ test('it does type check the config', () => {
 
 test('invalid JS in jest.config.ts', () => {
   writeFiles(DIR, {
-    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `export default i'll break this file yo`,
+    '__tests__/a-giraffe.js': "test('giraffe', () => expect(1).toBe(1));",
+    'jest.config.ts': "export default i'll break this file yo",
     'package.json': '{}',
   });
 

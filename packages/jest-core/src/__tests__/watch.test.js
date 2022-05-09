@@ -7,9 +7,8 @@
  */
 
 import chalk from 'chalk';
-import {JestHook, KEYS} from 'jest-watcher';
 // eslint-disable-next-line import/order
-import TestWatcher from '../TestWatcher';
+import {JestHook, KEYS, TestWatcher} from 'jest-watcher';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watchPlugin`;
@@ -142,7 +141,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -156,7 +157,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -167,7 +170,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
@@ -183,7 +188,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });

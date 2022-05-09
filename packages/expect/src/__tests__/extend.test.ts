@@ -6,11 +6,10 @@
  *
  */
 
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import jestExpect from '../';
-import {equals} from '../jasmineUtils';
-import {iterableEquality, subsetEquality} from '../utils';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -82,8 +81,8 @@ it('exposes matcherUtils in context', () => {
         }),
       );
       const message = pass
-        ? () => `expected this.utils to be defined in an extend call`
-        : () => `expected this.utils not to be defined in an extend call`;
+        ? () => 'expected this.utils to be defined in an extend call'
+        : () => 'expected this.utils not to be defined in an extend call';
 
       return {message, pass};
     },
@@ -184,4 +183,28 @@ it('allows overriding existing extension', () => {
   });
 
   jestExpect('foo').toAllowOverridingExistingMatcher();
+});
+
+it('throws descriptive errors for invalid matchers', () => {
+  expect(() =>
+    jestExpect.extend({
+      default: undefined,
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "undefined"',
+  );
+  expect(() =>
+    jestExpect.extend({
+      default: 42,
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "number"',
+  );
+  expect(() =>
+    jestExpect.extend({
+      default: 'foobar',
+    }),
+  ).toThrow(
+    'expect.extend: `default` is not a valid matcher. Must be a function, is "string"',
+  );
 });

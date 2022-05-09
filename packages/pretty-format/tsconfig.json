@@ -6,5 +6,6 @@
   },
   "include": ["./src/**/*"],
   "exclude": ["./**/__tests__/**/*"],
-  "references": [{"path": "../jest-util"}]
+  // no `expect`, only used in tests
+  "references": [{"path": "../jest-schemas"}, {"path": "../jest-util"}]
 }

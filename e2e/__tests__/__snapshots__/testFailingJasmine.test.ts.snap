@@ -1,0 +1,146 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`throws an error about unsupported modifier 1`] = `
+"FAIL __tests__/statuses.test.js
+  ● Test suite failed to run
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      20 | it.todo('todo');
+      21 |
+    > 22 | it.failing('failing fails = passes', () => {
+         |    ^
+      23 |   expect(10).toBe(101);
+      24 | });
+      25 |
+
+      at Object.failing (__tests__/statuses.test.js:22:4)
+
+FAIL __tests__/worksWithConcurrentMode.test.js
+  ● block with concurrent › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+       8 | describe('block with concurrent', () => {
+       9 |   it('failing test', () => {
+    > 10 |     expect(10).toBe(101);
+         |                ^
+      11 |   });
+      12 |
+      13 |   it.concurrent.failing('failing passes = fails', () => {
+
+      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+
+FAIL __tests__/worksWithConcurrentOnlyMode.test.js
+  ● block with concurrent › skipped failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+       8 | describe('block with concurrent', () => {
+       9 |   it('skipped failing test', () => {
+    > 10 |     expect(10).toBe(101);
+         |                ^
+      11 |   });
+      12 |
+      13 |   it.concurrent.only.failing('failing passes = fails', () => {
+
+      at Object.toBe (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
+
+FAIL __tests__/worksWithOnlyMode.test.js
+  ● block with only, should pass › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+       7 |
+       8 | describe('block with only, should pass', () => {
+    >  9 |   it.only.failing('failing fails = passes, should pass', () => {
+         |           ^
+      10 |     expect(10).toBe(101);
+      11 |   });
+      12 |
+
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:9:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+
+  ● block with only, should fail › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      21 |
+      22 | describe('block with only, should fail', () => {
+    > 23 |   it.only.failing('failing passes = fails, should fail', () => {
+         |           ^
+      24 |     expect(10).toBe(10);
+      25 |   });
+      26 |
+
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:23:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
+
+  ● block with only in other it, should skip › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      35 |
+      36 | describe('block with only in other it, should skip', () => {
+    > 37 |   it.failing('failing passes = fails, should fail but skipped', () => {
+         |      ^
+      38 |     expect(10).toBe(10);
+      39 |   });
+      40 |
+
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:37:6)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:36:1)
+
+  ● block with only with different syntax, should fail › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      50 |
+      51 | describe('block with only with different syntax, should fail', () => {
+    > 52 |   fit.failing('failing passes = fails, should fail 1', () => {
+         |       ^
+      53 |     expect(10).toBe(10);
+      54 |   });
+      55 |
+
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:52:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+
+FAIL __tests__/worksWithSkipMode.test.js
+  ● block with only, should pass › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+       7 |
+       8 | describe('block with only, should pass', () => {
+    >  9 |   it.skip.failing('skipped failing fails = passes, should pass', () => {
+         |           ^
+      10 |     expect(10).toBe(101);
+      11 |   });
+      12 |
+
+      at Suite.failing (__tests__/worksWithSkipMode.test.js:9:11)
+      at Object.describe (__tests__/worksWithSkipMode.test.js:8:1)
+
+  ● block with only, should fail › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      25 |
+      26 | describe('block with only, should fail', () => {
+    > 27 |   it.skip.failing('failing passes = fails, should fail', () => {
+         |           ^
+      28 |     expect(10).toBe(10);
+      29 |   });
+      30 |
+
+      at Suite.failing (__tests__/worksWithSkipMode.test.js:27:11)
+      at Object.describe (__tests__/worksWithSkipMode.test.js:26:1)"
+`;

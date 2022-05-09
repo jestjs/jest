@@ -34,10 +34,10 @@ let e;
 })();
 
 jest.mock('../__test_modules__/f', () => {
-  if (!global.CALLS) {
-    global.CALLS = 0;
+  if (!globalThis.CALLS) {
+    globalThis.CALLS = 0;
   }
-  global.CALLS++;
+  globalThis.CALLS++;
 
   return {
     _isMock: true,
@@ -50,6 +50,8 @@ jest.mock('../__test_modules__/f', () => {
     },
   };
 });
+// uses backticks on purpose
+// eslint-disable-next-line quotes
 jest.mock(`../__test_modules__/jestBackticks`);
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
@@ -114,15 +116,15 @@ describe('babel-plugin-jest-hoist', () => {
   it('only executes the module factories once', () => {
     jest.resetModules();
 
-    global.CALLS = 0;
+    globalThis.CALLS = 0;
 
     require('../__test_modules__/f');
-    expect(global.CALLS).toEqual(1);
+    expect(globalThis.CALLS).toEqual(1);
 
     require('../__test_modules__/f');
-    expect(global.CALLS).toEqual(1);
+    expect(globalThis.CALLS).toEqual(1);
 
-    delete global.CALLS;
+    delete globalThis.CALLS;
   });
 
   it('does not hoist dontMock calls before imports', () => {

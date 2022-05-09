@@ -7,15 +7,27 @@
 
 import type {ForkOptions} from 'child_process';
 import type {EventEmitter} from 'events';
+import type {ResourceLimits} from 'worker_threads';
 
-// import type {ResourceLimits} from 'worker_threads';
-// This is not present in the Node 12 typings
-export interface ResourceLimits {
-  maxYoungGenerationSizeMb?: number;
-  maxOldGenerationSizeMb?: number;
-  codeRangeSizeMb?: number;
-  stackSizeMb?: number;
-}
+type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
+type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
+
+type FunctionLike = (args: any) => unknown;
+
+type MethodLikeKeys<T> = {
+  [K in keyof T]: T[K] extends FunctionLike ? K : never;
+}[keyof T];
+
+type Promisify<T extends FunctionLike> = ReturnType<T> extends Promise<infer R>
+  ? (...args: Parameters<T>) => Promise<R>
+  : (...args: Parameters<T>) => Promise<ReturnType<T>>;
+
+export type WorkerModule<T> = {
+  [K in keyof T as Extract<
+    ExcludeReservedKeys<K>,
+    MethodLikeKeys<T>
+  >]: T[K] extends FunctionLike ? Promisify<T[K]> : never;
+};
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
@@ -34,18 +46,20 @@ export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
   | typeof PARENT_MESSAGE_SETUP_ERROR;
 
+export type WorkerCallback = (
+  workerId: number,
+  request: ChildMessage,
+  onStart: OnStart,
+  onEnd: OnEnd,
+  onCustomMessage: OnCustomMessage,
+) => void;
+
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
   getStdout(): NodeJS.ReadableStream;
   getWorkers(): Array<WorkerInterface>;
   createWorker(options: WorkerOptions): WorkerInterface;
-  send(
-    workerId: number,
-    request: ChildMessage,
-    onStart: OnStart,
-    onEnd: OnEnd,
-    onCustomMessage: OnCustomMessage,
-  ): void;
+  send: WorkerCallback;
   end(): Promise<PoolExitResult>;
 }
 
@@ -74,8 +88,6 @@ export interface PromiseWithCustomMessage<T> extends Promise<T> {
 
 // Option objects.
 
-export type {ForkOptions};
-
 export interface TaskQueue {
   /**
    * Enqueues the task in the queue for the specified worker or adds it to the
@@ -87,27 +99,29 @@ export interface TaskQueue {
   enqueue(task: QueueChildMessage, workerId?: number): void;
 
   /**
-   * Dequeues the next item from the queue for the speified worker
+   * Dequeues the next item from the queue for the specified worker
    * @param workerId the id of the worker for which the next task should be retrieved
    */
   dequeue(workerId: number): QueueChildMessage | null;
 }
 
-export type FarmOptions = {
+export type WorkerSchedulingPolicy = 'round-robin' | 'in-order';
+
+export type WorkerFarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
+  enableWorkerThreads?: boolean;
   exposedMethods?: ReadonlyArray<string>;
   forkOptions?: ForkOptions;
-  workerSchedulingPolicy?: 'round-robin' | 'in-order';
-  resourceLimits?: ResourceLimits;
-  setupArgs?: Array<unknown>;
   maxRetries?: number;
   numWorkers?: number;
+  resourceLimits?: ResourceLimits;
+  setupArgs?: Array<unknown>;
   taskQueue?: TaskQueue;
-  WorkerPool?: (
+  WorkerPool?: new (
     workerPath: string,
     options?: WorkerPoolOptions,
   ) => WorkerPoolInterface;
-  enableWorkerThreads?: boolean;
+  workerSchedulingPolicy?: WorkerSchedulingPolicy;
 };
 
 export type WorkerPoolOptions = {

@@ -368,6 +368,52 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title containing param values when using %#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: %#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('calls global with title containing param values when using $#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: $#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   });
 

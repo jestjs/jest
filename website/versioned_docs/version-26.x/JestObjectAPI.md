@@ -7,9 +7,9 @@ The `jest` object is automatically in scope within every test file. The methods 
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -662,7 +662,9 @@ When mocking time, `Date.now()` will also be mocked. If you for some reason need
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 

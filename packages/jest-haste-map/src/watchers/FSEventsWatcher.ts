@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {EventEmitter} from 'events';
 import * as path from 'path';
 import anymatch, {Matcher} from 'anymatch';
@@ -40,14 +38,14 @@ type FsEventsWatcherEvent =
  * Export `FSEventsWatcher` class.
  * Watches `dir`.
  */
-class FSEventsWatcher extends EventEmitter {
-  public readonly root: string;
-  public readonly ignored?: Matcher;
-  public readonly glob: Array<string>;
-  public readonly dot: boolean;
-  public readonly hasIgnore: boolean;
-  public readonly doIgnore: (path: string) => boolean;
-  public readonly fsEventsWatchStopper: () => Promise<void>;
+export class FSEventsWatcher extends EventEmitter {
+  readonly root: string;
+  readonly ignored?: Matcher;
+  readonly glob: Array<string>;
+  readonly dot: boolean;
+  readonly hasIgnore: boolean;
+  readonly doIgnore: (path: string) => boolean;
+  readonly fsEventsWatchStopper: () => Promise<void>;
   private _tracked: Set<string>;
 
   static isSupported(): boolean {
@@ -65,8 +63,8 @@ class FSEventsWatcher extends EventEmitter {
     dir: string,
     dirCallback: (normalizedPath: string, stats: fs.Stats) => void,
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
-    endCallback: Function,
-    errorCallback: Function,
+    endCallback: () => void,
+    errorCallback: () => void,
     ignored?: Matcher,
   ) {
     walker(dir)
@@ -187,5 +185,3 @@ class FSEventsWatcher extends EventEmitter {
     this.emit(ALL_EVENT, type, file, this.root, stat);
   }
 }
-
-export = FSEventsWatcher;

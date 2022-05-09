@@ -6,7 +6,9 @@
  *
  */
 
-import {TestWatcher} from '@jest/core';
+import type {TestContext} from '@jest/test-result';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import {TestWatcher} from 'jest-watcher';
 import TestRunner from '../index';
 
 let mockWorkerFarm;
@@ -26,58 +28,48 @@ jest.mock('jest-worker', () => ({
 jest.mock('../testWorker', () => {});
 
 test('injects the serializable module map into each worker in watch mode', async () => {
-  const globalConfig = {maxWorkers: 2, watch: true};
-  const config = {rootDir: '/path/'};
-  const serializableModuleMap = jest.fn();
+  const globalConfig = makeGlobalConfig({maxWorkers: 2, watch: true});
+  const config = makeProjectConfig({rootDir: '/path/'});
   const runContext = {};
-  const context = {
+  const mockTestContext = {
     config,
-    moduleMap: {toJSON: () => serializableModuleMap},
-  };
+    moduleMap: {toJSON: jest.fn()},
+  } as unknown as TestContext;
 
-  await new TestRunner(globalConfig).runTests(
+  await new TestRunner(globalConfig, runContext).runTests(
     [
-      {context, path: './file.test.js'},
-      {context, path: './file2.test.js'},
+      {context: mockTestContext, path: './file.test.js'},
+      {context: mockTestContext, path: './file2.test.js'},
     ],
     new TestWatcher({isWatchMode: globalConfig.watch}),
-    undefined,
-    undefined,
-    undefined,
     {serial: false},
   );
 
-  expect(mockWorkerFarm.worker.mock.calls).toEqual([
-    [
-      {
-        config,
-        context: runContext,
-        globalConfig,
-        path: './file.test.js',
-      },
-    ],
-    [
-      {
-        config,
-        context: runContext,
-        globalConfig,
-        path: './file2.test.js',
-      },
-    ],
-  ]);
+  expect(mockWorkerFarm.worker).toBeCalledTimes(2);
+
+  expect(mockWorkerFarm.worker).nthCalledWith(1, {
+    config,
+    context: runContext,
+    globalConfig,
+    path: './file.test.js',
+  });
+
+  expect(mockWorkerFarm.worker).nthCalledWith(2, {
+    config,
+    context: runContext,
+    globalConfig,
+    path: './file2.test.js',
+  });
 });
 
 test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () => {
-  const globalConfig = {maxWorkers: 1, watch: false};
-  const config = {rootDir: '/path/'};
-  const context = {config};
+  const globalConfig = makeGlobalConfig({maxWorkers: 1, watch: false});
+  const config = makeProjectConfig({rootDir: '/path/'});
+  const context = {config} as TestContext;
 
-  await new TestRunner(globalConfig).runTests(
+  await new TestRunner(globalConfig, {}).runTests(
     [{context, path: './file.test.js'}],
     new TestWatcher({isWatchMode: globalConfig.watch}),
-    undefined,
-    undefined,
-    undefined,
     {serial: true},
   );
 

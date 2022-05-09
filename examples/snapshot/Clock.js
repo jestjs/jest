@@ -1,8 +1,8 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
-const Clock = () => {
+export default function Clock() {
   const [seconds, setSeconds] = useState(Date.now() / 1000);
 
   const tick = () => {
@@ -16,6 +16,4 @@ const Clock = () => {
   }, []);
 
   return <p>{seconds} seconds have elapsed since the UNIX epoch.</p>;
-};
-
-export default Clock;
+}

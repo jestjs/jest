@@ -11,12 +11,14 @@ import {getCallsite} from '@jest/source-map';
 import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
-import type {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotState} from 'jest-snapshot';
+import {ErrorWithStack} from 'jest-util';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import JasmineReporter from './reporter';
+
 export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
@@ -79,6 +81,17 @@ export default async function jasmine2(
 
   installEach(environment);
 
+  const failing = () => {
+    throw new ErrorWithStack(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+      failing,
+    );
+  };
+
+  environment.global.it.failing = failing;
+  environment.global.fit.failing = failing;
+  environment.global.xit.failing = failing;
+
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
   environment.global.it.todo = env.todo;
@@ -87,10 +100,12 @@ export default async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake' || config.timers === 'modern') {
-    environment.fakeTimersModern!.useFakeTimers();
-  } else if (config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   env.beforeEach(() => {
@@ -105,7 +120,10 @@ export default async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'legacy') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         environment.fakeTimers!.useFakeTimers();
       }
     }
@@ -138,7 +156,7 @@ export default async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotStateType = await runtime
+  const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       path.resolve(__dirname, './setup_jest_globals.js'),
     )
@@ -178,10 +196,7 @@ export default async function jasmine2(
   return addSnapshotData(results, snapshotState);
 }
 
-const addSnapshotData = (
-  results: TestResult,
-  snapshotState: SnapshotStateType,
-) => {
+const addSnapshotData = (results: TestResult, snapshotState: SnapshotState) => {
   results.testResults.forEach(({fullName, status}: AssertionResult) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark

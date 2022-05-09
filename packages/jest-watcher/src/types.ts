@@ -17,7 +17,7 @@ type TestSuiteInfo = {
 export type JestHookExposedFS = {
   projects: Array<{
     config: Config.ProjectConfig;
-    testPaths: Array<Config.Path>;
+    testPaths: Array<string>;
   }>;
 };
 

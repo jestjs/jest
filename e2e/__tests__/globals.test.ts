@@ -262,13 +262,29 @@ test('cannot test with no implementation with expand arg', () => {
   expect(exitCode).toBe(1);
 });
 
-test('function as descriptor', () => {
+test('function as describe() descriptor', () => {
   const filename = 'functionAsDescriptor.test.js';
   const content = `
     function Foo() {}
     describe(Foo, () => {
       it('it', () => {});
     });
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, exitCode} = runJest(DIR);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
+
+test('function as it() descriptor', () => {
+  const filename = 'functionAsDescriptor.test.js';
+  const content = `
+    function Foo() {}
+    it(Foo, () => {});
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});

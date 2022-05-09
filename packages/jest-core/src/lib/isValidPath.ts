@@ -10,7 +10,7 @@ import {isSnapshotPath} from 'jest-snapshot';
 
 export default function isValidPath(
   globalConfig: Config.GlobalConfig,
-  filePath: Config.Path,
+  filePath: string,
 ): boolean {
   return (
     !filePath.includes(globalConfig.coverageDirectory) &&

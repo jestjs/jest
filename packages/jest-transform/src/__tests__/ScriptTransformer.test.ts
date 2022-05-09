@@ -11,30 +11,40 @@ import type {Config} from '@jest/types';
 import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
-  .mock('graceful-fs', () =>
-    // Node 10.5.x compatibility
-    ({
-      ...jest.createMockFromModule('fs'),
-      ReadStream: jest.requireActual('fs').ReadStream,
-      WriteStream: jest.requireActual('fs').WriteStream,
-      readFileSync: jest.fn(path => {
-        if (mockFs[path]) {
-          return mockFs[path];
-        }
-
-        throw new Error(`Cannot read path '${path}'.`);
-      }),
-      statSync: path => ({
-        isFile: () => !!mockFs[path],
-        mtime: {getTime: () => 42, toString: () => '42'},
-      }),
-    }),
-  )
   .mock('graceful-fs', () => ({
-    ...jest.requireActual('graceful-fs'),
-    realPathSync: {
-      native: dirInput => dirInput,
-    },
+    ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
+    /* eslint-disable sort-keys */
+    readFileSync: jest.fn((path, options) => {
+      mockInvariant(typeof path === 'string');
+
+      expect(options).toBe('utf8');
+      if (mockFs[path]) {
+        return mockFs[path];
+      }
+
+      throw new Error(`Cannot read path '${path}'.`);
+    }),
+    writeFileSync: jest.fn((path, data, options) => {
+      mockInvariant(typeof path === 'string');
+      expect(options).toBe('utf8');
+      mockFs[path] = data;
+    }),
+
+    unlinkSync: jest.fn(),
+    statSync: jest.fn(path => ({
+      isFile() {
+        mockInvariant(typeof path === 'string');
+        return !!mockFs[path];
+      },
+      mtime: {getTime: () => 42, toString: () => '42'},
+    })),
+
+    existsSync: jest.fn(path => {
+      mockInvariant(typeof path === 'string');
+
+      return !!mockFs[path];
+    }),
+    /* eslint-enable */
   }))
   .mock('jest-haste-map', () => ({
     getStatic() {
@@ -45,7 +55,7 @@ jest
     },
   }))
   .mock('jest-util', () => ({
-    ...jest.requireActual('jest-util'),
+    ...jest.requireActual<typeof import('jest-util')>('jest-util'),
     createDirectory: jest.fn(),
   }))
   .mock('path', () => jest.requireActual('path').posix);
@@ -53,17 +63,19 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
-      process: (content, filename, config) => require('dedent')`
+      process: (content, filename, config) => ({
+        code: require('dedent')`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
         `,
+      }),
     };
 
     return transformer;
@@ -74,18 +86,19 @@ jest.mock(
 jest.mock(
   'test_async_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
       getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
-      processAsync: async (content, filename, config) =>
-        require('dedent')`
+      processAsync: async (content, filename, config) => ({
+        code: require('dedent')`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
         `,
+      }),
     };
 
     return transformer;
@@ -97,7 +110,7 @@ jest.mock(
   'configureable-preprocessor',
   () => ({
     createTransformer: jest.fn(() => ({
-      process: jest.fn(() => 'processedCode'),
+      process: jest.fn().mockReturnValue({code: 'processedCode'}),
     })),
   }),
   {virtual: true},
@@ -107,7 +120,7 @@ jest.mock(
   'cache_fs_preprocessor',
   () => ({
     getCacheKey: jest.fn(() => 'ab'),
-    process: jest.fn(() => 'processedCode'),
+    process: jest.fn().mockReturnValue({code: 'processedCode'}),
   }),
   {virtual: true},
 );
@@ -116,7 +129,7 @@ jest.mock(
   'cache_fs_async_preprocessor',
   () => ({
     getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
-    processAsync: jest.fn().mockResolvedValue('processedCode'),
+    processAsync: jest.fn().mockResolvedValue({code: 'processedCode'}),
   }),
   {virtual: true},
 );
@@ -144,12 +157,14 @@ jest.mock(
   () => {
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
-      process: (content, filename) => jest.requireActual('dedent')`
+      process: (content, filename) => ({
+        code: require('dedent')`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
           };
         `,
+      }),
     };
 
     return transformer;
@@ -167,14 +182,14 @@ jest.mock('skipped-required-props-preprocessor', () => ({}), {virtual: true});
 // Bad preprocessor
 jest.mock(
   'skipped-required-props-preprocessor-only-sync',
-  () => ({process: () => ''}),
+  () => ({process: () => ({code: ''})}),
   {virtual: true},
 );
 
 // Bad preprocessor
 jest.mock(
   'skipped-required-props-preprocessor-only-async',
-  () => ({processAsync: async () => ''}),
+  () => ({processAsync: async () => ({code: ''})}),
   {virtual: true},
 );
 
@@ -193,7 +208,7 @@ jest.mock(
   'skipped-process-method-preprocessor',
   () => ({
     createTransformer() {
-      return {process: jest.fn(() => 'code')};
+      return {process: jest.fn().mockReturnValue({code: 'code'})};
     },
   }),
   {virtual: true},
@@ -203,14 +218,14 @@ jest.mock(
   'factory-for-async-preprocessor',
   () => ({
     createTransformer() {
-      return {processAsync: jest.fn().mockResolvedValue('code')};
+      return {processAsync: jest.fn().mockResolvedValue({code: 'code'})};
     },
   }),
   {virtual: true},
 );
 
 const getCachePath = (
-  mockFs: Record<Config.Path, string>,
+  mockFs: Record<string, string>,
   config: Config.ProjectConfig,
 ) => {
   for (const path in mockFs) {
@@ -224,7 +239,7 @@ const getCachePath = (
 let createScriptTransformer: typeof import('../ScriptTransformer').createScriptTransformer;
 let config: Config.ProjectConfig;
 let fs: typeof import('fs');
-let mockFs: Record<Config.Path, string>;
+let mockFs: Record<string, string>;
 let object: <T>(input: T) => T;
 let writeFileAtomic: typeof import('write-file-atomic');
 
@@ -257,43 +272,13 @@ describe('ScriptTransformer', () => {
     });
 
     fs = require('graceful-fs');
-    fs.readFileSync = jest.fn((path, options) => {
-      invariant(typeof path === 'string');
-
-      expect(options).toBe('utf8');
-      if (mockFs[path]) {
-        return mockFs[path];
-      }
-
-      throw new Error(`Cannot read path '${path}'.`);
-    });
-    fs.writeFileSync = jest.fn((path, data, options) => {
-      invariant(typeof path === 'string');
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    });
-
-    fs.unlinkSync = jest.fn();
-    fs.statSync = jest.fn(path => ({
-      isFile() {
-        invariant(typeof path === 'string');
-        return !!mockFs[path];
-      },
-      mtime: {getTime: () => 42, toString: () => '42'},
-    }));
-
-    fs.existsSync = jest.fn(path => {
-      invariant(typeof path === 'string');
-
-      return !!mockFs[path];
-    });
 
     writeFileAtomic = require('write-file-atomic');
 
     config = makeProjectConfig({
       cache: true,
       cacheDirectory: '/cache/',
-      name: 'test',
+      id: 'test',
       rootDir: '/',
       transformIgnorePatterns: ['/node_modules/'],
     });
@@ -396,7 +381,7 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it("throws an error if `process` doesn't return a string or an object containing `code` key with processed string", async () => {
+  it("throws an error if `process` doesn't return an object containing `code` key with processed string", async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'passthrough-preprocessor', {}]],
@@ -405,25 +390,23 @@ describe('ScriptTransformer', () => {
 
     const incorrectReturnValues = [
       [undefined, '/fruits/banana.js'],
+      ['code', '/fruits/banana.js'],
       [{a: 'a'}, '/fruits/kiwi.js'],
       [[], '/fruits/grapefruit.js'],
     ];
 
     incorrectReturnValues.forEach(([returnValue, filePath]) => {
-      invariant(typeof filePath === 'string');
+      mockInvariant(typeof filePath === 'string');
       require('passthrough-preprocessor').process.mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
-      ).toThrow('must return a string');
+      ).toThrowErrorMatchingSnapshot();
     });
 
-    const correctReturnValues = [
-      ['code', '/fruits/banana.js'],
-      [{code: 'code'}, '/fruits/kiwi.js'],
-    ];
+    const correctReturnValues = [[{code: 'code'}, '/fruits/kiwi.js']];
 
     correctReturnValues.forEach(([returnValue, filePath]) => {
-      invariant(typeof filePath === 'string');
+      mockInvariant(typeof filePath === 'string');
       require('passthrough-preprocessor').process.mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
@@ -431,15 +414,15 @@ describe('ScriptTransformer', () => {
     });
   });
 
-  it("throws an error if `processAsync` doesn't return a promise of string or object containing `code` key with processed string", async () => {
+  it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {
     const incorrectReturnValues: Array<[any, string]> = [
       [undefined, '/fruits/banana.js'],
+      ['code', '/fruits/avocado.js'],
       [{a: 'a'}, '/fruits/kiwi.js'],
       [[], '/fruits/grapefruit.js'],
     ];
 
     const correctReturnValues: Array<[any, string]> = [
-      ['code', '/fruits/avocado.js'],
       [{code: 'code'}, '/fruits/mango.js'],
     ];
 
@@ -473,10 +456,7 @@ describe('ScriptTransformer', () => {
 
     const promisesToReject = incorrectReturnValues
       .map(buildPromise)
-      .map(promise =>
-        // Jest must throw error
-        expect(promise).rejects.toThrow(),
-      );
+      .map(promise => expect(promise).rejects.toThrowErrorMatchingSnapshot());
 
     const promisesToResolve = correctReturnValues
       .map(buildPromise)
@@ -806,10 +786,13 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: content,
+    });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -838,10 +821,13 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: content,
+    });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -870,11 +856,12 @@ describe('ScriptTransformer', () => {
 
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64');
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      ).toString('base64')}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      content,
+      {code: content},
     );
 
     const result = await scriptTransformer.transformAsync(
@@ -908,10 +895,15 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: content,
+    });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -943,10 +935,15 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: content,
+    });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -978,11 +975,14 @@ describe('ScriptTransformer', () => {
     // Cut off the inlined map prematurely with slice so the JSON ends abruptly
     const content =
       'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+      `//# sourceMappingURL=data:application/json;base64,${Buffer.from(
+        sourceMap,
+      )
+        .toString('base64')
+        .slice(0, 16)}`;
 
     require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      content,
+      {code: content},
     );
 
     const result = await scriptTransformer.transformAsync(
@@ -1109,11 +1109,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1154,11 +1154,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1199,11 +1199,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
+      sources: ['banana.js'],
       sourcesContent: ['content'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1237,11 +1237,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
@@ -1273,11 +1273,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
@@ -1309,11 +1309,11 @@ describe('ScriptTransformer', () => {
     /* eslint-disable sort-keys */
     const instrumentedCodeMap = {
       version: 3,
-      sources: ['banana.js'],
       names: ['module', 'exports'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
     };
     /* eslint-enable */
 
@@ -1832,7 +1832,7 @@ function getCoverageOptions(
   };
 }
 
-function invariant(subject: unknown): asserts subject {
+function mockInvariant(subject: unknown): asserts subject {
   if (!subject) {
     throw new Error('Went boom');
   }

@@ -5,21 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-
 export type ResolverConfig = {
   defaultPlatform?: string | null;
   extensions: Array<string>;
   hasCoreModules: boolean;
   moduleDirectories: Array<string>;
   moduleNameMapper?: Array<ModuleNameMapperConfig> | null;
-  modulePaths?: Array<Config.Path>;
+  modulePaths?: Array<string>;
   platforms?: Array<string>;
-  resolver?: Config.Path | null;
-  rootDir: Config.Path;
+  resolver?: string | null;
+  rootDir: string;
 };
 
 type ModuleNameMapperConfig = {
   regex: RegExp;
   moduleName: string | Array<string>;
 };
+
+// https://github.com/Microsoft/TypeScript/issues/3496#issuecomment-128553540
+type JSONValue = string | number | boolean | JSONObject | Array<JSONValue>;
+interface JSONObject {
+  [key: string]: JSONValue;
+}
+
+export type PackageJSON = JSONObject;
