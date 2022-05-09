@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
+
 ### Performance
 
 ## 28.1.0
