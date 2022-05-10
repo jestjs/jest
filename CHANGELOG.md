@@ -2,9 +2,13 @@
 
 ### Features
 
+- `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
+
 ### Fixes
 
 ### Chore & Maintenance
+
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 
 ### Performance
 
@@ -12,7 +16,7 @@
 
 ### Features
 
-- `[jest-circus]` Add `failing` test modifier that inverts the behaviour of tests ([#12610](https://github.com/facebook/jest/pull/12610))
+- `[jest-circus]` Add `failing` test modifier that inverts the behavior of tests ([#12610](https://github.com/facebook/jest/pull/12610))
 - `[jest-environment-node, jest-environment-jsdom]` Allow specifying `customExportConditions` ([#12774](https://github.com/facebook/jest/pull/12774))
 
 ### Fixes
