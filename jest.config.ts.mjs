@@ -15,6 +15,7 @@ export default {
         name: 'ts-integration',
       },
       modulePathIgnorePatterns: jestConfigBase.modulePathIgnorePatterns,
+      roots: ['<rootDir>/e2e/__tests__'],
       testMatch: ['<rootDir>/e2e/__tests__/ts*'],
     },
     {
