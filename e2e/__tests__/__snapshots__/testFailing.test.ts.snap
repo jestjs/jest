@@ -1,0 +1,226 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works with all statuses 1`] = `
+"FAIL __tests__/statuses.test.js
+  ✓ passes
+  ✕ fails
+  ✓ failing fails = passes
+  ✓ failing fails = passes with test syntax
+  ✕ failing passes = fails
+  ○ skipped skips
+  ○ skipped skipped failing 1
+  ○ skipped skipped failing 2
+  ○ skipped skipped failing with different syntax
+  ○ skipped skipped failing with another different syntax
+  ✎ todo todo
+
+  ● fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      11 |
+      12 | it('fails', () => {
+    > 13 |   expect(10).toBe(101);
+         |              ^
+      14 | });
+      15 |
+      16 | it.skip('skips', () => {
+
+      at Object.toBe (__tests__/statuses.test.js:13:14)
+
+  ● failing passes = fails
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      36 | });
+      37 |
+    > 38 | it.failing('failing passes = fails', () => {
+         |    ^
+      39 |   expect(10).toBe(10);
+      40 | });
+      41 |
+
+      at Object.failing (__tests__/statuses.test.js:38:4)"
+`;
+
+exports[`works with concurrent and only mode 1`] = `
+"FAIL __tests__/worksWithConcurrentOnlyMode.test.js
+  block with concurrent
+    ✕ failing passes = fails
+    ✓ failing fails = passes
+    ○ skipped skipped failing test
+    ○ skipped skipped failing fails
+
+  ● block with concurrent › failing passes = fails
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.only.failing('failing passes = fails', () => {
+         |                      ^
+      14 |     expect(10).toBe(10);
+      15 |   });
+      16 |
+
+      at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
+      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
+`;
+
+exports[`works with concurrent mode 1`] = `
+"FAIL __tests__/worksWithConcurrentMode.test.js
+  block with concurrent
+    ✕ failing test
+    ✕ failing passes = fails
+    ✓ failing fails = passes
+    ○ skipped skipped failing fails
+
+  ● block with concurrent › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+       8 | describe('block with concurrent', () => {
+       9 |   it('failing test', () => {
+    > 10 |     expect(10).toBe(101);
+         |                ^
+      11 |   });
+      12 |
+      13 |   it.concurrent.failing('failing passes = fails', () => {
+
+      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+
+  ● block with concurrent › failing passes = fails
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.failing('failing passes = fails', () => {
+         |                 ^
+      14 |     expect(10).toBe(10);
+      15 |   });
+      16 |
+
+      at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
+      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
+`;
+
+exports[`works with only mode 1`] = `
+"FAIL __tests__/worksWithOnlyMode.test.js
+  block with only, should pass
+    ✓ failing fails = passes, should pass
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
+  block with only, should fail
+    ✕ failing passes = fails, should fail
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
+  block with only in other it, should skip
+    ✕ failing test
+    ○ skipped failing passes = fails, should fail but skipped
+    ○ skipped passing test but skipped
+  block with only with different syntax, should fail
+    ✕ failing passes = fails, should fail 1
+    ✕ failing passes = fails, should fail 2
+    ○ skipped failing test but skipped
+    ○ skipped passing test but skipped
+
+  ● block with only, should fail › failing passes = fails, should fail
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      21 |
+      22 | describe('block with only, should fail', () => {
+    > 23 |   it.only.failing('failing passes = fails, should fail', () => {
+         |           ^
+      24 |     expect(10).toBe(10);
+      25 |   });
+      26 |
+
+      at failing (__tests__/worksWithOnlyMode.test.js:23:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
+
+  ● block with only in other it, should skip › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      41 |   // eslint-disable-next-line jest/no-focused-tests
+      42 |   it.only('failing test', () => {
+    > 43 |     expect(10).toBe(101);
+         |                ^
+      44 |   });
+      45 |
+      46 |   it('passing test but skipped', () => {
+
+      at Object.toBe (__tests__/worksWithOnlyMode.test.js:43:16)
+
+  ● block with only with different syntax, should fail › failing passes = fails, should fail 1
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      50 |
+      51 | describe('block with only with different syntax, should fail', () => {
+    > 52 |   fit.failing('failing passes = fails, should fail 1', () => {
+         |       ^
+      53 |     expect(10).toBe(10);
+      54 |   });
+      55 |
+
+      at failing (__tests__/worksWithOnlyMode.test.js:52:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+
+  ● block with only with different syntax, should fail › failing passes = fails, should fail 2
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      54 |   });
+      55 |
+    > 56 |   test.only.failing('failing passes = fails, should fail 2', () => {
+         |             ^
+      57 |     expect(10).toBe(10);
+      58 |   });
+      59 |
+
+      at failing (__tests__/worksWithOnlyMode.test.js:56:13)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)"
+`;
+
+exports[`works with skip mode 1`] = `
+"FAIL __tests__/worksWithSkipMode.test.js
+  block with only, should pass
+    ✕ failing test
+    ✓ failing fails = passes
+    ○ skipped skipped failing fails = passes, should pass
+    ○ skipped passing test
+  block with only, should fail
+    ✓ passing test
+    ✓ failing passes = fails
+    ○ skipped failing passes = fails, should fail
+    ○ skipped failing test
+
+  ● block with only, should pass › failing test
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 101
+    Received: 10
+
+      12 |
+      13 |   it('failing test', () => {
+    > 14 |     expect(10).toBe(101);
+         |                ^
+      15 |   });
+      16 |
+      17 |   it.skip('passing test', () => {
+
+      at Object.toBe (__tests__/worksWithSkipMode.test.js:14:16)"
+`;

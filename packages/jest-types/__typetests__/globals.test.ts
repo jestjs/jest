@@ -135,6 +135,42 @@ expectType<void>(test.skip.each(list)(function named() {}, fn));
 expectType<void>(test.skip.each(list)(class {}, fn));
 expectType<void>(test.skip.each(list)(class Named {}, fn));
 
+expectType<void>(test.failing(123, fn));
+expectType<void>(test.failing(() => {}, fn));
+expectType<void>(test.failing(function named() {}, fn));
+expectType<void>(test.failing(class {}, fn));
+expectType<void>(test.failing(class Named {}, fn));
+
+expectType<void>(test.skip.failing(123, fn));
+expectType<void>(test.skip.failing(() => {}, fn));
+expectType<void>(test.skip.failing(function named() {}, fn));
+expectType<void>(test.skip.failing(class {}, fn));
+expectType<void>(test.skip.failing(class Named {}, fn));
+
+expectType<void>(test.only.failing(123, fn));
+expectType<void>(test.only.failing(() => {}, fn));
+expectType<void>(test.only.failing(function named() {}, fn));
+expectType<void>(test.only.failing(class {}, fn));
+expectType<void>(test.only.failing(class Named {}, fn));
+
+expectType<void>(test.concurrent.failing(123, asyncFn));
+expectType<void>(test.concurrent.failing(() => {}, asyncFn));
+expectType<void>(test.concurrent.failing(function named() {}, asyncFn));
+expectType<void>(test.concurrent.failing(class {}, asyncFn));
+expectType<void>(test.concurrent.failing(class Named {}, asyncFn));
+
+expectType<void>(test.concurrent.skip.failing(123, asyncFn));
+expectType<void>(test.concurrent.skip.failing(() => {}, asyncFn));
+expectType<void>(test.concurrent.skip.failing(function named() {}, asyncFn));
+expectType<void>(test.concurrent.skip.failing(class {}, asyncFn));
+expectType<void>(test.concurrent.skip.failing(class Named {}, asyncFn));
+
+expectType<void>(test.concurrent.only.failing(123, asyncFn));
+expectType<void>(test.concurrent.only.failing(() => {}, asyncFn));
+expectType<void>(test.concurrent.only.failing(function named() {}, asyncFn));
+expectType<void>(test.concurrent.only.failing(class {}, asyncFn));
+expectType<void>(test.concurrent.only.failing(class Named {}, asyncFn));
+
 expectType<void>(
   test.each`
     a    | b    | expected
@@ -188,6 +224,9 @@ expectType<void>(
     ${2} | ${1} | ${3}
   `(testName, fn, timeout),
 );
+
+expectType<void>(test.concurrent(testName, asyncFn));
+expectType<void>(test.concurrent(testName, asyncFn, timeout));
 
 expectType<void>(test.concurrent.each(list)(testName, asyncFn));
 expectType<void>(test.concurrent.each(list)(testName, asyncFn, timeout));

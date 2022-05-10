@@ -3,19 +3,34 @@
 ### Features
 
 - `[jest, jest-config]` Add `defineConfig()` type helper and expose `JestConfig` type ([#12801](https://github.com/facebook/jest/pull/12801))
+- `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
+
+### Fixes
+
+### Chore & Maintenance
+
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
+
+### Performance
+
+## 28.1.0
+
+### Features
+
+- `[jest-circus]` Add `failing` test modifier that inverts the behavior of tests ([#12610](https://github.com/facebook/jest/pull/12610))
 - `[jest-environment-node, jest-environment-jsdom]` Allow specifying `customExportConditions` ([#12774](https://github.com/facebook/jest/pull/12774))
 
 ### Fixes
 
+- `[expect]` Adjust typings of `lastCalledWith`, `nthCalledWith`, `toBeCalledWith` matchers to allow a case there a mock was called with no arguments ([#12807](https://github.com/facebook/jest/pull/12807))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Lists ([#12763](https://github.com/facebook/jest/pull/12763))
 - `[jest-core]` Do not collect `SIGNREQUEST` as open handles ([#12789](https://github.com/facebook/jest/pull/12789))
 
 ### Chore & Maintenance
 
+- `[docs]` Specified documentation about `--filter` CLI docs ([#12799](https://github.com/facebook/jest/pull/12799))
 - `[@jest-reporters]` Move helper functions from `utils.ts` into separate files ([#12782](https://github.com/facebook/jest/pull/12782))
 - `[jest-resolve]` Replace `process.versions.pnp` type declaration with `@types/pnpapi` devDependency ([#12783](https://github.com/facebook/jest/pull/12783))
-
-### Performance
 
 ## 28.0.3
 
