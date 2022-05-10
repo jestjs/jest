@@ -8,6 +8,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Updated docs to indicate that `jest-environment-jsdom` is a separate package [#12828](https://github.com/facebook/jest/issues/12828)
 - `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 
 ### Performance
