@@ -63,7 +63,7 @@ We are mocking `fetchCurrentUser.js` so that our test doesn't make a real networ
 
 Also, the function being tested adds an event listener on the `#button` DOM element, so we need to set up our DOM correctly for the test. `jsdom` and the `jest-environment-jsdom` package simulate a DOM environment as if you were in the browser. This means that every DOM API that we call can be observed in the same way it would be observed in a browser!
 
-To get started with the JSDOM [test environment](https://jestjs.io/docs/next/configuration#testenvironment-string), the `jest-environment-jsdom` package must be installed if it's not already:
+To get started with the JSDOM [test environment](Configuration.md#testenvironment-string), the `jest-environment-jsdom` package must be installed if it's not already:
 
 ```bash npm2yarn
 npm install --save-dev jest-environment-jsdom
