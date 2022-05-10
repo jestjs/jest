@@ -649,7 +649,7 @@ test('some test', () => {
 
 :::note
 
-This option is only supported using the default `jest-circus`. test runner.
+This option is only supported using the default `jest-circus` test runner.
 
 :::
 
