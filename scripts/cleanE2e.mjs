@@ -22,9 +22,12 @@ const excludedModules = [
 ].map(dir => normalize(dir));
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const globOptions = {absolute: true, cwd: rootDir, ignore: excludedModules};
 
-const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', globOptions);
+const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', {
+  absolute: true,
+  cwd: rootDir,
+  ignore: excludedModules,
+});
 
 e2eNodeModules.forEach(dir => {
   rimraf.sync(dir, {glob: false});
