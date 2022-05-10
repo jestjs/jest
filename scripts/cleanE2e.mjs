@@ -27,7 +27,7 @@ const globOptions = {absolute: true, cwd: rootDir, ignore: excludedModules};
 const e2eNodeModules = [
   ...glob.sync('e2e/*/node_modules/', globOptions),
   ...glob.sync('e2e/*/*/node_modules/', globOptions),
-];
+].sort();
 
 e2eNodeModules.forEach(dir => {
   rimraf.sync(dir, {glob: false});
