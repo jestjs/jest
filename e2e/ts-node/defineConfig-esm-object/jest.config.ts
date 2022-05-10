@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const config = {
-  displayName: 'Config from ts file',
-  testEnvironment: 'node',
-};
+import {defineConfig} from 'jest';
 
-export default () => config;
+export default defineConfig({
+  displayName: 'ts-object-config',
+  verbose: true,
+});

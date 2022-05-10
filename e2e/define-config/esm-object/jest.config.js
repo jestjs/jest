@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const config = {
-  displayName: 'Config from ts file',
-  testEnvironment: 'node',
-};
+import jest from 'jest';
 
-export default () => config;
+export default jest.defineConfig({
+  displayName: 'esm-object-config',
+  verbose: true,
+});

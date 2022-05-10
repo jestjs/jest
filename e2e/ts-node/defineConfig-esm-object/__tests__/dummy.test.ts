@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const config = {
-  displayName: 'Config from ts file',
-  testEnvironment: 'node',
-};
-
-export default () => config;
+test('dummy', () => {
+  expect('true').toBeTruthy();
+});

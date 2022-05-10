@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jest from 'jest';
-
-export default jest.defineConfig(() => ({
-  displayName: 'esm-function-config',
-  verbose: true,
-}));
+test('dummy', () => {
+  expect('true').toBeTruthy();
+});
