@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`snapshot this one makes not toMatchSnapshot assertion, but has a .snap file 1`] = `"normal"`;
