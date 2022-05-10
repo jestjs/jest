@@ -13038,7 +13038,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-cli@^28.0.3, jest-cli@workspace:packages/jest-cli":
+"jest-cli@^28.1.0, jest-cli@workspace:packages/jest-cli":
   version: 0.0.0-use.local
   resolution: "jest-cli@workspace:packages/jest-cli"
   dependencies:
@@ -13068,7 +13068,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-config@^28.0.3, jest-config@^28.1.0, jest-config@workspace:packages/jest-config":
+"jest-config@^28.1.0, jest-config@workspace:packages/jest-config":
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
@@ -13780,8 +13780,8 @@ __metadata:
   dependencies:
     "@jest/core": ^28.1.0
     import-local: ^3.0.2
-    jest-cli: ^28.0.3
-    jest-config: ^28.0.3
+    jest-cli: ^28.1.0
+    jest-config: ^28.1.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
