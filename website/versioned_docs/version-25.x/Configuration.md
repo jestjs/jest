@@ -215,6 +215,14 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
 1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
 
+:::note
+
+The `babel` and `v8` coverage providers use different comments to exclude code from the coverage reports. When using the `babel` coverage provider, you can use comments in the format `/* istanbul ignore <word>[non-word] [optional-docs] /*`. The simplest ignore comment is `/* istanbul ignore next */`. More information can be found [here](https://github.com/gotwarlost/istanbul/blob/f17cb56fa8664c129b497ce86c22a922a6d64d12/ignoring-code-for-coverage.md).
+
+The `v8` coverage provider uses c8 comments in the format `/* c8 ignore <next [number] | start | stop> /*`. For example, `/* c8 ignore next */`. For more details, you can view the [c8 documentation](https://github.com/bcoe/c8/blob/49c45b3395e3354c2463cf40247c6c8eab4bbe1c/README.md#ignoring-uncovered-lines-functions-and-blocks).
+
+:::
+
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
 Default: `["clover", "json", "lcov", "text"]`
