@@ -55,7 +55,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
     expect(globalConfig.verbose).toBe(true);
   });
 
-  test('type checks the config file', () => {
+  test('throws if type errors are encountered', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
@@ -70,6 +70,25 @@ describe('when `Config` type is imported from "@jest/types"', () => {
 
     expect(stderr).toMatch(
       "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+    );
+    expect(exitCode).toBe(1);
+  });
+
+  test('throws if syntax errors are encountered', () => {
+    writeFiles(DIR, {
+      '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
+      'jest.config.ts': `
+        import type {Config} from '@jest/types';
+        const config: Config.InitialOptions = {verbose: true};
+        export default get config;
+        `,
+      'package.json': '{}',
+    });
+
+    const {stderr, exitCode} = runJest(DIR);
+
+    expect(stderr).toMatch(
+      "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -115,7 +134,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
       expect(globalConfig.verbose).toBe(true);
     });
 
-    test('type checks the config file when package.json#type=module', () => {
+    test('throws if type errors are encountered when package.json#type=module', () => {
       writeFiles(DIR, {
         '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
         'jest.config.ts': `
@@ -130,6 +149,26 @@ describe('when `Config` type is imported from "@jest/types"', () => {
 
       expect(stderr).toMatch(
         "jest.config.ts(2,40): error TS2322: Type 'string' is not assignable to type 'number'.",
+      );
+      expect(exitCode).toBe(1);
+    });
+
+    test('throws if syntax errors are encountered when package.json#type=module', () => {
+      writeFiles(DIR, {
+        '__tests__/dummy.test.js':
+          "test('dummy', () => expect(123).toBe(123));",
+        'jest.config.ts': `
+          import type {Config} from '@jest/types';
+          const config: Config.InitialOptions = {verbose: true};
+          export default get config;
+          `,
+        'package.json': '{}',
+      });
+
+      const {stderr, exitCode} = runJest(DIR);
+
+      expect(stderr).toMatch(
+        "jest.config.ts(3,16): error TS2304: Cannot find name 'get'.",
       );
       expect(exitCode).toBe(1);
     });
