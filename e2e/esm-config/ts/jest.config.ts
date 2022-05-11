@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-
-const config: Config.InitialOptions = {
+const config = {
   displayName: 'Config from ts file',
   testEnvironment: 'node',
 };
