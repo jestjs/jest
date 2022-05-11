@@ -38,8 +38,8 @@ jobs:
           YARN_ENABLE_SCRIPTS: false
         run: yarn --immutable
 
-  typecheck:
-    name: Running TypeScript compiler
+  ts-compatibility:
+    name: TypeScript Compatibility
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
@@ -53,13 +53,15 @@ jobs:
         run: yarn --immutable
       - name: build
         run: yarn build
-      - name: test typings
-        run: yarn test-types
+      - name: ts integration
+        run: yarn test-ts --selectProjects ts-integration
+      - name: type tests
+        run: yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
 
   lint:
-    name: Running Lint
+    name: Lint
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache
 
