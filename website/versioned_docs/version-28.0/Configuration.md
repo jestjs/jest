@@ -230,9 +230,7 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 
 :::note
 
-The `babel` and `v8` coverage providers use different comments to exclude code from the coverage reports. When using the `babel` coverage provider, you can use comments in the format `/* istanbul ignore <word>[non-word] [optional-docs] /*`. The simplest ignore comment is `/* istanbul ignore next */`. More information can be found [here](https://github.com/gotwarlost/istanbul/blob/f17cb56fa8664c129b497ce86c22a922a6d64d12/ignoring-code-for-coverage.md).
-
-The `v8` coverage provider uses c8 comments in the format `/* c8 ignore <next [number] | start | stop> /*`. For example, `/* c8 ignore next */`. For more details, you can view the [c8 documentation](https://github.com/bcoe/c8/blob/49c45b3395e3354c2463cf40247c6c8eab4bbe1c/README.md#ignoring-uncovered-lines-functions-and-blocks).
+The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/* c8 ignore next */` to exclude lines from coverage reports, respectively. For more information, you can view [the istanbuljs documentation](https://github.com/gotwarlost/istanbul/blob/f17cb56fa8664c129b497ce86c22a922a6d64d12/ignoring-code-for-coverage.md) and [the c8 documentation](https://github.com/bcoe/c8/blob/49c45b3395e3354c2463cf40247c6c8eab4bbe1c/README.md#ignoring-uncovered-lines-functions-and-blocks).
 
 :::
 
