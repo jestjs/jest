@@ -103,22 +103,6 @@ jobs:
     with:
       os: windows-latest
 
-  test-jasmine-ubuntu:
-    uses: ./.github/workflows/test-jasmine.yml
-    needs: prepare-yarn-cache-ubuntu
-    with:
-      os: ubuntu-latest
-  test-jasmine-macos:
-    uses: ./.github/workflows/test-jasmine.yml
-    needs: prepare-yarn-cache-macos
-    with:
-      os: macos-latest
-  test-jasmine-windows:
-    uses: ./.github/workflows/test-jasmine.yml
-    needs: prepare-yarn-cache-windows
-    with:
-      os: windows-latest
-
   test-coverage:
     name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
     strategy:
