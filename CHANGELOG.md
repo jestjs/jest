@@ -7,9 +7,13 @@
 
 ### Fixes
 
+- `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
+
 ### Chore & Maintenance
 
+- `[docs]` Updated docs to indicate that `jest-environment-jsdom` is a separate package [#12828](https://github.com/facebook/jest/issues/12828)
 - `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
+- `[docs]` Document the comments used by coverage providers [#12835](https://github.com/facebook/jest/issues/12835)
 
 ### Performance
 
