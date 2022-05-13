@@ -39,7 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         shard: ['1/4', '2/4', '3/4', '4/4']
-    name: Node LTS on ${{ matrix.os }} using jest-jasmine2 (${{ matrix.shard }})
+    name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
 
     steps:
