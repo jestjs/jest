@@ -13,14 +13,47 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare-yarn-cache:
+  prepare-yarn-cache-ubuntu-latest:
     name: Prepare yarn cache
-    strategy:
-      fail-fast: false
-      matrix:
-        # for some reason the Windows cache doesn't work
-        os: [ubuntu-latest, macOS-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Validate cache
+        env:
+          # Use PnP and disable postinstall scripts as this just needs to
+          # populate the cache for the other jobs
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn --immutable
+  prepare-yarn-cache-macos-latest:
+    name: Prepare yarn cache
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Validate cache
+        env:
+          # Use PnP and disable postinstall scripts as this just needs to
+          # populate the cache for the other jobs
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn --immutable
+  prepare-yarn-cache-windows-latest:
+    name: Prepare yarn cache
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +74,7 @@ jobs:
   ts-compatibility:
     name: TypeScript Compatibility
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
       - uses: actions/checkout@v3
@@ -63,7 +96,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
       - uses: actions/checkout@v3
@@ -87,7 +120,7 @@ jobs:
   yarn-validate:
     name: Validate Yarn dependencies and constraints
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -105,10 +138,10 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [12.x, 14.x, 16.x, 17.x, 18.x]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-${{ matrix.os }}
 
     steps:
       - name: Set git config
@@ -136,10 +169,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-${{ matrix.os }}
 
     steps:
       - name: Set git config
@@ -169,7 +202,7 @@ jobs:
       matrix:
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
