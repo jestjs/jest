@@ -769,19 +769,27 @@ A preset that is used as a base for Jest's configuration. A preset should point 
 
 For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
 
-```json
-{
-  "preset": "foo-bar"
-}
+```js
+/** @type { import('@jest/types').Config.InitialOptions } */
+module.exports = {
+  preset: 'foo-bar',
+};
 ```
 
 Presets may also be relative to filesystem paths.
 
-```json
-{
-  "preset": "./node_modules/foo-bar/jest-preset.js"
-}
+```js
+/** @type { import('@jest/types').Config.InitialOptions } */
+module.exports = {
+  preset: './node_modules/foo-bar/jest-preset.js',
+};
 ```
+
+:::info
+
+Note that if you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+
+:::
 
 ### `prettierPath` \[string]
 
