@@ -9,7 +9,7 @@ on:
 
 jobs:
   prepare-yarn-cache:
-    name: Prepare yarn cache
+    name: Prepare yarn cache for ${{ inputs.os }}
     runs-on: ${{ inputs.os }}
 
     steps:
