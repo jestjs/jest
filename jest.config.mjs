@@ -49,7 +49,6 @@ export default {
     '/e2e/test-in-root',
     '/e2e/run-programmatically-multiple-projects',
     '/e2e/multi-project-babel',
-    '/e2e/__tests__/tsIntegration.test.ts',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
