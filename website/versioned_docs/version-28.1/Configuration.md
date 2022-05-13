@@ -765,7 +765,7 @@ For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
 /** @type { import('@jest/types').Config.InitialOptions } */
 module.exports = {
   preset: 'foo-bar',
-}
+};
 ```
 
 Presets may also be relative to filesystem paths.
@@ -774,7 +774,7 @@ Presets may also be relative to filesystem paths.
 /** @type { import('@jest/types').Config.InitialOptions } */
 module.exports = {
   preset: './node_modules/foo-bar/jest-preset.js',
-}
+};
 ```
 
 :::info
