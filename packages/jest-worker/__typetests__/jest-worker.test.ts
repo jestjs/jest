@@ -10,7 +10,8 @@ import type {JestWorkerFarm} from 'jest-worker';
 import type * as testWorker from './testWorker';
 
 type TestWorker = {
-  runTest: () => void;
+  runTest: (a: string, b: number) => void;
+  doSomething: () => void;
   isResult: boolean;
   end: () => void; // reserved keys should be excluded from returned type
   getStderr: () => string;
@@ -40,8 +41,20 @@ expectType<NodeJS.ReadableStream>(unknownWorkerFarm.getStdout());
 
 declare const detectedWorkerFarm: JestWorkerFarm<typeof testWorker>;
 
-expectType<Promise<void>>(detectedWorkerFarm.runTest());
-expectType<Promise<void>>(detectedWorkerFarm.runTestAsync());
+expectType<Promise<void>>(detectedWorkerFarm.runTest('abc', true));
+expectType<Promise<void>>(detectedWorkerFarm.runTestAsync(123, 456));
+
+expectType<Promise<void>>(detectedWorkerFarm.doSomething());
+expectType<Promise<void>>(detectedWorkerFarm.doSomething());
+expectType<Promise<void>>(detectedWorkerFarm.doSomethingAsync());
+expectType<Promise<void>>(detectedWorkerFarm.doSomethingAsync());
+
+expectError(detectedWorkerFarm.runTest());
+expectError(detectedWorkerFarm.runTest('abc'));
+expectError(detectedWorkerFarm.runTestAsync());
+expectError(detectedWorkerFarm.runTestAsync(123));
+expectError(detectedWorkerFarm.doSomething(123));
+expectError(detectedWorkerFarm.doSomethingAsync('abc'));
 
 expectError(detectedWorkerFarm.getResult());
 expectError(detectedWorkerFarm.isResult);
@@ -62,7 +75,12 @@ expectType<NodeJS.ReadableStream>(detectedWorkerFarm.getStdout());
 
 declare const typedWorkerFarm: JestWorkerFarm<TestWorker>;
 
-expectType<Promise<void>>(typedWorkerFarm.runTest());
+expectType<Promise<void>>(typedWorkerFarm.runTest('abc', 123));
+expectType<Promise<void>>(typedWorkerFarm.doSomething());
+
+expectError(typedWorkerFarm.runTest());
+expectError(typedWorkerFarm.runTest('abc'));
+expectError(typedWorkerFarm.doSomething('abc'));
 
 expectError(typedWorkerFarm.isResult);
 expectError(typedWorkerFarm.runTestAsync());
