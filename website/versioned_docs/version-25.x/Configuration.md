@@ -871,30 +871,29 @@ A list of paths to modules that run some code to configure or set up the testing
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment but before the test code itself.
+:::tip
 
-If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
-
-For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
-
-:::note
-
-`setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`.
+Renamed from `setupTestFrameworkScriptFile` in Jest 24.
 
 :::
 
-Example `setupFilesAfterEnv` array in a jest.config.js:
+A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment but before the test code itself.
+
+In other words, `setupFilesAfterEnv` modules are meant for code which is repeating in each test files. Having the test framework installed makes Jest [globals](GlobalAPI.md), [`jest` object](JestObjectAPI.md) and [`expect`](ExpectAPI.md) accessible in the module. For example, you can add extra matchers from [`jest-extended`](https://github.com/jest-community/jest-extended) library or call [setup and teardown](SetupAndTeardown.md) hooks:
+
+```js title="setup-jest.js"
+const matchers = require('jest-extended');
+expect.extend(matchers);
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+```
 
 ```js
 module.exports = {
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
 };
-```
-
-Example `jest.setup.js` file
-
-```js
-jest.setTimeout(10000); // in milliseconds
 ```
 
 ### `snapshotResolver` \[string]
