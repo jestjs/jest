@@ -7,6 +7,7 @@
 
 import jestConfigBase from './jest.config.mjs';
 
+/** @type {import('jest').JestConfig} */
 export default {
   ...jestConfigBase,
   coverageReporters: ['json'],

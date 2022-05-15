@@ -13777,8 +13777,11 @@ __metadata:
   resolution: "jest@workspace:packages/jest"
   dependencies:
     "@jest/core": ^28.1.0
+    "@jest/types": ^28.1.0
+    "@tsd/typescript": ~4.6.2
     import-local: ^3.0.2
     jest-cli: ^28.1.0
+    tsd-lite: ^0.5.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:

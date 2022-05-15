@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {expectType} from 'tsd-lite';
 import type {Config} from '@jest/types';
+import type {JestConfig} from 'jest';
 
-export {
-  SearchSource,
-  createTestScheduler,
-  getVersion,
-  runCLI,
-} from '@jest/core';
+declare const config: JestConfig;
 
-export {run} from 'jest-cli';
-
-export type JestConfig = Config.InitialOptions;
+expectType<Config.InitialOptions>(config);
