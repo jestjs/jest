@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
+- `[jest-docblock]` Handle multiline comments in parseWithComments ([#12845](https://github.com/facebook/jest/pull/12845))
 
 ### Chore & Maintenance
 
