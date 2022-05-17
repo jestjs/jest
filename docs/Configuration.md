@@ -106,6 +106,8 @@ Alternatively Jest's configuration can be defined through the `"jest"` key in th
 
 ## Options
 
+:::info
+
 You can retrieve Jest's defaults from `jest-config` to extend them if needed:
 
 <Tabs groupId="examples">
@@ -116,7 +118,7 @@ const {defaults} = require('jest-config');
 
 /** @type {import('jest').JestConfig} */
 const config = {
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
+  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
 };
 
 module.exports = config;
@@ -139,6 +141,8 @@ export default config;
 
 </TabItem>
 </Tabs>
+
+:::
 
 import TOCInline from '@theme/TOCInline';
 
