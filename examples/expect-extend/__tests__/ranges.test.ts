@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expect, test} from '@jest/globals';
 import '../toBeWithinRange';
 
 test('is within range', () => expect(100).toBeWithinRange(90, 110));
