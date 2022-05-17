@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest]` Allow enabling Jest global types through `"types": ["jest"]` in `tsconfig.json` ([#12856](https://github.com/facebook/jest/pull/12856))
 - `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
 
 ### Fixes
