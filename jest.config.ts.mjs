@@ -7,7 +7,7 @@
 
 import jestConfigBase from './jest.config.mjs';
 
-/** @type {import('jest').JestConfig} */
+/** @type {import('jest').Config} */
 export default {
   projects: [
     {

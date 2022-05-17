@@ -8,7 +8,7 @@
 import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
 
-/** @type {import('jest').JestConfig} */
+/** @type {import('jest').Config} */
 export default {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
