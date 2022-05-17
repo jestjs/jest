@@ -16,7 +16,7 @@ Keep in mind that the resulting configuration object must always be JSON-seriali
 
 :::
 
-The configuration file should simply export an object or a function returning an object:
+The configuration file should simply export an object:
 
 <Tabs groupId="examples">
 <TabItem value="js" label="JavaScript">
@@ -42,6 +42,37 @@ const config: JestConfig = {
 };
 
 export default config;
+```
+
+</TabItem>
+</Tabs>
+
+Or a function returning an object:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @returns {Promise<import('jest').JestConfig>} */
+module.exports = async () => {
+  return {
+    verbose: true,
+  };
+};
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {JestConfig} from 'jest';
+
+export default async (): Promise<JestConfig> => {
+  return {
+    verbose: true,
+  };
+};
 ```
 
 </TabItem>
