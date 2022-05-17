@@ -17,6 +17,8 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "importsNotUsedAsValues": "error",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    "types": ["jest"]
   }
 }

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["jest"]
   }
 }

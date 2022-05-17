@@ -8,6 +8,10 @@
 /* eslint-disable jest/no-focused-tests */
 
 import semver = require('semver');
+import type {Global} from '@jest/types';
+
+declare const describe: Global.TestFrameworkGlobals['describe'];
+declare const test: Global.TestFrameworkGlobals['test'];
 
 export function isJestJasmineRun(): boolean {
   return process.env.JEST_JASMINE === '1';

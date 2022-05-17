@@ -2668,7 +2668,6 @@ __metadata:
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
     "@types/dedent": ^0.7.0
-    "@types/jest": ^27.4.0
     "@types/node": ~12.12.0
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
@@ -5076,16 +5075,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^27.4.0":
-  version: 27.4.1
-  resolution: "@types/jest@npm:27.4.1"
-  dependencies:
-    jest-matcher-utils: ^27.0.0
-    pretty-format: ^27.0.0
-  checksum: 5184f3eef4832d01ee8f59bed15eec45ccc8e29c724a5e6ce37bf74396b37bdf04f557000f45ba4fc38ae6075cf9cfcce3d7a75abc981023c61ceb27230a93e4
-  languageName: node
-  linkType: hard
-
 "@types/jsdom@npm:^16.2.4":
   version: 16.2.14
   resolution: "@types/jsdom@npm:16.2.14"
@@ -6150,7 +6139,6 @@ __metadata:
     "@babel/plugin-proposal-decorators": "*"
     "@babel/preset-env": ^7.1.0
     "@babel/preset-typescript": ^7.0.0
-    "@types/jest": ^27.4.0
     babel-jest: "workspace:*"
     babel-plugin-transform-typescript-metadata: "*"
     core-js: ^3.2.1
@@ -9057,13 +9045,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"diff-sequences@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "diff-sequences@npm:27.5.1"
-  checksum: a00db5554c9da7da225db2d2638d85f8e41124eccbd56cbaefb3b276dcbb1c1c2ad851c32defe2055a54a4806f030656cbf6638105fd6ce97bb87b90b32a33ca
-  languageName: node
-  linkType: hard
-
 "diff@npm:^4.0.1":
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
@@ -10199,7 +10180,6 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.12.1
     "@babel/preset-typescript": ^7.0.0
-    "@types/jest": ^27.4.0
     babel-jest: "workspace:*"
     jest: "workspace:*"
     react: 17.0.2
@@ -13124,18 +13104,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-diff@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "jest-diff@npm:27.5.1"
-  dependencies:
-    chalk: ^4.0.0
-    diff-sequences: ^27.5.1
-    jest-get-type: ^27.5.1
-    pretty-format: ^27.5.1
-  checksum: 8be27c1e1ee57b2bb2bef9c0b233c19621b4c43d53a3c26e2c00a4e805eb4ea11fe1694a06a9fb0e80ffdcfdc0d2b1cb0b85920b3f5c892327ecd1e7bd96b865
-  languageName: node
-  linkType: hard
-
 "jest-docblock@^28.0.2, jest-docblock@workspace:packages/jest-docblock":
   version: 0.0.0-use.local
   resolution: "jest-docblock@workspace:packages/jest-docblock"
@@ -13197,13 +13165,6 @@ __metadata:
   version: 26.3.0
   resolution: "jest-get-type@npm:26.3.0"
   checksum: 1cc6465ae4f5e880be22ba52fd270fa64c21994915f81b41f8f7553a7957dd8e077cc8d03035de9412e2d739f8bad6a032ebb5dab5805692a5fb9e20dd4ea666
-  languageName: node
-  linkType: hard
-
-"jest-get-type@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "jest-get-type@npm:27.5.1"
-  checksum: 63064ab70195c21007d897c1157bf88ff94a790824a10f8c890392e7d17eda9c3900513cb291ca1c8d5722cad79169764e9a1279f7c8a9c4cd6e9109ff04bbc0
   languageName: node
   linkType: hard
 
@@ -13317,18 +13278,6 @@ __metadata:
     pretty-format: ^28.1.0
   languageName: unknown
   linkType: soft
-
-"jest-matcher-utils@npm:^27.0.0":
-  version: 27.5.1
-  resolution: "jest-matcher-utils@npm:27.5.1"
-  dependencies:
-    chalk: ^4.0.0
-    jest-diff: ^27.5.1
-    jest-get-type: ^27.5.1
-    pretty-format: ^27.5.1
-  checksum: bb2135fc48889ff3fe73888f6cc7168ddab9de28b51b3148f820c89fdfd2effdcad005f18be67d0b9be80eda208ad47290f62f03d0a33f848db2dd0273c8217a
-  languageName: node
-  linkType: hard
 
 "jest-message-util@^28.1.0, jest-message-util@workspace:packages/jest-message-util":
   version: 0.0.0-use.local
@@ -13777,8 +13726,10 @@ __metadata:
   resolution: "jest@workspace:packages/jest"
   dependencies:
     "@jest/core": ^28.1.0
+    "@tsd/typescript": ~4.6.2
     import-local: ^3.0.2
     jest-cli: ^28.1.0
+    tsd-lite: ^0.5.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -17946,7 +17897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
+"pretty-format@npm:^27.0.2":
   version: 27.5.1
   resolution: "pretty-format@npm:27.5.1"
   dependencies:
