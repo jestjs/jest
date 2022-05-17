@@ -16,4 +16,4 @@ export {
 
 export {run} from 'jest-cli';
 
-export type JestConfig = Config.InitialOptions;
+export type Config = Config.InitialOptions;

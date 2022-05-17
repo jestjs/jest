@@ -6,9 +6,9 @@
  */
 
 import {expectType} from 'tsd-lite';
-import type {Config} from '@jest/types';
-import type {JestConfig} from 'jest';
+import type {Config as ConfigTypes} from '@jest/types';
+import type {Config} from 'jest';
 
-declare const config: JestConfig;
+declare const config: Config;
 
-expectType<Config.InitialOptions>(config);
+expectType<ConfigTypes.InitialOptions>(config);
