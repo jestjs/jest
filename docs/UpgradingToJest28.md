@@ -189,15 +189,24 @@ Known examples of packages that fails in Jest 28 are [`uuid`](https://npmjs.com/
 
 ## TypeScript
 
-:::info
+From Jest 28.2 you can replace `@types/jest` package with native type definitions. Simply add `"jest"` to the `"types"` list of your `tsconfig.json` and enjoy typed testing!
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
-
-```ts
-import {jest} from '@jest/globals';
+```diff title="tsconfig.json"
+  {
+    "compilerOptions": {
+-     "types": ["@types/jest"]
++     "types": ["jest"]
+    }
+  }
 ```
 
+:::info
+
+If you had `@types/jest` installed in your project before, remember to remove it.
+
 :::
+
+The TypeScript examples bellow assume you are using type definitions from `jest`.
 
 ### `jest.fn()`
 

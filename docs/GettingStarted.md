@@ -156,10 +156,31 @@ npm install --save-dev ts-jest
 
 #### Type definitions
 
-You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+To enable type definitions of [Jest globals](GlobalAPI.md) add `"jest"` to the `"types"` list of your `tsconfig.json`:
 
-> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
-
-```bash npm2yarn
-npm install --save-dev @types/jest
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "types": ["jest"]
+  }
+}
 ```
+
+Alternatively you may use explicit imports from `@jest/globals` package:
+
+```ts title="sum.test.ts"
+import {describe, expect, test} from '@jest/globals';
+import {sum} from './sum';
+
+describe('sum module', () => {
+  test('adds 1 + 2 to equal 3', () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+});
+```
+
+:::info
+
+If you had `@types/jest` installed in your project before, remember to remove it.
+
+:::
