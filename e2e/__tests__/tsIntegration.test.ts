@@ -175,13 +175,13 @@ describe('when `Config` type is imported from "@jest/types"', () => {
   });
 });
 
-describe('when `JestConfig` type is imported from "jest"', () => {
+describe('when `Config` type is imported from "jest"', () => {
   test('with object config exported from TS file', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
-        import type {JestConfig} from 'jest';
-        const config: JestConfig = {displayName: 'ts-object-config', verbose: true};
+        import type {Config} from 'jest';
+        const config: Config = {displayName: 'ts-object-config', verbose: true};
         export default config;
         `,
       'package.json': '{}',
@@ -198,10 +198,10 @@ describe('when `JestConfig` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
-        import type {JestConfig} from 'jest';
+        import type {Config} from 'jest';
         async function getVerbose() {return true;}
-        export default async (): Promise<JestConfig> => {
-          const verbose: JestConfig['verbose'] = await getVerbose();
+        export default async (): Promise<Config> => {
+          const verbose: Config['verbose'] = await getVerbose();
           return {displayName: 'ts-async-function-config', verbose};
         };
         `,
@@ -219,8 +219,8 @@ describe('when `JestConfig` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
-        import type {JestConfig} from 'jest';
-        const config: JestConfig = {testTimeout: '10000'};
+        import type {Config} from 'jest';
+        const config: Config = {testTimeout: '10000'};
         export default config;
         `,
       'package.json': '{}',
@@ -229,7 +229,7 @@ describe('when `JestConfig` type is imported from "jest"', () => {
     const {stderr, exitCode} = runJest(DIR);
 
     expect(stderr).toMatch(
-      "jest.config.ts(2,29): error TS2322: Type 'string' is not assignable to type 'number'.",
+      "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
     );
     expect(exitCode).toBe(1);
   });
@@ -238,8 +238,8 @@ describe('when `JestConfig` type is imported from "jest"', () => {
     writeFiles(DIR, {
       '__tests__/dummy.test.js': "test('dummy', () => expect(123).toBe(123));",
       'jest.config.ts': `
-        import type {JestConfig} from 'jest';
-        const config: JestConfig = {verbose: true};
+        import type {Config} from 'jest';
+        const config: Config = {verbose: true};
         export default get config;
         `,
       'package.json': '{}',
@@ -259,8 +259,8 @@ describe('when `JestConfig` type is imported from "jest"', () => {
       writeFiles(DIR, {
         '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
         'jest.config.ts': `
-          import type {JestConfig} from 'jest';
-          const config: JestConfig = {displayName: 'ts-esm-object-config', verbose: true};
+          import type {Config} from 'jest';
+          const config: Config = {displayName: 'ts-esm-object-config', verbose: true};
           export default config;
           `,
         'package.json': '{"type": "module"}',
@@ -277,10 +277,10 @@ describe('when `JestConfig` type is imported from "jest"', () => {
       writeFiles(DIR, {
         '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
         'jest.config.ts': `
-          import type {JestConfig} from 'jest';
+          import type {Config} from 'jest';
           async function getVerbose() {return true;}
-          export default async (): Promise<JestConfig> => {
-            const verbose: JestConfig['verbose'] = await getVerbose();
+          export default async (): Promise<Config> => {
+            const verbose: Config['verbose'] = await getVerbose();
             return {displayName: 'ts-esm-async-function-config', verbose};
           };
           `,
@@ -298,8 +298,8 @@ describe('when `JestConfig` type is imported from "jest"', () => {
       writeFiles(DIR, {
         '__tests__/dummy.test.js': "test('dummy', () => expect(12).toBe(12));",
         'jest.config.ts': `
-          import type {JestConfig} from 'jest';
-          const config: JestConfig = {testTimeout: '10000'};
+          import type {Config} from 'jest';
+          const config: Config = {testTimeout: '10000'};
           export default config;
           `,
         'package.json': '{"type": "module"}',
@@ -308,7 +308,7 @@ describe('when `JestConfig` type is imported from "jest"', () => {
       const {stderr, exitCode} = runJest(DIR);
 
       expect(stderr).toMatch(
-        "jest.config.ts(2,29): error TS2322: Type 'string' is not assignable to type 'number'.",
+        "jest.config.ts(2,25): error TS2322: Type 'string' is not assignable to type 'number'.",
       );
       expect(exitCode).toBe(1);
     });
@@ -318,8 +318,8 @@ describe('when `JestConfig` type is imported from "jest"', () => {
         '__tests__/dummy.test.js':
           "test('dummy', () => expect(123).toBe(123));",
         'jest.config.ts': `
-          import type {JestConfig} from 'jest';
-          const config: JestConfig = {verbose: true};
+          import type {Config} from 'jest';
+          const config: Config = {verbose: true};
           export default get config;
           `,
         'package.json': '{}',
