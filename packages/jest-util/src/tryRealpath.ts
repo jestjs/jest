@@ -6,8 +6,14 @@
  */
 
 import {realpathSync} from 'graceful-fs';
+import shouldPreserveSymlinks from './shouldPreserveSymlinks';
+
+const preserveSymlinks = shouldPreserveSymlinks();
 
 export default function tryRealpath(path: string): string {
+  if (preserveSymlinks) {
+    return path;
+  }
   try {
     path = realpathSync.native(path);
   } catch (error: any) {
