@@ -174,7 +174,7 @@ mockFn(3); // 39
 
 <TabItem value="ts" label="TypeScript">
 
-```js
+```ts
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42

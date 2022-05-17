@@ -7,6 +7,12 @@ When you're writing tests, you often need to check that values meet certain cond
 
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
 
+:::info
+
+The TypeScript examples from this page assume you are using type definitions from [`jest`](GettingStarted.md/#type-definitions).
+
+:::
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
@@ -16,6 +22,9 @@ import TOCInline from '@theme/TOCInline';
 ---
 
 ## Reference
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 ### `expect(value)`
 
@@ -37,55 +46,120 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
 ```js
+const toBeWithinRange = function (actual, floor, ceiling) {
+  if (
+    typeof actual !== 'number' ||
+    typeof floor !== 'number' ||
+    typeof ceiling !== 'number'
+  ) {
+    throw new Error('These must be of type number!');
+  }
+
+  const pass = actual >= floor && actual <= ceiling;
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} not to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: false,
+    };
+  }
+};
+
 expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
-    const pass = received >= floor && received <= ceiling;
+  toBeWithinRange,
+});
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {MatcherFunction} from 'expect';
+
+const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
+  function (actual: unknown, floor: unknown, ceiling: unknown) {
+    if (
+      typeof actual !== 'number' ||
+      typeof floor !== 'number' ||
+      typeof ceiling !== 'number'
+    ) {
+      throw new Error('These must be of type number!');
+    }
+
+    const pass = actual >= floor && actual <= ceiling;
     if (pass) {
       return {
         message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
         pass: true,
       };
     } else {
       return {
         message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
         pass: false,
       };
     }
-  },
+  };
+
+expect.extend({
+  toBeWithinRange,
 });
 
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+And use it in a test:
+
+```js
 test('numeric ranges', () => {
   expect(100).toBeWithinRange(90, 110);
+
   expect(101).not.toBeWithinRange(0, 100);
+
   expect({apples: 6, bananas: 3}).toEqual({
     apples: expect.toBeWithinRange(1, 10),
     bananas: expect.not.toBeWithinRange(11, 20),
   });
 });
 ```
-
-:::note
-
-In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
-
-```ts
-interface CustomMatchers<R = unknown> {
-  toBeWithinRange(floor: number, ceiling: number): R;
-}
-
-declare global {
-  namespace jest {
-    interface Expect extends CustomMatchers {}
-    interface Matchers<R> extends CustomMatchers<R> {}
-    interface InverseAsymmetricMatchers extends CustomMatchers {}
-  }
-}
-```
-
-:::
 
 #### Async Matchers
 
