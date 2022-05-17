@@ -86,7 +86,7 @@ function find(
           return;
         }
 
-        if (!preserveSymlinks) {
+        if (!preserveSymlinks && entry.isSymbolicLink()) {
           return;
         }
         if (entry.isDirectory()) {
