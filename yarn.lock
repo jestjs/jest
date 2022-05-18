@@ -13726,6 +13726,7 @@ __metadata:
   resolution: "jest@workspace:packages/jest"
   dependencies:
     "@jest/core": ^28.1.0
+    "@jest/globals": ^28.1.0
     "@tsd/typescript": ~4.6.2
     import-local: ^3.0.2
     jest-cli: ^28.1.0
