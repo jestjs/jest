@@ -72,7 +72,8 @@ export default function collectHandles(): HandleCollectionResult {
         type === 'PerformanceObserver' ||
         type === 'RANDOMBYTESREQUEST' ||
         type === 'DNSCHANNEL' ||
-        type === 'ZLIB'
+        type === 'ZLIB' ||
+        type === 'SIGNREQUEST'
       ) {
         return;
       }

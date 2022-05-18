@@ -224,9 +224,23 @@ const _callCircusTest = async (
       isHook: false,
       timeout,
     });
-    await dispatch({name: 'test_fn_success', test});
+    if (test.failing) {
+      test.asyncError.message =
+        'Failing test passed even though it was supposed to fail. Remove `.failing` to remove error.';
+      await dispatch({
+        error: test.asyncError,
+        name: 'test_fn_failure',
+        test,
+      });
+    } else {
+      await dispatch({name: 'test_fn_success', test});
+    }
   } catch (error) {
-    await dispatch({error, name: 'test_fn_failure', test});
+    if (test.failing) {
+      await dispatch({name: 'test_fn_success', test});
+    } else {
+      await dispatch({error, name: 'test_fn_failure', test});
+    }
   }
 };
 

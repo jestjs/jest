@@ -12,7 +12,7 @@ import type {ResourceLimits} from 'worker_threads';
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
 type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
 
-type FunctionLike = (args: any) => unknown;
+type FunctionLike = (...args: any) => unknown;
 
 type MethodLikeKeys<T> = {
   [K in keyof T]: T[K] extends FunctionLike ? K : never;

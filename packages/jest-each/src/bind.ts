@@ -30,7 +30,7 @@ type GlobalCallback = (
 
 export default function bind<EachCallback extends Global.TestCallback>(
   cb: GlobalCallback,
-  supportsDone: boolean = true,
+  supportsDone = true,
 ) {
   return (
     table: Global.EachTable,

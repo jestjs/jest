@@ -122,12 +122,11 @@ type PromiseMatchers = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
-// This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
 export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  lastCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
@@ -135,13 +134,13 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: [unknown, ...Array<unknown>]): R;
+  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
   nthReturnedWith(nth: number, expected: unknown): R;
   /**
-   * Checks that a value is what you expect. It uses `===` to check strict equality.
+   * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
    */
   toBe(expected: unknown): R;
@@ -156,7 +155,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toBeCalledWith(...expected: Array<unknown>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -239,19 +238,16 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toHaveBeenCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(
-    nth: number,
-    ...expected: [unknown, ...Array<unknown>]
-  ): R;
+  toHaveBeenNthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toHaveBeenLastCalledWith(...expected: Array<unknown>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail

@@ -21,12 +21,13 @@ const excludedModules = [
   'e2e/retain-all-files/node_modules/',
 ].map(dir => normalize(dir));
 
-const e2eNodeModules = glob
-  .sync('e2e/*/node_modules/')
-  .concat(glob.sync('e2e/*/*/node_modules/'))
-  .filter(dir => !excludedModules.includes(dir))
-  .map(dir => resolve(dirname(fileURLToPath(import.meta.url)), '..', dir))
-  .sort();
+const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', {
+  absolute: true,
+  cwd: rootDir,
+  ignore: excludedModules,
+});
 
 e2eNodeModules.forEach(dir => {
   rimraf.sync(dir, {glob: false});
