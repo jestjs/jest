@@ -1,6 +1,8 @@
 {
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
+    "composite": false,
+    "esModuleInterop": true,
     "rootDir": "../",
     "types": ["jest"]
   },

@@ -1,9 +1,9 @@
 {
-  "extends": "../../../../tsconfig.json",
+  "extends": "../../../../../tsconfig.json",
   "compilerOptions": {
     "composite": false,
     "esModuleInterop": true,
-    "rootDir": "../",
+    "rootDir": "../../",
     "types": ["jest"]
   },
   "include": ["../**/*"]
