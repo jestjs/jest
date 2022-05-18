@@ -13721,6 +13721,7 @@ __metadata:
     react-github-btn: ^1.2.0
     react-lite-youtube-embed: ^2.2.1-a
     react-markdown: ^8.0.0
+    unist-util-visit: ^2.0.3
   languageName: unknown
   linkType: soft
 
