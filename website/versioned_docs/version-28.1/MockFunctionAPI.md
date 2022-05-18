@@ -25,9 +25,6 @@ import TOCInline from '@theme/TOCInline';
 
 ## Reference
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 ### `mockFn.getMockName()`
 
 Returns the mock name string set by calling `mockFn.mockName(value)`.
@@ -159,10 +156,7 @@ Accepts a function that should be used as the implementation of the mock. The mo
 
 :::
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest.fn(scalar => 42 + scalar);
 
 mockFn(0); // 42
@@ -174,11 +168,7 @@ mockFn(2); // 38
 mockFn(3); // 39
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```js
+```ts tab
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42
@@ -189,9 +179,6 @@ mockFn.mockImplementation(scalar => 36 + scalar);
 mockFn(2); // 38
 mockFn(3); // 39
 ```
-
-</TabItem>
-</Tabs>
 
 `.mockImplementation()` can also be used to mock class constructors:
 
@@ -257,10 +244,7 @@ console.log('Calls to method: ', mockMethod.mock.calls);
 
 Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest
   .fn()
   .mockImplementationOnce(cb => cb(null, true))
@@ -270,11 +254,7 @@ mockFn((err, val) => console.log(val)); // true
 mockFn((err, val) => console.log(val)); // false
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mockFn = jest
   .fn<(cb: (a: null, b: boolean) => void) => void>()
   .mockImplementationOnce(cb => cb(null, true))
@@ -283,9 +263,6 @@ const mockFn = jest
 mockFn((err, val) => console.log(val)); // true
 mockFn((err, val) => console.log(val)); // false
 ```
-
-</TabItem>
-</Tabs>
 
 When the mocked function runs out of implementations defined with `.mockImplementationOnce()`, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
 
@@ -336,10 +313,7 @@ jest.fn(function () {
 
 Accepts a value that will be returned whenever the mock function is called.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mock = jest.fn();
 
 mock.mockReturnValue(42);
@@ -349,11 +323,7 @@ mock.mockReturnValue(43);
 mock(); // 43
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mock = jest.fn<() => number>();
 
 mock.mockReturnValue(42);
@@ -363,17 +333,11 @@ mock.mockReturnValue(43);
 mock(); // 43
 ```
 
-</TabItem>
-</Tabs>
-
 ### `mockFn.mockReturnValueOnce(value)`
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest
   .fn()
   .mockReturnValue('default')
@@ -386,11 +350,7 @@ mockFn(); // 'default'
 mockFn(); // 'default'
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mockFn = jest
   .fn<() => string>()
   .mockReturnValue('default')
@@ -403,9 +363,6 @@ mockFn(); // 'default'
 mockFn(); // 'default'
 ```
 
-</TabItem>
-</Tabs>
-
 ### `mockFn.mockResolvedValue(value)`
 
 Syntactic sugar function for:
@@ -416,10 +373,7 @@ jest.fn().mockImplementation(() => Promise.resolve(value));
 
 Useful to mock async functions in async tests:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest.fn().mockResolvedValue(43);
 
@@ -427,20 +381,13 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest.fn<() => Promise<number>>().mockResolvedValue(43);
 
   await asyncMock(); // 43
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
@@ -452,10 +399,7 @@ jest.fn().mockImplementationOnce(() => Promise.resolve(value));
 
 Useful to resolve different values over multiple async calls:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -470,11 +414,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -488,9 +428,6 @@ test('async test', async () => {
   await asyncMock(); // 'default'
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockRejectedValue(value)`
 
@@ -502,10 +439,7 @@ jest.fn().mockImplementation(() => Promise.reject(value));
 
 Useful to create async mock functions that will always reject:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -515,11 +449,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<never>>()
@@ -528,9 +458,6 @@ test('async test', async () => {
   await asyncMock(); // throws 'Async error message'
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
@@ -542,10 +469,7 @@ jest.fn().mockImplementationOnce(() => Promise.reject(value));
 
 Useful together with `.mockResolvedValueOnce()` or to reject with different exceptions over multiple async calls:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -557,11 +481,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -572,9 +492,6 @@ test('async test', async () => {
   await asyncMock(); // throws 'Async error message'
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ## TypeScript Usage
 
