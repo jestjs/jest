@@ -80,7 +80,7 @@ export default async (): Promise<Config> => {
 
 :::tip
 
-To read TypeScript configuration files Jest requires [`ts-node`](https://github.com/TypeStrong/ts-node). Make sure it is installed in your project.
+To read TypeScript configuration files Jest requires [`ts-node`](https://npmjs.com/package/ts-node). Make sure it is installed in your project.
 
 :::
 
