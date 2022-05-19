@@ -3,9 +3,99 @@ id: configuration
 title: Configuring Jest
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-```json
+The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
+
+It is recommended to define the configuration in a dedicated JavaScript, TypeScript or JSON file. The file will be discovered automatically, if it is named `jest.config.js|ts|mjs|cjs|json`. You can use [`--config`](CLI.md#--configpath) flag to pass an explicit path to the file.
+
+:::note
+
+Keep in mind that the resulting configuration object must always be JSON-serializable.
+
+:::
+
+The configuration file should simply export an object:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  verbose: true,
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  verbose: true,
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
+
+Or a function returning an object:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @returns {Promise<import('jest').Config>} */
+module.exports = async () => {
+  return {
+    verbose: true,
+  };
+};
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+export default async (): Promise<Config> => {
+  return {
+    verbose: true,
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+:::tip
+
+To read TypeScript configuration files Jest requires [`ts-node`](https://npmjs.com/package/ts-node). Make sure it is installed in your project.
+
+:::
+
+The configuration also can be stored in a JSON file as a plain object:
+
+```json title="jest.config.json"
+{
+  "bail": 1,
+  "verbose": true
+}
+```
+
+Alternatively Jest's configuration can be defined through the `"jest"` key in the `package.json` of your project:
+
+```json title="package.json"
 {
   "name": "my-project",
   "jest": {
@@ -14,71 +104,45 @@ Jest's configuration can be defined in the `package.json` file of your project, 
 }
 ```
 
-Or through JavaScript:
+## Options
 
-```js title="jest.config.js"
-// Sync object
-/** @type {import('@jest/types').Config.InitialOptions} */
+:::info
+
+You can retrieve Jest's defaults from `jest-config` to extend them if needed:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+const {defaults} = require('jest-config');
+
+/** @type {import('jest').Config} */
 const config = {
-  verbose: true,
+  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts', 'cts'],
 };
 
 module.exports = config;
-
-// Or async function
-module.exports = async () => {
-  return {
-    verbose: true,
-  };
-};
 ```
 
-Or through TypeScript (if `ts-node` is installed):
+</TabItem>
 
-```ts title="jest.config.ts"
-import type {Config} from '@jest/types';
+<TabItem value="ts" label="TypeScript">
 
-// Sync object
-const config: Config.InitialOptions = {
-  verbose: true,
+```ts
+import type {Config} from 'jest';
+import {defaults} from 'jest-config';
+
+const config: Config = {
+  moduleFileExtensions: [...defaults.moduleFileExtensions, 'mts'],
 };
+
 export default config;
-
-// Or async function
-export default async (): Promise<Config.InitialOptions> => {
-  return {
-    verbose: true,
-  };
-};
 ```
 
-Please keep in mind that the resulting configuration must be JSON-serializable.
+</TabItem>
+</Tabs>
 
-When using the `--config` option, the JSON file must not contain a "jest" key:
-
-```json
-{
-  "bail": 1,
-  "verbose": true
-}
-```
-
-## Options
-
-These options let you control Jest's behavior in your `package.json` file. The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
-
-### Defaults
-
-You can retrieve Jest's default options to expand them if needed:
-
-```js title="jest.config.js"
-const {defaults} = require('jest-config');
-module.exports = {
-  // ...
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
-  // ...
-};
-```
+:::
 
 import TOCInline from '@theme/TOCInline';
 
@@ -98,15 +162,12 @@ Example:
 
 ```js title="utils.js"
 export default {
-  authorize: () => {
-    return 'token';
-  },
+  authorize: () => 'token',
   isAuthorized: secret => secret === 'wizard',
 };
 ```
 
-```js
-//__tests__/automocking.test.js
+```js title="__tests__/automock.test.js"
 import utils from '../utils';
 
 test('if utils mocked automatically', () => {
@@ -172,17 +233,42 @@ Default: `undefined`
 
 An array of [glob patterns](https://github.com/micromatch/micromatch) indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.
 
-Example:
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
-```json
-{
-  "collectCoverageFrom": [
-    "**/*.{js,jsx}",
-    "!**/node_modules/**",
-    "!**/vendor/**"
-  ]
-}
+```js
+/** @type {import('jest').Config} */
+const config = {
+  collectCoverageFrom: [
+    '**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+  ],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  collectCoverageFrom: [
+    '**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+  ],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match `**/node_modules/**` or `**/vendor/**`.
 
@@ -250,11 +336,34 @@ Setting this option overwrites the default values. Add `"text"` or `"text-summar
 
 Additional options can be passed using the tuple form. For example, you may hide coverage report lines for all fully-covered files:
 
-```json
-{
-  "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  coverageReporters: ['clover', 'json', 'lcov', ['text', {skipFull: true}]],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  coverageReporters: ['clover', 'json', 'lcov', ['text', {skipFull: true}]],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 For more information about the options object shape refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Config.ts).
 
@@ -266,54 +375,121 @@ This will be used to configure minimum threshold enforcement for coverage result
 
 For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:
 
-```json
-{
-  ...
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": -10
-      }
-    }
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10,
+    },
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10,
+    },
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, an error is returned.
 
 For example, with the following configuration:
 
-```json
-{
-  ...
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 50,
-        "functions": 50,
-        "lines": 50,
-        "statements": 50
-      },
-      "./src/components/": {
-        "branches": 40,
-        "statements": 40
-      },
-      "./src/reducers/**/*.js": {
-        "statements": 90
-      },
-      "./src/api/very-important-module.js": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+    './src/components/': {
+      branches: 40,
+      statements: 40,
+    },
+    './src/reducers/**/*.js': {
+      statements: 90,
+    },
+    './src/api/very-important-module.js': {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+    './src/components/': {
+      branches: 40,
+      statements: 40,
+    },
+    './src/reducers/**/*.js': {
+      statements: 90,
+    },
+    './src/api/very-important-module.js': {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 Jest will fail if:
 
@@ -355,26 +531,73 @@ That module can also contain a `getCacheKey` function to generate a cache key to
 
 default: `undefined`
 
-Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.
+Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
 ```js
-module.exports = {
+/** @type {import('jest').Config} */
+const config = {
   displayName: 'CLIENT',
 };
+
+module.exports = config;
 ```
 
-or
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  displayName: 'CLIENT',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
+
+Alternatively, an object with the properties `name` and `color` can be passed. This allows for a custom configuration of the background color of the displayName. `displayName` defaults to white when its value is a string. Jest uses [`chalk`](https://github.com/chalk/chalk) to provide the color. As such, all of the valid options for colors supported by `chalk` are also supported by Jest.
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
 ```js
-module.exports = {
+/** @type {import('jest').Config} */
+const config = {
   displayName: {
     name: 'CLIENT',
     color: 'blue',
   },
 };
+
+module.exports = config;
 ```
 
-As a secondary option, an object with the properties `name` and `color` can be passed. This allows for a custom configuration of the background color of the displayName. `displayName` defaults to white when its value is a string. Jest uses [chalk](https://github.com/chalk/chalk) to provide the color. As such, all of the valid options for colors supported by chalk are also supported by jest.
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  displayName: {
+    name: 'CLIENT',
+    color: 'blue',
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `errorOnDeprecated` \[boolean]
 
@@ -388,20 +611,40 @@ Default: `[]`
 
 Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field set to `module` as ECMAScript Modules. If you have any other files that should run with native ESM, you need to specify their file extension here.
 
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  extensionsToTreatAsEsm: ['.ts'],
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  extensionsToTreatAsEsm: ['.ts'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
+
 :::caution
 
 Jest's ESM support is still experimental, see [its docs for more details](ECMAScriptModules.md).
 
 :::
-
-```json
-{
-  ...
-  "jest": {
-    "extensionsToTreatAsEsm": [".ts"]
-  }
-}
-```
 
 ### `fakeTimers` \[object]
 
@@ -411,14 +654,40 @@ The fake timers may be useful when a piece of code sets a long timeout that we d
 
 This option provides the default configuration of fake timers for all tests. Calling `jest.useFakeTimers()` in a test file will use these options or will override them if a configuration object is passed. For example, you can tell Jest to keep the original implementation of `process.nextTick()` and adjust the limit of recursive timers that will be run:
 
-```json
-{
-  "fakeTimers": {
-    "doNotFake": ["nextTick"],
-    "timerLimit": 1000
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  fakeTimers: {
+    doNotFake: ['nextTick'],
+    timerLimit: 1000,
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  fakeTimers: {
+    doNotFake: ['nextTick'],
+    timerLimit: 1000,
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ```js title="fakeTime.test.js"
 // install fake timers for this file using the options from Jest configuration
@@ -432,15 +701,40 @@ test('increase the limit of recursive timers for this and following tests', () =
 
 :::tip
 
-Instead of including `jest.useFakeTimers()` in each test file, you can enable fake timers globally for all tests:
+Instead of including `jest.useFakeTimers()` in each test file, you can enable fake timers globally for all tests in your Jest configuration:
 
-```json
-{
-  "fakeTimers": {
-    "enableGlobally": true
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  fakeTimers: {
+    enableGlobally: true,
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  fakeTimers: {
+    enableGlobally: true,
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::
 
@@ -494,14 +788,40 @@ type ModernFakeTimersConfig = {
 
 For some reason you might have to use legacy implementation of fake timers. Here is how to enable it globally (additional options are not supported):
 
-```json
-{
-  "fakeTimers": {
-    "enableGlobally": true,
-    "legacyFakeTimers": true
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  fakeTimers: {
+    enableGlobally: true,
+    legacyFakeTimers: true,
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  fakeTimers: {
+    enableGlobally: true,
+    legacyFakeTimers: true,
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::
 
@@ -527,14 +847,34 @@ if (process.env.NODE_ENV === 'test') {
 
 You can collect coverage from those files with setting `forceCoverageMatch`.
 
-```json
-{
-  ...
-  "jest": {
-    "forceCoverageMatch": ["**/*.t.js"]
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  forceCoverageMatch: ['**/*.t.js'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  forceCoverageMatch: ['**/*.t.js'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `globals` \[object]
 
@@ -544,16 +884,38 @@ A set of global variables that need to be available in all test environments.
 
 For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
 
-```json
-{
-  ...
-  "jest": {
-    "globals": {
-      "__DEV__": true
-    }
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  globals: {
+    __DEV__: true,
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  globals: {
+    __DEV__: true,
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
 
@@ -671,13 +1033,71 @@ A number limiting the number of tests that are allowed to run at the same time w
 
 Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
 
-For environments with variable CPUs available, you can use percentage based configuration: `"maxWorkers": "50%"`
+For environments with variable CPUs available, you can use percentage based configuration:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  maxWorkers: '50%',
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  maxWorkers: '50%',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `moduleDirectories` \[array&lt;string&gt;]
 
 Default: `["node_modules"]`
 
-An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
+An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  moduleDirectories: ['node_modules', 'bower_components'],
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  moduleDirectories: ['node_modules', 'bower_components'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `moduleFileExtensions` \[array&lt;string&gt;]
 
@@ -699,22 +1119,52 @@ Use `<rootDir>` string token to refer to [`rootDir`](#rootdir-string) value if y
 
 Additionally, you can substitute captured regex groups using numbered backreferences.
 
-Example:
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
-```json
-{
-  "moduleNameMapper": {
-    "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
-    "^[./a-zA-Z0-9$_-]+\\.png$": "<rootDir>/RelativeImageStub.js",
-    "module_name_(.*)": "<rootDir>/substituted_module_$1.js",
-    "assets/(.*)": [
-      "<rootDir>/images/$1",
-      "<rootDir>/photos/$1",
-      "<rootDir>/recipes/$1"
-    ]
-  }
-}
+```js
+/** @type {import('jest').Config} */
+const config = {
+  moduleNameMapper: {
+    '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+    '^[./a-zA-Z0-9$_-]+\\.png$': '<rootDir>/RelativeImageStub.js',
+    'module_name_(.*)': '<rootDir>/substituted_module_$1.js',
+    'assets/(.*)': [
+      '<rootDir>/images/$1',
+      '<rootDir>/photos/$1',
+      '<rootDir>/recipes/$1',
+    ],
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  moduleNameMapper: {
+    '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+    '^[./a-zA-Z0-9$_-]+\\.png$': '<rootDir>/RelativeImageStub.js',
+    'module_name_(.*)': '<rootDir>/substituted_module_$1.js',
+    'assets/(.*)': [
+      '<rootDir>/images/$1',
+      '<rootDir>/photos/$1',
+      '<rootDir>/recipes/$1',
+    ],
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first. This is true for arrays of module names as well.
 
@@ -730,13 +1180,71 @@ Default: `[]`
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories.
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  modulePathIgnorePatterns: ['<rootDir>/build/'],
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  modulePathIgnorePatterns: ['<rootDir>/build/'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `modulePaths` \[array&lt;string&gt;]
 
 Default: `[]`
 
-An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
+An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory.
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  modulePaths: ['<rootDir>/app/'],
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  modulePaths: ['<rootDir>/app/'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `notify` \[boolean]
 
@@ -779,21 +1287,65 @@ A preset that is used as a base for Jest's configuration. A preset should point 
 
 For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
 
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
 ```js
-/** @type { import('@jest/types').Config.InitialOptions } */
-module.exports = {
+/** @type {import('jest').Config} */
+const config = {
   preset: 'foo-bar',
 };
+
+module.exports = config;
 ```
 
-Presets may also be relative to filesystem paths.
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  preset: 'foo-bar',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
+
+Presets may also be relative to filesystem paths:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
 ```js
-/** @type { import('@jest/types').Config.InitialOptions } */
-module.exports = {
+/** @type {import('jest').Config} */
+const config = {
   preset: './node_modules/foo-bar/jest-preset.js',
 };
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  preset: './node_modules/foo-bar/jest-preset.js',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::info
 
@@ -813,30 +1365,85 @@ Default: `undefined`
 
 When the `projects` configuration is provided with an array of paths or glob patterns, Jest will run tests in all of the specified projects at the same time. This is great for monorepos or when working on multiple projects at the same time.
 
-```json
-{
-  "projects": ["<rootDir>", "<rootDir>/examples/*"]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  projects: ['<rootDir>', '<rootDir>/examples/*'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  projects: ['<rootDir>', '<rootDir>/examples/*'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.
 
 The projects feature can also be used to run multiple configurations or multiple [runners](#runner-string). For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via [jest-runner-eslint](https://github.com/jest-community/jest-runner-eslint)) in the same invocation of Jest:
 
-```json
-{
-  "projects": [
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  projects: [
     {
-      "displayName": "test"
+      displayName: 'test',
     },
     {
-      "displayName": "lint",
-      "runner": "jest-runner-eslint",
-      "testMatch": ["<rootDir>/**/*.js"]
-    }
-  ]
-}
+      displayName: 'lint',
+      runner: 'jest-runner-eslint',
+      testMatch: ['<rootDir>/**/*.js'],
+    },
+  ],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  projects: [
+    {
+      displayName: 'test',
+    },
+    {
+      displayName: 'lint',
+      runner: 'jest-runner-eslint',
+      testMatch: ['<rootDir>/**/*.js'],
+    },
+  ],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::tip
 
@@ -850,47 +1457,145 @@ Default: `undefined`
 
 Use this configuration option to add reporters to Jest. It must be a list of reporter names, additional options can be passed to a reporter using the tuple form:
 
-```json
-{
-  "reporters": [
-    "default",
-    ["<rootDir>/custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
-  ]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  reporters: [
+    'default',
+    ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+  ],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  reporters: [
+    'default',
+    ['<rootDir>/custom-reporter.js', {banana: 'yes', pineapple: 'no'}],
+  ],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 #### Default Reporter
 
 If custom reporters are specified, the default Jest reporter will be overridden. If you wish to keep it, `'default'` must be passed as a reporters name:
 
-```json
-{
-  "reporters": [
-    "default",
-    ["jest-junit", {"outputDirectory": "reports", "outputName": "report.xml"}]
-  ]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  reporters: [
+    'default',
+    ['jest-junit', {outputDirectory: 'reports', outputName: 'report.xml'}],
+  ],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  reporters: [
+    'default',
+    ['jest-junit', {outputDirectory: 'reports', outputName: 'report.xml'}],
+  ],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 #### GitHub Actions Reporter
 
 If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages:
 
-```json
-{
-  "reporters": ["default", "github-actions"]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  reporters: ['default', 'github-actions'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  reporters: ['default', 'github-actions'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 #### Summary Reporter
 
 Summary reporter prints out summary of all tests. It is a part of default reporter, hence it will be enabled if `'default'` is included in the list. For instance, you might want to use it as stand-alone reporter instead of the default one, or together with [Silent Reporter](https://github.com/rickhanlonii/jest-silent-reporter):
 
-```json
-{
-  "reporters": ["jest-silent-reporter", "summary"]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  reporters: ['jest-silent-reporter', 'summary'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  reporters: ['jest-silent-reporter', 'summary'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 #### Custom Reporters
 
@@ -981,19 +1686,44 @@ The `defaultResolver` passed as an option is the Jest default resolver which mig
 
 :::
 
-For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
-
-```json
-{
-  "resolver": "<rootDir>/resolver.js"
-}
-```
+For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following resolver:
 
 ```js title="resolver.js"
 const browserResolve = require('browser-resolve');
 
 module.exports = browserResolve.sync;
 ```
+
+And add it to Jest configuration:
+
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  resolver: '<rootDir>/resolver.js',
+};
+
+module.exports = config;
+```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  resolver: '<rootDir>/resolver.js',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
 
@@ -1096,14 +1826,34 @@ Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls 
 
 For example, if your tests call `Math` often, you can pass it by setting `sandboxInjectedGlobals`.
 
-```json
-{
-  ...
-  "jest": {
-    "sandboxInjectedGlobals": ["Math"]
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  sandboxInjectedGlobals: ['Math'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  sandboxInjectedGlobals: ['Math'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::note
 
@@ -1140,11 +1890,34 @@ afterEach(() => {
 });
 ```
 
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
 ```js
-module.exports = {
+/** @type {import('jest').Config} */
+const config = {
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
 };
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  setupFilesAfterEnv: ['<rootDir>/setup-matchers.js'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `slowTestThreshold` \[number]
 
@@ -1158,19 +1931,40 @@ Default: `undefined`
 
 Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 
-```json
-{
-  "jest": {
-    "snapshotFormat": {
-      "printBasicPrototype": false
-    }
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  snapshotFormat: {
+    printBasicPrototype: false,
+  },
+};
+
+module.exports = config;
 ```
 
-```ts
-import {expect, test} from '@jest/globals';
+</TabItem>
 
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  snapshotFormat: {
+    printBasicPrototype: false,
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
+
+```js title="some.test.js"
 test('does not show prototypes for object and array inline', () => {
   const object = {
     array: [{hello: 'Danger'}],
@@ -1193,9 +1987,7 @@ Default: `undefined`
 
 The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
-Example snapshot resolver module:
-
-```js
+```js title="custom-resolver.js"
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -1220,10 +2012,7 @@ A list of paths to snapshot serializer modules Jest should use for snapshot test
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more information.
 
-Example serializer module:
-
-```js
-// my-serializer-module
+```js title="custom-serializer.js"
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
     return `Pretty foo: ${printer(val.foo)}`;
@@ -1237,16 +2026,36 @@ module.exports = {
 
 `printer` is a function that serializes a value using existing plugins.
 
-To use `my-serializer-module` as a serializer, configuration would be as follows:
+Add `custom-serializer` to your Jest configuration:
 
-```json
-{
-  ...
-  "jest": {
-    "snapshotSerializers": ["my-serializer-module"]
-  }
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  snapshotSerializers: ['path/to/custom-serializer.js'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  snapshotSerializers: ['path/to/custom-serializer.js'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 Finally tests would look as follows:
 
@@ -1544,11 +2353,9 @@ Both `sort` and `shard` may optionally return a `Promise`.
 
 :::
 
-Example:
+For example, you may sort test paths alphabetically:
 
-Sort test path alphabetically.
-
-```js title="testSequencer.js"
+```js title="custom-sequencer.js"
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1581,13 +2388,36 @@ class CustomSequencer extends Sequencer {
 module.exports = CustomSequencer;
 ```
 
-Use it in your Jest config file like this:
+Add `custom-sequencer` to your Jest configuration:
 
-```json
-{
-  "testSequencer": "path/to/testSequencer.js"
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  testSequencer: 'path/to/custom-sequencer.js',
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  testSequencer: 'path/to/custom-sequencer.js',
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `testTimeout` \[number]
 
@@ -1611,12 +2441,40 @@ Keep in mind that a transformer only runs once per file unless the file has chan
 
 Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
 
-```json
-"transform": {
-  "\\.[jt]sx?$": "babel-jest",
-  "\\.css$": "some-css-transformer",
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  transform: {
+    '\\.[jt]sx?$': 'babel-jest',
+    '\\.css$': 'some-css-transformer',
+  },
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  transform: {
+    '\\.[jt]sx?$': 'babel-jest',
+    '\\.css$': 'some-css-transformer',
+  },
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 :::
 
@@ -1628,11 +2486,34 @@ An array of regexp pattern strings that are matched against all source file path
 
 Providing regexp patterns that overlap with each other may result in files not being transformed that you expected to be transformed. For example:
 
-```json
-{
-  "transformIgnorePatterns": ["/node_modules/(?!(foo|bar)/)", "/bar/"]
-}
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
+
+```js
+/** @type {import('jest').Config} */
+const config = {
+  transformIgnorePatterns: ['/node_modules/(?!(foo|bar)/)', '/bar/'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  transformIgnorePatterns: ['/node_modules/(?!(foo|bar)/)', '/bar/'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 The first pattern will match (and therefore not transform) files inside `/node_modules` except for those in `/node_modules/foo/` and `/node_modules/bar/`. The second pattern will match (and therefore not transform) files inside any path with `/bar/` in it. With the two together, files in `/node_modules/bar/` will not be transformed because it does match the second pattern, even though it was excluded by the first.
 
@@ -1640,16 +2521,40 @@ Sometimes it happens (especially in React Native or TypeScript projects) that 3r
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories.
 
-Example:
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
-```json
-{
-  "transformIgnorePatterns": [
-    "<rootDir>/bower_components/",
-    "<rootDir>/node_modules/"
-  ]
-}
+```js
+/** @type {import('jest').Config} */
+const config = {
+  transformIgnorePatterns: [
+    '<rootDir>/bower_components/',
+    '<rootDir>/node_modules/',
+  ],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  transformIgnorePatterns: [
+    '<rootDir>/bower_components/',
+    '<rootDir>/node_modules/',
+  ],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 
@@ -1677,13 +2582,34 @@ These patterns match against the full path. Use the `<rootDir>` string token to 
 
 Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
 
-Example:
+<Tabs groupId="examples">
+<TabItem value="js" label="JavaScript">
 
-```json
-{
-  "watchPathIgnorePatterns": ["<rootDir>/\\.tmp/", "<rootDir>/bar/"]
-}
+```js
+/** @type {import('jest').Config} */
+const config = {
+  watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
+};
+
+module.exports = config;
 ```
+
+</TabItem>
+
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import type {Config} from 'jest';
+
+const config: Config = {
+  watchPathIgnorePatterns: ['<rootDir>/\\.tmp/', '<rootDir>/bar/'],
+};
+
+export default config;
+```
+
+</TabItem>
+</Tabs>
 
 ### `watchPlugins` \[array&lt;string | \[string, Object]&gt;]
 
@@ -1713,13 +2639,9 @@ Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawl
 
 ### `//` \[string]
 
-No default
+This option allows comments in `package.json`. Include the comment text as the value of this key:
 
-This option allows comments in `package.json`. Include the comment text as the value of this key anywhere in `package.json`.
-
-Example:
-
-```json
+```json title="package.json"
 {
   "name": "my-project",
   "jest": {
