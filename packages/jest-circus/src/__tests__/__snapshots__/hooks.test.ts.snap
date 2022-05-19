@@ -1,5 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`afterEach & afterAll run in reverse order 1`] = `
+"add_hook: beforeAll
+add_hook: afterAll
+add_hook: beforeEach
+add_hook: afterEach
+add_test: 
+start_describe_definition: Scoped / Nested block
+add_hook: beforeAll
+add_hook: afterAll
+add_hook: beforeEach
+add_hook: afterEach
+add_test: 
+finish_describe_definition: Scoped / Nested block
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+hook_start: beforeAll
+1 - beforeAll
+hook_success: beforeAll
+test_start: 
+hook_start: beforeEach
+1 - beforeEach
+hook_success: beforeEach
+test_fn_start: 
+1 - test
+test_fn_success: 
+hook_start: afterEach
+1 - afterEach
+hook_success: afterEach
+test_done: 
+run_describe_start: Scoped / Nested block
+hook_start: beforeAll
+2 - beforeAll
+hook_success: beforeAll
+test_start: 
+hook_start: beforeEach
+1 - beforeEach
+hook_success: beforeEach
+hook_start: beforeEach
+2 - beforeEach
+hook_success: beforeEach
+test_fn_start: 
+2 - test
+test_fn_success: 
+hook_start: afterEach
+2 - afterEach
+hook_success: afterEach
+hook_start: afterEach
+1 - afterEach
+hook_success: afterEach
+test_done: 
+hook_start: afterAll
+2 - afterAll
+hook_success: afterAll
+run_describe_finish: Scoped / Nested block
+hook_start: afterAll
+1 - afterAll
+hook_success: afterAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0"
+`;
+
 exports[`beforeAll is exectued correctly 1`] = `
 "start_describe_definition: describe 1
 add_hook: beforeAll
