@@ -56,7 +56,7 @@ module.exports = {
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
-            require('./src/remark/tabs-plugin'),
+            require('./src/remark/code-tabs-plugin'),
           ],
         },
         blog: {
