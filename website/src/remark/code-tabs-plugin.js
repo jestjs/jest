@@ -7,37 +7,26 @@
 
 const visit = require('unist-util-visit');
 
-const transformFirstTabNode = node => [
-  {
-    type: 'jsx',
-    value: `<Tabs groupId="examples">\n<TabItem value="${node.lang}" label="JavaScript">`,
-  },
-  {
-    type: node.type,
-    lang: node.lang,
-    value: node.value,
-  },
-  {
-    type: 'jsx',
-    value: '</TabItem>',
-  },
-];
+const transformTabNode = (node, options) => {
+  const labels = {
+    js: 'JavaScript',
+    ts: 'TypeScript',
+  };
 
-const transformLastTabNode = node => [
-  {
-    type: 'jsx',
-    value: `<TabItem value="${node.lang}" label="TypeScript">`,
-  },
-  {
-    type: node.type,
-    lang: node.lang,
-    value: node.value,
-  },
-  {
-    type: 'jsx',
-    value: '</TabItem>\n</Tabs>',
-  },
-];
+  return [
+    {
+      type: 'jsx',
+      value: `${
+        options.first ? '<Tabs groupId="code-examples">\n' : ''
+      }<TabItem value="${node.lang}" label="${labels[node.lang]}">`,
+    },
+    node,
+    {
+      type: 'jsx',
+      value: `</TabItem>${options.last ? '\n</Tabs>' : ''}`,
+    },
+  ];
+};
 
 const isImport = node => node.type === 'import';
 const isParent = node => Array.isArray(node.children);
@@ -94,13 +83,13 @@ const tabsPlugin = () => root => {
         const child = node.children[index];
 
         if (isFirstTab(child, index, node)) {
-          const result = transformFirstTabNode(child);
+          const result = transformTabNode(child, {first: true});
           node.children.splice(index, 1, ...result);
 
           index += result.length;
           hasTabs = true;
         } else if (isLastTab(child, index, node)) {
-          const result = transformLastTabNode(child);
+          const result = transformTabNode(child, {last: true});
           node.children.splice(index, 1, ...result);
 
           index += result.length;
