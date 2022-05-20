@@ -5,9 +5,9 @@ title: Setup and Teardown
 
 Often while writing tests you have some setup work that needs to happen before tests run, and you have some finishing work that needs to happen after tests run. Jest provides helper functions to handle this.
 
-## Repeating Setup For Many Tests
+## Repeating Setup
 
-If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach`.
+If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach` hooks.
 
 For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
 
@@ -39,9 +39,9 @@ beforeEach(() => {
 
 ## One-Time Setup
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
+In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` hooks to handle this situation.
 
-For example, if both `initializeCityDatabase` and `clearCityDatabase` returned promises, and the city database could be reused between tests, we could change our test code to:
+For example, if both `initializeCityDatabase()` and `clearCityDatabase()` returned promises, and the city database could be reused between tests, we could change our test code to:
 
 ```js
 beforeAll(() => {
@@ -104,12 +104,15 @@ beforeAll(() => console.log('1 - beforeAll'));
 afterAll(() => console.log('1 - afterAll'));
 beforeEach(() => console.log('1 - beforeEach'));
 afterEach(() => console.log('1 - afterEach'));
+
 test('', () => console.log('1 - test'));
+
 describe('Scoped / Nested block', () => {
   beforeAll(() => console.log('2 - beforeAll'));
   afterAll(() => console.log('2 - afterAll'));
   beforeEach(() => console.log('2 - beforeEach'));
   afterEach(() => console.log('2 - afterEach'));
+
   test('', () => console.log('2 - test'));
 });
 
@@ -127,51 +130,117 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
-## Order of execution of describe and test blocks
+## Order of Execution
 
-Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
+The execution of a test file can be seen as two major steps. First Jest runs the code of all `describe` blocks alongside with any code, which does not belong to `before*`, `after*` or `test` blocks. Next the execution of the actual tests begins: Jest calls all applicable `before*` hooks, then runs each `test` waiting for it to finish and finally the relevant `after*` hooks are invoked.
 
-Consider the following illustrative test file and output:
+Consider the following example:
 
 ```js
-describe('outer', () => {
-  console.log('describe outer-a');
+console.log('topLevel 1');
 
-  describe('describe inner 1', () => {
-    console.log('describe inner 1');
-    test('test 1', () => {
-      console.log('test for describe inner 1');
-      expect(true).toEqual(true);
-    });
+beforeAll(() => console.log('beforeAll'));
+afterAll(() => console.log('afterAll'));
+
+console.log('topLevel 2');
+
+describe('describe A', () => {
+  beforeAll(() => console.log('beforeAll A'));
+  afterAll(() => console.log('afterAll A'));
+
+  console.log('describe A.1');
+
+  test('test A.1', () => console.log('test A.1'));
+
+  describe('describe A.1', () => {
+    beforeEach(() => console.log('beforeEach A.1'));
+    beforeEach(() => console.log('beforeEach A.2'));
+
+    afterEach(() => console.log('afterEach A.2'));
+    afterEach(() => console.log('afterEach A.1'));
+
+    console.log('describe A.1.1');
+
+    test('test A.1.1', () => console.log('test A.1.1'));
+    test('test A.1.2', () => console.log('test A.1.2'));
+
+    console.log('describe A.1.2');
   });
 
-  console.log('describe outer-b');
+  console.log('describe A.2');
 
-  test('test 1', () => {
-    console.log('test for describe outer');
-    expect(true).toEqual(true);
-  });
-
-  describe('describe inner 2', () => {
-    console.log('describe inner 2');
-    test('test for describe inner 2', () => {
-      console.log('test for describe inner 2');
-      expect(false).toEqual(false);
-    });
-  });
-
-  console.log('describe outer-c');
+  test('test A.2', () => console.log('test A.2'));
 });
 
-// describe outer-a
-// describe inner 1
-// describe outer-b
-// describe inner 2
-// describe outer-c
-// test for describe inner 1
-// test for describe outer
-// test for describe inner 2
+console.log('topLevel 3');
+
+describe('describe B', () => {
+  beforeEach(() => console.log('beforeEach B'));
+  afterEach(() => console.log('afterEach B'));
+
+  console.log('describe B');
+
+  test('test B', () => console.log('test B'));
+});
 ```
+
+And its output (indentation is added for readability):
+
+```
+topLevel 1
+topLevel 2
+
+describe A.1
+  describe A.1.1
+  describe A.1.2
+describe A.2
+
+topLevel 3
+
+describe B
+
+beforeAll
+
+  beforeAll A
+    test A.1
+
+    beforeEach A.1
+    beforeEach A.2
+      test A.1.1
+    afterEach A.2
+    afterEach A.1
+
+    beforeEach A.1
+    beforeEach A.2
+      test A.1.2
+    afterEach A.2
+    afterEach A.1
+
+    test A.2
+  afterAll A
+
+  beforeEach B
+    test B
+  afterEach B
+
+afterAll
+```
+
+As you can see the top level code, `describe` and `test` blocks as well as `before*` and `after*` hooks are executed in the order of declaration.
+
+:::tip
+
+Here is how to use the hooks to set up and tear down resources which depend on each other:
+
+```js
+beforeEach(() => console.log('connection setup'));
+beforeEach(() => console.log('database setup'));
+
+afterEach(() => console.log('database teardown'));
+afterEach(() => console.log('connection teardown'));
+```
+
+:::
 
 ## General Advice
 
