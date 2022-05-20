@@ -132,115 +132,62 @@ describe('Scoped / Nested block', () => {
 
 ## Order of Execution
 
-The execution of a test file can be seen as two major steps. First Jest runs the code of all `describe` blocks alongside with any code, which does not belong to `before*`, `after*` or `test` blocks. Next the execution of the actual tests begins: Jest calls all applicable `before*` hooks, then runs each `test` waiting for it to finish and finally the relevant `after*` hooks are invoked.
+Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the `describe` blocks. Once the `describe` blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
 
-Consider the following example:
+Consider the following illustrative test file and output:
 
 ```js
-console.log('topLevel 1');
+describe('describe outer', () => {
+  console.log('describe outer-a');
 
-beforeAll(() => console.log('beforeAll'));
-afterAll(() => console.log('afterAll'));
+  describe('describe inner 1', () => {
+    console.log('describe inner 1');
 
-console.log('topLevel 2');
-
-describe('describe A', () => {
-  beforeAll(() => console.log('beforeAll A'));
-  afterAll(() => console.log('afterAll A'));
-
-  console.log('describe A.1');
-
-  test('test A.1', () => console.log('test A.1'));
-
-  describe('describe A.1', () => {
-    beforeEach(() => console.log('beforeEach A.1'));
-    beforeEach(() => console.log('beforeEach A.2'));
-
-    afterEach(() => console.log('afterEach A.2'));
-    afterEach(() => console.log('afterEach A.1'));
-
-    console.log('describe A.1.1');
-
-    test('test A.1.1', () => console.log('test A.1.1'));
-    test('test A.1.2', () => console.log('test A.1.2'));
-
-    console.log('describe A.1.2');
+    test('test 1', () => console.log('test 1'));
   });
 
-  console.log('describe A.2');
+  console.log('describe outer-b');
 
-  test('test A.2', () => console.log('test A.2'));
+  test('test 2', () => console.log('test 2'));
+
+  describe('describe inner 2', () => {
+    console.log('describe inner 2');
+
+    test('test 3', () => console.log('test 3'));
+  });
+
+  console.log('describe outer-c');
 });
 
-console.log('topLevel 3');
-
-describe('describe B', () => {
-  beforeEach(() => console.log('beforeEach B'));
-  afterEach(() => console.log('afterEach B'));
-
-  console.log('describe B');
-
-  test('test B', () => console.log('test B'));
-});
+// describe outer-a
+// describe inner 1
+// describe outer-b
+// describe inner 2
+// describe outer-c
+// test 1
+// test 2
+// test 3
 ```
 
-And its output (indentation is added for readability):
-
-```
-topLevel 1
-topLevel 2
-
-describe A.1
-  describe A.1.1
-  describe A.1.2
-describe A.2
-
-topLevel 3
-
-describe B
-
-beforeAll
-
-  beforeAll A
-    test A.1
-
-    beforeEach A.1
-    beforeEach A.2
-      test A.1.1
-    afterEach A.2
-    afterEach A.1
-
-    beforeEach A.1
-    beforeEach A.2
-      test A.1.2
-    afterEach A.2
-    afterEach A.1
-
-    test A.2
-  afterAll A
-
-  beforeEach B
-    test B
-  afterEach B
-
-afterAll
-```
-
-As you can see the top level code, `describe` and `test` blocks as well as `before*` and `after*` hooks are executed in the order of declaration.
-
-:::tip
-
-Here is how to use the hooks to set up and tear down resources which depend on each other:
+Just like the `describe` and `test` blocks Jest will call the `before*` and `after*` hooks in the order of declaration. Here is how to use the hooks to set up and tear down resources which depend on each other:
 
 ```js
-beforeEach(() => console.log('connection setup'));
-beforeEach(() => console.log('database setup'));
+beforeAll(() => console.log('connection setup'));
+beforeAll(() => console.log('database setup'));
 
-afterEach(() => console.log('database teardown'));
-afterEach(() => console.log('connection teardown'));
+afterAll(() => console.log('database teardown'));
+afterAll(() => console.log('connection teardown'));
+
+test('test 1', () => console.log('test 1'));
+test('test 2', () => console.log('test 2'));
+
+// connection setup
+// database setup
+// test 1
+// test 2
+// database teardown
+// connection teardown
 ```
-
-:::
 
 ## General Advice
 
