@@ -20,6 +20,14 @@ onNodeVersions('>=12.16.0', () => {
     expect(result.exitCode).toBe(0);
     const sequence = extractSummary(result.stderr)
       .rest.replace(/PASS /g, '')
+      .replace(
+        / {2}Configuration option testSequencer should be a global config, not per-project.\n/g,
+        '',
+      )
+      .replace(
+        /Configuration option testSequencer should be a global config, not per-project.\n/g,
+        '',
+      )
       .split('\n');
     expect(sequence).toEqual([
       './a.test.js',
