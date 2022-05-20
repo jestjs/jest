@@ -586,6 +586,14 @@ export default async function normalize(
     }
   }
 
+  if (options.testSequencer) {
+    console.warn(
+      `  Configuration option ${chalk.bold(
+        'testSequencer',
+      )} should be a global config, not per-project.`,
+    );
+  }
+
   if (!options.coverageDirectory) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
