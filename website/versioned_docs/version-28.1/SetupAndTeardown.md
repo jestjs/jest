@@ -204,7 +204,20 @@ describe('extra', () => {
 
 :::note
 
-The `jasmine2` test runner calls the `after*` hooks in the reverse order of declaration.
+If you are using `jasmine2` test runner, take into account that it calls the `after*` hooks in the reverse order of declaration. To have identical output, the above example should be altered like this:
+
+```diff
+  beforeEach(() => console.log('connection setup'));
++ afterEach(() => console.log('connection teardown'));
+
+  beforeEach(() => console.log('database setup'));
++ afterEach(() => console.log('database teardown'));
+
+- afterEach(() => console.log('database teardown'));
+- afterEach(() => console.log('connection teardown'));
+
+  // ...
+```
 
 :::
 
