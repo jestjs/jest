@@ -8,17 +8,17 @@
 const visit = require('unist-util-visit');
 
 const transformTabNode = (node, options) => {
-  const labels = {
-    js: 'JavaScript',
-    ts: 'TypeScript',
-  };
+  const label = new Map([
+    ['js', 'JavaScript'],
+    ['ts', 'TypeScript'],
+  ]);
 
   return [
     {
       type: 'jsx',
       value: `${
         options.first ? '<Tabs groupId="code-examples">\n' : ''
-      }<TabItem value="${node.lang}" label="${labels[node.lang]}">`,
+      }<TabItem value="${node.lang}" label="${label.get(node.lang)}">`,
     },
     node,
     {
@@ -30,7 +30,9 @@ const transformTabNode = (node, options) => {
 
 const isImport = node => node.type === 'import';
 const isParent = node => Array.isArray(node.children);
-const isTab = node => node.type === 'code' && node.meta === 'tab';
+const isTab = node =>
+  node.type === 'code' &&
+  node.meta.split(' ').some(tag => tag.startsWith('tab'));
 
 const isFirstTab = (node, index, parent) => {
   if (!isTab(node)) {
