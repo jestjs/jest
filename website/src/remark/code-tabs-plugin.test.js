@@ -11,16 +11,17 @@ const remarkMdx = require('remark-mdx');
 const remark = require('remark');
 const codeTabsPlugin = require('./code-tabs-plugin');
 
-const processFixture = async name => {
-  const filePath = path.join(__dirname, '__fixtures__', `${name}.md`);
+async function processFixture(fixture) {
+  const filePath = path.join(__dirname, '__fixtures__', `${fixture}.md`);
   const file = fs.readFileSync(filePath);
+
   const result = await remark()
     .use(remarkMdx)
     .use(codeTabsPlugin)
     .process(file);
 
   return result.toString();
-};
+}
 
 describe('code tabs plugin', () => {
   test('base example', async () => {
