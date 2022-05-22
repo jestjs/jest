@@ -32,6 +32,7 @@ const isImport = node => node.type === 'import';
 const isParent = node => Array.isArray(node.children);
 const isTab = node =>
   node.type === 'code' &&
+  typeof node.meta === 'string' &&
   node.meta.split(' ').some(tag => tag.startsWith('tab'));
 
 const isFirstTab = (node, index, parent) => {
