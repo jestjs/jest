@@ -60,4 +60,4 @@ export default config;
 
 :::
 
-Configuration options:
+Configuration options.
