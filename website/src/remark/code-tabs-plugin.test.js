@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import fs from 'graceful-fs';
-import remarkMdx from 'remark-mdx';
-import remark from 'remark';
-import codeTabsPlugin from './code-tabs-plugin';
+const path = require('node:path');
+const fs = require('graceful-fs');
+const remarkMdx = require('remark-mdx');
+const remark = require('remark');
+const codeTabsPlugin = require('./code-tabs-plugin');
 
 const processFixture = async name => {
   const filePath = path.join(__dirname, '__fixtures__', `${name}.md`);
