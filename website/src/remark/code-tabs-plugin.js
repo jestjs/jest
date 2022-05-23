@@ -101,6 +101,9 @@ module.exports = function tabsPlugin() {
 
         hasTabs = true;
         parent.children.splice(index, result.tabsCount, ...result.tabsNode);
+
+        // eslint-disable-next-line consistent-return
+        return index + result.tabsNode.length;
       }
     });
 
