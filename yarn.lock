@@ -5120,7 +5120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mdast@npm:^3.0.0":
+"@types/mdast@npm:^3.0.0, @types/mdast@npm:^3.0.10":
   version: 3.0.10
   resolution: "@types/mdast@npm:3.0.10"
   dependencies:
@@ -13723,6 +13723,7 @@ __metadata:
     "@docusaurus/plugin-pwa": ^2.0.0-beta.17
     "@docusaurus/preset-classic": ^2.0.0-beta.17
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0-beta.17
+    "@types/mdast": ^3.0.10
     "@types/react": ^17.0.3
     clsx: ^1.1.1
     globby: ^11.0.1
@@ -13737,6 +13738,7 @@ __metadata:
     react-markdown: ^8.0.0
     remark: ^12.0.1
     remark-mdx: ^1.6.21
+    unist-util-is: ^4.1.0
     unist-util-visit: ^2.0.3
   languageName: unknown
   linkType: soft
@@ -21916,7 +21918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unist-util-is@npm:^4.0.0":
+"unist-util-is@npm:^4.0.0, unist-util-is@npm:^4.1.0":
   version: 4.1.0
   resolution: "unist-util-is@npm:4.1.0"
   checksum: 726484cd2adc9be75a939aeedd48720f88294899c2e4a3143da413ae593f2b28037570730d5cf5fd910ff41f3bc1501e3d636b6814c478d71126581ef695f7ea

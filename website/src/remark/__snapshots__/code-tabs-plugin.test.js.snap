@@ -2,9 +2,11 @@
 
 exports[`code tabs plugin base example 1`] = `
 "import Tabs from '@theme/Tabs';
+
 import TabItem from '@theme/TabItem';
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -20,12 +22,14 @@ console.log('this is TS');
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 "
 `;
 
 exports[`code tabs plugin can be nested inside an admonition 1`] = `
 "import Tabs from '@theme/Tabs';
+
 import TabItem from '@theme/TabItem';
 
 ### \`fakeTimers\` \\\\[object]
@@ -39,6 +43,7 @@ The fake timers may be useful when a piece of code sets a long timeout that we d
 Instead of including \`jest.useFakeTimers()\` in each test file, you can enable fake timers globally for all tests in your Jest configuration:
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -69,6 +74,7 @@ export default config;
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 
 :::
@@ -83,6 +89,7 @@ exports[`code tabs plugin does not re-import tabs components when already import
 import TabItem from '@theme/TabItem';
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -98,12 +105,14 @@ console.log('this is TS');
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 "
 `;
 
 exports[`code tabs plugin does not re-import tabs components when already imported below 1`] = `
 "<Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -119,6 +128,7 @@ console.log('this is TS');
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 
 import Tabs from '@theme/Tabs';
@@ -129,6 +139,7 @@ import TabItem from '@theme/TabItem';
 
 exports[`code tabs plugin full example 1`] = `
 "import Tabs from '@theme/Tabs';
+
 import TabItem from '@theme/TabItem';
 
 ### \`displayName\` \\\\[string, object]
@@ -138,6 +149,7 @@ Default: \`undefined\`
 Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -164,6 +176,7 @@ export default config;
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 
 Alternatively, an object with the properties \`name\` and \`color\` can be passed.
@@ -179,6 +192,7 @@ The fake timers may be useful when a piece of code sets a long timeout that we d
 Instead of including \`jest.useFakeTimers()\` in each test file, you can enable fake timers globally for all tests in your Jest configuration:
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab
@@ -209,6 +223,7 @@ export default config;
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 
 :::
@@ -219,11 +234,13 @@ Configuration options:
 
 exports[`code tabs plugin respects file title 1`] = `
 "import Tabs from '@theme/Tabs';
+
 import TabItem from '@theme/TabItem';
 
 \`.mockImplementation()\` can also be used to mock class constructors:
 
 <Tabs groupId=\\"code-examples\\">
+
 <TabItem value=\\"js\\" label=\\"JavaScript\\">
 
 \`\`\`js tab title=\\"SomeClass.js\\"
@@ -243,6 +260,7 @@ export class SomeClass {
 \`\`\`
 
 </TabItem>
+
 </Tabs>
 
 ### \`mockFn.mockImplementationOnce(fn)\`

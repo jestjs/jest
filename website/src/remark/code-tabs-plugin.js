@@ -6,107 +6,106 @@
  */
 
 const visit = require('unist-util-visit');
+const is = require('unist-util-is');
 
-const transformTabNode = (node, options) => {
-  const label = new Map([
-    ['js', 'JavaScript'],
-    ['ts', 'TypeScript'],
-  ]);
+const importNodes = [
+  {
+    type: 'import',
+    value: "import Tabs from '@theme/Tabs';",
+  },
+  {
+    type: 'import',
+    value: "import TabItem from '@theme/TabItem';",
+  },
+];
 
+function parseTabMeta(nodeMeta) {
+  const tabTag = nodeMeta.split(' ').filter(tag => tag.startsWith('tab'));
+  if (tabTag.length < 1) return null;
+
+  const tabMeta = tabTag[0].split('=')[1] || '{}';
+
+  return JSON.parse(tabMeta);
+}
+
+const labels = new Map([
+  ['js', 'JavaScript'],
+  ['ts', 'TypeScript'],
+]);
+
+function createTabItem(node) {
   return [
     {
       type: 'jsx',
-      value: `${
-        options.first ? '<Tabs groupId="code-examples">\n' : ''
-      }<TabItem value="${node.lang}" label="${label.get(node.lang)}">`,
+      value: `<TabItem value="${node.lang}" label="${labels.get(node.lang)}">`,
     },
     node,
     {
       type: 'jsx',
-      value: `</TabItem>${options.last ? '\n</Tabs>' : ''}`,
+      value: '</TabItem>',
     },
   ];
-};
+}
 
-const isImport = node => node.type === 'import';
-const isParent = node => Array.isArray(node.children);
-const isTab = node =>
-  node.type === 'code' &&
-  typeof node.meta === 'string' &&
-  node.meta.split(' ').some(tag => tag.startsWith('tab'));
+function createTabs(node, index, parent, meta) {
+  let tabsCount = 1;
+  const tabsNode = [
+    {
+      type: 'jsx',
+      value: '<Tabs groupId="code-examples">',
+    },
+    ...createTabItem(node),
+  ];
 
-const isFirstTab = (node, index, parent) => {
-  if (!isTab(node)) {
-    return false;
+  while (index + tabsCount <= parent.children.length) {
+    const nextNode = parent.children[index + tabsCount];
+
+    if (is(nextNode, 'code') && typeof node.meta === 'string') {
+      const nextTabMeta = parseTabMeta(nextNode.meta);
+      if (!nextTabMeta) break;
+
+      tabsCount += 1;
+      tabsNode.push(...createTabItem(nextNode));
+    } else {
+      break;
+    }
   }
 
-  const nextChild = parent.children[index + 1];
-  const previousChild = parent.children[index - 1];
+  if (tabsCount === 1) return null;
 
-  const isNextChildTab = nextChild ? isTab(nextChild) : false;
-  const isPreviousChildTab = previousChild ? isTab(previousChild) : false;
-
-  return isNextChildTab && !isPreviousChildTab;
-};
-
-const isLastTab = (node, index, parent) => {
-  if (!isTab(node)) {
-    return false;
-  }
-
-  const nextChild = parent.children[index + 1];
-  const previousChild = parent.children[index - 1];
-
-  const isNextChildTab = nextChild ? isTab(nextChild) : false;
-  // it should be already transformed
-  const isPreviousChildTab =
-    previousChild?.type === 'jsx' && previousChild?.value === '</TabItem>';
-
-  return !isNextChildTab && isPreviousChildTab;
-};
-
-const importTabsNode = {
-  type: 'import',
-  value:
-    "import Tabs from '@theme/Tabs';\nimport TabItem from '@theme/TabItem';",
-};
-
-const tabsPlugin = () => root => {
-  let hasTabs = false;
-  let hasImportTabsNode = false;
-
-  visit(root, node => {
-    if (isImport(node) && node.value.includes('@theme/Tabs')) {
-      hasImportTabsNode = true;
-    }
-
-    if (isParent(node)) {
-      let index = 0;
-      while (index < node.children.length) {
-        const child = node.children[index];
-
-        if (isFirstTab(child, index, node)) {
-          const result = transformTabNode(child, {first: true});
-          node.children.splice(index, 1, ...result);
-
-          index += result.length;
-          hasTabs = true;
-        } else if (isLastTab(child, index, node)) {
-          const result = transformTabNode(child, {last: true});
-          node.children.splice(index, 1, ...result);
-
-          index += result.length;
-          hasTabs = true;
-        } else {
-          index += 1;
-        }
-      }
-    }
+  tabsNode.push({
+    type: 'jsx',
+    value: '</Tabs>',
   });
 
-  if (hasTabs && !hasImportTabsNode) {
-    root.children.unshift(importTabsNode);
-  }
-};
+  return {tabsNode, tabsCount};
+}
 
-module.exports = tabsPlugin;
+module.exports = function tabsPlugin() {
+  /** @param {import('@types/mdast').Root tree} */
+  return tree => {
+    let hasTabs = false;
+    let includesImportTabs = false;
+
+    visit(tree, ['code', 'import'], (node, index, parent) => {
+      if (is(node, 'import') && node.value.includes('@theme/Tabs')) {
+        includesImportTabs = true;
+      }
+
+      if (is(node, 'code') && typeof node.meta === 'string') {
+        const tabMeta = parseTabMeta(node.meta);
+        if (!tabMeta) return;
+
+        const result = createTabs(node, index, parent, {...tabMeta});
+        if (!result) return;
+
+        hasTabs = true;
+        parent.children.splice(index, result.tabsCount, ...result.tabsNode);
+      }
+    });
+
+    if (hasTabs && !includesImportTabs) {
+      tree.children.unshift(...importNodes);
+    }
+  };
+};

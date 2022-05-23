@@ -25,7 +25,7 @@ async function processFixture(fixture) {
 
 describe('code tabs plugin', () => {
   test('base example', async () => {
-    const result = await processFixture('base-example');
+    const result = await processFixture('base');
 
     expect(result).toMatchSnapshot();
   });
@@ -46,6 +46,14 @@ describe('code tabs plugin', () => {
     const result = await processFixture('file-title');
 
     expect(result).toMatchSnapshot();
+  });
+
+  test('supports span', async () => {
+    const result = await processFixture('span');
+
+    console.log(result);
+
+    // expect(result).toMatchSnapshot();
   });
 
   test('does not re-import tabs components when already imported above', async () => {
