@@ -11,8 +11,9 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "fetchSupporters": "node fetchSupporters.js",
-    "netlify:ci:production": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
-    "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
+    "test": "yarn jest",
+    "netlify:ci:production": "yarn test && yarn netlify:prepare && yarn netlify:crowdin && yarn build",
+    "netlify:ci:deployPreview": "yarn test && yarn netlify:prepare && yarn build -l en",
     "netlify:prepare": "yarn fetchSupporters && yarn build:js",
     "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },

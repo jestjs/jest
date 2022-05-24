@@ -9,7 +9,7 @@ const path = require('node:path');
 const fs = require('graceful-fs');
 const remarkMdx = require('remark-mdx');
 const remark = require('remark');
-const codeTabsPlugin = require('./code-tabs-plugin');
+const codeTabsPlugin = require('../code-tabs-plugin');
 
 async function processFixture(fixture) {
   const filePath = path.join(__dirname, '__fixtures__', `${fixture}.md`);
