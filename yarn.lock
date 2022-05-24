@@ -13737,8 +13737,8 @@ __metadata:
     react-markdown: ^8.0.0
     remark: ^12.0.1
     remark-mdx: ^1.6.21
-    unist-util-is: ^4.1.0
-    unist-util-visit: ^2.0.3
+    unist-util-is: ^4.0.0
+    unist-util-visit: ^2.0.0
   languageName: unknown
   linkType: soft
 
@@ -21917,7 +21917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unist-util-is@npm:^4.0.0, unist-util-is@npm:^4.1.0":
+"unist-util-is@npm:^4.0.0":
   version: 4.1.0
   resolution: "unist-util-is@npm:4.1.0"
   checksum: 726484cd2adc9be75a939aeedd48720f88294899c2e4a3143da413ae593f2b28037570730d5cf5fd910ff41f3bc1501e3d636b6814c478d71126581ef695f7ea
