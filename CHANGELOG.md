@@ -13,8 +13,10 @@
 ### Chore & Maintenance
 
 - `[docs]` Updated docs to indicate that `jest-environment-jsdom` is a separate package [#12828](https://github.com/facebook/jest/issues/12828)
-- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 - `[docs]` Document the comments used by coverage providers [#12835](https://github.com/facebook/jest/issues/12835)
+- `[docs]` Fix typo in `--shard` CLI docs ([#12761](https://github.com/facebook/jest/pull/12761))
+- `[docs]` Use custom Remark plugin to format tabs with code examples ([#12859](https://github.com/facebook/jest/pull/12859))
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 
 ### Performance
 
