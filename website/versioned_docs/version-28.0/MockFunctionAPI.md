@@ -182,10 +182,7 @@ mockFn(3); // 39
 
 `.mockImplementation()` can also be used to mock class constructors:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js title="SomeClass.js"
+```js tab={"span":2} title="SomeClass.js"
 module.exports = class SomeClass {
   method(a, b) {}
 };
@@ -209,11 +206,7 @@ some.method('a', 'b');
 console.log('Calls to method: ', mockMethod.mock.calls);
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts title="SomeClass.ts"
+```ts tab={"span":2} title="SomeClass.ts"
 export class SomeClass {
   method(a: string, b: string): void {}
 }
@@ -236,9 +229,6 @@ some.method('a', 'b');
 
 console.log('Calls to method: ', mockMethod.mock.calls);
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockImplementationOnce(fn)`
 
