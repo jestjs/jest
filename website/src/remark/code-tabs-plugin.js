@@ -74,7 +74,17 @@ function collectTabNodes(parent, index) {
       const tabMeta = parseTabMeta(node.meta);
       if (!tabMeta) break;
 
-      tabNodes.push(parent.children.slice(nodeIndex, nodeIndex + tabMeta.span));
+      const nodes = parent.children.slice(nodeIndex, nodeIndex + tabMeta.span);
+
+      if (
+        nodes.length === tabMeta.span &&
+        nodes.every(node => is(node, 'code'))
+      ) {
+        tabNodes.push(nodes);
+      } else {
+        break;
+      }
+
       nodeIndex += tabMeta.span;
     } else {
       break;

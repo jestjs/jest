@@ -54,6 +54,12 @@ describe('code tabs plugin', () => {
     expect(result).toMatchSnapshot();
   });
 
+  test('ignores incomplete spans', async () => {
+    const result = await processFixture('span-incomplete');
+
+    expect(result).toMatchSnapshot();
+  });
+
   test('does not re-import tabs components when already imported above', async () => {
     const result = await processFixture('import-tabs-above');
 
