@@ -13736,7 +13736,7 @@ __metadata:
     react-lite-youtube-embed: ^2.2.1-a
     react-markdown: ^8.0.0
     remark: ^12.0.1
-    remark-mdx: ^1.6.21
+    remark-mdx: ^1.6.22
     unist-util-is: ^4.0.0
     unist-util-visit: ^2.0.0
   languageName: unknown
@@ -19186,7 +19186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-mdx@npm:1.6.22, remark-mdx@npm:^1.6.21":
+"remark-mdx@npm:1.6.22, remark-mdx@npm:^1.6.22":
   version: 1.6.22
   resolution: "remark-mdx@npm:1.6.22"
   dependencies:

@@ -53,6 +53,6 @@
     "graphql-request": "^4.0.0",
     "js-yaml": "^4.1.0",
     "remark": "^12.0.1",
-    "remark-mdx": "^1.6.21"
+    "remark-mdx": "^1.6.22"
   }
 }
