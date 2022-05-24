@@ -101,15 +101,12 @@ module.exports = function tabsPlugin() {
       if (!tabNodes) return;
 
       hasTabs = true;
+      const tabs = formatTabs(tabNodes);
 
-      parent.children.splice(
-        index,
-        tabNodes.flat().length,
-        ...formatTabs(tabNodes)
-      );
+      parent.children.splice(index, tabNodes.flat().length, ...tabs);
 
       // eslint-disable-next-line consistent-return
-      return index + tabNodes.flat().length;
+      return index + tabs.length;
     });
 
     if (hasTabs && !includesImportTabs) {
