@@ -5120,7 +5120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mdast@npm:^3.0.0, @types/mdast@npm:^3.0.10":
+"@types/mdast@npm:^3.0.0":
   version: 3.0.10
   resolution: "@types/mdast@npm:3.0.10"
   dependencies:
@@ -13723,7 +13723,6 @@ __metadata:
     "@docusaurus/plugin-pwa": ^2.0.0-beta.17
     "@docusaurus/preset-classic": ^2.0.0-beta.17
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0-beta.17
-    "@types/mdast": ^3.0.10
     "@types/react": ^17.0.3
     clsx: ^1.1.1
     globby: ^11.0.1
