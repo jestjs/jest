@@ -33,6 +33,20 @@ const labels = new Map([
   ['ts', 'TypeScript'],
 ]);
 
+function createTabs(nodes) {
+  return [
+    {
+      type: 'jsx',
+      value: '<Tabs groupId="code-examples">',
+    },
+    ...nodes,
+    {
+      type: 'jsx',
+      value: '</Tabs>',
+    },
+  ];
+}
+
 function createTabItem(node) {
   return [
     {
@@ -47,38 +61,25 @@ function createTabItem(node) {
   ];
 }
 
-function createTabs(node, index, parent, meta) {
-  let tabsCount = 1;
-  const tabsNode = [
-    {
-      type: 'jsx',
-      value: '<Tabs groupId="code-examples">',
-    },
-    ...createTabItem(node),
-  ];
+function formatTabItems(node, index, parent) {
+  const tabItems = [createTabItem(node)];
 
-  while (index + tabsCount <= parent.children.length) {
-    const nextNode = parent.children[index + tabsCount];
+  while (index + tabItems.length <= parent.children.length) {
+    const nextNode = parent.children[index + tabItems.length];
 
     if (is(nextNode, 'code') && typeof node.meta === 'string') {
       const nextTabMeta = parseTabMeta(nextNode.meta);
       if (!nextTabMeta) break;
 
-      tabsCount += 1;
-      tabsNode.push(...createTabItem(nextNode));
+      tabItems.push(createTabItem(nextNode));
     } else {
       break;
     }
   }
 
-  if (tabsCount === 1) return null;
+  if (tabItems.length === 1) return null;
 
-  tabsNode.push({
-    type: 'jsx',
-    value: '</Tabs>',
-  });
-
-  return {tabsNode, tabsCount};
+  return tabItems;
 }
 
 module.exports = function tabsPlugin() {
@@ -96,14 +97,16 @@ module.exports = function tabsPlugin() {
         const tabMeta = parseTabMeta(node.meta);
         if (!tabMeta) return;
 
-        const result = createTabs(node, index, parent, {...tabMeta});
-        if (!result) return;
+        const tabItems = formatTabItems(node, index, parent);
+        if (!tabItems) return;
+
+        const tabs = createTabs(tabItems.flat());
 
         hasTabs = true;
-        parent.children.splice(index, result.tabsCount, ...result.tabsNode);
+        parent.children.splice(index, tabItems.length, ...tabs);
 
         // eslint-disable-next-line consistent-return
-        return index + result.tabsNode.length;
+        return index + tabs.length;
       }
     });
 
