@@ -13729,7 +13729,6 @@ __metadata:
     globby: ^11.0.1
     graphql: ^16.3.0
     graphql-request: ^4.0.0
-    jest: "workspace:*"
     js-yaml: ^4.1.0
     react: 17.0.2
     react-dom: ^17.0.1
