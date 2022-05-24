@@ -12,8 +12,8 @@
     "write-translations": "docusaurus write-translations",
     "fetchSupporters": "node fetchSupporters.js",
     "jest": "node ../packages/jest-cli/bin/jest.js",
-    "netlify:ci:production": "yarn test && yarn netlify:prepare && yarn netlify:crowdin && yarn build",
-    "netlify:ci:deployPreview": "yarn test && yarn netlify:prepare && yarn build -l en",
+    "netlify:ci:production": "yarn netlify:prepare && yarn jest && yarn netlify:crowdin && yarn build",
+    "netlify:ci:deployPreview": "yarn netlify:prepare && yarn jest && yarn build -l en",
     "netlify:prepare": "yarn fetchSupporters && yarn build:js",
     "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },
