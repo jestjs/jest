@@ -60,4 +60,52 @@ export default config;
 
 :::
 
-Configuration options:
+`.mockImplementation()` can also be used to mock class constructors:
+
+```js tab={"span":2} title="SomeClass.js"
+module.exports = class SomeClass {
+  method(a, b) {}
+};
+```
+
+```js title="SomeClass.test.js"
+const SomeClass = require('./SomeClass');
+
+jest.mock('./SomeClass'); // this happens automatically with automocking
+
+const mockMethod = jest.fn();
+SomeClass.mockImplementation(() => {
+  return {
+    method: mockMethod,
+  };
+});
+
+const some = new SomeClass();
+some.method('a', 'b');
+
+console.log('Calls to method: ', mockMethod.mock.calls);
+```
+
+```ts tab={"span":2} title="SomeClass.ts"
+export class SomeClass {
+  method(a: string, b: string): void {}
+}
+```
+
+```ts title="SomeClass.test.ts"
+import {SomeClass} from './SomeClass';
+
+jest.mock('./SomeClass'); // this happens automatically with automocking
+
+const mockMethod = jest.fn<(a: string, b: string) => void>();
+SomeClass.mockImplementation(() => {
+  return {
+    method: mockMethod,
+  };
+});
+
+const some = new SomeClass();
+some.method('a', 'b');
+
+console.log('Calls to method: ', mockMethod.mock.calls);
+```

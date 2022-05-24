@@ -228,11 +228,71 @@ export default config;
 
 :::
 
-Configuration options:
+\`.mockImplementation()\` can also be used to mock class constructors:
+
+<Tabs groupId=\\"code-examples\\">
+
+<TabItem value=\\"js\\" label=\\"JavaScript\\">
+
+\`\`\`js tab={\\"span\\":2} title=\\"SomeClass.js\\"
+module.exports = class SomeClass {
+  method(a, b) {}
+};
+\`\`\`
+
+\`\`\`js title=\\"SomeClass.test.js\\"
+const SomeClass = require('./SomeClass');
+
+jest.mock('./SomeClass'); // this happens automatically with automocking
+
+const mockMethod = jest.fn();
+SomeClass.mockImplementation(() => {
+  return {
+    method: mockMethod,
+  };
+});
+
+const some = new SomeClass();
+some.method('a', 'b');
+
+console.log('Calls to method: ', mockMethod.mock.calls);
+\`\`\`
+
+</TabItem>
+
+<TabItem value=\\"ts\\" label=\\"TypeScript\\">
+
+\`\`\`ts tab={\\"span\\":2} title=\\"SomeClass.ts\\"
+export class SomeClass {
+  method(a: string, b: string): void {}
+}
+\`\`\`
+
+\`\`\`ts title=\\"SomeClass.test.ts\\"
+import {SomeClass} from './SomeClass';
+
+jest.mock('./SomeClass'); // this happens automatically with automocking
+
+const mockMethod = jest.fn<(a: string, b: string) => void>();
+SomeClass.mockImplementation(() => {
+  return {
+    method: mockMethod,
+  };
+});
+
+const some = new SomeClass();
+some.method('a', 'b');
+
+console.log('Calls to method: ', mockMethod.mock.calls);
+\`\`\`
+
+</TabItem>
+
+</Tabs>
 "
 `;
 
-exports[`code tabs plugin respects file title 1`] = `
+exports[`code tabs plugin respects title meta 1`] = `
 "import Tabs from '@theme/Tabs';
 
 import TabItem from '@theme/TabItem';
@@ -266,5 +326,46 @@ export class SomeClass {
 ### \`mockFn.mockImplementationOnce(fn)\`
 
 Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
+"
+`;
+
+exports[`code tabs plugin supports span meta 1`] = `
+"import Tabs from '@theme/Tabs';
+
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId=\\"code-examples\\">
+
+<TabItem value=\\"js\\" label=\\"JavaScript\\">
+
+\`\`\`js tab={\\"span\\":2}
+console.log('this is first JS codeblock in a tab');
+\`\`\`
+
+\`\`\`js
+console.log('this is second JS codeblock in a tab');
+\`\`\`
+
+</TabItem>
+
+<TabItem value=\\"ts\\" label=\\"TypeScript\\">
+
+\`\`\`ts tab={\\"span\\":2}
+console.log('this is first TS codeblock in a tab');
+\`\`\`
+
+\`\`\`ts
+console.log('this is second TS codeblock in a tab');
+\`\`\`
+
+</TabItem>
+
+</Tabs>
+
+Some text
+
+\`\`\`ts title=\\"some-file.ts\\"
+console.log('this is just code');
+\`\`\`
 "
 `;

@@ -42,18 +42,16 @@ describe('code tabs plugin', () => {
     expect(result).toMatchSnapshot();
   });
 
-  test('respects file title', async () => {
-    const result = await processFixture('file-title');
+  test('respects title meta', async () => {
+    const result = await processFixture('title');
 
     expect(result).toMatchSnapshot();
   });
 
-  test('supports span', async () => {
+  test('supports span meta', async () => {
     const result = await processFixture('span');
 
-    console.log(result);
-
-    // expect(result).toMatchSnapshot();
+    expect(result).toMatchSnapshot();
   });
 
   test('does not re-import tabs components when already imported above', async () => {

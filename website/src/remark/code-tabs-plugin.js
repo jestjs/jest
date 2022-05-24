@@ -25,7 +25,7 @@ function parseTabMeta(nodeMeta) {
 
   const tabMeta = tabTag[0].split('=')[1] || '{}';
 
-  return JSON.parse(tabMeta);
+  return {span: 1, ...JSON.parse(tabMeta)};
 }
 
 const labels = new Map([
@@ -33,27 +33,15 @@ const labels = new Map([
   ['ts', 'TypeScript'],
 ]);
 
-function createTabs(nodes) {
+function formatTabItem(nodes) {
   return [
     {
       type: 'jsx',
-      value: '<Tabs groupId="code-examples">',
+      value: `<TabItem value="${nodes[0].lang}" label="${labels.get(
+        nodes[0].lang
+      )}">`,
     },
     ...nodes,
-    {
-      type: 'jsx',
-      value: '</Tabs>',
-    },
-  ];
-}
-
-function createTabItem(node) {
-  return [
-    {
-      type: 'jsx',
-      value: `<TabItem value="${node.lang}" label="${labels.get(node.lang)}">`,
-    },
-    node,
     {
       type: 'jsx',
       value: '</TabItem>',
@@ -61,25 +49,41 @@ function createTabItem(node) {
   ];
 }
 
-function formatTabItems(node, index, parent) {
-  const tabItems = [createTabItem(node)];
+function formatTabs(tabNodes) {
+  return [
+    {
+      type: 'jsx',
+      value: '<Tabs groupId="code-examples">',
+    },
+    ...tabNodes.map(node => formatTabItem(node)),
+    {
+      type: 'jsx',
+      value: '</Tabs>',
+    },
+  ].flat();
+}
 
-  while (index + tabItems.length <= parent.children.length) {
-    const nextNode = parent.children[index + tabItems.length];
+function collectTabNodes(parent, index) {
+  let nodeIndex = index;
+  const tabNodes = [];
 
-    if (is(nextNode, 'code') && typeof node.meta === 'string') {
-      const nextTabMeta = parseTabMeta(nextNode.meta);
-      if (!nextTabMeta) break;
+  do {
+    const node = parent.children[nodeIndex];
 
-      tabItems.push(createTabItem(nextNode));
+    if (is(node, 'code') && typeof node.meta === 'string') {
+      const tabMeta = parseTabMeta(node.meta);
+      if (!tabMeta) break;
+
+      tabNodes.push(parent.children.slice(nodeIndex, nodeIndex + tabMeta.span));
+      nodeIndex += tabMeta.span;
     } else {
       break;
     }
-  }
+  } while (nodeIndex <= parent.children.length);
 
-  if (tabItems.length === 1) return null;
+  if (tabNodes.length <= 1) return null;
 
-  return tabItems;
+  return tabNodes;
 }
 
 module.exports = function tabsPlugin() {
@@ -93,21 +97,19 @@ module.exports = function tabsPlugin() {
         includesImportTabs = true;
       }
 
-      if (is(node, 'code') && typeof node.meta === 'string') {
-        const tabMeta = parseTabMeta(node.meta);
-        if (!tabMeta) return;
+      const tabNodes = collectTabNodes(parent, index);
+      if (!tabNodes) return;
 
-        const tabItems = formatTabItems(node, index, parent);
-        if (!tabItems) return;
+      hasTabs = true;
 
-        const tabs = createTabs(tabItems.flat());
+      parent.children.splice(
+        index,
+        tabNodes.flat().length,
+        ...formatTabs(tabNodes)
+      );
 
-        hasTabs = true;
-        parent.children.splice(index, tabItems.length, ...tabs);
-
-        // eslint-disable-next-line consistent-return
-        return index + tabs.length;
-      }
+      // eslint-disable-next-line consistent-return
+      return index + tabNodes.flat().length;
     });
 
     if (hasTabs && !includesImportTabs) {
