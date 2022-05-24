@@ -13717,6 +13717,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-website@workspace:website"
   dependencies:
+    "@babel/core": ^7.11.6
     "@crowdin/cli": ^3.5.2
     "@docusaurus/core": ^2.0.0-beta.17
     "@docusaurus/plugin-client-redirects": ^2.0.0-beta.17
