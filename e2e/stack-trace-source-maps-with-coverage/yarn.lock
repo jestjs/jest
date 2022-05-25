@@ -25,7 +25,7 @@ __metadata:
 
 "typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.6.3
-  resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
+  resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
