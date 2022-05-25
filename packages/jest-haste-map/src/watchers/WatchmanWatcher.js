@@ -241,6 +241,12 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
         return;
       }
 
+      // Files can be inaccessible
+      // the most reliable thing to do here is to ignore the event.
+      if (error && error.code === 'EPERM') {
+        return;
+      }
+
       if (handleError(self, error)) {
         return;
       }
