@@ -707,6 +707,8 @@ The projects feature can also be used to run multiple configurations or multiple
 
 _Note: When using multi-project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
 
+_Note: With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the *child's root directory* even if they are defined in the root-level configuration._
+
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`

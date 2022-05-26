@@ -1451,7 +1451,11 @@ When using multi-project runner, it's recommended to add a `displayName` for eac
 
 :::
 
-With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that the `<rootDir>` string token will point to the _child directory_ even if it's used in the root-level configuration, which is crucial to keep in mind when constructing paths.
+:::note
+
+With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the _child's root directory_ even if they are defined in the root-level configuration.
+
+:::
 
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
