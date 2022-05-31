@@ -855,11 +855,11 @@ test('will fail', () => {
 });
 ```
 
-You can pass in a `retryFilter` function to filter which errors we should retry
-on. `retryFilter` is passed in an array of the exceptions/test errors for each
+You can pass in a `retryFilter` function to filter which errors Jest should retry
+on. The `retryFilter` will receive an array of the exceptions/test errors for each
 run of the test.
 
-By default, jest.retryTimes will retry on all errors.
+By default, `jest.retryTimes()` will retry on all errors.
 
 ```js
 jest.retryTimes(3, {
