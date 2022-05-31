@@ -9,7 +9,7 @@ In your test files, Jest puts each of these methods and objects into the global 
 
 import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(2)} />
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -933,4 +933,109 @@ Example:
 const add = (a, b) => a + b;
 
 test.todo('add should be associative');
+```
+
+## TypeScript Usage
+
+:::info
+
+These TypeScript usage tips and caveats are only applicable if you import from `'@jest/globals'`:
+
+```ts
+import {describe, test} from '@jest/globals';
+```
+
+:::
+
+### `.each`
+
+The `.each` modifier offers few different ways to define a table of the test cases. Some of the APIs have caveats related with the type inference of the arguments which are passed to `describe` or `test` callback functions. Let's take a look at each of them.
+
+:::note
+
+For simplicity `test.each` is picked for the examples, but the type inference is identical in all cases where `.each` modifier can be used: `describe.each`, `test.concurrent.only.each`, `test.skip.each`, etc.
+
+:::
+
+#### Array of objects
+
+The array of objects API is most verbose, but it makes the type inference a painless task. A `table` can be inlined:
+
+```ts
+test.each([
+  {name: 'a', path: 'path/to/a', count: 1, write: true},
+  {name: 'b', path: 'path/to/b', count: 3},
+])('inline table', ({name, path, count, write}) => {
+  // arguments are typed as expected, e.g. `write: boolean | undefined`
+});
+```
+
+Or declared separately as a variable:
+
+```ts
+const table = [
+  {a: 1, b: 2, expected: 'three', extra: true},
+  {a: 3, b: 4, expected: 'seven', extra: false},
+  {a: 5, b: 6, expected: 'eleven'},
+];
+
+test.each(table)('table as a variable', ({a, b, expected, extra}) => {
+  // again everything is typed as expected, e.g. `extra: boolean | undefined`
+});
+```
+
+#### Array of arrays
+
+The array of arrays style will work smoothly with inlined tables:
+
+```ts
+test.each([
+  [1, 2, 'three', true],
+  [3, 4, 'seven', false],
+  [5, 6, 'eleven'],
+])('inline table example', (a, b, expected, extra) => {
+  // arguments are typed as expected, e.g. `extra: boolean | undefined`
+});
+```
+
+However, if a table is declared as a separate variable, it must be typed as an array of tuples for correct type inference (this is not needed only if all elements of a row are of the same type):
+
+```ts
+const table: Array<[number, number, string, boolean?]> = [
+  [1, 2, 'three', true],
+  [3, 4, 'seven', false],
+  [5, 6, 'eleven'],
+];
+
+test.each(table)('table as a variable example', (a, b, expected, extra) => {
+  // without the annotation types are incorrect, e.g. `a: number | string | boolean`
+});
+```
+
+#### Template literal
+
+If all values are of the same type, the template literal API will type the arguments correctly:
+
+```ts
+test.each`
+  a    | b    | expected
+  ${1} | ${2} | ${3}
+  ${3} | ${4} | ${7}
+  ${5} | ${6} | ${11}
+`('template literal example', ({a, b, expected}) => {
+  // all arguments are of type `number`
+});
+```
+
+Otherwise it will require a generic type argument:
+
+```ts
+test.each<{a: number; b: number; expected: string; extra?: boolean}>`
+  a    | b    | expected    | extra
+  ${1} | ${2} | ${'three'}  | ${true}
+  ${3} | ${4} | ${'seven'}  | ${false}
+  ${5} | ${6} | ${'eleven'}
+`('template literal example', ({a, b, expected, extra}) => {
+  // without the generic argument in this case types would default to `unknown`
+});
 ```
