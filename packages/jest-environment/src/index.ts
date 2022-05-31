@@ -232,17 +232,24 @@ export interface Jest {
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted.
    *
-   * If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused
-   * the test to fail to the console, providing visibility on why a retry occurred.
-   * retries is exhausted.
-   *
    * @remarks
    * Only available with `jest-circus` runner.
    */
   retryTimes(
     numRetries: number,
     options?: {
+      /**
+       * If `logErrorsBeforeRetry` is true, Jest will log the error(s) that
+       * caused the test to fail to the console, providing visibility on why a
+       * retry occurred.
+       */
       logErrorsBeforeRetry?: boolean;
+      /**
+       * You can pass in a `retryFilter` function to filter which errors Jest
+       * should retry on. The `retryFilter` will receive an array of the
+       * exceptions/test errors for each run of the test, and should return
+       * `true` if we should retry on this error
+       */
       retryFilter?: Circus.TestRetryFilter;
     },
   ): Jest;
