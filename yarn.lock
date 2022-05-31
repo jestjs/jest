@@ -9152,6 +9152,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"docusaurus-remark-plugin-tab-blocks@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "docusaurus-remark-plugin-tab-blocks@npm:1.0.0"
+  dependencies:
+    unist-util-is: ^4.0.0
+    unist-util-visit: ^2.0.0
+  checksum: 3c6877b1b66f7dab70991c3707165e8bfd73bc3255fb7a66af52a926ea9b7c20e8a82cc112737a27b5afaecd7c0868c2684d86a68c8a442d17ef36192b7cc6bc
+  languageName: node
+  linkType: hard
+
 "dom-accessibility-api@npm:^0.5.9":
   version: 0.5.13
   resolution: "dom-accessibility-api@npm:0.5.13"
@@ -13752,6 +13762,7 @@ __metadata:
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0-beta.17
     "@types/react": ^17.0.3
     clsx: ^1.1.1
+    docusaurus-remark-plugin-tab-blocks: ^1.0.0
     globby: ^11.0.1
     graphql: ^16.3.0
     graphql-request: ^4.0.0
