@@ -305,4 +305,15 @@ expectType<typeof jest>(jest.setTimeout(6000));
 expectError(jest.setTimeout());
 
 expectType<typeof jest>(jest.retryTimes(3));
+expectType<typeof jest>(
+  jest.retryTimes(3, {
+    logErrorsBeforeRetry: true,
+    retryFilter: ({errors}) => errors.length !== 0,
+  }),
+);
 expectError(jest.retryTimes());
+expectError(jest.retryTimes(3, {retryFilter: 1}));
+expectError(jest.retryTimes(3, {retryFilter: () => 1}));
+expectError(
+  jest.retryTimes(3, {retryFilter: ({someOtherKey}) => !!someOtherKey}),
+);
