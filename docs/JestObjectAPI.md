@@ -855,4 +855,25 @@ test('will fail', () => {
 });
 ```
 
+You can pass in a `retryFilter` function to filter which errors we should retry
+on. `retryFilter` is passed in an array of the exceptions/test errors for each
+run of the test.
+
+By default, jest.retryTimes will retry on all errors.
+
+```js
+jest.retryTimes(3, {
+  retryFilter: ({errors}) => 
+    errors.some(error => error.message.includes('Some flaky error')),
+});
+
+test('will get retried', () => {
+  throw new Error('Some flaky error');
+});
+
+test('will not get retried', () => {
+  throw new Error('Error that is not from flakiness');
+});
+```
+
 Returns the `jest` object for chaining.

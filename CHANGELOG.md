@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest]` Expose `Config` type ([#12848](https://github.com/facebook/jest/pull/12848))
+- `[jest-circus, jest-environment, jest-runtime, @jest/types]` Allow retrying only certain test errors ([#12848](https://github.com/facebook/jest/pull/12848))
 - `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
 
 ### Fixes
