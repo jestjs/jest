@@ -119,6 +119,7 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
+const retryFilterSymbol = Symbol.for('RETRY_FILTER');
 const logErrorsBeforeRetrySymbol = Symbol.for('LOG_ERRORS_BEFORE_RETRY');
 
 const NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -2120,6 +2121,7 @@ export default class Runtime {
 
     const retryTimes: Jest['retryTimes'] = (numTestRetries, options) => {
       this._environment.global[retryTimesSymbol] = numTestRetries;
+      this._environment.global[retryFilterSymbol] = options?.retryFilter;
       this._environment.global[logErrorsBeforeRetrySymbol] =
         options?.logErrorsBeforeRetry;
 

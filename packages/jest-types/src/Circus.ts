@@ -253,3 +253,5 @@ export type TestEntry = {
   timeout?: number;
   failing: boolean;
 };
+
+export type TestRetryFilter = (options: { errors: Array<TestError> }) => boolean;

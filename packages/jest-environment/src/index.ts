@@ -241,7 +241,10 @@ export interface Jest {
    */
   retryTimes(
     numRetries: number,
-    options?: {logErrorsBeforeRetry?: boolean},
+    options?: {
+      logErrorsBeforeRetry?: boolean;
+      retryFilter?: Circus.TestRetryFilter;
+    },
   ): Jest;
 
   /**

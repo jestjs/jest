@@ -8,7 +8,7 @@
 import throat from 'throat';
 import type {Circus} from '@jest/types';
 import {dispatch, getState} from './state';
-import {RETRY_TIMES} from './types';
+import {RETRY_FILTER, RETRY_TIMES} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -65,6 +65,7 @@ const _runTestsForDescribeBlock = async (
   // Tests that fail and are retried we run after other tests
   // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const retryFilter: Circus.TestRetryFilter = global[RETRY_FILTER] || (() => true);
   const deferredRetryTests = [];
 
   for (const child of describeBlock.children) {
@@ -80,6 +81,7 @@ const _runTestsForDescribeBlock = async (
         if (
           hasErrorsBeforeTestRun === false &&
           retryTimes > 0 &&
+          retryFilter({ errors: child.errors }) &&
           child.errors.length > 0
         ) {
           deferredRetryTests.push(child);
