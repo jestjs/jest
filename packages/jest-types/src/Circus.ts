@@ -254,4 +254,4 @@ export type TestEntry = {
   failing: boolean;
 };
 
-export type TestRetryFilter = (options: { errors: Array<TestError> }) => boolean;
+export type TestRetryFilter = (options: {errors: Array<Exception>}) => boolean;

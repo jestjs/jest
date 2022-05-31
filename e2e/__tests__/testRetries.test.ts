@@ -20,6 +20,12 @@ describe('Test Retries', () => {
     'e2e/test-retries/',
     outputFileName,
   );
+  const reporterConfigJSON = JSON.stringify({
+    reporters: [
+      ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+    ],
+  });
+
   const logErrorsBeforeRetryErrorMessage = 'LOGGING RETRY ERRORS';
 
   afterAll(() => {
@@ -28,6 +34,14 @@ describe('Test Retries', () => {
 
   it('retries failed tests', () => {
     const result = runJest('test-retries', ['e2e.test.js']);
+
+    expect(result.exitCode).toEqual(0);
+    expect(result.failed).toBe(false);
+    expect(result.stderr).not.toContain(logErrorsBeforeRetryErrorMessage);
+  });
+
+  it('retries only tests matching patterns', () => {
+    const result = runJest('test-retries', ['retry.test.js']);
 
     expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
@@ -45,17 +59,7 @@ describe('Test Retries', () => {
   it('reporter shows more than 1 invocation if test is retried', () => {
     let jsonResult;
 
-    const reporterConfig = {
-      reporters: [
-        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
-      ],
-    };
-
-    runJest('test-retries', [
-      '--config',
-      JSON.stringify(reporterConfig),
-      'retry.test.js',
-    ]);
+    runJest('test-retries', ['--config', reporterConfigJSON, 'retry.test.js']);
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 
@@ -76,15 +80,9 @@ describe('Test Retries', () => {
   it('reporter shows 1 invocation if tests are not retried', () => {
     let jsonResult;
 
-    const reporterConfig = {
-      reporters: [
-        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
-      ],
-    };
-
     runJest('test-retries', [
       '--config',
-      JSON.stringify(reporterConfig),
+      reporterConfigJSON,
       'control.test.js',
     ]);
 
@@ -107,15 +105,9 @@ describe('Test Retries', () => {
   it('tests are not retried if beforeAll hook failure occurs', () => {
     let jsonResult;
 
-    const reporterConfig = {
-      reporters: [
-        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
-      ],
-    };
-
     runJest('test-retries', [
       '--config',
-      JSON.stringify(reporterConfig),
+      reporterConfigJSON,
       'beforeAllFailure.test.js',
     ]);
 
@@ -133,5 +125,35 @@ describe('Test Retries', () => {
     expect(jsonResult.numFailedTests).toBe(1);
     expect(jsonResult.numPendingTests).toBe(0);
     expect(jsonResult.testResults[0].testResults[0].invocations).toBe(1);
+  });
+
+  it('only retries the retryFilter-matching errors', () => {
+    let jsonResult;
+
+    runJest('test-retries', [
+      '--config',
+      reporterConfigJSON,
+      'retryFilter.test.js',
+    ]);
+
+    const testOutput = fs.readFileSync(outputFilePath, 'utf8');
+
+    try {
+      jsonResult = JSON.parse(testOutput);
+    } catch (err: any) {
+      throw new Error(
+        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+      );
+    }
+
+    const testResults = jsonResult.testResults[0].testResults;
+    const matchingFilterResult = testResults.find(
+      (result: any) => result.title === 'matching retry',
+    );
+    const nonMatchingFilterResult = testResults.find(
+      (result: any) => result.title === 'non-matching retry',
+    );
+    expect(matchingFilterResult.invocations).toBe(4);
+    expect(nonMatchingFilterResult.invocations).toBe(1);
   });
 });

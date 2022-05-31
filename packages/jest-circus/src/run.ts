@@ -65,7 +65,9 @@ const _runTestsForDescribeBlock = async (
   // Tests that fail and are retried we run after other tests
   // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
-  const retryFilter: Circus.TestRetryFilter = global[RETRY_FILTER] || (() => true);
+  const retryFilter: Circus.TestRetryFilter =
+    // eslint-disable-next-line no-restricted-globals
+    global[RETRY_FILTER] || (() => true);
   const deferredRetryTests = [];
 
   for (const child of describeBlock.children) {
@@ -81,7 +83,11 @@ const _runTestsForDescribeBlock = async (
         if (
           hasErrorsBeforeTestRun === false &&
           retryTimes > 0 &&
-          retryFilter({ errors: child.errors }) &&
+          retryFilter({
+            errors: child.errors
+              .flatMap(errors => (Array.isArray(errors) ? errors : [errors]))
+              .filter(error => error != null),
+          }) &&
           child.errors.length > 0
         ) {
           deferredRetryTests.push(child);
