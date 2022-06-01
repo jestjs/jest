@@ -1881,19 +1881,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cspotcode/source-map-consumer@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
-  checksum: c0c16ca3d2f58898f1bd74c4f41a189dbcc202e642e60e489cbcc2e52419c4e89bdead02c886a12fb13ea37798ede9e562b2321df997ebc210ae9bd881561b4e
-  languageName: node
-  linkType: hard
-
-"@cspotcode/source-map-support@npm:0.7.0":
-  version: 0.7.0
-  resolution: "@cspotcode/source-map-support@npm:0.7.0"
+"@cspotcode/source-map-support@npm:^0.8.0":
+  version: 0.8.1
+  resolution: "@cspotcode/source-map-support@npm:0.8.1"
   dependencies:
-    "@cspotcode/source-map-consumer": 0.8.0
-  checksum: 9faddda7757cd778b5fd6812137b2cc265810043680d6399acc20441668fafcdc874053be9dccd0d9110087287bfad27eb3bf342f72bceca9aa9059f5d0c4be8
+    "@jridgewell/trace-mapping": 0.3.9
+  checksum: 5718f267085ed8edb3e7ef210137241775e607ee18b77d95aa5bd7514f47f5019aa2d82d96b3bf342ef7aa890a346fa1044532ff7cc3009e7d24fce3ce6200fa
   languageName: node
   linkType: hard
 
@@ -2704,7 +2697,7 @@ __metadata:
     eslint-plugin-markdown: ^2.2.1
     eslint-plugin-prettier: ^4.0.0
     execa: ^5.0.0
-    fast-check: ^2.0.0
+    fast-check: ^3.0.0
     find-process: ^1.4.1
     glob: ^8.0.0
     globby: ^11.0.1
@@ -2957,6 +2950,16 @@ __metadata:
   version: 1.4.11
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.11"
   checksum: 3b2afaf8400fb07a36db60e901fcce6a746cdec587310ee9035939d89878e57b2dec8173b0b8f63176f647efa352294049a53c49739098eb907ff81fec2547c8
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:0.3.9":
+  version: 0.3.9
+  resolution: "@jridgewell/trace-mapping@npm:0.3.9"
+  dependencies:
+    "@jridgewell/resolve-uri": ^3.0.3
+    "@jridgewell/sourcemap-codec": ^1.4.10
+  checksum: d89597752fd88d3f3480845691a05a44bd21faac18e2185b6f436c3b0fd0c5a859fbbd9aaa92050c4052caf325ad3e10e2e1d1b64327517471b7d51babc0ddef
   languageName: node
   linkType: hard
 
@@ -9077,7 +9080,7 @@ __metadata:
   dependencies:
     benchmark: ^2.1.4
     diff: ^5.0.0
-    fast-check: ^2.0.0
+    fast-check: ^3.0.0
   languageName: unknown
   linkType: soft
 
@@ -10304,7 +10307,7 @@ __metadata:
     "@jest/test-utils": ^28.1.0
     "@tsd/typescript": ~4.6.2
     chalk: ^4.0.0
-    fast-check: ^2.0.0
+    fast-check: ^3.0.0
     immutable: ^4.0.0
     jest-get-type: ^28.0.2
     jest-matcher-utils: ^28.1.0
@@ -10427,12 +10430,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-check@npm:^2.0.0":
-  version: 2.24.0
-  resolution: "fast-check@npm:2.24.0"
+"fast-check@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "fast-check@npm:3.0.0"
   dependencies:
     pure-rand: ^5.0.1
-  checksum: 8f1e590768379c2831bfc70e38c3eb545f82c706eaa316664226bd46956a1e52b644d665d9b31ebeca1e86477b054232f1159841b41c065ec8e4c24295da1c05
+  checksum: 894f60127cbceeb39c079624c769edb695b458ac19a5258708ada56473da45dace3bdf072a0bcc036f2830798252e31dfb59c672d8b6b2516dda54f0fc8bae8f
   languageName: node
   linkType: hard
 
@@ -21437,10 +21440,10 @@ __metadata:
   linkType: hard
 
 "ts-node@npm:^10.5.0":
-  version: 10.7.0
-  resolution: "ts-node@npm:10.7.0"
+  version: 10.8.0
+  resolution: "ts-node@npm:10.8.0"
   dependencies:
-    "@cspotcode/source-map-support": 0.7.0
+    "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
     "@tsconfig/node12": ^1.0.7
     "@tsconfig/node14": ^1.0.0
@@ -21451,7 +21454,7 @@ __metadata:
     create-require: ^1.1.0
     diff: ^4.0.1
     make-error: ^1.1.1
-    v8-compile-cache-lib: ^3.0.0
+    v8-compile-cache-lib: ^3.0.1
     yn: 3.1.1
   peerDependencies:
     "@swc/core": ">=1.2.50"
@@ -21470,7 +21473,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 2a379e43f7478d0b79e1e63af91fe222d83857727957df4bd3bdf3c0a884de5097b12feb9bbf530074526b8874c0338b0e6328cf334f3a5e2c49c71e837273f7
+  checksum: 1c22dc8dd80d0ba4dd4250b82cc032b63f6fbe8c87f8197cef43e7f9e2d43f5b333b445ed712e3006e24119257b4bff2c46605f7da61ab6f5e9514885d296f0c
   languageName: node
   linkType: hard
 
@@ -22252,10 +22255,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-compile-cache-lib@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "v8-compile-cache-lib@npm:3.0.0"
-  checksum: 674e312bbca796584b61dc915f33c7e7dc4e06d196e0048cb772c8964493a1ec723f1dd014d9419fd55c24a6eae148f60769da23f622e05cd13268063fa1ed6b
+"v8-compile-cache-lib@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "v8-compile-cache-lib@npm:3.0.1"
+  checksum: 78089ad549e21bcdbfca10c08850022b22024cdcc2da9b168bcf5a73a6ed7bf01a9cebb9eac28e03cd23a684d81e0502797e88f3ccd27a32aeab1cfc44c39da0
   languageName: node
   linkType: hard
 
