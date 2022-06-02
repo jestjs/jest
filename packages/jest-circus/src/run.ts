@@ -52,6 +52,7 @@ const _runTestsForDescribeBlock = async (
         const promise = mutex(test.fn);
         // Avoid triggering the uncaught promise rejection handler in case the
         // test errors before being awaited on.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         promise.catch(() => {});
         test.fn = () => promise;
       } catch (err) {

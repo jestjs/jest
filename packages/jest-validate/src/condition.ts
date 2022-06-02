@@ -24,7 +24,7 @@ function validationConditionSingle(
 export function getValues<T = unknown>(validOption: T): Array<T> {
   if (
     Array.isArray(validOption) &&
-    // @ts-expect-error
+    // @ts-expect-error: no index signature
     validOption[MULTIPLE_VALID_OPTIONS_SYMBOL]
   ) {
     return validOption;
@@ -43,7 +43,7 @@ export function multipleValidOptions<T extends Array<unknown>>(
   ...args: T
 ): T[number] {
   const options = <T>[...args];
-  // @ts-expect-error
+  // @ts-expect-error: no index signature
   options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
 
   return options;

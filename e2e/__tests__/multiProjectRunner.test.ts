@@ -49,7 +49,7 @@ test('can pass projects or global config', () => {
         getHasteName(filename) {
           return filename
             .substr(filename.lastIndexOf(path.sep) + 1)
-            .replace(/\.js$/, '');
+            .replace(/\\.js$/, '');
         },
       };
     `,
@@ -446,7 +446,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project1/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project1/transformer.js': `
       module.exports = {
@@ -461,7 +461,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project2/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project2/transformer.js': `
       module.exports = {

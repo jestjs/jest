@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *

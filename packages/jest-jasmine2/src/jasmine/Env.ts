@@ -599,6 +599,7 @@ export default function jasmineEnv(j$: Jasmine) {
 
         const spec = specFactory(
           description,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {},
           currentDeclarationSuite,
         );
