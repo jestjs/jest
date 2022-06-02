@@ -6,7 +6,7 @@
  *
  */
 
-import {List,OrderedMap} from 'immutable';
+import {List, OrderedMap} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
 import {
   arrayBufferEquality,
@@ -528,7 +528,7 @@ describe('iterableEquality', () => {
 
   test('returns true when given Immutable OrderedMaps without an OwnerID', () => {
     const a = OrderedMap().set('saving', true);
-    const b = OrderedMap().merge({ saving: true });
+    const b = OrderedMap().merge({saving: true});
     expect(iterableEquality(a, b)).toBe(true);
   });
 });
