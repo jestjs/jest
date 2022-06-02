@@ -1087,7 +1087,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${methodName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            methodName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
@@ -1149,7 +1151,9 @@ export class ModuleMocker {
 
     if (!obj) {
       throw new Error(
-        `spyOn could not find an object to spy upon for ${propertyName}`,
+        `spyOn could not find an object to spy upon for ${String(
+          propertyName,
+        )}`,
       );
     }
 
@@ -1166,16 +1170,18 @@ export class ModuleMocker {
     }
 
     if (!descriptor) {
-      throw new Error(`${propertyName} property does not exist`);
+      throw new Error(`${String(propertyName)} property does not exist`);
     }
 
     if (!descriptor.configurable) {
-      throw new Error(`${propertyName} is not declared configurable`);
+      throw new Error(`${String(propertyName)} is not declared configurable`);
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        `Property ${propertyName} does not have access type ${accessType}`,
+        `Property ${String(
+          propertyName,
+        )} does not have access type ${accessType}`,
       );
     }
 
@@ -1184,7 +1190,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${propertyName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            propertyName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
