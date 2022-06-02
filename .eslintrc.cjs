@@ -248,7 +248,13 @@ module.exports = {
       },
     },
     {
-      files: ['**/__typetests__/**', '**/*.md/**'],
+      files: [
+        '**/__typetests__/**',
+        '**/*.md/**',
+        'e2e/circus-concurrent/__tests__/concurrent-only-each.test.js',
+        'e2e/jasmine-async/__tests__/concurrent-only-each.test.js',
+        'e2e/test-failing/__tests__/worksWithOnlyMode.test.js',
+      ],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',

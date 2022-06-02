@@ -153,45 +153,45 @@ exports[`works with only mode 1`] = `
     Expected: 101
     Received: 10
 
-      41 |   // eslint-disable-next-line jest/no-focused-tests
-      42 |   it.only('failing test', () => {
-    > 43 |     expect(10).toBe(101);
+      40 |
+      41 |   it.only('failing test', () => {
+    > 42 |     expect(10).toBe(101);
          |                ^
-      44 |   });
-      45 |
-      46 |   it('passing test but skipped', () => {
+      43 |   });
+      44 |
+      45 |   it('passing test but skipped', () => {
 
-      at Object.toBe (__tests__/worksWithOnlyMode.test.js:43:16)
+      at Object.toBe (__tests__/worksWithOnlyMode.test.js:42:16)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 1
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      50 |
-      51 | describe('block with only with different syntax, should fail', () => {
-    > 52 |   fit.failing('failing passes = fails, should fail 1', () => {
+      49 |
+      50 | describe('block with only with different syntax, should fail', () => {
+    > 51 |   fit.failing('failing passes = fails, should fail 1', () => {
          |       ^
-      53 |     expect(10).toBe(10);
-      54 |   });
-      55 |
+      52 |     expect(10).toBe(10);
+      53 |   });
+      54 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:52:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+      at failing (__tests__/worksWithOnlyMode.test.js:51:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:50:1)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      54 |   });
-      55 |
-    > 56 |   test.only.failing('failing passes = fails, should fail 2', () => {
+      53 |   });
+      54 |
+    > 55 |   test.only.failing('failing passes = fails, should fail 2', () => {
          |             ^
-      57 |     expect(10).toBe(10);
-      58 |   });
-      59 |
+      56 |     expect(10).toBe(10);
+      57 |   });
+      58 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:56:13)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)"
+      at failing (__tests__/worksWithOnlyMode.test.js:55:13)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:50:1)"
 `;
 
 exports[`works with skip mode 1`] = `

@@ -102,16 +102,16 @@ FAIL __tests__/worksWithOnlyMode.test.js
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-      50 |
-      51 | describe('block with only with different syntax, should fail', () => {
-    > 52 |   fit.failing('failing passes = fails, should fail 1', () => {
+      49 |
+      50 | describe('block with only with different syntax, should fail', () => {
+    > 51 |   fit.failing('failing passes = fails, should fail 1', () => {
          |       ^
-      53 |     expect(10).toBe(10);
-      54 |   });
-      55 |
+      52 |     expect(10).toBe(10);
+      53 |   });
+      54 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:52:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:51:1)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:51:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:50:1)
 
 FAIL __tests__/worksWithSkipMode.test.js
   ● block with only, should pass › encountered a declaration exception
