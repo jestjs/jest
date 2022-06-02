@@ -35,6 +35,7 @@
     "@docusaurus/preset-classic": "^2.0.0-beta.17",
     "@docusaurus/remark-plugin-npm2yarn": "^2.0.0-beta.17",
     "clsx": "^1.1.1",
+    "docusaurus-remark-plugin-tab-blocks": "^1.0.0",
     "globby": "^11.0.1",
     "react": "17.0.2",
     "react-dom": "^17.0.1",

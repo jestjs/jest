@@ -4,18 +4,21 @@
 
 - `[jest]` Expose `Config` type ([#12848](https://github.com/facebook/jest/pull/12848))
 - `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
+- `[@jest/types]` Infer argument types passed to `test` and `describe` callback functions from `each` tables ([#12885](https://github.com/facebook/jest/pull/12885))
 
 ### Fixes
 
-- `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedMaps ([#12763](https://github.com/facebook/jest/pull/12899))
 - `[jest-docblock]` Handle multiline comments in parseWithComments ([#12845](https://github.com/facebook/jest/pull/12845))
-- `[jest-haste-map]` Prevent an `EPERM` crash when a file or folder is inaccessible. ([#12876](https://github.com/facebook/jest/pull/12876)).
+- `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
+- `[jest-haste-map]` Prevent an `EPERM` crash when a file or folder is inaccessible. ([#12876](https://github.com/facebook/jest/pull/12876))
 
 ### Chore & Maintenance
 
 - `[docs]` Updated docs to indicate that `jest-environment-jsdom` is a separate package [#12828](https://github.com/facebook/jest/issues/12828)
-- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 - `[docs]` Document the comments used by coverage providers [#12835](https://github.com/facebook/jest/issues/12835)
+- `[docs]` Use `docusaurus-remark-plugin-tab-blocks` to format tabs with code examples ([#12859](https://github.com/facebook/jest/pull/12859))
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 
 ### Performance
 
