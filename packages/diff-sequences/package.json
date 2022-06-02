@@ -30,7 +30,7 @@
   "devDependencies": {
     "benchmark": "^2.1.4",
     "diff": "^5.0.0",
-    "fast-check": "^2.0.0"
+    "fast-check": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
