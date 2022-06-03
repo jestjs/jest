@@ -266,3 +266,11 @@ export function isImmutableList(maybeList: any) {
     maybeList[IS_LIST_SENTINEL]
   );
 }
+
+export function isImmutableOrderedKeyed(maybeKeyed: any) {
+  return !!(
+    maybeKeyed &&
+    maybeKeyed[IS_KEYED_SENTINEL] &&
+    maybeKeyed[IS_ORDERED_SENTINEL]
+  );
+}

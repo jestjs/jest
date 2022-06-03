@@ -8,7 +8,14 @@
 import {expectType} from 'tsd-lite';
 import type {Jest} from '@jest/environment';
 import type {JestExpect} from '@jest/expect';
-import type {Global} from '@jest/types';
+import type {Config as ConfigTypes, Global} from '@jest/types';
+import type {Config} from 'jest';
+
+// Config
+
+declare const config: Config;
+
+expectType<ConfigTypes.InitialOptions>(config);
 
 // globals enable through "types": ["jest"]
 

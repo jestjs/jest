@@ -15,6 +15,7 @@
   "dependencies": {
     "@jest/core": "^28.1.0",
     "@jest/globals": "^28.1.0",
+    "@jest/types": "^28.1.0",
     "import-local": "^3.0.2",
     "jest-cli": "^28.1.0"
   },

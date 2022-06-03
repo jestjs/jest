@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestConfigBase from './jest.config.mjs';
+import baseConfig from './jest.config.mjs';
 
+/** @type {import('jest').Config} */
 export default {
   projects: [
     {
@@ -14,7 +15,7 @@ export default {
         color: 'blue',
         name: 'ts-integration',
       },
-      modulePathIgnorePatterns: jestConfigBase.modulePathIgnorePatterns,
+      modulePathIgnorePatterns: baseConfig.modulePathIgnorePatterns,
       roots: ['<rootDir>/e2e/__tests__'],
       testMatch: ['<rootDir>/e2e/__tests__/ts*'],
     },
@@ -23,7 +24,7 @@ export default {
         color: 'blue',
         name: 'type-tests',
       },
-      modulePathIgnorePatterns: jestConfigBase.modulePathIgnorePatterns,
+      modulePathIgnorePatterns: baseConfig.modulePathIgnorePatterns,
       roots: ['<rootDir>/packages'],
       runner: 'jest-runner-tsd',
       testMatch: ['**/__typetests__/**/*.ts'],

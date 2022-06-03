@@ -8,6 +8,7 @@
   "references": [
     {"path": "../jest-cli"},
     {"path": "../jest-core"},
-    {"path": "../jest-globals"}
+    {"path": "../jest-globals"},
+    {"path": "../jest-types"}
   ]
 }
