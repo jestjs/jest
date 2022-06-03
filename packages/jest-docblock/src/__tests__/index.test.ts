@@ -31,6 +31,11 @@ describe('docblock', () => {
     expect(docblock.extract(code)).toBe(`/*${EOL} * @team foo${EOL}*/`);
   });
 
+  it('extracts from invalid docblock singleline', () => {
+    const code = `/* some comment @team foo */${EOL}const x = foo;`;
+    expect(docblock.extract(code)).toBe('/* some comment @team foo */');
+  });
+
   it('returns extract and parsedocblock', () => {
     const code = `/** @provides module-name */${EOL}${EOL}.dummy {}${EOL}`;
 
@@ -201,6 +206,22 @@ describe('docblock', () => {
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// keep me',
       pragmas: {'format:': 'everything'},
+    });
+  });
+
+  it('extract from invalid docblock', () => {
+    const code = `/* @format: everything${EOL}// keep me */`;
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: '// keep me',
+      pragmas: {'format:': 'everything'},
+    });
+  });
+
+  it('extract from invalid docblock singleline', () => {
+    const code = '/* some test */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: ' some test',
+      pragmas: {},
     });
   });
 

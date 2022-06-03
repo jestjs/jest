@@ -8,7 +8,7 @@
 import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
 
-/** @type import('@jest/types').Config.InitialOptions */
+/** @type {import('jest').Config} */
 export default {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
@@ -67,6 +67,7 @@ export default {
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/packages/jest-validate/src/__tests__/fixtures/',
     '/e2e/__tests__/iterator-to-null-test.ts',
+    '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
   ],
   testTimeout: 70000,
   transform: {

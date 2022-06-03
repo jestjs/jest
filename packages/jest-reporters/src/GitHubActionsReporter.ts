@@ -6,54 +6,79 @@
  */
 
 import stripAnsi = require('strip-ansi');
-import type {
-  AggregatedResult,
-  TestContext,
-  TestResult,
-} from '@jest/test-result';
+import type {Test, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {
+  formatPath,
+  getStackTraceLines,
+  getTopFrame,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import BaseReporter from './BaseReporter';
 
-const lineAndColumnInStackTrace = /^.*?:([0-9]+):([0-9]+).*$/;
+type AnnotationOptions = {
+  file?: string;
+  line?: number | string;
+  message: string;
+  title: string;
+  type: 'error' | 'warning';
+};
 
-function replaceEntities(s: string): string {
-  // https://github.com/actions/toolkit/blob/b4639928698a6bfe1c4bdae4b2bfdad1cb75016d/packages/core/src/command.ts#L80-L85
-  const substitutions: Array<[RegExp, string]> = [
-    [/%/g, '%25'],
-    [/\r/g, '%0D'],
-    [/\n/g, '%0A'],
-  ];
-  return substitutions.reduce((acc, sub) => acc.replace(...sub), s);
-}
+const titleSeparator = ' \u203A ';
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
 
-  override onRunComplete(
-    _testContexts?: Set<TestContext>,
-    aggregatedResults?: AggregatedResult,
-  ): void {
-    const messages = getMessages(aggregatedResults?.testResults);
+  onTestFileResult({context}: Test, {testResults}: TestResult): void {
+    testResults.forEach(result => {
+      const title = [...result.ancestorTitles, result.title].join(
+        titleSeparator,
+      );
 
-    for (const message of messages) {
-      this.log(message);
-    }
+      result.retryReasons?.forEach((retryReason, index) => {
+        this.#createAnnotation({
+          ...this.#getMessageDetails(retryReason, context.config),
+          title: `RETRY ${index + 1}: ${title}`,
+          type: 'warning',
+        });
+      });
+
+      result.failureMessages.forEach(failureMessage => {
+        this.#createAnnotation({
+          ...this.#getMessageDetails(failureMessage, context.config),
+          title,
+          type: 'error',
+        });
+      });
+    });
   }
-}
 
-function getMessages(results: Array<TestResult> | undefined) {
-  if (!results) return [];
+  #getMessageDetails(failureMessage: string, config: Config.ProjectConfig) {
+    const {message, stack} = separateMessageFromStack(failureMessage);
 
-  return results.flatMap(({testFilePath, testResults}) =>
-    testResults
-      .filter(r => r.status === 'failed')
-      .flatMap(r => r.failureMessages)
-      .map(m => stripAnsi(m))
-      .map(m => replaceEntities(m))
-      .map(m => lineAndColumnInStackTrace.exec(m))
-      .filter((m): m is RegExpExecArray => m !== null)
-      .map(
-        ([message, line, col]) =>
-          `\n::error file=${testFilePath},line=${line},col=${col}::${message}`,
-      ),
-  );
+    const stackLines = getStackTraceLines(stack);
+    const topFrame = getTopFrame(stackLines);
+
+    const normalizedStackLines = stackLines.map(line =>
+      formatPath(line, config),
+    );
+    const messageText = [message, ...normalizedStackLines].join('\n');
+
+    return {
+      file: topFrame?.file,
+      line: topFrame?.line,
+      message: messageText,
+    };
+  }
+
+  #createAnnotation({file, line, message, title, type}: AnnotationOptions) {
+    message = stripAnsi(
+      // copied from: https://github.com/actions/toolkit/blob/main/packages/core/src/command.ts
+      message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'),
+    );
+
+    this.log(
+      `\n::${type} file=${file},line=${line},title=${title}::${message}`,
+    );
+  }
 }

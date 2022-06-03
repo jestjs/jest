@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "28.0.2",
+  "version": "28.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.0.2",
+    "@jest/types": "^28.1.0",
     "@types/node": "*"
   },
   "devDependencies": {
