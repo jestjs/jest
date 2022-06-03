@@ -23,9 +23,6 @@ import TOCInline from '@theme/TOCInline';
 
 ## Reference
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 ### `expect(value)`
 
 The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.
@@ -46,10 +43,7 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const toBeWithinRange = function (actual, floor, ceiling) {
   if (
     typeof actual !== 'number' ||
@@ -88,11 +82,7 @@ expect.extend({
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 import type {MatcherFunction} from 'expect';
 
 const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
@@ -142,9 +132,6 @@ declare module 'expect' {
   }
 }
 ```
-
-</TabItem>
-</Tabs>
 
 And use it in a test:
 
