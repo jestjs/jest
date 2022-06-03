@@ -77,7 +77,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
           configurable: descriptor.configurable,
           enumerable: descriptor.enumerable,
           get() {
-            // @ts-expect-error
+            // @ts-expect-error: no index signature
             const val = globalThis[nodeGlobalsKey];
 
             // override lazy getter
@@ -157,6 +157,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async setup(): Promise<void> {}
 
   async teardown(): Promise<void> {

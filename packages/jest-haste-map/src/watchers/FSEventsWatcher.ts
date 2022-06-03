@@ -14,7 +14,7 @@ import micromatch = require('micromatch');
 // @ts-expect-error no types
 import walker from 'walker';
 
-// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
 // @ts-ignore: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {

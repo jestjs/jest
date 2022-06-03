@@ -142,6 +142,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async setup(): Promise<void> {}
 
   async teardown(): Promise<void> {
@@ -165,7 +166,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
-    // @ts-expect-error
+    // @ts-expect-error: this.global not allowed to be `null`
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;

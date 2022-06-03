@@ -1168,6 +1168,7 @@ describe('moduleMocker', () => {
       const obj = {
         method() {
           isOriginalCalled = true;
+          // eslint-disable-next-line @typescript-eslint/no-this-alias
           originalCallThis = this;
           originalCallArguments = arguments;
         },
@@ -1255,6 +1256,7 @@ describe('moduleMocker', () => {
         get method() {
           return function () {
             isOriginalCalled = true;
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             originalCallThis = this;
             originalCallArguments = arguments;
           };
@@ -1309,6 +1311,7 @@ describe('moduleMocker', () => {
         get method() {
           return function () {
             isOriginalCalled = true;
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             originalCallThis = this;
             originalCallArguments = arguments;
           };
@@ -1423,6 +1426,7 @@ describe('moduleMocker', () => {
         get method() {
           return function () {
             isOriginalCalled = true;
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             originalCallThis = this;
             originalCallArguments = arguments;
           };

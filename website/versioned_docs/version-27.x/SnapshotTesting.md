@@ -265,7 +265,7 @@ exports[`<UserName /> should render Alan Turing`] = `
 `;
 ```
 
-Since the later describes exactly what's expected in the output, it's more clear to see when it's wrong:
+Since the latter describes exactly what's expected in the output, it's more clear to see when it's wrong:
 
 ```js
 exports[`<UserName /> should render null`] = `

@@ -5,8 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export function runTest(): void {}
-export async function runTestAsync(): Promise<void> {}
+export function runTest(a: string, b: boolean): void {}
+export async function runTestAsync(c: number, d: number): Promise<void> {}
+
+export function doSomething(): void {}
+export async function doSomethingAsync(): Promise<void> {}
 
 function getResult(): string {
   return 'result';

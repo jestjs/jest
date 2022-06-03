@@ -28,12 +28,14 @@ abstract class BaseWatchPlugin implements WatchPlugin {
     this._stdout = stdout;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   apply(_hooks: JestHookSubscriber): void {}
 
   getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onKey(_key: string): void {}
 
   run(
