@@ -86,6 +86,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
     timeout?: number,
   ) => void;
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   <T extends unknown>(
     strings: TemplateStringsArray,
     ...expressions: Array<T>

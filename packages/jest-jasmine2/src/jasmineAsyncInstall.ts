@@ -23,8 +23,10 @@ function isPromise(obj: any): obj is PromiseLike<unknown> {
   return obj && typeof obj.then === 'function';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const doneFnNoop = () => {};
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 doneFnNoop.fail = () => {};
 
 function promisifyLifeCycleFunction(
@@ -70,6 +72,7 @@ function promisifyLifeCycleFunction(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
+    // eslint-disable-next-line no-self-assign
     extraError.stack = extraError.stack;
 
     // We make *all* functions async and run `done` right away if they
@@ -145,6 +148,7 @@ function promisifyIt(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
+    // eslint-disable-next-line no-self-assign
     extraError.stack = extraError.stack;
 
     const asyncJestTest = function (done: DoneFn) {
@@ -217,11 +221,13 @@ function makeConcurrent(
     }
     // Avoid triggering the uncaught promise rejection handler in case the test errors before
     // being awaited on.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     promise.catch(() => {});
 
     return spec;
   };
-  // each is binded after the function is made concurrent, so for now it is made noop
+  // each is bound after the function is made concurrent, so for now it is made noop
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   concurrentFn.each = () => () => {};
   concurrentFn.failing = () => () => {
     throw new Error(

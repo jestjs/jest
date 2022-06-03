@@ -751,7 +751,7 @@ export default class Runtime {
       [...cjsExports, 'default'],
       function () {
         cjsExports.forEach(exportName => {
-          // @ts-expect-error
+          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
         });
         // @ts-expect-error: TS doesn't know what `this` is
@@ -1514,8 +1514,8 @@ export default class Runtime {
         module.require, // require implementation
         module.path, // __dirname
         module.filename, // __filename
-        // @ts-expect-error
-        ...lastArgs.filter(notEmpty),
+        lastArgs[0],
+        ...lastArgs.slice(1).filter(notEmpty),
       );
     } catch (error: any) {
       this.handleExecutionError(error, module);
@@ -1680,10 +1680,9 @@ export default class Runtime {
           : fileURLToPath(modulePath);
 
       if (!path.isAbsolute(filename)) {
-        const error = new TypeError(
+        const error: NodeJS.ErrnoException = new TypeError(
           `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
         );
-        // @ts-expect-error
         error.code = 'ERR_INVALID_ARG_TYPE';
         throw error;
       }
@@ -1702,7 +1701,7 @@ export default class Runtime {
     class Module extends nativeModule.Module {}
 
     Object.entries(nativeModule.Module).forEach(([key, value]) => {
-      // @ts-expect-error
+      // @ts-expect-error: no index signature
       Module[key] = value;
     });
 
@@ -1716,14 +1715,13 @@ export default class Runtime {
         filename: string | URL,
       ) {
         if (typeof filename !== 'string') {
-          const error = new TypeError(
+          const error: NodeJS.ErrnoException = new TypeError(
             `The argument 'filename' must be string. Received '${filename}'.${
               filename instanceof URL
                 ? ' Use createRequire for URL filename.'
                 : ''
             }`,
           );
-          // @ts-expect-error
           error.code = 'ERR_INVALID_ARG_TYPE';
           throw error;
         }
@@ -1733,6 +1731,7 @@ export default class Runtime {
     if ('syncBuiltinESMExports' in nativeModule) {
       // cast since TS seems very confused about whether it exists or not
       (Module as any).syncBuiltinESMExports =
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         function syncBuiltinESMExports() {};
     }
 

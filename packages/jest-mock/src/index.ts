@@ -160,6 +160,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SpyInstance<T extends FunctionLike = UnknownFunction>
   extends MockInstance<T> {}
 
@@ -230,7 +231,7 @@ type MockFunctionConfig = {
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
-const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/;
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-/:-@[-`{-~]/;
 const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   FUNCTION_NAME_RESERVED_PATTERN.source,
   'g',
@@ -633,6 +634,7 @@ export class ModuleMocker {
           metadata.members.prototype.members) ||
         {};
       const prototypeSlots = this._getSlots(prototype);
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
       const mockConstructor = matchArity(function (
         this: ReturnType<T>,
@@ -896,7 +898,7 @@ export class ModuleMocker {
   ): Mock<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
-    // @ts-expect-error
+    // @ts-expect-error - unsure why TSC complains here?
     const mock = this._makeComponent(metadata);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
@@ -1020,6 +1022,7 @@ export class ModuleMocker {
   isMockFunction<T extends FunctionLike = UnknownFunction>(
     fn: SpyInstance<T>,
   ): fn is SpyInstance<T>;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   isMockFunction<P extends Array<unknown>, R extends unknown>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
@@ -1207,7 +1210,7 @@ export class ModuleMocker {
       (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-expect-error
+        // @ts-expect-error - wrong context
         return original.apply(this, arguments);
       });
     }

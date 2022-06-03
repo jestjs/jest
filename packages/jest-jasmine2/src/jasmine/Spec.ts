@@ -28,7 +28,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually, @typescript-eslint/no-empty-function */
 
 import {AssertionError} from 'assert';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
@@ -138,11 +138,12 @@ export default class Spec {
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
+    // eslint-disable-next-line no-self-assign
     this.initError.stack = this.initError.stack;
 
     this.queueableFn.initError = this.initError;
 
-    // @ts-expect-error
+    // @ts-expect-error: misses some fields added later
     this.result = {
       id: this.id,
       description: this.description,
@@ -172,6 +173,7 @@ export default class Spec {
   }
 
   execute(onComplete?: () => void, enabled?: boolean) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
     this.onStart(this);
@@ -192,7 +194,7 @@ export default class Spec {
     this.currentRun = this.queueRunnerFactory({
       queueableFns: allFns,
       onException() {
-        // @ts-expect-error
+        // @ts-expect-error: wrong context
         self.onException.apply(self, arguments);
       },
       userContext: this.userContext(),

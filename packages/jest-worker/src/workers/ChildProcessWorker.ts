@@ -242,6 +242,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._request = request;
     this._retries = 0;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this._child.send(request, () => {});
   }
 

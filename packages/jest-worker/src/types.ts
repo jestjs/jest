@@ -33,14 +33,14 @@ export type WorkerModule<T> = {
 // coming from any of the other processes cannot be typed. Thus, many types
 // include "unknown" as a TS type, which is (unfortunately) correct here.
 
-export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
-export const CHILD_MESSAGE_CALL: 1 = 1;
-export const CHILD_MESSAGE_END: 2 = 2;
+export const CHILD_MESSAGE_INITIALIZE = 0;
+export const CHILD_MESSAGE_CALL = 1;
+export const CHILD_MESSAGE_END = 2;
 
-export const PARENT_MESSAGE_OK: 0 = 0;
-export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
-export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
-export const PARENT_MESSAGE_CUSTOM: 3 = 3;
+export const PARENT_MESSAGE_OK = 0;
+export const PARENT_MESSAGE_CLIENT_ERROR = 1;
+export const PARENT_MESSAGE_SETUP_ERROR = 2;
+export const PARENT_MESSAGE_CUSTOM = 3;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
