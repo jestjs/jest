@@ -493,7 +493,7 @@ Please consult the [Getting Started](GettingStarted.md#using-typescript) guide f
 
 ### `jest.fn(implementation?)`
 
-Correct mock typings will be inferred, if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases there the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
+Correct mock typings will be inferred if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases where the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
 
 ```ts
 import {expect, jest, test} from '@jest/globals';
