@@ -1325,6 +1325,7 @@ export default class Runtime {
     this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
+    this._v8CoverageSources?.clear();
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
