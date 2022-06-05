@@ -221,6 +221,7 @@ export default class Runtime {
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
+  private _v8CoverageSources: Map<string, RuntimeTransformResult> | undefined;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
   private readonly _virtualMocks: Map<string, boolean>;
@@ -1155,6 +1156,18 @@ export default class Runtime {
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
+
+    if (
+      this._coverageOptions.collectCoverage &&
+      this._coverageOptions.coverageProvider === 'v8' &&
+      this._v8CoverageSources
+    ) {
+      this._v8CoverageSources = new Map([
+        ...this._v8CoverageSources,
+        ...this._fileTransforms,
+      ]);
+    }
+
     this._fileTransforms.clear();
 
     if (this._environment) {
@@ -1182,16 +1195,21 @@ export default class Runtime {
 
   async collectV8Coverage(): Promise<void> {
     this._v8CoverageInstrumenter = new CoverageInstrumenter();
+    this._v8CoverageSources = new Map();
 
     await this._v8CoverageInstrumenter.startInstrumenting();
   }
 
   async stopCollectingV8Coverage(): Promise<void> {
-    if (!this._v8CoverageInstrumenter) {
+    if (!this._v8CoverageInstrumenter || !this._v8CoverageSources) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
     this._v8CoverageResult =
       await this._v8CoverageInstrumenter.stopInstrumenting();
+    this._v8CoverageSources = new Map([
+      ...this._v8CoverageSources,
+      ...this._fileTransforms,
+    ]);
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -1199,8 +1217,8 @@ export default class Runtime {
   }
 
   getAllV8CoverageInfoCopy(): V8CoverageResult {
-    if (!this._v8CoverageResult) {
-      throw new Error('You need to `stopCollectingV8Coverage` first');
+    if (!this._v8CoverageResult || !this._v8CoverageSources) {
+      throw new Error('You need to call `stopCollectingV8Coverage` first.');
     }
 
     return this._v8CoverageResult
@@ -1210,11 +1228,11 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          this._fileTransforms.has(res.url) &&
+          this._v8CoverageSources!.has(res.url) &&
           shouldInstrument(res.url, this._coverageOptions, this._config),
       )
       .map(result => {
-        const transformedFile = this._fileTransforms.get(result.url);
+        const transformedFile = this._v8CoverageSources!.get(result.url);
 
         return {
           codeTransformResult: transformedFile,
@@ -1307,6 +1325,7 @@ export default class Runtime {
     this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
+    this._v8CoverageSources?.clear();
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;

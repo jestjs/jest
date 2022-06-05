@@ -37,6 +37,19 @@ test('prints coverage with empty sourcemaps', () => {
   expect(stdout).toMatchSnapshot();
 });
 
+test('reports coverage with `resetModules`', () => {
+  const sourcemapDir = path.join(DIR, 'with-resetModules');
+
+  const {stdout, exitCode} = runJest(
+    sourcemapDir,
+    ['--coverage', '--coverage-provider', 'v8'],
+    {stripAnsi: true},
+  );
+
+  expect(exitCode).toBe(0);
+  expect(stdout).toMatchSnapshot();
+});
+
 test('prints correct coverage report, if a CJS module is put under test without transformation', () => {
   const sourcemapDir = path.join(DIR, 'cjs-native-without-sourcemap');
 
