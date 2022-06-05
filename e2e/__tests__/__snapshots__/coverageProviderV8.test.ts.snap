@@ -92,6 +92,11 @@ exports[`reports coverage with \`resetModules\` 1`] = `
 
       at log (module.js:11:11)
 
+  console.log
+    this will print
+
+      at log (module.js:11:11)
+
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 --------------|---------|----------|---------|---------|-------------------

@@ -5,8 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {value} = require('../module');
-
 test('dummy', () => {
+  const {value} = require('../module');
+  expect(value).toBe('abc');
+});
+
+test('reset dummy', () => {
+  const {value} = require('../module');
   expect(value).toBe('abc');
 });
