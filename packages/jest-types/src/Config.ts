@@ -231,10 +231,12 @@ export type InitialOptions = Partial<{
   changedSince: string;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
+  /** @deprecated Use `collectCoverageFrom` option instead */
   collectCoverageOnlyFrom: {
     [key: string]: boolean;
   };
   coverageDirectory: string;
+  /** @deprecated Use `collectCoverageFrom` option instead */
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;

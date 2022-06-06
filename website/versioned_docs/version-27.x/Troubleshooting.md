@@ -180,9 +180,9 @@ jest --maxWorkers=4
 yarn test --maxWorkers=4
 ```
 
-## `coveragePathIgnorePatterns` seems to not have any effect.
+## Negated glob patterns in the `collectCoverageFrom` list seem to not have any effect.
 
-Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by `coveragePathIgnorePatterns`.
+Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by the negated glob patterns in the `collectCoverageFrom` list.
 
 ## Defining Tests
 

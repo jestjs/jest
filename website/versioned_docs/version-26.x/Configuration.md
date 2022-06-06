@@ -210,14 +210,6 @@ Default: `undefined`
 
 The directory where Jest should output its coverage files.
 
-### `coveragePathIgnorePatterns` \[array&lt;string&gt;]
-
-Default: `["/node_modules/"]`
-
-An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
-
-These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
-
 ### `coverageProvider` \[string]
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
