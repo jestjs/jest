@@ -27,7 +27,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `mockFn.getMockName()`
 
-Returns the mock name string set by calling `mockFn.mockName(value)`.
+Returns the mock name string set by calling [`.mockName()`](#mockfnmocknamename).
 
 ### `mockFn.mock.calls`
 
@@ -283,10 +283,11 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```
+```bash
 expect(mockedFunction).toHaveBeenCalled()
 
-Expected mock function "mockedFunction" to have been called, but it was not called.
+Expected number of calls: >= 1
+Received number of calls:    0
 ```
 
 ### `mockFn.mockReturnThis()`
