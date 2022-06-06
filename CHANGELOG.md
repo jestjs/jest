@@ -20,6 +20,7 @@
 - `[docs]` Document the comments used by coverage providers [#12835](https://github.com/facebook/jest/issues/12835)
 - `[docs]` Use `docusaurus-remark-plugin-tab-blocks` to format tabs with code examples ([#12859](https://github.com/facebook/jest/pull/12859))
 - `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
+- `[@jest/types]` Mark `collectCoverageOnlyFrom` and `coveragePathIgnorePatterns` options as deprecated ([#12914](https://github.com/facebook/jest/pull/12914))
 
 ### Performance
 
