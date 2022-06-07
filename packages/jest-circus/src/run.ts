@@ -17,6 +17,7 @@ import {
   invariant,
   makeRunResult,
 } from './utils';
+import shuffle = require('lodash.shuffle');
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
@@ -68,6 +69,8 @@ const _runTestsForDescribeBlock = async (
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
+  // jhwang I did this :)
+  describeBlock.children = shuffle(describeBlock.children);
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
