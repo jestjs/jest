@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "28.1.0",
+  "version": "28.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,22 +17,22 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^28.1.0",
-    "@jest/expect": "^28.1.0",
+    "@jest/environment": "^28.1.1",
+    "@jest/expect": "^28.1.1",
     "@jest/source-map": "^28.0.2",
-    "@jest/test-result": "^28.1.0",
-    "@jest/types": "^28.1.0",
+    "@jest/test-result": "^28.1.1",
+    "@jest/types": "^28.1.1",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^28.1.0",
-    "jest-matcher-utils": "^28.1.0",
-    "jest-message-util": "^28.1.0",
-    "jest-runtime": "^28.1.0",
-    "jest-snapshot": "^28.1.0",
-    "jest-util": "^28.1.0",
-    "pretty-format": "^28.1.0",
+    "jest-each": "^28.1.1",
+    "jest-matcher-utils": "^28.1.1",
+    "jest-message-util": "^28.1.1",
+    "jest-runtime": "^28.1.1",
+    "jest-snapshot": "^28.1.1",
+    "jest-util": "^28.1.1",
+    "pretty-format": "^28.1.1",
     "throat": "^6.0.1"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "28.1.0",
+  "version": "28.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -29,9 +29,9 @@
     "@types/react": "^17.0.3",
     "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "17.0.2",
-    "expect": "^28.1.0",
+    "expect": "^28.1.1",
     "immutable": "^4.0.0",
-    "jest-util": "^28.1.0",
+    "jest-util": "^28.1.1",
     "react": "17.0.2",
     "react-dom": "^17.0.1",
     "react-test-renderer": "17.0.2"
