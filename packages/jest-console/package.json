@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "28.1.0",
+  "version": "28.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^28.1.0",
+    "@jest/types": "^28.1.1",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "jest-message-util": "^28.1.0",
-    "jest-util": "^28.1.0",
+    "jest-message-util": "^28.1.1",
+    "jest-util": "^28.1.1",
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.1.0"
+    "@jest/test-utils": "^28.1.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
