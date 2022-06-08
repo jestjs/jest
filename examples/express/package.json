@@ -9,9 +9,7 @@
     "@types/jest": "^28.1.1",
     "babel-jest": "^26.0.1",
     "jest": "^28.1.0",
-    "typescript": "^4.7.3"
-  },
-  "dependencies": {
+    "typescript": "^4.7.3",
     "express": "^4.18.1",
     "merge": "^2.1.1",
     "ts-jest": "^28.0.4"
