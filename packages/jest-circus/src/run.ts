@@ -7,6 +7,7 @@
 
 import throat from 'throat';
 import type {Circus} from '@jest/types';
+import {rng, shuffleArray} from 'jest-util';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {
@@ -17,7 +18,6 @@ import {
   invariant,
   makeRunResult,
 } from './utils';
-import shuffle = require('lodash.shuffle');
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
@@ -70,7 +70,8 @@ const _runTestsForDescribeBlock = async (
   const deferredRetryTests = [];
 
   // jhwang I did this :)
-  describeBlock.children = shuffle(describeBlock.children);
+  const r = rng(3);
+  describeBlock.children = shuffleArray(describeBlock.children, r.next);
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {

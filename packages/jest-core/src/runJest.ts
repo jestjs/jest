@@ -200,6 +200,7 @@ export default async function runJest({
     allTests = await sequencer.shard(allTests, globalConfig.shard);
   }
 
+  // jhwang allTests actually means all test suites
   allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
