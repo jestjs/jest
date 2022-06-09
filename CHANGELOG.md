@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
+
 ### Performance
 
 ## 28.1.1
