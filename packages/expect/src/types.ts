@@ -167,6 +167,11 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   toBeDefined(): R;
   /**
+   * This is the same as `.toBe(false)` but the error messages are a bit nicer.
+   * So use `.toBeFalse()` when you want to check that something is false.
+   */
+  toBeFalse(): R;
+  /**
    * When you don't care what a value is, you just want to
    * ensure a value is false in a boolean context.
    */
@@ -201,6 +206,11 @@ export interface Matchers<R extends void | Promise<void>> {
    * So use `.toBeNull()` when you want to check that something is null.
    */
   toBeNull(): R;
+  /**
+   * This is the same as `.toBe(true)` but the error messages are a bit nicer.
+   * So use `.toBeTrue()` when you want to check that something is true.
+   */
+  toBeTrue(): R;
   /**
    * Use when you don't care what a value is, you just want to ensure a value
    * is true in a boolean context. In JavaScript, there are six falsy values:
