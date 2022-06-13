@@ -7,6 +7,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
+- `[*]` Replace `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935))
 
 ### Performance
 
