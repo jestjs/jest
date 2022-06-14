@@ -14,7 +14,7 @@ import {Stats, readFileSync, writeFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {requireOrImportModule} from 'jest-util';
-import {JestWorkerFarm, createWorkerFarm} from 'jest-worker';
+import {JestWorkerFarm, WorkerFarm} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -570,26 +570,16 @@ export default class HasteMap extends EventEmitter {
     // reading them if they aren't important (node_modules).
     if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
-        const workerReplyPromise = (async () => {
-          try {
-            const workerFarm = await this._getWorker(workerOptions);
-
-            const workerMetadata = await workerFarm.getSha1({
-              computeDependencies: this._options.computeDependencies,
-              computeSha1,
-              dependencyExtractor: this._options.dependencyExtractor,
-              filePath,
-              hasteImplModulePath: this._options.hasteImplModulePath,
-              rootDir,
-            });
-
-            workerReply(workerMetadata);
-          } catch (error) {
-            workerError(error);
-          }
-        })();
-
-        return workerReplyPromise;
+        return this._getWorker(workerOptions)
+          .getSha1({
+            computeDependencies: this._options.computeDependencies,
+            computeSha1,
+            dependencyExtractor: this._options.dependencyExtractor,
+            filePath,
+            hasteImplModulePath: this._options.hasteImplModulePath,
+            rootDir,
+          })
+          .then(workerReply, workerError);
       }
 
       return null;
@@ -757,34 +747,27 @@ export default class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private async _getWorker(
+  private _getWorker(
     options = {forceInBand: false},
-  ): Promise<JestWorkerFarm<HasteWorker> | HasteWorker> {
+  ): JestWorkerFarm<HasteWorker> | HasteWorker {
     if (!this._worker) {
       if (options.forceInBand || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        this._worker = await createWorkerFarm<HasteWorker>(
-          require.resolve('./worker'),
-          {
-            exposedMethods: ['getSha1', 'worker'],
-            // @ts-expect-error: option does not exist on the node 12 types
-            forkOptions: {serialization: 'json'},
-            maxRetries: 3,
-            numWorkers: this._options.maxWorkers,
-          },
-        );
+        this._worker = new WorkerFarm(require.resolve('./worker'), {
+          exposedMethods: ['getSha1', 'worker'],
+          // @ts-expect-error: option does not exist on the node 12 types
+          forkOptions: {serialization: 'json'},
+          maxRetries: 3,
+          numWorkers: this._options.maxWorkers,
+        }) as JestWorkerFarm<HasteWorker>;
       }
     }
 
     return this._worker;
   }
 
-  private async _crawl(hasteMap: InternalHasteMap): Promise<{
-    changedFiles?: FileData | undefined;
-    removedFiles: FileData;
-    hasteMap: InternalHasteMap;
-  }> {
+  private async _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl = (await this._shouldUseWatchman()) ? watchmanCrawl : nodeCrawl;
