@@ -646,26 +646,16 @@ export default class HasteMap extends EventEmitter {
       }
     }
 
-    const workerReplyPromise = (async () => {
-      try {
-        const workerFarm = await this._getWorker(workerOptions);
-
-        const workerMetadata = await workerFarm.worker({
-          computeDependencies: this._options.computeDependencies,
-          computeSha1,
-          dependencyExtractor: this._options.dependencyExtractor,
-          filePath,
-          hasteImplModulePath: this._options.hasteImplModulePath,
-          rootDir,
-        });
-
-        workerReply(workerMetadata);
-      } catch (error) {
-        workerError(error);
-      }
-    })();
-
-    return workerReplyPromise;
+    return this._getWorker(workerOptions)
+      .worker({
+        computeDependencies: this._options.computeDependencies,
+        computeSha1,
+        dependencyExtractor: this._options.dependencyExtractor,
+        filePath,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+        rootDir,
+      })
+      .then(workerReply, workerError);
   }
 
   private _buildHasteMap(data: {
