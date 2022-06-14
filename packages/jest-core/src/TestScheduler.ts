@@ -55,8 +55,6 @@ type TestRunnerConstructor = new (
 
 export type TestSchedulerContext = ReporterContext & TestRunnerContext;
 
-type ReporterMap = Record<string, Record<string, unknown>>;
-
 export async function createTestScheduler(
   globalConfig: Config.GlobalConfig,
   context: TestSchedulerContext,
@@ -329,77 +327,59 @@ class TestScheduler {
   }
 
   async _setupReporters() {
-    const {collectCoverage, notify, reporters} = this._globalConfig;
+    const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
+    const reporters = this._globalConfig.reporters || [['default', {}]];
+    let summary = false;
+
+    for (const [reporter, options] of reporters) {
+      switch (reporter) {
+        case 'default':
+          summary = true;
+          verbose
+            ? this.addReporter(new VerboseReporter(this._globalConfig))
+            : this.addReporter(new DefaultReporter(this._globalConfig));
+          break;
+        case 'github-actions':
+          GITHUB_ACTIONS && this.addReporter(new GitHubActionsReporter());
+          break;
+        case 'summary':
+          summary = true;
+          break;
+        default:
+          await this._addCustomReporter(reporter, options);
+      }
+    }
 
     if (notify) {
       this.addReporter(new NotifyReporter(this._globalConfig, this._context));
     }
 
-    if (!reporters) {
-      this._setupDefaultReporters(collectCoverage);
-      return;
-    }
-
-    let reporterMap: ReporterMap = {};
-
-    reporters.forEach(reporter => {
-      reporterMap = Object.assign(reporterMap, {
-        [reporter[0]]: reporter[1],
-      });
-    });
-
-    const reporterNames = Object.keys(reporterMap);
-
-    const isDefault = reporterNames.includes('default');
-    const isGitHubActions =
-      GITHUB_ACTIONS && reporterNames.includes('github-actions');
-
-    if (isDefault) {
-      this._setupDefaultReporters(collectCoverage);
-    }
-
-    if (isGitHubActions) {
-      this.addReporter(new GitHubActionsReporter());
-    }
-
-    if (!isDefault && collectCoverage) {
+    if (coverage) {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    if (reporterNames.length) {
-      await this._addCustomReporters(reporterMap);
+    if (summary) {
+      this.addReporter(new SummaryReporter(this._globalConfig));
     }
   }
 
-  private _setupDefaultReporters(collectCoverage: boolean) {
-    this.addReporter(
-      this._globalConfig.verbose
-        ? new VerboseReporter(this._globalConfig)
-        : new DefaultReporter(this._globalConfig),
-    );
+  private async _addCustomReporter(
+    reporter: string,
+    options: Record<string, unknown>,
+  ) {
+    try {
+      const Reporter: ReporterConstructor = await requireOrImportModule(
+        reporter,
+      );
 
-    if (collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig, this._context));
-    }
-
-    this.addReporter(new SummaryReporter(this._globalConfig));
-  }
-
-  private async _addCustomReporters(reporters: ReporterMap) {
-    for (const path in reporters) {
-      if (['default', 'github-actions'].includes(path)) continue;
-
-      try {
-        const Reporter: ReporterConstructor = await requireOrImportModule(path);
-        this.addReporter(
-          new Reporter(this._globalConfig, reporters[path], this._context),
-        );
-      } catch (error: any) {
-        error.message = `An error occurred while adding the reporter at path "${chalk.bold(
-          path,
-        )}".\n${error.message}`;
-        throw error;
-      }
+      this.addReporter(
+        new Reporter(this._globalConfig, options, this._context),
+      );
+    } catch (error: any) {
+      error.message = `An error occurred while adding the reporter at path "${chalk.bold(
+        reporter,
+      )}".\n${error instanceof Error ? error.message : ''}`;
+      throw error;
     }
   }
 

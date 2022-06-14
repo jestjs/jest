@@ -327,56 +327,19 @@ const normalizeUnmockedModulePathPatterns = (
     replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
 
-const normalizePreprocessor = (
-  options: Config.InitialOptionsWithRootDir,
-): Config.InitialOptionsWithRootDir => {
-  if (options.scriptPreprocessor && options.transform) {
-    throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
-        'transform',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`,
-    );
-  }
-
-  if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
-    throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
-        'transformIgnorePatterns',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'transformIgnorePatterns',
-  )}.`,
-    );
-  }
-
-  if (options.scriptPreprocessor) {
-    options.transform = {
-      '.*': options.scriptPreprocessor,
-    };
-  }
-
-  if (options.preprocessorIgnorePatterns) {
-    options.transformIgnorePatterns = options.preprocessorIgnorePatterns;
-  }
-
-  delete options.scriptPreprocessor;
-  delete options.preprocessorIgnorePatterns;
-  return options;
-};
-
 const normalizeMissingOptions = (
   options: Config.InitialOptionsWithRootDir,
   configPath: string | null | undefined,
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('md5')
+    options.id = createHash('sha256')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
       .update(String(projectIndex))
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   if (!options.setupFiles) {
@@ -412,14 +375,19 @@ const normalizeRootDir = (
   };
 };
 
-const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
-  const reporters = options.reporters;
+const normalizeReporters = ({
+  reporters,
+  rootDir,
+}: Config.InitialOptionsWithRootDir):
+  | Array<Config.ReporterConfig>
+  | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
-    return options;
+    return undefined;
   }
 
   validateReporters(reporters);
-  options.reporters = reporters.map(reporterConfig => {
+
+  return reporters.map(reporterConfig => {
     const normalizedReporterConfig: Config.ReporterConfig =
       typeof reporterConfig === 'string'
         ? // if reporter config is a string, we wrap it in an array
@@ -429,13 +397,13 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
         : reporterConfig;
 
     const reporterPath = replaceRootDirInPath(
-      options.rootDir,
+      rootDir,
       normalizedReporterConfig[0],
     );
 
-    if (!['default', 'github-actions'].includes(reporterPath)) {
+    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
-        basedir: options.rootDir,
+        basedir: rootDir,
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
@@ -447,8 +415,6 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
     }
     return normalizedReporterConfig;
   });
-
-  return options;
 };
 
 const buildTestPathPattern = (argv: Config.Argv): string => {
@@ -573,14 +539,10 @@ export default async function normalize(
     ],
   });
 
-  let options = normalizePreprocessor(
-    normalizeReporters(
-      normalizeMissingOptions(
-        normalizeRootDir(setFromArgv(initialOptions, argv)),
-        configPath,
-        projectIndex,
-      ),
-    ),
+  let options = normalizeMissingOptions(
+    normalizeRootDir(setFromArgv(initialOptions, argv)),
+    configPath,
+    projectIndex,
   );
 
   if (options.preset) {
@@ -591,22 +553,6 @@ export default async function normalize(
     options.setupFilesAfterEnv = [];
   }
 
-  if (
-    options.setupTestFrameworkScriptFile &&
-    options.setupFilesAfterEnv.length > 0
-  ) {
-    throw createConfigError(`  Options: ${chalk.bold(
-      'setupTestFrameworkScriptFile',
-    )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'setupFilesAfterEnv',
-  )}.`);
-  }
-
-  if (options.setupTestFrameworkScriptFile) {
-    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
-  }
-
   options.testEnvironment = resolveTestEnvironment({
     requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
@@ -614,11 +560,6 @@ export default async function normalize(
       options.testEnvironment ||
       require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
-
-  if (!options.roots && options.testPathDirs) {
-    options.roots = options.testPathDirs;
-    delete options.testPathDirs;
-  }
 
   if (!options.roots) {
     options.roots = [options.rootDir];
@@ -636,7 +577,7 @@ export default async function normalize(
       options.testRunner = require.resolve('jest-jasmine2');
     } catch (error: any) {
       if (error.code === 'MODULE_NOT_FOUND') {
-        createConfigError(
+        throw createConfigError(
           'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
         );
       }
@@ -808,6 +749,9 @@ export default async function normalize(
               Array.isArray(transformElement) ? transformElement[1] : {},
             ];
           });
+        break;
+      case 'reporters':
+        value = normalizeReporters(oldOptions);
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -998,7 +942,6 @@ export default async function normalize(
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
-      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'restoreMocks':

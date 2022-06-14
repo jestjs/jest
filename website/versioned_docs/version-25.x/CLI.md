@@ -98,7 +98,11 @@ jest --update-snapshot --detectOpenHandles
 
 ## Options
 
-_Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
+:::note
+
+CLI options take precedence over values from the [Configuration](Configuration.md).
+
+:::
 
 import TOCInline from '@theme/TOCInline';
 
@@ -118,7 +122,13 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 ### `--cache`
 
-Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. _Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower._
+Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`.
+
+:::note
+
+The cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.
+
+:::
 
 If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
@@ -136,7 +146,13 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 ### `--clearCache`
 
-Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
+Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`.
+
+:::caution
+
+Clearing the cache will reduce performance.
+
+:::
 
 ### `--clearMocks`
 
@@ -198,7 +214,13 @@ Find and run the tests that cover a space separated list of source files that we
 
 ### `--forceExit`
 
-Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. _Note: This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down._
+Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
+
+:::note
+
+This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
+
+:::
 
 ### `--help`
 
@@ -284,7 +306,11 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 Run only the tests that were specified with their exact paths.
 
-_Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
+:::tip
+
+The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files.
+
+:::
 
 ### `--setupFilesAfterEnv <path1> ... <pathN>`
 
@@ -319,7 +345,11 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
 
-_Note: The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks._
+:::note
+
+The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks.
+
+:::
 
 ### `--testPathIgnorePatterns=<regex>|[array]`
 

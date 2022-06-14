@@ -13,35 +13,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare-yarn-cache:
-    name: Prepare yarn cache
-    strategy:
-      fail-fast: false
-      matrix:
-        # for some reason the Windows cache doesn't work
-        os: [ubuntu-latest, macOS-latest]
-    runs-on: ${{ matrix.os }}
+  prepare-yarn-cache-ubuntu:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: ubuntu-latest
+  prepare-yarn-cache-macos:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: macos-latest
+  prepare-yarn-cache-windows:
+    uses: ./.github/workflows/prepare-cache.yml
+    with:
+      os: windows-latest
 
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-
-      - name: Validate cache
-        env:
-          # Use PnP and disable postinstall scripts as this just needs to
-          # populate the cache for the other jobs
-          YARN_NODE_LINKER: pnp
-          YARN_ENABLE_SCRIPTS: false
-        run: yarn --immutable
-
-  typecheck:
-    name: Running TypeScript compiler
+  ts-compatibility:
+    name: TypeScript Compatibility
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
       - uses: actions/checkout@v3
@@ -53,15 +41,17 @@ jobs:
         run: yarn --immutable
       - name: build
         run: yarn build
-      - name: test typings
-        run: yarn test-types
+      - name: ts integration
+        run: yarn test-ts --selectProjects ts-integration
+      - name: type tests
+        run: yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
 
   lint:
-    name: Running ESLint
+    name: Lint
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
       - uses: actions/checkout@v3
@@ -82,72 +72,36 @@ jobs:
       - name: check copyright headers
         run: yarn check-copyright-headers
 
-  test:
-    name: Node v${{ matrix.node-version }} on ${{ matrix.os }} (${{ matrix.shard }})
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        shard: ['1/4', '2/4', '3/4', '4/4']
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
-
+  yarn-validate:
+    name: Validate Yarn dependencies and constraints
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache-ubuntu
     steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - name: install
-        run: yarn --immutable
-      - name: build
-        run: yarn build:js
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
-
-  test-jasmine:
-    name: Node LTS on ${{ matrix.os }} using jest-jasmine2 (${{ matrix.shard }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        shard: ['1/4', '2/4', '3/4', '4/4']
-    runs-on: ${{ matrix.os }}
-    needs: prepare-yarn-cache
-
-    steps:
-      - name: Set git config
-        shell: bash
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.symlinks true
-        if: runner.os == 'Windows'
-      - uses: actions/checkout@v3
-      - name: Use Node.js LTS
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
-      - name: install
-        run: yarn --immutable
-      - name: build
-        run: yarn build:js
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests using jest-jasmine
-        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+      - name: 'Check for unmet constraints (fix w/ "yarn constraints --fix")'
+        run: yarn constraints
+      - name: 'Check for duplicate dependencies (fix w/ "yarn dedupe")'
+        run: yarn dedupe --check
+
+  test-ubuntu:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-ubuntu
+    with:
+      os: ubuntu-latest
+  test-macos:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-macos
+    with:
+      os: macos-latest
+  test-windows:
+    uses: ./.github/workflows/test.yml
+    needs: prepare-yarn-cache-windows
+    with:
+      os: windows-latest
 
   test-coverage:
     name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
@@ -156,7 +110,7 @@ jobs:
       matrix:
         shard: ['1/4', '2/4', '3/4', '4/4']
     runs-on: ubuntu-latest
-    needs: prepare-yarn-cache
+    needs: prepare-yarn-cache-ubuntu
 
     steps:
       - uses: actions/checkout@v3

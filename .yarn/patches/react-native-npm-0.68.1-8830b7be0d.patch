@@ -1,0 +1,18 @@
+diff --git a/jest/setup.js b/jest/setup.js
+index 5bc65447594091c2da6dadb4be6bc1c6da43c7a0..356e7ff3eb55947e084db5d1df9b2d9f0544a15b 100644
+--- a/jest/setup.js
++++ b/jest/setup.js
+@@ -17,13 +17,8 @@ jest.requireActual('@react-native/polyfills/error-guard');
+ 
+ global.__DEV__ = true;
+ 
+-global.performance = {
+-  now: jest.fn(Date.now),
+-};
+-
+ global.Promise = jest.requireActual('promise');
+ global.regeneratorRuntime = jest.requireActual('regenerator-runtime/runtime');
+-global.window = global;
+ 
+ global.requestAnimationFrame = function (callback) {
+   return setTimeout(callback, 0);

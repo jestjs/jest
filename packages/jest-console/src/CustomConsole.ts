@@ -57,7 +57,7 @@ export default class CustomConsole extends Console {
     }
   }
 
-  override count(label: string = 'default'): void {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -65,7 +65,7 @@ export default class CustomConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  override countReset(label: string = 'default'): void {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
@@ -116,7 +116,7 @@ export default class CustomConsole extends Console {
     this._log('log', format(firstArg, ...args));
   }
 
-  override time(label: string = 'default'): void {
+  override time(label = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -124,7 +124,7 @@ export default class CustomConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  override timeEnd(label: string = 'default'): void {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {

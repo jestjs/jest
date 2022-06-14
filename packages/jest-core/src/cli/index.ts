@@ -9,12 +9,12 @@ import chalk = require('chalk');
 import exit = require('exit');
 import rimraf = require('rimraf');
 import {CustomConsole} from '@jest/console';
-import type {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
-import Runtime, {Context} from 'jest-runtime';
+import Runtime from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
@@ -105,6 +105,7 @@ export async function runCLI(
     // If in watch mode, return the promise that will never resolve.
     // If the watch mode is interrupted, watch should handle the process
     // shutdown.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return new Promise(() => {});
   }
 
@@ -227,7 +228,7 @@ const _run10000 = async (
 };
 
 const runWatch = async (
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -265,7 +266,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

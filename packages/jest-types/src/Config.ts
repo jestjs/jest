@@ -277,10 +277,6 @@ export type InitialOptions = Partial<{
   onlyFailures: boolean;
   outputFile: string;
   passWithNoTests: boolean;
-  /**
-   * @deprecated Use `transformIgnorePatterns` options instead.
-   */
-  preprocessorIgnorePatterns: Array<string>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
@@ -295,15 +291,7 @@ export type InitialOptions = Partial<{
   runTestsByPath: boolean;
   runtime: string;
   sandboxInjectedGlobals: Array<string>;
-  /**
-   * @deprecated Use `transform` options instead.
-   */
-  scriptPreprocessor: string;
   setupFiles: Array<string>;
-  /**
-   * @deprecated Use `setupFilesAfterEnv` options instead.
-   */
-  setupTestFrameworkScriptFile: string;
   setupFilesAfterEnv: Array<string>;
   silent: boolean;
   skipFilter: boolean;
@@ -319,10 +307,6 @@ export type InitialOptions = Partial<{
   testLocationInResults: boolean;
   testMatch: Array<string>;
   testNamePattern: string;
-  /**
-   * @deprecated Use `roots` options instead.
-   */
-  testPathDirs: Array<string>;
   testPathIgnorePatterns: Array<string>;
   testRegex: string | Array<string>;
   testResultsProcessor: string;

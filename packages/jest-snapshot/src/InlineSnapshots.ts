@@ -269,11 +269,12 @@ const runPrettier = (
 
   // Detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
-  // @ts-expect-error
-  const inferredParser: PrettierParserName | undefined = prettier.getFileInfo
-    ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-    : (config && typeof config.parser === 'string' && config.parser) ||
-      simpleDetectParser(sourceFilePath);
+  // @ts-expect-error - `inferredParser` is `string`
+  const inferredParser: PrettierParserName | null | undefined =
+    prettier.getFileInfo
+      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+      : (config && typeof config.parser === 'string' && config.parser) ||
+        simpleDetectParser(sourceFilePath);
 
   if (!inferredParser) {
     throw new Error(

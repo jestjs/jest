@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {resolve} from 'path';
-import execa = require('execa');
-import {existsSync} from 'graceful-fs';
 import {onNodeVersions} from '@jest/test-utils';
 import {getConfig} from '../runJest';
 
@@ -48,33 +45,15 @@ onNodeVersions('>=12.17.0', () => {
     });
   });
 
-  describe('typescript', () => {
-    beforeAll(async () => {
-      // the typescript config test needs `@jest/types` to be built
-      const cwd = resolve(__dirname, '../../');
-      const typesPackageDirectory = 'packages/jest-types';
+  test('reads config from ts file when package.json#type=module', () => {
+    const {configs} = getConfig('esm-config/ts', [], {
+      skipPkgJsonCheck: true,
+    });
 
-      const indexDTsFile = resolve(
-        cwd,
-        typesPackageDirectory,
-        'build/index.d.ts',
-      );
-
-      if (!existsSync(indexDTsFile)) {
-        await execa('tsc', ['-b', typesPackageDirectory], {cwd});
-      }
-    }, 360_000);
-
-    test('reads config from ts file when package.json#type=module', () => {
-      const {configs} = getConfig('esm-config/ts', [], {
-        skipPkgJsonCheck: true,
-      });
-
-      expect(configs).toHaveLength(1);
-      expect(configs[0].displayName).toEqual({
-        color: 'white',
-        name: 'Config from ts file',
-      });
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
+      color: 'white',
+      name: 'Config from ts file',
     });
   });
 });

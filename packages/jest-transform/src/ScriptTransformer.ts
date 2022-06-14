@@ -116,19 +116,21 @@ class ScriptTransformer {
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey) {
-      return createHash('md5')
+      return createHash('sha256')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
-        .digest('hex');
+        .digest('hex')
+        .substring(0, 32);
     }
 
-    return createHash('md5')
+    return createHash('sha256')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
       .update(filename)
       .update(CACHE_VERSION)
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   private _getCacheKey(
@@ -382,7 +384,9 @@ class ScriptTransformer {
       if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
-        throw new Error(makeInvalidReturnValueError());
+        const transformPath = this._getTransformPath(filename);
+        invariant(transformPath);
+        throw new Error(makeInvalidReturnValueError(transformPath));
       }
     }
 
@@ -465,7 +469,7 @@ class ScriptTransformer {
     const {transformer, transformerConfig = {}} =
       this._getTransformer(filename) || {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
-    const sourceMapPath: string = `${cacheFilePath}.map`;
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -524,7 +528,7 @@ class ScriptTransformer {
       content,
       options,
     );
-    const sourceMapPath: string = `${cacheFilePath}.map`;
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -825,11 +829,12 @@ export async function createTranspilingRequire(
 
   return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
-    applyInteropRequireDefault: boolean = false,
+    applyInteropRequireDefault = false,
   ) {
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
         resolverPath,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         () => {},
         {
           applyInteropRequireDefault,
@@ -869,7 +874,10 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
@@ -885,7 +893,10 @@ function readCodeCacheFile(cachePath: string): string | null {
     return null;
   }
   const code = content.substring(33);
-  const checksum = createHash('md5').update(code).digest('hex');
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
   if (checksum === content.substring(0, 32)) {
     return code;
   }

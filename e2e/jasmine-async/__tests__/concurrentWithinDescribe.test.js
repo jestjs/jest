@@ -8,6 +8,12 @@
 'use strict';
 
 describe('one', () => {
-  it.concurrent('concurrent test gets skipped', () => Promise.resolve());
-  it.concurrent('concurrent test fails', () => Promise.reject());
+  it.concurrent('concurrent test gets skipped', () => {
+    console.log(`this is not logged ${Math.random()}`);
+    return Promise.resolve();
+  });
+  it.concurrent('concurrent test fails', () => {
+    console.log(`this is logged ${Math.random()}`);
+    return Promise.reject(new Error());
+  });
 });

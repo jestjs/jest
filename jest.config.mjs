@@ -8,14 +8,14 @@
 import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
 
-/** @type import('@jest/types').Config.InitialOptions */
+/** @type {import('jest').Config} */
 export default {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
     '**/packages/*/**/*.ts',
     '!**/bin/**',
     '!**/cli/**',
-    '!**/perf/**',
+    '!**/__benchmarks__/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
     '!**/__typetests__/**',
@@ -38,6 +38,7 @@ export default {
   snapshotSerializers: [require.resolve('pretty-format/ConvertAnsi')],
   testPathIgnorePatterns: [
     '/__arbitraries__/',
+    '/__benchmarks__/',
     '/__typetests__/',
     '/node_modules/',
     '/examples/',
@@ -47,6 +48,7 @@ export default {
     '/e2e/custom-*',
     '/e2e/test-in-root',
     '/e2e/run-programmatically-multiple-projects',
+    '/e2e/multi-project-babel',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
@@ -64,9 +66,8 @@ export default {
     '/packages/jest-snapshot/src/__tests__/plugins',
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/packages/jest-validate/src/__tests__/fixtures/',
-    '/packages/jest-worker/src/__performance_tests__',
-    '/packages/pretty-format/perf/test.js',
     '/e2e/__tests__/iterator-to-null-test.ts',
+    '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
   ],
   testTimeout: 70000,
   transform: {

@@ -122,7 +122,7 @@ export type RawModuleMap = {
   mocks: MockData;
 };
 
-type ModuleMapItem = {[platform: string]: ModuleMetaData};
+export type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [path: string, type: number];
 
 export type HType = {

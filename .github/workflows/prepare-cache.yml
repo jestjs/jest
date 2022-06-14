@@ -1,0 +1,29 @@
+name: Prepare CI cache
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+
+jobs:
+  prepare-yarn-cache:
+    name: Prepare yarn cache for ${{ inputs.os }}
+    runs-on: ${{ inputs.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Validate cache
+        env:
+          # Use PnP and disable postinstall scripts as this just needs to
+          # populate the cache for the other jobs
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn --immutable

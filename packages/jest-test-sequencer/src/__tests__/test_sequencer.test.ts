@@ -7,9 +7,8 @@
 
 import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
-import type {Test} from '@jest/test-result';
+import type {Test, TestContext} from '@jest/test-result';
 import {makeProjectConfig} from '@jest/test-utils';
-import type {Context} from 'jest-runtime';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
@@ -24,7 +23,7 @@ let sequencer: TestSequencer;
 
 const fs = jest.mocked(mockedFs);
 
-const context: Context = {
+const context: TestContext = {
   config: makeProjectConfig({
     cache: true,
     cacheDirectory: '/cache',
@@ -36,7 +35,7 @@ const context: Context = {
   },
 };
 
-const secondContext: Context = {
+const secondContext: TestContext = {
   config: makeProjectConfig({
     cache: true,
     cacheDirectory: '/cache2',

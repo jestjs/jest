@@ -64,6 +64,7 @@ export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&

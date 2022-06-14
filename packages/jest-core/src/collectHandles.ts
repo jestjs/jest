@@ -72,7 +72,8 @@ export default function collectHandles(): HandleCollectionResult {
         type === 'PerformanceObserver' ||
         type === 'RANDOMBYTESREQUEST' ||
         type === 'DNSCHANNEL' ||
-        type === 'ZLIB'
+        type === 'ZLIB' ||
+        type === 'SIGNREQUEST'
       ) {
         return;
       }
@@ -93,24 +94,19 @@ export default function collectHandles(): HandleCollectionResult {
       if (fromUser) {
         let isActive: () => boolean;
 
-        if (type === 'Timeout' || type === 'Immediate') {
-          // Timer that supports hasRef (Node v11+)
-          if ('hasRef' in resource) {
-            if (hasWeakRef) {
-              // @ts-expect-error: doesn't exist in v12 typings
-              const ref = new WeakRef(resource);
-              isActive = () => {
-                return ref.deref()?.hasRef() ?? false;
-              };
-            } else {
-              isActive = resource.hasRef.bind(resource);
-            }
+        // Handle that supports hasRef
+        if ('hasRef' in resource) {
+          if (hasWeakRef) {
+            // @ts-expect-error: doesn't exist in v12 typings
+            const ref = new WeakRef(resource);
+            isActive = () => {
+              return ref.deref()?.hasRef() ?? false;
+            };
           } else {
-            // Timer that doesn't support hasRef
-            isActive = alwaysActive;
+            isActive = resource.hasRef.bind(resource);
           }
         } else {
-          // Any other async resource
+          // Handle that doesn't support hasRef
           isActive = alwaysActive;
         }
 

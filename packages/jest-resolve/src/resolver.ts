@@ -24,9 +24,8 @@ import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
-type FindNodeModuleConfig = {
+export type FindNodeModuleConfig = {
   basedir: string;
-  browser?: boolean;
   conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
@@ -124,7 +123,6 @@ export default class Resolver {
     try {
       return resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
@@ -167,7 +165,6 @@ export default class Resolver {
     try {
       const result = await resolver(path, {
         basedir: options.basedir,
-        browser: options.browser,
         conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
@@ -593,7 +590,8 @@ export default class Resolver {
       moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '');
+      (mockPath ? mockPath + sep : '') +
+      (stringifiedOptions ? stringifiedOptions + sep : '');
 
     this._moduleIDCache.set(key, id);
     return id;
@@ -860,7 +858,7 @@ Please check your configuration for these entries:
 
 type ResolverSyncObject = {sync: SyncResolver; async?: AsyncResolver};
 type ResolverAsyncObject = {sync?: SyncResolver; async: AsyncResolver};
-type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
+export type ResolverObject = ResolverSyncObject | ResolverAsyncObject;
 
 function loadResolver(
   resolver: string | undefined | null,

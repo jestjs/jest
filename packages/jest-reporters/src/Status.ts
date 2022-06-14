@@ -14,13 +14,11 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
+import getSummary from './getSummary';
+import printDisplayName from './printDisplayName';
+import trimAndFormatPath from './trimAndFormatPath';
 import type {ReporterOnStartOptions} from './types';
-import {
-  getSummary,
-  printDisplayName,
-  trimAndFormatPath,
-  wrapAnsiString,
-} from './utils';
+import wrapAnsiString from './wrapAnsiString';
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;

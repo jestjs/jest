@@ -16,19 +16,18 @@ import type {
 } from '@jest/test-result';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
-import {PromiseWithCustomMessage, Worker} from 'jest-worker';
+import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
-import type {SerializableResolver, worker} from './testWorker';
+import type {SerializableResolver} from './testWorker';
 import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
 
-const TEST_WORKER_PATH = require.resolve('./testWorker');
-
-interface WorkerInterface extends Worker {
-  worker: typeof worker;
-}
-
+export type {Test, TestEvents} from '@jest/test-result';
+export type {Config} from '@jest/types';
+export type {TestWatcher} from 'jest-watcher';
 export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
+  CallbackTestRunnerInterface,
+  EmittingTestRunnerInterface,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
@@ -37,6 +36,8 @@ export type {
   JestTestRunner,
   UnsubscribeFn,
 } from './types';
+
+type TestWorker = typeof import('./testWorker');
 
 export default class TestRunner extends EmittingTestRunner {
   readonly #eventEmitter = new Emittery<TestEvents>();
@@ -103,13 +104,14 @@ export default class TestRunner extends EmittingTestRunner {
       }
     }
 
-    const worker = new Worker(TEST_WORKER_PATH, {
+    const worker = new Worker(require.resolve('./testWorker'), {
       exposedMethods: ['worker'],
-      forkOptions: {stdio: 'pipe'},
+      // @ts-expect-error: option does not exist on the node 12 types
+      forkOptions: {serialization: 'json', stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
-    }) as WorkerInterface;
+    }) as JestWorkerFarm<TestWorker>;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
     if (worker.getStderr()) worker.getStderr().pipe(process.stderr);

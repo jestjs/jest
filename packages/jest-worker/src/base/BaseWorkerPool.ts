@@ -19,6 +19,7 @@ import {
 const FORCE_EXIT_DELAY = 500;
 
 /* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {

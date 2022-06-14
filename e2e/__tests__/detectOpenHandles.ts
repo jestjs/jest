@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
 function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
+
+beforeAll(() => {
+  jest.retryTimes(3);
+});
 
 it('prints message about flag on slow tests', async () => {
   const run = runContinuous('detect-open-handles', ['outside']);
@@ -102,6 +107,30 @@ it('does not report timeouts using unref', () => {
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(textAfterTest).toBe('');
+});
+
+it('does not report child_process using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'child_process',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+onNodeVersions('>=18.1.0', () => {
+  it('does not report worker using unref', () => {
+    // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+    const {stderr} = runJest('detect-open-handles', [
+      'worker',
+      '--detectOpenHandles',
+    ]);
+    const textAfterTest = getTextAfterTest(stderr);
+
+    expect(textAfterTest).toBe('');
+  });
 });
 
 it('prints out info about open handlers from inside tests', async () => {

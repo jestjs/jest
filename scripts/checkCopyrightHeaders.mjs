@@ -71,7 +71,8 @@ const GENERIC_IGNORED_EXTENSIONS = [
   'ipynb',
   'htm',
   'toml',
-].map(extension => createRegExp(`\.${extension}$`));
+  'pro',
+].map(extension => createRegExp(`\\.${extension}$`));
 
 const GENERIC_IGNORED_PATTERNS = [
   '(^|/)\\.[^/]+(/|$)',

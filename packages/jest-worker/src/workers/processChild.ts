@@ -11,12 +11,13 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
-  FunctionLike,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
+
+type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -114,7 +115,7 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: FunctionLike;
+  let fn: UnknownFunction;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -143,7 +144,7 @@ const isPromise = (obj: any): obj is PromiseLike<unknown> =>
   typeof obj.then === 'function';
 
 function execFunction(
-  fn: FunctionLike,
+  fn: UnknownFunction,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,

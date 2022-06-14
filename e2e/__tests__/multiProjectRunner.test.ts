@@ -49,7 +49,7 @@ test('can pass projects or global config', () => {
         getHasteName(filename) {
           return filename
             .substr(filename.lastIndexOf(path.sep) + 1)
-            .replace(/\.js$/, '');
+            .replace(/\\.js$/, '');
         },
       };
     `,
@@ -446,7 +446,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project1/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project1/transformer.js': `
       module.exports = {
@@ -461,7 +461,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project2/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project2/transformer.js': `
       module.exports = {
@@ -570,5 +570,43 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     expect(stderr).toMatch('Ran all test suites in 2 projects.');
     expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
     expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+  });
+});
+
+describe('Babel config in individual project works in multi-project', () => {
+  it('Prj-1 works individually', () => {
+    const result = runJest('multi-project-babel/prj-1');
+    expect(result.stderr).toMatch('PASS ./index.test.js');
+    expect(result.exitCode).toBe(0);
+  });
+  it('Prj-2 works individually', () => {
+    const result = runJest('multi-project-babel/prj-2');
+    expect(result.stderr).toMatch('PASS ./index.test.js');
+    expect(result.exitCode).toBe(0);
+  });
+  it('Prj-3 works individually', () => {
+    const result = runJest('multi-project-babel/prj-3');
+    expect(result.stderr).toMatch('PASS src/index.test.js');
+    expect(result.exitCode).toBe(0);
+  });
+  it('Prj-4 works individually', () => {
+    const result = runJest('multi-project-babel/prj-4');
+    expect(result.stderr).toMatch('PASS src/index.test.js');
+    expect(result.exitCode).toBe(0);
+  });
+  it('Prj-5 works individually', () => {
+    const result = runJest('multi-project-babel/prj-5');
+    expect(result.stderr).toMatch('PASS src/index.test.js');
+    expect(result.exitCode).toBe(0);
+  });
+  it('All project work when running from multiproject', () => {
+    const result = runJest('multi-project-babel');
+    expect(result.stderr).toMatch('PASS prj-1/index.test.js');
+    expect(result.stderr).toMatch('PASS prj-2/index.test.js');
+    expect(result.stderr).toMatch('PASS prj-3/src/index.test.js');
+    expect(result.stderr).toMatch('PASS prj-4/src/index.test.js');
+    expect(result.stderr).toMatch('PASS prj-5/src/index.test.js');
+    expect(result.stderr).toMatch('PASS prj-3/src/index.test.js');
+    expect(result.exitCode).toBe(0);
   });
 });

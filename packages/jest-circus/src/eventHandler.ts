@@ -10,7 +10,7 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {TEST_TIMEOUT_SYMBOL} from './types';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -122,7 +122,15 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'add_test': {
       const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
-      const {asyncError, fn, mode, testName: name, timeout} = event;
+      const {
+        asyncError,
+        fn,
+        mode,
+        testName: name,
+        timeout,
+        concurrent,
+        failing,
+      } = event;
 
       if (currentlyRunningTest) {
         currentlyRunningTest.errors.push(
@@ -143,10 +151,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       const test = makeTest(
         fn,
         mode,
+        concurrent,
         name,
         currentDescribeBlock,
         timeout,
         asyncError,
+        failing,
       );
       if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
@@ -205,6 +215,12 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       break;
     }
     case 'test_retry': {
+      const logErrorsBeforeRetry: boolean =
+        // eslint-disable-next-line no-restricted-globals
+        global[LOG_ERRORS_BEFORE_RETRY] || false;
+      if (logErrorsBeforeRetry) {
+        event.test.retryReasons.push(...event.test.errors);
+      }
       event.test.errors = [];
       break;
     }
