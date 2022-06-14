@@ -100,6 +100,7 @@ export default class Suite {
   getFullName() {
     const fullName = [];
     for (
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let parentSuite: Suite | undefined = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
@@ -215,6 +216,7 @@ export default class Suite {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   execute(..._args: Array<any>) {}
 }
 

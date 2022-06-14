@@ -92,6 +92,9 @@ export default class ChildProcessWorker implements WorkerInterface {
       },
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      // default to advanced serialization in order to match worker threads
+      // @ts-expect-error: option does not exist on the node 12 types
+      serialization: 'advanced',
       silent: true,
       ...this._options.forkOptions,
     });
@@ -239,6 +242,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._request = request;
     this._retries = 0;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this._child.send(request, () => {});
   }
 

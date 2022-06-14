@@ -33,6 +33,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   global: Win;
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['browser'];
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
     const {projectConfig} = config;
@@ -109,6 +110,20 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       return originalRemoveListener.apply(this, args);
     };
 
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(item => typeof item === 'string')
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
+    }
+
     this.moduleMocker = new ModuleMocker(global as any);
 
     this.fakeTimers = new LegacyFakeTimers({
@@ -127,6 +142,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async setup(): Promise<void> {}
 
   async teardown(): Promise<void> {
@@ -150,7 +166,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
-    // @ts-expect-error
+    // @ts-expect-error: this.global not allowed to be `null`
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
@@ -158,7 +174,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   }
 
   exportConditions(): Array<string> {
-    return ['browser'];
+    return this.customExportConditions;
   }
 
   getVmContext(): Context | null {

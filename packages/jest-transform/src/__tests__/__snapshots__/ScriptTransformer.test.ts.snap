@@ -358,9 +358,12 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 1`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -368,9 +371,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 2`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -378,9 +384,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 3`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -388,9 +397,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 4`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -398,9 +410,12 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 1`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-banana-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -408,9 +423,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 2`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-avocado-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -418,9 +436,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 3`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-kiwi-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -428,9 +449,12 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 4`] = `
 "<red><bold>● Invalid return value:</></>
-<red>  Code transformer's \`process\` method must return an object containing \`code\` key </>
-<red>  with processed string. If \`processAsync\` method is implemented it must return </>
-<red>  a Promise resolving to an object containing \`code\` key with processed string.</>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
+<red>  "passthrough-preprocessor-fruits-grapefruit-js" </>
+<red>  should return an object or a Promise resolving to an object. The object </>
+<red>  must have \`code\` property with a string of processed code.</>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
 <red>  <bold>Code Transformation Documentation:</></>
 <red>  https://jestjs.io/docs/code-transformation</>
 <red></>"
@@ -505,7 +529,7 @@ function cov_25u22311x4() {
 cov_25u22311x4();
 cov_25u22311x4().s[0]++;
 module.exports = "banana";
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJhbmFuYS5qcyJdLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFlWTs7Ozs7Ozs7OztBQWZaQSxNQUFNLENBQUNDLE9BQVAsR0FBaUIsUUFBakIiLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9IFwiYmFuYW5hXCI7Il19"
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sInNvdXJjZXMiOlsiYmFuYW5hLmpzIl0sInNvdXJjZXNDb250ZW50IjpbIm1vZHVsZS5leHBvcnRzID0gXCJiYW5hbmFcIjsiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQWVZOzs7Ozs7Ozs7O0FBZlpBLE1BQU0sQ0FBQ0MsT0FBUCxHQUFpQixRQUFqQiJ9"
 `;
 
 exports[`ScriptTransformer transforms a file async properly 2`] = `
@@ -603,7 +627,7 @@ module.exports = () => {
   cov_23yvu8etmu().s[1]++;
   return "kiwi";
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImtpd2kuanMiXSwibmFtZXMiOlsibW9kdWxlIiwiZXhwb3J0cyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFlWTs7Ozs7Ozs7Ozs7QUFmWkEsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLE1BQU07QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFNLENBQTdCIiwic291cmNlc0NvbnRlbnQiOlsibW9kdWxlLmV4cG9ydHMgPSAoKSA9PiBcImtpd2lcIjsiXX0="
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sInNvdXJjZXMiOlsia2l3aS5qcyJdLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9ICgpID0+IFwia2l3aVwiOyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7SUFlWTs7Ozs7Ozs7Ozs7QUFmWkEsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLE1BQU07RUFBQTtFQUFBO0VBQUE7RUFBQTtBQUFNLENBQTdCIn0="
 `;
 
 exports[`ScriptTransformer transforms a file properly 1`] = `
@@ -657,7 +681,7 @@ function cov_25u22311x4() {
 cov_25u22311x4();
 cov_25u22311x4().s[0]++;
 module.exports = "banana";
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJhbmFuYS5qcyJdLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFlWTs7Ozs7Ozs7OztBQWZaQSxNQUFNLENBQUNDLE9BQVAsR0FBaUIsUUFBakIiLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9IFwiYmFuYW5hXCI7Il19"
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sInNvdXJjZXMiOlsiYmFuYW5hLmpzIl0sInNvdXJjZXNDb250ZW50IjpbIm1vZHVsZS5leHBvcnRzID0gXCJiYW5hbmFcIjsiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQWVZOzs7Ozs7Ozs7O0FBZlpBLE1BQU0sQ0FBQ0MsT0FBUCxHQUFpQixRQUFqQiJ9"
 `;
 
 exports[`ScriptTransformer transforms a file properly 2`] = `
@@ -755,7 +779,7 @@ module.exports = () => {
   cov_23yvu8etmu().s[1]++;
   return "kiwi";
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImtpd2kuanMiXSwibmFtZXMiOlsibW9kdWxlIiwiZXhwb3J0cyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFlWTs7Ozs7Ozs7Ozs7QUFmWkEsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLE1BQU07QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFNLENBQTdCIiwic291cmNlc0NvbnRlbnQiOlsibW9kdWxlLmV4cG9ydHMgPSAoKSA9PiBcImtpd2lcIjsiXX0="
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJtb2R1bGUiLCJleHBvcnRzIl0sInNvdXJjZXMiOlsia2l3aS5qcyJdLCJzb3VyY2VzQ29udGVudCI6WyJtb2R1bGUuZXhwb3J0cyA9ICgpID0+IFwia2l3aVwiOyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7SUFlWTs7Ozs7Ozs7Ozs7QUFmWkEsTUFBTSxDQUFDQyxPQUFQLEdBQWlCLE1BQU07RUFBQTtFQUFBO0VBQUE7RUFBQTtBQUFNLENBQTdCIn0="
 `;
 
 exports[`ScriptTransformer uses mixture of sync/async preprocessors 1`] = `

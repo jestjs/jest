@@ -9,7 +9,7 @@ import chalk = require('chalk');
 import type {SnapshotSummary} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';
-import {formatTestPath} from './utils';
+import formatTestPath from './formatTestPath';
 
 const ARROW = ' \u203A ';
 const DOWN_ARROW = ' \u21B3 ';

@@ -21,10 +21,13 @@ import runTest from './runTest';
 import type {SerializableResolver} from './testWorker';
 import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
 
-type TestWorker = typeof import('./testWorker');
-
+export type {Test, TestEvents} from '@jest/test-result';
+export type {Config} from '@jest/types';
+export type {TestWatcher} from 'jest-watcher';
 export {CallbackTestRunner, EmittingTestRunner} from './types';
 export type {
+  CallbackTestRunnerInterface,
+  EmittingTestRunnerInterface,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
@@ -33,6 +36,8 @@ export type {
   JestTestRunner,
   UnsubscribeFn,
 } from './types';
+
+type TestWorker = typeof import('./testWorker');
 
 export default class TestRunner extends EmittingTestRunner {
   readonly #eventEmitter = new Emittery<TestEvents>();
@@ -103,7 +108,8 @@ export default class TestRunner extends EmittingTestRunner {
       require.resolve('./testWorker'),
       {
         exposedMethods: ['worker'],
-        forkOptions: {stdio: 'pipe'},
+        // @ts-expect-error: option does not exist on the node 12 types
+        forkOptions: {serialization: 'json', stdio: 'pipe'},
         maxRetries: 3,
         numWorkers: this._globalConfig.maxWorkers,
         setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],

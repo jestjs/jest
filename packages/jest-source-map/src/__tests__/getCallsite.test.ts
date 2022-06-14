@@ -5,11 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {originalPositionFor} from '@jridgewell/trace-mapping';
 import * as fs from 'graceful-fs';
-import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 jest.mock('graceful-fs');
+jest.mock('@jridgewell/trace-mapping', () => {
+  const actual = jest.requireActual('@jridgewell/trace-mapping');
+
+  return {
+    ...actual,
+    originalPositionFor: jest.fn(actual.originalPositionFor),
+  };
+});
 
 describe('getCallsite', () => {
   test('without source map', () => {
@@ -35,30 +43,35 @@ describe('getCallsite', () => {
   });
 
   test('reads source map file to determine line and column', () => {
-    (fs.readFileSync as jest.Mock).mockImplementation(() => 'file data');
+    (fs.readFileSync as jest.Mock).mockImplementation(() =>
+      JSON.stringify({
+        file: 'file.js',
+        mappings: 'AAAA,OAAO,MAAM,KAAK,GAAG,QAAd',
+        names: [],
+        sources: ['file.js'],
+        sourcesContent: ["export const hello = 'foobar';\\n"],
+        version: 3,
+      }),
+    );
 
     const sourceMapColumn = 1;
     const sourceMapLine = 2;
 
-    SourceMap.SourceMapConsumer = class {
-      originalPositionFor(params: Record<string, number>) {
-        expect(params).toMatchObject({
-          column: expect.any(Number),
-          line: expect.any(Number),
-        });
-
-        return {
-          column: sourceMapColumn,
-          line: sourceMapLine,
-        };
-      }
-    };
+    jest.mocked(originalPositionFor).mockImplementation(() => ({
+      column: sourceMapColumn,
+      line: sourceMapLine,
+    }));
 
     const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(sourceMapColumn);
     expect(site.getLineNumber()).toEqual(sourceMapLine);
+    expect(originalPositionFor).toHaveBeenCalledTimes(1);
+    expect(originalPositionFor).toHaveBeenCalledWith(expect.anything(), {
+      column: expect.any(Number),
+      line: expect.any(Number),
+    });
     expect(fs.readFileSync).toHaveBeenCalledWith('mockedSourceMapFile', 'utf8');
   });
 });

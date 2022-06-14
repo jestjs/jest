@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {RawSourceMap} from 'source-map';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Config, TransformTypes} from '@jest/types';
 
 export interface ShouldInstrumentOptions
@@ -26,8 +26,8 @@ export interface Options
   isInternalModule?: boolean;
 }
 
-// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+// `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
+interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 
@@ -57,18 +57,19 @@ export interface RequireAndTranspileModuleOptions
 
 export type StringMap = Map<string, string>;
 
-export interface TransformOptions<OptionType = unknown>
+export interface TransformOptions<TransformerConfig = unknown>
   extends ReducedTransformOptions {
-  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: StringMap;
+  /** Jest configuration of currently running project. */
   config: Config.ProjectConfig;
-  /** A stringified version of the configuration - useful in cache busting */
+  /** Stringified version of the `config` - useful in cache busting. */
   configString: string;
-  /** the options passed through Jest's config by the user */
-  transformerConfig: OptionType;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig: TransformerConfig;
 }
 
-export interface SyncTransformer<OptionType = unknown> {
+export interface SyncTransformer<TransformerConfig = unknown> {
   /**
    * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
@@ -80,29 +81,29 @@ export interface SyncTransformer<OptionType = unknown> {
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
-export interface AsyncTransformer<OptionType = unknown> {
+export interface AsyncTransformer<TransformerConfig = unknown> {
   /**
    * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
@@ -114,25 +115,25 @@ export interface AsyncTransformer<OptionType = unknown> {
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions<OptionType>,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
@@ -144,14 +145,14 @@ export interface AsyncTransformer<OptionType = unknown> {
  *
  * For more info on the sync vs async model, see https://jestjs.io/docs/code-transformation#writing-custom-transformers
  */
-export type Transformer<OptionType = unknown> =
-  | SyncTransformer<OptionType>
-  | AsyncTransformer<OptionType>;
+export type Transformer<TransformerConfig = unknown> =
+  | SyncTransformer<TransformerConfig>
+  | AsyncTransformer<TransformerConfig>;
 
 export type TransformerCreator<
-  X extends Transformer<OptionType>,
-  OptionType = unknown,
-> = (options?: OptionType) => X;
+  X extends Transformer<TransformerConfig>,
+  TransformerConfig = unknown,
+> = (transformerConfig?: TransformerConfig) => X;
 
 /**
  * Instead of having your custom transformer implement the Transformer interface

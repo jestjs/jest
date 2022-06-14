@@ -33,6 +33,7 @@ export class ValidationError extends Error {
     comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
     this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});
   }
 }

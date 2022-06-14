@@ -91,8 +91,8 @@ export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
 
 export const stringify = (
   object: unknown,
-  maxDepth: number = 10,
-  maxWidth: number = 10,
+  maxDepth = 10,
+  maxWidth = 10,
 ): string => {
   const MAX_LENGTH = 10000;
   let result;

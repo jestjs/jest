@@ -236,7 +236,6 @@ async function runTestInternal(
   runtime
     .requireInternalModule<typeof import('source-map-support')>(
       require.resolve('source-map-support'),
-      'source-map-support',
     )
     .install(sourcemapOptions);
 
@@ -340,7 +339,7 @@ async function runTestInternal(
     }
 
     if (globalConfig.logHeapUsage) {
-      // @ts-expect-error
+      // @ts-expect-error - doesn't exist on globalThis
       globalThis.gc?.();
 
       result.memoryUsage = process.memoryUsage().heapUsed;

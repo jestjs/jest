@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 
 const activeFilters = (
   globalConfig: Config.GlobalConfig,
-  delimiter: string = '\n',
+  delimiter = '\n',
 ): string => {
   const {testNamePattern, testPathPattern} = globalConfig;
   if (testNamePattern || testPathPattern) {

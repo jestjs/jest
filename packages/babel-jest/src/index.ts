@@ -78,7 +78,7 @@ function getCacheKeyFromConfig(
 
   const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
 
-  return createHash('md5')
+  return createHash('sha256')
     .update(THIS_FILE)
     .update('\0', 'utf8')
     .update(JSON.stringify(babelOptions.options))
@@ -98,7 +98,8 @@ function getCacheKeyFromConfig(
     .update(process.env.BABEL_ENV || '')
     .update('\0', 'utf8')
     .update(process.version)
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function loadBabelConfig(
@@ -173,10 +174,11 @@ export const createTransformer: TransformerCreator<
     filename: string,
     transformOptions: JestTransformOptions,
   ): TransformOptions {
-    const {cwd} = transformOptions.config;
-    // `cwd` first to allow incoming options to override it
+    const {cwd, rootDir} = transformOptions.config;
+    // `cwd` and `root` first to allow incoming options to override it
     return {
       cwd,
+      root: rootDir,
       ...options,
       caller: {
         ...options.caller,

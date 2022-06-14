@@ -1,6 +1,6 @@
 {
   "name": "@jest/schemas",
-  "version": "28.0.0-alpha.3",
+  "version": "28.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
     "@sinclair/typebox": "^0.23.3"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "publishConfig": {
     "access": "public"

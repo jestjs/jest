@@ -44,7 +44,9 @@ beforeEach(() => {
     'non_covered_file.js': '',
     'relative_path_file.js': '',
   };
-
+  fileTree[`${process.cwd()}/path-test`] = {
+    '100pc_coverage_file.js': '',
+  };
   mock(fileTree);
 });
 
@@ -79,6 +81,10 @@ describe('onRunComplete', () => {
         statements: {covered: 5, pct: 50, skipped: 0, total: 10},
       };
       const fileCoverage = [
+        [
+          './path-test/100pc_coverage_file.js',
+          {statements: {covered: 10, pct: 100, total: 10}},
+        ],
         ['./path-test-files/covered_file_without_threshold.js'],
         ['./path-test-files/full_path_file.js'],
         ['./path-test-files/relative_path_file.js'],
@@ -309,6 +315,9 @@ describe('onRunComplete', () => {
           './path-test-files/': {
             statements: 50,
           },
+          './path-test/': {
+            statements: 100,
+          },
           global: {
             statements: 100,
           },
@@ -368,6 +377,9 @@ describe('onRunComplete', () => {
         collectCoverage: true,
         coverageThreshold: {
           './path-test-files/100pc_coverage_file.js': {
+            statements: 100,
+          },
+          './path-test/100pc_coverage_file.js': {
             statements: 100,
           },
           global: {

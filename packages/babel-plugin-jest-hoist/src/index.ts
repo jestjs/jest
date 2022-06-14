@@ -305,6 +305,7 @@ export default function jestHoist(): PluginObj<{
     },
     // in `post` to make sure we come after an import transform and can unshift above the `require`s
     post({path: program}) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const self = this;
 
       visitBlock(program);

@@ -1,6 +1,6 @@
 {
   "name": "jest-regex-util",
-  "version": "28.0.0-alpha.6",
+  "version": "28.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
     "@types/node": "*"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",

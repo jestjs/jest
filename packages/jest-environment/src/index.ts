@@ -28,6 +28,10 @@ export type ModuleWrapper = (
   ...sandboxInjectedGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
+export interface JestImportMeta extends ImportMeta {
+  jest: Jest;
+}
+
 export interface JestEnvironmentConfig {
   projectConfig: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
@@ -228,10 +232,18 @@ export interface Jest {
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted.
    *
+   * If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused
+   * the test to fail to the console, providing visibility on why a retry occurred.
+   * retries is exhausted.
+   *
    * @remarks
    * Only available with `jest-circus` runner.
    */
-  retryTimes(numRetries: number): Jest;
+  retryTimes(
+    numRetries: number,
+    options?: {logErrorsBeforeRetry?: boolean},
+  ): Jest;
+
   /**
    * Exhausts tasks queued by `setImmediate()`.
    *
