@@ -7,7 +7,7 @@ Jest's configuration can be defined in the `package.json` file of your project, 
 
 ```json
 {
-  "name": "my-project",
+  "displayName": "my-project",
   "jest": {
     "verbose": true
   }
@@ -1721,7 +1721,7 @@ Example:
 
 ```json
 {
-  "name": "my-project",
+  "displayName": "my-project",
   "jest": {
     "//": "Comment goes here",
     "verbose": true
