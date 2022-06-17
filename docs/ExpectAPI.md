@@ -644,6 +644,7 @@ test('resolves to lemon', () => {
   return expect(Promise.resolve('lemon')).resolves.toBe('lemon');
 });
 ```
+:::note
 
 Note that, since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
 
@@ -656,6 +657,7 @@ test('resolves to lemon', async () => {
 });
 ```
 
+:::
 ### `.rejects`
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.
@@ -671,6 +673,8 @@ test('rejects to octopus', () => {
 });
 ```
 
+:::note
+
 Note that, since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
 
 Alternatively, you can use `async/await` in combination with `.rejects`.
@@ -681,6 +685,7 @@ test('rejects to octopus', async () => {
 });
 ```
 
+:::
 ### `.toBe(value)`
 
 Use `.toBe` to compare primitive values or to check referential identity of object instances. It calls `Object.is` to compare values, which is even better for testing than `===` strict equality operator.

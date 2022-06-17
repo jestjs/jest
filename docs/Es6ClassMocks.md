@@ -44,7 +44,11 @@ export default class SoundPlayerConsumer {
 
 Calling `jest.mock('./sound-player')` returns a useful "automatic mock" you can use to spy on calls to the class constructor and all of its methods. It replaces the ES6 class with a mock constructor, and replaces all of its methods with [mock functions](MockFunctions.md) that always return `undefined`. Method calls are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
+:::note
+
 Please note that if you use arrow functions in your classes, they will _not_ be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.
+
+:::
 
 If you don't need to replace the implementation of the class, this is the easiest option to set up. For example:
 
@@ -240,7 +244,7 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-**_Note: Arrow functions won't work_**
+:::note
 
 Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
 
@@ -255,6 +259,7 @@ jest.mock('./sound-player', () => {
 
 This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, unless the code is transpiled to ES5, e.g. by `@babel/preset-env`. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
 
+:::
 ## Mocking a specific method of a class
 
 Lets say that you want to mock or spy the method `playSoundFile` within the class `SoundPlayer`. A simple example:

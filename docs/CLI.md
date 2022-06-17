@@ -180,8 +180,11 @@ Alias: `--collectCoverage`. Indicates that test coverage information should be c
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
+:::note
+
 Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
+:::
 ### `--debug`
 
 Print debugging info about your Jest config.
@@ -309,7 +312,13 @@ Allows the test suite to pass when no files are found.
 
 ### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option.
+
+:::note
+
+ Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+ :::
 
 ### `--reporters`
 
@@ -385,6 +394,8 @@ A JSON string with options that will be passed to the `testEnvironment`. The rel
 
 Adds a `location` field to test results. Useful if you want to report the location of a test in a reporter.
 
+:::note
+
 Note that `column` is 0-indexed while `line` is not.
 
 ```json
@@ -394,6 +405,7 @@ Note that `column` is 0-indexed while `line` is not.
 }
 ```
 
+:::
 ### `--testMatch glob1 ... globN`
 
 The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
@@ -454,7 +466,13 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+Use `--watchAll=false` to explicitly disable the watch mode. 
+
+:::note
+
+Note that in most CI environments, this is automatically handled for you.
+
+:::
 
 ### `--watchman`
 

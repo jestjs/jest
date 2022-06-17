@@ -19,7 +19,11 @@ import TOCInline from '@theme/TOCInline';
 
 Disables automatic mocking in the module loader.
 
-> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+:::info
+
+See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+
+:::
 
 After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
 
@@ -59,7 +63,11 @@ Examples of dependencies that might be considered "implementation details" are t
 
 Returns the `jest` object for chaining.
 
-_Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior._
+:::note
+
+Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.enableAutomock()`
 
@@ -67,7 +75,10 @@ Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
 
-> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+:::info
+
+See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+
 
 Example:
 
@@ -92,7 +103,13 @@ test('original implementation', () => {
 });
 ```
 
-_Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
+:::
+
+:::note
+
+Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.createMockFromModule(moduleName)`
 
@@ -276,11 +293,15 @@ jest.mock(
 );
 ```
 
-> **Warning:** Importing a module in a setup file (as specified by `setupFilesAfterEnv`) will prevent mocking for the module in question, as well as all the modules that it imports.
+:::danger
+
+Importing a module in a setup file (as specified by `setupFilesAfterEnv`) will prevent mocking for the module in question, as well as all the modules that it imports.
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
+
+:::
 
 ### `jest.unmock(moduleName)`
 
@@ -376,7 +397,11 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
+:::note
+
+It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
+
+:::
 
 ### `jest.requireActual(moduleName)`
 
@@ -481,7 +506,9 @@ Determines if the given function is a mocked function.
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
-_Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
+:::note
+
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
 
 Example:
 
@@ -510,6 +537,8 @@ test('plays video', () => {
   spy.mockRestore();
 });
 ```
+
+:::
 
 ### `jest.spyOn(object, methodName, accessType?)`
 
@@ -588,7 +617,9 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
 
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
+:::note
+
+While it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value.
 
 Example:
 
@@ -627,6 +658,8 @@ test('direct', () => {
   expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
 });
 ```
+
+:::
 
 ## Fake Timers
 
@@ -823,9 +856,15 @@ Set the default timeout interval (in milliseconds) for all tests and before/afte
 
 To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
 
-_Note: The default timeout interval is 5 seconds if this method is not called._
+:::note
 
-_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
+The default timeout interval is 5 seconds if this method is not called.
+
+:::
+
+:::note
+
+If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`.
 
 Example:
 
@@ -856,3 +895,5 @@ test('will fail', () => {
 ```
 
 Returns the `jest` object for chaining.
+
+:::
