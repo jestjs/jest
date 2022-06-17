@@ -3,7 +3,7 @@ id: architecture
 title: Architecture
 ---
 
-This diagram shows how Jest works to run your tests. Jest is composed of 51 modules up to this moment, however, to keep things a bit easier, we decided to focus at a higher level.
+This diagram shows how Jest works to run your tests. Jest is composed of a bunch of internal modules, however, to keep things a bit easier, we've decided to focus at a higher level.
 
 ![](https://i.imgur.com/qGVNhBB.png)
 
