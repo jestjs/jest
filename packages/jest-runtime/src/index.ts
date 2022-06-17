@@ -32,7 +32,7 @@ import type {
   ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type * as JestGlobals from '@jest/globals';
+import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {
   RuntimeTransformResult,
@@ -69,11 +69,11 @@ const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof JestGlobals.expect;
+  expect: typeof expect;
 }
 
 interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof JestGlobals.jest;
+  jest: typeof jest;
 }
 
 type HasteMapOptions = {
@@ -2331,7 +2331,7 @@ export default class Runtime {
       beforeAll: this._environment.global.beforeAll,
       beforeEach: this._environment.global.beforeEach,
       describe: this._environment.global.describe,
-      expect: this._environment.global.expect as any,
+      expect: this._environment.global.expect as typeof expect,
       fdescribe: this._environment.global.fdescribe,
       fit: this._environment.global.fit,
       it: this._environment.global.it,
