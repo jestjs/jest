@@ -5,7 +5,7 @@ title: Architecture
 
 This diagram shows how Jest works to run your tests. Jest is composed of 51 modules up to this moment, however, to keep things a bit easier, we decided to focus at a higher level.
 
-![](https://i.imgur.com/kMZEqyM.png)
+![](https://i.imgur.com/qGVNhBB.png)
 
 **Jest-Cli**: Module responsible for exposing the communication interface to the users.
 
