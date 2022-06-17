@@ -9,13 +9,13 @@ This diagram shows how Jest works to run your tests. Jest is composed of a bunch
 
 **Jest-Cli**: Module responsible for exposing the communication interface to the users.
 
-**Jest-Config**: Module responsible for collecting user preferences, such as test runner, test environment, and plugins. For more information, read the Jest’s config page.
+**Jest-Config**: Module responsible for collecting user preferences, such as test runner, test environment, and plugins. For more information, read the Jest’s [config page](Configuration.md).
 
 **Jest-Core**: Module responsible for collecting the user’s requests, normalizing them to the module's internal pattern of communication, and orchestrating its execution.
 
 **Jest-Runtime**: Module responsible for dealing with the configuration and test environment. This module defines which additional features will come to play depending on the users’ execution environment (browser, nodejs).
 
-**Jest-Haste-Map**: Module responsible for collecting all test files to create an internal representation, so as to localize it efficiently.
+**Jest-Haste-Map**: Module responsible for collecting all test files to create an internal representation of them, to localize efficiently.
 
 **Jest-Runner**: Module responsible for managing the execution of the tests. It decides which test runner should be invoked according to the users’ config.
 
