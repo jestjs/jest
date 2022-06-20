@@ -4,6 +4,8 @@
 
 ### Fixes
 
+-`[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
+
 ### Chore & Maintenance
 
 - `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
