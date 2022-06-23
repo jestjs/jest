@@ -2722,6 +2722,7 @@ __metadata:
     mock-fs: ^5.1.2
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
+    p-limit: ^3.1.0
     pkg-dir: ^5.0.0
     prettier: ^2.1.1
     progress: ^2.0.0
@@ -2735,7 +2736,6 @@ __metadata:
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
-    throat: ^6.0.1
     ts-node: ^10.5.0
     type-fest: ^2.11.2
     typescript: ^4.7.3
@@ -13111,7 +13111,7 @@ __metadata:
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
     execa: ^5.0.0
-    throat: ^6.0.1
+    p-limit: ^3.1.0
   languageName: unknown
   linkType: soft
 
@@ -13142,10 +13142,10 @@ __metadata:
     jest-runtime: ^28.1.1
     jest-snapshot: ^28.1.1
     jest-util: ^28.1.1
+    p-limit: ^3.1.0
     pretty-format: ^28.1.1
     slash: ^3.0.0
     stack-utils: ^2.0.3
-    throat: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -13388,8 +13388,8 @@ __metadata:
     jest-runtime: ^28.1.1
     jest-snapshot: ^28.1.1
     jest-util: ^28.1.1
+    p-limit: ^3.1.0
     pretty-format: ^28.1.1
-    throat: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -13606,8 +13606,8 @@ __metadata:
     jest-util: ^28.1.1
     jest-watcher: ^28.1.1
     jest-worker: ^28.1.1
+    p-limit: ^3.1.0
     source-map-support: 0.5.13
-    throat: ^6.0.1
     tsd-lite: ^0.5.1
   languageName: unknown
   linkType: soft
@@ -16930,7 +16930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-limit@npm:^3.0.2":
+"p-limit@npm:^3.0.2, p-limit@npm:^3.1.0":
   version: 3.1.0
   resolution: "p-limit@npm:3.1.0"
   dependencies:
