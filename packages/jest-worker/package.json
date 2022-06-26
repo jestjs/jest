@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "28.1.1",
+  "version": "28.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,6 +22,7 @@
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@milahu/gnumake-jobclient": "^0.0.3",
     "@tsd/typescript": "~4.7.3",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",

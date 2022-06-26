@@ -6,6 +6,7 @@
  */
 
 import FifoQueue from './FifoQueue';
+import {debug} from './debug';
 import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
@@ -31,10 +32,14 @@ export default class Farm {
   private readonly _taskQueue: TaskQueue;
 
   constructor(
+    // TODO rename to _numWorkers
     private _numOfWorkers: number,
+    // workerPool.send. TODO rename to _sendToWorkerPool
     private _callback: WorkerCallback,
     options: WorkerFarmOptions = {},
   ) {
+    debug(`Farm.constructor: _numOfWorkers = ${_numOfWorkers}`);
+    //this._numOfWorkers = _numOfWorkers;
     this._computeWorkerKey = options.computeWorkerKey;
     this._workerSchedulingPolicy =
       options.workerSchedulingPolicy ?? 'round-robin';
@@ -45,6 +50,8 @@ export default class Farm {
     method: string,
     ...args: Array<unknown>
   ): PromiseWithCustomMessage<unknown> {
+    debug('');
+    debug(`Farm.doWork: method=${method} args=${args}`);
     const customMessageListeners = new Set<OnCustomMessage>();
 
     const addCustomMessageListener = (listener: OnCustomMessage) => {
@@ -96,9 +103,12 @@ export default class Farm {
         const task = {onCustomMessage, onEnd, onStart, request};
 
         if (worker) {
+          debug(`Farm.doWork: re-use last worker -> add task to queue`);
           this._taskQueue.enqueue(task, worker.getWorkerId());
+          // try to process, fail if worker is blocked
           this._process(worker.getWorkerId());
         } else {
+          debug(`Farm.doWork: use any worker -> call push`);
           this._push(task);
         }
       }).bind(null, args),
@@ -111,10 +121,12 @@ export default class Farm {
 
   private _process(workerId: number): Farm {
     if (this._isLocked(workerId)) {
+      debug(`Farm._process: worker ${workerId} is locked`);
       return this;
     }
 
     const task = this._taskQueue.dequeue(workerId);
+    debug(`Farm._process: worker ${workerId}: task = ${task}`);
 
     if (!task) {
       return this;
@@ -130,18 +142,25 @@ export default class Farm {
     let taskOnEnd: OnEnd | null = task.onEnd;
     const onEnd: OnEnd = (error, result) => {
       if (taskOnEnd) {
+        debug('');
+        debug(`Farm._process: worker ${workerId}: onEnd: calling taskOnEnd`);
         taskOnEnd(error, result);
       }
       taskOnEnd = null;
+
+      debug(`Farm._process: worker ${workerId}: onEnd: done. unlock worker ${workerId}`);
 
       this._unlock(workerId);
       this._process(workerId);
     };
 
-    task.request[1] = true;
+    debug(`Farm._process: worker ${workerId}: lock worker ${workerId}`);
 
     this._lock(workerId);
-    this._callback(
+
+    debug(`Farm._process: worker ${workerId}: send task to worker ...`);
+
+    task.request[1] = this._callback(
       workerId,
       task.request,
       task.onStart,
@@ -149,17 +168,34 @@ export default class Farm {
       task.onCustomMessage,
     );
 
+    if (task.request[1] == false) {
+      // task was not sent to worker
+      this._unlock(workerId);
+    }
+
+    debug(`Farm._process: worker ${workerId}: send task to worker ... ${task.request[1] ? 'ok' : 'fail'}`);
+
     return this;
   }
 
   private _push(task: QueueChildMessage): Farm {
-    this._taskQueue.enqueue(task);
+
+    debug(`Farm._push: add task ${task}`);
+
+    this._taskQueue.enqueue(task); // no worker id -> any worker
 
     const offset = this._getNextWorkerOffset();
-    for (let i = 0; i < this._numOfWorkers; i++) {
-      this._process((offset + i) % this._numOfWorkers);
+    debug(`Farm._push: offset = ${offset}`);
 
-      if (task.request[1]) {
+    debug(`Farm._push: find worker for task ${task}`);
+    for (let i = 0; i < this._numOfWorkers; i++) {
+      const workerId = (offset + i) % this._numOfWorkers;
+      debug(`Farm._push: process worker ${workerId}`);
+      this._process(workerId);
+
+      debug(`Farm._push: task.request[1] = ${task.request[1]}`);
+
+      if (task.request[1]) { // found worker
         break;
       }
     }
@@ -172,6 +208,7 @@ export default class Farm {
       case 'in-order':
         return 0;
       case 'round-robin':
+        // note: this counts to infinity
         return this._offset++;
     }
   }

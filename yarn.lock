@@ -3875,6 +3875,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@milahu/gnumake-jobclient@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@milahu/gnumake-jobclient@npm:0.0.3"
+  checksum: d79e749694ed089dc246ab286b30144f0506b9c615ba0f577dfb09afe427e0f3e598b687743f04b302c60134ae6fcfd178b090f2257610b690c392619c518ea7
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -13840,6 +13847,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
+    "@milahu/gnumake-jobclient": ^0.0.3
     "@tsd/typescript": ~4.7.3
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"

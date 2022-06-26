@@ -6,6 +6,7 @@
  */
 
 import BaseWorkerPool from './base/BaseWorkerPool';
+import {debug} from './debug';
 import type {
   ChildMessage,
   OnCustomMessage,
@@ -23,11 +24,16 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     onStart: OnStart,
     onEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
-  ): void {
-    this.getWorkerById(workerId).send(request, onStart, onEnd, onCustomMessage);
+  ): boolean {
+    const worker = this.getWorkerById(workerId);
+    debug(`WorkerPool.send: workerId=${workerId} worker=${worker}`)
+    if (worker == null) return false;
+    worker.send(request, onStart, onEnd, onCustomMessage);
+    return true;
   }
 
   override createWorker(workerOptions: WorkerOptions): WorkerInterface {
+    debug(`WorkerPool.createWorker`)
     let Worker;
     if (this._options.enableWorkerThreads) {
       Worker = require('./workers/NodeThreadsWorker').default;

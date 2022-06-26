@@ -8,6 +8,7 @@
 import type {ForkOptions} from 'child_process';
 import type {EventEmitter} from 'events';
 import type {ResourceLimits} from 'worker_threads';
+import type {JobClient} from '@milahu/gnumake-jobclient';
 
 type ReservedKeys = 'end' | 'getStderr' | 'getStdout' | 'setup' | 'teardown';
 type ExcludeReservedKeys<K> = Exclude<K, ReservedKeys>;
@@ -52,7 +53,7 @@ export type WorkerCallback = (
   onStart: OnStart,
   onEnd: OnEnd,
   onCustomMessage: OnCustomMessage,
-) => void;
+) => boolean;
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
@@ -122,6 +123,7 @@ export type WorkerFarmOptions = {
     options?: WorkerPoolOptions,
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
+  jobClient?: JobClient | null;
 };
 
 export type WorkerPoolOptions = {
@@ -131,6 +133,7 @@ export type WorkerPoolOptions = {
   maxRetries: number;
   numWorkers: number;
   enableWorkerThreads: boolean;
+  jobClient: JobClient | null;
 };
 
 export type WorkerOptions = {

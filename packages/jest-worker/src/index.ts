@@ -9,6 +9,8 @@ import {cpus} from 'os';
 import {isAbsolute} from 'path';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
+import {JobClient} from '@milahu/gnumake-jobclient';
+import {debug} from './debug';
 import type {
   PoolExitResult,
   WorkerFarmOptions,
@@ -93,6 +95,8 @@ export class Worker {
       throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
     }
 
+    debug(`Worker.constructor: this._options.jobClient = ${this._options.jobClient}`);
+
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
@@ -100,7 +104,10 @@ export class Worker {
       numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
+      jobClient: this._options.jobClient ?? JobClient(),
     };
+
+    debug(`Worker.constructor: workerPoolOptions.jobClient = ${workerPoolOptions.jobClient}`);
 
     if (this._options.WorkerPool) {
       this._workerPool = new this._options.WorkerPool(

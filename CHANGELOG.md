@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-worker]` add gnumake jobclient to limit number of workers ([#12968](https://github.com/facebook/jest/pull/12968))
+
 ### Fixes
 
 -`[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
