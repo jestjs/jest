@@ -2,6 +2,8 @@
 
 ### Features
 
+`[expect]` Include `.toBeTrue` and `.toBeFalse` matchers. ([#12970](https://github.com/facebook/jest/pull/12971))
+
 ### Fixes
 
 -`[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
