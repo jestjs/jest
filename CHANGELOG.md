@@ -2,6 +2,8 @@
 
 ### Features
 
+`[expect]` Include `.toBeTrue` and `.toBeFalse` matchers. ([#12970](https://github.com/facebook/jest/pull/12970))
+
 ### Fixes
 
 ### Chore & Maintenance
