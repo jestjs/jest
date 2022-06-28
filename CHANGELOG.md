@@ -4,13 +4,19 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 28.1.2
+
+### Fixes
+
 -`[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
 
 ### Chore & Maintenance
 
 - `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
-
-### Performance
 
 ## 28.1.1
 
