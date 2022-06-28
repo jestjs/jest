@@ -193,6 +193,10 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   toBeLessThanOrEqual(expected: number | bigint): R;
   /**
+   * Ensure that an array elements are within the expected range
+   */
+  toBeWithin(expected: number[]): R;
+  /**
    * Used to check that a variable is NaN.
    */
   toBeNaN(): R;

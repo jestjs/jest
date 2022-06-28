@@ -2320,3 +2320,10 @@ describe('toMatchObject()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+describe('toBeWithin()', () => {
+  it('test array contains values within the specified range', async () => {
+    const arrayList = [1, 2, 3, 4];
+    jestExpect(arrayList).toBeWithin([1, 4]);
+  });
+});

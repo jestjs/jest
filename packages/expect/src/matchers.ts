@@ -26,6 +26,7 @@ import {
   MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
+  ensureArray,
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
@@ -265,6 +266,29 @@ const matchers: MatchersObject = {
     ensureNumbers(received, expected, matcherName, options);
 
     const pass = received >= expected;
+
+    const message = () =>
+      // eslint-disable-next-line prefer-template
+      matcherHint(matcherName, undefined, undefined, options) +
+      '\n\n' +
+      `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
+      `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
+
+    return {message, pass};
+  },
+
+  toBeWithin(received: Array<number>, expected: Array<number>) {
+    const matcherName = 'toBeWithin';
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureArray(received, expected, matcherName, options);
+
+    const pass = received.every(
+      option => option >= expected[0] && option <= expected[1],
+    );
 
     const message = () =>
       // eslint-disable-next-line prefer-template

@@ -225,6 +225,77 @@ export const ensureNumbers = (
   ensureExpectedIsNumber(expected, matcherName, options);
 };
 
+/**
+ * Ensures that `actual` is an array of type `number`
+ */
+export const ensureActualIsArray = (
+  actual: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+): void => {
+  if (Array.isArray(actual)) {
+    const isNumberArray =
+      actual.length > 0 &&
+      actual.every(value => {
+        return typeof value === 'number';
+      });
+
+    if (isNumberArray) {
+      // Prepend maybe not only for backward compatibility.
+      const matcherString = (options ? '' : '[.not]') + matcherName;
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherString, undefined, undefined, options),
+          `${RECEIVED_COLOR('received')} value must be an array of type number`,
+          printWithType('Received', actual, printReceived),
+        ),
+      );
+    }
+  }
+};
+
+/**
+ * Ensures that `expected` is an array of type `number`
+ */
+export const ensureExpectedIsArray = (
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+): void => {
+  if (Array.isArray(expected)) {
+    const isNumberArray =
+      expected.length > 0 &&
+      expected.every(value => {
+        return typeof value === 'number';
+      });
+
+    if (isNumberArray) {
+      // Prepend maybe not only for backward compatibility.
+      const matcherString = (options ? '' : '[.not]') + matcherName;
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherString, undefined, undefined, options),
+          `${EXPECTED_COLOR('expected')} value must be an array of type number`,
+          printWithType('Expected', expected, printExpected),
+        ),
+      );
+    }
+  }
+};
+
+/**
+ * Ensures that `actual` & `expected` are arrays of type `number`
+ */
+export const ensureArray = (
+  actual: unknown,
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+): void => {
+  ensureActualIsNumber(actual, matcherName, options);
+  ensureExpectedIsArray(expected, matcherName, options);
+};
+
 export const ensureExpectedIsNonNegativeInteger = (
   expected: unknown,
   matcherName: string,
