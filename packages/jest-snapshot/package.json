@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "28.1.1",
+  "version": "28.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -23,7 +23,7 @@
     "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.3.3",
     "@jest/expect-utils": "^28.1.1",
-    "@jest/transform": "^28.1.1",
+    "@jest/transform": "^28.1.2",
     "@jest/types": "^28.1.1",
     "@types/babel__traverse": "^7.0.6",
     "@types/prettier": "^2.1.5",

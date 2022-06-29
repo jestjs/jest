@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "28.1.1",
+  "version": "28.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,8 +18,8 @@
     "./runner": "./runner.js"
   },
   "dependencies": {
-    "@jest/environment": "^28.1.1",
-    "@jest/expect": "^28.1.1",
+    "@jest/environment": "^28.1.2",
+    "@jest/expect": "^28.1.2",
     "@jest/test-result": "^28.1.1",
     "@jest/types": "^28.1.1",
     "@types/node": "*",
@@ -30,8 +30,8 @@
     "jest-each": "^28.1.1",
     "jest-matcher-utils": "^28.1.1",
     "jest-message-util": "^28.1.1",
-    "jest-runtime": "^28.1.1",
-    "jest-snapshot": "^28.1.1",
+    "jest-runtime": "^28.1.2",
+    "jest-snapshot": "^28.1.2",
     "jest-util": "^28.1.1",
     "pretty-format": "^28.1.1",
     "slash": "^3.0.0",
