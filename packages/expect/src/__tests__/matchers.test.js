@@ -2323,7 +2323,7 @@ describe('toMatchObject()', () => {
 
 describe('toBeWithin()', () => {
   it('test array contains values within the specified range', async () => {
-    const arrayList = [1, 2, 3, 4];
-    jestExpect(arrayList).toBeWithin([1, 4]);
+    const arrayList = [6, 7, 8, 9];
+    jestExpect(arrayList).toBeWithinRange(6, 9);
   });
 });
