@@ -240,7 +240,7 @@ export const ensureActualIsArray = (
         return typeof value === 'number';
       });
 
-    if (isNumberArray) {
+    if (!isNumberArray) {
       // Prepend maybe not only for backward compatibility.
       const matcherString = (options ? '' : '[.not]') + matcherName;
       throw new Error(
@@ -255,45 +255,18 @@ export const ensureActualIsArray = (
 };
 
 /**
- * Ensures that `expected` is an array of type `number`
+ * Ensures that `actual` is an array and both `min` & `max` are numbers
  */
-export const ensureExpectedIsArray = (
-  expected: unknown,
-  matcherName: string,
-  options?: MatcherHintOptions,
-): void => {
-  if (Array.isArray(expected)) {
-    const isNumberArray =
-      expected.length > 0 &&
-      expected.every(value => {
-        return typeof value === 'number';
-      });
-
-    if (isNumberArray) {
-      // Prepend maybe not only for backward compatibility.
-      const matcherString = (options ? '' : '[.not]') + matcherName;
-      throw new Error(
-        matcherErrorMessage(
-          matcherHint(matcherString, undefined, undefined, options),
-          `${EXPECTED_COLOR('expected')} value must be an array of type number`,
-          printWithType('Expected', expected, printExpected),
-        ),
-      );
-    }
-  }
-};
-
-/**
- * Ensures that `actual` & `expected` are arrays of type `number`
- */
-export const ensureArray = (
+export const ensureArrayAndRange = (
   actual: unknown,
-  expected: unknown,
+  min: unknown,
+  max: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
-  ensureActualIsNumber(actual, matcherName, options);
-  ensureExpectedIsArray(expected, matcherName, options);
+  ensureActualIsArray(actual, matcherName, options);
+  ensureExpectedIsNumber(min, matcherName, options);
+  ensureExpectedIsNumber(max, matcherName, options);
 };
 
 export const ensureExpectedIsNonNegativeInteger = (
