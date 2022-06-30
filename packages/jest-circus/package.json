@@ -33,10 +33,10 @@
     "jest-runtime": "^28.1.2",
     "jest-snapshot": "^28.1.2",
     "jest-util": "^28.1.1",
+    "p-limit": "^3.1.0",
     "pretty-format": "^28.1.1",
     "slash": "^3.0.0",
-    "stack-utils": "^2.0.3",
-    "throat": "^6.0.1"
+    "stack-utils": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

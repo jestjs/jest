@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[jest-changed-files]` Fix a lock-up after repeated invocations ([#12757](https://github.com/facebook/jest/issues/12757))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
 
 ### Chore & Maintenance
