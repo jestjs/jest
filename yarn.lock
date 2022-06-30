@@ -21468,11 +21468,11 @@ __metadata:
   linkType: hard
 
 "tsd-lite@npm:^0.5.1, tsd-lite@npm:^0.5.4":
-  version: 0.5.5
-  resolution: "tsd-lite@npm:0.5.5"
+  version: 0.5.4
+  resolution: "tsd-lite@npm:0.5.4"
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 93c4f7e264b019e6eb3f29c1c8f600d56e386203e92ed0740cbf7e5e18be0a401b21ae384bc9cb7ea35bf1df9c02861d7fc88d7e98397920730dc8a43f42333a
+  checksum: d1777bd7292c9b56d4bcaab5bd73d64106a84067e76e1e836d7f5b89b84b9d123d35a13f9805d77480b237de68a14003eabdf45ad0d4db1b7c217a70d3dbbb59
   languageName: node
   linkType: hard
 
