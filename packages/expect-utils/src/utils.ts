@@ -12,6 +12,7 @@ import {
   isA,
   isImmutableList,
   isImmutableOrderedKeyed,
+  isImmutableOrderedSet,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
 } from './jasmineUtils';
@@ -256,7 +257,11 @@ export const iterableEquality = (
     return false;
   }
 
-  if (!isImmutableList(a) && !isImmutableOrderedKeyed(a)) {
+  if (
+    !isImmutableList(a) &&
+    !isImmutableOrderedKeyed(a) &&
+    !isImmutableOrderedSet(a)
+  ) {
     const aEntries = Object.entries(a);
     const bEntries = Object.entries(b);
     if (!equals(aEntries, bEntries)) {

@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
+
 ### Chore & Maintenance
 
 ### Performance

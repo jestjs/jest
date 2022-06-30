@@ -274,3 +274,12 @@ export function isImmutableOrderedKeyed(maybeKeyed: any) {
     maybeKeyed[IS_ORDERED_SENTINEL]
   );
 }
+
+
+export function isImmutableOrderedSet(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_SET_SENTINEL] &&
+    maybeSet[IS_ORDERED_SENTINEL]
+  );
+}
