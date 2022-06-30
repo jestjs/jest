@@ -26,7 +26,7 @@ import {
   MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
-  ensureArray,
+  ensureArrayAndRange,
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
@@ -277,29 +277,6 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeWithin(received: Array<number>, expected: Array<number>) {
-    const matcherName = 'toBeWithin';
-    const isNot = this.isNot;
-    const options: MatcherHintOptions = {
-      isNot,
-      promise: this.promise,
-    };
-    ensureArray(received, expected, matcherName, options);
-
-    const pass = received.every(
-      option => option >= expected[0] && option <= expected[1],
-    );
-
-    const message = () =>
-      // eslint-disable-next-line prefer-template
-      matcherHint(matcherName, undefined, undefined, options) +
-      '\n\n' +
-      `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
-      `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
-
-    return {message, pass};
-  },
-
   toBeInstanceOf(received: any, expected: Function) {
     const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
@@ -466,6 +443,31 @@ const matchers: MatchersObject = {
       matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
+
+    return {message, pass};
+  },
+
+  toBeWithinRange(received: Array<number>, min: number, max: number) {
+    const matcherName = 'toBeWithin';
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureArrayAndRange(received, min, max, matcherName, options);
+
+    const element = received.find(option => option < min || option > max);
+
+    const pass = element === undefined;
+
+    const message = () =>
+      // eslint-disable-next-line prefer-template
+      matcherHint(matcherName, undefined, undefined, options) +
+      '\n\n' +
+      `Expected: Array elements to be in range (${printExpected(
+        min,
+      )}, ${printExpected(max)})\n` +
+      `Received: Array element out of range ${printReceived(element)}`;
 
     return {message, pass};
   },
