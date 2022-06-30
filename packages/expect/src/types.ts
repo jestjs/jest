@@ -193,10 +193,6 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   toBeLessThanOrEqual(expected: number | bigint): R;
   /**
-   * Ensure that an array elements are within the expected range
-   */
-  toBeWithin(expected: number[]): R;
-  /**
    * Used to check that a variable is NaN.
    */
   toBeNaN(): R;
@@ -215,6 +211,10 @@ export interface Matchers<R extends void | Promise<void>> {
    * Used to check that a variable is undefined.
    */
   toBeUndefined(): R;
+  /**
+   * Ensure that an array elements are within the expected range
+   */
+  toBeWithinRange(min: number, max: number): R;
   /**
    * Used when you want to check that an item is in a list.
    * For testing the items in the list, this uses `===`, a strict equality check.
