@@ -2711,7 +2711,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^3.0.1
+    jest-runner-tsd: ^3.1.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^1.1.0
@@ -8360,9 +8360,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest-runner@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "create-jest-runner@npm:0.11.0"
+"create-jest-runner@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "create-jest-runner@npm:0.11.1"
   dependencies:
     chalk: ^4.1.0
     jest-worker: ^28.0.2
@@ -8377,7 +8377,7 @@ __metadata:
       optional: true
   bin:
     create-jest-runner: generator/index.js
-  checksum: 2ff2ff4f747c695a04c5ab3106b99a7bf4c6ddd567aad7af11d336a90105b2459ec1d31a6ac7b020ec32a0329843ea696e5706be8502e1c9fd5e50f21b099748
+  checksum: 6fc69d9fe3cd852155f73fbb423e834ba88e33d9f2f6f5bf76fbddc18ed54f73d3e037e83fe0c3f0a279b34f6b83555cd7a43557e20f58aa001c08fe5b3ccb0d
   languageName: node
   linkType: hard
 
@@ -13564,17 +13564,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "jest-runner-tsd@npm:3.0.1"
+"jest-runner-tsd@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "jest-runner-tsd@npm:3.1.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
-    create-jest-runner: ^0.11.0
-    tsd-lite: ^0.5.0
+    create-jest-runner: ^0.11.1
+    tsd-lite: ^0.5.4
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: 8613e3feefdfc6d34a91fc73306b56b95c491e1723135a8db044797aa4eb5d7f75bc86bca20a458f5b402124c3db03769cc5001f88a49d6f3d4294530392cfc8
+  checksum: c080b642cadac452c2a1da3e27abafe809a223f1f60c4929115a06d368e89417210599ae73b65bad514ae7b869c52dd6fefc71216f6e088e41cd86239cf17273
   languageName: node
   linkType: hard
 
@@ -21467,12 +21467,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsd-lite@npm:^0.5.0, tsd-lite@npm:^0.5.1":
-  version: 0.5.3
-  resolution: "tsd-lite@npm:0.5.3"
+"tsd-lite@npm:^0.5.1, tsd-lite@npm:^0.5.4":
+  version: 0.5.5
+  resolution: "tsd-lite@npm:0.5.5"
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: b1a5ffcd584b66e34173f0182d4cc7b2c5a145655346f9014318dd16a7ab3418d462df1cfa13923f79628e7900e5b8992c1210f59492adc9b7ef242b2026ab14
+  checksum: 93c4f7e264b019e6eb3f29c1c8f600d56e386203e92ed0740cbf7e5e18be0a401b21ae384bc9cb7ea35bf1df9c02861d7fc88d7e98397920730dc8a43f42333a
   languageName: node
   linkType: hard
 
