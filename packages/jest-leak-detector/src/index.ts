@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+/// <reference lib="es2021.WeakRef" />
 
 import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
@@ -15,6 +16,7 @@ const tick = promisify(setImmediate);
 
 export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
+  private _finalizationRegistry?: FinalizationRegistry<undefined>;
 
   constructor(value: unknown) {
     if (isPrimitive(value)) {
@@ -26,23 +28,36 @@ export default class LeakDetector {
       );
     }
 
-    let weak: typeof import('weak-napi');
+    // TODO: Remove the `if` and `weak-napi` when we drop node 12, as v14 supports FinalizationRegistry
+    if (globalThis.FinalizationRegistry) {
+      // When `_finalizationRegistry` is GCed the callback we set will no longer be called,
+      // so we need to assign it to `this` to keep it referenced
+      this._finalizationRegistry = new FinalizationRegistry(() => {
+        this._isReferenceBeingHeld = false;
+      });
 
-    try {
-      // eslint-disable-next-line import/no-extraneous-dependencies
-      weak = require('weak-napi');
-    } catch (err: any) {
-      if (!err || err.code !== 'MODULE_NOT_FOUND') {
-        throw err;
+      this._finalizationRegistry.register(value as object, undefined);
+    } else {
+      let weak: typeof import('weak-napi');
+
+      try {
+        // eslint-disable-next-line import/no-extraneous-dependencies
+        weak = require('weak-napi');
+      } catch (err: any) {
+        if (!err || err.code !== 'MODULE_NOT_FOUND') {
+          throw err;
+        }
+
+        throw new Error(
+          'The leaking detection mechanism requires newer version of node that supports ' +
+            'FinalizationRegistry, update your node or install the "weak-napi" package' +
+            'which support current node version as a dependency on your main project.',
+        );
       }
 
-      throw new Error(
-        'The leaking detection mechanism requires the "weak-napi" package to be installed and work. ' +
-          'Please install it as a dependency on your main project',
-      );
+      weak(value as object, () => (this._isReferenceBeingHeld = false));
     }
 
-    weak(value as object, () => (this._isReferenceBeingHeld = false));
     this._isReferenceBeingHeld = true;
 
     // Ensure value is not leaked by the closure created by the "weak" callback.

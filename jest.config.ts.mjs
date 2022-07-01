@@ -27,7 +27,7 @@ export default {
       modulePathIgnorePatterns: baseConfig.modulePathIgnorePatterns,
       roots: ['<rootDir>/packages'],
       runner: 'jest-runner-tsd',
-      testMatch: ['**/__typetests__/**/*.ts'],
+      testMatch: ['**/__typetests__/**/*.test.ts'],
     },
   ],
   reporters: ['default', 'github-actions'],

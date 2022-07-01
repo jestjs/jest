@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import Emittery = require('emittery');
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {
   Test,
   TestEvents,
@@ -54,7 +54,7 @@ export default class TestRunner extends EmittingTestRunner {
 
   async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
-    const mutex = throat(1);
+    const mutex = pLimit(1);
     return tests.reduce(
       (promise, test) =>
         mutex(() =>
@@ -116,7 +116,7 @@ export default class TestRunner extends EmittingTestRunner {
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
     if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
 
-    const mutex = throat(this._globalConfig.maxWorkers);
+    const mutex = pLimit(this._globalConfig.maxWorkers);
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.

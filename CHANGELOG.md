@@ -3,6 +3,18 @@
 ### Features
 
 `[expect]` Include `.toBeTrue` and `.toBeFalse` matchers. ([#12970](https://github.com/facebook/jest/pull/12971))
+- `[jest-leak-detector]` Use native `FinalizationRegistry` when it exists to get rid of external C dependency ([#12973](https://github.com/facebook/jest/pull/12973))
+
+### Fixes
+
+- `[jest-changed-files]` Fix a lock-up after repeated invocations ([#12757](https://github.com/facebook/jest/issues/12757))
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
+
+### Chore & Maintenance
+
+### Performance
+
+## 28.1.2
 
 ### Fixes
 
@@ -11,8 +23,6 @@
 ### Chore & Maintenance
 
 - `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
-
-### Performance
 
 ## 28.1.1
 

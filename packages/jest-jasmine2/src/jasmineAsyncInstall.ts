@@ -12,7 +12,7 @@
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {Config, Global} from '@jest/types';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
@@ -192,7 +192,7 @@ function makeConcurrent(
     timeout?: number,
   ) => Spec,
   env: Jasmine['currentEnv_'],
-  mutex: ReturnType<typeof throat>,
+  mutex: ReturnType<typeof pLimit>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
     specName: Global.TestNameLike,
@@ -242,7 +242,7 @@ export default function jasmineAsyncInstall(
   global: Global.Global,
 ): void {
   const jasmine = global.jasmine;
-  const mutex = throat(globalConfig.maxConcurrency);
+  const mutex = pLimit(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);

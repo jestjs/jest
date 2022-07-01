@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect",
-  "version": "28.1.1",
+  "version": "28.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "expect": "^28.1.1",
-    "jest-snapshot": "^28.1.1"
+    "jest-snapshot": "^28.1.2"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.7.3",
-    "tsd-lite": "^0.5.1"
+    "tsd-lite": "^0.5.6"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
