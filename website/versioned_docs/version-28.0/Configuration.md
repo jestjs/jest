@@ -1553,9 +1553,9 @@ class CustomSequencer extends Sequencer {
    * Sharding is applied before sorting
    */
   shard(tests, {shardIndex, shardCount}) {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardSize = Math.ceil(tests.length / shardCount);
+    const shardStart = shardSize * (shardIndex - 1);
+    const shardEnd = shardSize * shardIndex;
 
     return [...tests]
       .sort((a, b) => (a.path > b.path ? 1 : -1))

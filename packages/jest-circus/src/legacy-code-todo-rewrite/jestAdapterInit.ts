@@ -63,7 +63,7 @@ export const initialize = async ({
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
 
-  // @ts-expect-error
+  // @ts-expect-error: missing `concurrent` which is added later
   const globalsObject: Global.TestFrameworkGlobals = {
     ...globals,
     fdescribe: globals.describe.only,

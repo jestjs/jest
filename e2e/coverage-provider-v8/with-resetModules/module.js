@@ -5,14 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-.showcaseSection {
-  text-align: center;
-  margin: 0 auto;
-  max-width: 900px;
+const value = 'abc';
+
+function covered() {
+  console.log('this will print');
 }
 
-.showcaseSection .prose {
-  margin: 0 auto;
-  max-width: 560px;
-  text-align: center;
+function uncovered() {
+  console.log('this will not');
 }
+
+if (value !== 'abc') {
+  uncovered();
+}
+
+covered();
+
+module.exports = {value};

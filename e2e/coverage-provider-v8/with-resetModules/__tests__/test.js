@@ -5,5 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface obj {}
+test('dummy', () => {
+  const {value} = require('../module');
+  expect(value).toBe('abc');
+});
+
+test('reset dummy', () => {
+  const {value} = require('../module');
+  expect(value).toBe('abc');
+});
