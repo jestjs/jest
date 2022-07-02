@@ -8,6 +8,7 @@
 
 - `[jest-changed-files]` Fix a lock-up after repeated invocations ([#12757](https://github.com/facebook/jest/issues/12757))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
+- `[jest-haste-map]` Prevent an `EPERM` crash when a file or folder is inaccessible. ([#12876](https://github.com/facebook/jest/pull/12876))
 
 ### Chore & Maintenance
 
@@ -38,7 +39,6 @@
 - `[jest-mock]` Improve `spyOn` error messages ([#12901](https://github.com/facebook/jest/pull/12901))
 - `[jest-runtime]` Correctly report V8 coverage with `resetModules: true` ([#12912](https://github.com/facebook/jest/pull/12912))
 - `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
-- `[jest-haste-map]` Prevent an `EPERM` crash when a file or folder is inaccessible. ([#12876](https://github.com/facebook/jest/pull/12876))
 
 ### Chore & Maintenance
 
