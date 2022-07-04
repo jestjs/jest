@@ -245,10 +245,9 @@ export interface Jest {
        */
       logErrorsBeforeRetry?: boolean;
       /**
-       * You can pass in a `retryFilter` function to filter which errors Jest
-       * should retry on. The `retryFilter` will receive an array of the
-       * exceptions/test errors for each run of the test, and should return
-       * `true` if we should retry on this error
+       * A function to filter which errors Jest should retry on. It will
+       * receive an array of the exceptions/test errors for each failing test
+       * and should return `true` to retry the test.
        */
       retryFilter?: Circus.TestRetryFilter;
     },
