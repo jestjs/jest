@@ -239,9 +239,8 @@ export interface Jest {
     numRetries: number,
     options?: {
       /**
-       * If `logErrorsBeforeRetry` is true, Jest will log the error(s) that
-       * caused the test to fail to the console, providing visibility on why a
-       * retry occurred.
+       * If set to `true`, Jest will log the error(s) that caused the test
+       * to fail to the console, providing visibility on why a retry occurred.
        */
       logErrorsBeforeRetry?: boolean;
       /**
