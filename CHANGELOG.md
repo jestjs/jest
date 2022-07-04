@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-leak-detector]` Use native `FinalizationRegistry` when it exists to get rid of external C dependency ([#12973](https://github.com/facebook/jest/pull/12973))
+- `[jest-config]` Allow env-based `getMaxWorkers` configuration via `JEST_MAX_WORKERS` ([#12985](https://github.com/facebook/jest/pull/12985))
 
 ### Fixes
 

@@ -52,4 +52,33 @@ describe('getMaxWorkers', () => {
       expect(getMaxWorkers(argv)).toBe(1);
     });
   });
+
+  describe('JEST_MAX_WORKERS environment variable', () => {
+    let originalEnv: NodeJS.ProcessEnv;
+    beforeEach(() => {
+      originalEnv = process.env;
+      process.env = {};
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('Returns JEST_MAX_WORKERS when specified', () => {
+      process.env.JEST_MAX_WORKERS = '10';
+      expect(getMaxWorkers({})).toBe(10);
+    });
+
+    it('Does not override runInBand', () => {
+      const argv = {runInBand: true};
+      process.env.JEST_MAX_WORKERS = '10';
+      expect(getMaxWorkers(argv)).toBe(1);
+    });
+
+    it('Does not override `--maxWorkers`', () => {
+      const argv = {maxWorkers: 2};
+      process.env.JEST_MAX_WORKERS = '10';
+      expect(getMaxWorkers(argv)).toBe(2);
+    });
+  });
 });

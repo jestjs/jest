@@ -18,6 +18,8 @@ export default function getMaxWorkers(
     return 1;
   } else if (argv.maxWorkers) {
     return parseWorkers(argv.maxWorkers);
+  } else if (process.env.JEST_MAX_WORKERS) {
+    return parseWorkers(process.env.JEST_MAX_WORKERS);
   } else if (defaultOptions && defaultOptions.maxWorkers) {
     return parseWorkers(defaultOptions.maxWorkers);
   } else {
