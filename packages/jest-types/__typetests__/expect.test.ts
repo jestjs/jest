@@ -109,6 +109,9 @@ expectError(expect(0.2 + 0.1).toBeCloseTo(0.3, false));
 expectType<void>(expect('value').toBeDefined());
 expectError(expect(true).not.toBeDefined(false));
 
+expectType<void>(expect(false).toBeFalse());
+expectError(expect(true).not.toBeFalse(true));
+
 expectType<void>(expect(0).toBeFalsy());
 expectError(expect(true).not.toBeFalsy(true));
 
@@ -140,6 +143,9 @@ expectError(expect(Number('10')).not.toBeNaN(true));
 
 expectType<void>(expect(null).toBeNull());
 expectError(expect('not null').not.toBeNull(true));
+
+expectType<void>(expect(true).toBeTrue());
+expectError(expect(false).not.toBeTrue(false));
 
 expectType<void>(expect('true').toBeTruthy());
 expectError(expect(false).not.toBeTruthy(true));
