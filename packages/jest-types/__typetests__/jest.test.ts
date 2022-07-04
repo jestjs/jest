@@ -117,7 +117,6 @@ expectError(jest.unmock());
 
 // Mock Functions
 
-expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
 expectType<typeof jest>(jest.clearAllMocks());
 expectError(jest.clearAllMocks('moduleName'));
 
@@ -305,6 +304,7 @@ expectType<typeof jest>(jest.setTimeout(6000));
 expectError(jest.setTimeout());
 
 expectType<typeof jest>(jest.retryTimes(3));
+expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
 expectType<typeof jest>(
   jest.retryTimes(3, {
     logErrorsBeforeRetry: true,
