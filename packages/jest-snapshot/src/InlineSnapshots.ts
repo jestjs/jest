@@ -8,9 +8,9 @@
 import * as path from 'path';
 import type {PluginItem} from '@babel/core';
 import {
-  type Expression,
-  type File,
-  type Program,
+  Expression,
+  File,
+  Program,
   isAwaitExpression,
 } from '@babel/types';
 import * as fs from 'graceful-fs';
