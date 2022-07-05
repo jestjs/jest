@@ -629,3 +629,39 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
       '  `));\n',
   );
 });
+
+test('saveInlineSnapshots() indents awaited snapshots with spaces', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(
+    filename,
+    "it('is a test', async () => {\n" +
+      "  const a = Promise.resolve({a: 'a'});\n" +
+      '  await expect(a).resolves.toMatchInlineSnapshot();\n' +
+      '});\n',
+  );
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 28, file: filename, line: 3} as Frame,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
+      },
+    ],
+    'prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    "it('is a test', async () => {\n" +
+      "  const a = Promise.resolve({a: 'a'});\n" +
+      '  await expect(a).resolves.toMatchInlineSnapshot(`\n' +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+});

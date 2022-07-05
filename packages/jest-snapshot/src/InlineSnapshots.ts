@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type {PluginItem} from '@babel/core';
-import type {Expression, File, Program} from '@babel/types';
+import {Expression, File, Program, isAwaitExpression} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -312,7 +312,7 @@ const createFormattingParser =
 
     const ast = resolveAst(parsers[inferredParser](text, options));
     babelTraverse(ast, {
-      CallExpression({node: {arguments: args, callee}}) {
+      CallExpression({node: {arguments: args, callee}, parent}) {
         if (
           callee.type !== 'MemberExpression' ||
           callee.property.type !== 'Identifier' ||
@@ -336,13 +336,19 @@ const createFormattingParser =
           return;
         }
 
+        const startColumn =
+          isAwaitExpression(parent) && parent.loc
+            ? parent.loc.start.column
+            : callee.loc.start.column;
+
         const useSpaces = !options.useTabs;
         snapshot = indent(
           snapshot,
           Math.ceil(
             useSpaces
-              ? callee.loc.start.column / (options.tabWidth ?? 1)
-              : callee.loc.start.column / 2, // Each tab is 2 characters.
+              ? startColumn / (options.tabWidth ?? 1)
+              : // Each tab is 2 characters.
+                startColumn / 2,
           ),
           useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
         );
