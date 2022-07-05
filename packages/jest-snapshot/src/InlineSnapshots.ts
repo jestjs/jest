@@ -7,12 +7,7 @@
 
 import * as path from 'path';
 import type {PluginItem} from '@babel/core';
-import {
-  Expression,
-  File,
-  Program,
-  isAwaitExpression,
-} from '@babel/types';
+import {Expression, File, Program, isAwaitExpression} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
