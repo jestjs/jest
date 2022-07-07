@@ -35,7 +35,7 @@ export default {
   snapshotFormat: {
     escapeString: false,
   },
-  snapshotSerializers: [require.resolve('pretty-format/ConvertAnsi')],
+  snapshotSerializers: [require.resolve('jest-serializer-ansi-escapes')],
   testPathIgnorePatterns: [
     '/__arbitraries__/',
     '/__benchmarks__/',

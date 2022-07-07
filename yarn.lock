@@ -2712,6 +2712,7 @@ __metadata:
     jest-junit: ^13.0.0
     jest-mock: "workspace:*"
     jest-runner-tsd: ^3.1.0
+    jest-serializer-ansi-escapes: ^1.0.0
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
     jest-watch-typeahead: ^1.1.0
@@ -13645,6 +13646,13 @@ __metadata:
     strip-bom: ^4.0.0
   languageName: unknown
   linkType: soft
+
+"jest-serializer-ansi-escapes@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "jest-serializer-ansi-escapes@npm:1.0.1"
+  checksum: 9cf71b090d27b45a7237247feebb556c474cafc52d12c0e5c49b08a5b871dec6046a83343e148eb607f2e6eb901513946347c08708ff35b0daf514085d599c65
+  languageName: node
+  linkType: hard
 
 "jest-serializer@npm:^27.5.1":
   version: 27.5.1
