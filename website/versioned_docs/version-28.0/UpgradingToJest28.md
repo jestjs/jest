@@ -191,7 +191,7 @@ Known examples of packages that fails in Jest 28 are [`uuid`](https://npmjs.com/
 
 :::info
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
+The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
 
 ```ts
 import {jest} from '@jest/globals';
