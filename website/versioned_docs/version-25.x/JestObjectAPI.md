@@ -496,6 +496,7 @@ Example test:
 const video = require('./video');
 
 afterEach(() => {
+  // restore the spy created with spyOn
   jest.restoreAllMocks();
 });
 
@@ -546,6 +547,7 @@ const audio = require('./audio');
 const video = require('./video');
 
 afterEach(() => {
+// restore the spy created with spyOn
   jest.restoreAllMocks();
 });
 
