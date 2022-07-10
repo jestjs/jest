@@ -16,7 +16,8 @@ function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
-    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+    .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
     return pkg.name;
