@@ -8,11 +8,11 @@
 
 - `[jest-changed-files]` Fix a lock-up after repeated invocations ([#12757](https://github.com/facebook/jest/issues/12757))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
-- `[jest-snapshot]` Fix indendation of awaited inline snapshots ([#12986](https://github.com/facebook/jest/pull/12986))
+- `[jest-snapshot]` Fix indentation of awaited inline snapshots ([#12986](https://github.com/facebook/jest/pull/12986))
 
 ### Chore & Maintenance
 
-- `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935))
+- `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
 
 ### Performance
 
