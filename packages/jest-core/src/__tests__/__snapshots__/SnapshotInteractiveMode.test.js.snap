@@ -4,26 +4,26 @@ exports[`SnapshotInteractiveMode skip 1 test, then quit 1`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode skip 1 test, then quit 2`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>1 snapshot reviewed</intensity></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>r<dim> to restart Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
 "
 `;
 
@@ -31,26 +31,26 @@ exports[`SnapshotInteractiveMode skip 1 test, then restart 1`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode skip 1 test, then restart 2`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>1 snapshot reviewed</intensity></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>r<dim> to restart Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
 "
 `;
 
@@ -58,14 +58,14 @@ exports[`SnapshotInteractiveMode skip 1 test, then restart 3`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -73,14 +73,14 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>2 snapshots remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -88,26 +88,26 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and restart 3`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed</></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>2 snapshots reviewed</intensity></intensity>, <bold><green>1 snapshot updated</color></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>r<dim> to restart Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
 "
 `;
 
@@ -115,14 +115,14 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -130,14 +130,14 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 1`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>2 snapshots remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -145,26 +145,26 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 2`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 3`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed</></>, <bold><yellow>2 snapshots skipped</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>2 snapshots reviewed</intensity></intensity>, <bold><yellow>2 snapshots skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>r<dim> to restart Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
 "
 `;
 
@@ -172,14 +172,14 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 4`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>2 snapshots remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -187,14 +187,14 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>2 snapshots remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -202,26 +202,26 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>, <bold><green>1 snapshot updated</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>, <bold><green>1 snapshot updated</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and restart 3`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed</></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>2 snapshots reviewed</intensity></intensity>, <bold><green>1 snapshot updated</color></intensity>, <bold><yellow>1 snapshot skipped</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>r<dim> to restart Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
 "
 `;
 
@@ -229,14 +229,14 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -244,25 +244,25 @@ exports[`SnapshotInteractiveMode update 1 test, then finish and return 1`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode update 1 test, then finish and return 2`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed</></>, <bold><green>1 snapshot updated</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>1 snapshot reviewed</intensity></intensity>, <bold><green>1 snapshot updated</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>Enter<dim> to return to watch mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>Enter<dim> to return to watch mode.</intensity>
 "
 `;
 
@@ -270,14 +270,14 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 1`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>2 snapshots remaining</intensity></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
@@ -285,24 +285,24 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 2`] = `
 "<moveCursorUpBy6Rows>
 <eraseScreenDown>
 
-<bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining</></>, <bold><green>1 snapshot updated</></>
+<bold>Interactive Snapshot Progress</intensity>
+ › <bold><dim>1 snapshot remaining</intensity></intensity>, <bold><green>1 snapshot updated</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>u<dim> to update failing snapshots for this test.</>
-<dim> › Press </>s<dim> to skip the current test.</>
-<dim> › Press </>q<dim> to quit Interactive Snapshot Mode.</>
-<dim> › Press </>Enter<dim> to trigger a test run.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>u<dim> to update failing snapshots for this test.</intensity>
+<dim> › Press </intensity>s<dim> to skip the current test.</intensity>
+<dim> › Press </intensity>q<dim> to quit Interactive Snapshot Mode.</intensity>
+<dim> › Press </intensity>Enter<dim> to trigger a test run.</intensity>
 "
 `;
 
 exports[`SnapshotInteractiveMode update 2 tests, then finish and return 3`] = `
 "<clearTerminal>
 
-<bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed</></>, <bold><green>2 snapshots updated</></>
+<bold>Interactive Snapshot Result</intensity>
+ › <bold><dim>2 snapshots reviewed</intensity></intensity>, <bold><green>2 snapshots updated</color></intensity>
 
-<bold>Watch Usage</>
-<dim> › Press </>Enter<dim> to return to watch mode.</>
+<bold>Watch Usage</intensity>
+<dim> › Press </intensity>Enter<dim> to return to watch mode.</intensity>
 "
 `;
