@@ -13,6 +13,8 @@
 ### Chore & Maintenance
 
 - `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
+- `[*]` Added Dockerfile for Jest Development ([#9109](https://github.com/facebook/jest/pull/9109))
+
 
 ### Performance
 
