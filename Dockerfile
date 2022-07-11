@@ -17,7 +17,7 @@ WORKDIR /usr/src/app
 COPY . ./
 
 #Install dependencies
-RUN yarn
+RUN yarn install --non-interactive
 
 #Build && Watch for changes
 ENTRYPOINT ["yarn"]
