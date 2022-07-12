@@ -113,6 +113,7 @@
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
     "verify-pnp": "node ./scripts/verifyPnP.mjs",
     "watch": "yarn build:js && node ./scripts/watch.mjs",
+    "watch:polling": "yarn build:js && node ./scripts/watchWithPolling.mjs",
     "watch:ts": "yarn build:ts --watch"
   },
   "workspaces": [

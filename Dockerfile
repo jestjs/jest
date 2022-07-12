@@ -21,4 +21,4 @@ RUN yarn install
 
 #Build && Watch for changes
 ENTRYPOINT ["yarn"]
-CMD ["watch"]
+CMD ["watch:polling"]
