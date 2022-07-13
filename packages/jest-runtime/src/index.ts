@@ -49,7 +49,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import type {IModuleMap} from 'jest-haste-map';
+import type {IHasteMap, IModuleMap} from 'jest-haste-map';
 import HasteMap from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
@@ -358,7 +358,7 @@ export default class Runtime {
   static createHasteMap(
     config: Config.ProjectConfig,
     options?: HasteMapOptions,
-  ): Promise<HasteMap> {
+  ): Promise<IHasteMap> {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
       ...(options && options.watch ? config.watchPathIgnorePatterns : []),

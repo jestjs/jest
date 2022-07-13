@@ -9,7 +9,7 @@ import type {V8Coverage} from 'collect-v8-coverage';
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
-import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type {IHasteFS, IModuleMap} from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
 export interface RuntimeTransformResult extends TransformTypes.TransformResult {
@@ -190,8 +190,8 @@ export type Test = {
 
 export type TestContext = {
   config: Config.ProjectConfig;
-  hasteFS: HasteFS;
-  moduleMap: ModuleMap;
+  hasteFS: IHasteFS;
+  moduleMap: IModuleMap;
   resolver: Resolver;
 };
 
