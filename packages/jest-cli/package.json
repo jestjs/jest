@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "28.1.2",
+  "version": "28.1.3",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -13,16 +13,16 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^28.1.2",
-    "@jest/test-result": "^28.1.1",
-    "@jest/types": "^28.1.1",
+    "@jest/core": "^28.1.3",
+    "@jest/test-result": "^28.1.3",
+    "@jest/types": "^28.1.3",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
     "import-local": "^3.0.2",
-    "jest-config": "^28.1.2",
-    "jest-util": "^28.1.1",
-    "jest-validate": "^28.1.1",
+    "jest-config": "^28.1.3",
+    "jest-util": "^28.1.3",
+    "jest-validate": "^28.1.3",
     "prompts": "^2.0.1",
     "yargs": "^17.3.1"
   },

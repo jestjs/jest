@@ -1,6 +1,6 @@
 {
   "name": "jest-each",
-  "version": "28.1.1",
+  "version": "28.1.3",
   "description": "Parameterised tests for Jest",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -25,11 +25,11 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
-    "@jest/types": "^28.1.1",
+    "@jest/types": "^28.1.3",
     "chalk": "^4.0.0",
     "jest-get-type": "^28.0.2",
-    "jest-util": "^28.1.1",
-    "pretty-format": "^28.1.1"
+    "jest-util": "^28.1.3",
+    "pretty-format": "^28.1.3"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
