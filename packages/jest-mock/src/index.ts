@@ -34,13 +34,13 @@ export type MockFunctionMetadata<
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
-export type ConstructorLikeKeys<T> = {
-  [K in keyof T]: T[K] extends ClassLike ? K : never;
-}[keyof T];
+export type ConstructorLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends ClassLike ? K : never]: T[K];
+};
 
-export type MethodLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? K : never;
-}[keyof T];
+export type MethodLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
+};
 
 export type PropertyLikeKeys<T> = {
   [K in keyof T]: T[K] extends FunctionLike
