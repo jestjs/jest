@@ -25,6 +25,8 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   \+ member(DependencyIdent, [
     % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     'react', 'react-dom',
+    % Only RN should be bumped to react 18
+    'react-test-renderer',
     % @types/node in the root need to stay on ~12.12.0
     '@types/node',
     % upgrading the entire repository is a breaking change
