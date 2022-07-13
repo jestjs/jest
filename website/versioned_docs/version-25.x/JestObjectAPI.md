@@ -469,7 +469,7 @@ Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
-Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md). 
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 :::note
 
