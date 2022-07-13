@@ -22,7 +22,7 @@
 
 ### Fixes
 
--`[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
+- `[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
 
 ### Chore & Maintenance
 
