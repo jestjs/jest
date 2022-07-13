@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 28.1.3
+
+### Features
+
 - `[jest-leak-detector]` Use native `FinalizationRegistry` when it exists to get rid of external C dependency ([#12973](https://github.com/facebook/jest/pull/12973))
 
 ### Fixes
@@ -15,8 +25,6 @@
 
 - `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
 - `[docs]` Update spyOn docs ([#13000](https://github.com/facebook/jest/pull/13000))
-
-### Performance
 
 ## 28.1.2
 
