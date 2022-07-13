@@ -21,7 +21,7 @@
     "jest-snapshot": "^28.1.2"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.7.3",
+    "@tsd/typescript": "~4.7.4",
     "tsd-lite": "^0.5.6"
   },
   "engines": {
