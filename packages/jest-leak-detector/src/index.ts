@@ -50,7 +50,7 @@ export default class LeakDetector {
 
         throw new Error(
           'The leaking detection mechanism requires newer version of node that supports ' +
-            'FinalizationRegistry, update your node or install the "weak-napi" package' +
+            'FinalizationRegistry, update your node or install the "weak-napi" package ' +
             'which support current node version as a dependency on your main project.',
         );
       }
