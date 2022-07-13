@@ -374,8 +374,6 @@ expectType<SpyInstance<typeof indexSpiedObject.methodE>>(
   spyOn(indexSpiedObject, 'methodE'),
 );
 
-expectError(spyOn(indexSpiedObject, 'propertyA'));
-
 expectType<SpyInstance<() => {a: string}>>(
   spyOn(indexSpiedObject, 'propertyA', 'get'),
 );

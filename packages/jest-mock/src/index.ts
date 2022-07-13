@@ -42,13 +42,10 @@ export type MethodLikeKeys<T> = keyof {
   [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
 };
 
-export type PropertyLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike
-    ? never
-    : T[K] extends ClassLike
-    ? never
-    : K;
-}[keyof T];
+export type PropertyLikeKeys<T> = Exclude<
+  keyof T,
+  ConstructorLikeKeys<T> | MethodLikeKeys<T>
+>;
 
 // TODO Figure out how to replace this with TS ConstructorParameters utility type
 // https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype

@@ -86,10 +86,10 @@ type IndexObject = {
 
   methodA(): void;
   methodB(b: string): boolean;
-  methodC: (c: number) => true;
+  methodC: (c: number) => boolean;
 
-  propertyA: {a: 123};
-  propertyB: {b: 'value'};
+  propertyA: {a: number};
+  propertyB: {b: string};
 };
 
 // ClassLike
@@ -142,6 +142,6 @@ declare const objectProperties: PropertyLikeKeys<SomeObject>;
 declare const indexObjectProperties: PropertyLikeKeys<IndexObject>;
 
 expectType<'propertyA' | 'propertyB' | 'propertyC'>(classProperties);
-expectType<string>(indexClassProperties);
+expectType<string | number>(indexClassProperties);
 expectType<'propertyA' | 'propertyB' | 'someClassInstance'>(objectProperties);
-expectType<string>(indexObjectProperties);
+expectType<string | number>(indexObjectProperties);
