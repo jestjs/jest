@@ -14,7 +14,7 @@
 ### Chore & Maintenance
 
 - `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
-- `[docs]` Update spyOn docs  ([#13000](https://github.com/facebook/jest/pull/13000))
+- `[docs]` Update spyOn docs ([#13000](https://github.com/facebook/jest/pull/13000))
 
 ### Performance
 
