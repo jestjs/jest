@@ -20,7 +20,9 @@ import {installCommonGlobals} from 'jest-util';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
-type Win = Window &
+type Win =
+  // TODO: this adds a dependency on the @types/trusted-types module, probably fixed by `@types/jsdom`
+  /* Window & */
   Global.Global & {
     Error: {
       stackTraceLimit: number;
