@@ -33,7 +33,7 @@ export default {
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   snapshotFormat: {
-    escapeString: false,
+    printBasicPrototype: true,
   },
   snapshotSerializers: [require.resolve('jest-serializer-ansi-escapes')],
   testPathIgnorePatterns: [
