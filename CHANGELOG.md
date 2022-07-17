@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Drop support for Node v12 and v17
+
 ### Performance
 
 ## 28.1.3

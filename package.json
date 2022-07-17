@@ -13,14 +13,14 @@
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.28.4",
-    "@tsconfig/node12": "^1.0.9",
+    "@tsconfig/node14": "^1.0.3",
     "@tsd/typescript": "~4.7.4",
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
     "@types/dedent": "^0.7.0",
     "@types/jest": "^27.4.0",
-    "@types/node": "~12.12.0",
+    "@types/node": "~14.14.45",
     "@types/which": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
@@ -167,10 +167,10 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "resolutions": {
-    "@types/node": "~12.12.0",
+    "@types/node": "~14.14.45",
     "babel-jest": "workspace:*",
     "enzyme/cheerio": "=1.0.0-rc.3",
     "jest": "workspace:*",
