@@ -90,7 +90,7 @@ test('that the failureDetails property is set', () => {
             "actual": "",
             "error": Object {
               "matcherResult": Object {
-                "actual": "Object {
+                "actual": "{
         "p1": "hello",
         "p2": "world",
       }",
@@ -105,7 +105,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -123,7 +123,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -136,7 +136,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
