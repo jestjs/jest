@@ -5591,15 +5591,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/weak-napi@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/weak-napi@npm:2.0.0"
-  dependencies:
-    "@types/node": "*"
-  checksum: 148b14ace8702cc1e639cfbaa5f17eaf98d571821e30e0c1ddb15c6d9f2a646d2677eabf6d0dd924b89e8c87aac4bc795f1d52a29abc170cb1cbfb4022ce4f48
-  languageName: node
-  linkType: hard
-
 "@types/webidl-conversions@npm:*":
   version: 6.1.1
   resolution: "@types/webidl-conversions@npm:6.1.1"
@@ -11193,26 +11184,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-symbol-from-current-process-h@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "get-symbol-from-current-process-h@npm:1.0.2"
-  checksum: d47cc1b9e0be27469e2af0555b21aaa5ebd114e8aa25bb0e2616c8abaebb7933e7b5bedcc31c6cad06e4df232e0fe280118001fec78da488f5f630b65cc1cae5
-  languageName: node
-  linkType: hard
-
 "get-tsconfig@npm:@unts/get-tsconfig@^4.1.1":
   version: 4.1.1
   resolution: "@unts/get-tsconfig@npm:4.1.1"
   checksum: dff677518c6bb9452aeb96a8d5935d0a93da1671ec17f92a8b1dfedc957447b12a4a1e8cade4b8dbacfef97a7b1761de40787f315ec62eebe65aa20675fc4944
-  languageName: node
-  linkType: hard
-
-"get-uv-event-loop-napi-h@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "get-uv-event-loop-napi-h@npm:1.0.6"
-  dependencies:
-    get-symbol-from-current-process-h: ^1.0.1
-  checksum: 3a2a9f9fc18196113d94496c79d5208c7e750cee6f65625fa34df195cab6bf9f122981c923e10cadd81d7f8da1ff92fe4020a7414d3ec16c820dee18e45bb29c
   languageName: node
   linkType: hard
 
@@ -13383,10 +13358,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-leak-detector@workspace:packages/jest-leak-detector"
   dependencies:
-    "@types/weak-napi": ^2.0.0
     jest-get-type: ^28.0.2
     pretty-format: ^28.1.3
-    weak-napi: ^2.0.1
   languageName: unknown
   linkType: soft
 
@@ -16128,15 +16101,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^3.0.0":
-  version: 3.2.1
-  resolution: "node-addon-api@npm:3.2.1"
-  dependencies:
-    node-gyp: latest
-  checksum: 2369986bb0881ccd9ef6bacdf39550e07e089a9c8ede1cbc5fc7712d8e2faa4d50da0e487e333d4125f8c7a616c730131d1091676c9d499af1d74560756b4a18
-  languageName: node
-  linkType: hard
-
 "node-dir@npm:^0.1.17":
   version: 0.1.17
   resolution: "node-dir@npm:0.1.17"
@@ -16173,17 +16137,6 @@ __metadata:
   version: 1.3.1
   resolution: "node-forge@npm:1.3.1"
   checksum: 08fb072d3d670599c89a1704b3e9c649ff1b998256737f0e06fbd1a5bf41cae4457ccaee32d95052d80bbafd9ffe01284e078c8071f0267dc9744e51c5ed42a9
-  languageName: node
-  linkType: hard
-
-"node-gyp-build@npm:^4.2.1":
-  version: 4.4.0
-  resolution: "node-gyp-build@npm:4.4.0"
-  bin:
-    node-gyp-build: bin.js
-    node-gyp-build-optional: optional.js
-    node-gyp-build-test: build-test.js
-  checksum: 972a059f960253d254e0b23ce10f54c8982236fc0edcab85166d0b7f87443b2ce98391c877cfb2f6eeafcf03c538c5f4dd3e0bfff03828eb48634f58f4c64343
   languageName: node
   linkType: hard
 
@@ -19903,16 +19856,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"setimmediate-napi@npm:^1.0.3":
-  version: 1.0.6
-  resolution: "setimmediate-napi@npm:1.0.6"
-  dependencies:
-    get-symbol-from-current-process-h: ^1.0.1
-    get-uv-event-loop-napi-h: ^1.0.5
-  checksum: c2bd48c6f7131e1aa9d7e076d6778a56047ec509b5edfedcc4c98c917d912abed9a60c70f4cf6a841393abe2352ef9cff44e3fe9a1000010180f3ad9522d625a
-  languageName: node
-  linkType: hard
-
 "setimmediate@npm:^1.0.5":
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
@@ -22369,18 +22312,6 @@ __metadata:
   dependencies:
     defaults: ^1.0.3
   checksum: 814e9d1ddcc9798f7377ffa448a5a3892232b9275ebb30a41b529607691c0491de47cba426e917a4d08ded3ee7e9ba2f3fe32e62ee3cd9c7d3bafb7754bd553c
-  languageName: node
-  linkType: hard
-
-"weak-napi@npm:^2.0.1":
-  version: 2.0.2
-  resolution: "weak-napi@npm:2.0.2"
-  dependencies:
-    node-addon-api: ^3.0.0
-    node-gyp: latest
-    node-gyp-build: ^4.2.1
-    setimmediate-napi: ^1.0.3
-  checksum: 4c3ebac3250c179c789bbef0514a53d35143da41706c716d4b8d2d8921aa8acb3eb4a1c1ccc7d5dc4dead6eae8602c69bae36250e15d967fda39c363dadf02af
   languageName: node
   linkType: hard
 
