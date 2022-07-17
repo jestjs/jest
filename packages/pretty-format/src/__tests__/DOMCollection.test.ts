@@ -126,7 +126,7 @@ describe('DOMCollection plugin for list items', () => {
   });
 
   const expectedHTMLFormControlsCollection = [
-    'HTMLCollection [',
+    'HTMLFormControlsCollection [',
     '  <select>',
     '    <option',
     '      value="1"',
