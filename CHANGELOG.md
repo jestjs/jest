@@ -7,7 +7,7 @@
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v12 and v17 ([#13033](https://github.com/facebook/jest/pull/13033))
-- `[jest-leak-detector]` Remove support for `weak-napi` ([#13034](https://github.com/facebook/jest/pull/13034))
+- `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
 
 ### Performance
 
