@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
+
 ### Fixes
 
 ### Chore & Maintenance

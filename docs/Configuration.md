@@ -1614,7 +1614,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 ### `snapshotFormat` \[object]
 
-Default: `undefined`
+Default: `{escapeString: false, printBasicPrototype: false}`
 
 Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 

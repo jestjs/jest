@@ -190,6 +190,7 @@ export type DefaultOptions = {
   setupFilesAfterEnv: Array<string>;
   skipFilter: boolean;
   slowTestThreshold: number;
+  snapshotFormat: SnapshotFormat;
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
