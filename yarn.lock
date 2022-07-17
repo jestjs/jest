@@ -13604,7 +13604,6 @@ __metadata:
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
-    execa: ^5.0.0
     glob: ^7.1.3
     graceful-fs: ^4.2.9
     jest-environment-node: ^28.1.3
