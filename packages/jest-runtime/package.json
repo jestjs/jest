@@ -24,6 +24,7 @@
     "@jest/test-result": "^28.1.3",
     "@jest/transform": "^28.1.3",
     "@jest/types": "^28.1.3",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
@@ -43,7 +44,6 @@
     "@jest/test-utils": "^28.1.3",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",
-    "@types/node": "*",
     "jest-environment-node": "^28.1.3"
   },
   "engines": {
