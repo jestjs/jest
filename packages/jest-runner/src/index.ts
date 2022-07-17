@@ -106,7 +106,6 @@ export default class TestRunner extends EmittingTestRunner {
 
     const worker = new Worker(require.resolve('./testWorker'), {
       exposedMethods: ['worker'],
-      // @ts-expect-error: option does not exist on the node 12 types
       forkOptions: {serialization: 'json', stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,

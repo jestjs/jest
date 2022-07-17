@@ -27,7 +27,6 @@
     "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
-    "execa": "^5.0.0",
     "glob": "^7.1.3",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "^28.1.3",
@@ -48,7 +47,7 @@
     "jest-environment-node": "^28.1.3"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
