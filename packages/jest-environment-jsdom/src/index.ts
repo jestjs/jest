@@ -30,7 +30,8 @@ type Win =
   };
 
 export default class JSDOMEnvironment implements JestEnvironment<number> {
-  dom: JSDOM | null;
+  // TODO: make non-privat when we have `@types/jsdom` again
+  private dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
