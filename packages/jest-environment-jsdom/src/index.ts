@@ -6,6 +6,7 @@
  */
 
 import type {Context} from 'vm';
+// @ts-expect-error: TODO: we're missing v20 types
 import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
 import type {
   EnvironmentContext,
@@ -40,6 +41,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     const virtualConsole = new VirtualConsole();
     virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    // @ts-expect-error: TODO: we're missing v20 types
     virtualConsole.on('jsdomError', error => {
       context.console.error(error);
     });
@@ -86,6 +88,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         process.emit('uncaughtException', event.error);
       }
     };
+    // @ts-expect-error: TODO: we're missing v20 types
     global.addEventListener('error', this.errorEventListener);
 
     // However, don't report them as uncaught if the user listens to 'error' event.
@@ -94,19 +97,23 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
     global.addEventListener = function (
+      // @ts-expect-error: TODO: we're missing v20 types
       ...args: Parameters<typeof originalAddListener>
     ) {
       if (args[0] === 'error') {
         userErrorListenerCount++;
       }
+      // @ts-expect-error: TODO: we're missing v20 types
       return originalAddListener.apply(this, args);
     };
     global.removeEventListener = function (
+      // @ts-expect-error: TODO: we're missing v20 types
       ...args: Parameters<typeof originalRemoveListener>
     ) {
       if (args[0] === 'error') {
         userErrorListenerCount--;
       }
+      // @ts-expect-error: TODO: we're missing v20 types
       return originalRemoveListener.apply(this, args);
     };
 
@@ -154,8 +161,10 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     }
     if (this.global) {
       if (this.errorEventListener) {
+        // @ts-expect-error: TODO: we're missing v20 types
         this.global.removeEventListener('error', this.errorEventListener);
       }
+      // @ts-expect-error: TODO: we're missing v20 types
       this.global.close();
 
       // Dispose "document" to prevent "load" event from triggering.
