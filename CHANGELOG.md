@@ -6,7 +6,7 @@
 
 ### Chore & Maintenance
 
-- `[*]` [**BREAKING**] Drop support for Node v12 and v17
+- `[*]` [**BREAKING**] Drop support for Node v12 and v17 ([#13033](https://github.com/facebook/jest/pull/13033))
 
 ### Performance
 
