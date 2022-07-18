@@ -31,3 +31,7 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 ## JSDOM upgrade
 
 `jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. Due to issues with `@types/jsdom`, if you extend this environment, you might run into type errors. See https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/60999#discussioncomment-3158685.
+
+## `pretty-format`
+
+`ConvertAnsi` plugin is removed in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).

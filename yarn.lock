@@ -17945,7 +17945,6 @@ __metadata:
     "@types/react": ^17.0.3
     "@types/react-is": ^17.0.0
     "@types/react-test-renderer": 17.0.2
-    ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     expect: ^29.0.0-alpha.0
     immutable: ^4.0.0
