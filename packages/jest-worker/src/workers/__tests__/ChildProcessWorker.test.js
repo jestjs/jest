@@ -375,6 +375,43 @@ it('restarts the child when the child process dies', () => {
   expect(childProcess.fork).toHaveBeenCalledTimes(2);
 });
 
+it('when out of memory occurs the worker is killed and exits', async () => {
+  const worker = new Worker({
+    workerPath: '/tmp/foo',
+  });
+
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'foo', []],
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  // Only onProcessStart has been called
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  forkInterface.emit('exit', null, 'SIGABRT');
+
+  // We don't want it to try and restart.
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).toHaveBeenCalledWith(
+    new Error('Process exited unexpectedly: SIGABRT'),
+    null,
+  );
+
+  // It should not hang
+  await worker.waitForExit();
+});
+
 it('sends SIGTERM when forceExit() is called', async () => {
   const worker = new Worker({
     forkOptions: {},
