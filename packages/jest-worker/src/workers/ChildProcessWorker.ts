@@ -206,7 +206,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _onExit(exitCode: number | null) {
+  private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
     if (
       exitCode !== 0 &&
       exitCode !== null &&
@@ -219,6 +219,17 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._child.send(this._request);
       }
     } else {
+      if (signal === 'SIGABRT') {
+        // When a child process worker crashes due to lack of memory this prevents
+        // jest from spinning and failing to exit. It could be argued it should restart
+        // the process, but if you're running out of memory then restarting processes
+        // is only going to make matters worse.
+        this._onProcessEnd(
+          new Error(`Process exited unexpectedly: ${signal}`),
+          null,
+        );
+      }
+
       this._shutdown();
     }
   }
