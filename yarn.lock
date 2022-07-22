@@ -2746,7 +2746,7 @@ __metadata:
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^26.1.0
     eslint-plugin-local: ^1.0.0
-    eslint-plugin-markdown: ^2.2.1
+    eslint-plugin-markdown: ^3.0.0
     eslint-plugin-prettier: ^4.0.0
     execa: ^5.0.0
     fast-check: ^3.0.0
@@ -2766,7 +2766,7 @@ __metadata:
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
-    jest-watch-typeahead: ^1.1.0
+    jest-watch-typeahead: ^2.0.0
     jquery: ^3.2.1
     js-yaml: ^4.1.0
     lerna: ^4.0.0
@@ -6293,12 +6293,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-escapes@npm:^4.2.1, ansi-escapes@npm:^4.3.1":
+"ansi-escapes@npm:^4.2.1":
   version: 4.3.2
   resolution: "ansi-escapes@npm:4.3.2"
   dependencies:
     type-fest: ^0.21.3
   checksum: 93111c42189c0a6bed9cdb4d7f2829548e943827ee8479c74d6e0b22ee127b2a21d3f8b5ca57723b8ef78ce011fbfc2784350eb2bde3ccfccf2f575fa8489815
+  languageName: node
+  linkType: hard
+
+"ansi-escapes@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "ansi-escapes@npm:5.0.0"
+  dependencies:
+    type-fest: ^1.0.2
+  checksum: d4b5eb8207df38367945f5dd2ef41e08c28edc192dc766ef18af6b53736682f49d8bfcfa4e4d6ecbc2e2f97c258fda084fb29a9e43b69170b71090f771afccac
   languageName: node
   linkType: hard
 
@@ -9854,14 +9863,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-markdown@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "eslint-plugin-markdown@npm:2.2.1"
+"eslint-plugin-markdown@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "eslint-plugin-markdown@npm:3.0.0"
   dependencies:
     mdast-util-from-markdown: ^0.8.5
   peerDependencies:
-    eslint: ">=6.0.0"
-  checksum: 68be3ac504f0bef6a50b092b4a6d46188e4be713c9fa18dcab2a5dff577714c71b5064219214db8324629f36128f1f13e2d5ba55ef2f053fb48fb65576db9c66
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: ea9e8613cffcf7decbc2de0c900a83553ccdccfb6d90187e5d461a457a403d2634585a8c165cc4adf52c86f3b910161f33b1f24a46f296c4a577d2547780c997
   languageName: node
   linkType: hard
 
@@ -13796,11 +13805,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-watch-typeahead@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "jest-watch-typeahead@npm:1.1.0"
+"jest-watch-typeahead@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "jest-watch-typeahead@npm:2.0.0"
   dependencies:
-    ansi-escapes: ^4.3.1
+    ansi-escapes: ^5.0.0
     chalk: ^4.0.0
     jest-regex-util: ^28.0.0
     jest-watcher: ^28.0.0
@@ -13809,7 +13818,7 @@ __metadata:
     strip-ansi: ^7.0.1
   peerDependencies:
     jest: ^27.0.0 || ^28.0.0
-  checksum: 59b0a494ac01e3801c9ec586de3209153eedb024b981e25443111c5703711d23b67ebc71b072986c1758307e0bfb5bf1c92bd323f73f58602d6f4f609dce6a0c
+  checksum: c25fa793e56e0a316642a714c960b29359ddc1ce3f621ffb8a42a3ccfffb67c57223597e2fb387d5f49e2b93a22fc1f4b54e900e4fa80eca6602f70a30c22ffb
   languageName: node
   linkType: hard
 
@@ -21573,6 +21582,13 @@ __metadata:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: d61c4b2eba24009033ae4500d7d818a94fd6d1b481a8111612ee141400d5f1db46f199c014766b9fa9b31a6a7374d96fc748c6d688a78a3ce5a33123839becb7
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^1.0.2":
+  version: 1.4.0
+  resolution: "type-fest@npm:1.4.0"
+  checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
   languageName: node
   linkType: hard
 
