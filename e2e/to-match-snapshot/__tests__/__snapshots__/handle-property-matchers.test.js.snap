@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handles property matchers 1`] = `
+Object {
+  "createdAt": Any<Date>,
+}
+`;

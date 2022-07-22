@@ -107,6 +107,7 @@ export default class TestRunner extends EmittingTestRunner {
     const worker = new Worker(require.resolve('./testWorker'), {
       exposedMethods: ['worker'],
       forkOptions: {serialization: 'json', stdio: 'pipe'},
+      idleMemoryLimit: this._globalConfig.workerIdleMemoryLimit,
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],

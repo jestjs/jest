@@ -36,11 +36,13 @@ export type WorkerModule<T> = {
 export const CHILD_MESSAGE_INITIALIZE = 0;
 export const CHILD_MESSAGE_CALL = 1;
 export const CHILD_MESSAGE_END = 2;
+export const CHILD_MESSAGE_MEM_USAGE = 3;
 
 export const PARENT_MESSAGE_OK = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR = 1;
 export const PARENT_MESSAGE_SETUP_ERROR = 2;
 export const PARENT_MESSAGE_CUSTOM = 3;
+export const PARENT_MESSAGE_MEM_USAGE = 4;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
@@ -122,6 +124,7 @@ export type WorkerFarmOptions = {
     options?: WorkerPoolOptions,
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
+  idleMemoryLimit?: number;
 };
 
 export type WorkerPoolOptions = {
@@ -131,6 +134,7 @@ export type WorkerPoolOptions = {
   maxRetries: number;
   numWorkers: number;
   enableWorkerThreads: boolean;
+  idleMemoryLimit?: number;
 };
 
 export type WorkerOptions = {
@@ -141,6 +145,7 @@ export type WorkerOptions = {
   workerId: number;
   workerData?: unknown;
   workerPath: string;
+  idleMemoryLimit?: number;
 };
 
 // Messages passed from the parent to the children.
@@ -174,10 +179,15 @@ export type ChildMessageEnd = [
   boolean, // processed
 ];
 
+export type ChildMessageMemUsage = [
+  typeof CHILD_MESSAGE_MEM_USAGE, // type
+];
+
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
-  | ChildMessageEnd;
+  | ChildMessageEnd
+  | ChildMessageMemUsage;
 
 // Messages passed from the children to the parent.
 
@@ -191,6 +201,11 @@ export type ParentMessageOk = [
   unknown, // result
 ];
 
+export type ParentMessageMemUsage = [
+  typeof PARENT_MESSAGE_MEM_USAGE, // type
+  number, // used memory in bytes
+];
+
 export type ParentMessageError = [
   PARENT_MESSAGE_ERROR, // type
   string, // constructor
@@ -202,7 +217,8 @@ export type ParentMessageError = [
 export type ParentMessage =
   | ParentMessageOk
   | ParentMessageError
-  | ParentMessageCustom;
+  | ParentMessageCustom
+  | ParentMessageMemUsage;
 
 // Queue types.
 

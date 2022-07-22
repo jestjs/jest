@@ -6,17 +6,20 @@
  */
 
 import {ChildProcess, fork} from 'child_process';
+import {totalmem} from 'os';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   ChildMessage,
   OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -64,6 +67,9 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
+  private _childIdleMemoryUsage: number | null;
+  private _childIdleMemoryUsageLimit: number | null;
+  private _restarting = false;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -73,6 +79,8 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
+    this._childIdleMemoryUsage = null;
+    this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
 
     this._exitPromise = new Promise(resolve => {
       this._resolveExitPromise = resolve;
@@ -82,6 +90,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   initialize(): void {
+    this._restarting = false;
+
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
     const child = fork(require.resolve('./processChild'), [], {
       cwd: process.cwd(),
@@ -201,17 +211,44 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_CUSTOM:
         this._onCustomMessage(response[1]);
         break;
+
+      case PARENT_MESSAGE_MEM_USAGE:
+        this._childIdleMemoryUsage = response[1];
+
+        this._performRestartIfRequired();
+
+        break;
+
       default:
         throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 
+  private _performRestartIfRequired(): void {
+    let limit = this._childIdleMemoryUsageLimit;
+
+    if (limit && limit > 0 && limit <= 1) {
+      limit = Math.floor(totalmem() * limit);
+    }
+
+    if (
+      limit &&
+      this._childIdleMemoryUsage &&
+      this._childIdleMemoryUsage > limit
+    ) {
+      this._restarting = true;
+
+      this.killChild();
+    }
+  }
+
   private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
     if (
-      exitCode !== 0 &&
-      exitCode !== null &&
-      exitCode !== SIGTERM_EXIT_CODE &&
-      exitCode !== SIGKILL_EXIT_CODE
+      (exitCode !== 0 &&
+        exitCode !== null &&
+        exitCode !== SIGTERM_EXIT_CODE &&
+        exitCode !== SIGKILL_EXIT_CODE) ||
+      this._restarting
     ) {
       this.initialize();
 
@@ -241,7 +278,12 @@ export default class ChildProcessWorker implements WorkerInterface {
     onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
+
     this._onProcessEnd = (...args) => {
+      if (this._childIdleMemoryUsageLimit) {
+        this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+      }
+
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
@@ -260,12 +302,13 @@ export default class ChildProcessWorker implements WorkerInterface {
     return this._exitPromise;
   }
 
-  forceExit(): void {
+  killChild(): NodeJS.Timeout {
     this._child.kill('SIGTERM');
-    const sigkillTimeout = setTimeout(
-      () => this._child.kill('SIGKILL'),
-      SIGKILL_DELAY,
-    );
+    return setTimeout(() => this._child.kill('SIGKILL'), SIGKILL_DELAY);
+  }
+
+  forceExit(): void {
+    const sigkillTimeout = this.killChild();
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
