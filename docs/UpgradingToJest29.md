@@ -30,7 +30,7 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 ## JSDOM upgrade
 
-`jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. Due to issues with `@types/jsdom`, if you extend this environment, you might run into type errors. See https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/60999#discussioncomment-3158685.
+`jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. Note that _if_ you use `jest-environment-jsdom`, the minimum TypeScript version is set to `4.5`.
 
 ## `pretty-format`
 
