@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/// <reference lib="dom" />
-
 import type {Context} from 'vm';
-// @ts-expect-error: TODO: we're missing v20 types
 import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
 import type {
   EnvironmentContext,
@@ -30,8 +27,7 @@ type Win = Window &
   };
 
 export default class JSDOMEnvironment implements JestEnvironment<number> {
-  // TODO: make non-privat when we have `@types/jsdom` again
-  private dom: JSDOM | null;
+  dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
@@ -44,7 +40,6 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     const virtualConsole = new VirtualConsole();
     virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
-    // @ts-expect-error: TODO: we're missing v20 types
     virtualConsole.on('jsdomError', error => {
       context.console.error(error);
     });
