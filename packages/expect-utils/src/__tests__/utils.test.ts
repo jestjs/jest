@@ -6,7 +6,7 @@
  *
  */
 
-import {List, OrderedMap, OrderedSet} from 'immutable';
+import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
 import {
   arrayBufferEquality,
@@ -535,6 +535,13 @@ describe('iterableEquality', () => {
   test('returns true when given Immutable OrderedSets without an OwnerID', () => {
     const a = OrderedSet().add('newValue');
     const b = List(['newValue']).toOrderedSet();
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable Record without an OwnerID', () => {
+    class TestRecord extends Record({dummy: ''}) {}
+    const a = new TestRecord().merge({dummy: 'data'});
+    const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
   });
 });
