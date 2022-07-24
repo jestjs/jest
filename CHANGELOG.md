@@ -3,7 +3,7 @@
 ### Features
 
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
-- `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037))
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
 - `[pretty-format]` [**BREAKING**] Remove `ConvertAnsi` plugin in favour of `jest-serializer-ansi-escapes` ([#13040](https://github.com/facebook/jest/pull/13040))
 
 ### Fixes
