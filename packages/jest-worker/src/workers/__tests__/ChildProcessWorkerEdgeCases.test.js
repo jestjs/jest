@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {rm, writeFile} from 'fs/promises';
+import {access, rm, writeFile} from 'fs/promises';
 import {join} from 'path';
 import {transformFileAsync} from '@babel/core';
 import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_MEM_USAGE} from '../../types';
@@ -34,8 +34,6 @@ afterAll(async () => {
     await rm(join(__dirname, `${file}.js`));
   }
 });
-
-beforeEach(() => {});
 
 afterEach(async () => {
   if (worker) {
@@ -67,6 +65,12 @@ function waitForChange(fn, limit = 100) {
     }, 50);
   });
 }
+
+test.each(filesToBuild)('%s should exist', async file => {
+  const path = join(__dirname, `${file}.js`);
+
+  expect(() => access(path)).not.toThrow();
+});
 
 test('should get memory usage', async () => {
   console.log(1);
