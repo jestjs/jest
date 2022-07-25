@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ChildProcess, fork} from 'child_process';
+import {ChildProcess, ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
@@ -67,9 +67,14 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
+
+  private _memoryUsagePromise: Promise<number> | undefined;
+  private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
+
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _restarting = false;
+  private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -93,7 +98,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._restarting = false;
 
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
-    const child = fork(require.resolve('./processChild'), [], {
+    const options: ForkOptions = {
       cwd: process.cwd(),
       env: {
         ...process.env,
@@ -106,7 +111,9 @@ export default class ChildProcessWorker implements WorkerInterface {
       serialization: 'advanced',
       silent: true,
       ...this._options.forkOptions,
-    });
+    };
+
+    const child = fork(require.resolve('./processChild'), [], options);
 
     if (child.stdout) {
       if (!this._stdout) {
@@ -215,6 +222,13 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_MEM_USAGE:
         this._childIdleMemoryUsage = response[1];
 
+        if (this._resolveMemoryUsage) {
+          this._resolveMemoryUsage(response[1]);
+
+          this._resolveMemoryUsage = undefined;
+          this._memoryUsagePromise = undefined;
+        }
+
         this._performRestartIfRequired();
 
         break;
@@ -225,20 +239,24 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _performRestartIfRequired(): void {
-    let limit = this._childIdleMemoryUsageLimit;
+    if (this._memoryUsageCheck) {
+      this._memoryUsageCheck = false;
 
-    if (limit && limit > 0 && limit <= 1) {
-      limit = Math.floor(totalmem() * limit);
-    }
+      let limit = this._childIdleMemoryUsageLimit;
 
-    if (
-      limit &&
-      this._childIdleMemoryUsage &&
-      this._childIdleMemoryUsage > limit
-    ) {
-      this._restarting = true;
+      if (limit && limit > 0 && limit <= 1) {
+        limit = Math.floor(totalmem() * limit);
+      }
 
-      this.killChild();
+      if (
+        limit &&
+        this._childIdleMemoryUsage &&
+        this._childIdleMemoryUsage > limit
+      ) {
+        this._restarting = true;
+
+        this.killChild();
+      }
     }
   }
 
@@ -280,8 +298,8 @@ export default class ChildProcessWorker implements WorkerInterface {
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
-      if (this._childIdleMemoryUsageLimit) {
-        this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+      if (this._childIdleMemoryUsageLimit && this._child.connected) {
+        this.checkMemoryUsage();
       }
 
       // Clean the request to avoid sending past requests to workers that fail
@@ -316,12 +334,56 @@ export default class ChildProcessWorker implements WorkerInterface {
     return this._options.workerId;
   }
 
+  /**
+   * Gets the process id of the worker.
+   *
+   * @returns Process id.
+   */
+  getWorkerPid(): number {
+    return this._child.pid;
+  }
+
   getStdout(): NodeJS.ReadableStream | null {
     return this._stdout;
   }
 
   getStderr(): NodeJS.ReadableStream | null {
     return this._stderr;
+  }
+
+  /**
+   * Gets the last reported memory usage.
+   *
+   * @returns Memory usage in bytes.
+   */
+  getMemoryUsage(): Promise<number | null> {
+    if (!this._memoryUsagePromise) {
+      this._memoryUsagePromise = new Promise((resolve, reject) => {
+        this._resolveMemoryUsage = resolve;
+
+        if (!this._child.connected) {
+          reject(new Error('Child process is not running.'));
+        }
+      });
+
+      this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+    }
+
+    return this._memoryUsagePromise;
+  }
+
+  /**
+   * Gets updated memory usage and restarts if required
+   */
+  checkMemoryUsage(): void {
+    if (this._childIdleMemoryUsageLimit) {
+      this._memoryUsageCheck = true;
+      this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+    } else {
+      console.warn(
+        'Memory usage of workers can only be checked if a limit is set',
+      );
+    }
   }
 
   private _getFakeStream() {

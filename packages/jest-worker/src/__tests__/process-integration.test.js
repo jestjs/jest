@@ -20,6 +20,7 @@ function mockBuildForkedProcess() {
   const mockChild = new EventEmitter();
 
   mockChild.send = jest.fn();
+  mockChild.connected = true;
 
   return mockChild;
 }

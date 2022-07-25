@@ -53,3 +53,7 @@ api-extractor.json
 **/.pnp.*
 
 crowdin-cli.jar
+
+# We don't want this temp file
+packages/jest-worker/src/workers/processChild.js
+packages/jest-worker/src/types.js

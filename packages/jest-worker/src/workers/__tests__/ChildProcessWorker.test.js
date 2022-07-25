@@ -37,6 +37,7 @@ beforeEach(() => {
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
     forkInterface = Object.assign(new EventEmitter(), {
+      connected: true,
       kill: jest.fn(),
       send: jest.fn(),
       stderr: new PassThrough(),
@@ -543,16 +544,7 @@ it('should check for memory limits and not restart if under absolute limit', asy
   };
   const worker = new Worker(options);
 
-  const onProcessStart = jest.fn();
-  const onProcessEnd = jest.fn();
-  const onCustomMessage = jest.fn();
-
-  worker.send(
-    [CHILD_MESSAGE_CALL, false, 'foo', []],
-    onProcessStart,
-    onProcessEnd,
-    onCustomMessage,
-  );
+  worker.checkMemoryUsage();
 
   totalmem.mockReturnValue(memoryConfig.totalMem);
 
@@ -581,16 +573,7 @@ it('should check for memory limits and restart if above percentage limit', async
   };
   const worker = new Worker(options);
 
-  const onProcessStart = jest.fn();
-  const onProcessEnd = jest.fn();
-  const onCustomMessage = jest.fn();
-
-  worker.send(
-    [CHILD_MESSAGE_CALL, false, 'foo', []],
-    onProcessStart,
-    onProcessEnd,
-    onCustomMessage,
-  );
+  worker.checkMemoryUsage();
 
   totalmem.mockReturnValue(memoryConfig.totalMem);
 
@@ -619,16 +602,7 @@ it('should check for memory limits and restart if above absolute limit', async (
   };
   const worker = new Worker(options);
 
-  const onProcessStart = jest.fn();
-  const onProcessEnd = jest.fn();
-  const onCustomMessage = jest.fn();
-
-  worker.send(
-    [CHILD_MESSAGE_CALL, false, 'foo', []],
-    onProcessStart,
-    onProcessEnd,
-    onCustomMessage,
-  );
+  worker.checkMemoryUsage();
 
   totalmem.mockReturnValue(memoryConfig.totalMem);
 
