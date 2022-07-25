@@ -113,7 +113,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       ...this._options.forkOptions,
     };
 
-    const child = fork(require.resolve('./processChild'), [], options);
+    const child = fork(require.resolve('./processChild.js'), [], options);
 
     if (child.stdout) {
       if (!this._stdout) {
