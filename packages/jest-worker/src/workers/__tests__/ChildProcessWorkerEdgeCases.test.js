@@ -78,7 +78,12 @@ test('should get memory usage', async () => {
     ),
   });
 
-  expect(await worker.getMemoryUsage()).toBeGreaterThan(0);
+  const memoryUsagePromise = worker.getMemoryUsage();
+  expect(memoryUsagePromise).toBeInstanceOf(Promise);
+
+  console.log(1, memoryUsagePromise);
+  expect(await memoryUsagePromise).toBeGreaterThan(0);
+  console.log(2, memoryUsagePromise);
 }, 10000);
 
 test('should recycle on idle limit breach', async () => {
