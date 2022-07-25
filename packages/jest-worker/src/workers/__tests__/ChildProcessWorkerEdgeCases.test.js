@@ -139,10 +139,6 @@ test('should cleanly exit on crash', async () => {
       // Forcibly set the heap limit so we can crash the process easily.
       execArgv: ['--max-old-space-size=50'],
     },
-    // There is no way this is fitting into 1000 bytes, so it should restart
-    // after requesting a memory usage update
-    idleMemoryLimit: 1000,
-
     maxRetries: 0,
     workerPath: join(
       __dirname,
@@ -166,4 +162,4 @@ test('should cleanly exit on crash', async () => {
   );
 
   await worker.waitForExit();
-}, 10000);
+}, 30000);
