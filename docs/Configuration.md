@@ -2262,8 +2262,8 @@ Specifies the memory limit for workers before they are recycled and is primarily
 
 After the worker has executed a test the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. The limit can be specified in 2 ways
 
-* < 1 - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
-* \> 1 - Assumed to be a fixed byte value
+- < 1 - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
+- \> 1 - Assumed to be a fixed byte value
 
 ```js tab
 /** @type {import('jest').Config} */
@@ -2273,6 +2273,7 @@ const config = {
 
 module.exports = config;
 ```
+
 ```ts tab
 import type {Config} from 'jest';
 
