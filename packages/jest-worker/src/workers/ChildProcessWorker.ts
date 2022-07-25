@@ -109,7 +109,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
-      silent: true,
+      silent: false,
       ...this._options.forkOptions,
     };
 
