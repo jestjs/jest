@@ -358,15 +358,33 @@ export default class ChildProcessWorker implements WorkerInterface {
    */
   getMemoryUsage(): Promise<number | null> {
     if (!this._memoryUsagePromise) {
-      this._memoryUsagePromise = new Promise((resolve, reject) => {
-        this._resolveMemoryUsage = resolve;
+      let rejectCallback!: (err: Error) => void;
 
-        if (!this._child.connected) {
-          reject(new Error('Child process is not running.'));
+      const promise = new Promise<number>((resolve, reject) => {
+        this._resolveMemoryUsage = resolve;
+        rejectCallback = reject;
+      });
+      this._memoryUsagePromise = promise;
+
+      if (!this._child.connected && rejectCallback) {
+        rejectCallback(new Error('Child process is not running.'));
+
+        this._memoryUsagePromise = undefined;
+        this._resolveMemoryUsage = undefined;
+
+        return promise;
+      }
+
+      this._child.send([CHILD_MESSAGE_MEM_USAGE], err => {
+        if (err && rejectCallback) {
+          this._memoryUsagePromise = undefined;
+          this._resolveMemoryUsage = undefined;
+
+          rejectCallback(err);
         }
       });
 
-      this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+      return promise;
     }
 
     return this._memoryUsagePromise;
@@ -378,7 +396,11 @@ export default class ChildProcessWorker implements WorkerInterface {
   checkMemoryUsage(): void {
     if (this._childIdleMemoryUsageLimit) {
       this._memoryUsageCheck = true;
-      this._child.send([CHILD_MESSAGE_MEM_USAGE]);
+      this._child.send([CHILD_MESSAGE_MEM_USAGE], err => {
+        if (err) {
+          console.error('Unable to check memory usage', err);
+        }
+      });
     } else {
       console.warn(
         'Memory usage of workers can only be checked if a limit is set',
