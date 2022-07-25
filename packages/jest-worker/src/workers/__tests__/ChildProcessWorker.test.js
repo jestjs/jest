@@ -6,7 +6,6 @@
  */
 
 import EventEmitter from 'events';
-import * as Os from 'os';
 import {PassThrough} from 'stream';
 import getStream from 'get-stream';
 import supportsColor from 'supports-color';
@@ -29,6 +28,11 @@ let childProcess;
 let originalExecArgv;
 let totalmem;
 
+beforeAll(() => {
+  const os = require('os');
+  totalmem = jest.spyOn(os, 'totalmem');
+});
+
 beforeEach(() => {
   jest.mock('child_process');
 
@@ -47,7 +51,7 @@ beforeEach(() => {
     return forkInterface;
   });
 
-  totalmem = jest.spyOn(Os, 'totalmem');
+  totalmem.mockReset();
 
   Worker = require('../ChildProcessWorker').default;
 });
