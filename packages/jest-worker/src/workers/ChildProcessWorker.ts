@@ -31,6 +31,7 @@ import {
 const SIGNAL_BASE_EXIT_CODE = 128;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
+const SIGABRT_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 6;
 
 // How long to wait after SIGTERM before sending SIGKILL
 const SIGKILL_DELAY = 500;
@@ -269,11 +270,16 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
+    // When a out of memory crash occurs
+    // - Mac/Unix signal=SIGABRT
+    // - Windows exitCode=134
+
     if (
       (exitCode !== 0 &&
         exitCode !== null &&
         exitCode !== SIGTERM_EXIT_CODE &&
-        exitCode !== SIGKILL_EXIT_CODE) ||
+        exitCode !== SIGKILL_EXIT_CODE &&
+        exitCode !== SIGABRT_EXIT_CODE) ||
       this._restarting
     ) {
       this.initialize();
@@ -282,7 +288,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._child.send(this._request);
       }
     } else {
-      if (signal === 'SIGABRT') {
+      if (signal === 'SIGABRT' || exitCode === SIGABRT_EXIT_CODE) {
         // When a child process worker crashes due to lack of memory this prevents
         // jest from spinning and failing to exit. It could be argued it should restart
         // the process, but if you're running out of memory then restarting processes
