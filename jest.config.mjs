@@ -76,8 +76,7 @@ export default {
   },
   watchPathIgnorePatterns: [
     'coverage',
-    '<rootDir>/packages/jest-worker/src/workers/processChild.js',
-    '<rootDir>/packages/jest-worker/src/types.js',
+    '<rootDir>/packages/jest-worker/src/workers/__tests__/__temp__',
   ],
   watchPlugins: [
     require.resolve('jest-watch-typeahead/filename'),

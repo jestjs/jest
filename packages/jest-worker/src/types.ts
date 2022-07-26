@@ -148,6 +148,14 @@ export type WorkerOptions = {
   idleMemoryLimit?: number;
 };
 
+export type ChildProcessWorkerOptions = WorkerOptions & {
+  /**
+   * This mainly exists so the path can be changed during testing.
+   * https://github.com/facebook/jest/issues/9543
+   */
+  childWorkerPath?: string;
+};
+
 // Messages passed from the parent to the children.
 
 export type MessagePort = typeof EventEmitter & {

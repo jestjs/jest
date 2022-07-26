@@ -14,6 +14,7 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   ChildMessage,
+  ChildProcessWorkerOptions,
   OnCustomMessage,
   OnEnd,
   OnStart,
@@ -76,7 +77,9 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _restarting = false;
   private _memoryUsageCheck = false;
 
-  constructor(options: WorkerOptions) {
+  private _childWorkerPath: string;
+
+  constructor(options: ChildProcessWorkerOptions) {
     this._options = options;
 
     this._request = null;
@@ -90,6 +93,9 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._exitPromise = new Promise(resolve => {
       this._resolveExitPromise = resolve;
     });
+
+    this._childWorkerPath =
+      options.childWorkerPath || require.resolve('./processChild');
 
     this.initialize();
   }
@@ -113,7 +119,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       ...this._options.forkOptions,
     };
 
-    const child = fork(require.resolve('./processChild.js'), [], options);
+    const child = fork(this._childWorkerPath, [], options);
 
     if (child.stdout) {
       if (!this._stdout) {
