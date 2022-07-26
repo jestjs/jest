@@ -78,6 +78,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _memoryUsageCheck = false;
 
   private _childWorkerPath: string;
+  private _silent = true;
 
   constructor(options: ChildProcessWorkerOptions) {
     this._options = options;
@@ -96,6 +97,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
+    this._silent = options.silent ?? true;
 
     this.initialize();
   }
@@ -115,7 +117,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
-      silent: true,
+      silent: this._silent,
       ...this._options.forkOptions,
     };
 

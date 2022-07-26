@@ -154,6 +154,11 @@ export type ChildProcessWorkerOptions = WorkerOptions & {
    * https://github.com/facebook/jest/issues/9543
    */
   childWorkerPath?: string;
+  /**
+   * This is useful for debugging individual tests allowing you to see
+   * the raw output of the worker.
+   */
+  silent?: boolean;
 };
 
 // Messages passed from the parent to the children.

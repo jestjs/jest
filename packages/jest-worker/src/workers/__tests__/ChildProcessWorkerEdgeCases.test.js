@@ -165,6 +165,7 @@ test('should cleanly exit on crash', async () => {
       execArgv: ['--max-old-space-size=50'],
     },
     maxRetries: 0,
+    silent: false,
     workerPath: join(
       __dirname,
       '__fixtures__',
@@ -172,8 +173,10 @@ test('should cleanly exit on crash', async () => {
     ),
   });
 
-  const startPid = worker.getWorkerPid();
-  expect(startPid).toBeGreaterThanOrEqual(0);
+  const pid = worker.getWorkerPid();
+  expect(pid).toBeGreaterThanOrEqual(0);
+
+  console.log(1, pid);
 
   const onStart = jest.fn();
   const onEnd = jest.fn();
@@ -186,5 +189,9 @@ test('should cleanly exit on crash', async () => {
     onCustom,
   );
 
+  console.log(2, pid, worker.waitForExit());
+
   await worker.waitForExit();
+
+  console.log(3, pid, worker.waitForExit());
 }, 30000);
