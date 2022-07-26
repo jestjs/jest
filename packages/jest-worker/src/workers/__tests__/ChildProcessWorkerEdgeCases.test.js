@@ -81,8 +81,6 @@ test.each(filesToBuild)('%s.js should exist', async file => {
 });
 
 test('should get memory usage', async () => {
-  console.log(1);
-
   worker = new ChildProcessWorker({
     childWorkerPath,
     maxRetries: 0,
@@ -93,14 +91,9 @@ test('should get memory usage', async () => {
     ),
   });
 
-  console.log(2, worker);
-
   const memoryUsagePromise = worker.getMemoryUsage();
   expect(memoryUsagePromise).toBeInstanceOf(Promise);
-
-  console.log(3, memoryUsagePromise);
   expect(await memoryUsagePromise).toBeGreaterThan(0);
-  console.log(4, memoryUsagePromise);
 }, 10000);
 
 test('should recycle on idle limit breach', async () => {
