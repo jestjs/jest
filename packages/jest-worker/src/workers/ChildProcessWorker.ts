@@ -224,6 +224,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+
       case PARENT_MESSAGE_CUSTOM:
         this._onCustomMessage(response[1]);
         break;
@@ -239,7 +240,6 @@ export default class ChildProcessWorker implements WorkerInterface {
         }
 
         this._performRestartIfRequired();
-
         break;
 
       default:

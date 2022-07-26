@@ -12,15 +12,16 @@ export default {
   ...baseConfig,
   coverageReporters: ['json'],
   reporters: [
+    'default',
     'github-actions',
     [
       'jest-junit',
       {outputDirectory: 'reports/junit', outputName: 'js-test-results.xml'},
     ],
-    [
-      'jest-silent-reporter',
-      {showPaths: true, showWarnings: true, useDots: true},
-    ],
+    // [
+    //   'jest-silent-reporter',
+    //   {showPaths: true, showWarnings: true, useDots: true},
+    // ],
     'summary',
   ],
 };
