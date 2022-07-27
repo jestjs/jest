@@ -33,7 +33,7 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
         timeout-minutes: 20
-        run: yarn test-ci-partial:parallel --runInBand --shard=${{ matrix.shard }} ChildProcessWorkerEdgeCases
+        run: yarn test-ci-partial:parallel --runInBand --shard=${{ matrix.shard }}
 
   test-jasmine:
     strategy:

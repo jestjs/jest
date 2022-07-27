@@ -28,7 +28,7 @@ jobs:
           node-version: << parameters.node-version >>
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL --runInBand
+          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: reports/junit
 
@@ -59,4 +59,4 @@ workflows:
           matrix:
             parameters:
               node-version: ['14', '16', '18']
-      # - test-jest-jasmine
+      - test-jest-jasmine
