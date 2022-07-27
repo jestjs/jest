@@ -967,6 +967,7 @@ export default async function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
+      case 'workerIdleMemoryLimit':
         value = oldOptions[key];
         break;
       case 'watchPlugins':
