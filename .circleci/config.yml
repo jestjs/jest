@@ -28,7 +28,7 @@ jobs:
           node-version: << parameters.node-version >>
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
+          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL --runInBand
       - store_test_results:
           path: reports/junit
 
@@ -43,10 +43,10 @@ jobs:
       - node/install-packages: *install
       - run:
           name: Test
-          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL --runInBand
+          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
       - run:
           name: Leak test
-          command: JEST_JASMINE=1 yarn test-leak --runInBand
+          command: JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
