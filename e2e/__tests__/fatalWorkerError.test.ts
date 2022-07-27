@@ -19,7 +19,7 @@ const DIR = path.resolve(tmpdir(), 'fatal-worker-error');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('fails a test that terminates the worker with a fatal error', () => {
+test.skip('fails a test that terminates the worker with a fatal error', () => {
   const testFiles = {
     ...generateTestFilesToForceUsingWorkers(),
     '__tests__/fatalWorkerError.test.js': `
