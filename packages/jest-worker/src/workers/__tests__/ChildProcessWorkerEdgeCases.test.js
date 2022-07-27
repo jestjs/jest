@@ -11,7 +11,8 @@ import {transformFileAsync} from '@babel/core';
 import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_MEM_USAGE} from '../../types';
 import ChildProcessWorker from '../ChildProcessWorker';
 
-jest.retryTimes(1);
+// These tests appear to be slow/flakey on Windows
+jest.retryTimes(5);
 
 /** @type ChildProcessWorker */
 let worker;
@@ -189,7 +190,7 @@ test('should cleanly exit on crash', async () => {
   );
 
   await worker.waitForExit();
-}, 10000);
+}, 15000);
 
 test('should handle regular fatal crashes', async () => {
   worker = new ChildProcessWorker({

@@ -15,6 +15,9 @@ import {
 } from '../Utils';
 import runJest from '../runJest';
 
+// These tests appear to be slow/flakey on Windows
+jest.retryTimes(5);
+
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
 beforeEach(() => cleanup(DIR));
@@ -74,4 +77,4 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(pidNumber).not.toBeNaN();
 
   expect(await findProcess('pid', pidNumber)).toHaveLength(0);
-});
+}, 15000);
