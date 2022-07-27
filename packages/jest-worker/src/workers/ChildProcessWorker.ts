@@ -31,10 +31,17 @@ import {
 const SIGNAL_BASE_EXIT_CODE = 128;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
-const SIGABRT_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 6;
 
 // How long to wait after SIGTERM before sending SIGKILL
 const SIGKILL_DELAY = 500;
+
+enum WorkerStates {
+  STARTING = 'starting',
+  OK = 'ok',
+  OUT_OF_MEMORY = 'oom',
+  RESTARTING = 'restarting',
+  SHUTTING_DOWN = 'shutdown',
+}
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -75,8 +82,8 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
-  private _restarting = false;
   private _memoryUsageCheck = false;
+  private _state: WorkerStates;
 
   private _childWorkerPath: string;
   private _silent = true;
@@ -100,11 +107,23 @@ export default class ChildProcessWorker implements WorkerInterface {
       options.childWorkerPath || require.resolve('./processChild');
     this._silent = options.silent ?? true;
 
+    this._state = WorkerStates.STARTING;
     this.initialize();
   }
 
   initialize(): void {
-    this._restarting = false;
+    if (
+      this._state === WorkerStates.OUT_OF_MEMORY ||
+      this._state === WorkerStates.SHUTTING_DOWN
+    ) {
+      return;
+    }
+
+    if (this._child && this._child.connected) {
+      this._child.kill('SIGKILL');
+    }
+
+    this._state = WorkerStates.STARTING;
 
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
     const options: ForkOptions = {
@@ -142,6 +161,8 @@ export default class ChildProcessWorker implements WorkerInterface {
       }
 
       this._stderr.add(child.stderr);
+
+      child.stderr.on('data', this._detectOutOfMemoryCrash.bind(this));
     }
 
     child.on('message', this._onMessage.bind(this));
@@ -155,6 +176,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     ]);
 
     this._child = child;
+    this._state = WorkerStates.OK;
 
     this._retries++;
 
@@ -173,10 +195,33 @@ export default class ChildProcessWorker implements WorkerInterface {
         error.stack!,
         {type: 'WorkerError'},
       ]);
+
+      // Clear the request so we don't keep executing it.
+      this._request = null;
+    }
+  }
+
+  private _detectOutOfMemoryCrash(chunk: any): void {
+    let str: string | undefined = undefined;
+
+    if (chunk instanceof Buffer) {
+      str = chunk.toString('utf8');
+    } else if (typeof chunk === 'string') {
+      str = chunk;
+    }
+
+    if (
+      str &&
+      this._state !== WorkerStates.OUT_OF_MEMORY &&
+      str.includes('JavaScript heap out of memory')
+    ) {
+      this._state = WorkerStates.OUT_OF_MEMORY;
     }
   }
 
   private _shutdown() {
+    this._state = WorkerStates.SHUTTING_DOWN;
+
     // End the temporary streams so the merged streams end too
     if (this._fakeStream) {
       this._fakeStream.end();
@@ -262,25 +307,28 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this._restarting = true;
+        this._state = WorkerStates.RESTARTING;
 
         this.killChild();
       }
     }
   }
 
-  private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
-    // When a out of memory crash occurs
-    // - Mac/Unix signal=SIGABRT
-    // - Windows exitCode=134
+  private _onExit(exitCode: number | null) {
+    if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
+      this._onProcessEnd(
+        new Error('Jest worker ran out of memory and crashed'),
+        null,
+      );
 
-    if (
+      this._shutdown();
+    } else if (
       (exitCode !== 0 &&
         exitCode !== null &&
         exitCode !== SIGTERM_EXIT_CODE &&
         exitCode !== SIGKILL_EXIT_CODE &&
-        exitCode !== SIGABRT_EXIT_CODE) ||
-      this._restarting
+        this._state !== WorkerStates.SHUTTING_DOWN) ||
+      this._state === WorkerStates.RESTARTING
     ) {
       this.initialize();
 
@@ -288,17 +336,6 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._child.send(this._request);
       }
     } else {
-      if (signal === 'SIGABRT' || exitCode === SIGABRT_EXIT_CODE) {
-        // When a child process worker crashes due to lack of memory this prevents
-        // jest from spinning and failing to exit. It could be argued it should restart
-        // the process, but if you're running out of memory then restarting processes
-        // is only going to make matters worse.
-        this._onProcessEnd(
-          new Error(`Process exited unexpectedly: ${signal}`),
-          null,
-        );
-      }
-
       this._shutdown();
     }
   }
@@ -340,6 +377,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   forceExit(): void {
+    this._state = WorkerStates.SHUTTING_DOWN;
+
     const sigkillTimeout = this.killChild();
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }

@@ -57,7 +57,8 @@ function waitForChange(fn, limit = 100) {
 
   return new Promise((resolve, reject) => {
     let count = 0;
-    const int = setInterval(() => {
+
+    int = setInterval(() => {
       const updated = fn();
 
       if (inital !== updated) {
@@ -94,7 +95,7 @@ test('should get memory usage', async () => {
   const memoryUsagePromise = worker.getMemoryUsage();
   expect(memoryUsagePromise).toBeInstanceOf(Promise);
   expect(await memoryUsagePromise).toBeGreaterThan(0);
-}, 10000);
+});
 
 test('should recycle on idle limit breach', async () => {
   worker = new ChildProcessWorker({
@@ -120,7 +121,7 @@ test('should recycle on idle limit breach', async () => {
   const endPid = worker.getWorkerPid();
   expect(endPid).toBeGreaterThanOrEqual(0);
   expect(endPid).not.toEqual(startPid);
-}, 10000);
+});
 
 test('should automatically recycle on idle limit breach', async () => {
   worker = new ChildProcessWorker({
@@ -155,7 +156,7 @@ test('should automatically recycle on idle limit breach', async () => {
   const endPid = worker.getWorkerPid();
   expect(endPid).toBeGreaterThanOrEqual(0);
   expect(endPid).not.toEqual(startPid);
-}, 10000);
+});
 
 test('should cleanly exit on crash', async () => {
   worker = new ChildProcessWorker({
@@ -189,3 +190,67 @@ test('should cleanly exit on crash', async () => {
 
   await worker.waitForExit();
 }, 5000);
+
+test('should handle regular fatal crashes', async () => {
+  worker = new ChildProcessWorker({
+    childWorkerPath,
+    maxRetries: 4,
+    workerPath: join(
+      __dirname,
+      '__fixtures__',
+      'ChildProcessWorkerEdgeCasesWorker',
+    ),
+  });
+
+  const startPid = worker.getWorkerPid();
+  expect(startPid).toBeGreaterThanOrEqual(0);
+
+  const onStart = jest.fn();
+  const onEnd = jest.fn();
+  const onCustom = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, true, 'fatalExitCode', []],
+    onStart,
+    onEnd,
+    onCustom,
+  );
+
+  const pids = new Set();
+
+  while (true) {
+    // Ideally this would use Promise.any but it's not supported in Node 14
+    // so doing this instead.
+
+    const newPid = await new Promise(resolve => {
+      const resolved = false;
+
+      const to = setTimeout(() => {
+        if (!resolved) {
+          this.resolved = true;
+          resolve(undefined);
+        }
+      }, 250);
+
+      waitForChange(() => worker.getWorkerPid()).then(() => {
+        clearTimeout(to);
+
+        if (!resolved) {
+          resolve(worker.getWorkerPid());
+        }
+      });
+    });
+
+    if (typeof newPid === 'number') {
+      pids.add(newPid);
+    } else {
+      break;
+    }
+  }
+
+  // Expect the pids to be retries + 1 because it is restarted
+  // one last time at the end ready for the next request.
+  expect(pids.size).toEqual(5);
+
+  worker.forceExit();
+});

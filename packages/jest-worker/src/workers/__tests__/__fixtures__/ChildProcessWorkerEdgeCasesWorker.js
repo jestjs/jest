@@ -16,11 +16,16 @@ function leakMemory() {
   }
 }
 
+function fatalExitCode() {
+  process.exit(134);
+}
+
 function safeFunction() {
   // Doesn't do anything.
 }
 
 module.exports = {
+  fatalExitCode,
   leakMemory,
   safeFunction,
 };
