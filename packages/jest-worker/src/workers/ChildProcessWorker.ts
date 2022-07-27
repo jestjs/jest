@@ -161,10 +161,9 @@ export default class ChildProcessWorker implements WorkerInterface {
       }
 
       this._stderr.add(child.stderr);
-
-      child.stderr.on('data', this._detectOutOfMemoryCrash.bind(this));
     }
 
+    this._detectOutOfMemoryCrash(child);
     child.on('message', this._onMessage.bind(this));
     child.on('exit', this._onExit.bind(this));
 
@@ -201,26 +200,32 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _detectOutOfMemoryCrash(chunk: any): void {
-    let str: string | undefined = undefined;
+  private _detectOutOfMemoryCrash(child: ChildProcess): void {
+    let stderrStr = '';
 
-    if (chunk instanceof Buffer) {
-      str = chunk.toString('utf8');
-    } else if (typeof chunk === 'string') {
-      str = chunk;
-    }
+    const handler = (chunk: any) => {
+      if (this._state !== WorkerStates.OUT_OF_MEMORY) {
+        let str: string | undefined = undefined;
 
-    console.log({
-      str,
-    });
+        if (chunk instanceof Buffer) {
+          str = chunk.toString('utf8');
+        } else if (typeof chunk === 'string') {
+          str = chunk;
+        }
 
-    if (
-      str &&
-      this._state !== WorkerStates.OUT_OF_MEMORY &&
-      str.includes('JavaScript heap out of memory')
-    ) {
-      this._state = WorkerStates.OUT_OF_MEMORY;
-    }
+        if (str) {
+          stderrStr += str;
+        }
+
+        if (stderrStr.includes('JavaScript heap out of memory')) {
+          this._state = WorkerStates.OUT_OF_MEMORY;
+        }
+      }
+
+      console.log({state: this._state, stderrStr});
+    };
+
+    child.stderr?.on('data', handler);
   }
 
   private _shutdown() {
