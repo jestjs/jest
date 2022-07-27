@@ -411,13 +411,38 @@ it('when out of memory occurs the worker is killed and exits', async () => {
   expect(onProcessEnd).not.toHaveBeenCalled();
   expect(onCustomMessage).not.toHaveBeenCalled();
 
+  forkInterface.stderr.emit(
+    'data',
+    `<--- Last few GCs --->
+
+  [20048:0x7fa356200000]      349 ms: Mark-sweep (reduce) 49.2 (80.6) -> 49.0 (51.6) MB, 6.8 / 0.0 ms  (+ 59.5 ms in 35 steps since start of marking, biggest step 2.3 ms, walltime since start of marking 68 ms) (average mu = 0.679, current mu = 0.679) finali[20048:0x7fa356200000]      418 ms: Mark-sweep 50.0 (51.6) -> 49.9 (55.6) MB, 67.8 / 0.0 ms  (average mu = 0.512, current mu = 0.004) allocation failure scavenge might not succeed
+
+
+  <--- JS stacktrace --->
+
+  FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+   1: 0x10da153a5 node::Abort() (.cold.1) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   2: 0x10c6f09b9 node::Abort() [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   3: 0x10c6f0b2f node::OnFatalError(char const*, char const*) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   4: 0x10c86ff37 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   5: 0x10c86fed3 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   6: 0x10ca2eed5 v8::internal::Heap::FatalProcessOutOfMemory(char const*) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   7: 0x10ca2d8f6 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   8: 0x10ca39e30 v8::internal::Heap::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   9: 0x10ca39eb1 v8::internal::Heap::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+  10: 0x10ca070d7 v8::internal::Factory::NewFillerObject(int, bool, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+  11: 0x10cdb896e v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+  12: 0x10d157ed9 Builtins_CEntry_Return1_DontSaveFPRegs_ArgvOnStack_NoBuiltinExit [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+  13: 0x10d158e0f Builtins_StringAdd_CheckNone [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+  14: 0x10d1b5740 Builtins_StringRepeat [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]`,
+  );
   forkInterface.emit('exit', null, 'SIGABRT');
 
   // We don't want it to try and restart.
   expect(childProcess.fork).toHaveBeenCalledTimes(1);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd).toHaveBeenCalledWith(
-    new Error('Process exited unexpectedly: SIGABRT'),
+    new Error('Jest worker ran out of memory and crashed'),
     null,
   );
 
