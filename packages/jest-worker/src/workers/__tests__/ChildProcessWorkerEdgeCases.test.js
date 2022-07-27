@@ -12,7 +12,7 @@ import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_MEM_USAGE} from '../../types';
 import ChildProcessWorker from '../ChildProcessWorker';
 
 // These tests appear to be slow/flakey on Windows
-jest.retryTimes(5);
+jest.retryTimes(10);
 
 /** @type ChildProcessWorker */
 let worker;

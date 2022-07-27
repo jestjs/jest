@@ -16,7 +16,7 @@ import {
 import runJest from '../runJest';
 
 // These tests appear to be slow/flakey on Windows
-jest.retryTimes(5);
+jest.retryTimes(10);
 
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
