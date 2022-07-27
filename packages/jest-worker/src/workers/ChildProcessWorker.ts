@@ -314,7 +314,9 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _onExit(exitCode: number | null) {
+  private _onExit(exitCode: number | null, signal) {
+    console.log({exitCode, signal, state: this._state});
+
     if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),

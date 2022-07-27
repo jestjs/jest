@@ -158,7 +158,7 @@ test('should automatically recycle on idle limit breach', async () => {
   expect(endPid).not.toEqual(startPid);
 });
 
-test('should cleanly exit on crash', async () => {
+test.only('should cleanly exit on crash', async () => {
   worker = new ChildProcessWorker({
     childWorkerPath,
     forkOptions: {
