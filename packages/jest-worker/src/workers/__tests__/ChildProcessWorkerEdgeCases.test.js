@@ -216,12 +216,14 @@ test('should handle regular fatal crashes', async () => {
     onCustom,
   );
 
-  const pids = new Set();
+  let pidChanges = 0;
 
   while (true) {
     // Ideally this would use Promise.any but it's not supported in Node 14
-    // so doing this instead.
-
+    // so doing this instead. Essentially what we're doing is looping and
+    // capturing the pid every time it changes. When it stops changing the
+    // timeout will be hit and we should be left with a collection of all
+    // the pids used by the worker.
     const newPid = await new Promise(resolve => {
       const resolved = false;
 
@@ -242,7 +244,7 @@ test('should handle regular fatal crashes', async () => {
     });
 
     if (typeof newPid === 'number') {
-      pids.add(newPid);
+      pidChanges++;
     } else {
       break;
     }
@@ -250,7 +252,7 @@ test('should handle regular fatal crashes', async () => {
 
   // Expect the pids to be retries + 1 because it is restarted
   // one last time at the end ready for the next request.
-  expect(pids.size).toEqual(5);
+  expect(pidChanges).toEqual(5);
 
   worker.forceExit();
 });
