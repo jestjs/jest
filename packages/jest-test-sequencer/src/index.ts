@@ -163,7 +163,7 @@ export default class TestSequencer {
       cache[test.path] && cache[test.path][1];
 
     tests.forEach(test => (test.duration = time(this._getCache(test), test)));
-    return tests.sort((testA, testB) => {
+    const sorted = tests.sort((testA, testB) => {
       const cacheA = this._getCache(testA);
       const cacheB = this._getCache(testB);
       const failedA = hasFailed(cacheA, testA);
@@ -180,6 +180,14 @@ export default class TestSequencer {
         return fileSize(testA) < fileSize(testB) ? 1 : -1;
       }
     });
+
+    process.stdout.write('Expected test execution order\n');
+    tests.forEach(x => {
+      process.stdout.write(`  ${x.path}\n`);
+    });
+    process.stdout.write('\n');
+
+    return sorted;
   }
 
   allFailedTests(tests: Array<Test>): Array<Test> | Promise<Array<Test>> {
