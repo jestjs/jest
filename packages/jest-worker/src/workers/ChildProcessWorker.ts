@@ -210,6 +210,10 @@ export default class ChildProcessWorker implements WorkerInterface {
       str = chunk;
     }
 
+    console.log({
+      str,
+    });
+
     if (
       str &&
       this._state !== WorkerStates.OUT_OF_MEMORY &&

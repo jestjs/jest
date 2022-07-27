@@ -166,7 +166,7 @@ test.only('should cleanly exit on crash', async () => {
       execArgv: ['--max-old-space-size=50'],
     },
     maxRetries: 0,
-    silent: false,
+    silent: true,
     workerPath: join(
       __dirname,
       '__fixtures__',
