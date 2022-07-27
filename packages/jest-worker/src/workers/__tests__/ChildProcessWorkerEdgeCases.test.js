@@ -189,7 +189,7 @@ test('should cleanly exit on crash', async () => {
   );
 
   await worker.waitForExit();
-}, 5000);
+}, 10000);
 
 test('should handle regular fatal crashes', async () => {
   worker = new ChildProcessWorker({
