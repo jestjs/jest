@@ -251,7 +251,7 @@ describe.each([
             this.resolved = true;
             resolve(undefined);
           }
-        }, 250);
+        }, 500);
 
         waitForChange(() => worker.getWorkerSystemId()).then(() => {
           clearTimeout(to);
