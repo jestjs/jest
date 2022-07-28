@@ -98,6 +98,16 @@ Arguments can also be mixed:
 jest --update-snapshot --detectOpenHandles
 ```
 
+## Autocomplete
+
+You can get IDE-style autocompletions for Jest with [Fig](https://fig.io/) <a href="https://fig.io/" target="_blank"><img src="https://fig.io/badges/Logo.svg" width="15" height="15"/></a>. It works in bash, zsh, and fish.
+
+To install, run:
+
+```shell
+brew install fig
+```
+
 ## Options
 
 :::note
