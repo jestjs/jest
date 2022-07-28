@@ -14,7 +14,6 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_MEM_USAGE,
   ChildMessage,
-  ChildProcessWorkerOptions,
   OnCustomMessage,
   OnEnd,
   OnStart,
@@ -26,6 +25,7 @@ import {
   ParentMessage,
   WorkerInterface,
   WorkerOptions,
+  WorkerStates,
 } from '../types';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
@@ -34,14 +34,6 @@ const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
 
 // How long to wait after SIGTERM before sending SIGKILL
 const SIGKILL_DELAY = 500;
-
-enum WorkerStates {
-  STARTING = 'starting',
-  OK = 'ok',
-  OUT_OF_MEMORY = 'oom',
-  RESTARTING = 'restarting',
-  SHUTTING_DOWN = 'shutdown',
-}
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -86,9 +78,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _state: WorkerStates;
 
   private _childWorkerPath: string;
-  private _silent = true;
 
-  constructor(options: ChildProcessWorkerOptions) {
+  constructor(options: WorkerOptions) {
     this._options = options;
 
     this._request = null;
@@ -105,7 +96,6 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
-    this._silent = options.silent ?? true;
 
     this._state = WorkerStates.STARTING;
     this.initialize();
@@ -114,7 +104,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   initialize(): void {
     if (
       this._state === WorkerStates.OUT_OF_MEMORY ||
-      this._state === WorkerStates.SHUTTING_DOWN
+      this._state === WorkerStates.SHUTTING_DOWN ||
+      this._state === WorkerStates.SHUT_DOWN
     ) {
       return;
     }
@@ -137,7 +128,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
-      silent: this._silent,
+      silent: this._options.silent ?? true,
       ...this._options.forkOptions,
     };
 
@@ -217,7 +208,7 @@ export default class ChildProcessWorker implements WorkerInterface {
           stderrStr += str;
         }
 
-        if (stderrStr.includes('JavaScript heap out of memory')) {
+        if (stderrStr.includes('heap out of memory')) {
           this._state = WorkerStates.OUT_OF_MEMORY;
         }
       }
@@ -356,13 +347,14 @@ export default class ChildProcessWorker implements WorkerInterface {
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
+      // Clean the request to avoid sending past requests to workers that fail
+      // while waiting for a new request (timers, unhandled rejections...)
+      this._request = null;
+
       if (this._childIdleMemoryUsageLimit && this._child.connected) {
         this.checkMemoryUsage();
       }
 
-      // Clean the request to avoid sending past requests to workers that fail
-      // while waiting for a new request (timers, unhandled rejections...)
-      this._request = null;
       return onProcessEnd(...args);
     };
 
@@ -399,7 +391,7 @@ export default class ChildProcessWorker implements WorkerInterface {
    *
    * @returns Process id.
    */
-  getWorkerPid(): number {
+  getWorkerSystemId(): number {
     return this._child.pid;
   }
 

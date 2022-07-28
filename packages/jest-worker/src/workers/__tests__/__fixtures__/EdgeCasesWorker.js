@@ -5,14 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-let leakStore = '';
+const leakStore = [];
 
 /**
  * This exists to force a memory leak in the worker tests.
  */
-function leakMemory() {
+async function leakMemory() {
+  console.log(
+    `Intentionally leaking memory: ${(
+      process.memoryUsage().heapUsed /
+      1024 /
+      1024
+    ).toFixed(2)}MB at start`,
+  );
+
+  let i = 0;
   while (true) {
-    leakStore += '#'.repeat(1000);
+    i++;
+
+    leakStore.push(i);
   }
 }
 

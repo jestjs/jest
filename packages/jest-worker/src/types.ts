@@ -78,6 +78,11 @@ export interface WorkerInterface {
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
   getStdout(): NodeJS.ReadableStream | null;
+  /**
+   * Some system level identifier for the worker. IE, process id, thread id, etc.
+   */
+  getWorkerSystemId(): number;
+  getMemoryUsage(): Promise<number | null>;
 }
 
 export type PoolExitResult = {
@@ -145,10 +150,16 @@ export type WorkerOptions = {
   workerId: number;
   workerData?: unknown;
   workerPath: string;
+  /**
+   * After a job has executed the memory usage it should return to.
+   *
+   * @remarks
+   * Note this is different from ResourceLimits in that it checks at idle, after
+   * a job is complete. So you could have a resource limit of 500MB but an idle
+   * limit of 50MB. The latter will only trigger if after a job has completed the
+   * memory usage hasn't returned back down under 50MB.
+   */
   idleMemoryLimit?: number;
-};
-
-export type ChildProcessWorkerOptions = WorkerOptions & {
   /**
    * This mainly exists so the path can be changed during testing.
    * https://github.com/facebook/jest/issues/9543
@@ -245,3 +256,12 @@ export type QueueChildMessage = {
   onEnd: OnEnd;
   onCustomMessage: OnCustomMessage;
 };
+
+export enum WorkerStates {
+  STARTING = 'starting',
+  OK = 'ok',
+  OUT_OF_MEMORY = 'oom',
+  RESTARTING = 'restarting',
+  SHUTTING_DOWN = 'shutting-down',
+  SHUT_DOWN = 'shut-down',
+}
