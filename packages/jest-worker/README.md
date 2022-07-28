@@ -98,9 +98,9 @@ The `resourceLimits` option which will be passed to `worker_threads` workers.
 
 #### `silent: Boolean` (optional)
 
-Set to false for `stdout` and `stderr` to be logged to console. 
+Set to false for `stdout` and `stderr` to be logged to console.
 
-By default this is true. 
+By default this is true.
 
 #### `setupArgs: Array<unknown>` (optional)
 
