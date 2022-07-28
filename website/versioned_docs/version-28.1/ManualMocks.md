@@ -162,3 +162,30 @@ describe('myMethod()', () => {
   // Test the method here...
 });
 ```
+
+In Next JS can happen that the test return the same error even if the file is imported before.
+
+You need to follow the next guide about [NextTesting](https://nextjs.org/docs/testing) and create `jest.config.js` and `jest.setup.js` in root.
+Then add `setupFilesAfterEnv: ["<rootDir>/jest.setup.js"]` in `customJestConfig` , with this you can add more options before each test is run
+Inside `jest.setup.js` you need to define `Object.defineProperty(...)` like before:
+
+```js
+
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: jest
+    .fn()
+    .mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(), // deprecated
+      removeListener: jest.fn(), // deprecated
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+});
+
+import "@testing-library/jest-dom/extend-expect";
+```
