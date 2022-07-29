@@ -209,7 +209,7 @@ Expected mock function "mockedFunction" to have been called, but it was not call
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+API sugar function for:
 
 ```js
 jest.fn(function () {
@@ -246,7 +246,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+API sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -264,7 +264,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+API sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -289,7 +289,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+API sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -307,7 +307,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+API sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
