@@ -788,7 +788,24 @@ export default class Runtime {
     const transformedCode =
       this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
 
-    const {exports, reexports} = parseCjs(transformedCode);
+    const {exports, reexports} = (
+      // It's impossible to parse a native addon module
+      // for Node.js (node-gyp) as JavaScript, so skip it.
+      [
+        // ELF:
+        '\x7FELF',      // 0x7F 'E'  'L'  'F'
+        // Windows:
+        'MZ\uFFFD\x00', // 'M'  'Z'  0x90 0x00
+        // macOS:
+        // 0xFE 0xED 0xFA 0xCE, Mach-O (32-bit)
+        // 0xFE 0xED 0xFA 0xCF, Mach-O (64-bit)
+        // 0xCE 0xFA 0xED 0xFE, Mach-O (reverse byte ordering scheme, 32-bit)
+        // 0xCF 0xFA 0xED 0xFE, Mach-O (reverse byte ordering scheme, x86_64 and arm64)
+        '\uFFFD\uFFFD\uFFFD\uFFFD',
+      ].includes(transformedCode.slice(0, 4))
+      ? {exports: [], reexports: []}
+      : parseCjs(transformedCode)
+    );
 
     const namedExports = new Set(exports);
 
