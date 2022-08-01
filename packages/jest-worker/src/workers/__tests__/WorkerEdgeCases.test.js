@@ -82,7 +82,7 @@ describe.each([
     clearInterval(int);
   });
 
-  function waitForChange(fn, limit = 100) {
+  function waitForChange(fn) {
     const inital = fn();
 
     return new Promise((resolve, reject) => {
@@ -96,12 +96,12 @@ describe.each([
           clearInterval(int);
         }
 
-        if (count > limit) {
+        if (count > 100000) {
           reject(new Error('Timeout waiting for change'));
         }
 
         count++;
-      }, 50);
+      }, 1);
     });
   }
 
@@ -169,7 +169,7 @@ describe.each([
     const endPid = worker.getWorkerSystemId();
     expect(endPid).toBeGreaterThanOrEqual(0);
     expect(endPid).not.toEqual(startPid);
-  });
+  }, 10000);
 
   test('should cleanly exit on crash', async () => {
     const workerHeapLimit = 10;
