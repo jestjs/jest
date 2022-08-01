@@ -296,8 +296,14 @@ export default class ChildProcessWorker implements WorkerInterface {
 
       let limit = this._childIdleMemoryUsageLimit;
 
+      // TODO: At some point it would make sense to make use of
+      // stringToBytes found in jest-config, however as this
+      // package does not have any dependencies on an other jest
+      // packages that can wait until some other time.
       if (limit && limit > 0 && limit <= 1) {
         limit = Math.floor(totalmem() * limit);
+      } else if (limit) {
+        limit = Math.floor(limit);
       }
 
       if (

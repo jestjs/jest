@@ -17,8 +17,9 @@ import {
 import ChildProcessWorker from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
-// These tests appear to be slow/flakey on Windows
-jest.retryTimes(10);
+// These tests appear to be slow/flaky. Allowing it to retry quite a few times
+// will cut down on this noise and they're fast tests anyway.
+jest.retryTimes(30);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];

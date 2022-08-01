@@ -81,8 +81,8 @@ Specifies the memory limit for workers before they are recycled and is primarily
 
 After the worker has executed a task the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. If no limit is set this process does not occur. The limit can be specified in 2 ways:
 
-- `< 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
-- `\> 1` - Assumed to be a fixed byte value. So 5000 would set an idle limit of 5000 bytes.
+- `<= 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
+- `\> 1` - Assumed to be a fixed byte value. Because of the previous rule if you wanted a value of 1 byte (I don't know why) you could use `1.1`.
 
 #### `maxRetries: number` (optional)
 
