@@ -279,7 +279,7 @@ module.exports = class NodeWatcher extends EventEmitter {
     const relativePath = path.join(path.relative(this.root, dir), file);
 
     fs.lstat(fullPath, (error, stat) => {
-      if (error && error.code !== 'ENOENT') {
+      if (error && error.code !== 'ENOENT' && error.code !== 'EPERM') {
         this.emit('error', error);
       } else if (!error && stat.isDirectory()) {
         // win32 emits usless change events on dirs.
