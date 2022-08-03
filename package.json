@@ -12,7 +12,7 @@
     "@crowdin/cli": "^3.5.2",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
-    "@microsoft/api-extractor": "^7.28.4",
+    "@microsoft/api-extractor": "^7.29.0",
     "@tsconfig/node14": "^1.0.3",
     "@tsd/typescript": "~4.7.4",
     "@types/babel__core": "^7.1.14",

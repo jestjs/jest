@@ -17,7 +17,7 @@
     "@jest/test-result": "^29.0.0-alpha.0",
     "@jest/transform": "^29.0.0-alpha.0",
     "@jest/types": "^29.0.0-alpha.0",
-    "@jridgewell/trace-mapping": "^0.3.13",
+    "@jridgewell/trace-mapping": "^0.3.14",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "collect-v8-coverage": "^1.0.0",
