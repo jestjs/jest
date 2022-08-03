@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jridgewell/trace-mapping": "^0.3.13",
+    "@jridgewell/trace-mapping": "^0.3.14",
     "callsites": "^3.0.0",
     "graceful-fs": "^4.2.9"
   },
