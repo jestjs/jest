@@ -2294,7 +2294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/remark-plugin-npm2yarn@npm:^2.0.1":
+"@docusaurus/remark-plugin-npm2yarn@npm:^2.0.0":
   version: 2.0.1
   resolution: "@docusaurus/remark-plugin-npm2yarn@npm:2.0.1"
   dependencies:
@@ -13880,7 +13880,7 @@ __metadata:
     "@docusaurus/plugin-client-redirects": ^2.0.0
     "@docusaurus/plugin-pwa": ^2.0.0
     "@docusaurus/preset-classic": ^2.0.0
-    "@docusaurus/remark-plugin-npm2yarn": ^2.0.1
+    "@docusaurus/remark-plugin-npm2yarn": ^2.0.0
     "@types/react": ^17.0.3
     clsx: ^1.1.1
     docusaurus-remark-plugin-tab-blocks: ^1.2.0
