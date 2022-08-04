@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "29.0.0-alpha.0",
+  "version": "29.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -25,7 +25,7 @@
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.9",
-    "jest-haste-map": "^29.0.0-alpha.0",
+    "jest-haste-map": "^29.0.0-alpha.1",
     "jest-regex-util": "^29.0.0-alpha.0",
     "jest-util": "^29.0.0-alpha.0",
     "micromatch": "^4.0.4",
@@ -34,7 +34,7 @@
     "write-file-atomic": "^4.0.1"
   },
   "devDependencies": {
-    "@jest/test-utils": "^29.0.0-alpha.0",
+    "@jest/test-utils": "^29.0.0-alpha.1",
     "@types/babel__core": "^7.1.14",
     "@types/convert-source-map": "^1.5.1",
     "@types/graceful-fs": "^4.1.3",

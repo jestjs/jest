@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "29.0.0-alpha.0",
+  "version": "29.0.0-alpha.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -25,12 +25,12 @@
     "graceful-fs": "^4.2.9",
     "jest-regex-util": "^29.0.0-alpha.0",
     "jest-util": "^29.0.0-alpha.0",
-    "jest-worker": "^29.0.0-alpha.0",
+    "jest-worker": "^29.0.0-alpha.1",
     "micromatch": "^4.0.4",
     "walker": "^1.0.8"
   },
   "devDependencies": {
-    "@jest/test-utils": "^29.0.0-alpha.0",
+    "@jest/test-utils": "^29.0.0-alpha.1",
     "@types/fb-watchman": "^2.0.0",
     "@types/micromatch": "^4.0.1",
     "slash": "^3.0.0"

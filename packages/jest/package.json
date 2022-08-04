@@ -1,7 +1,7 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "29.0.0-alpha.0",
+  "version": "29.0.0-alpha.1",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -13,10 +13,10 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^29.0.0-alpha.0",
+    "@jest/core": "^29.0.0-alpha.1",
     "@jest/types": "^29.0.0-alpha.0",
     "import-local": "^3.0.2",
-    "jest-cli": "^29.0.0-alpha.0"
+    "jest-cli": "^29.0.0-alpha.1"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.7.4",
