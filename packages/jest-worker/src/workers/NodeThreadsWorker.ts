@@ -123,6 +123,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     // This can be useful for debugging.
     if (!(this._options.silent ?? true)) {
       this._worker.stdout.setEncoding('utf8');
+      // eslint-disable-next-line no-console
       this._worker.stdout.on('data', console.log);
       this._worker.stderr.setEncoding('utf8');
       this._worker.stderr.on('data', console.error);

@@ -2254,7 +2254,7 @@ Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
-### `workerIdleMemoryLimit` \[number]
+### `workerIdleMemoryLimit` \[number|string]
 
 Default: `undefined`
 

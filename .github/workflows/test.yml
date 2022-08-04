@@ -32,7 +32,6 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        timeout-minutes: 20
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-jasmine:
@@ -58,5 +57,4 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
-        timeout-minutes: 20
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
