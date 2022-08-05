@@ -11,6 +11,7 @@
 
 - `[jest-worker]` When a process runs out of memory worker exits correctly and doesn't spin indefinitely ([#13054](https://github.com/facebook/jest/pull/13054))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Record ([#13055](https://github.com/facebook/jest/pull/13055))
+- `[jest-haste-map]` Increase the maximum possible file size that jest-haste-map can handle ([#13094](https://github.com/facebook/jest/pull/13094))
 
 ### Chore & Maintenance
 
