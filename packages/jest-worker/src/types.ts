@@ -36,11 +36,13 @@ export type WorkerModule<T> = {
 export const CHILD_MESSAGE_INITIALIZE = 0;
 export const CHILD_MESSAGE_CALL = 1;
 export const CHILD_MESSAGE_END = 2;
+export const CHILD_MESSAGE_MEM_USAGE = 3;
 
 export const PARENT_MESSAGE_OK = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR = 1;
 export const PARENT_MESSAGE_SETUP_ERROR = 2;
 export const PARENT_MESSAGE_CUSTOM = 3;
+export const PARENT_MESSAGE_MEM_USAGE = 4;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
@@ -76,6 +78,11 @@ export interface WorkerInterface {
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
   getStdout(): NodeJS.ReadableStream | null;
+  /**
+   * Some system level identifier for the worker. IE, process id, thread id, etc.
+   */
+  getWorkerSystemId(): number;
+  getMemoryUsage(): Promise<number | null>;
 }
 
 export type PoolExitResult = {
@@ -122,6 +129,7 @@ export type WorkerFarmOptions = {
     options?: WorkerPoolOptions,
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
+  idleMemoryLimit?: number;
 };
 
 export type WorkerPoolOptions = {
@@ -131,6 +139,7 @@ export type WorkerPoolOptions = {
   maxRetries: number;
   numWorkers: number;
   enableWorkerThreads: boolean;
+  idleMemoryLimit?: number;
 };
 
 export type WorkerOptions = {
@@ -141,6 +150,26 @@ export type WorkerOptions = {
   workerId: number;
   workerData?: unknown;
   workerPath: string;
+  /**
+   * After a job has executed the memory usage it should return to.
+   *
+   * @remarks
+   * Note this is different from ResourceLimits in that it checks at idle, after
+   * a job is complete. So you could have a resource limit of 500MB but an idle
+   * limit of 50MB. The latter will only trigger if after a job has completed the
+   * memory usage hasn't returned back down under 50MB.
+   */
+  idleMemoryLimit?: number;
+  /**
+   * This mainly exists so the path can be changed during testing.
+   * https://github.com/facebook/jest/issues/9543
+   */
+  childWorkerPath?: string;
+  /**
+   * This is useful for debugging individual tests allowing you to see
+   * the raw output of the worker.
+   */
+  silent?: boolean;
 };
 
 // Messages passed from the parent to the children.
@@ -174,10 +203,15 @@ export type ChildMessageEnd = [
   boolean, // processed
 ];
 
+export type ChildMessageMemUsage = [
+  typeof CHILD_MESSAGE_MEM_USAGE, // type
+];
+
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
-  | ChildMessageEnd;
+  | ChildMessageEnd
+  | ChildMessageMemUsage;
 
 // Messages passed from the children to the parent.
 
@@ -191,6 +225,11 @@ export type ParentMessageOk = [
   unknown, // result
 ];
 
+export type ParentMessageMemUsage = [
+  typeof PARENT_MESSAGE_MEM_USAGE, // type
+  number, // used memory in bytes
+];
+
 export type ParentMessageError = [
   PARENT_MESSAGE_ERROR, // type
   string, // constructor
@@ -202,7 +241,8 @@ export type ParentMessageError = [
 export type ParentMessage =
   | ParentMessageOk
   | ParentMessageError
-  | ParentMessageCustom;
+  | ParentMessageCustom
+  | ParentMessageMemUsage;
 
 // Queue types.
 
@@ -216,3 +256,12 @@ export type QueueChildMessage = {
   onEnd: OnEnd;
   onCustomMessage: OnCustomMessage;
 };
+
+export enum WorkerStates {
+  STARTING = 'starting',
+  OK = 'ok',
+  OUT_OF_MEMORY = 'oom',
+  RESTARTING = 'restarting',
+  SHUTTING_DOWN = 'shutting-down',
+  SHUT_DOWN = 'shut-down',
+}

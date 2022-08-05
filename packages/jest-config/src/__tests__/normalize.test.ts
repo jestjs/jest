@@ -2112,3 +2112,15 @@ describe('logs a deprecation warning', () => {
     expect(console.warn).toMatchSnapshot();
   });
 });
+
+it('parses workerIdleMemoryLimit', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/',
+      workerIdleMemoryLimit: '45MiB',
+    },
+    {} as Config.Argv,
+  );
+
+  expect(options.workerIdleMemoryLimit).toEqual(47185920);
+});

@@ -12,9 +12,12 @@ import supportsColor from 'supports-color';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
+  WorkerOptions,
 } from '../../types';
 
 jest.useFakeTimers();
@@ -23,14 +26,22 @@ let Worker;
 let forkInterface;
 let childProcess;
 let originalExecArgv;
+let totalmem;
+
+beforeAll(() => {
+  const os = require('os');
+  totalmem = jest.spyOn(os, 'totalmem');
+});
 
 beforeEach(() => {
   jest.mock('child_process');
+
   originalExecArgv = process.execArgv;
 
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
     forkInterface = Object.assign(new EventEmitter(), {
+      connected: true,
       kill: jest.fn(),
       send: jest.fn(),
       stderr: new PassThrough(),
@@ -39,6 +50,8 @@ beforeEach(() => {
 
     return forkInterface;
   });
+
+  totalmem.mockReset();
 
   Worker = require('../ChildProcessWorker').default;
 });
@@ -398,13 +411,33 @@ it('when out of memory occurs the worker is killed and exits', async () => {
   expect(onProcessEnd).not.toHaveBeenCalled();
   expect(onCustomMessage).not.toHaveBeenCalled();
 
+  // Splitting the emit into 2 to check concat is happening.
+  forkInterface.stderr.emit(
+    'data',
+    `<--- Last few GCs --->
+
+  [20048:0x7fa356200000]      349 ms: Mark-sweep (reduce) 49.2 (80.6) -> 49.0 (51.6) MB, 6.8 / 0.0 ms  (+ 59.5 ms in 35 steps since start of marking, biggest step 2.3 ms, walltime since start of marking 68 ms) (average mu = 0.679, current mu = 0.679) finali[20048:0x7fa356200000]      418 ms: Mark-sweep 50.0 (51.6) -> 49.9 (55.6) MB, 67.8 / 0.0 ms  (average mu = 0.512, current mu = 0.004) allocation failure scavenge might not succeed
+
+
+  <--- JS stacktrace --->
+
+  FATAL ERROR: Reached heap limit Allocation failed - JavaScript he`,
+  );
+
+  forkInterface.stderr.emit(
+    'data',
+    `ap out of memory
+   1: 0x10da153a5 node::Abort() (.cold.1) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
+   2: 0x10c6f09b9 node::Abort() [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]`,
+  );
+
   forkInterface.emit('exit', null, 'SIGABRT');
 
   // We don't want it to try and restart.
   expect(childProcess.fork).toHaveBeenCalledTimes(1);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd).toHaveBeenCalledWith(
-    new Error('Process exited unexpectedly: SIGABRT'),
+    new Error('Jest worker ran out of memory and crashed'),
     null,
   );
 
@@ -448,4 +481,160 @@ it('does not send SIGKILL if SIGTERM exited the process', async () => {
 
   jest.runAllTimers();
   expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM']]);
+});
+
+it('should check for memory limits and not restart if under percentage limit', async () => {
+  const memoryConfig = {
+    limit: 0.2,
+    processHeap: 2500,
+    totalMem: 16000,
+  };
+
+  /** @type WorkerOptions */
+  const options = {
+    forkOptions: {},
+    idleMemoryLimit: memoryConfig.limit,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  };
+  const worker = new Worker(options);
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'foo', []],
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  // Only onProcessStart has been called
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  // then first call replies...
+  forkInterface.emit('message', [PARENT_MESSAGE_OK]);
+
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
+
+  // This is the initalization call.
+  expect(forkInterface.send.mock.calls[0][0]).toEqual([
+    CHILD_MESSAGE_INITIALIZE,
+    false,
+    '/tmp/foo',
+    undefined,
+  ]);
+
+  // This is the child message
+  expect(forkInterface.send.mock.calls[1][0]).toEqual([
+    CHILD_MESSAGE_CALL,
+    false,
+    'foo',
+    [],
+  ]);
+
+  // This is the subsequent call to get memory usage
+  expect(forkInterface.send.mock.calls[2][0]).toEqual([
+    CHILD_MESSAGE_MEM_USAGE,
+  ]);
+
+  totalmem.mockReturnValue(memoryConfig.totalMem);
+
+  forkInterface.emit('message', [
+    PARENT_MESSAGE_MEM_USAGE,
+    memoryConfig.processHeap,
+  ]);
+
+  expect(totalmem).toHaveBeenCalledTimes(1);
+  expect(forkInterface.kill).not.toHaveBeenCalled();
+});
+
+it('should check for memory limits and not restart if under absolute limit', async () => {
+  const memoryConfig = {
+    limit: 2600,
+    processHeap: 2500,
+    totalMem: 16000,
+  };
+
+  /** @type WorkerOptions */
+  const options = {
+    forkOptions: {},
+    idleMemoryLimit: memoryConfig.limit,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  };
+  const worker = new Worker(options);
+
+  worker.checkMemoryUsage();
+
+  totalmem.mockReturnValue(memoryConfig.totalMem);
+
+  forkInterface.emit('message', [
+    PARENT_MESSAGE_MEM_USAGE,
+    memoryConfig.processHeap,
+  ]);
+
+  expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.kill).not.toHaveBeenCalled();
+});
+
+it('should check for memory limits and restart if above percentage limit', async () => {
+  const memoryConfig = {
+    limit: 0.01,
+    processHeap: 2500,
+    totalMem: 16000,
+  };
+
+  /** @type WorkerOptions */
+  const options = {
+    forkOptions: {},
+    idleMemoryLimit: memoryConfig.limit,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  };
+  const worker = new Worker(options);
+
+  worker.checkMemoryUsage();
+
+  totalmem.mockReturnValue(memoryConfig.totalMem);
+
+  forkInterface.emit('message', [
+    PARENT_MESSAGE_MEM_USAGE,
+    memoryConfig.processHeap,
+  ]);
+
+  expect(totalmem).toHaveBeenCalledTimes(1);
+  expect(forkInterface.kill).toHaveBeenCalledTimes(1);
+});
+
+it('should check for memory limits and restart if above absolute limit', async () => {
+  const memoryConfig = {
+    limit: 2000,
+    processHeap: 2500,
+    totalMem: 16000,
+  };
+
+  /** @type WorkerOptions */
+  const options = {
+    forkOptions: {},
+    idleMemoryLimit: memoryConfig.limit,
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  };
+  const worker = new Worker(options);
+
+  worker.checkMemoryUsage();
+
+  totalmem.mockReturnValue(memoryConfig.totalMem);
+
+  forkInterface.emit('message', [
+    PARENT_MESSAGE_MEM_USAGE,
+    memoryConfig.processHeap,
+  ]);
+
+  expect(totalmem).not.toHaveBeenCalled();
+  expect(forkInterface.kill).toHaveBeenCalledTimes(1);
 });

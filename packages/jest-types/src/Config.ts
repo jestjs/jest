@@ -327,6 +327,7 @@ export type InitialOptions = Partial<{
   watchAll: boolean;
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
+  workerIdleMemoryLimit: number;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -420,6 +421,7 @@ export type GlobalConfig = {
     path: string;
     config: Record<string, unknown>;
   }> | null;
+  workerIdleMemoryLimit?: number;
 };
 
 export type ProjectConfig = {
@@ -478,6 +480,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  workerIdleMemoryLimit?: number;
 };
 
 export type Argv = Arguments<
@@ -571,5 +574,6 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
+    workerIdleMemoryLimit: number;
   }>
 >;

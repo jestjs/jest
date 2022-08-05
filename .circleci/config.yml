@@ -42,7 +42,11 @@ jobs:
           node-version: lts/*
       - node/install-packages: *install
       - run:
-          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL && JEST_JASMINE=1 yarn test-leak
+          name: Test
+          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
+      - run:
+          name: Leak test
+          command: JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 

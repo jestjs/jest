@@ -66,6 +66,7 @@ export default {
     '/packages/jest-snapshot/src/__tests__/plugins',
     '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/packages/jest-validate/src/__tests__/fixtures/',
+    '/packages/jest-worker/src/workers/__tests__/__fixtures__/',
     '/e2e/__tests__/iterator-to-null-test.ts',
     '/e2e/__tests__/tsIntegration.test.ts', // this test needs types to be build, it runs in a separate CI job through `jest.config.ts.mjs`
   ],
@@ -73,7 +74,10 @@ export default {
   transform: {
     '\\.[jt]sx?$': require.resolve('babel-jest'),
   },
-  watchPathIgnorePatterns: ['coverage'],
+  watchPathIgnorePatterns: [
+    'coverage',
+    '<rootDir>/packages/jest-worker/src/workers/__tests__/__temp__',
+  ],
   watchPlugins: [
     require.resolve('jest-watch-typeahead/filename'),
     require.resolve('jest-watch-typeahead/testname'),
