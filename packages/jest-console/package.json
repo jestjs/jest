@@ -17,15 +17,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "jest-message-util": "^29.0.0-alpha.1",
-    "jest-util": "^29.0.0-alpha.0",
+    "jest-message-util": "workspace:^",
+    "jest-util": "workspace:^",
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^29.0.0-alpha.1"
+    "@jest/test-utils": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

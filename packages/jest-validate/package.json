@@ -17,12 +17,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/types": "workspace:^",
     "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
-    "jest-get-type": "^29.0.0-alpha.0",
+    "jest-get-type": "workspace:^",
     "leven": "^3.1.0",
-    "pretty-format": "^29.0.0-alpha.1"
+    "pretty-format": "workspace:^"
   },
   "devDependencies": {
     "@types/yargs": "^17.0.8"

@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/schemas": "^29.0.0-alpha.0",
+    "@jest/schemas": "workspace:^",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",

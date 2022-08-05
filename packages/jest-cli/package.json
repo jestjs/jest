@@ -13,16 +13,16 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^29.0.0-alpha.1",
-    "@jest/test-result": "^29.0.0-alpha.1",
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/core": "workspace:^",
+    "@jest/test-result": "workspace:^",
+    "@jest/types": "workspace:^",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.9",
     "import-local": "^3.0.2",
-    "jest-config": "^29.0.0-alpha.1",
-    "jest-util": "^29.0.0-alpha.0",
-    "jest-validate": "^29.0.0-alpha.1",
+    "jest-config": "workspace:^",
+    "jest-util": "workspace:^",
+    "jest-validate": "workspace:^",
     "prompts": "^2.0.1",
     "yargs": "^17.3.1"
   },

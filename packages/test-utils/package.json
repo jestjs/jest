@@ -12,11 +12,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "^29.0.0-alpha.1",
+    "pretty-format": "workspace:^",
     "semver": "^7.3.5"
   },
   "devDependencies": {

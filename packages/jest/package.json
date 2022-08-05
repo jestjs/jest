@@ -13,10 +13,10 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^29.0.0-alpha.1",
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/core": "workspace:^",
+    "@jest/types": "workspace:^",
     "import-local": "^3.0.2",
-    "jest-cli": "^29.0.0-alpha.1"
+    "jest-cli": "workspace:^"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.7.4",

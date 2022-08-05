@@ -25,11 +25,11 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/types": "workspace:^",
     "chalk": "^4.0.0",
-    "jest-get-type": "^29.0.0-alpha.0",
-    "jest-util": "^29.0.0-alpha.0",
-    "pretty-format": "^29.0.0-alpha.1"
+    "jest-get-type": "workspace:^",
+    "jest-util": "workspace:^",
+    "pretty-format": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

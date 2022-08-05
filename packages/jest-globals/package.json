@@ -20,9 +20,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^29.0.0-alpha.1",
-    "@jest/expect": "^29.0.0-alpha.1",
-    "@jest/types": "^29.0.0-alpha.0"
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/types": "workspace:^"
   },
   "publishConfig": {
     "access": "public"
