@@ -15,7 +15,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "^29.0.0-alpha.1"
+    "@jest/test-result": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

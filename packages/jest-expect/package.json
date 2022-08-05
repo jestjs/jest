@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "expect": "^29.0.0-alpha.1",
-    "jest-snapshot": "^29.0.0-alpha.1"
+    "expect": "workspace:^",
+    "jest-snapshot": "workspace:^"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.7.4",

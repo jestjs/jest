@@ -7,11 +7,11 @@
     "directory": "packages/jest-create-cache-key-function"
   },
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0"
+    "@jest/types": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "*",
-    "jest-util": "^29.0.0-alpha.0"
+    "jest-util": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

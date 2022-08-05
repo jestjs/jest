@@ -13,7 +13,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "babel-plugin-jest-hoist": "^29.0.0-alpha.0",
+    "babel-plugin-jest-hoist": "workspace:^",
     "babel-preset-current-node-syntax": "^1.0.0"
   },
   "peerDependencies": {

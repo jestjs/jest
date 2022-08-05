@@ -18,14 +18,14 @@
     "./build/matchers": "./build/matchers.js"
   },
   "dependencies": {
-    "@jest/expect-utils": "^29.0.0-alpha.1",
-    "jest-get-type": "^29.0.0-alpha.0",
-    "jest-matcher-utils": "^29.0.0-alpha.1",
-    "jest-message-util": "^29.0.0-alpha.1",
-    "jest-util": "^29.0.0-alpha.0"
+    "@jest/expect-utils": "workspace:^",
+    "jest-get-type": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@jest/test-utils": "^29.0.0-alpha.1",
+    "@jest/test-utils": "workspace:^",
     "@tsd/typescript": "~4.7.4",
     "chalk": "^4.0.0",
     "fast-check": "^3.0.0",

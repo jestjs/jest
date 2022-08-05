@@ -17,11 +17,11 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "jest-get-type": "^29.0.0-alpha.0"
+    "jest-get-type": "workspace:^"
   },
   "devDependencies": {
     "immutable": "^4.0.0",
-    "jest-matcher-utils": "^29.0.0-alpha.1"
+    "jest-matcher-utils": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

@@ -12,13 +12,13 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/test-result": "^29.0.0-alpha.1",
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/test-result": "workspace:^",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
     "emittery": "^0.10.2",
-    "jest-util": "^29.0.0-alpha.0",
+    "jest-util": "workspace:^",
     "string-length": "^4.0.1"
   },
   "repository": {

@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "diff-sequences": "^29.0.0-alpha.0",
-    "jest-get-type": "^29.0.0-alpha.0",
-    "pretty-format": "^29.0.0-alpha.1"
+    "diff-sequences": "workspace:^",
+    "jest-get-type": "workspace:^",
+    "pretty-format": "workspace:^"
   },
   "devDependencies": {
-    "@jest/test-utils": "^29.0.0-alpha.1",
+    "@jest/test-utils": "workspace:^",
     "strip-ansi": "^6.0.0"
   },
   "engines": {

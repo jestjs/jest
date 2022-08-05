@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^29.0.0-alpha.0",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",
