@@ -100,13 +100,13 @@ const loadTSConfigFile = async (
 
 let registeredCompilerPromise: Promise<Service>;
 
-const getRegisteredCompiler = async () => {
+function getRegisteredCompiler() {
   // Cache the promise to avoid multiple registrations
   registeredCompilerPromise = registeredCompilerPromise ?? registerTsNode();
   return registeredCompilerPromise;
-};
+}
 
-const registerTsNode = async () => {
+async function registerTsNode(): Promise<Service> {
   try {
     // Register TypeScript compiler instance
     const tsNode = await import('ts-node');
@@ -127,4 +127,4 @@ const registerTsNode = async () => {
 
     throw e;
   }
-};
+}
