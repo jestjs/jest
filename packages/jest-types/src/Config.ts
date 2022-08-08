@@ -327,7 +327,7 @@ export type InitialOptions = Partial<{
   watchAll: boolean;
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
-  workerIdleMemoryLimit: number;
+  workerIdleMemoryLimit: number | string;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -574,6 +574,6 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
-    workerIdleMemoryLimit: number;
+    workerIdleMemoryLimit: number | string;
   }>
 >;
