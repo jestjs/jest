@@ -23,7 +23,7 @@ The supported Node versions are 14.15, 16.10, 18.0 and above.
 
 ## Snapshot format
 
-As announced in the [Jest 28 blog post](/blog/2022/04/25/jest-28#future), Jets 29 has changed the default snapshot formatting to `{escapeString: false, printBasicPrototype: false}`.
+As announced in the [Jest 28 blog post](/blog/2022/04/25/jest-28#future), Jest 29 has changed the default snapshot formatting to `{escapeString: false, printBasicPrototype: false}`.
 
 If you want to keep the old behavior, you can set the `snapshotFormat` property to:
 
