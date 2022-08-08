@@ -11,6 +11,12 @@ See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2900) fo
 
 :::
 
+:::note
+
+Upgrading from an older version? You can see the upgrade guide from v27 to v28 [here](/docs/28.1/upgrading-to-jest28).
+
+:::
+
 ## Compatibility
 
 The supported Node versions are 14.15, 16.10, 18.0 and above.
