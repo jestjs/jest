@@ -17,11 +17,19 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@types/node": "*",
+    "@babel/core": "^7.11.6",
+    "@types/node": "*",   
+    "babel-jest": "workspace:^",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
+    "@babel/core": {
+      "optional": true
+    },
     "@types/node": {
+      "optional": true
+    },
+    "babel-jest": {
       "optional": true
     },
     "ts-node": {
@@ -29,10 +37,8 @@
     }
   },
   "dependencies": {
-    "@babel/core": "^7.11.6",
     "@jest/test-sequencer": "workspace:^",
     "@jest/types": "workspace:^",
-    "babel-jest": "workspace:^",
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",
     "deepmerge": "^4.2.2",
