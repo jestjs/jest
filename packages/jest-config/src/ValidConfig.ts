@@ -187,6 +187,7 @@ const initialOptions: Config.InitialOptions = {
     ],
   ],
   watchman: true,
+  workerIdleMemoryLimit: 0.2,
 };
 
 export default initialOptions;
