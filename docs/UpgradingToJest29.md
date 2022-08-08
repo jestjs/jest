@@ -11,13 +11,19 @@ See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2900) fo
 
 :::
 
+:::note
+
+Upgrading from an older version? You can see the upgrade guide from v27 to v28 [here](/docs/upgrading-to-jest28).
+
+:::
+
 ## Compatibility
 
 The supported Node versions are 14.15, 16.10, 18.0 and above.
 
 ## Snapshot format
 
-As announced in the [Jest 28 blog post](/blog/2022/04/25/jest-28#future), Jets 29 has changed the default snapshot formatting to `{escapeString: false, printBasicPrototype: false}`.
+As announced in the [Jest 28 blog post](/blog/2022/04/25/jest-28#future), Jest 29 has changed the default snapshot formatting to `{escapeString: false, printBasicPrototype: false}`.
 
 If you want to keep the old behavior, you can set the `snapshotFormat` property to:
 
@@ -31,6 +37,8 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 ## JSDOM upgrade
 
 `jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. Note that _if_ you use `jest-environment-jsdom`, the minimum TypeScript version is set to `4.5`.
+
+Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means packages like `jsdom` and `nanoid`, which doesn't work properly in Jest@28, can work without extra polyfills.
 
 ## `pretty-format`
 
