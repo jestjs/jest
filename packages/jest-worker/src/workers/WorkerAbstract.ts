@@ -27,9 +27,10 @@ export default abstract class WorkerAbstract
   }
   protected set state(value: WorkerStates) {
     if (this.__state !== value) {
+      const oldState = this.__state;
       this.__state = value;
 
-      this.emit(WorkerEvents.STATE_CHANGE, value);
+      this.emit(WorkerEvents.STATE_CHANGE, value, oldState);
     }
   }
 

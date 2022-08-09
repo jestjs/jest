@@ -189,11 +189,16 @@ export type WorkerOptions = {
    * Used to immediately bind event handlers.
    */
   on?: {
-    [key in WorkerEvents]?:
-      | Array<(...args: Array<any>) => void>
-      | ((...args: Array<any>) => void);
+    [WorkerEvents.STATE_CHANGE]:
+      | onStateChangeHandler
+      | Array<onStateChangeHandler>;
   };
 };
+
+export type onStateChangeHandler = (
+  state: WorkerStates,
+  oldState: WorkerStates,
+) => void;
 
 // Messages passed from the parent to the children.
 

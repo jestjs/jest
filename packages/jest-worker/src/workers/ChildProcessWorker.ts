@@ -98,6 +98,9 @@ export default class ChildProcessWorker
     this._exitPromise = new Promise(resolve => {
       this._resolveExitPromise = resolve;
     });
+    this._exitPromise.then(() => {
+      this.state = WorkerStates.SHUT_DOWN;
+    });
 
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');

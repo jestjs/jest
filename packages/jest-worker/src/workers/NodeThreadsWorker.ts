@@ -76,6 +76,9 @@ export default class ExperimentalWorker
     this._exitPromise = new Promise(resolve => {
       this._resolveExitPromise = resolve;
     });
+    this._exitPromise.then(() => {
+      this.state = WorkerStates.SHUT_DOWN;
+    });
 
     this.initialize();
   }
@@ -181,6 +184,8 @@ export default class ExperimentalWorker
   private _onError(error: Error) {
     if (error.message.includes('heap out of memory')) {
       this.state = WorkerStates.OUT_OF_MEMORY;
+
+      this.forceExit();
     }
   }
 

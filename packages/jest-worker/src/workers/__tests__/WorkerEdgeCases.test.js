@@ -238,6 +238,7 @@ describe.each([
 
   describe('should cleanly exit on crash', () => {
     let worker;
+    const orderOfEvents = [];
 
     beforeAll(() => {
       const workerHeapLimit = 10;
@@ -246,6 +247,11 @@ describe.each([
       const options = {
         childWorkerPath: workerPath,
         maxRetries: 0,
+        on: {
+          [WorkerEvents.STATE_CHANGE]: state => {
+            orderOfEvents.push(state);
+          },
+        },
         silent: true,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       };
@@ -293,10 +299,23 @@ describe.each([
 
       await worker.waitForExit();
 
+      expect(worker.state).not.toEqual(WorkerStates.OK);
+    });
+
+    test('worker stays dead', async () => {
       await expect(
         async () => await worker.waitForWorkerReady(),
       ).rejects.toThrowError();
       expect(worker.isWorkerRunning()).toBeFalsy();
+    });
+
+    test('expected state order', () => {
+      expect(orderOfEvents).toMatchObject([
+        WorkerStates.OK,
+        WorkerStates.OUT_OF_MEMORY,
+        WorkerStates.SHUTTING_DOWN,
+        WorkerStates.SHUT_DOWN,
+      ]);
     });
   }, 15000);
 
