@@ -14,12 +14,8 @@ import {
   WorkerInterface,
   WorkerOptions,
 } from '../../types';
-import ChildProcessWorker from '../ChildProcessWorker';
+import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
-
-// These tests appear to be slow/flaky. Allowing it to retry quite a few times
-// will cut down on this noise and they're fast tests anyway.
-jest.retryTimes(30);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
@@ -169,6 +165,14 @@ describe.each([
     const endPid = worker.getWorkerSystemId();
     expect(endPid).toBeGreaterThanOrEqual(0);
     expect(endPid).not.toEqual(startPid);
+    expect(worker.isWorkerRunning()).toBeTruthy();
+
+    await new Promise(resolve => {
+      setTimeout(resolve, SIGKILL_DELAY + 100);
+    });
+
+    expect(worker.isWorkerRunning()).toBeTruthy();
+    expect(worker.getWorkerSystemId()).toEqual(endPid);
   }, 10000);
 
   test('should cleanly exit on crash', async () => {

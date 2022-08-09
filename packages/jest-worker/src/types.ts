@@ -83,6 +83,7 @@ export interface WorkerInterface {
    */
   getWorkerSystemId(): number;
   getMemoryUsage(): Promise<number | null>;
+  isWorkerRunning(): boolean;
 }
 
 export type PoolExitResult = {

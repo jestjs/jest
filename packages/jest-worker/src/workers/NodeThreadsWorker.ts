@@ -410,4 +410,8 @@ export default class ExperimentalWorker implements WorkerInterface {
     }
     return this._fakeStream;
   }
+
+  isWorkerRunning(): boolean {
+    return !!this._worker.threadId;
+  }
 }

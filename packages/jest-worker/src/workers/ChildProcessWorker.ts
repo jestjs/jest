@@ -33,7 +33,7 @@ const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
 
 // How long to wait after SIGTERM before sending SIGKILL
-const SIGKILL_DELAY = 500;
+export const SIGKILL_DELAY = 500;
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -464,6 +464,10 @@ export default class ChildProcessWorker implements WorkerInterface {
         'Memory usage of workers can only be checked if a limit is set',
       );
     }
+  }
+
+  isWorkerRunning(): boolean {
+    return this._child.connected && !this._child.killed;
   }
 
   private _getFakeStream() {
