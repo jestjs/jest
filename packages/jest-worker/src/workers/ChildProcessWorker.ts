@@ -222,6 +222,8 @@ export default class ChildProcessWorker
           this.state = WorkerStates.OUT_OF_MEMORY;
         }
       }
+
+      console.log({stderrStr});
     };
 
     child.stderr?.on('data', handler);
