@@ -5,15 +5,49 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {WorkerInterface, WorkerStates} from '../types';
+import {EventEmitter} from 'stream';
+import {
+  WorkerEvents,
+  WorkerInterface,
+  WorkerOptions,
+  WorkerStates,
+} from '../types';
 
 export default abstract class WorkerAbstract
-  implements Pick<WorkerInterface, 'waitForWorkerReady'>
+  extends EventEmitter
+  implements Pick<WorkerInterface, 'waitForWorkerReady' | 'state'>
 {
-  protected _state = WorkerStates.STARTING;
+  private __state = WorkerStates.STARTING;
 
   protected _workerReadyPromise: Promise<void> | undefined;
   protected _resolveWorkerReady: (() => void) | undefined;
+
+  public get state(): WorkerStates {
+    return this.__state;
+  }
+  protected set state(value: WorkerStates) {
+    if (this.__state !== value) {
+      this.__state = value;
+
+      this.emit(WorkerEvents.STATE_CHANGE, value);
+    }
+  }
+
+  constructor(options: WorkerOptions) {
+    super();
+
+    if (typeof options.on === 'object') {
+      for (const [event, handlers] of Object.entries(options.on)) {
+        if (Array.isArray(handlers)) {
+          for (const handler of handlers) {
+            super.on(event, handler);
+          }
+        } else {
+          super.on(event, handlers);
+        }
+      }
+    }
+  }
 
   /**
    * Wait for the worker child process to be ready to handle requests.
@@ -26,14 +60,14 @@ export default abstract class WorkerAbstract
         let settled = false;
         let to: NodeJS.Timeout | undefined;
 
-        switch (this._state) {
+        switch (this.state) {
           case WorkerStates.OUT_OF_MEMORY:
           case WorkerStates.SHUTTING_DOWN:
           case WorkerStates.SHUT_DOWN:
             settled = true;
             reject(
               new Error(
-                `Worker state means it will never be ready: ${this._state}`,
+                `Worker state means it will never be ready: ${this.state}`,
               ),
             );
             break;

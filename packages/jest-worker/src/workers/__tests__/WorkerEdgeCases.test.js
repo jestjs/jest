@@ -11,6 +11,7 @@ import {transformFileAsync} from '@babel/core';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_MEM_USAGE,
+  WorkerEvents,
   WorkerInterface,
   WorkerOptions,
   WorkerStates,
@@ -159,7 +160,6 @@ describe.each([
     let startPid;
     let worker;
     const orderOfEvents = [];
-    let orderInt;
 
     beforeAll(() => {
       worker = new workerClass({
@@ -168,18 +168,13 @@ describe.each([
         // after requesting a memory usage update
         idleMemoryLimit: 1000,
         maxRetries: 0,
+        on: {
+          [WorkerEvents.STATE_CHANGE]: state => {
+            orderOfEvents.push(state);
+          },
+        },
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       });
-
-      // We're doing this so we can track the state changes that have occurred within
-      // the worker to make sure it hasn't done anything weird.
-      orderInt = setInterval(() => {
-        const currentState = worker.getWorkerState();
-
-        if (orderOfEvents[orderOfEvents.length - 1] !== currentState) {
-          orderOfEvents.push(currentState);
-        }
-      }, 1);
     });
 
     afterAll(async () => {
@@ -187,14 +182,14 @@ describe.each([
         worker.forceExit();
         await worker.waitForExit();
       }
-
-      clearInterval(orderInt);
     });
 
     test('initial state', async () => {
       startPid = worker.getWorkerSystemId();
       expect(startPid).toBeGreaterThanOrEqual(0);
-      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+      expect(worker.state).toEqual(WorkerStates.OK);
+
+      expect(orderOfEvents).toMatchObject(['ok']);
     });
 
     test('new worker starts', async () => {
@@ -215,7 +210,7 @@ describe.each([
       expect(endPid).toBeGreaterThanOrEqual(0);
       expect(endPid).not.toEqual(startPid);
       expect(worker.isWorkerRunning()).toBeTruthy();
-      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+      expect(worker.state).toEqual(WorkerStates.OK);
     });
 
     test(
@@ -225,14 +220,19 @@ describe.each([
           setTimeout(resolve, SIGKILL_DELAY + 100);
         });
 
-        expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+        expect(worker.state).toEqual(WorkerStates.OK);
         expect(worker.isWorkerRunning()).toBeTruthy();
       },
       SIGKILL_DELAY * 3,
     );
 
     test('expected state order', () => {
-      expect(orderOfEvents).toMatchObject(['ok', 'restarting', 'ok']);
+      expect(orderOfEvents).toMatchObject([
+        'ok',
+        'restarting',
+        'starting',
+        'ok',
+      ]);
     });
   });
 
@@ -374,7 +374,7 @@ describe.each([
       expect(pidChanges).toEqual(5);
 
       expect(worker.isWorkerRunning()).toBeTruthy();
-      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+      expect(worker.state).toEqual(WorkerStates.OK);
     });
 
     test('processes exits', async () => {

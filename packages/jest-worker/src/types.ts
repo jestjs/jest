@@ -66,12 +66,15 @@ export interface WorkerPoolInterface {
 }
 
 export interface WorkerInterface {
+  get state(): WorkerStates;
+
   send(
     request: ChildMessage,
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void;
+
   waitForExit(): Promise<void>;
   forceExit(): void;
 
@@ -83,7 +86,6 @@ export interface WorkerInterface {
    */
   getWorkerSystemId(): number;
   getMemoryUsage(): Promise<number | null>;
-  getWorkerState(): WorkerStates;
   /**
    * Checks to see if the child worker is actually running.
    */
@@ -183,6 +185,14 @@ export type WorkerOptions = {
    * the raw output of the worker.
    */
   silent?: boolean;
+  /**
+   * Used to immediately bind event handlers.
+   */
+  on?: {
+    [key in WorkerEvents]?:
+      | Array<(...args: Array<any>) => void>
+      | ((...args: Array<any>) => void);
+  };
 };
 
 // Messages passed from the parent to the children.
@@ -277,4 +287,8 @@ export enum WorkerStates {
   RESTARTING = 'restarting',
   SHUTTING_DOWN = 'shutting-down',
   SHUT_DOWN = 'shut-down',
+}
+
+export enum WorkerEvents {
+  STATE_CHANGE = 'state-change',
 }

@@ -57,7 +57,7 @@ export default class ExperimentalWorker
   private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {
-    super();
+    super(options);
 
     this._options = options;
 
@@ -82,9 +82,9 @@ export default class ExperimentalWorker
 
   initialize(): void {
     if (
-      this._state === WorkerStates.OUT_OF_MEMORY ||
-      this._state === WorkerStates.SHUTTING_DOWN ||
-      this._state === WorkerStates.SHUT_DOWN
+      this.state === WorkerStates.OUT_OF_MEMORY ||
+      this.state === WorkerStates.SHUTTING_DOWN ||
+      this.state === WorkerStates.SHUT_DOWN
     ) {
       return;
     }
@@ -93,7 +93,7 @@ export default class ExperimentalWorker
       this._worker.terminate();
     }
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
 
     this._worker = new Worker(this._childWorkerPath, {
       eval: false,
@@ -162,7 +162,7 @@ export default class ExperimentalWorker
       ]);
     }
 
-    this._state = WorkerStates.OK;
+    this.state = WorkerStates.OK;
     if (this._resolveWorkerReady) {
       this._resolveWorkerReady();
     }
@@ -180,7 +180,7 @@ export default class ExperimentalWorker
 
   private _onError(error: Error) {
     if (error.message.includes('heap out of memory')) {
-      this._state = WorkerStates.OUT_OF_MEMORY;
+      this.state = WorkerStates.OUT_OF_MEMORY;
     }
   }
 
@@ -250,7 +250,7 @@ export default class ExperimentalWorker
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
-    if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
+    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
         null,
@@ -259,9 +259,9 @@ export default class ExperimentalWorker
       this._shutdown();
     } else if (
       (exitCode !== 0 &&
-        this._state !== WorkerStates.SHUTTING_DOWN &&
-        this._state !== WorkerStates.SHUT_DOWN) ||
-      this._state === WorkerStates.RESTARTING
+        this.state !== WorkerStates.SHUTTING_DOWN &&
+        this.state !== WorkerStates.SHUT_DOWN) ||
+      this.state === WorkerStates.RESTARTING
     ) {
       this.initialize();
 
@@ -278,7 +278,7 @@ export default class ExperimentalWorker
   }
 
   forceExit(): void {
-    this._state = WorkerStates.SHUTTING_DOWN;
+    this.state = WorkerStates.SHUTTING_DOWN;
     this._worker.terminate();
   }
 
@@ -349,7 +349,7 @@ export default class ExperimentalWorker
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this._state = WorkerStates.RESTARTING;
+        this.state = WorkerStates.RESTARTING;
 
         this._worker.terminate();
       }
@@ -430,6 +430,6 @@ export default class ExperimentalWorker
   }
 
   getWorkerState(): WorkerStates {
-    return this._state;
+    return this.state;
   }
 }

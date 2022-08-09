@@ -83,7 +83,7 @@ export default class ChildProcessWorker
   private _childWorkerPath: string;
 
   constructor(options: WorkerOptions) {
-    super();
+    super(options);
 
     this._options = options;
 
@@ -102,15 +102,15 @@ export default class ChildProcessWorker
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
     this.initialize();
   }
 
   initialize(): void {
     if (
-      this._state === WorkerStates.OUT_OF_MEMORY ||
-      this._state === WorkerStates.SHUTTING_DOWN ||
-      this._state === WorkerStates.SHUT_DOWN
+      this.state === WorkerStates.OUT_OF_MEMORY ||
+      this.state === WorkerStates.SHUTTING_DOWN ||
+      this.state === WorkerStates.SHUT_DOWN
     ) {
       return;
     }
@@ -119,7 +119,7 @@ export default class ChildProcessWorker
       this._child.kill('SIGKILL');
     }
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
 
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
     const options: ForkOptions = {
@@ -192,7 +192,7 @@ export default class ChildProcessWorker
       this._request = null;
     }
 
-    this._state = WorkerStates.OK;
+    this.state = WorkerStates.OK;
     if (this._resolveWorkerReady) {
       this._resolveWorkerReady();
     }
@@ -202,7 +202,7 @@ export default class ChildProcessWorker
     let stderrStr = '';
 
     const handler = (chunk: any) => {
-      if (this._state !== WorkerStates.OUT_OF_MEMORY) {
+      if (this.state !== WorkerStates.OUT_OF_MEMORY) {
         let str: string | undefined = undefined;
 
         if (chunk instanceof Buffer) {
@@ -216,7 +216,7 @@ export default class ChildProcessWorker
         }
 
         if (stderrStr.includes('heap out of memory')) {
-          this._state = WorkerStates.OUT_OF_MEMORY;
+          this.state = WorkerStates.OUT_OF_MEMORY;
         }
       }
     };
@@ -225,7 +225,7 @@ export default class ChildProcessWorker
   }
 
   private _shutdown() {
-    this._state = WorkerStates.SHUTTING_DOWN;
+    this.state = WorkerStates.SHUTTING_DOWN;
 
     // End the temporary streams so the merged streams end too
     if (this._fakeStream) {
@@ -318,7 +318,7 @@ export default class ChildProcessWorker
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this._state = WorkerStates.RESTARTING;
+        this.state = WorkerStates.RESTARTING;
 
         this.killChild();
       }
@@ -329,7 +329,7 @@ export default class ChildProcessWorker
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
-    if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
+    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
         null,
@@ -341,8 +341,8 @@ export default class ChildProcessWorker
         exitCode !== null &&
         exitCode !== SIGTERM_EXIT_CODE &&
         exitCode !== SIGKILL_EXIT_CODE &&
-        this._state !== WorkerStates.SHUTTING_DOWN) ||
-      this._state === WorkerStates.RESTARTING
+        this.state !== WorkerStates.SHUTTING_DOWN) ||
+      this.state === WorkerStates.RESTARTING
     ) {
       this.initialize();
 
@@ -402,7 +402,7 @@ export default class ChildProcessWorker
   }
 
   forceExit(): void {
-    this._state = WorkerStates.SHUTTING_DOWN;
+    this.state = WorkerStates.SHUTTING_DOWN;
 
     const sigkillTimeout = this.killChild();
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
@@ -498,6 +498,6 @@ export default class ChildProcessWorker
   }
 
   getWorkerState(): WorkerStates {
-    return this._state;
+    return this.state;
   }
 }
