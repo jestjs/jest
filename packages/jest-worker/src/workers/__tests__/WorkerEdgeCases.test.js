@@ -134,6 +134,12 @@ describe.each([
     const systemId = worker.getWorkerSystemId();
     expect(systemId).toBeGreaterThanOrEqual(0);
     expect(systemId).not.toEqual(startSystemId);
+
+    await new Promise(resolve => {
+      setTimeout(resolve, SIGKILL_DELAY + 100);
+    });
+
+    expect(worker.isWorkerRunning()).toBeTruthy();
   });
 
   test('should automatically recycle on idle limit breach', async () => {
@@ -172,7 +178,6 @@ describe.each([
     });
 
     expect(worker.isWorkerRunning()).toBeTruthy();
-    expect(worker.getWorkerSystemId()).toEqual(endPid);
   }, 10000);
 
   test('should cleanly exit on crash', async () => {

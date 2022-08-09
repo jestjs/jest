@@ -412,6 +412,6 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   isWorkerRunning(): boolean {
-    return !!this._worker.threadId;
+    return this._worker.threadId >= 0;
   }
 }

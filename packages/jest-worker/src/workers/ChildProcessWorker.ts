@@ -377,8 +377,12 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   killChild(): NodeJS.Timeout {
-    this._child.kill('SIGTERM');
-    return setTimeout(() => this._child.kill('SIGKILL'), SIGKILL_DELAY);
+    // We store a reference so that there's no way we can accidentally
+    // kill a new worker that has been spawned.
+    const childToKill = this._child;
+
+    childToKill.kill('SIGTERM');
+    return setTimeout(() => childToKill.kill('SIGKILL'), SIGKILL_DELAY);
   }
 
   forceExit(): void {
