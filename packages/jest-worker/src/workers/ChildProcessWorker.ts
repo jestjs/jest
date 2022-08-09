@@ -363,11 +363,17 @@ export default class ChildProcessWorker
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
+      const hasRequest = !!this._request;
+
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
 
-      if (this._childIdleMemoryUsageLimit && this._child.connected) {
+      if (
+        this._childIdleMemoryUsageLimit &&
+        this._child.connected &&
+        hasRequest
+      ) {
         this.checkMemoryUsage();
       }
 

@@ -158,6 +158,8 @@ describe.each([
   describe('should automatically recycle on idle limit breach', () => {
     let startPid;
     let worker;
+    const orderOfEvents = [];
+    let orderInt;
 
     beforeAll(() => {
       worker = new workerClass({
@@ -168,6 +170,16 @@ describe.each([
         maxRetries: 0,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       });
+
+      // We're doing this so we can track the state changes that have occurred within
+      // the worker to make sure it hasn't done anything weird.
+      orderInt = setInterval(() => {
+        const currentState = worker.getWorkerState();
+
+        if (orderOfEvents[orderOfEvents.length - 1] !== currentState) {
+          orderOfEvents.push(currentState);
+        }
+      }, 1);
     });
 
     afterAll(async () => {
@@ -175,6 +187,8 @@ describe.each([
         worker.forceExit();
         await worker.waitForExit();
       }
+
+      clearInterval(orderInt);
     });
 
     test('initial state', async () => {
@@ -216,6 +230,10 @@ describe.each([
       },
       SIGKILL_DELAY * 3,
     );
+
+    test('expected state order', () => {
+      expect(orderOfEvents).toMatchObject(['ok', 'restarting', 'ok']);
+    });
   });
 
   describe('should cleanly exit on crash', () => {
