@@ -514,4 +514,8 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
     return this._fakeStream;
   }
+
+  getWorkerState(): WorkerStates {
+    return this._state;
+  }
 }

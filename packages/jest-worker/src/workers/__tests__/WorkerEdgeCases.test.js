@@ -13,6 +13,7 @@ import {
   CHILD_MESSAGE_MEM_USAGE,
   WorkerInterface,
   WorkerOptions,
+  WorkerStates,
 } from '../../types';
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
@@ -59,11 +60,11 @@ describe.each([
     workerClass: ChildProcessWorker,
     workerPath: processChildWorkerPath,
   },
-  {
-    name: 'ThreadWorker',
-    workerClass: ThreadsWorker,
-    workerPath: threadChildWorkerPath,
-  },
+  // {
+  //   name: 'ThreadWorker',
+  //   workerClass: ThreadsWorker,
+  //   workerPath: threadChildWorkerPath,
+  // },
 ])('$name', ({workerClass, workerPath}) => {
   /** @type WorkerInterface */
   let worker;
@@ -152,8 +153,12 @@ describe.each([
       workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
     });
 
+    console.log('A');
+
     const startPid = worker.getWorkerSystemId();
     expect(startPid).toBeGreaterThanOrEqual(0);
+
+    console.log('B');
 
     const onStart = jest.fn();
     const onEnd = jest.fn();
@@ -166,18 +171,28 @@ describe.each([
       onCustom,
     );
 
+    console.log('C');
+
     await waitForChange(() => worker.getWorkerSystemId());
+
+    console.log('D');
 
     const endPid = worker.getWorkerSystemId();
     expect(endPid).toBeGreaterThanOrEqual(0);
     expect(endPid).not.toEqual(startPid);
     expect(worker.isWorkerRunning()).toBeTruthy();
 
+    console.log('E');
+
     await new Promise(resolve => {
       setTimeout(resolve, SIGKILL_DELAY + 100);
     });
 
+    console.log('F');
+
     await worker.waitForWorkerReady();
+
+    console.log('G');
 
     expect(worker.isWorkerRunning()).toBeTruthy();
   }, 10000);
@@ -192,6 +207,8 @@ describe.each([
       silent: true,
       workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
     };
+
+    console.time('1');
 
     if (workerClass === ThreadsWorker) {
       options.resourceLimits = {
@@ -216,6 +233,9 @@ describe.each([
     const onEnd = jest.fn();
     const onCustom = jest.fn();
 
+    console.timeEnd('1');
+    console.time('2');
+
     worker.send(
       [CHILD_MESSAGE_CALL, true, 'leakMemory', []],
       onStart,
@@ -223,9 +243,20 @@ describe.each([
       onCustom,
     );
 
+    console.timeEnd('2');
+    console.time('3');
+
     await worker.waitForExit();
 
+    console.timeEnd('3');
+    console.time('4');
+
+    await expect(
+      async () => await worker.waitForWorkerReady(),
+    ).rejects.toThrowError();
     expect(worker.isWorkerRunning()).toBeFalsy();
+
+    console.timeEnd('4');
   }, 15000);
 
   test('should handle regular fatal crashes', async () => {
@@ -287,6 +318,7 @@ describe.each([
     // one last time at the end ready for the next request.
     expect(pidChanges).toEqual(5);
     expect(worker.isWorkerRunning()).toBeTruthy();
+    expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
 
     worker.forceExit();
 

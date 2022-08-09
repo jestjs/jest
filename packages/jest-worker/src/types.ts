@@ -83,6 +83,7 @@ export interface WorkerInterface {
    */
   getWorkerSystemId(): number;
   getMemoryUsage(): Promise<number | null>;
+  getWorkerState(): WorkerStates;
   /**
    * Checks to see if the child worker is actually running.
    */

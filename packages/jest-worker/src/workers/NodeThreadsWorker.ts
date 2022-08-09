@@ -448,4 +448,8 @@ export default class ExperimentalWorker implements WorkerInterface {
   isWorkerRunning(): boolean {
     return this._worker.threadId >= 0;
   }
+
+  getWorkerState(): WorkerStates {
+    return this._state;
+  }
 }
