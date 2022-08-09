@@ -205,7 +205,7 @@ export default class ChildProcessWorker
     let stderrStr = '';
 
     const handler = (chunk: any) => {
-      if (this.state !== WorkerStates.OUT_OF_MEMORY) {
+      if (this.state === WorkerStates.OK) {
         let str: string | undefined = undefined;
 
         if (chunk instanceof Buffer) {
