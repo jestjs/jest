@@ -70,7 +70,6 @@ To automatically launch and attach to a process running your tests, use the foll
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "port": 9229
     }
   ]
 }
@@ -93,7 +92,6 @@ or the following for Windows:
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "port": 9229
     }
   ]
 }
