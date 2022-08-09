@@ -7,7 +7,6 @@
 
 import {ChildProcess, ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
-import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
@@ -66,12 +65,8 @@ export default class ChildProcessWorker
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
 
-  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
-
-  private _exitPromise: Promise<void>;
-  private _resolveExitPromise!: () => void;
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
@@ -89,18 +84,10 @@ export default class ChildProcessWorker
 
     this._request = null;
 
-    this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
     this._childIdleMemoryUsage = null;
     this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
-
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-    this._exitPromise.then(() => {
-      this.state = WorkerStates.SHUT_DOWN;
-    });
 
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
@@ -225,18 +212,6 @@ export default class ChildProcessWorker
     };
 
     child.stderr?.on('data', handler);
-  }
-
-  private _shutdown() {
-    this.state = WorkerStates.SHUTTING_DOWN;
-
-    // End the temporary streams so the merged streams end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
-    }
-
-    this._resolveExitPromise();
   }
 
   private _onMessage(response: ParentMessage) {
@@ -491,16 +466,5 @@ export default class ChildProcessWorker
 
   isWorkerRunning(): boolean {
     return this._child.connected && !this._child.killed;
-  }
-
-  private _getFakeStream() {
-    if (!this._fakeStream) {
-      this._fakeStream = new PassThrough();
-    }
-    return this._fakeStream;
-  }
-
-  getWorkerState(): WorkerStates {
-    return this.state;
   }
 }

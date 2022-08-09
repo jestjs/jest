@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'stream';
+import {EventEmitter, PassThrough} from 'stream';
 import {
   WorkerEvents,
   WorkerInterface,
@@ -18,6 +18,11 @@ export default abstract class WorkerAbstract
   implements Pick<WorkerInterface, 'waitForWorkerReady' | 'state'>
 {
   private __state = WorkerStates.STARTING;
+
+  protected _fakeStream: PassThrough | null = null;
+
+  protected _exitPromise: Promise<void>;
+  protected _resolveExitPromise!: () => void;
 
   protected _workerReadyPromise: Promise<void> | undefined;
   protected _resolveWorkerReady: (() => void) | undefined;
@@ -48,6 +53,13 @@ export default abstract class WorkerAbstract
         }
       }
     }
+
+    this._exitPromise = new Promise(resolve => {
+      this._resolveExitPromise = resolve;
+    });
+    this._exitPromise.then(() => {
+      this.state = WorkerStates.SHUT_DOWN;
+    });
   }
 
   /**
@@ -100,5 +112,26 @@ export default abstract class WorkerAbstract
     }
 
     return this._workerReadyPromise;
+  }
+
+  /**
+   * Used to shut down the current working instance once the children have been
+   * killed off.
+   */
+  protected _shutdown(): void {
+    // End the permanent stream so the merged stream end too
+    if (this._fakeStream) {
+      this._fakeStream.end();
+      this._fakeStream = null;
+    }
+
+    this._resolveExitPromise();
+  }
+
+  protected _getFakeStream(): PassThrough {
+    if (!this._fakeStream) {
+      this._fakeStream = new PassThrough();
+    }
+    return this._fakeStream;
   }
 }

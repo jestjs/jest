@@ -19,6 +19,8 @@ import {
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
+jest.retryTimes(0);
+
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
 const writeDestination = join(__dirname, '__temp__');
@@ -313,7 +315,6 @@ describe.each([
       expect(orderOfEvents).toMatchObject([
         WorkerStates.OK,
         WorkerStates.OUT_OF_MEMORY,
-        WorkerStates.SHUTTING_DOWN,
         WorkerStates.SHUT_DOWN,
       ]);
     });
@@ -321,11 +322,19 @@ describe.each([
 
   describe('should handle regular fatal crashes', () => {
     let worker;
+    let startedWorkers = 0;
 
     beforeAll(() => {
       worker = new workerClass({
         childWorkerPath: workerPath,
         maxRetries: 4,
+        on: {
+          [WorkerEvents.STATE_CHANGE]: state => {
+            if (state === WorkerStates.OK) {
+              startedWorkers++;
+            }
+          },
+        },
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       });
     });
@@ -354,43 +363,10 @@ describe.each([
         onCustom,
       );
 
-      let pidChanges = 0;
+      // Give it some time to restart some workers
+      await new Promise(resolve => setTimeout(resolve, 4000));
 
-      while (true) {
-        // Ideally this would use Promise.any but it's not supported in Node 14
-        // so doing this instead. Essentially what we're doing is looping and
-        // capturing the pid every time it changes. When it stops changing the
-        // timeout will be hit and we should be left with a collection of all
-        // the pids used by the worker.
-        const newPid = await new Promise(resolve => {
-          const resolved = false;
-
-          const to = setTimeout(() => {
-            if (!resolved) {
-              this.resolved = true;
-              resolve(undefined);
-            }
-          }, 500);
-
-          waitForChange(() => worker.getWorkerSystemId()).then(() => {
-            clearTimeout(to);
-
-            if (!resolved) {
-              resolve(worker.getWorkerSystemId());
-            }
-          });
-        });
-
-        if (typeof newPid === 'number') {
-          pidChanges++;
-        } else {
-          break;
-        }
-      }
-
-      // Expect the pids to be retries + 1 because it is restarted
-      // one last time at the end ready for the next request.
-      expect(pidChanges).toEqual(5);
+      expect(startedWorkers).toEqual(6);
 
       expect(worker.isWorkerRunning()).toBeTruthy();
       expect(worker.state).toEqual(WorkerStates.OK);

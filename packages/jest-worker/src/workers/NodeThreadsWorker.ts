@@ -6,7 +6,6 @@
  */
 
 import {totalmem} from 'os';
-import {PassThrough} from 'stream';
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 import {
@@ -40,12 +39,8 @@ export default class ExperimentalWorker
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
 
-  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
-
-  private _exitPromise: Promise<void>;
-  private _resolveExitPromise!: () => void;
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
@@ -63,7 +58,6 @@ export default class ExperimentalWorker
 
     this._request = null;
 
-    this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
 
@@ -72,13 +66,6 @@ export default class ExperimentalWorker
 
     this._childIdleMemoryUsage = null;
     this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
-
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-    this._exitPromise.then(() => {
-      this.state = WorkerStates.SHUT_DOWN;
-    });
 
     this.initialize();
   }
@@ -171,21 +158,14 @@ export default class ExperimentalWorker
     }
   }
 
-  private _shutdown() {
-    // End the permanent stream so the merged stream end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
-    }
-
-    this._resolveExitPromise();
-  }
-
   private _onError(error: Error) {
     if (error.message.includes('heap out of memory')) {
       this.state = WorkerStates.OUT_OF_MEMORY;
 
-      this.forceExit();
+      // Threads don't behave like processes, they don't crash when they run out of
+      // memory. But for consistency we want them to behave like processes so we call
+      // terminate to simulate a crash happening that was not planned
+      this._worker.terminate();
     }
   }
 
@@ -423,18 +403,7 @@ export default class ExperimentalWorker
     return this._worker.threadId;
   }
 
-  private _getFakeStream() {
-    if (!this._fakeStream) {
-      this._fakeStream = new PassThrough();
-    }
-    return this._fakeStream;
-  }
-
   isWorkerRunning(): boolean {
     return this._worker.threadId >= 0;
-  }
-
-  getWorkerState(): WorkerStates {
-    return this.state;
   }
 }
