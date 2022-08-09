@@ -26,8 +26,12 @@ import {
   WorkerOptions,
   WorkerStates,
 } from '../types';
+import WorkerAbstract from './WorkerAbstract';
 
-export default class ExperimentalWorker implements WorkerInterface {
+export default class ExperimentalWorker
+  extends WorkerAbstract
+  implements WorkerInterface
+{
   private _worker!: Worker;
   private _options: WorkerOptions;
 
@@ -46,17 +50,15 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
-  private _workerReadyPromise: Promise<void> | undefined;
-  private _resolveWorkerReady: (() => void) | undefined;
-
   private _childWorkerPath: string;
 
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
-  private _state: WorkerStates;
 
   constructor(options: WorkerOptions) {
+    super();
+
     this._options = options;
 
     this._request = null;
@@ -75,7 +77,6 @@ export default class ExperimentalWorker implements WorkerInterface {
       this._resolveExitPromise = resolve;
     });
 
-    this._state = WorkerStates.STARTING;
     this.initialize();
   }
 
@@ -413,33 +414,6 @@ export default class ExperimentalWorker implements WorkerInterface {
    */
   getWorkerSystemId(): number {
     return this._worker.threadId;
-  }
-
-  waitForWorkerReady(): Promise<void> {
-    if (!this._workerReadyPromise) {
-      this._workerReadyPromise = new Promise((resolve, reject) => {
-        switch (this._state) {
-          case WorkerStates.OUT_OF_MEMORY:
-          case WorkerStates.SHUTTING_DOWN:
-          case WorkerStates.SHUT_DOWN:
-            reject(
-              new Error(
-                `Worker state means it will never be ready: ${this._state}`,
-              ),
-            );
-            break;
-          case WorkerStates.STARTING:
-          case WorkerStates.RESTARTING:
-            this._resolveWorkerReady = resolve;
-            break;
-          case WorkerStates.OK:
-            resolve();
-            break;
-        }
-      });
-    }
-
-    return this._workerReadyPromise;
   }
 
   private _getFakeStream() {

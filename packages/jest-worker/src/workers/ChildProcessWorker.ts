@@ -27,6 +27,7 @@ import {
   WorkerOptions,
   WorkerStates,
 } from '../types';
+import WorkerAbstract from './WorkerAbstract';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
@@ -53,7 +54,10 @@ export const SIGKILL_DELAY = 500;
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class ChildProcessWorker implements WorkerInterface {
+export default class ChildProcessWorker
+  extends WorkerAbstract
+  implements WorkerInterface
+{
   private _child!: ChildProcess;
   private _options: WorkerOptions;
 
@@ -72,17 +76,15 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
-  private _workerReadyPromise: Promise<void> | undefined;
-  private _resolveWorkerReady: (() => void) | undefined;
-
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
-  private _state: WorkerStates;
 
   private _childWorkerPath: string;
 
   constructor(options: WorkerOptions) {
+    super();
+
     this._options = options;
 
     this._request = null;
@@ -480,53 +482,6 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   isWorkerRunning(): boolean {
     return this._child.connected && !this._child.killed;
-  }
-
-  waitForWorkerReady(): Promise<void> {
-    if (!this._workerReadyPromise) {
-      this._workerReadyPromise = new Promise((resolve, reject) => {
-        let settled = false;
-        let to: NodeJS.Timeout | undefined;
-
-        switch (this._state) {
-          case WorkerStates.OUT_OF_MEMORY:
-          case WorkerStates.SHUTTING_DOWN:
-          case WorkerStates.SHUT_DOWN:
-            settled = true;
-            reject(
-              new Error(
-                `Worker state means it will never be ready: ${this._state}`,
-              ),
-            );
-            break;
-          case WorkerStates.STARTING:
-          case WorkerStates.RESTARTING:
-            this._resolveWorkerReady = () => {
-              settled = true;
-              resolve();
-
-              if (to) {
-                clearTimeout(to);
-              }
-            };
-            break;
-          case WorkerStates.OK:
-            settled = true;
-            resolve();
-            break;
-        }
-
-        if (!settled) {
-          to = setTimeout(() => {
-            if (!settled) {
-              reject(new Error('Timeout starting worker'));
-            }
-          }, 500);
-        }
-      });
-    }
-
-    return this._workerReadyPromise;
   }
 
   private _getFakeStream() {
