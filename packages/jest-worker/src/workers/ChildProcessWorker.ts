@@ -135,40 +135,38 @@ export default class ChildProcessWorker implements WorkerInterface {
       ...this._options.forkOptions,
     };
 
-    const child = fork(this._childWorkerPath, [], options);
+    this._child = fork(this._childWorkerPath, [], options);
 
-    if (child.stdout) {
+    if (this._child.stdout) {
       if (!this._stdout) {
         // We need to add a permanent stream to the merged stream to prevent it
         // from ending when the subprocess stream ends
         this._stdout = mergeStream(this._getFakeStream());
       }
 
-      this._stdout.add(child.stdout);
+      this._stdout.add(this._child.stdout);
     }
 
-    if (child.stderr) {
+    if (this._child.stderr) {
       if (!this._stderr) {
         // We need to add a permanent stream to the merged stream to prevent it
         // from ending when the subprocess stream ends
         this._stderr = mergeStream(this._getFakeStream());
       }
 
-      this._stderr.add(child.stderr);
+      this._stderr.add(this._child.stderr);
     }
 
-    this._detectOutOfMemoryCrash(child);
-    child.on('message', this._onMessage.bind(this));
-    child.on('exit', this._onExit.bind(this));
+    this._detectOutOfMemoryCrash(this._child);
+    this._child.on('message', this._onMessage.bind(this));
+    this._child.on('exit', this._onExit.bind(this));
 
-    child.send([
+    this._child.send([
       CHILD_MESSAGE_INITIALIZE,
       false,
       this._options.workerPath,
       this._options.setupArgs,
     ]);
-
-    this._child = child;
 
     this._retries++;
 
@@ -487,10 +485,14 @@ export default class ChildProcessWorker implements WorkerInterface {
   waitForWorkerReady(): Promise<void> {
     if (!this._workerReadyPromise) {
       this._workerReadyPromise = new Promise((resolve, reject) => {
+        let settled = false;
+        let to: NodeJS.Timeout | undefined;
+
         switch (this._state) {
           case WorkerStates.OUT_OF_MEMORY:
           case WorkerStates.SHUTTING_DOWN:
           case WorkerStates.SHUT_DOWN:
+            settled = true;
             reject(
               new Error(
                 `Worker state means it will never be ready: ${this._state}`,
@@ -499,11 +501,27 @@ export default class ChildProcessWorker implements WorkerInterface {
             break;
           case WorkerStates.STARTING:
           case WorkerStates.RESTARTING:
-            this._resolveWorkerReady = resolve;
+            this._resolveWorkerReady = () => {
+              settled = true;
+              resolve();
+
+              if (to) {
+                clearTimeout(to);
+              }
+            };
             break;
           case WorkerStates.OK:
+            settled = true;
             resolve();
             break;
+        }
+
+        if (!settled) {
+          to = setTimeout(() => {
+            if (!settled) {
+              reject(new Error('Timeout starting worker'));
+            }
+          }, 500);
         }
       });
     }

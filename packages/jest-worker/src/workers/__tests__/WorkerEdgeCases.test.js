@@ -180,7 +180,10 @@ describe.each([
     test('initial state', async () => {
       startPid = worker.getWorkerSystemId();
       expect(startPid).toBeGreaterThanOrEqual(0);
+      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+    });
 
+    test('new worker starts', async () => {
       const onStart = jest.fn();
       const onEnd = jest.fn();
       const onCustom = jest.fn();
@@ -193,24 +196,26 @@ describe.each([
       );
 
       await waitForChange(() => worker.getWorkerSystemId());
-    });
 
-    test('new worker starts', async () => {
       const endPid = worker.getWorkerSystemId();
       expect(endPid).toBeGreaterThanOrEqual(0);
       expect(endPid).not.toEqual(startPid);
       expect(worker.isWorkerRunning()).toBeTruthy();
+      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
     });
 
-    test('worker continues to run after kill delay', async () => {
-      await new Promise(resolve => {
-        setTimeout(resolve, SIGKILL_DELAY + 100);
-      });
+    test(
+      'worker continues to run after kill delay',
+      async () => {
+        await new Promise(resolve => {
+          setTimeout(resolve, SIGKILL_DELAY + 100);
+        });
 
-      await worker.waitForWorkerReady();
-
-      expect(worker.isWorkerRunning()).toBeTruthy();
-    });
+        expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+        expect(worker.isWorkerRunning()).toBeTruthy();
+      },
+      SIGKILL_DELAY * 3,
+    );
   });
 
   describe('should cleanly exit on crash', () => {
