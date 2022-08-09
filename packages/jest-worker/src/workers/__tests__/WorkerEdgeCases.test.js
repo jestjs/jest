@@ -60,22 +60,16 @@ describe.each([
     workerClass: ChildProcessWorker,
     workerPath: processChildWorkerPath,
   },
-  // {
-  //   name: 'ThreadWorker',
-  //   workerClass: ThreadsWorker,
-  //   workerPath: threadChildWorkerPath,
-  // },
+  {
+    name: 'ThreadWorker',
+    workerClass: ThreadsWorker,
+    workerPath: threadChildWorkerPath,
+  },
 ])('$name', ({workerClass, workerPath}) => {
   /** @type WorkerInterface */
-  let worker;
   let int;
 
   afterEach(async () => {
-    if (worker) {
-      worker.forceExit();
-      await worker.waitForExit();
-    }
-
     clearInterval(int);
   });
 
@@ -103,227 +97,269 @@ describe.each([
   }
 
   test('should get memory usage', async () => {
-    worker = new workerClass({
-      childWorkerPath: workerPath,
-      maxRetries: 0,
-      workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-    });
+    let worker;
 
-    const memoryUsagePromise = worker.getMemoryUsage();
-    expect(memoryUsagePromise).toBeInstanceOf(Promise);
+    try {
+      worker = new workerClass({
+        childWorkerPath: workerPath,
+        maxRetries: 0,
+        workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
+      });
 
-    expect(await memoryUsagePromise).toBeGreaterThan(0);
+      const memoryUsagePromise = worker.getMemoryUsage();
+      expect(memoryUsagePromise).toBeInstanceOf(Promise);
+
+      expect(await memoryUsagePromise).toBeGreaterThan(0);
+    } finally {
+      if (worker) {
+        worker.forceExit();
+        await worker.waitForExit();
+      }
+    }
   });
 
   test('should recycle on idle limit breach', async () => {
-    worker = new workerClass({
-      childWorkerPath: workerPath,
-      // There is no way this is fitting into 1000 bytes, so it should restart
-      // after requesting a memory usage update
-      idleMemoryLimit: 1000,
-      maxRetries: 0,
-      workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-    });
+    let worker;
 
-    const startSystemId = worker.getWorkerSystemId();
-    expect(startSystemId).toBeGreaterThanOrEqual(0);
-
-    worker.checkMemoryUsage();
-
-    await waitForChange(() => worker.getWorkerSystemId());
-
-    const systemId = worker.getWorkerSystemId();
-    expect(systemId).toBeGreaterThanOrEqual(0);
-    expect(systemId).not.toEqual(startSystemId);
-
-    await new Promise(resolve => {
-      setTimeout(resolve, SIGKILL_DELAY + 100);
-    });
-
-    expect(worker.isWorkerRunning()).toBeTruthy();
-  });
-
-  test('should automatically recycle on idle limit breach', async () => {
-    worker = new workerClass({
-      childWorkerPath: workerPath,
-      // There is no way this is fitting into 1000 bytes, so it should restart
-      // after requesting a memory usage update
-      idleMemoryLimit: 1000,
-      maxRetries: 0,
-      workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-    });
-
-    console.log('A');
-
-    const startPid = worker.getWorkerSystemId();
-    expect(startPid).toBeGreaterThanOrEqual(0);
-
-    console.log('B');
-
-    const onStart = jest.fn();
-    const onEnd = jest.fn();
-    const onCustom = jest.fn();
-
-    worker.send(
-      [CHILD_MESSAGE_CALL, true, 'safeFunction', []],
-      onStart,
-      onEnd,
-      onCustom,
-    );
-
-    console.log('C');
-
-    await waitForChange(() => worker.getWorkerSystemId());
-
-    console.log('D');
-
-    const endPid = worker.getWorkerSystemId();
-    expect(endPid).toBeGreaterThanOrEqual(0);
-    expect(endPid).not.toEqual(startPid);
-    expect(worker.isWorkerRunning()).toBeTruthy();
-
-    console.log('E');
-
-    await new Promise(resolve => {
-      setTimeout(resolve, SIGKILL_DELAY + 100);
-    });
-
-    console.log('F');
-
-    await worker.waitForWorkerReady();
-
-    console.log('G');
-
-    expect(worker.isWorkerRunning()).toBeTruthy();
-  }, 10000);
-
-  test('should cleanly exit on crash', async () => {
-    const workerHeapLimit = 10;
-
-    /** @type WorkerOptions */
-    const options = {
-      childWorkerPath: workerPath,
-      maxRetries: 0,
-      silent: true,
-      workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-    };
-
-    console.time('1');
-
-    if (workerClass === ThreadsWorker) {
-      options.resourceLimits = {
-        codeRangeSizeMb: workerHeapLimit * 2,
-        maxOldGenerationSizeMb: workerHeapLimit,
-        maxYoungGenerationSizeMb: workerHeapLimit * 2,
-        stackSizeMb: workerHeapLimit * 2,
-      };
-    } else if (workerClass === ChildProcessWorker) {
-      options.forkOptions = {
-        // Forcibly set the heap limit so we can crash the process easily.
-        execArgv: [`--max-old-space-size=${workerHeapLimit}`],
-      };
-    }
-
-    worker = new workerClass(options);
-
-    const pid = worker.getWorkerSystemId();
-    expect(pid).toBeGreaterThanOrEqual(0);
-
-    const onStart = jest.fn();
-    const onEnd = jest.fn();
-    const onCustom = jest.fn();
-
-    console.timeEnd('1');
-    console.time('2');
-
-    worker.send(
-      [CHILD_MESSAGE_CALL, true, 'leakMemory', []],
-      onStart,
-      onEnd,
-      onCustom,
-    );
-
-    console.timeEnd('2');
-    console.time('3');
-
-    await worker.waitForExit();
-
-    console.timeEnd('3');
-    console.time('4');
-
-    await expect(
-      async () => await worker.waitForWorkerReady(),
-    ).rejects.toThrowError();
-    expect(worker.isWorkerRunning()).toBeFalsy();
-
-    console.timeEnd('4');
-  }, 15000);
-
-  test('should handle regular fatal crashes', async () => {
-    worker = new workerClass({
-      childWorkerPath: workerPath,
-      maxRetries: 4,
-      workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-    });
-
-    const startPid = worker.getWorkerSystemId();
-    expect(startPid).toBeGreaterThanOrEqual(0);
-
-    const onStart = jest.fn();
-    const onEnd = jest.fn();
-    const onCustom = jest.fn();
-
-    worker.send(
-      [CHILD_MESSAGE_CALL, true, 'fatalExitCode', []],
-      onStart,
-      onEnd,
-      onCustom,
-    );
-
-    let pidChanges = 0;
-
-    while (true) {
-      // Ideally this would use Promise.any but it's not supported in Node 14
-      // so doing this instead. Essentially what we're doing is looping and
-      // capturing the pid every time it changes. When it stops changing the
-      // timeout will be hit and we should be left with a collection of all
-      // the pids used by the worker.
-      const newPid = await new Promise(resolve => {
-        const resolved = false;
-
-        const to = setTimeout(() => {
-          if (!resolved) {
-            this.resolved = true;
-            resolve(undefined);
-          }
-        }, 500);
-
-        waitForChange(() => worker.getWorkerSystemId()).then(() => {
-          clearTimeout(to);
-
-          if (!resolved) {
-            resolve(worker.getWorkerSystemId());
-          }
-        });
+    try {
+      worker = new workerClass({
+        childWorkerPath: workerPath,
+        // There is no way this is fitting into 1000 bytes, so it should restart
+        // after requesting a memory usage update
+        idleMemoryLimit: 1000,
+        maxRetries: 0,
+        workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       });
 
-      if (typeof newPid === 'number') {
-        pidChanges++;
-      } else {
-        break;
+      const startSystemId = worker.getWorkerSystemId();
+      expect(startSystemId).toBeGreaterThanOrEqual(0);
+
+      worker.checkMemoryUsage();
+
+      await waitForChange(() => worker.getWorkerSystemId());
+
+      const systemId = worker.getWorkerSystemId();
+      expect(systemId).toBeGreaterThanOrEqual(0);
+      expect(systemId).not.toEqual(startSystemId);
+
+      await new Promise(resolve => {
+        setTimeout(resolve, SIGKILL_DELAY + 100);
+      });
+
+      expect(worker.isWorkerRunning()).toBeTruthy();
+    } finally {
+      if (worker) {
+        worker.forceExit();
+        await worker.waitForExit();
       }
     }
+  });
 
-    // Expect the pids to be retries + 1 because it is restarted
-    // one last time at the end ready for the next request.
-    expect(pidChanges).toEqual(5);
-    expect(worker.isWorkerRunning()).toBeTruthy();
-    expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+  describe('should automatically recycle on idle limit breach', () => {
+    let startPid;
+    let worker;
 
-    worker.forceExit();
+    beforeAll(() => {
+      worker = new workerClass({
+        childWorkerPath: workerPath,
+        // There is no way this is fitting into 1000 bytes, so it should restart
+        // after requesting a memory usage update
+        idleMemoryLimit: 1000,
+        maxRetries: 0,
+        workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
+      });
+    });
 
-    await expect(
-      async () => await worker.waitForWorkerReady(),
-    ).rejects.toThrowError();
+    afterAll(async () => {
+      if (worker) {
+        worker.forceExit();
+        await worker.waitForExit();
+      }
+    });
+
+    test('initial state', async () => {
+      startPid = worker.getWorkerSystemId();
+      expect(startPid).toBeGreaterThanOrEqual(0);
+
+      const onStart = jest.fn();
+      const onEnd = jest.fn();
+      const onCustom = jest.fn();
+
+      worker.send(
+        [CHILD_MESSAGE_CALL, true, 'safeFunction', []],
+        onStart,
+        onEnd,
+        onCustom,
+      );
+
+      await waitForChange(() => worker.getWorkerSystemId());
+    });
+
+    test('new worker starts', async () => {
+      const endPid = worker.getWorkerSystemId();
+      expect(endPid).toBeGreaterThanOrEqual(0);
+      expect(endPid).not.toEqual(startPid);
+      expect(worker.isWorkerRunning()).toBeTruthy();
+    });
+
+    test('worker continues to run after kill delay', async () => {
+      await new Promise(resolve => {
+        setTimeout(resolve, SIGKILL_DELAY + 100);
+      });
+
+      await worker.waitForWorkerReady();
+
+      expect(worker.isWorkerRunning()).toBeTruthy();
+    });
+  });
+
+  describe('should cleanly exit on crash', () => {
+    let worker;
+
+    beforeAll(() => {
+      const workerHeapLimit = 10;
+
+      /** @type WorkerOptions */
+      const options = {
+        childWorkerPath: workerPath,
+        maxRetries: 0,
+        silent: true,
+        workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
+      };
+
+      if (workerClass === ThreadsWorker) {
+        options.resourceLimits = {
+          codeRangeSizeMb: workerHeapLimit * 2,
+          maxOldGenerationSizeMb: workerHeapLimit,
+          maxYoungGenerationSizeMb: workerHeapLimit * 2,
+          stackSizeMb: workerHeapLimit * 2,
+        };
+      } else if (workerClass === ChildProcessWorker) {
+        options.forkOptions = {
+          // Forcibly set the heap limit so we can crash the process easily.
+          execArgv: [`--max-old-space-size=${workerHeapLimit}`],
+        };
+      }
+
+      worker = new workerClass(options);
+    });
+
+    afterAll(async () => {
+      if (worker) {
+        worker.forceExit();
+        await worker.waitForExit();
+      }
+    });
+
+    test('starting state', async () => {
+      const startPid = worker.getWorkerSystemId();
+      expect(startPid).toBeGreaterThanOrEqual(0);
+    });
+
+    test('worker crashes and exits', async () => {
+      const onStart = jest.fn();
+      const onEnd = jest.fn();
+      const onCustom = jest.fn();
+
+      worker.send(
+        [CHILD_MESSAGE_CALL, true, 'leakMemory', []],
+        onStart,
+        onEnd,
+        onCustom,
+      );
+
+      await worker.waitForExit();
+
+      await expect(
+        async () => await worker.waitForWorkerReady(),
+      ).rejects.toThrowError();
+      expect(worker.isWorkerRunning()).toBeFalsy();
+    });
+  }, 15000);
+
+  describe('should handle regular fatal crashes', () => {
+    let worker;
+
+    beforeAll(() => {
+      worker = new workerClass({
+        childWorkerPath: workerPath,
+        maxRetries: 4,
+        workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
+      });
+    });
+
+    afterAll(async () => {
+      if (worker) {
+        worker.forceExit();
+        await worker.waitForExit();
+      }
+    });
+
+    test('starting state', async () => {
+      const startPid = worker.getWorkerSystemId();
+      expect(startPid).toBeGreaterThanOrEqual(0);
+    });
+
+    test('processes restart', async () => {
+      const onStart = jest.fn();
+      const onEnd = jest.fn();
+      const onCustom = jest.fn();
+
+      worker.send(
+        [CHILD_MESSAGE_CALL, true, 'fatalExitCode', []],
+        onStart,
+        onEnd,
+        onCustom,
+      );
+
+      let pidChanges = 0;
+
+      while (true) {
+        // Ideally this would use Promise.any but it's not supported in Node 14
+        // so doing this instead. Essentially what we're doing is looping and
+        // capturing the pid every time it changes. When it stops changing the
+        // timeout will be hit and we should be left with a collection of all
+        // the pids used by the worker.
+        const newPid = await new Promise(resolve => {
+          const resolved = false;
+
+          const to = setTimeout(() => {
+            if (!resolved) {
+              this.resolved = true;
+              resolve(undefined);
+            }
+          }, 500);
+
+          waitForChange(() => worker.getWorkerSystemId()).then(() => {
+            clearTimeout(to);
+
+            if (!resolved) {
+              resolve(worker.getWorkerSystemId());
+            }
+          });
+        });
+
+        if (typeof newPid === 'number') {
+          pidChanges++;
+        } else {
+          break;
+        }
+      }
+
+      // Expect the pids to be retries + 1 because it is restarted
+      // one last time at the end ready for the next request.
+      expect(pidChanges).toEqual(5);
+
+      expect(worker.isWorkerRunning()).toBeTruthy();
+      expect(worker.getWorkerState()).toEqual(WorkerStates.OK);
+    });
+
+    test('processes exits', async () => {
+      worker.forceExit();
+
+      await expect(
+        async () => await worker.waitForWorkerReady(),
+      ).rejects.toThrowError();
+    });
   });
 });

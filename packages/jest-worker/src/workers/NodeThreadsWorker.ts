@@ -145,6 +145,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     ]);
 
     this._retries++;
+    this._state = WorkerStates.OK;
 
     // If we exceeded the amount of retries, we will emulate an error reply
     // coming from the child. This avoids code duplication related with cleaning
