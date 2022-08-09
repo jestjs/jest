@@ -236,7 +236,7 @@ describe.each([
     });
   });
 
-  describe('should cleanly exit on crash', () => {
+  describe.only('should cleanly exit on out of memory crash', () => {
     let worker;
     const orderOfEvents = [];
 
