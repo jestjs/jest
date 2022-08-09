@@ -169,7 +169,6 @@ export default class ChildProcessWorker implements WorkerInterface {
     ]);
 
     this._child = child;
-    this._state = WorkerStates.OK;
 
     this._retries++;
 
@@ -193,6 +192,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._request = null;
     }
 
+    this._state = WorkerStates.OK;
     if (this._resolveWorkerReady) {
       this._resolveWorkerReady();
     }
@@ -487,20 +487,23 @@ export default class ChildProcessWorker implements WorkerInterface {
   waitForWorkerReady(): Promise<void> {
     if (!this._workerReadyPromise) {
       this._workerReadyPromise = new Promise((resolve, reject) => {
-        if (
-          this._state === WorkerStates.OUT_OF_MEMORY ||
-          this._state === WorkerStates.SHUTTING_DOWN ||
-          this._state === WorkerStates.SHUT_DOWN
-        ) {
-          reject(
-            new Error(
-              `Worker state means it will never be ready: ${this._state}`,
-            ),
-          );
-        } else if (this.isWorkerRunning()) {
-          resolve();
-        } else {
-          this._resolveWorkerReady = resolve;
+        switch (this._state) {
+          case WorkerStates.OUT_OF_MEMORY:
+          case WorkerStates.SHUTTING_DOWN:
+          case WorkerStates.SHUT_DOWN:
+            reject(
+              new Error(
+                `Worker state means it will never be ready: ${this._state}`,
+              ),
+            );
+            break;
+          case WorkerStates.STARTING:
+          case WorkerStates.RESTARTING:
+            this._resolveWorkerReady = resolve;
+            break;
+          case WorkerStates.OK:
+            resolve();
+            break;
         }
       });
     }
