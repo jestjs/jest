@@ -46,6 +46,9 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
+  private _workerReadyPromise: Promise<void> | undefined;
+  private _resolveWorkerReady: (() => void) | undefined;
+
   private _childWorkerPath: string;
 
   private _childIdleMemoryUsage: number | null;
@@ -157,6 +160,10 @@ export default class ExperimentalWorker implements WorkerInterface {
         {type: 'WorkerError'},
       ]);
     }
+
+    if (this._resolveWorkerReady) {
+      this._resolveWorkerReady();
+    }
   }
 
   private _shutdown() {
@@ -238,6 +245,9 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number) {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
     if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
@@ -402,6 +412,30 @@ export default class ExperimentalWorker implements WorkerInterface {
    */
   getWorkerSystemId(): number {
     return this._worker.threadId;
+  }
+
+  waitForWorkerReady(): Promise<void> {
+    if (!this._workerReadyPromise) {
+      this._workerReadyPromise = new Promise((resolve, reject) => {
+        if (
+          this._state === WorkerStates.OUT_OF_MEMORY ||
+          this._state === WorkerStates.SHUTTING_DOWN ||
+          this._state === WorkerStates.SHUT_DOWN
+        ) {
+          reject(
+            new Error(
+              `Worker state means it will never be ready: ${this._state}`,
+            ),
+          );
+        } else if (this.isWorkerRunning()) {
+          resolve();
+        } else {
+          this._resolveWorkerReady = resolve;
+        }
+      });
+    }
+
+    return this._workerReadyPromise;
   }
 
   private _getFakeStream() {

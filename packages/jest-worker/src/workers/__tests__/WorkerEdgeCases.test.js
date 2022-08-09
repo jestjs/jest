@@ -177,6 +177,8 @@ describe.each([
       setTimeout(resolve, SIGKILL_DELAY + 100);
     });
 
+    await worker.waitForWorkerReady();
+
     expect(worker.isWorkerRunning()).toBeTruthy();
   }, 10000);
 
@@ -222,6 +224,8 @@ describe.each([
     );
 
     await worker.waitForExit();
+
+    expect(worker.isWorkerRunning()).toBeFalsy();
   }, 15000);
 
   test('should handle regular fatal crashes', async () => {
@@ -282,7 +286,12 @@ describe.each([
     // Expect the pids to be retries + 1 because it is restarted
     // one last time at the end ready for the next request.
     expect(pidChanges).toEqual(5);
+    expect(worker.isWorkerRunning()).toBeTruthy();
 
     worker.forceExit();
+
+    await expect(
+      async () => await worker.waitForWorkerReady(),
+    ).rejects.toThrowError();
   });
 });

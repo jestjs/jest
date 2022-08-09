@@ -72,6 +72,9 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
+  private _workerReadyPromise: Promise<void> | undefined;
+  private _resolveWorkerReady: (() => void) | undefined;
+
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
@@ -188,6 +191,10 @@ export default class ChildProcessWorker implements WorkerInterface {
 
       // Clear the request so we don't keep executing it.
       this._request = null;
+    }
+
+    if (this._resolveWorkerReady) {
+      this._resolveWorkerReady();
     }
   }
 
@@ -319,6 +326,9 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number | null) {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
     if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
@@ -472,6 +482,30 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   isWorkerRunning(): boolean {
     return this._child.connected && !this._child.killed;
+  }
+
+  waitForWorkerReady(): Promise<void> {
+    if (!this._workerReadyPromise) {
+      this._workerReadyPromise = new Promise((resolve, reject) => {
+        if (
+          this._state === WorkerStates.OUT_OF_MEMORY ||
+          this._state === WorkerStates.SHUTTING_DOWN ||
+          this._state === WorkerStates.SHUT_DOWN
+        ) {
+          reject(
+            new Error(
+              `Worker state means it will never be ready: ${this._state}`,
+            ),
+          );
+        } else if (this.isWorkerRunning()) {
+          resolve();
+        } else {
+          this._resolveWorkerReady = resolve;
+        }
+      });
+    }
+
+    return this._workerReadyPromise;
   }
 
   private _getFakeStream() {

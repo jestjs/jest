@@ -83,7 +83,18 @@ export interface WorkerInterface {
    */
   getWorkerSystemId(): number;
   getMemoryUsage(): Promise<number | null>;
+  /**
+   * Checks to see if the child worker is actually running.
+   */
   isWorkerRunning(): boolean;
+  /**
+   * When the worker child is started and ready to start handling requests.
+   *
+   * @remarks
+   * This mostly exists to help with testing so that you don't check the status
+   * of things like isWorkerRunning before it actually is.
+   */
+  waitForWorkerReady(): Promise<void>;
 }
 
 export type PoolExitResult = {
