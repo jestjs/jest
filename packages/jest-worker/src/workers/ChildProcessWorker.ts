@@ -222,8 +222,6 @@ export default class ChildProcessWorker
           this.state = WorkerStates.OUT_OF_MEMORY;
         }
       }
-
-      console.log('ON DATA', {stderrStr});
     };
 
     child.stderr?.on('data', handler);
@@ -244,8 +242,6 @@ export default class ChildProcessWorker
   private _onMessage(response: ParentMessage) {
     // TODO: Add appropriate type check
     let error: any;
-
-    console.log('ON MESSAGE', {response});
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
@@ -332,9 +328,7 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null, signal: any) {
-    console.log('ON EXIT', {exitCode, signal});
-
+  private _onExit(exitCode: number | null) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
