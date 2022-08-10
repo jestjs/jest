@@ -195,43 +195,37 @@ export default class ChildProcessWorker
   }
 
   private _detectOutOfMemoryCrash(child: ChildProcess): void {
-    const createHandler = (stream: string) => {
-      let bufferStr = '';
+    const setupHandler = (
+      stream: keyof Pick<ChildProcess, 'stdout' | 'stderr'>,
+    ) => {
+      const readableStream = child[stream];
 
-      return (chunk: unknown) => {
-        if (
-          this.state === WorkerStates.OK ||
-          this.state === WorkerStates.STARTING
-        ) {
-          let str: string | undefined = undefined;
+      if (readableStream) {
+        const buffer: Array<Buffer> = [];
 
-          if (chunk instanceof Buffer) {
-            str = chunk.toString('utf8');
-          } else if (typeof chunk === 'string') {
-            str = chunk;
+        readableStream.on('data', chunk => {
+          if (chunk) {
+            buffer.push(Buffer.from(chunk));
           }
-
-          if (str) {
-            bufferStr += str;
-          }
+        });
+        readableStream.on('end', () => {
+          const bufferStr = Buffer.concat(buffer).toString('utf8');
 
           if (bufferStr.includes('heap out of memory')) {
             this.state = WorkerStates.OUT_OF_MEMORY;
           }
-        }
 
-        // eslint-disable-next-line sort-keys
-        console.log({stream, state: this.state, bufferStr});
-      };
+          console.log({
+            state: this.state,
+            stream,
+            bufferStr,
+          });
+        });
+      }
     };
 
-    const stderrHandler = createHandler('stderr');
-    child.stderr?.on('data', stderrHandler);
-    child.stderr?.on('end', stderrHandler);
-
-    const stdoutHandler = createHandler('stdout');
-    child.stdout?.on('data', stdoutHandler);
-    child.stdout?.on('end', stdoutHandler);
+    setupHandler('stderr');
+    setupHandler('stdout');
   }
 
   private _onMessage(response: ParentMessage) {
@@ -323,7 +317,7 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null, signal: unknown) {
+  private _onExit(exitCode: number | null) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
@@ -342,11 +336,6 @@ export default class ChildProcessWorker
         this.state !== WorkerStates.SHUTTING_DOWN) ||
       this.state === WorkerStates.RESTARTING
     ) {
-      console.log({
-        exitCode,
-        signal,
-      });
-
       this.state = WorkerStates.RESTARTING;
 
       this.initialize();

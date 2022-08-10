@@ -239,7 +239,7 @@ describe.each([
     });
   });
 
-  describe('should cleanly exit on out of memory crash', () => {
+  describe.only('should cleanly exit on out of memory crash', () => {
     const workerHeapLimit = 50;
 
     let worker;
