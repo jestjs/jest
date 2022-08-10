@@ -20,7 +20,7 @@ import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
 jest.retryTimes(0);
-jest.setTimeout(1000);
+jest.setTimeout(10000);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];

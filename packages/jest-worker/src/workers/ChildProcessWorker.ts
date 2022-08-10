@@ -213,21 +213,25 @@ export default class ChildProcessWorker
 
   private _detectOutOfMemoryCrash(): void {
     for (const buffer of [this._stderrBuffer, this._stdoutBuffer]) {
-      const bufferStr = Buffer.concat(buffer).toString('utf8');
+      try {
+        const bufferStr = Buffer.concat(buffer).toString('utf8');
 
-      console.log({
-        bufferStr,
-        state: this.state,
-        oom: bufferStr.includes('heap out of memory'),
-      });
+        // console.log({
+        //   bufferStr,
+        //   state: this.state,
+        //   oom: bufferStr.includes('heap out of memory'),
+        // });
 
-      if (bufferStr.includes('heap out of memory')) {
-        if (
-          this.state === WorkerStates.OK ||
-          this.state === WorkerStates.STARTING
-        ) {
-          this.state = WorkerStates.OUT_OF_MEMORY;
+        if (bufferStr.includes('heap out of memory')) {
+          if (
+            this.state === WorkerStates.OK ||
+            this.state === WorkerStates.STARTING
+          ) {
+            this.state = WorkerStates.OUT_OF_MEMORY;
+          }
         }
+      } catch (err) {
+        console.error('Error looking for out of memory crash', err);
       }
     }
   }
