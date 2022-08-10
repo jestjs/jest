@@ -159,11 +159,7 @@ export default class ChildProcessWorker
 
       this._stderr.add(this._child.stderr);
 
-      this._child.stderr.on('data', chunk => {
-        if (chunk) {
-          this._stderrBuffer.push(Buffer.from(chunk));
-        }
-      });
+      this._child.stderr.on('data', this.stderrDataHandler.bind(this));
     }
 
     this._child.on('message', this._onMessage.bind(this));
@@ -211,10 +207,23 @@ export default class ChildProcessWorker
     }
   }
 
-  private _detectOutOfMemoryCrash(
-    exitCode?: number | null,
-    signal?: NodeJS.Signals | null,
-  ): void {
+  private stderrDataHandler(chunk: any): void {
+    if (chunk) {
+      this._stderrBuffer.push(Buffer.from(chunk));
+    }
+
+    this._detectOutOfMemoryCrash();
+
+    if (this.state === WorkerStates.OUT_OF_MEMORY) {
+      this._workerReadyPromise = undefined;
+      this._resolveWorkerReady = undefined;
+
+      this.killChild();
+      this._shutdown();
+    }
+  }
+
+  private _detectOutOfMemoryCrash(): void {
     try {
       const bufferStr = Buffer.concat(this._stderrBuffer).toString('utf8');
 
@@ -232,49 +241,6 @@ export default class ChildProcessWorker
       }
     } catch (err) {
       console.error('Error looking for out of memory crash', err);
-    }
-
-    // This is to try and work around a weird edge case when for some reason Windows doesn't feel
-    // like sending all of stderr, or even any of it in some cases, so we end up with not much
-    // to go on.
-    // Just to add to the confusion out of memory on windows can occur with either
-    // -> exitCode 134 | signal null
-    // OR (for some unknown reason)
-    // -> exitCode null | signal 'SIGTERM'
-    // Here are some samples
-
-    // exitCode: 134,
-    // signal: null,
-    // stderr: '\r\n' +
-    //   '<--- Last few GCs --->\r\n' +
-    //   '\r\n' +
-    //   '[6996:000001FCB84D40B0]      263 ms: Mark-sweep 60.1 (9',
-    // platform: 'win32'
-
-    // exitCode: null,
-    // signal: 'SIGTERM',
-    // stderr: '2.7) -> 37.7 (70.3) MB, 33.7 / 0.0 ms  (average mu = 0.539, current mu = 0.562) allocation failure; scavenge might not succeed\r\n' +
-    //   '[6996:000001FCB84D40B0]      357 ms: Mark-sweep 88.1 (120.7) -> 54.4 (87.1) MB, 32.3 / 0.0 ms  (average mu = 0.608, current mu = 0.656) allocation failure; scavenge might not succeed\r\n' +
-    //   '\r\n' +
-    //   '\r\n' +
-    //   '<--- JS stacktrace --->\r\n' +
-    //   '\r\n',
-    // platform: 'win32'
-
-    if (process.platform === 'win32') {
-      if (!this._stderrBuffer.length) {
-        if (
-          (exitCode === SIGABRT_EXIT_CODE && signal === null) ||
-          (exitCode === null && signal === 'SIGTERM')
-        ) {
-          if (
-            this.state === WorkerStates.OK ||
-            this.state === WorkerStates.STARTING
-          ) {
-            this.state = WorkerStates.OUT_OF_MEMORY;
-          }
-        }
-      }
     }
   }
 
@@ -410,7 +376,7 @@ export default class ChildProcessWorker
       platform: process.platform,
     });
 
-    this._detectOutOfMemoryCrash(exitCode, signal);
+    this._detectOutOfMemoryCrash();
 
     console.log('_onExit POST', {
       exitCode,

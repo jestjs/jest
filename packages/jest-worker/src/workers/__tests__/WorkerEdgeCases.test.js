@@ -279,12 +279,18 @@ describe.each([
       worker = new workerClass(options);
     });
 
-    // afterAll(async () => {
-    //   if (worker) {
-    //     worker.forceExit();
-    //     await worker.waitForExit();
-    //   }
-    // });
+    afterAll(async () => {
+      await new Promise(resolve => {
+        setTimeout(async () => {
+          if (worker) {
+            worker.forceExit();
+            await worker.waitForExit();
+          }
+
+          resolve();
+        }, 500);
+      });
+    });
 
     test('starting state', async () => {
       const startPid = worker.getWorkerSystemId();
@@ -318,6 +324,7 @@ describe.each([
         console.log({
           child: worker._child,
           buff: Buffer.concat(worker._stderrBuffer).toString('utf8'),
+          state: worker.state,
         });
       }
 
