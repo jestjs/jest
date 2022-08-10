@@ -58,7 +58,7 @@ export default class ChildProcessWorker
   extends WorkerAbstract
   implements WorkerInterface
 {
-  private _child!: ChildProcess;
+  public _child!: ChildProcess;
   private _options: WorkerOptions;
 
   private _request: ChildMessage | null;
