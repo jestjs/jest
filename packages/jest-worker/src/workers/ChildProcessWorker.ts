@@ -69,7 +69,7 @@ export default class ChildProcessWorker
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
 
-  private _stderrBuffer: Array<Buffer> = [];
+  public _stderrBuffer: Array<Buffer> = [];
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
