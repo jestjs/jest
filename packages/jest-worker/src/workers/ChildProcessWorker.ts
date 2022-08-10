@@ -169,6 +169,12 @@ export default class ChildProcessWorker
     this._child.on('message', this._onMessage.bind(this));
     this._child.on('exit', this._onExit.bind(this));
     this._child.on('disconnect', this._onDisconnect.bind(this));
+    this._child.on('close', (code, signal) => {
+      console.log('CLOSE', code, signal);
+    });
+    this._child.on('error', err => {
+      console.log('ERROR', err);
+    });
 
     this._child.send([
       CHILD_MESSAGE_INITIALIZE,

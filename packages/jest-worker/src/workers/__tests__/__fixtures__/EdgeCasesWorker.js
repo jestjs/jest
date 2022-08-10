@@ -19,7 +19,7 @@ async function leakMemory() {
     ).toFixed(2)}MB at start`,
   );
 
-  let i = 0;
+  let i = Number.MAX_SAFE_INTEGER / 2;
   while (true) {
     i++;
 
