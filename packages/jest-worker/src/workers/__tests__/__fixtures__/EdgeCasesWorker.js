@@ -28,7 +28,7 @@ async function leakMemory() {
 }
 
 function fatalExitCode() {
-  process.exit(134);
+  process.exit(139);
 }
 
 function safeFunction() {

@@ -29,6 +29,7 @@ import {
 import WorkerAbstract from './WorkerAbstract';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
+const SIGABRT_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 6;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
 
@@ -211,16 +212,13 @@ export default class ChildProcessWorker
     }
   }
 
-  private _detectOutOfMemoryCrash(): void {
+  private _detectOutOfMemoryCrash(
+    exitCode?: number | null,
+    signal?: NodeJS.Signals | null,
+  ): void {
     for (const buffer of [this._stderrBuffer, this._stdoutBuffer]) {
       try {
         const bufferStr = Buffer.concat(buffer).toString('utf8');
-
-        // console.log({
-        //   bufferStr,
-        //   state: this.state,
-        //   oom: bufferStr.includes('heap out of memory'),
-        // });
 
         if (bufferStr.includes('heap out of memory')) {
           if (
@@ -232,6 +230,21 @@ export default class ChildProcessWorker
         }
       } catch (err) {
         console.error('Error looking for out of memory crash', err);
+      }
+    }
+
+    // This is to try and work around a weird edge case when for some reason Windows doesn't feel
+    // like sending stderr, so we end up with no data to look at.
+    if (process.platform === 'win32') {
+      if (!this._stderrBuffer.length && !this._stdoutBuffer.length) {
+        if (exitCode === SIGABRT_EXIT_CODE && signal === null) {
+          if (
+            this.state === WorkerStates.OK ||
+            this.state === WorkerStates.STARTING
+          ) {
+            this.state = WorkerStates.OUT_OF_MEMORY;
+          }
+        }
       }
     }
   }
@@ -325,11 +338,11 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null) {
+  private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
-    this._detectOutOfMemoryCrash();
+    this._detectOutOfMemoryCrash(exitCode, signal);
 
     if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
