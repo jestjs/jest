@@ -68,6 +68,9 @@ export default class ChildProcessWorker
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
 
+  private _stdoutBuffer: Array<Buffer> = [];
+  private _stderrBuffer: Array<Buffer> = [];
+
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
@@ -118,6 +121,9 @@ export default class ChildProcessWorker
       console.warn('Unable to detect out of memory event if silent === false');
     }
 
+    this._stdoutBuffer = [];
+    this._stderrBuffer = [];
+
     const options: ForkOptions = {
       cwd: process.cwd(),
       env: {
@@ -143,6 +149,12 @@ export default class ChildProcessWorker
       }
 
       this._stdout.add(this._child.stdout);
+
+      this._child.stdout.on('data', chunk => {
+        if (chunk) {
+          this._stdoutBuffer.push(Buffer.from(chunk));
+        }
+      });
     }
 
     if (this._child.stderr) {
@@ -153,10 +165,14 @@ export default class ChildProcessWorker
       }
 
       this._stderr.add(this._child.stderr);
+
+      this._child.stderr.on('data', chunk => {
+        if (chunk) {
+          this._stderrBuffer.push(Buffer.from(chunk));
+        }
+      });
     }
 
-    this._detectOutOfMemoryCrash(this._child);
-    this._child.on('error', this._onError.bind(this));
     this._child.on('message', this._onMessage.bind(this));
     this._child.on('exit', this._onExit.bind(this));
 
@@ -195,48 +211,24 @@ export default class ChildProcessWorker
     }
   }
 
-  private _detectOutOfMemoryCrash(child: ChildProcess): void {
-    const setupHandler = (
-      stream: keyof Pick<ChildProcess, 'stdout' | 'stderr'>,
-    ) => {
-      const readableStream = child[stream];
+  private _detectOutOfMemoryCrash(): void {
+    for (const buffer of [this._stderrBuffer, this._stdoutBuffer]) {
+      const bufferStr = Buffer.concat(buffer).toString('utf8');
 
-      if (readableStream) {
-        const buffer: Array<Buffer> = [];
+      console.log({
+        bufferStr,
+        state: this.state,
+        oom: bufferStr.includes('heap out of memory'),
+      });
 
-        readableStream.on('data', chunk => {
-          if (chunk) {
-            buffer.push(Buffer.from(chunk));
-          }
-        });
-        readableStream.on('end', () => {
-          const bufferStr = Buffer.concat(buffer).toString('utf8');
-
-          if (bufferStr.includes('heap out of memory')) {
-            if (
-              this.state === WorkerStates.OK ||
-              this.state === WorkerStates.STARTING
-            ) {
-              this.state = WorkerStates.OUT_OF_MEMORY;
-            } else {
-              console.log({
-                state: this.state,
-                stream,
-                bufferStr,
-              });
-            }
-          }
-        });
+      if (bufferStr.includes('heap out of memory')) {
+        if (
+          this.state === WorkerStates.OK ||
+          this.state === WorkerStates.STARTING
+        ) {
+          this.state = WorkerStates.OUT_OF_MEMORY;
+        }
       }
-    };
-
-    setupHandler('stderr');
-    setupHandler('stdout');
-  }
-
-  private _onError(error: Error) {
-    if (error.message.includes('heap out of memory')) {
-      this.state = WorkerStates.OUT_OF_MEMORY;
     }
   }
 
@@ -333,6 +325,8 @@ export default class ChildProcessWorker
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
+    this._detectOutOfMemoryCrash();
+
     if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
@@ -366,6 +360,9 @@ export default class ChildProcessWorker
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
+    this._stdoutBuffer = [];
+    this._stderrBuffer = [];
+
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
