@@ -322,6 +322,8 @@ export default class ChildProcessWorker
         this.state !== WorkerStates.SHUTTING_DOWN) ||
       this.state === WorkerStates.RESTARTING
     ) {
+      this.state = WorkerStates.RESTARTING;
+
       this.initialize();
 
       if (this._request) {
