@@ -168,6 +168,15 @@ export default class ChildProcessWorker
 
     this._child.on('message', this._onMessage.bind(this));
     this._child.on('exit', this._onExit.bind(this));
+    this._child.on('disconnect', () => {
+      console.log('DISCONNECT');
+    });
+    this._child.on('error', err => {
+      console.log('ERROR', err);
+    });
+    this._child.on('close', (code, signal) => {
+      console.log('CLOSE', code, signal);
+    });
 
     this._child.send([
       CHILD_MESSAGE_INITIALIZE,
@@ -274,6 +283,8 @@ export default class ChildProcessWorker
   private _onMessage(response: ParentMessage) {
     // TODO: Add appropriate type check
     let error: any;
+
+    console.log('MSG');
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
