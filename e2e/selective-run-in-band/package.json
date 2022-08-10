@@ -1,0 +1,9 @@
+{
+  "description": "Testing the behaviour of runInBand at project level",
+  "jest": {
+    "projects": [
+      "./*/jest.config.js"
+    ],
+    "maxWorkers": 9
+  }
+}

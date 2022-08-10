@@ -52,6 +52,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "roots": [
         "<<REPLACED_ROOT_DIR>>"
       ],
+      "runInBand":false,
       "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
       "sandboxInjectedGlobals": [],
       "setupFiles": [],
@@ -124,6 +125,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "passWithNoTests": false,
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
+    "runInBand": false,
     "runTestsByPath": false,
     "skipFilter": false,
     "snapshotFormat": {

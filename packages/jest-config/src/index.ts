@@ -153,6 +153,8 @@ const groupOptions = (
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
+    runTestsByPath:
     runTestsByPath: options.runTestsByPath,
     shard: options.shard,
     silent: options.silent,
@@ -206,6 +208,7 @@ const groupOptions = (
     resolver: options.resolver,
     restoreMocks: options.restoreMocks,
     rootDir: options.rootDir,
+    runInBand: options.runInBand,
     roots: options.roots,
     runner: options.runner,
     runtime: options.runtime,

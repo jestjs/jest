@@ -953,6 +953,7 @@ export default async function normalize(
       case 'resetModules':
       case 'restoreMocks':
       case 'rootDir':
+      case  'runInBand':
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':

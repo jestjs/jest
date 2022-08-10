@@ -33,6 +33,7 @@ exports[`prints the config object 1`] = `
     "resetModules": false,
     "restoreMocks": false,
     "rootDir": "/path/to/dir",
+    "runInBand": false,
     "roots": [
       "path/to/dir/test"
     ],
@@ -94,6 +95,7 @@ exports[`prints the config object 1`] = `
     "projects": [],
     "reporters": [],
     "rootDir": "/test_root_dir/",
+    "runInBand": false,
     "runTestsByPath": false,
     "silent": false,
     "skipFilter": false,
