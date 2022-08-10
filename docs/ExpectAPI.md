@@ -101,7 +101,7 @@ declare global {
   }
 }
 
-export{}
+export {};
 ```
 
 :::
