@@ -279,12 +279,12 @@ describe.each([
       worker = new workerClass(options);
     });
 
-    afterAll(async () => {
-      if (worker) {
-        worker.forceExit();
-        await worker.waitForExit();
-      }
-    });
+    // afterAll(async () => {
+    //   if (worker) {
+    //     worker.forceExit();
+    //     await worker.waitForExit();
+    //   }
+    // });
 
     test('starting state', async () => {
       const startPid = worker.getWorkerSystemId();
