@@ -134,7 +134,6 @@ export default class ChildProcessWorker
     };
 
     this._child = fork(this._childWorkerPath, [], options);
-    this._detectOutOfMemoryCrash(this._child);
 
     if (this._child.stdout) {
       if (!this._stdout) {
@@ -156,6 +155,8 @@ export default class ChildProcessWorker
       this._stderr.add(this._child.stderr);
     }
 
+    this._detectOutOfMemoryCrash(this._child);
+    this._child.on('error', this._onError.bind(this));
     this._child.on('message', this._onMessage.bind(this));
     this._child.on('exit', this._onExit.bind(this));
 
@@ -226,6 +227,12 @@ export default class ChildProcessWorker
 
     setupHandler('stderr');
     setupHandler('stdout');
+  }
+
+  private _onError(error: Error) {
+    if (error.message.includes('heap out of memory')) {
+      this.state = WorkerStates.OUT_OF_MEMORY;
+    }
   }
 
   private _onMessage(response: ParentMessage) {
