@@ -19,7 +19,7 @@ import {
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
-jest.retryTimes(0);
+jest.retryTimes(5);
 
 const root = join('../../');
 const filesToBuild = ['workers/processChild', 'workers/threadChild', 'types'];
@@ -243,7 +243,7 @@ describe.each([
     const orderOfEvents = [];
 
     beforeAll(() => {
-      const workerHeapLimit = 10;
+      const workerHeapLimit = 50;
 
       /** @type WorkerOptions */
       const options = {
@@ -285,6 +285,11 @@ describe.each([
     test('starting state', async () => {
       const startPid = worker.getWorkerSystemId();
       expect(startPid).toBeGreaterThanOrEqual(0);
+    });
+
+    test('worker ready', async () => {
+      await worker.waitForWorkerReady();
+      expect(worker.state).toEqual(WorkerStates.OK);
     });
 
     test('worker crashes and exits', async () => {
