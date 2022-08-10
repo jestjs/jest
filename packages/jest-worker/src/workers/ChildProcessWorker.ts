@@ -273,6 +273,9 @@ export default class ChildProcessWorker
   }
 
   private _onDisconnect() {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
     console.log('_onDisconnect PRE', {
       stderr: Buffer.concat(this._stderrBuffer).toString('utf8'),
       childExitCode: this._child.exitCode,
@@ -443,7 +446,6 @@ export default class ChildProcessWorker
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
-    this._stdoutBuffer = [];
     this._stderrBuffer = [];
 
     onProcessStart(this);
