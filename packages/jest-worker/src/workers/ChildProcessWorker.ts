@@ -112,6 +112,12 @@ export default class ChildProcessWorker
     this.state = WorkerStates.STARTING;
 
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
+    const silent = this._options.silent ?? true;
+
+    if (!silent) {
+      console.warn('Unable to detect out of memory event if silent === false');
+    }
+
     const options: ForkOptions = {
       cwd: process.cwd(),
       env: {
@@ -123,7 +129,7 @@ export default class ChildProcessWorker
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
-      silent: this._options.silent ?? true,
+      silent,
       ...this._options.forkOptions,
     };
 
@@ -189,29 +195,43 @@ export default class ChildProcessWorker
   }
 
   private _detectOutOfMemoryCrash(child: ChildProcess): void {
-    let stderrStr = '';
+    const createHandler = (stream: string) => {
+      let bufferStr = '';
 
-    const handler = (chunk: any) => {
-      if (this.state === WorkerStates.OK) {
-        let str: string | undefined = undefined;
+      return (chunk: unknown) => {
+        if (
+          this.state === WorkerStates.OK ||
+          this.state === WorkerStates.STARTING
+        ) {
+          let str: string | undefined = undefined;
 
-        if (chunk instanceof Buffer) {
-          str = chunk.toString('utf8');
-        } else if (typeof chunk === 'string') {
-          str = chunk;
+          if (chunk instanceof Buffer) {
+            str = chunk.toString('utf8');
+          } else if (typeof chunk === 'string') {
+            str = chunk;
+          }
+
+          if (str) {
+            bufferStr += str;
+          }
+
+          if (bufferStr.includes('heap out of memory')) {
+            this.state = WorkerStates.OUT_OF_MEMORY;
+          }
         }
 
-        if (str) {
-          stderrStr += str;
-        }
-
-        if (stderrStr.includes('heap out of memory')) {
-          this.state = WorkerStates.OUT_OF_MEMORY;
-        }
-      }
+        // eslint-disable-next-line sort-keys
+        console.log({stream, state: this.state, bufferStr});
+      };
     };
 
-    child.stderr?.on('data', handler);
+    const stderrHandler = createHandler('stderr');
+    child.stderr?.on('data', stderrHandler);
+    child.stderr?.on('end', stderrHandler);
+
+    const stdoutHandler = createHandler('stdout');
+    child.stdout?.on('data', stdoutHandler);
+    child.stdout?.on('end', stdoutHandler);
   }
 
   private _onMessage(response: ParentMessage) {

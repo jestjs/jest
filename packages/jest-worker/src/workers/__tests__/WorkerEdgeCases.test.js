@@ -175,7 +175,7 @@ describe.each([
             orderOfEvents.push(state);
           },
         },
-        silent: false,
+        silent: true,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       });
     });
@@ -257,7 +257,7 @@ describe.each([
             orderOfEvents.push(state);
           },
         },
-        silent: false,
+        silent: true,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
       };
 
