@@ -1651,6 +1651,20 @@ Example:
 }
 ```
 
+:::tip
+
+If you use pnpm and need to convert some packages under `node_modules`, you need to note that the packages in this folder (eg `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (eg ` node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootdir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+
+```json
+{
+   "transformIgnorePatterns": ["<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)"]
+}
+```
+
+It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+:::
+
 ### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 
 Default: `[]`
