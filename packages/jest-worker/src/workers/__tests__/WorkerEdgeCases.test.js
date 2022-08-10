@@ -314,6 +314,13 @@ describe.each([
     });
 
     test('worker stays dead', async () => {
+      if (worker instanceof ChildProcessWorker) {
+        console.log({
+          child: worker._child,
+          buff: Buffer.concat(worker._stderrBuffer).toString('utf8'),
+        });
+      }
+
       await expect(
         async () => await worker.waitForWorkerReady(),
       ).rejects.toThrowError();
