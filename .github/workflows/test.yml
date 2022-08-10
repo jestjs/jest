@@ -32,7 +32,7 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} WorkerEdgeCases
 
   test-jasmine:
     strategy:

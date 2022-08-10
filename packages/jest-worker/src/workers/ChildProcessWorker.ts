@@ -342,7 +342,26 @@ export default class ChildProcessWorker
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
+    console.log('PRE', {
+      exitCode,
+      signal,
+      stderr: Buffer.concat(this._stderrBuffer).toString('utf8'),
+      stdout: Buffer.concat(this._stdoutBuffer).toString('utf8'),
+      childExitCode: this._child.exitCode,
+      childConnected: this._child.connected,
+      childKilled: this._child.killed,
+      state: this.state,
+      platform: process.platform,
+    });
+
     this._detectOutOfMemoryCrash(exitCode, signal);
+
+    console.log('POST', {
+      exitCode,
+      signal,
+      state: this.state,
+      platform: process.platform,
+    });
 
     if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(

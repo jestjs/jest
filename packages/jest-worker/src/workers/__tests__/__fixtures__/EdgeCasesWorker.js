@@ -31,6 +31,10 @@ function fatalExitCode() {
   process.exit(139);
 }
 
+function weirdWindowsOutOfMemoryExit() {
+  process.exit(134);
+}
+
 function safeFunction() {
   // Doesn't do anything.
 }
