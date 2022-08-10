@@ -29,7 +29,6 @@ import {
 import WorkerAbstract from './WorkerAbstract';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
-const SIGABRT_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 6;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
 
@@ -58,7 +57,7 @@ export default class ChildProcessWorker
   extends WorkerAbstract
   implements WorkerInterface
 {
-  public _child!: ChildProcess;
+  private _child!: ChildProcess;
   private _options: WorkerOptions;
 
   private _request: ChildMessage | null;
@@ -69,7 +68,7 @@ export default class ChildProcessWorker
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
 
-  public _stderrBuffer: Array<Buffer> = [];
+  private _stderrBuffer: Array<Buffer> = [];
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
@@ -165,12 +164,6 @@ export default class ChildProcessWorker
     this._child.on('message', this._onMessage.bind(this));
     this._child.on('exit', this._onExit.bind(this));
     this._child.on('disconnect', this._onDisconnect.bind(this));
-    this._child.on('close', (code, signal) => {
-      console.log('CLOSE', code, signal);
-    });
-    this._child.on('error', err => {
-      console.log('ERROR', err);
-    });
 
     this._child.send([
       CHILD_MESSAGE_INITIALIZE,
@@ -248,33 +241,17 @@ export default class ChildProcessWorker
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
-    console.log('_onDisconnect PRE', {
-      stderr: Buffer.concat(this._stderrBuffer).toString('utf8'),
-      childExitCode: this._child.exitCode,
-      childConnected: this._child.connected,
-      childKilled: this._child.killed,
-      state: this.state,
-      platform: process.platform,
-    });
-
     this._detectOutOfMemoryCrash();
 
     if (this.state === WorkerStates.OUT_OF_MEMORY) {
       this.killChild();
       this._shutdown();
     }
-
-    console.log('_onDisconnect POST', {
-      state: this.state,
-      platform: process.platform,
-    });
   }
 
   private _onMessage(response: ParentMessage) {
     // TODO: Add appropriate type check
     let error: any;
-
-    console.log('MSG');
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
@@ -361,29 +338,11 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
+  private _onExit(exitCode: number | null) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
-    console.log('_onExit PRE', {
-      exitCode,
-      signal,
-      stderr: Buffer.concat(this._stderrBuffer).toString('utf8'),
-      childExitCode: this._child.exitCode,
-      childConnected: this._child.connected,
-      childKilled: this._child.killed,
-      state: this.state,
-      platform: process.platform,
-    });
-
     this._detectOutOfMemoryCrash();
-
-    console.log('_onExit POST', {
-      exitCode,
-      signal,
-      state: this.state,
-      platform: process.platform,
-    });
 
     if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(

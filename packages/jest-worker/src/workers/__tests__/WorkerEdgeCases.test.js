@@ -240,7 +240,7 @@ describe.each([
     });
   });
 
-  describe.only('should cleanly exit on out of memory crash', () => {
+  describe('should cleanly exit on out of memory crash', () => {
     const workerHeapLimit = 50;
 
     let worker;
@@ -320,14 +320,6 @@ describe.each([
     });
 
     test('worker stays dead', async () => {
-      if (worker instanceof ChildProcessWorker) {
-        console.log({
-          child: worker._child,
-          buff: Buffer.concat(worker._stderrBuffer).toString('utf8'),
-          state: worker.state,
-        });
-      }
-
       await expect(
         async () => await worker.waitForWorkerReady(),
       ).rejects.toThrowError();
