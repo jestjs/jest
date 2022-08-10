@@ -9,7 +9,7 @@ import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 it('all 3 test files should complete', () => {
-  const result = runJest('worker-restating');
+  const result = runJest('worker-restarting');
   expect(result.exitCode).toBe(0);
   const {summary} = extractSummary(result.stderr);
   expect(summary).toMatchSnapshot();
