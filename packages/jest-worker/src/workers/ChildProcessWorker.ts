@@ -303,7 +303,7 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null) {
+  private _onExit(exitCode: number | null, signal: unknown) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
@@ -322,6 +322,11 @@ export default class ChildProcessWorker
         this.state !== WorkerStates.SHUTTING_DOWN) ||
       this.state === WorkerStates.RESTARTING
     ) {
+      console.log({
+        exitCode,
+        signal,
+      });
+
       this.state = WorkerStates.RESTARTING;
 
       this.initialize();
