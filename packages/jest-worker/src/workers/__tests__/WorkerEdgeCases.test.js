@@ -239,11 +239,13 @@ describe.each([
   });
 
   describe('should cleanly exit on out of memory crash', () => {
+    const workerHeapLimit = 50;
+
     let worker;
-    const orderOfEvents = [];
+    let orderOfEvents = [];
 
     beforeAll(() => {
-      const workerHeapLimit = 50;
+      orderOfEvents = [];
 
       /** @type WorkerOptions */
       const options = {
