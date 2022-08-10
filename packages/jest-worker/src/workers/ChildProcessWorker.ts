@@ -213,14 +213,19 @@ export default class ChildProcessWorker
           const bufferStr = Buffer.concat(buffer).toString('utf8');
 
           if (bufferStr.includes('heap out of memory')) {
-            this.state = WorkerStates.OUT_OF_MEMORY;
+            if (
+              this.state === WorkerStates.OK ||
+              this.state === WorkerStates.STARTING
+            ) {
+              this.state = WorkerStates.OUT_OF_MEMORY;
+            } else {
+              console.log({
+                state: this.state,
+                stream,
+                bufferStr,
+              });
+            }
           }
-
-          console.log({
-            state: this.state,
-            stream,
-            bufferStr,
-          });
         });
       }
     };
