@@ -33,6 +33,7 @@ export declare const afterAll: Global.GlobalAdditions['afterAll'];
 
 declare const jest: Jest;
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace jest {
   /**
    * Wraps a class, function or object type with definitions of Jest mock.
