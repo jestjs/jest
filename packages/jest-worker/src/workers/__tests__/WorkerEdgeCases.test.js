@@ -19,7 +19,6 @@ import {
 import ChildProcessWorker, {SIGKILL_DELAY} from '../ChildProcessWorker';
 import ThreadsWorker from '../NodeThreadsWorker';
 
-jest.retryTimes(0);
 jest.setTimeout(10000);
 
 const root = join('../../');
@@ -57,6 +56,15 @@ test.each(filesToBuild)('%s.js should exist', async file => {
 
   await expect(async () => await access(path)).not.toThrowError();
 });
+
+async function closeWorkerAfter(worker, testBody) {
+  try {
+    await testBody(worker);
+  } finally {
+    worker.forceExit();
+    await worker.waitForExit();
+  }
+}
 
 describe.each([
   {
@@ -101,62 +109,50 @@ describe.each([
   }
 
   test('should get memory usage', async () => {
-    let worker;
-
-    try {
-      worker = new workerClass({
+    await closeWorkerAfter(
+      new workerClass({
         childWorkerPath: workerPath,
         maxRetries: 0,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      });
+      }),
+      async worker => {
+        const memoryUsagePromise = worker.getMemoryUsage();
+        expect(memoryUsagePromise).toBeInstanceOf(Promise);
 
-      const memoryUsagePromise = worker.getMemoryUsage();
-      expect(memoryUsagePromise).toBeInstanceOf(Promise);
-
-      expect(await memoryUsagePromise).toBeGreaterThan(0);
-    } finally {
-      if (worker) {
-        worker.forceExit();
-        await worker.waitForExit();
-      }
-    }
+        expect(await memoryUsagePromise).toBeGreaterThan(0);
+      },
+    );
   });
 
   test('should recycle on idle limit breach', async () => {
-    let worker;
-
-    try {
-      worker = new workerClass({
+    await closeWorkerAfter(
+      new workerClass({
         childWorkerPath: workerPath,
         // There is no way this is fitting into 1000 bytes, so it should restart
         // after requesting a memory usage update
         idleMemoryLimit: 1000,
         maxRetries: 0,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      });
+      }),
+      async worker => {
+        const startSystemId = worker.getWorkerSystemId();
+        expect(startSystemId).toBeGreaterThanOrEqual(0);
 
-      const startSystemId = worker.getWorkerSystemId();
-      expect(startSystemId).toBeGreaterThanOrEqual(0);
+        worker.checkMemoryUsage();
 
-      worker.checkMemoryUsage();
+        await waitForChange(() => worker.getWorkerSystemId());
 
-      await waitForChange(() => worker.getWorkerSystemId());
+        const systemId = worker.getWorkerSystemId();
+        expect(systemId).toBeGreaterThanOrEqual(0);
+        expect(systemId).not.toEqual(startSystemId);
 
-      const systemId = worker.getWorkerSystemId();
-      expect(systemId).toBeGreaterThanOrEqual(0);
-      expect(systemId).not.toEqual(startSystemId);
+        await new Promise(resolve => {
+          setTimeout(resolve, SIGKILL_DELAY + 100);
+        });
 
-      await new Promise(resolve => {
-        setTimeout(resolve, SIGKILL_DELAY + 100);
-      });
-
-      expect(worker.isWorkerRunning()).toBeTruthy();
-    } finally {
-      if (worker) {
-        worker.forceExit();
-        await worker.waitForExit();
-      }
-    }
+        expect(worker.isWorkerRunning()).toBeTruthy();
+      },
+    );
   });
 
   describe('should automatically recycle on idle limit breach', () => {

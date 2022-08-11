@@ -17,7 +17,11 @@ export default abstract class WorkerAbstract
   extends EventEmitter
   implements Pick<WorkerInterface, 'waitForWorkerReady' | 'state'>
 {
-  private __state = WorkerStates.STARTING;
+  /**
+   * DO NOT WRITE TO THIS DIRECTLY.
+   * Use this.state getter/setters so events are emitted correctly.
+   */
+  #state = WorkerStates.STARTING;
 
   protected _fakeStream: PassThrough | null = null;
 
@@ -28,12 +32,12 @@ export default abstract class WorkerAbstract
   protected _resolveWorkerReady: (() => void) | undefined;
 
   public get state(): WorkerStates {
-    return this.__state;
+    return this.#state;
   }
   protected set state(value: WorkerStates) {
-    if (this.__state !== value) {
-      const oldState = this.__state;
-      this.__state = value;
+    if (this.#state !== value) {
+      const oldState = this.#state;
+      this.#state = value;
 
       this.emit(WorkerEvents.STATE_CHANGE, value, oldState);
     }
@@ -44,12 +48,14 @@ export default abstract class WorkerAbstract
 
     if (typeof options.on === 'object') {
       for (const [event, handlers] of Object.entries(options.on)) {
-        if (Array.isArray(handlers)) {
+        // Can't do Array.isArray on a ReadonlyArray<T>.
+        // https://github.com/microsoft/TypeScript/issues/17002
+        if (typeof handlers === 'function') {
+          super.on(event, handlers);
+        } else {
           for (const handler of handlers) {
             super.on(event, handler);
           }
-        } else {
-          super.on(event, handlers);
         }
       }
     }

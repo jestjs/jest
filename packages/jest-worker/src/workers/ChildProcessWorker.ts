@@ -117,6 +117,11 @@ export default class ChildProcessWorker
     const silent = this._options.silent ?? true;
 
     if (!silent) {
+      // NOTE: Detecting an out of memory crash is independent of idle memory usage monitoring. We want to
+      // monitor for a crash occurring so that it can be handled as required and so we can tell the difference
+      // between an OOM crash and another kind of crash. We need to do this because if a worker crashes due to
+      // an OOM event sometimes it isn't seen by the worker pool and it just sits there waiting for the worker
+      // to respond and it never will.
       console.warn('Unable to detect out of memory event if silent === false');
     }
 

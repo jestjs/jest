@@ -190,12 +190,12 @@ export type WorkerOptions = {
    */
   on?: {
     [WorkerEvents.STATE_CHANGE]:
-      | onStateChangeHandler
-      | Array<onStateChangeHandler>;
+      | OnStateChangeHandler
+      | ReadonlyArray<OnStateChangeHandler>;
   };
 };
 
-export type onStateChangeHandler = (
+export type OnStateChangeHandler = (
   state: WorkerStates,
   oldState: WorkerStates,
 ) => void;
