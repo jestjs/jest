@@ -30,9 +30,9 @@ jest.mock('prettier', () => {
   return mockPrettier;
 });
 
-let dir;
+let dir: string;
 beforeEach(() => {
-  (prettier.resolveConfig.sync as jest.Mock).mockReset();
+  jest.mocked(prettier.resolveConfig.sync).mockReset();
 });
 
 beforeEach(() => {
@@ -262,7 +262,7 @@ test.each([['babel'], ['flow'], ['typescript']])(
     const filename = path.join(dir, 'my.test.js');
     fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot(`2`);\n');
 
-    (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({parser});
+    jest.mocked(prettier.resolveConfig.sync).mockReturnValue({parser});
 
     saveInlineSnapshots(
       [
@@ -275,7 +275,7 @@ test.each([['babel'], ['flow'], ['typescript']])(
     );
 
     expect(
-      (prettier.resolveConfig.sync as jest.Mock).mock.results[0].value,
+      jest.mocked(prettier.resolveConfig.sync).mock.results[0].value,
     ).toEqual({parser});
 
     expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -381,7 +381,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(filename, "expect({a: 'a'}).toMatchInlineSnapshot();\n");
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -409,7 +409,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -451,7 +451,7 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -500,7 +500,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
       '  `);\n' +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -541,7 +541,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
     useTabs: true,
@@ -574,7 +574,7 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
     filename,
     "it('is a test', () => expect({a: 'a'}).toMatchInlineSnapshot());\n",
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -605,7 +605,7 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
     filename,
     "it('is a test', () => expect(`hello\n\nworld`).toMatchInlineSnapshot());\n",
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -639,7 +639,7 @@ test('saveInlineSnapshots() indents awaited snapshots with spaces', () => {
       '  await expect(a).resolves.toMatchInlineSnapshot();\n' +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
