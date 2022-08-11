@@ -5,58 +5,73 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectAssignable, expectType} from 'tsd-lite';
+import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {MockInstance, Mocked} from 'jest-mock';
 
 /// mocks class
 
-class ExampleClass {
-  constructor(c: string, d?: boolean) {}
-
-  //   _propertyB: false;
+class SomeClass {
+  constructor(one: string, two?: boolean) {}
 
   methodA() {
     return true;
   }
-  methodB(a: string, b: number) {
+  methodB(a: string, b?: number) {
     return;
   }
-  methodC(e: any) {
-    throw new Error();
-  }
-
-  //   propertyA: 'abc',
 }
 
-const MockExampleClass = ExampleClass as Mocked<typeof ExampleClass>;
+const MockSomeClass = SomeClass as Mocked<typeof SomeClass>;
 
-const xx = MockExampleClass.mock.calls[0];
-const yy = MockExampleClass.prototype.methodB.mock.calls[0];
+expectType<[one: string, two?: boolean | undefined]>(
+  MockSomeClass.mock.calls[0],
+);
 
-const ww = MockExampleClass.mock.instances[0].methodB.mock.calls[0];
+expectType<[]>(MockSomeClass.prototype.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  MockSomeClass.prototype.methodB.mock.calls[0],
+);
 
-const mockExample = new MockExampleClass('c') as Mocked<
-  InstanceType<typeof MockExampleClass>
+expectError(MockSomeClass.prototype.methodA.mockReturnValue('true'));
+expectError(
+  MockSomeClass.prototype.methodB.mockImplementation(
+    (a: string, b?: string) => {
+      return;
+    },
+  ),
+);
+
+expectType<[]>(MockSomeClass.mock.instances[0].methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  MockSomeClass.prototype.methodB.mock.calls[0],
+);
+
+const mockExample = new MockSomeClass('c') as Mocked<
+  InstanceType<typeof MockSomeClass>
 >;
 
-const zz = mockExample.methodB.mock.calls[0];
+expectType<[]>(mockExample.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(mockExample.methodB.mock.calls[0]);
+
+expectError(mockExample.methodA.mockReturnValue('true'));
+expectError(
+  mockExample.methodB.mockImplementation((a: string, b?: string) => {
+    return;
+  }),
+);
 
 // mocks function
 
-function someFunction(a: number, b?: string): boolean {
+function someFunction(a: string, b?: number): boolean {
   return true;
 }
 
 const mockFunction = someFunction as Mocked<typeof someFunction>;
 
-expectType<number>(mockFunction.mock.calls[0][0]);
-expectType<string | undefined>(mockFunction.mock.calls[0][1]);
+expectType<[a: string, b?: number]>(mockFunction.mock.calls[0]);
 
-const mockFunctionResult = mockFunction.mock.results[0];
-
-if (mockFunctionResult.type === 'return') {
-  expectType<boolean>(mockFunctionResult.value);
-}
+expectError(mockFunction.mockReturnValue(123));
+expectError(mockFunction.mockImplementation((a: boolean, b?: number) => true));
 
 // mocks async function
 
@@ -66,18 +81,19 @@ async function someAsyncFunction(a: Array<boolean>): Promise<string> {
 
 const mockAsyncFunction = someAsyncFunction as Mocked<typeof someAsyncFunction>;
 
-expectType<Array<boolean>>(mockAsyncFunction.mock.calls[0][0]);
+expectType<[Array<boolean>]>(mockAsyncFunction.mock.calls[0]);
 
-const mockAsyncFunctionResult = mockAsyncFunction.mock.results[0];
-
-if (mockAsyncFunctionResult.type === 'return') {
-  expectType<Promise<string>>(mockAsyncFunctionResult.value);
-}
+expectError(mockAsyncFunction.mockResolvedValue(123));
+expectError(
+  mockAsyncFunction.mockImplementation((a: Array<boolean>) =>
+    Promise.resolve(true),
+  ),
+);
 
 // mocks function object
 
-type SomeFunctionObject = {
-  (a: number, b: string): void;
+interface SomeFunctionObject {
+  (a: number, b?: string): void;
   one: {
     (oneA: number, oneB?: boolean): boolean;
     more: {
@@ -86,17 +102,27 @@ type SomeFunctionObject = {
       };
     };
   };
-};
+}
 
 declare const someFunctionObject: SomeFunctionObject;
-
-someFunctionObject.one.more.time(12);
 
 const mockFunctionObject = someFunctionObject as Mocked<
   typeof someFunctionObject
 >;
 
-mockFunctionObject.one.more.time.mock;
+expectType<[a: number, b?: string]>(mockFunctionObject.mock.calls[0]);
+
+expectError(mockFunctionObject.mockReturnValue(123));
+expectError(mockFunctionObject.mockImplementation(() => true));
+
+expectType<[time: number]>(mockFunctionObject.one.more.time.mock.calls[0]);
+
+expectError(mockFunctionObject.one.more.time.mockReturnValue(123));
+expectError(
+  mockFunctionObject.one.more.time.mockImplementation((time: string) => {
+    return;
+  }),
+);
 
 // mocks object
 
