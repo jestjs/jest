@@ -78,7 +78,6 @@ describe.each([
     workerPath: threadChildWorkerPath,
   },
 ])('$name', ({workerClass, workerPath}) => {
-  /** @type WorkerInterface */
   let int;
 
   afterEach(async () => {
@@ -386,9 +385,7 @@ describe.each([
     test('processes exits', async () => {
       worker.forceExit();
 
-      await expect(
-        async () => await worker.waitForWorkerReady(),
-      ).rejects.toThrowError();
+      await expect(() => worker.waitForWorkerReady()).rejects.toThrowError();
     });
   });
 });
