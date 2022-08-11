@@ -7,8 +7,8 @@ jest.mock('../memory');
 jest.mock('../sub');
 jest.mock('../sum');
 
-const mockSub = sub as jest.MockedFunction<typeof sub>;
-const mockSum = sum as jest.MockedFunction<typeof sum>;
+const mockSub = jest.mocked(sub);
+const mockSum = jest.mocked(sum);
 const MockMemory = Memory as jest.MockedClass<typeof Memory>;
 
 describe('calc - mocks', () => {

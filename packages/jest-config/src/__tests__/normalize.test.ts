@@ -63,7 +63,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  (console.warn as unknown as jest.SpyInstance).mockRestore();
+  jest.mocked(console.warn).mockRestore();
 });
 
 it('picks an id based on the rootDir', async () => {
@@ -148,7 +148,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         automock: false,
@@ -1639,9 +1639,7 @@ describe('testPathPattern', () => {
         const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('');
-        expect(
-          (console.log as unknown as jest.SpyInstance).mock.calls[0][0],
-        ).toMatchSnapshot();
+        expect(jest.mocked(console.log).mock.calls[0][0]).toMatchSnapshot();
       });
 
       it(`joins multiple ${opt.name} if set`, async () => {
@@ -1783,7 +1781,7 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1851,7 +1849,7 @@ describe('displayName', () => {
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,
@@ -2001,7 +1999,7 @@ describe('shards', () => {
 
 describe('logs a deprecation warning', () => {
   beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
   });
 
   test("when 'browser' option is passed", async () => {
