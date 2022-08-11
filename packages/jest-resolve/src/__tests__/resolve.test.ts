@@ -588,9 +588,7 @@ describe('getMockModule', () => {
 
 describe('getMockModuleAsync', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', async () => {
-    mockUserResolverAsync.async.mockImplementation(() =>
-      Promise.resolve('module'),
-    );
+    mockUserResolverAsync.async.mockResolvedValue('module');
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
