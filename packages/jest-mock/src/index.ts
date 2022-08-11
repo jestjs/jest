@@ -36,21 +36,18 @@ export type MockFunctionMetadata<
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
-export type ConstructorLikeKeys<T> = {
-  [K in keyof T]: T[K] extends ClassLike ? K : never;
-}[keyof T];
+export type ConstructorLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends ClassLike ? K : never]: T[K];
+};
 
-export type MethodLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? K : never;
-}[keyof T];
+export type MethodLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
+};
 
-export type PropertyLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike
-    ? never
-    : T[K] extends ClassLike
-    ? never
-    : K;
-}[keyof T];
+export type PropertyLikeKeys<T> = Exclude<
+  keyof T,
+  ConstructorLikeKeys<T> | MethodLikeKeys<T>
+>;
 
 // TODO Figure out how to replace this with TS ConstructorParameters utility type
 // https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
@@ -148,6 +145,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SpyInstance<T extends FunctionLike = UnknownFunction>
   extends MockInstance<T> {}
 
@@ -218,7 +216,7 @@ type MockFunctionConfig = {
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
-const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/;
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-/:-@[-`{-~]/;
 const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   FUNCTION_NAME_RESERVED_PATTERN.source,
   'g',
@@ -621,6 +619,7 @@ export class ModuleMocker {
           metadata.members.prototype.members) ||
         {};
       const prototypeSlots = this._getSlots(prototype);
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
       const mockConstructor = matchArity(function (
         this: ReturnType<T>,
@@ -884,7 +883,7 @@ export class ModuleMocker {
   ): Mock<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
-    // @ts-expect-error
+    // @ts-expect-error - unsure why TSC complains here?
     const mock = this._makeComponent(metadata);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
@@ -1008,6 +1007,7 @@ export class ModuleMocker {
   isMockFunction<T extends FunctionLike = UnknownFunction>(
     fn: SpyInstance<T>,
   ): fn is SpyInstance<T>;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   isMockFunction<P extends Array<unknown>, R extends unknown>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
@@ -1075,7 +1075,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${methodName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            methodName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
@@ -1137,7 +1139,9 @@ export class ModuleMocker {
 
     if (!obj) {
       throw new Error(
-        `spyOn could not find an object to spy upon for ${propertyName}`,
+        `spyOn could not find an object to spy upon for ${String(
+          propertyName,
+        )}`,
       );
     }
 
@@ -1154,16 +1158,18 @@ export class ModuleMocker {
     }
 
     if (!descriptor) {
-      throw new Error(`${propertyName} property does not exist`);
+      throw new Error(`${String(propertyName)} property does not exist`);
     }
 
     if (!descriptor.configurable) {
-      throw new Error(`${propertyName} is not declared configurable`);
+      throw new Error(`${String(propertyName)} is not declared configurable`);
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        `Property ${propertyName} does not have access type ${accessType}`,
+        `Property ${String(
+          propertyName,
+        )} does not have access type ${accessType}`,
       );
     }
 
@@ -1172,7 +1178,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${propertyName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            propertyName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
@@ -1187,7 +1195,7 @@ export class ModuleMocker {
       (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-expect-error
+        // @ts-expect-error - wrong context
         return original.apply(this, arguments);
       });
     }

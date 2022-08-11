@@ -38,7 +38,6 @@ describe('block with only in other it, should skip', () => {
     expect(10).toBe(10);
   });
 
-  // eslint-disable-next-line jest/no-focused-tests
   it.only('failing test', () => {
     expect(10).toBe(101);
   });

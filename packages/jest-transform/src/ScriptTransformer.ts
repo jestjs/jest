@@ -834,6 +834,7 @@ export async function createTranspilingRequire(
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
         resolverPath,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         () => {},
         {
           applyInteropRequireDefault,

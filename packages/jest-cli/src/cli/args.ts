@@ -196,7 +196,7 @@ export const options: {[key: string]: Options} = {
     description:
       'The path to a jest config file specifying how to find ' +
       'and execute tests. If no rootDir is set in the config, the directory ' +
-      'containing the config file is assumed to be the rootDir for the project.' +
+      'containing the config file is assumed to be the rootDir for the project. ' +
       'This can also be a JSON encoded value which Jest will use as configuration.',
     type: 'string',
   },
@@ -213,7 +213,7 @@ export const options: {[key: string]: Options} = {
   coveragePathIgnorePatterns: {
     description:
       'An array of regexp pattern strings that are matched ' +
-      'against all file paths before executing the test. If the file path' +
+      'against all file paths before executing the test. If the file path ' +
       'matches any of the patterns, coverage information will be skipped.',
     string: true,
     type: 'array',
@@ -311,7 +311,7 @@ export const options: {[key: string]: Options} = {
   },
   ignoreProjects: {
     description:
-      'Ignore the tests of the specified projects.' +
+      'Ignore the tests of the specified projects. ' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',
@@ -352,7 +352,7 @@ export const options: {[key: string]: Options} = {
   },
   maxConcurrency: {
     description:
-      'Specifies the maximum number of tests that are allowed to run' +
+      'Specifies the maximum number of tests that are allowed to run ' +
       'concurrently. This only affects tests using `test.concurrent`.',
     type: 'number',
   },
@@ -517,7 +517,7 @@ export const options: {[key: string]: Options} = {
   },
   selectProjects: {
     description:
-      'Run the tests of the specified projects.' +
+      'Run the tests of the specified projects. ' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',

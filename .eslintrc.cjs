@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable sort-keys */
+
 const fs = require('fs');
 const path = require('path');
 const {sync: readPkg} = require('read-pkg');
@@ -14,7 +16,8 @@ function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
-    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+    .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
     return pkg.name;
@@ -27,6 +30,7 @@ module.exports = {
     'jest/globals': true,
   },
   extends: [
+    'eslint:recommended',
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
@@ -38,6 +42,7 @@ module.exports = {
   overrides: [
     {
       extends: [
+        'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:import/typescript',
       ],
@@ -52,10 +57,14 @@ module.exports = {
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
+        '@typescript-eslint/no-var-requires': 'off',
         // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        // TODO: enable at some point
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
       },
     },
     {
@@ -144,6 +153,9 @@ module.exports = {
       files: ['**/*.md/**'],
       rules: {
         '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
         'arrow-body-style': 'off',
         'consistent-return': 'off',
         'import/export': 'off',
@@ -202,6 +214,13 @@ module.exports = {
       },
     },
     {
+      files: ['**/__tests__/**', '**/__mocks__/**'],
+      rules: {
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+      },
+    },
+    {
       files: [
         '**/__tests__/**',
         '**/__mocks__/**',
@@ -248,7 +267,19 @@ module.exports = {
       },
     },
     {
-      files: ['**/__typetests__/**', '**/*.md/**'],
+      files: ['**/__typetests__/**'],
+      rules: {
+        '@typescript-eslint/no-empty-function': 'off',
+      },
+    },
+    {
+      files: [
+        '**/__typetests__/**',
+        '**/*.md/**',
+        'e2e/circus-concurrent/__tests__/concurrent-only-each.test.js',
+        'e2e/jasmine-async/__tests__/concurrent-only-each.test.js',
+        'e2e/test-failing/__tests__/worksWithOnlyMode.test.js',
+      ],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',

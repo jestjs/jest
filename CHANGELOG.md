@@ -2,20 +2,76 @@
 
 ### Features
 
-- `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
+- `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
+- `[jest-worker]` Adds `workerIdleMemoryLimit` option which is used as a check for worker memory leaks >= Node 16.11.0 and recycles child workers as required. ([#13056](https://github.com/facebook/jest/pull/13056), [#13105](https://github.com/facebook/jest/pull/13105), [#13106](https://github.com/facebook/jest/pull/13106))
+- `[pretty-format]` [**BREAKING**] Remove `ConvertAnsi` plugin in favour of `jest-serializer-ansi-escapes` ([#13040](https://github.com/facebook/jest/pull/13040))
 
 ### Fixes
 
-- `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
+- `[jest-config]` Fix testing multiple projects with TypeScript config files ([#13099](https://github.com/facebook/jest/pull/13099))
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS Record ([#13055](https://github.com/facebook/jest/pull/13055))
+- `[jest-haste-map]` Increase the maximum possible file size that jest-haste-map can handle ([#13094](https://github.com/facebook/jest/pull/13094))
+- `[jest-worker]` When a process runs out of memory worker exits correctly and doesn't spin indefinitely ([#13054](https://github.com/facebook/jest/pull/13054))
+
+### Chore & Maintenance
+
+- `[*]` [**BREAKING**] Drop support for Node v12 and v17 ([#13033](https://github.com/facebook/jest/pull/13033))
+- `[docs]` Fix webpack name ([#13049](https://github.com/facebook/jest/pull/13049))
+- `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
+
+### Performance
+
+## 28.1.3
+
+### Features
+
+- `[jest-leak-detector]` Use native `FinalizationRegistry` when it exists to get rid of external C dependency ([#12973](https://github.com/facebook/jest/pull/12973))
+
+### Fixes
+
+- `[jest-changed-files]` Fix a lock-up after repeated invocations ([#12757](https://github.com/facebook/jest/issues/12757))
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedSets ([#12977](https://github.com/facebook/jest/pull/12977))
+- `[jest-mock]` Add index signature support for `spyOn` types ([#13013](https://github.com/facebook/jest/pull/13013), [#13020](https://github.com/facebook/jest/pull/13020))
+- `[jest-snapshot]` Fix indentation of awaited inline snapshots ([#12986](https://github.com/facebook/jest/pull/12986))
+
+### Chore & Maintenance
+
+- `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
+- `[docs]` Update spyOn docs ([#13000](https://github.com/facebook/jest/pull/13000))
+
+## 28.1.2
+
+### Fixes
+
+- `[jest-runtime]` Avoid star type import from `@jest/globals` ([#12949](https://github.com/facebook/jest/pull/12949))
+
+### Chore & Maintenance
+
+- `[docs]` Mention that jest-codemods now supports Sinon ([#12898](https://github.com/facebook/jest/pull/12898))
+
+## 28.1.1
+
+### Features
+
+- `[jest]` Expose `Config` type ([#12848](https://github.com/facebook/jest/pull/12848))
+- `[@jest/reporters]` Improve `GitHubActionsReporter`s annotation format ([#12826](https://github.com/facebook/jest/pull/12826))
+- `[@jest/types]` Infer argument types passed to `test` and `describe` callback functions from `each` tables ([#12885](https://github.com/facebook/jest/pull/12885), [#12905](https://github.com/facebook/jest/pull/12905))
+
+### Fixes
+
+- `[@jest/expect-utils]` Fix deep equality of ImmutableJS OrderedMaps ([#12763](https://github.com/facebook/jest/pull/12899))
 - `[jest-docblock]` Handle multiline comments in parseWithComments ([#12845](https://github.com/facebook/jest/pull/12845))
+- `[jest-mock]` Improve `spyOn` error messages ([#12901](https://github.com/facebook/jest/pull/12901))
+- `[jest-runtime]` Correctly report V8 coverage with `resetModules: true` ([#12912](https://github.com/facebook/jest/pull/12912))
+- `[jest-worker]` Make `JestWorkerFarm` helper type to include methods of worker module that take more than one argument ([#12839](https://github.com/facebook/jest/pull/12839))
 
 ### Chore & Maintenance
 
 - `[docs]` Updated docs to indicate that `jest-environment-jsdom` is a separate package [#12828](https://github.com/facebook/jest/issues/12828)
-- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 - `[docs]` Document the comments used by coverage providers [#12835](https://github.com/facebook/jest/issues/12835)
-
-### Performance
+- `[docs]` Use `docusaurus-remark-plugin-tab-blocks` to format tabs with code examples ([#12859](https://github.com/facebook/jest/pull/12859))
+- `[jest-haste-map]` Bump `walker` version ([#12324](https://github.com/facebook/jest/pull/12324))
 
 ## 28.1.0
 

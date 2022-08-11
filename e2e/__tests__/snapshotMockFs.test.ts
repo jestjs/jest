@@ -29,7 +29,7 @@ test('store snapshot even if fs is mocked', () => {
 
   const content = require(snapshotFile);
   expect(content['snapshot 1']).toBe(`
-Object {
+{
   "foo": "bar",
 }
 `);

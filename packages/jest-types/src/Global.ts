@@ -55,12 +55,52 @@ export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
-type Each<EachCallback extends TestCallback, Name> =
-  | ((
-      table: EachTable,
-      ...taggedTemplateData: TemplateData
-    ) => (name: Name, test: EachTestFn<EachCallback>, timeout?: number) => void)
-  | (() => () => void);
+interface Each<EachFn extends TestFn | BlockFn> {
+  <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (arg: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T extends readonly [unknown, ...Array<unknown>]>(table: T): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T extends ReadonlyArray<unknown>>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T extends ReadonlyArray<unknown>>(table: T): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T = unknown>(strings: TemplateStringsArray, ...expressions: Array<T>): (
+    name: string | NameLike,
+    fn: (arg: Record<string, T>) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  <T extends Record<string, unknown>>(
+    strings: TemplateStringsArray,
+    ...expressions: Array<unknown>
+  ): (
+    name: string | NameLike,
+    fn: (arg: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+}
 
 export interface HookBase {
   (fn: HookFn, timeout?: number): void;
@@ -68,7 +108,7 @@ export interface HookBase {
 
 export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
-  each: Each<TestFn, TestNameLike>;
+  each: Each<TestFn>;
   failing(testName: TestNameLike, fn: TestFn, timeout?: number): void;
 }
 
@@ -80,7 +120,7 @@ export interface It extends ItBase {
 
 export interface ItConcurrentBase {
   (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
-  each: Each<ConcurrentTestFn, TestNameLike>;
+  each: Each<ConcurrentTestFn>;
   failing(testName: TestNameLike, fn: ConcurrentTestFn, timeout?: number): void;
 }
 
@@ -95,7 +135,7 @@ export interface ItConcurrent extends It {
 
 export interface DescribeBase {
   (blockName: BlockNameLike, blockFn: BlockFn): void;
-  each: Each<BlockFn, BlockNameLike | TestNameLike>;
+  each: Each<BlockFn>;
 }
 
 export interface Describe extends DescribeBase {

@@ -155,6 +155,7 @@ const test: Global.It = (() => {
         test.todo,
       );
     }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 

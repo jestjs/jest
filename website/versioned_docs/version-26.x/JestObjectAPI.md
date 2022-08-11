@@ -475,7 +475,17 @@ Determines if the given function is a mocked function.
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
-_Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
+:::note
+
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+
+:::
+
+:::tip
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
 
 Example:
 
@@ -494,14 +504,17 @@ Example test:
 ```js
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 ```
 
@@ -541,14 +554,17 @@ Example test:
 const audio = require('./audio');
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
   const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 
 test('plays audio', () => {
@@ -557,8 +573,6 @@ test('plays audio', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
-
-  spy.mockRestore();
 });
 ```
 

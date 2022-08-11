@@ -105,6 +105,7 @@ export async function runCLI(
     // If in watch mode, return the promise that will never resolve.
     // If the watch mode is interrupted, watch should handle the process
     // shutdown.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return new Promise(() => {});
   }
 

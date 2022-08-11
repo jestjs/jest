@@ -160,7 +160,7 @@ type StdErrAndOutString = {stderr: string; stdout: string};
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
 type CheckerFunction = (arg: StdErrAndOutString) => void;
 
-// Runs `jest` continously (watch mode) and allows the caller to wait for
+// Runs `jest` continuously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
 export const runContinuous = function (
   dir: string,

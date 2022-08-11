@@ -243,6 +243,7 @@ const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+const IS_RECORD_SYMBOL = '@@__IMMUTABLE_RECORD__@@';
 
 export function isImmutableUnorderedKeyed(maybeKeyed: any) {
   return !!(
@@ -264,5 +265,29 @@ export function isImmutableList(maybeList: any) {
   return !!(
     maybeList &&
     maybeList[IS_LIST_SENTINEL]
+  );
+}
+
+export function isImmutableOrderedKeyed(maybeKeyed: any) {
+  return !!(
+    maybeKeyed &&
+    maybeKeyed[IS_KEYED_SENTINEL] &&
+    maybeKeyed[IS_ORDERED_SENTINEL]
+  );
+}
+
+
+export function isImmutableOrderedSet(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_SET_SENTINEL] &&
+    maybeSet[IS_ORDERED_SENTINEL]
+  );
+}
+
+export function isImmutableRecord(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_RECORD_SYMBOL]
   );
 }

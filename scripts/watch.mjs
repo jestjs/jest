@@ -37,7 +37,7 @@ chokidar
     getPackages().map(p => path.resolve(p.packageDir, 'src')),
     {
       ignoreInitial: true,
-      ignored: /(^|[\/\\])\../, // ignore dotfiles
+      ignored: /(^|[/\\])\../, // ignore dotfiles
     },
   )
   .on('all', (event, filePath) => {
