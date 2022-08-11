@@ -55,9 +55,9 @@ export type MockedClass<T extends ClassLike> = MockInstance<
 export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
   MockedObject<T>;
 
-export type MockedFunctionShallow<T extends FunctionLike> = MockInstance<T> & T;
+type MockedFunctionShallow<T extends FunctionLike> = MockInstance<T> & T;
 
-type MockedObject<T extends object> = {
+export type MockedObject<T extends object> = {
   [K in keyof T]: T[K] extends ClassLike
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
@@ -85,7 +85,7 @@ export type Mocked<T extends object> = T extends ClassLike
   ? MockedObject<T>
   : T;
 
-export type MockedShallow<T extends object> = T extends ClassLike
+type MockedShallow<T extends object> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunctionShallow<T>
