@@ -520,3 +520,50 @@ test('calculate calls add', () => {
   expect(mockAdd).toBeCalledWith(1, 2);
 });
 ```
+
+### `jest.mocked<T>(source: T, {shallow?: boolean})`
+
+The `mocked()` type helper method wraps `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` option to disable the deeply mocked behavior.
+
+Returns the input value.
+
+Example:
+
+```ts title="song.ts"
+export const song = {
+  one: {
+    more: {
+      time: (t: number) => {
+        return t;
+      },
+    },
+  },
+};
+```
+
+```ts title="song.test.ts"
+import {expect, jest, test} from '@jest/globals';
+import {song} from './song';
+
+jest.mock('./song');
+jest.spyOn(console, 'log');
+
+const mockedSong = jest.mocked(song);
+
+test('deep method is typed correctly', () => {
+  mockedSong.one.more.time.mockReturnValue(12);
+
+  expect(mockedSong.one.more.time(10)).toBe(12);
+  expect(mockedSong.one.more.time.mock.calls).toHaveLength(1);
+});
+
+test('direct usage', () => {
+  jest.mocked(console.log).mockImplementation(() => {
+    return;
+  });
+
+  console.log('one more time');
+
+  expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
+});
+```

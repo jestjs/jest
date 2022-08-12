@@ -83,7 +83,7 @@ export type Mocked<T extends object> = T extends ClassLike
   ? MockedObject<T>
   : T;
 
-type MockedShallow<T extends object> = T extends ClassLike
+export type MockedShallow<T extends object> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunctionShallow<T>
@@ -1216,13 +1216,16 @@ export class ModuleMocker {
     return value == null ? `${value}` : typeof value;
   }
 
-  mocked<T extends object>(item: T, deep?: false): MockedShallow<T>;
-  mocked<T extends object>(item: T, deep: true): Mocked<T>;
+  mocked<T extends object>(source: T, options?: {shallow: false}): Mocked<T>;
   mocked<T extends object>(
-    item: T,
-    _deep = false,
+    source: T,
+    options: {shallow: true},
+  ): MockedShallow<T>;
+  mocked<T extends object>(
+    source: T,
+    _options?: {shallow: boolean},
   ): Mocked<T> | MockedShallow<T> {
-    return item as Mocked<T> | MockedShallow<T>;
+    return source as Mocked<T> | MockedShallow<T>;
   }
 }
 

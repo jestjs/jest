@@ -7,7 +7,13 @@
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, ModuleMocker, SpyInstance} from 'jest-mock';
+import type {
+  Mock,
+  Mocked,
+  MockedShallow,
+  ModuleMocker,
+  SpyInstance,
+} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -210,7 +216,7 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
-// deep mocked()
+// mocked()
 
 class SomeClass {
   constructor(one: string, two?: boolean) {}
@@ -248,9 +254,17 @@ const someObject = {
   someClassInstance: new SomeClass('value'),
 };
 
-const mockObjectA = jest.mocked(someObject, true);
+expectType<Mocked<typeof someObject>>(jest.mocked(someObject));
+expectType<Mocked<typeof someObject>>(
+  jest.mocked(someObject, {shallow: false}),
+);
+expectType<MockedShallow<typeof someObject>>(
+  jest.mocked(someObject, {shallow: true}),
+);
 
-expectError(jest.mocked('abc', true));
+expectError(jest.mocked('abc'));
+
+const mockObjectA = jest.mocked(someObject);
 
 expectType<[]>(mockObjectA.methodA.mock.calls[0]);
 expectType<[b: string]>(mockObjectA.methodB.mock.calls[0]);
@@ -303,11 +317,9 @@ expectError(
 
 expectAssignable<typeof someObject>(mockObjectA);
 
-// mocked()
+// shallow mocked()
 
-const mockObjectB = jest.mocked(someObject);
-
-expectError(jest.mocked('abc'));
+const mockObjectB = jest.mocked(someObject, {shallow: true});
 
 expectType<[]>(mockObjectB.methodA.mock.calls[0]);
 expectType<[b: string]>(mockObjectB.methodB.mock.calls[0]);
