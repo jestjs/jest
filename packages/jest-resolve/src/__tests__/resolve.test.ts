@@ -359,7 +359,7 @@ describe('findNodeModuleAsync', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -464,7 +464,7 @@ describe('resolveModule', () => {
 });
 
 describe('resolveModuleAsync', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -627,7 +627,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
