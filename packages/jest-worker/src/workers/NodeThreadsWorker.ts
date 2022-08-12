@@ -6,7 +6,6 @@
  */
 
 import {totalmem} from 'os';
-import {PassThrough} from 'stream';
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 import {
@@ -26,8 +25,12 @@ import {
   WorkerOptions,
   WorkerStates,
 } from '../types';
+import WorkerAbstract from './WorkerAbstract';
 
-export default class ExperimentalWorker implements WorkerInterface {
+export default class ExperimentalWorker
+  extends WorkerAbstract
+  implements WorkerInterface
+{
   private _worker!: Worker;
   private _options: WorkerOptions;
 
@@ -36,12 +39,8 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
 
-  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
-
-  private _exitPromise: Promise<void>;
-  private _resolveExitPromise!: () => void;
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
@@ -51,14 +50,14 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
-  private _state: WorkerStates;
 
   constructor(options: WorkerOptions) {
+    super(options);
+
     this._options = options;
 
     this._request = null;
 
-    this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
 
@@ -68,19 +67,14 @@ export default class ExperimentalWorker implements WorkerInterface {
     this._childIdleMemoryUsage = null;
     this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
 
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-
-    this._state = WorkerStates.STARTING;
     this.initialize();
   }
 
   initialize(): void {
     if (
-      this._state === WorkerStates.OUT_OF_MEMORY ||
-      this._state === WorkerStates.SHUTTING_DOWN ||
-      this._state === WorkerStates.SHUT_DOWN
+      this.state === WorkerStates.OUT_OF_MEMORY ||
+      this.state === WorkerStates.SHUTTING_DOWN ||
+      this.state === WorkerStates.SHUT_DOWN
     ) {
       return;
     }
@@ -89,7 +83,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       this._worker.terminate();
     }
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
 
     this._worker = new Worker(this._childWorkerPath, {
       eval: false,
@@ -157,21 +151,21 @@ export default class ExperimentalWorker implements WorkerInterface {
         {type: 'WorkerError'},
       ]);
     }
-  }
 
-  private _shutdown() {
-    // End the permanent stream so the merged stream end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
+    this.state = WorkerStates.OK;
+    if (this._resolveWorkerReady) {
+      this._resolveWorkerReady();
     }
-
-    this._resolveExitPromise();
   }
 
   private _onError(error: Error) {
     if (error.message.includes('heap out of memory')) {
-      this._state = WorkerStates.OUT_OF_MEMORY;
+      this.state = WorkerStates.OUT_OF_MEMORY;
+
+      // Threads don't behave like processes, they don't crash when they run out of
+      // memory. But for consistency we want them to behave like processes so we call
+      // terminate to simulate a crash happening that was not planned
+      this._worker.terminate();
     }
   }
 
@@ -238,7 +232,10 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number) {
-    if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
+    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
         null,
@@ -247,9 +244,9 @@ export default class ExperimentalWorker implements WorkerInterface {
       this._shutdown();
     } else if (
       (exitCode !== 0 &&
-        this._state !== WorkerStates.SHUTTING_DOWN &&
-        this._state !== WorkerStates.SHUT_DOWN) ||
-      this._state === WorkerStates.RESTARTING
+        this.state !== WorkerStates.SHUTTING_DOWN &&
+        this.state !== WorkerStates.SHUT_DOWN) ||
+      this.state === WorkerStates.RESTARTING
     ) {
       this.initialize();
 
@@ -266,7 +263,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   forceExit(): void {
-    this._state = WorkerStates.SHUTTING_DOWN;
+    this.state = WorkerStates.SHUTTING_DOWN;
     this._worker.terminate();
   }
 
@@ -278,11 +275,13 @@ export default class ExperimentalWorker implements WorkerInterface {
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
+      const hasRequest = !!this._request;
+
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
 
-      if (this._childIdleMemoryUsageLimit) {
+      if (this._childIdleMemoryUsageLimit && hasRequest) {
         this.checkMemoryUsage();
       }
 
@@ -335,7 +334,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this._state = WorkerStates.RESTARTING;
+        this.state = WorkerStates.RESTARTING;
 
         this._worker.terminate();
       }
@@ -404,10 +403,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     return this._worker.threadId;
   }
 
-  private _getFakeStream() {
-    if (!this._fakeStream) {
-      this._fakeStream = new PassThrough();
-    }
-    return this._fakeStream;
+  isWorkerRunning(): boolean {
+    return this._worker.threadId >= 0;
   }
 }
