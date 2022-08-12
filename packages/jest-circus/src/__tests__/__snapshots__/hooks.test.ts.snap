@@ -59,8 +59,9 @@ hook_start: afterAll
 hook_success: afterAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
+
 unhandledErrors: 0"
-`;
+;
 
 exports[`beforeAll is exectued correctly 1`] = `
 "start_describe_definition: describe 1
