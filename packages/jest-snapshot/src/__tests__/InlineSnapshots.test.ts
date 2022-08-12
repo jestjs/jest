@@ -30,14 +30,18 @@ jest.mock('prettier', () => {
   return mockPrettier;
 });
 
-let dir: string;
 beforeEach(() => {
   jest.mocked(prettier.resolveConfig.sync).mockReset();
 });
 
+let dir: string;
 beforeEach(() => {
   dir = path.join(tmpdir(), `jest-inline-snapshot-test-${Date.now()}`);
   fs.mkdirSync(dir);
+});
+
+afterEach(() => {
+  fs.rmSync(dir, {recursive: true});
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
