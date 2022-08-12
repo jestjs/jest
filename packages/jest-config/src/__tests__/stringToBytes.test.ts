@@ -5,22 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {totalmem} from 'os';
 import stringToBytes from '../stringToBytes';
-
-const platformMock = jest.fn();
-Object.defineProperty(process, 'platform', {get: platformMock});
-
-beforeEach(() => {
-  delete process.env.CIRCLECI;
-});
-
-test('CircleCI % throws an error', () => {
-  platformMock.mockReturnValue('linux');
-  process.env.CIRCLECI = '1';
-
-  expect(() => stringToBytes(0.3, totalmem())).toThrowError();
-});
 
 describe('numeric input', () => {
   test('> 1 represents bytes', () => {
