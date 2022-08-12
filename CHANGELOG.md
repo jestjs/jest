@@ -19,6 +19,7 @@
 
 - `[*]` [**BREAKING**] Drop support for Node v12 and v17 ([#13033](https://github.com/facebook/jest/pull/13033))
 - `[docs]` Fix webpack name ([#13049](https://github.com/facebook/jest/pull/13049))
+- `[docs]` Explicit how to set `n` for `--bail` ([#13128](https://github.com/facebook/jest/pull/13128))
 - `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
 
 ### Performance
