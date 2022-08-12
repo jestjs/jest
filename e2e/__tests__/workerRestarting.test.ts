@@ -13,4 +13,6 @@ it('all 3 test files should complete', () => {
   expect(result.exitCode).toBe(0);
   const {summary} = extractSummary(result.stderr);
   expect(summary).toMatchSnapshot();
+
+  console.log(result.stdout);
 });

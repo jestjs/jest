@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {totalmem} from 'os';
+
 function stringToBytes(
   input: undefined,
   percentageReference?: number,
@@ -28,6 +30,13 @@ function stringToBytes(
   if (input === null || input === undefined) {
     return input;
   }
+
+  console.log({
+    input,
+    totalmem: totalmem(),
+  });
+
+  const oringalInput = input;
 
   if (typeof input === 'string') {
     if (isNaN(Number.parseFloat(input.slice(-1)))) {
@@ -66,6 +75,17 @@ function stringToBytes(
       input = Number.parseFloat(input);
     }
   }
+
+  console.log({
+    oringalInput,
+    input,
+    percentageReference,
+    totalmem: totalmem(),
+    outValue:
+      typeof input === 'number'
+        ? Math.floor(input * percentageReference)
+        : 'Nope',
+  });
 
   if (typeof input === 'number') {
     if (input <= 1 && input > 0) {
