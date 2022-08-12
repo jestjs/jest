@@ -1,3 +1,7 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
+import {jest} from '@jest/globals';
+
 import Memory from '../memory';
 import sub from '../sub';
 import sum from '../sum';
@@ -9,7 +13,7 @@ jest.mock('../sum');
 
 const mockSub = jest.mocked(sub);
 const mockSum = jest.mocked(sum);
-const MockMemory = Memory as jest.MockedClass<typeof Memory>;
+const MockMemory = jest.mocked(Memory);
 
 describe('calc - mocks', () => {
   const memory = new MockMemory();
