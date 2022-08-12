@@ -40,10 +40,38 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means packages like `jsdom` and `nanoid`, which doesn't work properly in Jest@28, can work without extra polyfills.
 
-## `jest-mock`
-
-Exports of `Mocked*` utility types changed. `MaybeMockedDeep` and `MaybeMocked` now are exported as `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exposed.
-
 ## `pretty-format`
 
-`ConvertAnsi` plugin is removed in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).
+`ConvertAnsi` plugin is removed from `pretty-format` in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).
+
+### `jest-mock`
+
+Exports of `Mocked*` utility types from `jest-mock` module have changed. `MaybeMockedDeep` and `MaybeMocked` now are exported as `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exposed.
+
+## TypeScript
+
+:::info
+
+The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
+
+```ts
+import {jest} from '@jest/globals';
+```
+
+:::
+
+### `jest.mocked()`
+
+The `mocked()` method now wraps deep members of passed object by default. If you used the method with `true` argument before, remove it to avoid type errors:
+
+```diff
+- const mockedObject = jest.mocked(someObject, true);
++ const mockedObject = jest.mocked(someObject);
+```
+
+To have the old shallow mocked behavior, pass `{shallow: true}` option:
+
+```diff
+- const mockedObject = jest.mocked(someObject);
++ const mockedObject = jest.mocked(someObject, {shallow: true});
+```
