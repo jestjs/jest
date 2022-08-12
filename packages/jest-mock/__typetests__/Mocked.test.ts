@@ -23,9 +23,7 @@ class SomeClass {
 
 const MockSomeClass = SomeClass as Mocked<typeof SomeClass>;
 
-expectType<[one: string, two?: boolean | undefined]>(
-  MockSomeClass.mock.calls[0],
-);
+expectType<[one: string, two?: boolean]>(MockSomeClass.mock.calls[0]);
 
 expectType<[]>(MockSomeClass.prototype.methodA.mock.calls[0]);
 expectType<[a: string, b?: number]>(
@@ -130,9 +128,85 @@ expectError(
   }),
 );
 
-expectAssignable<SomeFunctionObject>(mockFunctionObject);
+expectAssignable<typeof someFunctionObject>(mockFunctionObject);
 
 // mocks object
+
+const someObject = {
+  SomeClass,
+
+  methodA() {
+    return;
+  },
+  methodB(b: string) {
+    return true;
+  },
+  methodC: (c: number) => true,
+
+  one: {
+    more: {
+      time: (t: number) => {
+        return;
+      },
+    },
+  },
+
+  propertyA: 123,
+  propertyB: 'value',
+
+  someClassInstance: new SomeClass('value'),
+};
+
+const mockObject = someObject as Mocked<typeof someObject>;
+
+expectType<[]>(mockObject.methodA.mock.calls[0]);
+expectType<[b: string]>(mockObject.methodB.mock.calls[0]);
+expectType<[c: number]>(mockObject.methodC.mock.calls[0]);
+
+expectType<[t: number]>(mockObject.one.more.time.mock.calls[0]);
+
+expectType<[one: string, two?: boolean]>(mockObject.SomeClass.mock.calls[0]);
+expectType<[]>(mockObject.SomeClass.prototype.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  mockObject.SomeClass.prototype.methodB.mock.calls[0],
+);
+
+expectType<[]>(mockObject.someClassInstance.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  mockObject.someClassInstance.methodB.mock.calls[0],
+);
+
+expectError(mockObject.methodA.mockReturnValue(123));
+expectError(mockObject.methodA.mockImplementation((a: number) => 123));
+expectError(mockObject.methodB.mockReturnValue(123));
+expectError(mockObject.methodB.mockImplementation((b: number) => 123));
+expectError(mockObject.methodC.mockReturnValue(123));
+expectError(mockObject.methodC.mockImplementation((c: number) => 123));
+
+expectError(mockObject.one.more.time.mockReturnValue(123));
+expectError(mockObject.one.more.time.mockImplementation((t: boolean) => 123));
+
+expectError(mockObject.SomeClass.prototype.methodA.mockReturnValue(123));
+expectError(
+  mockObject.SomeClass.prototype.methodA.mockImplementation((a: number) => 123),
+);
+expectError(mockObject.SomeClass.prototype.methodB.mockReturnValue(123));
+expectError(
+  mockObject.SomeClass.prototype.methodB.mockImplementation((a: number) => 123),
+);
+
+expectError(mockObject.someClassInstance.methodA.mockReturnValue(123));
+expectError(
+  mockObject.someClassInstance.methodA.mockImplementation((a: number) => 123),
+);
+expectError(mockObject.someClassInstance.methodB.mockReturnValue(123));
+expectError(
+  mockObject.someClassInstance.methodB.mockImplementation((a: number) => 123),
+);
+
+expectAssignable<typeof someObject>(mockObject);
+
+// mocks 'console' object
 
 const mockConsole = console as Mocked<typeof console>;
 
