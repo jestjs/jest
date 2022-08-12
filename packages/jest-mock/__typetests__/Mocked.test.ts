@@ -46,19 +46,21 @@ expectType<[a: string, b?: number]>(
   MockSomeClass.prototype.methodB.mock.calls[0],
 );
 
-const mockExample = new MockSomeClass('c') as Mocked<
+const mockSomeInstance = new MockSomeClass('a') as Mocked<
   InstanceType<typeof MockSomeClass>
 >;
 
-expectType<[]>(mockExample.methodA.mock.calls[0]);
-expectType<[a: string, b?: number]>(mockExample.methodB.mock.calls[0]);
+expectType<[]>(mockSomeInstance.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(mockSomeInstance.methodB.mock.calls[0]);
 
-expectError(mockExample.methodA.mockReturnValue('true'));
+expectError(mockSomeInstance.methodA.mockReturnValue('true'));
 expectError(
-  mockExample.methodB.mockImplementation((a: string, b?: string) => {
+  mockSomeInstance.methodB.mockImplementation((a: string, b?: string) => {
     return;
   }),
 );
+
+expectAssignable<SomeClass>(mockSomeInstance);
 
 // mocks function
 
@@ -72,6 +74,8 @@ expectType<[a: string, b?: number]>(mockFunction.mock.calls[0]);
 
 expectError(mockFunction.mockReturnValue(123));
 expectError(mockFunction.mockImplementation((a: boolean, b?: number) => true));
+
+expectAssignable<typeof someFunction>(mockFunction);
 
 // mocks async function
 
@@ -89,6 +93,8 @@ expectError(
     Promise.resolve(true),
   ),
 );
+
+expectAssignable<typeof someAsyncFunction>(mockAsyncFunction);
 
 // mocks function object
 
@@ -123,6 +129,8 @@ expectError(
     return;
   }),
 );
+
+expectAssignable<SomeFunctionObject>(mockFunctionObject);
 
 // mocks object
 
