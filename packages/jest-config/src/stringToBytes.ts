@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {totalmem} from 'os';
+
 function stringToBytes(
   input: undefined,
   percentageReference?: number,
@@ -70,6 +72,16 @@ function stringToBytes(
   if (typeof input === 'number') {
     if (input <= 1 && input > 0) {
       if (percentageReference) {
+        if (
+          process.env.CIRCLECI &&
+          process.platform === 'linux' &&
+          percentageReference === totalmem()
+        ) {
+          throw new Error(
+            'Percentage based memory does not work on CircleCI, sorry. https://github.com/facebook/jest/issues/11956#issuecomment-1212925677',
+          );
+        }
+
         return Math.floor(input * percentageReference);
       } else {
         throw new Error(
