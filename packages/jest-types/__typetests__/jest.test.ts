@@ -7,7 +7,15 @@
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, ModuleMocker, SpyInstance} from 'jest-mock';
+import type {
+  Mock,
+  Mocked,
+  MockedClass,
+  MockedFunction,
+  MockedObject,
+  ModuleMocker,
+  SpyInstance,
+} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -210,7 +218,7 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
-// deep mocked()
+// Mocked*<T>
 
 class SomeClass {
   constructor(one: string, two?: boolean) {}
@@ -221,6 +229,10 @@ class SomeClass {
   methodB(a: string, b?: number) {
     return;
   }
+}
+
+function someFunction(a: string, b?: number): boolean {
+  return true;
 }
 
 const someObject = {
@@ -247,6 +259,24 @@ const someObject = {
 
   someClassInstance: new SomeClass('value'),
 };
+
+expectType<Mocked<typeof someObject>>(
+  someObject as jest.Mocked<typeof someObject>,
+);
+
+expectType<MockedClass<typeof SomeClass>>(
+  SomeClass as jest.MockedClass<typeof SomeClass>,
+);
+
+expectType<MockedFunction<typeof someFunction>>(
+  someFunction as jest.MockedFunction<typeof someFunction>,
+);
+
+expectType<MockedObject<typeof someObject>>(
+  someObject as jest.MockedObject<typeof someObject>,
+);
+
+// deep mocked()
 
 const mockObjectA = jest.mocked(someObject, true);
 

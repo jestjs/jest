@@ -2717,6 +2717,7 @@ __metadata:
     "@jest/environment": "workspace:^"
     "@jest/expect": "workspace:^"
     "@jest/types": "workspace:^"
+    jest-mock: "workspace:^"
   languageName: unknown
   linkType: soft
 
