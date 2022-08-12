@@ -72,8 +72,6 @@ type MockedObjectShallow<T extends object> = {
     ? MockedClass<T[K]>
     : T[K] extends FunctionLike
     ? MockedFunctionShallow<T[K]>
-    : T[K] extends object
-    ? MockedObjectShallow<T[K]>
     : T[K];
 } & T;
 
@@ -85,7 +83,7 @@ export type Mocked<T extends object> = T extends ClassLike
   ? MockedObject<T>
   : T;
 
-type MockedShallow<T extends object> = T extends ClassLike
+export type MockedShallow<T extends object> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunctionShallow<T>

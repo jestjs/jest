@@ -7,7 +7,6 @@
 
 import {ChildProcess, ForkOptions, fork} from 'child_process';
 import {totalmem} from 'os';
-import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
@@ -27,13 +26,14 @@ import {
   WorkerOptions,
   WorkerStates,
 } from '../types';
+import WorkerAbstract from './WorkerAbstract';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
 const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
 
 // How long to wait after SIGTERM before sending SIGKILL
-const SIGKILL_DELAY = 500;
+export const SIGKILL_DELAY = 500;
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -53,7 +53,10 @@ const SIGKILL_DELAY = 500;
  * field is changed to "true", so that other workers which might encounter the
  * same call skip it.
  */
-export default class ChildProcessWorker implements WorkerInterface {
+export default class ChildProcessWorker
+  extends WorkerAbstract
+  implements WorkerInterface
+{
   private _child!: ChildProcess;
   private _options: WorkerOptions;
 
@@ -62,12 +65,10 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
 
-  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
 
-  private _exitPromise: Promise<void>;
-  private _resolveExitPromise!: () => void;
+  private _stderrBuffer: Array<Buffer> = [];
 
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
@@ -75,37 +76,33 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _childIdleMemoryUsage: number | null;
   private _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
-  private _state: WorkerStates;
 
   private _childWorkerPath: string;
 
   constructor(options: WorkerOptions) {
+    super(options);
+
     this._options = options;
 
     this._request = null;
 
-    this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
     this._childIdleMemoryUsage = null;
     this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
 
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-
     this._childWorkerPath =
       options.childWorkerPath || require.resolve('./processChild');
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
     this.initialize();
   }
 
   initialize(): void {
     if (
-      this._state === WorkerStates.OUT_OF_MEMORY ||
-      this._state === WorkerStates.SHUTTING_DOWN ||
-      this._state === WorkerStates.SHUT_DOWN
+      this.state === WorkerStates.OUT_OF_MEMORY ||
+      this.state === WorkerStates.SHUTTING_DOWN ||
+      this.state === WorkerStates.SHUT_DOWN
     ) {
       return;
     }
@@ -114,9 +111,22 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._child.kill('SIGKILL');
     }
 
-    this._state = WorkerStates.STARTING;
+    this.state = WorkerStates.STARTING;
 
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
+    const silent = this._options.silent ?? true;
+
+    if (!silent) {
+      // NOTE: Detecting an out of memory crash is independent of idle memory usage monitoring. We want to
+      // monitor for a crash occurring so that it can be handled as required and so we can tell the difference
+      // between an OOM crash and another kind of crash. We need to do this because if a worker crashes due to
+      // an OOM event sometimes it isn't seen by the worker pool and it just sits there waiting for the worker
+      // to respond and it never will.
+      console.warn('Unable to detect out of memory event if silent === false');
+    }
+
+    this._stderrBuffer = [];
+
     const options: ForkOptions = {
       cwd: process.cwd(),
       env: {
@@ -128,45 +138,44 @@ export default class ChildProcessWorker implements WorkerInterface {
       execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
       // default to advanced serialization in order to match worker threads
       serialization: 'advanced',
-      silent: this._options.silent ?? true,
+      silent,
       ...this._options.forkOptions,
     };
 
-    const child = fork(this._childWorkerPath, [], options);
+    this._child = fork(this._childWorkerPath, [], options);
 
-    if (child.stdout) {
+    if (this._child.stdout) {
       if (!this._stdout) {
         // We need to add a permanent stream to the merged stream to prevent it
         // from ending when the subprocess stream ends
         this._stdout = mergeStream(this._getFakeStream());
       }
 
-      this._stdout.add(child.stdout);
+      this._stdout.add(this._child.stdout);
     }
 
-    if (child.stderr) {
+    if (this._child.stderr) {
       if (!this._stderr) {
         // We need to add a permanent stream to the merged stream to prevent it
         // from ending when the subprocess stream ends
         this._stderr = mergeStream(this._getFakeStream());
       }
 
-      this._stderr.add(child.stderr);
+      this._stderr.add(this._child.stderr);
+
+      this._child.stderr.on('data', this.stderrDataHandler.bind(this));
     }
 
-    this._detectOutOfMemoryCrash(child);
-    child.on('message', this._onMessage.bind(this));
-    child.on('exit', this._onExit.bind(this));
+    this._child.on('message', this._onMessage.bind(this));
+    this._child.on('exit', this._onExit.bind(this));
+    this._child.on('disconnect', this._onDisconnect.bind(this));
 
-    child.send([
+    this._child.send([
       CHILD_MESSAGE_INITIALIZE,
       false,
       this._options.workerPath,
       this._options.setupArgs,
     ]);
-
-    this._child = child;
-    this._state = WorkerStates.OK;
 
     this._retries++;
 
@@ -189,44 +198,60 @@ export default class ChildProcessWorker implements WorkerInterface {
       // Clear the request so we don't keep executing it.
       this._request = null;
     }
+
+    this.state = WorkerStates.OK;
+    if (this._resolveWorkerReady) {
+      this._resolveWorkerReady();
+    }
   }
 
-  private _detectOutOfMemoryCrash(child: ChildProcess): void {
-    let stderrStr = '';
-
-    const handler = (chunk: any) => {
-      if (this._state !== WorkerStates.OUT_OF_MEMORY) {
-        let str: string | undefined = undefined;
-
-        if (chunk instanceof Buffer) {
-          str = chunk.toString('utf8');
-        } else if (typeof chunk === 'string') {
-          str = chunk;
-        }
-
-        if (str) {
-          stderrStr += str;
-        }
-
-        if (stderrStr.includes('heap out of memory')) {
-          this._state = WorkerStates.OUT_OF_MEMORY;
-        }
-      }
-    };
-
-    child.stderr?.on('data', handler);
-  }
-
-  private _shutdown() {
-    this._state = WorkerStates.SHUTTING_DOWN;
-
-    // End the temporary streams so the merged streams end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
+  private stderrDataHandler(chunk: any): void {
+    if (chunk) {
+      this._stderrBuffer.push(Buffer.from(chunk));
     }
 
-    this._resolveExitPromise();
+    this._detectOutOfMemoryCrash();
+
+    if (this.state === WorkerStates.OUT_OF_MEMORY) {
+      this._workerReadyPromise = undefined;
+      this._resolveWorkerReady = undefined;
+
+      this.killChild();
+      this._shutdown();
+    }
+  }
+
+  private _detectOutOfMemoryCrash(): void {
+    try {
+      const bufferStr = Buffer.concat(this._stderrBuffer).toString('utf8');
+
+      if (
+        bufferStr.includes('heap out of memory') ||
+        bufferStr.includes('allocation failure;') ||
+        bufferStr.includes('Last few GCs')
+      ) {
+        if (
+          this.state === WorkerStates.OK ||
+          this.state === WorkerStates.STARTING
+        ) {
+          this.state = WorkerStates.OUT_OF_MEMORY;
+        }
+      }
+    } catch (err) {
+      console.error('Error looking for out of memory crash', err);
+    }
+  }
+
+  private _onDisconnect() {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
+    this._detectOutOfMemoryCrash();
+
+    if (this.state === WorkerStates.OUT_OF_MEMORY) {
+      this.killChild();
+      this._shutdown();
+    }
   }
 
   private _onMessage(response: ParentMessage) {
@@ -311,7 +336,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._childIdleMemoryUsage &&
         this._childIdleMemoryUsage > limit
       ) {
-        this._state = WorkerStates.RESTARTING;
+        this.state = WorkerStates.RESTARTING;
 
         this.killChild();
       }
@@ -319,7 +344,12 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number | null) {
-    if (exitCode !== 0 && this._state === WorkerStates.OUT_OF_MEMORY) {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
+    this._detectOutOfMemoryCrash();
+
+    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
       this._onProcessEnd(
         new Error('Jest worker ran out of memory and crashed'),
         null,
@@ -331,9 +361,11 @@ export default class ChildProcessWorker implements WorkerInterface {
         exitCode !== null &&
         exitCode !== SIGTERM_EXIT_CODE &&
         exitCode !== SIGKILL_EXIT_CODE &&
-        this._state !== WorkerStates.SHUTTING_DOWN) ||
-      this._state === WorkerStates.RESTARTING
+        this.state !== WorkerStates.SHUTTING_DOWN) ||
+      this.state === WorkerStates.RESTARTING
     ) {
+      this.state = WorkerStates.RESTARTING;
+
       this.initialize();
 
       if (this._request) {
@@ -350,14 +382,22 @@ export default class ChildProcessWorker implements WorkerInterface {
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
   ): void {
+    this._stderrBuffer = [];
+
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
+      const hasRequest = !!this._request;
+
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
 
-      if (this._childIdleMemoryUsageLimit && this._child.connected) {
+      if (
+        this._childIdleMemoryUsageLimit &&
+        this._child.connected &&
+        hasRequest
+      ) {
         this.checkMemoryUsage();
       }
 
@@ -377,12 +417,16 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   killChild(): NodeJS.Timeout {
-    this._child.kill('SIGTERM');
-    return setTimeout(() => this._child.kill('SIGKILL'), SIGKILL_DELAY);
+    // We store a reference so that there's no way we can accidentally
+    // kill a new worker that has been spawned.
+    const childToKill = this._child;
+
+    childToKill.kill('SIGTERM');
+    return setTimeout(() => childToKill.kill('SIGKILL'), SIGKILL_DELAY);
   }
 
   forceExit(): void {
-    this._state = WorkerStates.SHUTTING_DOWN;
+    this.state = WorkerStates.SHUTTING_DOWN;
 
     const sigkillTimeout = this.killChild();
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
@@ -466,10 +510,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _getFakeStream() {
-    if (!this._fakeStream) {
-      this._fakeStream = new PassThrough();
-    }
-    return this._fakeStream;
+  isWorkerRunning(): boolean {
+    return this._child.connected && !this._child.killed;
   }
 }
