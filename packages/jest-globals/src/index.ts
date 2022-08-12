@@ -14,6 +14,7 @@ import type {
   Mocked as JestMocked,
   MockedClass as JestMockedClass,
   MockedFunction as JestMockedFunction,
+  MockedObject as JestMockedObject,
 } from 'jest-mock';
 
 export declare const expect: JestExpect;
@@ -36,17 +37,21 @@ declare const jest: Jest;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace jest {
   /**
-   * Wraps a class, function or object type with definitions of Jest mock.
+   * Wraps a class, function or object type with Jest mock type definitions.
    */
   export type Mocked<T extends object> = JestMocked<T>;
   /**
-   * Wraps a class type with definitions of Jest mock.
+   * Wraps a class type with Jest mock type definitions.
    */
   export type MockedClass<T extends ClassLike> = JestMockedClass<T>;
   /**
-   * Wraps a function type with definitions of Jest mock.
+   * Wraps a function type with Jest mock type definitions.
    */
   export type MockedFunction<T extends FunctionLike> = JestMockedFunction<T>;
+  /**
+   * Wraps an object type with Jest mock type definitions.
+   */
+  export type MockedObject<T extends object> = JestMockedObject<T>;
 }
 
 export {jest};
