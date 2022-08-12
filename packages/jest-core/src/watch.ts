@@ -12,10 +12,7 @@ import exit = require('exit');
 import slash = require('slash');
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {
-  ChangeEvent as HasteChangeEvent,
-  default as HasteMap,
-} from 'jest-haste-map';
+import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
   isInteractive,
