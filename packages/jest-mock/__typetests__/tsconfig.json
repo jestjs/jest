@@ -6,7 +6,7 @@
     "noUnusedParameters": false,
     "skipLibCheck": true,
 
-    "types": []
+    "types": ["node"]
   },
   "include": ["./**/*"]
 }

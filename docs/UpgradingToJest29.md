@@ -40,6 +40,10 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means packages like `jsdom` and `nanoid`, which doesn't work properly in Jest@28, can work without extra polyfills.
 
+## `jest-mock`
+
+Exports of `Mocked*` utility types changed. `MaybeMockedDeep` and `MaybeMocked` now are exported as `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exposed.
+
 ## `pretty-format`
 
 `ConvertAnsi` plugin is removed in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).
