@@ -2927,6 +2927,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
+    "@jest/globals": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/node": "*"
     "@types/semver": ^7.1.0
