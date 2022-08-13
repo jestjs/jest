@@ -282,6 +282,12 @@ Modules that are mocked with `jest.mock` are mocked only for the file that calls
 
 Returns the `jest` object for chaining.
 
+:::tip
+
+Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-shallow-boolean) helper method to have your mocked modules typed.
+
+:::
+
 ### `jest.unmock(moduleName)`
 
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -467,7 +473,7 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-:::note
+:::tip
 
 See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
