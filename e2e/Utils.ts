@@ -279,8 +279,8 @@ export const normalizeIcons = (str: string) => {
 
   // Make sure to keep in sync with `jest-cli/src/constants`
   return str
-    .replace(new RegExp('\u00D7', 'g'), '\u2715')
-    .replace(new RegExp('\u221A', 'g'), '\u2713');
+    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
+    .replace(new RegExp('\u221A', 'gu'), '\u2713');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed
