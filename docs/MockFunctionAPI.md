@@ -554,7 +554,7 @@ Types of classes, functions or objects can be passed as type argument to `jest.M
 
 The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` option to disable the deeply mocked behavior.
 
-Returns the input value.
+Returns the `source` object.
 
 ```ts title="song.ts"
 export const song = {
