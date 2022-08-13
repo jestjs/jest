@@ -64,7 +64,7 @@ export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
     const module = this._getModuleMetadata(
       name,
       platform,
-      !!supportsNativePlatform,
+      Boolean(supportsNativePlatform),
     );
     if (module && module[H.TYPE] === type) {
       const modulePath = module[H.PATH];

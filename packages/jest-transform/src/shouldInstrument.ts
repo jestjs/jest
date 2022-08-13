@@ -81,7 +81,9 @@ export default function shouldInstrument(
   }
 
   if (
-    config.coveragePathIgnorePatterns.some(pattern => !!filename.match(pattern))
+    config.coveragePathIgnorePatterns.some(pattern =>
+      Boolean(filename.match(pattern)),
+    )
   ) {
     return false;
   }

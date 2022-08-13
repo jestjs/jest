@@ -1035,7 +1035,7 @@ export default async function normalize(
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
-  newOptions.json = !!argv.json;
+  newOptions.json = Boolean(argv.json);
 
   newOptions.testFailureExitCode = parseInt(
     newOptions.testFailureExitCode as unknown as string,

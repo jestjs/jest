@@ -387,7 +387,7 @@ export default class ChildProcessWorker
     onProcessStart(this);
 
     this._onProcessEnd = (...args) => {
-      const hasRequest = !!this._request;
+      const hasRequest = Boolean(this._request);
 
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)

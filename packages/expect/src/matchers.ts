@@ -416,7 +416,7 @@ const matchers: MatchersObject = {
     };
     ensureNoExpected(expected, matcherName, options);
 
-    const pass = !!received;
+    const pass = Boolean(received);
 
     const message = () =>
       // eslint-disable-next-line prefer-template
