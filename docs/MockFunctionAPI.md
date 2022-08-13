@@ -550,7 +550,7 @@ test('returns correct data', () => {
 
 Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
 
-### `jest.mocked<T>(source: T, {shallow?: boolean})`
+### `jest.mocked(source, {shallow?: boolean})`
 
 The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` option to disable the deeply mocked behavior.
 
