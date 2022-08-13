@@ -63,7 +63,7 @@ From Jest 29 you can replace `@types/jest` package with native type definitions.
 
 :::info
 
-The TypeScript examples bellow assume you are using type definitions from `jest`.
+The TypeScript examples below assume you are using type definitions from `jest` and not `@types/jest`.
 
 ```ts
 import {jest} from '@jest/globals';
