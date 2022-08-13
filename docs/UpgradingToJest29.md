@@ -62,14 +62,14 @@ import {jest} from '@jest/globals';
 
 ### `jest.mocked()`
 
-The `mocked()` helper method now wraps types of deep members of passed object by default. If you have used the method with `true` argument before, remove it to avoid type errors:
+The [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method now wraps types of deep members of passed object by default. If you have used the method with `true` as the second argument, remove it to avoid type errors:
 
 ```diff
 - const mockedObject = jest.mocked(someObject, true);
 + const mockedObject = jest.mocked(someObject);
 ```
 
-To have the old shallow mocked behavior, pass `{shallow: true}` option:
+To have the old shallow mocked behavior, pass `{shallow: true}` as the second argument:
 
 ```diff
 - const mockedObject = jest.mocked(someObject);
