@@ -202,8 +202,9 @@ export interface Jest {
     */
   requireActual: (moduleName: string) => unknown;
   /**
-   * Wraps `source` object and its deep members with type definitions of Jest mock function.
-   * Pass `{shallow: true}` option to disable the deeply mocked behavior.
+   * Wraps types of the `source` object and its deep members with type definitions
+   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
+   * mocked behavior.
    */
   mocked: ModuleMocker['mocked'];
   /**

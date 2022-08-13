@@ -526,12 +526,16 @@ test('calculate calls add', () => {
 The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
 
 ```ts
-import fetch from 'node-fetch';
 import {expect, jest, test} from '@jest/globals';
+import type {fetch} from './fetch';
 
 jest.mock('node-fetch');
 
 let mockedFetch: jest.Mocked<typeof fetch>;
+
+afterEach(() => {
+  mockedFetch = resetMockedFetch();
+});
 
 test('makes correct call', () => {
   mockedFetch = getMockedFetch();
@@ -548,11 +552,9 @@ Types of classes, functions or objects can be passed as type argument to `jest.M
 
 ### `jest.mocked<T>(source: T, {shallow?: boolean})`
 
-The `mocked()` type helper method wraps `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` option to disable the deeply mocked behavior.
+The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` option to disable the deeply mocked behavior.
 
 Returns the input value.
-
-Example:
 
 ```ts title="song.ts"
 export const song = {
@@ -574,6 +576,8 @@ jest.mock('./song');
 jest.spyOn(console, 'log');
 
 const mockedSong = jest.mocked(song);
+// or through `jest.Mocked<Source>`
+// const mockedSong = song as jest.Mocked<typeof song>;
 
 test('deep method is typed correctly', () => {
   mockedSong.one.more.time.mockReturnValue(12);
