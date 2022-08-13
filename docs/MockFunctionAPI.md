@@ -526,8 +526,8 @@ test('calculate calls add', () => {
 The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
 
 ```ts
+import type {fetch} from 'node-fetch';
 import {expect, jest, test} from '@jest/globals';
-import type {fetch} from './fetch';
 
 jest.mock('node-fetch');
 
