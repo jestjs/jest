@@ -534,7 +534,7 @@ jest.mock('node-fetch');
 let mockedFetch: jest.Mocked<typeof fetch>;
 
 afterEach(() => {
-  mockedFetch = resetMockedFetch();
+  mockedFetch.mockClear();
 });
 
 test('makes correct call', () => {
