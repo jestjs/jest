@@ -6,7 +6,7 @@
  *
  */
 
-import throat from 'throat';
+import pLimit = require('p-limit');
 import git from './git';
 import hg from './hg';
 import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
@@ -21,7 +21,7 @@ function notEmpty<T>(value: T | null | undefined): value is T {
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
-const mutex = throat(5);
+const mutex = pLimit(5);
 
 const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));

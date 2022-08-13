@@ -9,6 +9,7 @@
   "references": [
     {"path": "../jest-environment"},
     {"path": "../jest-expect"},
+    {"path": "../jest-mock"},
     {"path": "../jest-types"}
   ]
 }

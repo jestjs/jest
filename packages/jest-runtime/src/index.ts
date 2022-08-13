@@ -20,7 +20,6 @@ import {
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
-import execa = require('execa');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
@@ -32,7 +31,7 @@ import type {
   ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type * as JestGlobals from '@jest/globals';
+import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {
   RuntimeTransformResult,
@@ -69,11 +68,11 @@ const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof JestGlobals.expect;
+  expect: typeof expect;
 }
 
 interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof JestGlobals.jest;
+  jest: typeof jest;
 }
 
 type HasteMapOptions = {
@@ -144,19 +143,6 @@ type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
-const supportsTopLevelAwait =
-  runtimeSupportsVmModules &&
-  (() => {
-    try {
-      // eslint-disable-next-line no-new
-      new SourceTextModule('await Promise.resolve()');
-
-      return true;
-    } catch {
-      return false;
-    }
-  })();
-
 const supportsNodeColonModulePrefixInRequire = (() => {
   try {
     require('node:fs');
@@ -165,19 +151,6 @@ const supportsNodeColonModulePrefixInRequire = (() => {
   } catch {
     return false;
   }
-})();
-
-const supportsNodeColonModulePrefixInImport = (() => {
-  const {stdout} = execa.sync(
-    'node',
-    [
-      '--eval',
-      'import("node:fs").then(() => console.log(true), () => console.log(false));',
-    ],
-    {reject: false},
-  );
-
-  return stdout === 'true';
 })();
 
 export default class Runtime {
@@ -221,6 +194,7 @@ export default class Runtime {
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
+  private _v8CoverageSources: Map<string, RuntimeTransformResult> | undefined;
   private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
   private readonly _virtualMocks: Map<string, boolean>;
@@ -478,7 +452,7 @@ export default class Runtime {
         supportsDynamicImport: true,
         supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
-        supportsTopLevelAwait,
+        supportsTopLevelAwait: true,
       });
 
       try {
@@ -751,7 +725,7 @@ export default class Runtime {
       [...cjsExports, 'default'],
       function () {
         cjsExports.forEach(exportName => {
-          // @ts-expect-error
+          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(exportName, cjs[exportName]);
         });
         // @ts-expect-error: TS doesn't know what `this` is
@@ -1155,6 +1129,18 @@ export default class Runtime {
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
+
+    if (
+      this._coverageOptions.collectCoverage &&
+      this._coverageOptions.coverageProvider === 'v8' &&
+      this._v8CoverageSources
+    ) {
+      this._v8CoverageSources = new Map([
+        ...this._v8CoverageSources,
+        ...this._fileTransforms,
+      ]);
+    }
+
     this._fileTransforms.clear();
 
     if (this._environment) {
@@ -1182,16 +1168,21 @@ export default class Runtime {
 
   async collectV8Coverage(): Promise<void> {
     this._v8CoverageInstrumenter = new CoverageInstrumenter();
+    this._v8CoverageSources = new Map();
 
     await this._v8CoverageInstrumenter.startInstrumenting();
   }
 
   async stopCollectingV8Coverage(): Promise<void> {
-    if (!this._v8CoverageInstrumenter) {
+    if (!this._v8CoverageInstrumenter || !this._v8CoverageSources) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
     this._v8CoverageResult =
       await this._v8CoverageInstrumenter.stopInstrumenting();
+    this._v8CoverageSources = new Map([
+      ...this._v8CoverageSources,
+      ...this._fileTransforms,
+    ]);
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -1199,8 +1190,8 @@ export default class Runtime {
   }
 
   getAllV8CoverageInfoCopy(): V8CoverageResult {
-    if (!this._v8CoverageResult) {
-      throw new Error('You need to `stopCollectingV8Coverage` first');
+    if (!this._v8CoverageResult || !this._v8CoverageSources) {
+      throw new Error('You need to call `stopCollectingV8Coverage` first.');
     }
 
     return this._v8CoverageResult
@@ -1210,11 +1201,11 @@ export default class Runtime {
         res =>
           // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
           res.url.startsWith(this._config.rootDir) &&
-          this._fileTransforms.has(res.url) &&
+          this._v8CoverageSources!.has(res.url) &&
           shouldInstrument(res.url, this._coverageOptions, this._config),
       )
       .map(result => {
-        const transformedFile = this._fileTransforms.get(result.url);
+        const transformedFile = this._v8CoverageSources!.get(result.url);
 
         return {
           codeTransformResult: transformedFile,
@@ -1307,6 +1298,7 @@ export default class Runtime {
     this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
+    this._v8CoverageSources?.clear();
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
@@ -1514,8 +1506,8 @@ export default class Runtime {
         module.require, // require implementation
         module.path, // __dirname
         module.filename, // __filename
-        // @ts-expect-error
-        ...lastArgs.filter(notEmpty),
+        lastArgs[0],
+        ...lastArgs.slice(1).filter(notEmpty),
       );
     } catch (error: any) {
       this.handleExecutionError(error, module);
@@ -1644,10 +1636,7 @@ export default class Runtime {
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
-    const required = this._requireCoreModule(
-      moduleName,
-      supportsNodeColonModulePrefixInImport,
-    );
+    const required = this._requireCoreModule(moduleName, true);
 
     const module = new SyntheticModule(
       ['default', ...Object.keys(required)],
@@ -1680,10 +1669,9 @@ export default class Runtime {
           : fileURLToPath(modulePath);
 
       if (!path.isAbsolute(filename)) {
-        const error = new TypeError(
+        const error: NodeJS.ErrnoException = new TypeError(
           `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
         );
-        // @ts-expect-error
         error.code = 'ERR_INVALID_ARG_TYPE';
         throw error;
       }
@@ -1702,7 +1690,7 @@ export default class Runtime {
     class Module extends nativeModule.Module {}
 
     Object.entries(nativeModule.Module).forEach(([key, value]) => {
-      // @ts-expect-error
+      // @ts-expect-error: no index signature
       Module[key] = value;
     });
 
@@ -1716,14 +1704,13 @@ export default class Runtime {
         filename: string | URL,
       ) {
         if (typeof filename !== 'string') {
-          const error = new TypeError(
+          const error: NodeJS.ErrnoException = new TypeError(
             `The argument 'filename' must be string. Received '${filename}'.${
               filename instanceof URL
                 ? ' Use createRequire for URL filename.'
                 : ''
             }`,
           );
-          // @ts-expect-error
           error.code = 'ERR_INVALID_ARG_TYPE';
           throw error;
         }
@@ -1733,6 +1720,7 @@ export default class Runtime {
     if ('syncBuiltinESMExports' in nativeModule) {
       // cast since TS seems very confused about whether it exists or not
       (Module as any).syncBuiltinESMExports =
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         function syncBuiltinESMExports() {};
     }
 
@@ -2313,7 +2301,7 @@ export default class Runtime {
       beforeAll: this._environment.global.beforeAll,
       beforeEach: this._environment.global.beforeEach,
       describe: this._environment.global.describe,
-      expect: this._environment.global.expect as any,
+      expect: this._environment.global.expect as typeof expect,
       fdescribe: this._environment.global.fdescribe,
       fit: this._environment.global.fit,
       it: this._environment.global.it,

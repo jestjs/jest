@@ -72,7 +72,7 @@ const GENERIC_IGNORED_EXTENSIONS = [
   'htm',
   'toml',
   'pro',
-].map(extension => createRegExp(`\.${extension}$`));
+].map(extension => createRegExp(`\\.${extension}$`));
 
 const GENERIC_IGNORED_PATTERNS = [
   '(^|/)\\.[^/]+(/|$)',

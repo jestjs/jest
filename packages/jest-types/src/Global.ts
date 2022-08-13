@@ -86,10 +86,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
     timeout?: number,
   ) => void;
 
-  <T extends unknown>(
-    strings: TemplateStringsArray,
-    ...expressions: Array<T>
-  ): (
+  <T = unknown>(strings: TemplateStringsArray, ...expressions: Array<T>): (
     name: string | NameLike,
     fn: (arg: Record<string, T>) => ReturnType<EachFn>,
     timeout?: number,

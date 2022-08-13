@@ -34,83 +34,62 @@ export type MockFunctionMetadata<
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
-export type ConstructorLikeKeys<T> = {
-  [K in keyof T]: T[K] extends ClassLike ? K : never;
-}[keyof T];
-
-export type MethodLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? K : never;
-}[keyof T];
-
-export type PropertyLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike
-    ? never
-    : T[K] extends ClassLike
-    ? never
-    : K;
-}[keyof T];
-
-// TODO Figure out how to replace this with TS ConstructorParameters utility type
-// https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
-type ConstructorParameters<T> = T extends new (...args: infer P) => any
-  ? P
-  : never;
-
-export type MaybeMockedConstructor<T> = T extends new (
-  ...args: Array<any>
-) => infer R
-  ? MockInstance<(...args: ConstructorParameters<T>) => R>
-  : T;
-
-export interface MockWithArgs<T extends FunctionLike> extends MockInstance<T> {
-  new (...args: ConstructorParameters<T>): T;
-  (...args: Parameters<T>): ReturnType<T>;
-}
-
-export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> & {
-  [K in keyof T]: T[K];
+export type ConstructorLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends ClassLike ? K : never]: T[K];
 };
 
-export type MockedFunctionDeep<T extends FunctionLike> = MockWithArgs<T> &
-  MockedObjectDeep<T>;
+export type MethodLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
+};
 
-export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
+export type PropertyLikeKeys<T> = Exclude<
+  keyof T,
+  ConstructorLikeKeys<T> | MethodLikeKeys<T>
+>;
+
+export type MockedClass<T extends ClassLike> = MockInstance<
+  (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
+> &
+  MockedObject<T>;
+
+export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
+  MockedObject<T>;
+
+type MockedFunctionShallow<T extends FunctionLike> = MockInstance<T> & T;
+
+export type MockedObject<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
     ? MockedFunction<T[K]>
+    : T[K] extends object
+    ? MockedObject<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: T[K]};
+} & T;
 
-export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
-    ? MockedFunctionDeep<T[K]>
+type MockedObjectShallow<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
+    ? MockedFunctionShallow<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: MaybeMockedDeep<T[K]>};
+} & T;
 
-export type MaybeMocked<T> = T extends FunctionLike
+export type Mocked<T extends object> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
   ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
   : T;
 
-export type MaybeMockedDeep<T> = T extends FunctionLike
-  ? MockedFunctionDeep<T>
+export type MockedShallow<T extends object> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
+  ? MockedFunctionShallow<T>
   : T extends object
-  ? MockedObjectDeep<T>
+  ? MockedObjectShallow<T>
   : T;
-
-export type Mocked<T> = {
-  [P in keyof T]: T[P] extends FunctionLike
-    ? MockInstance<T[P]>
-    : T[P] extends ClassLike
-    ? MockedClass<T[P]>
-    : T[P];
-} & T;
-
-export type MockedClass<T extends ClassLike> = MockInstance<
-  (args: T extends new (...args: infer P) => any ? P : never) => InstanceType<T>
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 
@@ -160,6 +139,7 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SpyInstance<T extends FunctionLike = UnknownFunction>
   extends MockInstance<T> {}
 
@@ -230,7 +210,7 @@ type MockFunctionConfig = {
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
-const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-\/:-@\[-`{-~]/;
+const FUNCTION_NAME_RESERVED_PATTERN = /[\s!-/:-@[-`{-~]/;
 const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   FUNCTION_NAME_RESERVED_PATTERN.source,
   'g',
@@ -633,6 +613,7 @@ export class ModuleMocker {
           metadata.members.prototype.members) ||
         {};
       const prototypeSlots = this._getSlots(prototype);
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const mocker = this;
       const mockConstructor = matchArity(function (
         this: ReturnType<T>,
@@ -896,7 +877,7 @@ export class ModuleMocker {
   ): Mock<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
-    // @ts-expect-error
+    // @ts-expect-error - unsure why TSC complains here?
     const mock = this._makeComponent(metadata);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
@@ -1020,6 +1001,7 @@ export class ModuleMocker {
   isMockFunction<T extends FunctionLike = UnknownFunction>(
     fn: SpyInstance<T>,
   ): fn is SpyInstance<T>;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   isMockFunction<P extends Array<unknown>, R extends unknown>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
@@ -1087,7 +1069,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${methodName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            methodName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
@@ -1149,7 +1133,9 @@ export class ModuleMocker {
 
     if (!obj) {
       throw new Error(
-        `spyOn could not find an object to spy upon for ${propertyName}`,
+        `spyOn could not find an object to spy upon for ${String(
+          propertyName,
+        )}`,
       );
     }
 
@@ -1166,16 +1152,18 @@ export class ModuleMocker {
     }
 
     if (!descriptor) {
-      throw new Error(`${propertyName} property does not exist`);
+      throw new Error(`${String(propertyName)} property does not exist`);
     }
 
     if (!descriptor.configurable) {
-      throw new Error(`${propertyName} is not declared configurable`);
+      throw new Error(`${String(propertyName)} is not declared configurable`);
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        `Property ${propertyName} does not have access type ${accessType}`,
+        `Property ${String(
+          propertyName,
+        )} does not have access type ${accessType}`,
       );
     }
 
@@ -1184,7 +1172,9 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${propertyName} property because it is not a function; ${this._typeOf(
+          `Cannot spy the ${String(
+            propertyName,
+          )} property because it is not a function; ${this._typeOf(
             original,
           )} given instead`,
         );
@@ -1199,7 +1189,7 @@ export class ModuleMocker {
       (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-expect-error
+        // @ts-expect-error - wrong context
         return original.apply(this, arguments);
       });
     }
@@ -1226,13 +1216,16 @@ export class ModuleMocker {
     return value == null ? `${value}` : typeof value;
   }
 
-  // the typings test helper
-  mocked<T>(item: T, deep?: false): MaybeMocked<T>;
-
-  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
-
-  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
-    return item as any;
+  mocked<T extends object>(source: T, options?: {shallow: false}): Mocked<T>;
+  mocked<T extends object>(
+    source: T,
+    options: {shallow: true},
+  ): MockedShallow<T>;
+  mocked<T extends object>(
+    source: T,
+    _options?: {shallow: boolean},
+  ): Mocked<T> | MockedShallow<T> {
+    return source as Mocked<T> | MockedShallow<T>;
   }
 }
 

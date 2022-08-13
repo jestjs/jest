@@ -364,7 +364,7 @@ test('indentation is correct in the presences of existing snapshots', () => {
   const test = `
     test('existing snapshot', () => {
       expect({ hello: 'world' }).toMatchInlineSnapshot(\`
-        Object {
+        {
           "hello": "world",
         }
       \`);

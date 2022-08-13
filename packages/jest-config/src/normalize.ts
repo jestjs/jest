@@ -6,6 +6,7 @@
  */
 
 import {createHash} from 'crypto';
+import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
@@ -36,6 +37,7 @@ import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
+import stringToBytes from './stringToBytes';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -909,6 +911,11 @@ export default async function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'snapshotFormat': {
+        value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'automock':
       case 'cache':
       case 'changedSince':
@@ -952,7 +959,6 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
-      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -964,6 +970,9 @@ export default async function normalize(
       case 'watchAll':
       case 'watchman':
         value = oldOptions[key];
+        break;
+      case 'workerIdleMemoryLimit':
+        value = stringToBytes(oldOptions[key], totalmem());
         break;
       case 'watchPlugins':
         value = (oldOptions[key] || []).map(watchPlugin => {

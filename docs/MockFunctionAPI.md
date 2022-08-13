@@ -489,7 +489,7 @@ Please consult the [Getting Started](GettingStarted.md#using-typescript) guide f
 
 ### `jest.fn(implementation?)`
 
-Correct mock typings will be inferred, if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases there the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
+Correct mock typings will be inferred if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases where the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
 
 ```ts
 import {expect, jest, test} from '@jest/globals';
@@ -514,5 +514,81 @@ test('calculate calls add', () => {
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
+});
+```
+
+### `jest.Mocked<Source>`
+
+The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+import type {fetch} from 'node-fetch';
+
+jest.mock('node-fetch');
+
+let mockedFetch: jest.Mocked<typeof fetch>;
+
+afterEach(() => {
+  mockedFetch.mockClear();
+});
+
+test('makes correct call', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+
+test('returns correct data', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+```
+
+Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
+
+### `jest.mocked(source, options?)`
+
+The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` as the `options` argument to disable the deeply mocked behavior.
+
+Returns the `source` object.
+
+```ts title="song.ts"
+export const song = {
+  one: {
+    more: {
+      time: (t: number) => {
+        return t;
+      },
+    },
+  },
+};
+```
+
+```ts title="song.test.ts"
+import {expect, jest, test} from '@jest/globals';
+import {song} from './song';
+
+jest.mock('./song');
+jest.spyOn(console, 'log');
+
+const mockedSong = jest.mocked(song);
+// or through `jest.Mocked<Source>`
+// const mockedSong = song as jest.Mocked<typeof song>;
+
+test('deep method is typed correctly', () => {
+  mockedSong.one.more.time.mockReturnValue(12);
+
+  expect(mockedSong.one.more.time(10)).toBe(12);
+  expect(mockedSong.one.more.time.mock.calls).toHaveLength(1);
+});
+
+test('direct usage', () => {
+  jest.mocked(console.log).mockImplementation(() => {
+    return;
+  });
+
+  console.log('one more time');
+
+  expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
 });
 ```

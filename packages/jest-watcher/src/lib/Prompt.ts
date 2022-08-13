@@ -26,9 +26,11 @@ export default class Prompt {
     this._offset = -1;
     this._promptLength = 0;
 
+    /* eslint-disable @typescript-eslint/no-empty-function */
     this._onChange = () => {};
     this._onSuccess = () => {};
     this._onCancel = () => {};
+    /* eslint-enable */
   }
 
   private _onResize = (): void => {
