@@ -13,6 +13,7 @@ import type {
   MockedClass,
   MockedFunction,
   MockedObject,
+  MockedShallow,
   ModuleMocker,
   SpyInstance,
 } from 'jest-mock';
@@ -276,11 +277,19 @@ expectType<MockedObject<typeof someObject>>(
   someObject as jest.MockedObject<typeof someObject>,
 );
 
-// deep mocked()
+// mocked()
 
-const mockObjectA = jest.mocked(someObject, true);
+expectType<Mocked<typeof someObject>>(jest.mocked(someObject));
+expectType<Mocked<typeof someObject>>(
+  jest.mocked(someObject, {shallow: false}),
+);
+expectType<MockedShallow<typeof someObject>>(
+  jest.mocked(someObject, {shallow: true}),
+);
 
-expectError(jest.mocked('abc', true));
+expectError(jest.mocked('abc'));
+
+const mockObjectA = jest.mocked(someObject);
 
 expectType<[]>(mockObjectA.methodA.mock.calls[0]);
 expectType<[b: string]>(mockObjectA.methodB.mock.calls[0]);
@@ -333,11 +342,9 @@ expectError(
 
 expectAssignable<typeof someObject>(mockObjectA);
 
-// mocked()
+// shallow mocked()
 
-const mockObjectB = jest.mocked(someObject);
-
-expectError(jest.mocked('abc'));
+const mockObjectB = jest.mocked(someObject, {shallow: true});
 
 expectType<[]>(mockObjectB.methodA.mock.calls[0]);
 expectType<[b: string]>(mockObjectB.methodB.mock.calls[0]);

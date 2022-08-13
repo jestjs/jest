@@ -180,7 +180,7 @@ module.exports = {
       },
     },
     {
-      files: ['website/**/*'],
+      files: ['docs/**/*', 'website/**/*'],
       rules: {
         'import/order': 'off',
         'import/sort-keys': 'off',
