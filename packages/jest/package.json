@@ -17,7 +17,8 @@
     "@jest/globals": "workspace:^",
     "@jest/types": "workspace:^",
     "import-local": "^3.0.2",
-    "jest-cli": "workspace:^"
+    "jest-cli": "workspace:^",
+    "jest-mock": "workspace:^"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.7.4",

@@ -9,6 +9,7 @@
     {"path": "../jest-cli"},
     {"path": "../jest-core"},
     {"path": "../jest-globals"},
+    {"path": "../jest-mock"},
     {"path": "../jest-types"}
   ]
 }
