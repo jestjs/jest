@@ -6,11 +6,11 @@
  *
  */
 
-/* eslint-disable import/no-duplicates */
+/* eslint-disable no-duplicate-imports */
 import {jest} from '@jest/globals';
 import {jest as aliasedJest} from '@jest/globals';
 import * as JestGlobals from '@jest/globals';
-/* eslint-enable import/no-duplicates */
+/* eslint-enable no-duplicate-imports */
 import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
 import c from '../__test_modules__/c';

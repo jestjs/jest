@@ -344,7 +344,6 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
-    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -414,6 +413,7 @@ module.exports = {
     'no-dupe-class-members': 'error',
     'no-dupe-keys': 'error',
     'no-duplicate-case': 'error',
+    'no-duplicate-imports': 'error',
     'no-else-return': 'off',
     'no-empty': 'off',
     'no-empty-character-class': 'warn',
