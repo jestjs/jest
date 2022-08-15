@@ -56,7 +56,9 @@ export default class LeakDetector {
     const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.
-    setFlagsFromString('--expose-gc');
+    if (isGarbageCollectorHidden) {
+      setFlagsFromString('--expose-gc');
+    }
     runInNewContext('gc')();
 
     // The GC was not initially exposed, so let's hide it again.
