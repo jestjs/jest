@@ -28,6 +28,8 @@ import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFramework, TestRunnerContext} from './types';
+import { setFlagsFromString } from 'v8';
+import { runInNewContext } from 'vm';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -357,6 +359,22 @@ async function runTestInternal(
   }
 }
 
+function runGarbageCollector() {
+    // @ts-expect-error: not a function on `globalThis`
+    const isGarbageCollectorHidden = globalThis.gc == null;
+
+    // GC is usually hidden, so we have to expose it before running.
+    if (isGarbageCollectorHidden) {
+      setFlagsFromString('--expose-gc');
+    }
+    runInNewContext('gc')();
+
+    // The GC was not initially exposed, so let's hide it again.
+    if (isGarbageCollectorHidden) {
+      setFlagsFromString('--no-expose-gc');
+    }
+  }
+
 export default async function runTest(
   path: string,
   globalConfig: Config.GlobalConfig,
@@ -373,6 +391,11 @@ export default async function runTest(
     context,
     sendMessageToJest,
   );
+
+  // GC might take a while, so we should run it here to ensure any delay
+  // doesn't happen later and cause the process to hang a bit before closing,
+  // which could result in a timeout
+  runGarbageCollector();
 
   if (leakDetector) {
     // We wanna allow a tiny but time to pass to allow last-minute cleanup
