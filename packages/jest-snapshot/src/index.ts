@@ -8,7 +8,7 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {MatcherFunctionWithState} from 'expect';
-import type {FS as HasteFS} from 'jest-haste-map';
+import type {IHasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -110,11 +110,11 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: string, hasteFS: HasteFS): boolean =>
+const fileExists = (filePath: string, hasteFS: IHasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 export const cleanup = (
-  hasteFS: HasteFS,
+  hasteFS: IHasteFS,
   update: Config.SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
   testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
