@@ -23,6 +23,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   detectOpenHandles: false,
   errorOnDeprecated: false,
   expand: false,
+  fakeTimers: {enableGlobally: false},
   filter: undefined,
   findRelatedTests: false,
   forceExit: false,

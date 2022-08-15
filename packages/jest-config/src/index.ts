@@ -129,6 +129,7 @@ const groupOptions = (
     detectOpenHandles: options.detectOpenHandles,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
+    fakeTimers: options.fakeTimers,
     filter: options.filter,
     findRelatedTests: options.findRelatedTests,
     forceExit: options.forceExit,

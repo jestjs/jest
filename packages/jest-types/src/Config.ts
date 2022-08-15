@@ -375,6 +375,7 @@ export type GlobalConfig = {
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   expand: boolean;
+  fakeTimers: FakeTimers;
   filter?: string;
   findRelatedTests: boolean;
   forceExit: boolean;
@@ -509,6 +510,7 @@ export type Argv = Arguments<
     debug: boolean;
     env: string;
     expand: boolean;
+    fakeTimers: FakeTimers;
     findRelatedTests: boolean;
     forceExit: boolean;
     globals: string;
