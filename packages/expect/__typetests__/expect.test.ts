@@ -8,9 +8,9 @@
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
+  MatcherContext,
   MatcherFunction,
-  MatcherFunctionWithState,
-  MatcherState,
+  MatcherFunctionWithContext,
   Matchers,
   expect,
 } from 'expect';
@@ -114,7 +114,7 @@ expectError(() => {
 });
 
 type ToBeWithinRange = (
-  this: MatcherState,
+  this: MatcherContext,
   actual: unknown,
   floor: number,
   ceiling: number,
@@ -133,7 +133,7 @@ const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
 
 expectAssignable<ToBeWithinRange>(toBeWithinRange);
 
-type AllowOmittingExpected = (this: MatcherState, actual: unknown) => any;
+type AllowOmittingExpected = (this: MatcherContext, actual: unknown) => any;
 
 const allowOmittingExpected: MatcherFunction = (
   actual: unknown,
@@ -151,13 +151,13 @@ const allowOmittingExpected: MatcherFunction = (
 
 expectAssignable<AllowOmittingExpected>(allowOmittingExpected);
 
-// MatcherState
+// MatcherContext
 
 const toHaveContext: MatcherFunction = function (
   actual: unknown,
   ...expect: Array<unknown>
 ) {
-  expectType<MatcherState>(this);
+  expectType<MatcherContext>(this);
 
   if (expect.length !== 0) {
     throw new Error('This matcher does not take any expected argument.');
@@ -169,15 +169,15 @@ const toHaveContext: MatcherFunction = function (
   };
 };
 
-interface CustomState extends MatcherState {
+interface CustomContext extends MatcherContext {
   customMethod(): void;
 }
 
-const customContext: MatcherFunctionWithState<CustomState> = function (
+const customContext: MatcherFunctionWithContext<CustomContext> = function (
   actual: unknown,
   ...expect: Array<unknown>
 ) {
-  expectType<CustomState>(this);
+  expectType<CustomContext>(this);
   expectType<void>(this.customMethod());
 
   if (expect.length !== 0) {
@@ -191,16 +191,16 @@ const customContext: MatcherFunctionWithState<CustomState> = function (
 };
 
 type CustomStateAndExpected = (
-  this: CustomState,
+  this: CustomContext,
   actual: unknown,
   count: number,
 ) => any;
 
-const customStateAndExpected: MatcherFunctionWithState<
-  CustomState,
+const customStateAndExpected: MatcherFunctionWithContext<
+  CustomContext,
   [count: number]
 > = function (actual: unknown, count: unknown) {
-  expectType<CustomState>(this);
+  expectType<CustomContext>(this);
   expectType<void>(this.customMethod());
 
   return {

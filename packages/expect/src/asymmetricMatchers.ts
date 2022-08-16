@@ -17,7 +17,7 @@ import {pluralize} from 'jest-util';
 import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
-  MatcherState,
+  MatcherContext,
 } from './types';
 
 const functionToString = Function.prototype.toString;
@@ -70,7 +70,7 @@ export abstract class AsymmetricMatcher<T>
 
   constructor(protected sample: T, protected inverse = false) {}
 
-  protected getMatcherContext(): MatcherState {
+  protected getMatcherContext(): MatcherContext {
     return {
       ...getState(),
       equals,
