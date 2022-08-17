@@ -38,16 +38,16 @@ FAIL __tests__/worksWithConcurrentMode.test.js
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.failing('failing passes = fails', () => {
+         |                 ^
+      14 |     expect(10).toBe(10);
       15 |   });
       16 |
-    > 17 |   test.concurrent.failing.each([
-         |                           ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
 
-      at Function.concurrentFn.failing.each (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:207:11)
-      at Suite.each (__tests__/worksWithConcurrentMode.test.js:17:27)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:197:11)
+      at Suite.failing (__tests__/worksWithConcurrentMode.test.js:13:17)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
 FAIL __tests__/worksWithConcurrentOnlyMode.test.js
@@ -72,16 +72,16 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
+      11 |   });
+      12 |
+    > 13 |   it.concurrent.only.failing('failing passes = fails', () => {
+         |                      ^
+      14 |     expect(10).toBe(10);
       15 |   });
       16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |                                ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
 
-      at Function.concurrentFn.failing.each (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:207:11)
-      at Suite.each (__tests__/worksWithConcurrentOnlyMode.test.js:17:32)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:197:11)
+      at Suite.failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
 FAIL __tests__/worksWithOnlyMode.test.js
