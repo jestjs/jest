@@ -24,7 +24,7 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
 if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
-  const defaultState: Partial<MatcherState> = {
+  const defaultState: MatcherState = {
     assertionCalls: 0,
     expectedAssertionsNumber: null,
     isExpectingAssertions: false,
