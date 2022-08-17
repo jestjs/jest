@@ -148,6 +148,7 @@ const test: Global.It = (() => {
       fn?: Circus.TestFn,
       timeout?: number,
     ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
+    failing.each = bindEach(failing, false);
     return failing;
   };
 
@@ -216,21 +217,16 @@ const test: Global.It = (() => {
   concurrentOnly.each = bindEach(concurrentOnly, false);
 
   only.failing = bindFailing(false, 'only');
-  only.failing.each = bindEach(only.failing, false);
   skip.failing = bindFailing(false, 'skip');
-  skip.failing.each = bindEach(skip.failing, false);
 
   test.failing = bindFailing(false);
-  test.failing.each = bindEach(test.failing, false);
   test.only = only;
   test.skip = skip;
   test.concurrent = concurrentTest;
   concurrentTest.only = concurrentOnly;
   concurrentTest.skip = skip;
   concurrentTest.failing = bindFailing(true);
-  concurrentTest.failing.each = bindEach(concurrentTest.failing, false);
   concurrentOnly.failing = bindFailing(true, 'only');
-  concurrentOnly.failing.each = bindEach(concurrentOnly.failing, false);
 
   return test;
 })();

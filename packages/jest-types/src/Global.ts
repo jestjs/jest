@@ -108,7 +108,7 @@ export interface HookBase {
 
 export interface Failing<T> {
   (testName: TestNameLike, fn: T, timeout?: number): void;
-  each?: Each<TestFn>;
+  each: Each<TestFn>;
 }
 
 export interface ItBase {
