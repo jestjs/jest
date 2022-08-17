@@ -361,7 +361,7 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
-      expectType<(() => void)>(this.dontThrow);
+      expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
       expectType<boolean | undefined>(this.expand);
