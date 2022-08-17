@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Failing} from '@jest/types/src/Global';
-import type {Circus, Global} from '@jest/types';
+import {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
@@ -141,12 +140,15 @@ const test: Global.It = (() => {
   ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
   const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
-    const failing = (
+    type FailingReturn = typeof concurrent extends true
+      ? Global.ConcurrentTestFn
+      : Global.TestFn;
+    const failing: Global.Failing<FailingReturn> = (
       testName: Circus.TestNameLike,
       fn?: Circus.TestFn,
       timeout?: number,
     ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
-    return failing as Failing;
+    return failing;
   };
 
   test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {

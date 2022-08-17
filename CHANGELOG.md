@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus]` Add `each` for failing tests ([#13142](https://github.com/facebook/jest/pull/13142)). It adds this functionality on top of previously added `failing` feature in ([#12610](https://github.com/facebook/jest/pull/12610)).
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
 - `[@jest/globals]` Add `jest.Mocked`, `jest.MockedClass`, `jest.MockedFunction` and `jest.MockedObject` utility types ([#12727](https://github.com/facebook/jest/pull/12727))

@@ -106,15 +106,15 @@ export interface HookBase {
   (fn: HookFn, timeout?: number): void;
 }
 
-export interface Failing {
-  (testName?: TestNameLike, fn?: TestFn, timeout?: number): void | never;
+export interface Failing<T> {
+  (testName: TestNameLike, fn: T, timeout?: number): void;
   each?: Each<TestFn>;
 }
 
 export interface ItBase {
   (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
-  failing: Failing;
+  failing: Failing<TestFn>;
 }
 
 export interface It extends ItBase {
@@ -126,7 +126,7 @@ export interface It extends ItBase {
 export interface ItConcurrentBase {
   (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
-  failing: Failing;
+  failing: Failing<ConcurrentTestFn>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
