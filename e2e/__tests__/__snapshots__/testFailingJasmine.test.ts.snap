@@ -2,84 +2,19 @@
 
 exports[`throws an error about unsupported modifier 1`] = `
 "FAIL __tests__/statuses.test.js
-  ● fails
+  ● Test suite failed to run
 
-    expect(received).toBe(expected) // Object.is equality
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-    Expected: 101
-    Received: 10
-
-      11 |
-      12 | it('fails', () => {
-    > 13 |   expect(10).toBe(101);
-         |              ^
-      14 | });
-      15 |
-      16 | it.skip('skips', () => {
-
-      at Object.toBe (__tests__/statuses.test.js:13:14)
-
-  ● .add(1, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
-      32 |   {a: 1, b: 2, expected: 3},
-      33 |   {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
-
-  ● .add(1, 2)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
-      32 |   {a: 1, b: 2, expected: 3},
-      33 |   {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
-
-  ● .add(2, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
-      32 |   {a: 1, b: 2, expected: 3},
-      33 |   {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
-
-  ● failing passes = fails
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      44 | });
-      45 |
-    > 46 | it.failing('failing passes = fails', () => {
+      20 | it.todo('todo');
+      21 |
+    > 22 | it.failing('failing fails = passes', () => {
          |    ^
-      47 |   expect(10).toBe(10);
-      48 | });
-      49 |
+      23 |   expect(10).toBe(101);
+      24 | });
+      25 |
 
-      at Object.failing (__tests__/statuses.test.js:46:4)
+      at Object.failing (__tests__/statuses.test.js:22:4)
 
 FAIL __tests__/worksWithConcurrentMode.test.js
   ● block with concurrent › failing test
@@ -99,194 +34,75 @@ FAIL __tests__/worksWithConcurrentMode.test.js
 
       at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
 
-  ● block with concurrent › failing passes = fails
+  ● block with concurrent › encountered a declaration exception
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      11 |   });
-      12 |
-    > 13 |   it.concurrent.failing('failing passes = fails', () => {
-         |                 ^
-      14 |     expect(10).toBe(10);
-      15 |   });
-      16 |
-
-      at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
-
-  ● block with concurrent › .add(1, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
       15 |   });
       16 |
     > 17 |   test.concurrent.failing.each([
-         |   ^
+         |                           ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
-
-  ● block with concurrent › .add(1, 2)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
-
-  ● block with concurrent › .add(2, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at Function.concurrentFn.failing.each (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:207:11)
+      at Suite.each (__tests__/worksWithConcurrentMode.test.js:17:27)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
 FAIL __tests__/worksWithConcurrentOnlyMode.test.js
-  ● block with concurrent › failing passes = fails
+  ● block with concurrent › skipped failing test
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    expect(received).toBe(expected) // Object.is equality
 
+    Expected: 101
+    Received: 10
+
+       8 | describe('block with concurrent', () => {
+       9 |   it('skipped failing test', () => {
+    > 10 |     expect(10).toBe(101);
+         |                ^
       11 |   });
       12 |
-    > 13 |   it.concurrent.only.failing('failing passes = fails', () => {
-         |                      ^
-      14 |     expect(10).toBe(10);
-      15 |   });
-      16 |
+      13 |   it.concurrent.only.failing('failing passes = fails', () => {
 
-      at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+      at Object.toBe (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
 
-  ● block with concurrent › .add(1, 1)
+  ● block with concurrent › encountered a declaration exception
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
       15 |   });
       16 |
     > 17 |   test.concurrent.only.failing.each([
-         |   ^
+         |                                ^
       18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
-
-  ● block with concurrent › .add(1, 2)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
-
-  ● block with concurrent › .add(2, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
-      19 |     {a: 1, b: 2, expected: 3},
-      20 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at Function.concurrentFn.failing.each (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:207:11)
+      at Suite.each (__tests__/worksWithConcurrentOnlyMode.test.js:17:32)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
 FAIL __tests__/worksWithOnlyMode.test.js
-  ● block with only, should pass › .add(1, 1)
+  ● block with only, should pass › encountered a declaration exception
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
+       7 |
+       8 | describe('block with only, should pass', () => {
+    >  9 |   it.only.failing('failing fails = passes, should pass', () => {
+         |           ^
+      10 |     expect(10).toBe(101);
       11 |   });
       12 |
-    > 13 |   it.only.failing.each([
-         |   ^
-      14 |     {a: 1, b: 1, expected: 2},
-      15 |     {a: 1, b: 2, expected: 3},
-      16 |     {a: 2, b: 1, expected: 3},
 
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:13:3
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:9:11)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
 
-  ● block with only, should pass › .add(1, 2)
+  ● block with only, should fail › encountered a declaration exception
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      11 |   });
-      12 |
-    > 13 |   it.only.failing.each([
-         |   ^
-      14 |     {a: 1, b: 1, expected: 2},
-      15 |     {a: 1, b: 2, expected: 3},
-      16 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:13:3
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
-
-  ● block with only, should pass › .add(2, 1)
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      11 |   });
-      12 |
-    > 13 |   it.only.failing.each([
-         |   ^
-      14 |     {a: 1, b: 1, expected: 2},
-      15 |     {a: 1, b: 2, expected: 3},
-      16 |     {a: 2, b: 1, expected: 3},
-
-      at ../../packages/jest-each/build/bind.js:45:11
-          at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:13:3
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
-
-  ● block with only, should fail › failing passes = fails, should fail
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
       29 |
       30 | describe('block with only, should fail', () => {
@@ -296,29 +112,27 @@ FAIL __tests__/worksWithOnlyMode.test.js
       33 |   });
       34 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:31:11)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:31:11)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:30:1)
 
-  ● block with only in other it, should skip › failing test
+  ● block with only in other it, should skip › encountered a declaration exception
 
-    expect(received).toBe(expected) // Object.is equality
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-    Expected: 101
-    Received: 10
-
+      43 |
+      44 | describe('block with only in other it, should skip', () => {
+    > 45 |   it.failing('failing passes = fails, should fail but skipped', () => {
+         |      ^
+      46 |     expect(10).toBe(10);
+      47 |   });
       48 |
-      49 |   it.only('failing test', () => {
-    > 50 |     expect(10).toBe(101);
-         |                ^
-      51 |   });
-      52 |
-      53 |   it('passing test but skipped', () => {
 
-      at Object.toBe (__tests__/worksWithOnlyMode.test.js:50:16)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:45:6)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:44:1)
 
-  ● block with only with different syntax, should fail › failing passes = fails, should fail 1
+  ● block with only with different syntax, should fail › encountered a declaration exception
 
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
       57 |
       58 | describe('block with only with different syntax, should fail', () => {
@@ -328,39 +142,37 @@ FAIL __tests__/worksWithOnlyMode.test.js
       61 |   });
       62 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:59:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:58:1)
-
-  ● block with only with different syntax, should fail › failing passes = fails, should fail 2
-
-    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
-
-      61 |   });
-      62 |
-    > 63 |   test.only.failing('failing passes = fails, should fail 2', () => {
-         |             ^
-      64 |     expect(10).toBe(10);
-      65 |   });
-      66 |
-
-      at failing (__tests__/worksWithOnlyMode.test.js:63:13)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:59:7)
       at Object.describe (__tests__/worksWithOnlyMode.test.js:58:1)
 
 FAIL __tests__/worksWithSkipMode.test.js
-  ● block with only, should pass › failing test
+  ● block with only, should pass › encountered a declaration exception
 
-    expect(received).toBe(expected) // Object.is equality
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-    Expected: 101
-    Received: 10
+       7 |
+       8 | describe('block with only, should pass', () => {
+    >  9 |   it.skip.failing('skipped failing fails = passes, should pass', () => {
+         |           ^
+      10 |     expect(10).toBe(101);
+      11 |   });
+      12 |
 
-      20 |
-      21 |   it('failing test', () => {
-    > 22 |     expect(10).toBe(101);
-         |                ^
-      23 |   });
-      24 |
-      25 |   it.skip('passing test', () => {
+      at Suite.failing (__tests__/worksWithSkipMode.test.js:9:11)
+      at Object.describe (__tests__/worksWithSkipMode.test.js:8:1)
 
-      at Object.toBe (__tests__/worksWithSkipMode.test.js:22:16)"
+  ● block with only, should fail › encountered a declaration exception
+
+    Jest: \`failing\` tests are only supported in \`jest-circus\`.
+
+      33 |
+      34 | describe('block with only, should fail', () => {
+    > 35 |   it.skip.failing('failing passes = fails, should fail', () => {
+         |           ^
+      36 |     expect(10).toBe(10);
+      37 |   });
+      38 |
+
+      at Suite.failing (__tests__/worksWithSkipMode.test.js:35:11)
+      at Object.describe (__tests__/worksWithSkipMode.test.js:34:1)"
 `;

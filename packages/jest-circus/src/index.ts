@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Global} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
