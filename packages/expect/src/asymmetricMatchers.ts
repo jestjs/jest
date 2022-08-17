@@ -18,6 +18,7 @@ import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherContext,
+  MatcherState,
 } from './types';
 
 const functionToString = Function.prototype.toString;
@@ -72,7 +73,9 @@ export abstract class AsymmetricMatcher<T>
 
   protected getMatcherContext(): MatcherContext {
     return {
-      ...getState(),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      dontThrow: () => {},
+      ...getState<MatcherState>(),
       equals,
       isNot: this.inverse,
       utils,
