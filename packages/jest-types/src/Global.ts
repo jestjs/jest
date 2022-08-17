@@ -106,9 +106,9 @@ export interface HookBase {
   (fn: HookFn, timeout?: number): void;
 }
 
-export interface Failing<T> {
+export interface Failing<T extends TestFn> {
   (testName: TestNameLike, fn: T, timeout?: number): void;
-  each: Each<TestFn>;
+  each: Each<T>;
 }
 
 export interface ItBase {
