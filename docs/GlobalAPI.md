@@ -765,7 +765,16 @@ test.failing('it is equal', () => {
 
 ### `test.failing.each(name, fn, timeout)`
 
-We can also run multiple tests at once by adding `each` after `failing`.
+
+Also under the alias: `it.failing.each(table)(name, fn)` and `` it.failing.each`table`(name, fn) ``
+
+:::note
+
+This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
+You can also run multiple tests at once by adding `each` after `failing`.
 
 Example:
 
