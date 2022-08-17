@@ -268,6 +268,7 @@ expectType<void>(test.concurrent.failing(() => {}, asyncFn));
 expectType<void>(test.concurrent.failing(function named() {}, asyncFn));
 expectType<void>(test.concurrent.failing(class {}, asyncFn));
 expectType<void>(test.concurrent.failing(class Named {}, asyncFn));
+
 expectType<typeof test.concurrent.each>(test.concurrent.failing.each);
 
 expectError(test.concurrent.failing(testName, fn));
@@ -305,6 +306,7 @@ expectType<void>(test.failing(() => {}, fn));
 expectType<void>(test.failing(function named() {}, fn));
 expectType<void>(test.failing(class {}, fn));
 expectType<void>(test.failing(class Named {}, fn));
+
 expectType<typeof test.each>(test.failing.each);
 
 // test.only
@@ -334,8 +336,8 @@ expectType<void>(test.skip(class {}, fn));
 expectType<void>(test.skip(class Named {}, fn));
 
 expectType<typeof test.each>(test.skip.each);
-expectType<typeof test.each>(test.skip.failing.each);
 expectType<typeof test.failing>(test.skip.failing);
+expectType<typeof test.each>(test.skip.failing.each);
 
 // test.todo
 
