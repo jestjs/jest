@@ -65,6 +65,7 @@ describe('Testing the mocking of a class', () => {
 
   it('can write a value to an instance setter', () => {
     class TestClass {
+      // eslint-disable-next-line accessor-pairs
       set testMethod(_x: string) {
         return;
       }
@@ -82,6 +83,7 @@ describe('Testing the mocking of a class', () => {
 
   it('can write a value to a superclass instance setter', () => {
     class SuperTestClass {
+      // eslint-disable-next-line accessor-pairs
       set testMethod(_x: string) {
         return;
       }
@@ -129,6 +131,7 @@ describe('Testing the mocking of a class', () => {
 
   it('can write a value to a static setter', () => {
     class TestClass {
+      // eslint-disable-next-line accessor-pairs
       static set testMethod(_x: string) {
         return;
       }
@@ -145,6 +148,7 @@ describe('Testing the mocking of a class', () => {
 
   it('can write a value to a superclass static setter', () => {
     class SuperTestClass {
+      // eslint-disable-next-line accessor-pairs
       static set testMethod(_x: string) {
         return;
       }

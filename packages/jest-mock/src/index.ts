@@ -506,7 +506,26 @@ export class ModuleMocker {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          if (propDesc !== undefined || object.__esModule) {
+          //In test packages/jest-runtime/src/__tests__/runtime_require_mock.test.js -> it('multiple node core modules returns correct module')
+          //when the component.name == 'propertyIsEnumerable' (object.name at start of _getSlots())
+          //when retrieving metadata, the match for object !== ObjectProto fails.
+          //This causes an error where an ancestor prototype getter method,
+          //and introduction of mocking getters, results in a getter object
+          //being assigned to the prototype property __proto__,
+          //which then breaks when later building the mock.  Ignore getters for __proto__.
+          //Please note that the metadata structure for the objects in this test seems heavily polluted
+          //with unnecessary objects, as if the exclusion conditions for object types in _getSlots()
+          //is failing in multiple cases.
+
+          //it seems the OR condition "object.__esModule" was added to allow
+          //getters returning imported class definitions to be included whilst
+          //other accessor properties with getters were ignored.
+          //Can the "object.__esModule" condition now be removed?
+          if (
+            (propDesc !== undefined &&
+              !(propDesc.get && prop == '__proto__')) ||
+            object.__esModule
+          ) {
             slots.add(prop);
           }
         }
@@ -896,7 +915,10 @@ export class ModuleMocker {
       } else {
         slotMock = this._generateMock(slotMetadata, callbacks, refs);
 
-        //missing getter and setter refs will be resolved as their callbacks have been
+        //For superclass accessor properties the subclass metadata contains the definitions
+        //for the getter and setter methods, and the superclass refs to them.
+        //The mock implementations are not available until the callbacks have been executed.
+        //Missing getter and setter refs will be resolved as their callbacks have been
         //stacked before the setting of the accessor definition is stacked.
         if (
           slotMetadata.members?.get?.ref !== undefined ||
@@ -907,7 +929,16 @@ export class ModuleMocker {
               return () => Object.defineProperty(mock, slot, ref);
             })(slotMock),
           );
-        } else if (slotMetadata.members?.get || slotMetadata.members?.set) {
+          //} else if (slotMetadata.members?.get || slotMetadata.members?.set) {
+        } else if (
+          (slotMetadata.members?.get || slotMetadata.members?.set) &&
+          slotMetadata.members?.configurable &&
+          slotMetadata.members?.enumerable
+        ) {
+          //In the test examples/jquery/__tests__/fetch_current_user.test.js-> it('calls into $.ajax with the correct params')
+          //the Ajax metadata has a 'get' property, causing it to enter here and except.
+          //while trying to redefine the 'prototype' property.
+          //The accessor property metadata contains 'configurable' and 'enumberable' properties also
           Object.defineProperty(mock, slot, slotMock);
         } else {
           mock[slot] = slotMock;
@@ -1009,8 +1040,19 @@ export class ModuleMocker {
 
         let slotMetadata: MockFunctionMetadata<T> | null = null;
         if (descriptor?.get || descriptor?.set) {
+          //Specific case required for mocking class definitions imported via types.
+          //In this case the class definitions are stored in accessor properties.
+          //All getters were previously ignored except where the containing object had __esModule == true
+          //Now getters are mocked the class definitions must still be read.
+          //Example is packages/jest-core/src/__tests__/TestScheduler.test.js -> test('works with default value')
           // @ts-expect-error ignore type mismatch
-          slotMetadata = this.getMetadata<T>(descriptor, refs);
+          if (component.__esModule) {
+            // @ts-expect-error no index signature
+            slotMetadata = this.getMetadata<T>(component[slot], refs);
+          } else {
+            // @ts-expect-error ignore type mismatch
+            slotMetadata = this.getMetadata<T>(descriptor, refs);
+          }
         } else {
           // @ts-expect-error no index signature
           slotMetadata = this.getMetadata<T>(component[slot], refs);
@@ -1164,7 +1206,7 @@ export class ModuleMocker {
 
       descriptor[accessType] = mock;
       mock.mockImplementation(function (this: unknown) {
-        return originalAccessor.apply(this, []);
+        return originalAccessor.call(this);
       });
       Object.defineProperty(object, methodName, descriptor);
     } else if (accessType == 'set' && descriptor['set']) {
@@ -1181,7 +1223,7 @@ export class ModuleMocker {
 
       descriptor[accessType] = mock;
       mock.mockImplementation(function (this: unknown) {
-        return originalAccessor.apply(this, arguments[0]);
+        return originalAccessor.call(this, arguments[0]);
       });
       Object.defineProperty(object, methodName, descriptor);
     } else {
