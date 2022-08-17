@@ -154,6 +154,25 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 npm install --save-dev ts-jest
 ```
 
+##### Configuration
+
+To configure `ts-jest` for a new project, run:
+
+```bash
+npx ts-jest config:init
+```
+
+Or add `ts-jest` to your existing `jest.config.js` file:
+
+```js
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+};
+```
+
+
+
 #### Type definitions
 
 You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
