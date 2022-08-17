@@ -39,12 +39,12 @@ expectType<void>(
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
       expectType<boolean | undefined>(this.expand);
-      expectType<number | null | undefined>(this.expectedAssertionsNumber);
+      expectType<number | null>(this.expectedAssertionsNumber);
       expectType<Error | undefined>(this.expectedAssertionsNumberError);
-      expectType<boolean | undefined>(this.isExpectingAssertions);
+      expectType<boolean>(this.isExpectingAssertions);
       expectType<Error | undefined>(this.isExpectingAssertionsError);
-      expectType<boolean>(this.isNot);
-      expectType<string>(this.promise);
+      expectType<boolean | undefined>(this.isNot);
+      expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);

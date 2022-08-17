@@ -59,12 +59,12 @@ export interface MatcherState {
   currentTestName?: string;
   error?: Error;
   expand?: boolean;
-  expectedAssertionsNumber?: number | null;
+  expectedAssertionsNumber: number | null;
   expectedAssertionsNumberError?: Error;
-  isExpectingAssertions?: boolean;
+  isExpectingAssertions: boolean;
   isExpectingAssertionsError?: Error;
-  isNot: boolean;
-  promise: string;
+  isNot?: boolean;
+  promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;
 }
