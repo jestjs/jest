@@ -17,6 +17,13 @@ import runJest, {json as runWithJson} from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'to-match-inline-snapshot-with-jsx');
 
+const babelConfig = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+    '@babel/preset-react',
+  ],
+};
+
 beforeEach(() => {
   cleanup(DIR);
 
@@ -61,21 +68,7 @@ afterAll(() => {
 
 it('successfully runs the tests with external babel config', () => {
   writeFiles(DIR, {
-    'babel.config.js': `
-      module.exports = {
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: {
-                node: 'current',
-              },
-            },
-          ],
-          '@babel/preset-react',
-        ],
-      };
-    `,
+    'babel.config.js': `module.exports = ${JSON.stringify(babelConfig)};`,
   });
 
   const normalRun = runWithJson(DIR, []);
