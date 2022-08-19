@@ -387,7 +387,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
   fs.writeFileSync(filename, 'expect("`").toMatchInlineSnapshot();\n');
 
   const frame = {column: 13, file: filename, line: 1} as Frame;
-  saveInlineSnapshots([{frame, snapshot: '`'}], 'prettier');
+  saveInlineSnapshots([{frame, snapshot: '`'}], dir, 'prettier');
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'expect("`").toMatchInlineSnapshot(`\\``);\n',

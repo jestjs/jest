@@ -54,7 +54,11 @@ export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
+  return run(
+    exists ? 'yarn install --immutable' : 'yarn install --no-immutable',
+    cwd,
+    env,
+  );
 };
 
 export const linkJestPackage = (packageName: string, cwd: string) => {
@@ -168,7 +172,7 @@ export const sortLines = (output: string) =>
     .map(str => str.trim())
     .join('\n');
 
-interface JestPackageJson extends PackageJson {
+export interface JestPackageJson extends PackageJson {
   jest: Config.InitialOptions;
 }
 
@@ -180,7 +184,7 @@ const DEFAULT_PACKAGE_JSON: JestPackageJson = {
 
 export const createEmptyPackage = (
   directory: string,
-  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
+  packageJson: JestPackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
   const packageJsonWithDefaults = {
     ...packageJson,
