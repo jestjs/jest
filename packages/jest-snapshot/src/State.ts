@@ -27,6 +27,7 @@ export type SnapshotStateOptions = {
   prettierPath?: string | null;
   expand?: boolean;
   snapshotFormat: PrettyFormatOptions;
+  rootDir: string;
 };
 
 export type SnapshotMatchOptions = {
@@ -64,6 +65,7 @@ export default class SnapshotState {
   private _uncheckedKeys: Set<string>;
   private _prettierPath: string | null;
   private _snapshotFormat: PrettyFormatOptions;
+  private _rootDir: string;
 
   added: number;
   expand: boolean;
@@ -92,6 +94,7 @@ export default class SnapshotState {
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
     this._snapshotFormat = options.snapshotFormat;
+    this._rootDir = options.rootDir;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -154,7 +157,11 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshots, this._prettierPath);
+        saveInlineSnapshots(
+          this._inlineSnapshots,
+          this._rootDir,
+          this._prettierPath,
+        );
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
