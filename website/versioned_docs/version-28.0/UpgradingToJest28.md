@@ -140,6 +140,16 @@ The constructor of [test environment](Configuration.md#testenvironment-string) c
 +     const config = projectConfig;
 ```
 
+In addition, test environments are now exported with the name `TestEnvironment`, instead of simply exporting the class directly:
+
+```diff
+- const TestEnvironment = require('jest-environment-node');
++ const {TestEnvironment} = require('jest-environment-node');
+
+- const TestEnvironment = require('jest-environment-jsdom');
++ const {TestEnvironment} = require('jest-environment-jsdom');
+```
+
 ### `jsdom`
 
 If you are using JSDOM [test environment](Configuration.md#testenvironment-string), `jest-environment-jsdom` package now must be installed separately:
@@ -171,13 +181,17 @@ npm install --save-dev jest-jasmine2
 
 ## `package.json` `exports`
 
-Jest now includes full support for [package `exports`](https://nodejs.org/api/packages.html#exports), which might mean that files you import are not resolved correctly. Additionally, Jest now supplies more conditions. `jest-environment-node` has `node` and `node-addons`, while `jest-environment-jsdom` has `browser`. As a result, you might e.g. get browser code which assumes ESM, when Jest provides `['require', 'browser']`. You can either report a bug to the library (or Jest, the implementation is new and might have bugs!) or override the conditions Jest passes.
+Jest now includes full support for [package `exports`](https://nodejs.org/api/packages.html#exports), which might mean that files you import are not resolved correctly.
+
+Additionally, Jest now supplies more conditions. `jest-environment-node` has `node` and `node-addons`, while `jest-environment-jsdom` has `browser`. As a result, you might e.g. get browser code which assumes ESM, when Jest provides `['require', 'browser']`. You can either report a bug to the library (or Jest, the implementation is new and might have bugs!), override the conditions Jest passes (via a custom test environment and overriding `exportConditions()`), using a custom resolver or `moduleMapper`. Lots of options, and you'll need to pick the correct one for your project.
+
+Known examples of packages that fails in Jest 28 are [`uuid`](https://npmjs.com/package/uuid) and [`nanoid`](https://npmjs.com/package/nanoid) when using the `jest-environment-jsdom` environment. For an analysis, and a potential workaround, see [this comment](https://github.com/microsoft/accessibility-insights-web/pull/5421#issuecomment-1109168149).
 
 ## TypeScript
 
 :::info
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
+The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
 
 ```ts
 import {jest} from '@jest/globals';

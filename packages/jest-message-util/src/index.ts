@@ -46,7 +46,7 @@ const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
 const JASMINE_IGNORE =
-  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+  /^\s+at(?:(?:.jasmine-)|\s+jasmine\.buildExpectationResult)/;
 const JEST_INTERNALS_IGNORE =
   /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
@@ -59,7 +59,7 @@ const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
-const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
+const STACK_PATH_REGEXP = /\s*at.*\(?(:\d*:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
@@ -234,11 +234,11 @@ const removeInternalStackEntries = (
   });
 };
 
-const formatPaths = (
-  config: StackTraceConfig,
-  relativeTestPath: string | null,
+export const formatPath = (
   line: string,
-) => {
+  config: StackTraceConfig,
+  relativeTestPath: string | null = null,
+): string => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -317,7 +317,7 @@ export const formatStackTrace = (
     .filter(Boolean)
     .map(
       line =>
-        STACK_INDENT + formatPaths(config, relativeTestPath, trimPaths(line)),
+        STACK_INDENT + formatPath(trimPaths(line), config, relativeTestPath),
     )
     .join('\n');
 

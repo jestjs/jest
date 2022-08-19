@@ -34,7 +34,7 @@ describe('toContain', () => {
       fc.property(
         fc.array(fc.anything(anythingSettings)),
         fc.array(fc.anything(anythingSettings)),
-        fc.dedup(fc.anything(anythingSettings), 2),
+        fc.clone(fc.anything(anythingSettings), 2),
         (startValues, endValues, [a, b]) => {
           // Given: startValues, endValues arrays
           //        and [a, b] equal, but not the same values

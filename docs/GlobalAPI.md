@@ -9,7 +9,7 @@ In your test files, Jest puts each of these methods and objects into the global 
 
 import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(2)} />
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -731,6 +731,86 @@ test.each`
 });
 ```
 
+### `test.failing(name, fn, timeout)`
+
+Also under the alias: `it.failing(name, fn, timeout)`
+
+:::note
+
+This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
+Use `test.failing` when you are writing a test and expecting it to fail. These tests will behave the other way normal tests do. If `failing` test will throw any errors then it will pass. If it does not throw it will fail.
+
+:::tip
+
+You can use this type of tests i.e. when writing code in a BDD way. In that case the tests will not show up as failing until they pass. Then you can just remove the `failing` modifier to make them pass.
+
+It can also be a nice way to contribute failing tests to a project, even if you don't know how to fix the bug.
+
+:::
+
+Example:
+
+```js
+test.failing('it is not equal', () => {
+  expect(5).toBe(6); // this test will pass
+});
+
+test.failing('it is equal', () => {
+  expect(10).toBe(10); // this test will fail
+});
+```
+
+### `test.failing.each(name, fn, timeout)`
+
+Also under the alias: `it.failing.each(table)(name, fn)` and `` it.failing.each`table`(name, fn) ``
+
+:::note
+
+This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
+You can also run multiple tests at once by adding `each` after `failing`.
+
+Example:
+
+```js
+test.failing.each([
+  {a: 1, b: 1, expected: 2},
+  {a: 1, b: 2, expected: 3},
+  {a: 2, b: 1, expected: 3},
+])('.add($a, $b)', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+```
+
+### `test.only.failing(name, fn, timeout)`
+
+Also under the aliases: `it.only.failing(name, fn, timeout)`, `fit.failing(name, fn, timeout)`
+
+:::note
+
+This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
+Use `test.only.failing` if you want to only run a specific failing test.
+
+### `test.skip.failing(name, fn, timeout)`
+
+Also under the aliases: `it.skip.failing(name, fn, timeout)`, `xit.failing(name, fn, timeout)`, `xtest.failing(name, fn, timeout)`
+
+:::note
+
+This is only available with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner.
+
+:::
+
+Use `test.skip.failing` if you want to skip running a specific failing test.
+
 ### `test.only(name, fn, timeout)`
 
 Also under the aliases: `it.only(name, fn, timeout)`, and `fit(name, fn, timeout)`
@@ -877,4 +957,109 @@ Example:
 const add = (a, b) => a + b;
 
 test.todo('add should be associative');
+```
+
+## TypeScript Usage
+
+:::info
+
+These TypeScript usage tips and caveats are only applicable if you import from `'@jest/globals'`:
+
+```ts
+import {describe, test} from '@jest/globals';
+```
+
+:::
+
+### `.each`
+
+The `.each` modifier offers few different ways to define a table of the test cases. Some of the APIs have caveats related with the type inference of the arguments which are passed to `describe` or `test` callback functions. Let's take a look at each of them.
+
+:::note
+
+For simplicity `test.each` is picked for the examples, but the type inference is identical in all cases where `.each` modifier can be used: `describe.each`, `test.concurrent.only.each`, `test.skip.each`, etc.
+
+:::
+
+#### Array of objects
+
+The array of objects API is most verbose, but it makes the type inference a painless task. A `table` can be inlined:
+
+```ts
+test.each([
+  {name: 'a', path: 'path/to/a', count: 1, write: true},
+  {name: 'b', path: 'path/to/b', count: 3},
+])('inline table', ({name, path, count, write}) => {
+  // arguments are typed as expected, e.g. `write: boolean | undefined`
+});
+```
+
+Or declared separately as a variable:
+
+```ts
+const table = [
+  {a: 1, b: 2, expected: 'three', extra: true},
+  {a: 3, b: 4, expected: 'seven', extra: false},
+  {a: 5, b: 6, expected: 'eleven'},
+];
+
+test.each(table)('table as a variable', ({a, b, expected, extra}) => {
+  // again everything is typed as expected, e.g. `extra: boolean | undefined`
+});
+```
+
+#### Array of arrays
+
+The array of arrays style will work smoothly with inlined tables:
+
+```ts
+test.each([
+  [1, 2, 'three', true],
+  [3, 4, 'seven', false],
+  [5, 6, 'eleven'],
+])('inline table example', (a, b, expected, extra) => {
+  // arguments are typed as expected, e.g. `extra: boolean | undefined`
+});
+```
+
+However, if a table is declared as a separate variable, it must be typed as an array of tuples for correct type inference (this is not needed only if all elements of a row are of the same type):
+
+```ts
+const table: Array<[number, number, string, boolean?]> = [
+  [1, 2, 'three', true],
+  [3, 4, 'seven', false],
+  [5, 6, 'eleven'],
+];
+
+test.each(table)('table as a variable example', (a, b, expected, extra) => {
+  // without the annotation types are incorrect, e.g. `a: number | string | boolean`
+});
+```
+
+#### Template literal
+
+If all values are of the same type, the template literal API will type the arguments correctly:
+
+```ts
+test.each`
+  a    | b    | expected
+  ${1} | ${2} | ${3}
+  ${3} | ${4} | ${7}
+  ${5} | ${6} | ${11}
+`('template literal example', ({a, b, expected}) => {
+  // all arguments are of type `number`
+});
+```
+
+Otherwise it will require a generic type argument:
+
+```ts
+test.each<{a: number; b: number; expected: string; extra?: boolean}>`
+  a    | b    | expected    | extra
+  ${1} | ${2} | ${'three'}  | ${true}
+  ${3} | ${4} | ${'seven'}  | ${false}
+  ${5} | ${6} | ${'eleven'}
+`('template literal example', ({a, b, expected, extra}) => {
+  // without the generic argument in this case types would default to `unknown`
+});
 ```

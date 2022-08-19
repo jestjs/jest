@@ -9,7 +9,9 @@ import * as path from 'path';
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
 import {makeProjectConfig} from '@jest/test-utils';
-import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
+import printDisplayName from '../printDisplayName';
+import trimAndFormatPath from '../trimAndFormatPath';
+import wrapAnsiString from '../wrapAnsiString';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {

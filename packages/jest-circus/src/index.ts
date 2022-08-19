@@ -139,6 +139,19 @@ const test: Global.It = (() => {
     timeout?: number,
   ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
+  const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
+    type FailingReturn = typeof concurrent extends true
+      ? Global.ConcurrentTestFn
+      : Global.TestFn;
+    const failing: Global.Failing<FailingReturn> = (
+      testName: Circus.TestNameLike,
+      fn?: Circus.TestFn,
+      timeout?: number,
+    ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
+    failing.each = bindEach(failing, false);
+    return failing;
+  };
+
   test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
       throw new ErrorWithStack(
@@ -146,6 +159,7 @@ const test: Global.It = (() => {
         test.todo,
       );
     }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 
@@ -160,6 +174,7 @@ const test: Global.It = (() => {
       timeout?: number,
     ) => void,
     timeout?: number,
+    failing?: boolean,
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
 
@@ -185,6 +200,7 @@ const test: Global.It = (() => {
     return dispatchSync({
       asyncError,
       concurrent,
+      failing: failing === undefined ? false : failing,
       fn,
       mode,
       name: 'add_test',
@@ -196,14 +212,21 @@ const test: Global.It = (() => {
   test.each = bindEach(test);
   only.each = bindEach(only);
   skip.each = bindEach(skip);
+
   concurrentTest.each = bindEach(concurrentTest, false);
   concurrentOnly.each = bindEach(concurrentOnly, false);
 
+  only.failing = bindFailing(false, 'only');
+  skip.failing = bindFailing(false, 'skip');
+
+  test.failing = bindFailing(false);
   test.only = only;
   test.skip = skip;
   test.concurrent = concurrentTest;
   concurrentTest.only = concurrentOnly;
   concurrentTest.skip = skip;
+  concurrentTest.failing = bindFailing(true);
+  concurrentOnly.failing = bindFailing(true, 'only');
 
   return test;
 })();

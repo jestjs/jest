@@ -6,6 +6,7 @@
  *
  */
 
+import crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
@@ -64,6 +65,22 @@ describe('collectHandles', () => {
 
     expect(openHandles).not.toContainEqual(
       expect.objectContaining({message: 'ZLIB'}),
+    );
+  });
+
+  it('should not collect the SIGNREQUEST open handle', async () => {
+    const handleCollector = collectHandles();
+
+    const key =
+      '-----BEGIN PRIVATE KEY-----\r\nMC4CAQAwBQYDK2VwBCIEIHKj+sVa9WcD' +
+      '/q2DJUJaf43Kptc8xYuUQA4bOFj9vC8T\r\n-----END PRIVATE KEY-----';
+    const data = Buffer.from('a');
+    crypto.sign(null, data, key);
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'SIGNREQUEST'}),
     );
   });
 

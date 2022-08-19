@@ -148,7 +148,6 @@ export default class CoverageReporter extends BaseReporter {
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
-        // @ts-expect-error: option does not exist on the node 12 types
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,

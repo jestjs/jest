@@ -158,6 +158,14 @@ Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
+Jest ships with two coverage providers: `babel` (default) and `v8`. See the [`coverageProvider`](#coverageprovider-string) option for more details.
+
+:::info
+
+The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/* c8 ignore next */` comments to exclude lines from coverage reports, respectively. For more information, you can view the [`istanbuljs` documentation](https://github.com/istanbuljs/nyc#parsing-hints-ignoring-lines) and the [`c8` documentation](https://github.com/bcoe/c8#ignoring-uncovered-lines-functions-and-blocks).
+
+:::
+
 ### `collectCoverageFrom` \[array]
 
 Default: `undefined`
@@ -649,7 +657,7 @@ test('some test', () => {
 
 :::note
 
-This option is only supported using the default `jest-circus`. test runner.
+This option is only supported using the default `jest-circus` test runner.
 
 :::
 
@@ -734,9 +742,19 @@ An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an 
 
 Default: `false`
 
-Activates notifications for test results.
+Activates native OS notifications for test results. To display the notifications Jest needs [`node-notifier`](https://github.com/mikaelbr/node-notifier) package, which must be installed additionally:
 
-**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
+```bash npm2yarn
+npm install --save-dev node-notifier
+```
+
+:::tip
+
+On macOS, remember to allow notifications from `terminal-notifier` under System Preferences > Notifications & Focus.
+
+On Windows, `node-notifier` creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs.
+
+:::
 
 ### `notifyMode` \[string]
 
@@ -761,19 +779,27 @@ A preset that is used as a base for Jest's configuration. A preset should point 
 
 For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
 
-```json
-{
-  "preset": "foo-bar"
-}
+```js
+/** @type { import('@jest/types').Config.InitialOptions } */
+module.exports = {
+  preset: 'foo-bar',
+};
 ```
 
 Presets may also be relative to filesystem paths.
 
-```json
-{
-  "preset": "./node_modules/foo-bar/jest-preset.js"
-}
+```js
+/** @type { import('@jest/types').Config.InitialOptions } */
+module.exports = {
+  preset: './node_modules/foo-bar/jest-preset.js',
+};
 ```
+
+:::info
+
+Note that if you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+
+:::
 
 ### `prettierPath` \[string]
 
@@ -974,7 +1000,7 @@ By combining `defaultResolver` and `packageFilter` we can implement a `package.j
 ```js
 module.exports = (path, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
-  return options.defaultResolver(request, {
+  return options.defaultResolver(path, {
     ...options,
     // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
     packageFilter: pkg => {
@@ -1002,7 +1028,11 @@ The root directory that Jest should scan for tests and modules within. If you pu
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-_Note that using `'<rootDir>'` as a string token in any other path-based config settings will refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`._
+:::tip
+
+Using `'<rootDir>'` as a string token in any other path-based configuration settings will refer back to this value. For example, if you want a [`setupFiles`](#setupfiles-array) entry to point at the `some-setup.js` file at the root of the project, set its value to: `'<rootDir>/some-setup.js'`.
+
+:::
 
 ### `roots` \[array&lt;string&gt;]
 
@@ -1099,36 +1129,21 @@ Default: `[]`
 
 A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment but before the test code itself.
 
-If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
+In other words, `setupFilesAfterEnv` modules are meant for code which is repeating in each test file. Having the test framework installed makes Jest [globals](GlobalAPI.md), [`jest` object](JestObjectAPI.md) and [`expect`](ExpectAPI.md) accessible in the modules. For example, you can add extra matchers from [`jest-extended`](https://github.com/jest-community/jest-extended) library or call [setup and teardown](SetupAndTeardown.md) hooks:
 
-For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
+```js title="setup-jest.js"
+const matchers = require('jest-extended');
+expect.extend(matchers);
 
-Example `setupFilesAfterEnv` array in a jest.config.js:
+afterEach(() => {
+  jest.useRealTimers();
+});
+```
 
 ```js
 module.exports = {
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
 };
-```
-
-Example `jest.setup.js` file
-
-```js
-jest.setTimeout(10000); // in milliseconds
-
-// you can even use the setup/teardown methods
-beforeAll(() => {
-  // your code
-});
-beforeEach(() => {
-  // your code
-});
-afterEach(() => {
-  // your code
-});
-afterAll(() => {
-  // your code
-});
 ```
 
 ### `slowTestThreshold` \[number]
@@ -1538,9 +1553,9 @@ class CustomSequencer extends Sequencer {
    * Sharding is applied before sorting
    */
   shard(tests, {shardIndex, shardCount}) {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardSize = Math.ceil(tests.length / shardCount);
+    const shardStart = shardSize * (shardIndex - 1);
+    const shardEnd = shardSize * shardIndex;
 
     return [...tests]
       .sort((a, b) => (a.path > b.path ? 1 : -1))

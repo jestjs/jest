@@ -93,15 +93,6 @@ export type AsyncResolver = (
 
 export type Resolver = SyncResolver | AsyncResolver;
 
-// https://github.com/facebook/jest/pull/10617
-declare global {
-  namespace NodeJS {
-    export interface ProcessVersions {
-      pnp?: any;
-    }
-  }
-}
-
 const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec

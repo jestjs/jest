@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,
@@ -199,12 +198,10 @@ test('properly handle rejections', () => {
   expect(stderr).toContain('reason: undefined');
 });
 
-onNodeVersions('>=12.17.0', () => {
-  test('globalSetup works with ESM modules', () => {
-    const {exitCode} = runJest('global-setup-esm', ['--no-cache'], {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-    });
-
-    expect(exitCode).toBe(0);
+test('globalSetup works with ESM modules', () => {
+  const {exitCode} = runJest('global-setup-esm', ['--no-cache'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
   });
+
+  expect(exitCode).toBe(0);
 });

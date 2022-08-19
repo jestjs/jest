@@ -6,6 +6,7 @@
  */
 
 import {createHash} from 'crypto';
+import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
@@ -36,6 +37,7 @@ import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
+import stringToBytes from './stringToBytes';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -375,14 +377,19 @@ const normalizeRootDir = (
   };
 };
 
-const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
-  const reporters = options.reporters;
+const normalizeReporters = ({
+  reporters,
+  rootDir,
+}: Config.InitialOptionsWithRootDir):
+  | Array<Config.ReporterConfig>
+  | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
-    return options;
+    return undefined;
   }
 
   validateReporters(reporters);
-  options.reporters = reporters.map(reporterConfig => {
+
+  return reporters.map(reporterConfig => {
     const normalizedReporterConfig: Config.ReporterConfig =
       typeof reporterConfig === 'string'
         ? // if reporter config is a string, we wrap it in an array
@@ -392,13 +399,13 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
         : reporterConfig;
 
     const reporterPath = replaceRootDirInPath(
-      options.rootDir,
+      rootDir,
       normalizedReporterConfig[0],
     );
 
     if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
-        basedir: options.rootDir,
+        basedir: rootDir,
       });
       if (!reporter) {
         throw new Resolver.ModuleNotFoundError(
@@ -410,8 +417,6 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
     }
     return normalizedReporterConfig;
   });
-
-  return options;
 };
 
 const buildTestPathPattern = (argv: Config.Argv): string => {
@@ -536,12 +541,10 @@ export default async function normalize(
     ],
   });
 
-  let options = normalizeReporters(
-    normalizeMissingOptions(
-      normalizeRootDir(setFromArgv(initialOptions, argv)),
-      configPath,
-      projectIndex,
-    ),
+  let options = normalizeMissingOptions(
+    normalizeRootDir(setFromArgv(initialOptions, argv)),
+    configPath,
+    projectIndex,
   );
 
   if (options.preset) {
@@ -749,6 +752,9 @@ export default async function normalize(
             ];
           });
         break;
+      case 'reporters':
+        value = normalizeReporters(oldOptions);
+        break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
@@ -905,6 +911,11 @@ export default async function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'snapshotFormat': {
+        value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'automock':
       case 'cache':
       case 'changedSince':
@@ -938,7 +949,6 @@ export default async function normalize(
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
-      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'restoreMocks':
@@ -949,7 +959,6 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
-      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -961,6 +970,9 @@ export default async function normalize(
       case 'watchAll':
       case 'watchman':
         value = oldOptions[key];
+        break;
+      case 'workerIdleMemoryLimit':
+        value = stringToBytes(oldOptions[key], totalmem());
         break;
       case 'watchPlugins':
         value = (oldOptions[key] || []).map(watchPlugin => {

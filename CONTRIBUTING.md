@@ -1,6 +1,6 @@
 # How to Contribute
 
-Jest is one of Facebook's open source projects that is both under very active development and is also being used to ship code to everybody on [facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully this document makes the process for contributing clear and answers some questions that you may have.
+Jest is one of Facebook's open-source projects that is both under very active development and is also being used to ship code to everybody on [Facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully, this document makes the process for contributing clear and answers some questions that you may have.
 
 If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
 
@@ -18,7 +18,7 @@ We will do our best to keep `main` in good shape, with tests passing at all time
 
 ### Workflow and Pull Requests
 
-The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delay. We'll do our best to provide updates and feedback throughout the process.
+The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delays. We'll do our best to provide updates and feedback throughout the process.
 
 _Before_ submitting a pull request, please make sure the following is done…
 
@@ -44,7 +44,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 29th 2021, `v16.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of October 29th, 2021, `v16.x` is recommended).
 
     ```sh
     node -v
@@ -62,7 +62,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
-    On Windows `yarn install` may fail with `gyp ERR! build error`. One of possible solutions:
+    On Windows `yarn install` may fail with `gyp ERR! build error`. One of the possible solutions:
 
     ```sh
      yarn global add windows-build-tools
@@ -100,7 +100,7 @@ For significant changes to the documentation or website and things like cleanup,
 
 You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
 
-Make sure to alphabetically order your entry based on package name. If you have changed multiple packages, separate them with a comma.
+Make sure to alphabetically order your entry based on the package name. If you have changed multiple packages, separate them with a comma.
 
 #### Testing
 
@@ -221,7 +221,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 ## Code Conventions
 
 - 2 spaces for indentation (no tabs).
-- 80 character line length strongly preferred.
+- 80 character line length is strongly preferred.
 - Prefer `'` over `"`.
 - ES6 syntax when possible.
 - Use [TypeScript](https://www.typescriptlang.org/).

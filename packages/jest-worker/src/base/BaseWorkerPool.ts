@@ -19,6 +19,7 @@ import {
 const FORCE_EXIT_DELAY = 500;
 
 /* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
@@ -39,6 +40,7 @@ export default class BaseWorkerPool {
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
         forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
         maxRetries,
         resourceLimits,
         setupArgs,

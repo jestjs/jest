@@ -63,7 +63,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  // @ts-expect-error
+  // @ts-expect-error: jasmine doesn't exist on globalThis
   globalThis.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
@@ -83,7 +83,7 @@ const patchJasmine = () => {
     }
 
     return Spec;
-    // @ts-expect-error
+    // @ts-expect-error: jasmine doesn't exist on globalThis
   })(globalThis.jasmine.Spec);
 };
 

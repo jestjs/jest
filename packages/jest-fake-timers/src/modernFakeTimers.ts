@@ -80,7 +80,7 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error
+      // @ts-expect-error - doesn't exist?
       this._clock.runMicrotasks();
     }
   }

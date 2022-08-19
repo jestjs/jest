@@ -77,16 +77,14 @@ export default async function readConfigFileAndSetRootDir(
   return configObject;
 }
 
-let registerer: Service;
-
 // Load the TypeScript configuration
 const loadTSConfigFile = async (
   configPath: string,
 ): Promise<Config.InitialOptions> => {
-  // Register TypeScript compiler instance
-  await registerTsNode();
+  // Get registered TypeScript compiler instance
+  const registeredCompiler = await getRegisteredCompiler();
 
-  registerer.enabled(true);
+  registeredCompiler.enabled(true);
 
   let configObject = interopRequireDefault(require(configPath)).default;
 
@@ -95,19 +93,24 @@ const loadTSConfigFile = async (
     configObject = await configObject();
   }
 
-  registerer.enabled(false);
+  registeredCompiler.enabled(false);
 
   return configObject;
 };
 
-async function registerTsNode(): Promise<Service> {
-  if (registerer) {
-    return registerer;
-  }
+let registeredCompilerPromise: Promise<Service>;
 
+function getRegisteredCompiler() {
+  // Cache the promise to avoid multiple registrations
+  registeredCompilerPromise = registeredCompilerPromise ?? registerTsNode();
+  return registeredCompilerPromise;
+}
+
+async function registerTsNode(): Promise<Service> {
   try {
+    // Register TypeScript compiler instance
     const tsNode = await import('ts-node');
-    registerer = tsNode.register({
+    return tsNode.register({
       compilerOptions: {
         module: 'CommonJS',
       },
@@ -115,7 +118,6 @@ async function registerTsNode(): Promise<Service> {
         '**': 'cjs',
       },
     });
-    return registerer;
   } catch (e: any) {
     if (e.code === 'ERR_MODULE_NOT_FOUND') {
       throw new Error(

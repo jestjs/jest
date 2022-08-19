@@ -55,7 +55,7 @@ type SaveStatus = {
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
-  // @ts-expect-error
+  // @ts-expect-error - seemingly unused?
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;

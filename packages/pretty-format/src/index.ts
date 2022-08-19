@@ -15,7 +15,6 @@ import {
   printObjectProperties,
 } from './collections';
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
-import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';
 import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
@@ -536,7 +535,6 @@ export function format(val: unknown, options?: OptionsReceived): string {
 
 export const plugins = {
   AsymmetricMatcher,
-  ConvertAnsi,
   DOMCollection,
   DOMElement,
   Immutable,
