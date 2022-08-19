@@ -24,7 +24,7 @@ import {
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath: string;
+  prettierPath?: string | null;
   expand?: boolean;
   snapshotFormat: PrettyFormatOptions;
   rootDir: string;
@@ -63,7 +63,7 @@ export default class SnapshotState {
   private _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _prettierPath: string;
+  private _prettierPath: string | null;
   private _snapshotFormat: PrettyFormatOptions;
   private _rootDir: string;
 
@@ -82,7 +82,7 @@ export default class SnapshotState {
     this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
-    this._prettierPath = options.prettierPath;
+    this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
