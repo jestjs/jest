@@ -6,24 +6,6 @@
     "react-test-renderer": "^17.0.2"
   },
   "jest": {
-    "testEnvironment": "jsdom",
-    "transform": {
-      "^.+\\.(js|jsx)$": [
-        "babel-jest",
-        {
-          "presets": [
-            [
-              "@babel/preset-env",
-              {
-                "targets": {
-                  "node": "current"
-                }
-              }
-            ],
-            "@babel/preset-react"
-          ]
-        }
-      ]
-    }
+    "testEnvironment": "jsdom"
   }
 }

@@ -7,11 +7,10 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import slash = require('slash');
 import {runYarnInstall} from '../Utils';
-import {json as runWithJson} from '../runJest';
+import runJest, {json as runWithJson} from '../runJest';
 
-const DIR = path.resolve(__dirname, '..', 'to-match-inline-snapshot-with-jsx');
+const DIR = path.resolve(__dirname, '../to-match-inline-snapshot-with-jsx');
 
 function cleanup() {
   fs.copyFileSync(
@@ -30,33 +29,9 @@ afterAll(() => {
 });
 
 it('successfully runs the tests inside `to-match-inline-snapshot-with-jsx/`', () => {
-  const updateSnapshotRun = runWithJson(DIR, ['--updateSnapshot']);
-  expect(
-    updateSnapshotRun.json.testResults[0].message.replace(
-      new RegExp(`${process.cwd()}[^:]*`),
-      match => slash(match.replace(process.cwd(), '<rootDir>')),
-    ),
-  ).toMatchInlineSnapshot(`
-    "  ● Test suite failed to run
-
-        SyntaxError: <rootDir>/e2e/to-match-inline-snapshot-with-jsx/__tests__/MismatchingSnapshot.test.js: Support for the experimental syntax 'jsx' isn't currently enabled (12:26):
-
-          10 |
-          11 | test('<div>x</div>', () => {
-        > 12 |   expect(renderer.create(<div>x</div>).toJSON()).toMatchInlineSnapshot(\`
-             |                          ^
-          13 |     <div>
-          14 |       y
-          15 |     </div>
-
-        Add @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.
-        If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.
-
-          at instantiate (../../node_modules/@babel/parser/src/parse-error/credentials.ts:62:21)
-    "
-  `);
-
   const normalRun = runWithJson(DIR, []);
+  expect(normalRun.exitCode).toBe(1);
+  expect(normalRun.stderr).toContain('1 snapshot failed from 1 test suite.');
   expect(normalRun.json.testResults[0].message).toMatchInlineSnapshot(`
     "  ● <div>x</div>
 
@@ -83,4 +58,9 @@ it('successfully runs the tests inside `to-match-inline-snapshot-with-jsx/`', ()
           at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:12:50)
     "
   `);
+
+  const updateSnapshotRun = runJest(DIR, ['--updateSnapshot']);
+
+  expect(updateSnapshotRun.exitCode).toBe(0);
+  expect(updateSnapshotRun.stderr).toContain('1 snapshot updated.');
 });
