@@ -180,7 +180,7 @@ const DEFAULT_PACKAGE_JSON: JestPackageJson = {
 
 export const createEmptyPackage = (
   directory: string,
-  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
+  packageJson: JestPackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
   const packageJsonWithDefaults = {
     ...packageJson,
