@@ -109,3 +109,52 @@ it('successfully runs the tests with external babel config', () => {
   expect(updateSnapshotRun.exitCode).toBe(0);
   expect(updateSnapshotRun.stderr).toContain('1 snapshot updated.');
 });
+
+it('successfully runs the tests with inline babel config', () => {
+  writeFiles(DIR, {
+    'package.json': JSON.stringify({
+      ...pkg,
+      jest: {
+        testEnvironment: 'jsdom',
+        transform: {
+          '^.+\\.(js|jsx)$': ['babel-jest', babelConfig],
+        },
+      },
+    }),
+  });
+
+  const normalRun = runWithJson(DIR, []);
+  expect(normalRun.exitCode).toBe(1);
+  expect(normalRun.stderr).toContain('1 snapshot failed from 1 test suite.');
+  expect(normalRun.json.testResults[0].message).toMatchInlineSnapshot(`
+    "  ● <div>x</div>
+
+        expect(received).toMatchInlineSnapshot(snapshot)
+
+        Snapshot name: \`<div>x</div> 1\`
+
+        - Snapshot  - 1
+        + Received  + 1
+
+          <div>
+        -   y
+        +   x
+          </div>
+
+          3 |
+          4 | test('<div>x</div>', () => {
+        > 5 |   expect(renderer.create(<div>x</div>).toJSON()).toMatchInlineSnapshot(\`
+            |                                                  ^
+          6 |     <div>
+          7 |       y
+          8 |     </div>
+
+          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:50)
+    "
+  `);
+
+  const updateSnapshotRun = runJest(DIR, ['--updateSnapshot']);
+
+  expect(updateSnapshotRun.exitCode).toBe(0);
+  expect(updateSnapshotRun.stderr).toContain('1 snapshot updated.');
+});
