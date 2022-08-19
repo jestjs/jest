@@ -46,7 +46,7 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: string,
+  prettierPath: string | null,
 ): void {
   let prettier: Prettier | null = null;
   if (prettierPath) {

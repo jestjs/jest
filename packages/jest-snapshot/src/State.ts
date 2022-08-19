@@ -24,7 +24,7 @@ import {
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath: string;
+  prettierPath: string | null;
   expand?: boolean;
   snapshotFormat: PrettyFormatOptions;
 };
@@ -62,7 +62,7 @@ export default class SnapshotState {
   private _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _prettierPath: string;
+  private _prettierPath: string | null;
   private _snapshotFormat: PrettyFormatOptions;
 
   added: number;
