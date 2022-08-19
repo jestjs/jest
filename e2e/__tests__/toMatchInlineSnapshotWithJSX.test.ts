@@ -11,7 +11,7 @@ import {
   JestPackageJson,
   cleanup,
   createEmptyPackage,
-  runYarnInstall,
+  run,
   writeFiles,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -59,7 +59,7 @@ beforeEach(() => {
       });`,
   });
 
-  runYarnInstall(DIR, {
+  run('yarn', DIR, {
     YARN_ENABLE_GLOBAL_CACHE: 'true',
     YARN_NODE_LINKER: 'node-modules',
   });
