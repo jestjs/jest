@@ -168,7 +168,7 @@ export const sortLines = (output: string) =>
     .map(str => str.trim())
     .join('\n');
 
-interface JestPackageJson extends PackageJson {
+export interface JestPackageJson extends PackageJson {
   jest: Config.InitialOptions;
 }
 

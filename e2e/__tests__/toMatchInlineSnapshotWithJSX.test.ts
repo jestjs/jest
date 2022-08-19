@@ -8,6 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {
+  JestPackageJson,
   cleanup,
   createEmptyPackage,
   runYarnInstall,
@@ -24,23 +25,25 @@ const babelConfig = {
   ],
 };
 
+const pkg: JestPackageJson = {
+  dependencies: {
+    react: '^17.0.0',
+  },
+  devDependencies: {
+    '@babel/core': '^7.14.4',
+    '@babel/preset-env': '^7.14.4',
+    '@babel/preset-react': '^7.13.13',
+    'react-test-renderer': '^17.0.2',
+  },
+  jest: {
+    testEnvironment: 'jsdom',
+  },
+};
+
 beforeEach(() => {
   cleanup(DIR);
 
-  createEmptyPackage(DIR, {
-    dependencies: {
-      react: '^17.0.0',
-    },
-    devDependencies: {
-      '@babel/core': '^7.14.4',
-      '@babel/preset-env': '^7.14.4',
-      '@babel/preset-react': '^7.13.13',
-      'react-test-renderer': '^17.0.2',
-    },
-    jest: {
-      testEnvironment: 'jsdom',
-    },
-  });
+  createEmptyPackage(DIR, pkg);
 
   writeFiles(DIR, {
     '__tests__/MismatchingSnapshot.test.js': `
