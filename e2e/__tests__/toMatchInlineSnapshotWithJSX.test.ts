@@ -61,7 +61,6 @@ beforeEach(() => {
 
   runYarnInstall(DIR, {
     YARN_ENABLE_GLOBAL_CACHE: 'true',
-    YARN_ENABLE_IMMUTABLE_INSTALLS: 'false',
     YARN_NODE_LINKER: 'node-modules',
   });
 });
