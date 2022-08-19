@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
@@ -32,8 +33,8 @@ it('successfully runs the tests inside `to-match-inline-snapshot-with-jsx/`', ()
   const updateSnapshotRun = runWithJson(DIR, ['--updateSnapshot']);
   expect(
     updateSnapshotRun.json.testResults[0].message.replace(
-      process.cwd(),
-      '<rootDir>',
+      new RegExp(`${process.cwd()}[^:]*`),
+      match => slash(match.replace(process.cwd(), '<rootDir>')),
     ),
   ).toMatchInlineSnapshot(`
     "  ● Test suite failed to run
