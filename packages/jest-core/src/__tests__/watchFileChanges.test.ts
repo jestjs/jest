@@ -9,7 +9,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import rimraf = require('rimraf');
 import type {AggregatedResult} from '@jest/test-result';
 import {normalize} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
@@ -36,8 +35,8 @@ describe('Watch mode flows with changed files', () => {
     watch = interopRequireDefault(require('../watch')).default;
     pipe = {write: jest.fn()} as unknown;
     stdin = new MockStdin();
-    rimraf.sync(cacheDirectory);
-    rimraf.sync(testDirectory);
+    fs.rmSync(cacheDirectory, {force: true, recursive: true});
+    fs.rmSync(testDirectory, {force: true, recursive: true});
     fs.mkdirSync(testDirectory);
     fs.mkdirSync(cacheDirectory);
   });
@@ -47,8 +46,8 @@ describe('Watch mode flows with changed files', () => {
     if (hasteMapInstance) {
       hasteMapInstance.end();
     }
-    rimraf.sync(cacheDirectory);
-    rimraf.sync(testDirectory);
+    fs.rmSync(cacheDirectory, {force: true, recursive: true});
+    fs.rmSync(testDirectory, {force: true, recursive: true});
   });
 
   it('should correct require new files without legacy cache', async () => {

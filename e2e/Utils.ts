@@ -9,7 +9,6 @@ import * as path from 'path';
 import dedent = require('dedent');
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
-import rimraf = require('rimraf');
 import type {PackageJson} from 'type-fest';
 import which = require('which');
 import type {Config} from '@jest/types';
@@ -66,7 +65,7 @@ export const linkJestPackage = (packageName: string, cwd: string) => {
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
   fs.mkdirSync(destination, {recursive: true});
-  rimraf.sync(destination);
+  fs.rmSync(destination, {force: true, recursive: true});
   fs.symlinkSync(packagePath, destination, 'junction');
 };
 
@@ -80,7 +79,8 @@ export const makeTemplate =
       return values[number - 1];
     });
 
-export const cleanup = (directory: string) => rimraf.sync(directory);
+export const cleanup = (directory: string) =>
+  fs.rmSync(directory, {force: true, recursive: true});
 
 /**
  * Creates a nested directory with files and their contents

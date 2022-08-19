@@ -2619,7 +2619,6 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
-    "@types/rimraf": ^3.0.0
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
     ci-info: ^3.2.0
@@ -2640,7 +2639,6 @@ __metadata:
     jest-watcher: "workspace:^"
     micromatch: ^4.0.4
     pretty-format: "workspace:^"
-    rimraf: ^3.0.0
     slash: ^3.0.0
     strip-ansi: ^6.0.0
   peerDependencies:
@@ -4522,7 +4520,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/glob@npm:*, @types/glob@npm:^7.1.1":
+"@types/glob@npm:^7.1.1":
   version: 7.2.0
   resolution: "@types/glob@npm:7.2.0"
   dependencies:
@@ -4917,16 +4915,6 @@ __metadata:
   version: 0.12.0
   resolution: "@types/retry@npm:0.12.0"
   checksum: 61a072c7639f6e8126588bf1eb1ce8835f2cb9c2aba795c4491cf6310e013267b0c8488039857c261c387e9728c1b43205099223f160bb6a76b4374f741b5603
-  languageName: node
-  linkType: hard
-
-"@types/rimraf@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "@types/rimraf@npm:3.0.2"
-  dependencies:
-    "@types/glob": "*"
-    "@types/node": "*"
-  checksum: b47fa302f46434cba704d20465861ad250df79467d3d289f9d6490d3aeeb41e8cb32dd80bd1a8fd833d1e185ac719fbf9be12e05ad9ce9be094d8ee8f1405347
   languageName: node
   linkType: hard
 
