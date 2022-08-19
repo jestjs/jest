@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
@@ -30,10 +31,15 @@ afterAll(() => {
 
 it('successfully runs the tests inside `to-match-inline-snapshot-with-jsx/`', () => {
   const updateSnapshotRun = runWithJson(DIR, ['--updateSnapshot']);
-  expect(updateSnapshotRun.json.testResults[0].message).toMatchInlineSnapshot(`
+  expect(
+    updateSnapshotRun.json.testResults[0].message.replace(
+      new RegExp(`${process.cwd()}[^:]*`),
+      match => slash(match.replace(process.cwd(), '<rootDir>')),
+    ),
+  ).toMatchInlineSnapshot(`
     "  ● Test suite failed to run
 
-        SyntaxError: /home/eps1lon/Development/forks/jest/e2e/to-match-inline-snapshot-with-jsx/__tests__/MismatchingSnapshot.test.js: Support for the experimental syntax 'jsx' isn't currently enabled (12:26):
+        SyntaxError: <rootDir>/e2e/to-match-inline-snapshot-with-jsx/__tests__/MismatchingSnapshot.test.js: Support for the experimental syntax 'jsx' isn't currently enabled (12:26):
 
           10 |
           11 | test('<div>x</div>', () => {
@@ -43,10 +49,10 @@ it('successfully runs the tests inside `to-match-inline-snapshot-with-jsx/`', ()
           14 |       y
           15 |     </div>
 
-        Add @babel/preset-react (https://git.io/JfeDR) to the 'presets' section of your Babel config to enable transformation.
-        If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://git.io/vb4yA) to the 'plugins' section to enable parsing.
+        Add @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.
+        If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.
 
-          at instantiate (../../node_modules/@babel/parser/src/parse-error/credentials.js:61:22)
+          at instantiate (../../node_modules/@babel/parser/src/parse-error/credentials.ts:62:21)
     "
   `);
 
