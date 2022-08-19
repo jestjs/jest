@@ -46,7 +46,7 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: string,
+  prettierPath: string | null,
 ): void {
   let prettier: Prettier | null = null;
   if (prettierPath) {
@@ -72,7 +72,7 @@ export function saveInlineSnapshots(
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: string,
-  prettier?: Prettier,
+  prettier: Prettier | undefined,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
