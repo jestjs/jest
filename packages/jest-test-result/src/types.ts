@@ -44,8 +44,6 @@ export type Status = AssertionResult['status'];
 
 export type Bytes = number;
 
-export type Milliseconds = TestResult.Milliseconds;
-
 export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
@@ -103,10 +101,10 @@ export type TestResult = {
   numTodoTests: number;
   openHandles: Array<Error>;
   perfStats: {
-    end: Milliseconds;
-    runtime: Milliseconds;
+    end: number;
+    runtime: number;
     slow: boolean;
-    start: Milliseconds;
+    start: number;
   };
   skipped: boolean;
   snapshot: {
