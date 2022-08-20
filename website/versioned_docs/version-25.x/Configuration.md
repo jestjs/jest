@@ -1352,6 +1352,8 @@ If you use `pnpm` and need to convert some packages under `node_modules`, you ne
 
 It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
 
+:::
+
 ### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 
 Default: `[]`
