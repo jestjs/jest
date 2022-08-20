@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually, @typescript-eslint/no-empty-function */
 
 import {AssertionError} from 'assert';
-import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
+import type {FailedAssertion, Status} from '@jest/test-result';
 import type {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
@@ -63,7 +63,7 @@ export type SpecResult = {
   id: string;
   description: string;
   fullName: string;
-  duration?: Milliseconds;
+  duration?: number;
   failedExpectations: Array<FailedAssertion>;
   testPath: string;
   passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
