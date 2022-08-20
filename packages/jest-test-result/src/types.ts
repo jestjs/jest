@@ -42,8 +42,6 @@ export type AssertionLocation = {
 
 export type Status = AssertionResult['status'];
 
-export type Bytes = number;
-
 export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
@@ -94,7 +92,7 @@ export type TestResult = {
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
-  memoryUsage?: Bytes;
+  memoryUsage?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
