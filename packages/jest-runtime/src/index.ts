@@ -20,7 +20,6 @@ import {
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
-import execa = require('execa');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
@@ -32,7 +31,7 @@ import type {
   ModuleWrapper,
 } from '@jest/environment';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type * as JestGlobals from '@jest/globals';
+import type {expect, jest} from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {
   RuntimeTransformResult,
@@ -49,8 +48,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import type {IModuleMap} from 'jest-haste-map';
-import HasteMap from 'jest-haste-map';
+import HasteMap, {IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -69,11 +67,11 @@ const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: typeof JestGlobals.expect;
+  expect: typeof expect;
 }
 
 interface JestGlobalsWithJest extends JestGlobals {
-  jest: typeof JestGlobals.jest;
+  jest: typeof jest;
 }
 
 type HasteMapOptions = {
@@ -144,19 +142,6 @@ type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
-const supportsTopLevelAwait =
-  runtimeSupportsVmModules &&
-  (() => {
-    try {
-      // eslint-disable-next-line no-new
-      new SourceTextModule('await Promise.resolve()');
-
-      return true;
-    } catch {
-      return false;
-    }
-  })();
-
 const supportsNodeColonModulePrefixInRequire = (() => {
   try {
     require('node:fs');
@@ -165,19 +150,6 @@ const supportsNodeColonModulePrefixInRequire = (() => {
   } catch {
     return false;
   }
-})();
-
-const supportsNodeColonModulePrefixInImport = (() => {
-  const {stdout} = execa.sync(
-    'node',
-    [
-      '--eval',
-      'import("node:fs").then(() => console.log(true), () => console.log(false));',
-    ],
-    {reject: false},
-  );
-
-  return stdout === 'true';
 })();
 
 export default class Runtime {
@@ -479,7 +451,7 @@ export default class Runtime {
         supportsDynamicImport: true,
         supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
-        supportsTopLevelAwait,
+        supportsTopLevelAwait: true,
       });
 
       try {
@@ -1663,10 +1635,7 @@ export default class Runtime {
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
-    const required = this._requireCoreModule(
-      moduleName,
-      supportsNodeColonModulePrefixInImport,
-    );
+    const required = this._requireCoreModule(moduleName, true);
 
     const module = new SyntheticModule(
       ['default', ...Object.keys(required)],
@@ -2331,7 +2300,7 @@ export default class Runtime {
       beforeAll: this._environment.global.beforeAll,
       beforeEach: this._environment.global.beforeEach,
       describe: this._environment.global.describe,
-      expect: this._environment.global.expect as any,
+      expect: this._environment.global.expect as typeof expect,
       fdescribe: this._environment.global.fdescribe,
       fit: this._environment.global.fit,
       it: this._environment.global.it,

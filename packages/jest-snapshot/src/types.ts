@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {MatcherState} from 'expect';
+import type {MatcherContext} from 'expect';
 import type SnapshotState from './State';
 
-export interface Context extends MatcherState {
+export interface Context extends MatcherContext {
   snapshotState: SnapshotState;
 }
 

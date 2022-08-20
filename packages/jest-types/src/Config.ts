@@ -190,6 +190,7 @@ export type DefaultOptions = {
   setupFilesAfterEnv: Array<string>;
   skipFilter: boolean;
   slowTestThreshold: number;
+  snapshotFormat: SnapshotFormat;
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -326,6 +327,7 @@ export type InitialOptions = Partial<{
   watchAll: boolean;
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
+  workerIdleMemoryLimit: number | string;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -419,6 +421,7 @@ export type GlobalConfig = {
     path: string;
     config: Record<string, unknown>;
   }> | null;
+  workerIdleMemoryLimit?: number;
 };
 
 export type ProjectConfig = {
@@ -477,6 +480,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  workerIdleMemoryLimit?: number;
 };
 
 export type Argv = Arguments<
@@ -570,5 +574,6 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
+    workerIdleMemoryLimit: number | string;
   }>
 >;

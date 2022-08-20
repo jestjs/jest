@@ -7,7 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-import type {MatcherFunctionWithState} from 'expect';
+import type {MatcherFunctionWithContext} from 'expect';
 import type {FS as HasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
@@ -153,7 +153,7 @@ export const cleanup = (
   };
 };
 
-export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
+export const toMatchSnapshot: MatcherFunctionWithContext<Context> = function (
   received: unknown,
   propertiesOrHint?: object | string,
   hint?: string,
@@ -211,7 +211,7 @@ export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
   });
 };
 
-export const toMatchInlineSnapshot: MatcherFunctionWithState<Context> =
+export const toMatchInlineSnapshot: MatcherFunctionWithContext<Context> =
   function (
     received: unknown,
     propertiesOrSnapshot?: object | string,
@@ -408,7 +408,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-export const toThrowErrorMatchingSnapshot: MatcherFunctionWithState<Context> =
+export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<Context> =
   function (received: unknown, hint?: string, fromPromise?: boolean) {
     const matcherName = 'toThrowErrorMatchingSnapshot';
 
@@ -427,7 +427,7 @@ export const toThrowErrorMatchingSnapshot: MatcherFunctionWithState<Context> =
     );
   };
 
-export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithState<Context> =
+export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<Context> =
   function (received: unknown, inlineSnapshot?: string, fromPromise?: boolean) {
     const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 

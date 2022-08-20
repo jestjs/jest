@@ -202,6 +202,12 @@ export interface Jest {
     */
   requireActual: (moduleName: string) => unknown;
   /**
+   * Wraps types of the `source` object and its deep members with type definitions
+   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
+   * mocked behavior.
+   */
+  mocked: ModuleMocker['mocked'];
+  /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
@@ -224,10 +230,6 @@ export interface Jest {
    * with `jest.spyOn()`; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
-  /**
-   * Wraps an object or a module with mock type definitions.
-   */
-  mocked: ModuleMocker['mocked'];
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted.

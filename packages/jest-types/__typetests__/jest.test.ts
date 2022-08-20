@@ -5,9 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {expectError, expectType} from 'tsd-lite';
+import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
-import type {Mock, ModuleMocker, SpyInstance} from 'jest-mock';
+import type {
+  Mock,
+  Mocked,
+  MockedClass,
+  MockedFunction,
+  MockedObject,
+  MockedShallow,
+  ModuleMocker,
+  SpyInstance,
+} from 'jest-mock';
 
 expectType<typeof jest>(
   jest
@@ -117,7 +126,6 @@ expectError(jest.unmock());
 
 // Mock Functions
 
-expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
 expectType<typeof jest>(jest.clearAllMocks());
 expectError(jest.clearAllMocks('moduleName'));
 
@@ -211,6 +219,172 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
+// Mocked*<T>
+
+class SomeClass {
+  constructor(one: string, two?: boolean) {}
+
+  methodA() {
+    return true;
+  }
+  methodB(a: string, b?: number) {
+    return;
+  }
+}
+
+function someFunction(a: string, b?: number): boolean {
+  return true;
+}
+
+const someObject = {
+  SomeClass,
+
+  methodA() {
+    return;
+  },
+  methodB(b: string) {
+    return true;
+  },
+  methodC: (c: number) => true,
+
+  one: {
+    more: {
+      time: (t: number) => {
+        return;
+      },
+    },
+  },
+
+  propertyA: 123,
+  propertyB: 'value',
+
+  someClassInstance: new SomeClass('value'),
+};
+
+expectType<Mocked<typeof someObject>>(
+  someObject as jest.Mocked<typeof someObject>,
+);
+
+expectType<MockedClass<typeof SomeClass>>(
+  SomeClass as jest.MockedClass<typeof SomeClass>,
+);
+
+expectType<MockedFunction<typeof someFunction>>(
+  someFunction as jest.MockedFunction<typeof someFunction>,
+);
+
+expectType<MockedObject<typeof someObject>>(
+  someObject as jest.MockedObject<typeof someObject>,
+);
+
+// mocked()
+
+expectType<Mocked<typeof someObject>>(jest.mocked(someObject));
+expectType<Mocked<typeof someObject>>(
+  jest.mocked(someObject, {shallow: false}),
+);
+expectType<MockedShallow<typeof someObject>>(
+  jest.mocked(someObject, {shallow: true}),
+);
+
+expectError(jest.mocked('abc'));
+
+const mockObjectA = jest.mocked(someObject);
+
+expectType<[]>(mockObjectA.methodA.mock.calls[0]);
+expectType<[b: string]>(mockObjectA.methodB.mock.calls[0]);
+expectType<[c: number]>(mockObjectA.methodC.mock.calls[0]);
+
+expectType<[t: number]>(mockObjectA.one.more.time.mock.calls[0]);
+
+expectType<[one: string, two?: boolean]>(mockObjectA.SomeClass.mock.calls[0]);
+expectType<[]>(mockObjectA.SomeClass.prototype.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  mockObjectA.SomeClass.prototype.methodB.mock.calls[0],
+);
+
+expectType<[]>(mockObjectA.someClassInstance.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  mockObjectA.someClassInstance.methodB.mock.calls[0],
+);
+
+expectError(mockObjectA.methodA.mockReturnValue(123));
+expectError(mockObjectA.methodA.mockImplementation((a: number) => 123));
+expectError(mockObjectA.methodB.mockReturnValue(123));
+expectError(mockObjectA.methodB.mockImplementation((b: number) => 123));
+expectError(mockObjectA.methodC.mockReturnValue(123));
+expectError(mockObjectA.methodC.mockImplementation((c: number) => 123));
+
+expectError(mockObjectA.one.more.time.mockReturnValue(123));
+expectError(mockObjectA.one.more.time.mockImplementation((t: boolean) => 123));
+
+expectError(mockObjectA.SomeClass.prototype.methodA.mockReturnValue(123));
+expectError(
+  mockObjectA.SomeClass.prototype.methodA.mockImplementation(
+    (a: number) => 123,
+  ),
+);
+expectError(mockObjectA.SomeClass.prototype.methodB.mockReturnValue(123));
+expectError(
+  mockObjectA.SomeClass.prototype.methodB.mockImplementation(
+    (a: number) => 123,
+  ),
+);
+
+expectError(mockObjectA.someClassInstance.methodA.mockReturnValue(123));
+expectError(
+  mockObjectA.someClassInstance.methodA.mockImplementation((a: number) => 123),
+);
+expectError(mockObjectA.someClassInstance.methodB.mockReturnValue(123));
+expectError(
+  mockObjectA.someClassInstance.methodB.mockImplementation((a: number) => 123),
+);
+
+expectAssignable<typeof someObject>(mockObjectA);
+
+// shallow mocked()
+
+const mockObjectB = jest.mocked(someObject, {shallow: true});
+
+expectType<[]>(mockObjectB.methodA.mock.calls[0]);
+expectType<[b: string]>(mockObjectB.methodB.mock.calls[0]);
+expectType<[c: number]>(mockObjectB.methodC.mock.calls[0]);
+
+expectError<[t: number]>(mockObjectB.one.more.time.mock.calls[0]);
+
+expectType<[one: string, two?: boolean]>(mockObjectB.SomeClass.mock.calls[0]);
+expectType<[]>(mockObjectB.SomeClass.prototype.methodA.mock.calls[0]);
+expectType<[a: string, b?: number]>(
+  mockObjectB.SomeClass.prototype.methodB.mock.calls[0],
+);
+
+expectError<[]>(mockObjectB.someClassInstance.methodA.mock.calls[0]);
+expectError<[a: string, b?: number]>(
+  mockObjectB.someClassInstance.methodB.mock.calls[0],
+);
+
+expectError(mockObjectB.methodA.mockReturnValue(123));
+expectError(mockObjectB.methodA.mockImplementation((a: number) => 123));
+expectError(mockObjectB.methodB.mockReturnValue(123));
+expectError(mockObjectB.methodB.mockImplementation((b: number) => 123));
+expectError(mockObjectB.methodC.mockReturnValue(123));
+expectError(mockObjectB.methodC.mockImplementation((c: number) => 123));
+
+expectError(mockObjectB.SomeClass.prototype.methodA.mockReturnValue(123));
+expectError(
+  mockObjectB.SomeClass.prototype.methodA.mockImplementation(
+    (a: number) => 123,
+  ),
+);
+expectError(mockObjectB.SomeClass.prototype.methodB.mockReturnValue(123));
+expectError(
+  mockObjectB.SomeClass.prototype.methodB.mockImplementation(
+    (a: number) => 123,
+  ),
+);
+
+expectAssignable<typeof someObject>(mockObjectB);
+
 // Mock Timers
 
 expectType<void>(jest.advanceTimersByTime(6000));
@@ -301,8 +475,11 @@ expectError(jest.useRealTimers(true));
 
 // Misc
 
+expectType<typeof jest>(jest.retryTimes(3));
+expectType<typeof jest>(jest.retryTimes(3, {logErrorsBeforeRetry: true}));
+expectError(jest.retryTimes(3, {logErrorsBeforeRetry: 'all'}));
+expectError(jest.retryTimes({logErrorsBeforeRetry: true}));
+expectError(jest.retryTimes());
+
 expectType<typeof jest>(jest.setTimeout(6000));
 expectError(jest.setTimeout());
-
-expectType<typeof jest>(jest.retryTimes(3));
-expectError(jest.retryTimes());

@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ScriptTransformer (in sync mode) throws an error if \`process\` isn't defined 1`] = `
-"<red><bold>● Invalid synchronous transformer module:</></>
-<red>  "skipped-required-props-preprocessor-only-async" specified in the "transform" object of Jest configuration</>
-<red>  must export a \`process\` function.</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid synchronous transformer module:</intensity></color>
+<red>  "skipped-required-props-preprocessor-only-async" specified in the "transform" object of Jest configuration</color>
+<red>  must export a \`process\` function.</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer in async mode, passes expected transform options to getCacheKey 1`] = `
@@ -137,9 +137,9 @@ exports[`ScriptTransformer in async mode, uses the supplied preprocessor 1`] = `
 exports[`ScriptTransformer in async mode, uses the supplied preprocessor 2`] = `"module.exports = "react";"`;
 
 exports[`ScriptTransformer in async mode, warns of unparseable inlined source maps from the preprocessor 1`] = `
-"<yellow><bold>● Invalid source map:</></>
-<yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</>
-<yellow>  Proceeding without source mapping for that file.</>"
+"<yellow><bold>● Invalid source map:</intensity></color>
+<yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</color>
+<yellow>  Proceeding without source mapping for that file.</color>"
 `;
 
 exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] = `
@@ -357,125 +357,125 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
 `;
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 1`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 2`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 3`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`process\` doesn't return an object containing \`code\` key with processed string 4`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 1`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor-fruits-banana-js" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor-fruits-banana-js" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 2`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor-fruits-avocado-js" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor-fruits-avocado-js" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 3`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor-fruits-kiwi-js" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor-fruits-kiwi-js" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a promise of object containing \`code\` key with processed string 4`] = `
-"<red><bold>● Invalid return value:</></>
-<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </>
-<red>  "passthrough-preprocessor-fruits-grapefruit-js" </>
-<red>  should return an object or a Promise resolving to an object. The object </>
-<red>  must have \`code\` property with a string of processed code.</>
-<red>  <bold>This error may be caused by a breaking change in Jest 28:</></>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid return value:</intensity></color>
+<red>  \`process()\` or/and \`processAsync()\` method of code transformer found at </color>
+<red>  "passthrough-preprocessor-fruits-grapefruit-js" </color>
+<red>  should return an object or a Promise resolving to an object. The object </color>
+<red>  must have \`code\` property with a string of processed code.</color>
+<red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
+<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if createTransformer returns object without \`process\` method 1`] = `
-"<red><bold>● Invalid transformer module:</></>
-<red>  "skipped-required-create-transformer-props-preprocessor" specified in the "transform" object of Jest configuration</>
-<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid transformer module:</intensity></color>
+<red>  "skipped-required-create-transformer-props-preprocessor" specified in the "transform" object of Jest configuration</color>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer throws an error if neither \`process\` nor \`processAsync\` is defined 1`] = `
-"<red><bold>● Invalid transformer module:</></>
-<red>  "skipped-required-props-preprocessor" specified in the "transform" object of Jest configuration</>
-<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
-<red>  <bold>Code Transformation Documentation:</></>
-<red>  https://jestjs.io/docs/code-transformation</>
-<red></>"
+"<red><bold>● Invalid transformer module:</intensity></color>
+<red>  "skipped-required-props-preprocessor" specified in the "transform" object of Jest configuration</color>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</color>
+<red>  <bold>Code Transformation Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/code-transformation</color>
+<red></color>"
 `;
 
 exports[`ScriptTransformer transforms a file async properly 1`] = `
@@ -827,13 +827,13 @@ exports[`ScriptTransformer uses the supplied preprocessor 1`] = `
 exports[`ScriptTransformer uses the supplied preprocessor 2`] = `"module.exports = "react";"`;
 
 exports[`ScriptTransformer warns of unparseable inlined source maps from the async preprocessor 1`] = `
-"<yellow><bold>● Invalid source map:</></>
-<yellow>  The source map for "/fruits/banana.js" returned by "async-preprocessor-with-sourcemaps" is invalid.</>
-<yellow>  Proceeding without source mapping for that file.</>"
+"<yellow><bold>● Invalid source map:</intensity></color>
+<yellow>  The source map for "/fruits/banana.js" returned by "async-preprocessor-with-sourcemaps" is invalid.</color>
+<yellow>  Proceeding without source mapping for that file.</color>"
 `;
 
 exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `
-"<yellow><bold>● Invalid source map:</></>
-<yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</>
-<yellow>  Proceeding without source mapping for that file.</>"
+"<yellow><bold>● Invalid source map:</intensity></color>
+<yellow>  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.</color>
+<yellow>  Proceeding without source mapping for that file.</color>"
 `;

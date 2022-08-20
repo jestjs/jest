@@ -25,7 +25,9 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   \+ member(DependencyIdent, [
     % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
     'react', 'react-dom',
-    % @types/node in the root need to stay on ~12.12.0
+    % Only RN should be bumped to react 18
+    'react-test-renderer',
+    % @types/node in the root need to stay on ~14.14.45
     '@types/node',
     % upgrading the entire repository is a breaking change
     'glob'
@@ -59,7 +61,7 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.access', null) :-
   workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the engines.node field for public workspace
-gen_enforced_field(WorkspaceCwd, 'engines.node', '^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0') :-
+gen_enforced_field(WorkspaceCwd, 'engines.node', '^14.15.0 || ^16.10.0 || >=18.0.0') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the main and types field to start with ./
