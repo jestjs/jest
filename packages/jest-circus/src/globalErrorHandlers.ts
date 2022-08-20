@@ -8,10 +8,17 @@
 import type {Circus} from '@jest/types';
 import {dispatchSync} from './state';
 
-const uncaught: NodeJS.UncaughtExceptionListener &
-  NodeJS.UnhandledRejectionListener = (error: unknown) => {
-  dispatchSync({error, name: 'error'});
-};
+const uncaught =
+  (
+    type: string,
+  ): NodeJS.UncaughtExceptionListener & NodeJS.UnhandledRejectionListener =>
+  (error: unknown) => {
+    error.message = `[${type}] ${error?.message}`;
+    dispatchSync({error, name: 'error'});
+  };
+
+const exception = uncaught('uncaughtException');
+const rejection = uncaught('unhandledRejection');
 
 export const injectGlobalErrorHandlers = (
   parentProcess: NodeJS.Process,
@@ -20,8 +27,8 @@ export const injectGlobalErrorHandlers = (
   const unhandledRejection = process.listeners('unhandledRejection').slice();
   parentProcess.removeAllListeners('uncaughtException');
   parentProcess.removeAllListeners('unhandledRejection');
-  parentProcess.on('uncaughtException', uncaught);
-  parentProcess.on('unhandledRejection', uncaught);
+  parentProcess.on('uncaughtException', exception);
+  parentProcess.on('unhandledRejection', rejection);
   return {uncaughtException, unhandledRejection};
 };
 
@@ -29,8 +36,8 @@ export const restoreGlobalErrorHandlers = (
   parentProcess: NodeJS.Process,
   originalErrorHandlers: Circus.GlobalErrorHandlers,
 ): void => {
-  parentProcess.removeListener('uncaughtException', uncaught);
-  parentProcess.removeListener('unhandledRejection', uncaught);
+  parentProcess.removeListener('uncaughtException', exception);
+  parentProcess.removeListener('unhandledRejection', rejection);
 
   for (const listener of originalErrorHandlers.uncaughtException) {
     parentProcess.on('uncaughtException', listener);
