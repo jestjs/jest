@@ -10,6 +10,7 @@
 - `[jest-mock]` [**BREAKING**] Refactor `Mocked*` utility types. `MaybeMockedDeep` and `MaybeMocked` became `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exported ([#13123](https://github.com/facebook/jest/pull/13123), [#13124](https://github.com/facebook/jest/pull/13124))
 - `[jest-mock]` [**BREAKING**] Change the default `jest.mocked` helper’s behavior to deep mocked ([#13125](https://github.com/facebook/jest/pull/13125))
 - `[jest-snapshot]` [**BREAKING**] Let `babel` find config when updating inline snapshots ([#13150](https://github.com/facebook/jest/pull/13150))
+- `[@jest/test-result, @jest/types]` [**BREAKING**] Replace `Bytes` and `Milliseconds` types with `number` ([#13155](https://github.com/facebook/jest/pull/13155))
 - `[jest-worker]` Adds `workerIdleMemoryLimit` option which is used as a check for worker memory leaks >= Node 16.11.0 and recycles child workers as required ([#13056](https://github.com/facebook/jest/pull/13056), [#13105](https://github.com/facebook/jest/pull/13105), [#13106](https://github.com/facebook/jest/pull/13106), [#13107](https://github.com/facebook/jest/pull/13107))
 - `[pretty-format]` [**BREAKING**] Remove `ConvertAnsi` plugin in favour of `jest-serializer-ansi-escapes` ([#13040](https://github.com/facebook/jest/pull/13040))
 
