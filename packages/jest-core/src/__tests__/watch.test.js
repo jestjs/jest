@@ -614,7 +614,6 @@ describe('Watch mode flows', () => {
     ${'✔︎'} | ${'changedSince'}
     ${'✔︎'} | ${'collectCoverage'}
     ${'✔︎'} | ${'collectCoverageFrom'}
-    ${'✔︎'} | ${'collectCoverageOnlyFrom'}
     ${'✔︎'} | ${'coverageDirectory'}
     ${'✔︎'} | ${'coverageReporters'}
     ${'✖︎'} | ${'coverageThreshold'}

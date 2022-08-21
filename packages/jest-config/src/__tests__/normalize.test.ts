@@ -161,65 +161,8 @@ describe('automock', () => {
   });
 });
 
-describe('collectCoverageOnlyFrom', () => {
-  it('normalizes all paths relative to rootDir', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          'bar/baz': true,
-          'qux/quux/': true,
-        },
-        rootDir: '/root/path/foo/',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-    expected[expectedPathFooQux] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('does not change absolute paths', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '/an/abs/path': true,
-          '/another/abs/path': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathAbs] = true;
-    expected[expectedPathAbsAnother] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('substitutes <rootDir> tokens', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '<rootDir>/bar/baz': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-});
-
 describe('collectCoverageFrom', () => {
-  it('substitutes <rootDir> tokens', async () => {
+  it('ignores <rootDir> tokens', async () => {
     const barBaz = 'bar/baz';
     const quxQuux = 'qux/quux/';
     const notQuxQuux = `!${quxQuux}`;
@@ -2006,6 +1949,20 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         browser: true,
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'collectCoverageOnlyFrom' option is passed", async () => {
+    await normalize(
+      {
+        collectCoverageOnlyFrom: {
+          '<rootDir>/this-directory-is-covered/Covered.js': true,
+        },
         rootDir: '/root/',
       },
       {} as Config.Argv,
