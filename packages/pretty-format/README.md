@@ -206,20 +206,20 @@ Write `serialize` to return a string, given the arguments:
 ### config
 
 <!-- prettier-ignore -->
-| key                 | type      | description                                             |
-| :------------------ | :-------- | :------------------------------------------------------ |
-| `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |
-| `compareKeys`       | `function|null`| compare function used when sorting object keys, `null` can be used to skip over sorting |
-| `colors`            | `Object`  | escape codes for colors to highlight syntax             |
-| `escapeRegex`       | `boolean` | escape special characters in regular expressions        |
-| `escapeString`      | `boolean` | escape special characters in strings                    |
-| `indent`            | `string`  | spaces in each level of indentation                     |
-| `maxDepth`          | `number`  | levels to print in arrays, objects, elements, and so on |
-| `min`               | `boolean` | minimize added space: no indentation nor line breaks    |
-| `plugins`           | `array`   | plugins to serialize application-specific data types    |
-| `printFunctionName` | `boolean` | include or omit the name of a function                  |
-| `spacingInner`      | `string`  | spacing to separate items in a list                     |
-| `spacingOuter`      | `string`  | spacing to enclose a list of items                      |
+| key                 | type             | description                                                                             |
+| :------------------ | :--------------- | :-------------------------------------------------------------------------------------- |
+| `callToJSON`        | `boolean`        | call `toJSON` method (if it exists) on objects                                          |
+| `compareKeys`       | `function\|null` | compare function used when sorting object keys, `null` can be used to skip over sorting |
+| `colors`            | `Object`         | escape codes for colors to highlight syntax                                             |
+| `escapeRegex`       | `boolean`        | escape special characters in regular expressions                                        |
+| `escapeString`      | `boolean`        | escape special characters in strings                                                    |
+| `indent`            | `string`         | spaces in each level of indentation                                                     |
+| `maxDepth`          | `number`         | levels to print in arrays, objects, elements, and so on                                 |
+| `min`               | `boolean`        | minimize added space: no indentation nor line breaks                                    |
+| `plugins`           | `array`          | plugins to serialize application-specific data types                                    |
+| `printFunctionName` | `boolean`        | include or omit the name of a function                                                  |
+| `spacingInner`      | `string`         | spacing to separate items in a list                                                     |
+| `spacingOuter`      | `string`         | spacing to enclose a list of items                                                      |
 
 Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
 
