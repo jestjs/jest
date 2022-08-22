@@ -476,4 +476,4 @@ Note that in most CI environments, this is automatically handled for you.
 
 ### `--watchman`
 
-Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`. 

@@ -238,6 +238,6 @@ Third-party plugins are also forbidden to overwrite a key reserved already by an
 
 :::caution
 
-Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap. 
 
 :::
