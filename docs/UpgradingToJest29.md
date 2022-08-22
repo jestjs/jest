@@ -42,4 +42,36 @@ Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means
 
 ## `pretty-format`
 
-`ConvertAnsi` plugin is removed in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).
+`ConvertAnsi` plugin is removed from `pretty-format` package in favour of [`jest-serializer-ansi-escapes`](https://github.com/mrazauskas/jest-serializer-ansi-escapes).
+
+### `jest-mock`
+
+Exports of `Mocked*` utility types from `jest-mock` package have changed. `MaybeMockedDeep` and `MaybeMocked` now are exported as `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exposed.
+
+## TypeScript
+
+:::info
+
+The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
+
+```ts
+import {jest} from '@jest/globals';
+```
+
+:::
+
+### `jest.mocked()`
+
+The [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method now wraps types of deep members of passed object by default. If you have used the method with `true` as the second argument, remove it to avoid type errors:
+
+```diff
+- const mockedObject = jest.mocked(someObject, true);
++ const mockedObject = jest.mocked(someObject);
+```
+
+To have the old shallow mocked behavior, pass `{shallow: true}` as the second argument:
+
+```diff
+- const mockedObject = jest.mocked(someObject);
++ const mockedObject = jest.mocked(someObject, {shallow: true});
+```

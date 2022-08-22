@@ -30,7 +30,7 @@ describe('getCallsite', () => {
   });
 
   test('ignores errors when fs throws', () => {
-    (fs.readFileSync as jest.Mock).mockImplementation(() => {
+    jest.mocked(fs.readFileSync).mockImplementation(() => {
       throw new Error('Mock error');
     });
 
@@ -43,7 +43,7 @@ describe('getCallsite', () => {
   });
 
   test('reads source map file to determine line and column', () => {
-    (fs.readFileSync as jest.Mock).mockImplementation(() =>
+    jest.mocked(fs.readFileSync).mockImplementation(() =>
       JSON.stringify({
         file: 'file.js',
         mappings: 'AAAA,OAAO,MAAM,KAAK,GAAG,QAAd',

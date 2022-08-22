@@ -47,67 +47,49 @@ export type PropertyLikeKeys<T> = Exclude<
   ConstructorLikeKeys<T> | MethodLikeKeys<T>
 >;
 
-// TODO Figure out how to replace this with TS ConstructorParameters utility type
-// https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
-type ConstructorParameters<T> = T extends new (...args: infer P) => any
-  ? P
-  : never;
+export type MockedClass<T extends ClassLike> = MockInstance<
+  (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
+> &
+  MockedObject<T>;
 
-export type MaybeMockedConstructor<T> = T extends new (
-  ...args: Array<any>
-) => infer R
-  ? MockInstance<(...args: ConstructorParameters<T>) => R>
-  : T;
+export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
+  MockedObject<T>;
 
-export interface MockWithArgs<T extends FunctionLike> extends MockInstance<T> {
-  new (...args: ConstructorParameters<T>): T;
-  (...args: Parameters<T>): ReturnType<T>;
-}
+type MockedFunctionShallow<T extends FunctionLike> = MockInstance<T> & T;
 
-export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> & {
-  [K in keyof T]: T[K];
-};
-
-export type MockedFunctionDeep<T extends FunctionLike> = MockWithArgs<T> &
-  MockedObjectDeep<T>;
-
-export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
+export type MockedObject<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
     ? MockedFunction<T[K]>
+    : T[K] extends object
+    ? MockedObject<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: T[K]};
+} & T;
 
-export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
-    ? MockedFunctionDeep<T[K]>
+type MockedObjectShallow<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
+    ? MockedFunctionShallow<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: MaybeMockedDeep<T[K]>};
+} & T;
 
-export type MaybeMocked<T> = T extends FunctionLike
+export type Mocked<T extends object> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
   ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
   : T;
 
-export type MaybeMockedDeep<T> = T extends FunctionLike
-  ? MockedFunctionDeep<T>
+export type MockedShallow<T extends object> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
+  ? MockedFunctionShallow<T>
   : T extends object
-  ? MockedObjectDeep<T>
+  ? MockedObjectShallow<T>
   : T;
-
-export type Mocked<T> = {
-  [P in keyof T]: T[P] extends FunctionLike
-    ? MockInstance<T[P]>
-    : T[P] extends ClassLike
-    ? MockedClass<T[P]>
-    : T[P];
-} & T;
-
-export type MockedClass<T extends ClassLike> = MockInstance<
-  (args: T extends new (...args: infer P) => any ? P : never) => InstanceType<T>
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 
@@ -1234,13 +1216,16 @@ export class ModuleMocker {
     return value == null ? `${value}` : typeof value;
   }
 
-  // the typings test helper
-  mocked<T>(item: T, deep?: false): MaybeMocked<T>;
-
-  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
-
-  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
-    return item as any;
+  mocked<T extends object>(source: T, options?: {shallow: false}): Mocked<T>;
+  mocked<T extends object>(
+    source: T,
+    options: {shallow: true},
+  ): MockedShallow<T>;
+  mocked<T extends object>(
+    source: T,
+    _options?: {shallow: boolean},
+  ): Mocked<T> | MockedShallow<T> {
+    return source as Mocked<T> | MockedShallow<T>;
   }
 }
 

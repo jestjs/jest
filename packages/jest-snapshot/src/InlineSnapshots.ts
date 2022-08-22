@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import type {PluginItem} from '@babel/core';
+import type {ParseResult, PluginItem} from '@babel/core';
 import {Expression, File, Program, isAwaitExpression} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
@@ -46,7 +46,8 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: string,
+  rootDir: string,
+  prettierPath: string | null,
 ): void {
   let prettier: Prettier | null = null;
   if (prettierPath) {
@@ -64,6 +65,7 @@ export function saveInlineSnapshots(
     saveSnapshotsForFile(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
+      rootDir,
       prettier && semver.gte(prettier.version, '1.5.0') ? prettier : undefined,
     );
   }
@@ -72,7 +74,8 @@ export function saveInlineSnapshots(
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: string,
-  prettier?: Prettier,
+  rootDir: string,
+  prettier: Prettier | undefined,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -92,12 +95,39 @@ const saveSnapshotsForFile = (
   // by one to formatting parser.
   const snapshotMatcherNames: Array<string> = [];
 
-  const ast = parseSync(sourceFile, {
-    filename: sourceFilePath,
-    plugins,
-    presets,
-    root: path.dirname(sourceFilePath),
-  });
+  let ast: ParseResult | null = null;
+
+  try {
+    ast = parseSync(sourceFile, {
+      filename: sourceFilePath,
+      plugins,
+      presets,
+      root: rootDir,
+    });
+  } catch (error: any) {
+    // attempt to recover from missing jsx plugin
+    if (error.message.includes('@babel/plugin-syntax-jsx')) {
+      try {
+        const jsxSyntaxPlugin: PluginItem = [
+          require.resolve('@babel/plugin-syntax-jsx'),
+          {},
+          // unique name to make sure Babel does not complain about a possible duplicate plugin.
+          'JSX syntax plugin added by Jest snapshot',
+        ];
+        ast = parseSync(sourceFile, {
+          filename: sourceFilePath,
+          plugins: [...plugins, jsxSyntaxPlugin],
+          presets,
+          root: rootDir,
+        });
+      } catch {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
+  }
+
   if (!ast) {
     throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
   }

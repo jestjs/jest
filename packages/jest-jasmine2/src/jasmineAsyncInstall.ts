@@ -226,14 +226,23 @@ function makeConcurrent(
 
     return spec;
   };
-  // each is bound after the function is made concurrent, so for now it is made noop
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  concurrentFn.each = () => () => {};
-  concurrentFn.failing = () => () => {
+
+  const failing = () => {
     throw new Error(
       'Jest: `failing` tests are only supported in `jest-circus`.',
     );
   };
+
+  failing.each = () => {
+    throw new Error(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+    );
+  };
+  // each is bound after the function is made concurrent, so for now it is made noop
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  concurrentFn.each = () => () => {};
+  concurrentFn.failing = failing;
+
   return concurrentFn;
 }
 

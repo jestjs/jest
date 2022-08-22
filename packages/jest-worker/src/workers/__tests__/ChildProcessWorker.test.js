@@ -430,6 +430,7 @@ it('when out of memory occurs the worker is killed and exits', async () => {
    1: 0x10da153a5 node::Abort() (.cold.1) [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]
    2: 0x10c6f09b9 node::Abort() [/Users/paul/.nvm/versions/node/v16.10.0/bin/node]`,
   );
+  forkInterface.stderr.emit('end');
 
   forkInterface.emit('exit', null, 'SIGABRT');
 

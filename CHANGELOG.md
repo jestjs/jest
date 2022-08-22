@@ -2,9 +2,15 @@
 
 ### Features
 
+- `[expect]` [**BREAKING**] Differentiate between `MatcherContext` `MatcherUtils` and `MatcherState` types ([#13141](https://github.com/facebook/jest/pull/13141))
+- `[jest-circus]` Add support for `test.failing.each` ([#13142](https://github.com/facebook/jest/pull/13142))
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
-- `[jest-worker]` Adds `workerIdleMemoryLimit` option which is used as a check for worker memory leaks >= Node 16.11.0 and recycles child workers as required. ([#13056](https://github.com/facebook/jest/pull/13056), [#13105](https://github.com/facebook/jest/pull/13105), [#13106](https://github.com/facebook/jest/pull/13106))
+- `[@jest/globals]` Add `jest.Mocked`, `jest.MockedClass`, `jest.MockedFunction` and `jest.MockedObject` utility types ([#12727](https://github.com/facebook/jest/pull/12727))
+- `[jest-mock]` [**BREAKING**] Refactor `Mocked*` utility types. `MaybeMockedDeep` and `MaybeMocked` became `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exported ([#13123](https://github.com/facebook/jest/pull/13123), [#13124](https://github.com/facebook/jest/pull/13124))
+- `[jest-mock]` [**BREAKING**] Change the default `jest.mocked` helper’s behavior to deep mocked ([#13125](https://github.com/facebook/jest/pull/13125))
+- `[jest-snapshot]` [**BREAKING**] Let `babel` find config when updating inline snapshots ([#13150](https://github.com/facebook/jest/pull/13150))
+- `[jest-worker]` Adds `workerIdleMemoryLimit` option which is used as a check for worker memory leaks >= Node 16.11.0 and recycles child workers as required ([#13056](https://github.com/facebook/jest/pull/13056), [#13105](https://github.com/facebook/jest/pull/13105), [#13106](https://github.com/facebook/jest/pull/13106), [#13107](https://github.com/facebook/jest/pull/13107))
 - `[pretty-format]` [**BREAKING**] Remove `ConvertAnsi` plugin in favour of `jest-serializer-ansi-escapes` ([#13040](https://github.com/facebook/jest/pull/13040))
 
 ### Fixes
@@ -12,13 +18,17 @@
 - `[jest-config]` Fix testing multiple projects with TypeScript config files ([#13099](https://github.com/facebook/jest/pull/13099))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Record ([#13055](https://github.com/facebook/jest/pull/13055))
 - `[jest-haste-map]` Increase the maximum possible file size that jest-haste-map can handle ([#13094](https://github.com/facebook/jest/pull/13094))
+- `[jest-snapshot]` Make `prettierPath` optional in `SnapshotState` ([#13149](https://github.com/facebook/jest/pull/13149))
+- `[jest-snapshot]` Fix parsing error from inline snapshot files with `JSX` ([#12760](https://github.com/facebook/jest/pull/12760))
 - `[jest-worker]` When a process runs out of memory worker exits correctly and doesn't spin indefinitely ([#13054](https://github.com/facebook/jest/pull/13054))
 
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node v12 and v17 ([#13033](https://github.com/facebook/jest/pull/13033))
 - `[docs]` Fix webpack name ([#13049](https://github.com/facebook/jest/pull/13049))
+- `[docs]` Explicit how to set `n` for `--bail` ([#13128](https://github.com/facebook/jest/pull/13128))
 - `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
+- `[jest-snapshot]` [**BREAKING**] Require `rootDir` as argument to `SnapshotState` ([#13150](https://github.com/facebook/jest/pull/13150))
 
 ### Performance
 

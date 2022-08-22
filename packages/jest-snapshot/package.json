@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "29.0.0-alpha.4",
+  "version": "29.0.0-alpha.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@babel/core": "^7.11.6",
     "@babel/generator": "^7.7.2",
+    "@babel/plugin-syntax-jsx": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
     "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.3.3",

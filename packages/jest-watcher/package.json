@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "29.0.0-alpha.4",
+  "version": "29.0.0-alpha.6",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
