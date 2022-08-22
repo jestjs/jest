@@ -14,6 +14,7 @@
 - `[@jest/test-result, @jest/types]` [**BREAKING**] Replace `Bytes` and `Milliseconds` types with `number` ([#13155](https://github.com/facebook/jest/pull/13155))
 - `[jest-worker]` Adds `workerIdleMemoryLimit` option which is used as a check for worker memory leaks >= Node 16.11.0 and recycles child workers as required ([#13056](https://github.com/facebook/jest/pull/13056), [#13105](https://github.com/facebook/jest/pull/13105), [#13106](https://github.com/facebook/jest/pull/13106), [#13107](https://github.com/facebook/jest/pull/13107))
 - `[pretty-format]` [**BREAKING**] Remove `ConvertAnsi` plugin in favour of `jest-serializer-ansi-escapes` ([#13040](https://github.com/facebook/jest/pull/13040))
+- `[pretty-format]` Allow to opt out from sorting object keys with `compareKeys: null` ([#12443](https://github.com/facebook/jest/pull/12443))
 
 ### Fixes
 
