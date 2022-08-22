@@ -10,12 +10,17 @@ import {isPrimitive} from 'jest-get-type';
 import {
   equals,
   isA,
+  isImmutableList,
+  isImmutableOrderedKeyed,
+  isImmutableOrderedSet,
+  isImmutableRecord,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
 } from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean;
+  endPropIsDefined?: boolean;
   lastTraversedObject: unknown;
   traversedPath: Array<string>;
   value?: unknown;
@@ -74,8 +79,8 @@ export const getPath = (
       // Does object have the property with an undefined value?
       // Although primitive values support bracket notation (above)
       // they would throw TypeError for in operator (below).
-      result.hasEndProp =
-        newObject !== undefined || (!isPrimitive(object) && prop in object);
+      result.endPropIsDefined = !isPrimitive(object) && prop in object;
+      result.hasEndProp = newObject !== undefined || result.endPropIsDefined;
 
       if (!result.hasEndProp) {
         result.traversedPath.shift();
@@ -251,6 +256,19 @@ export const iterableEquality = (
   }
   if (!bIterator.next().done) {
     return false;
+  }
+
+  if (
+    !isImmutableList(a) &&
+    !isImmutableOrderedKeyed(a) &&
+    !isImmutableOrderedSet(a) &&
+    !isImmutableRecord(a)
+  ) {
+    const aEntries = Object.entries(a);
+    const bEntries = Object.entries(b);
+    if (!equals(aEntries, bEntries)) {
+      return false;
+    }
   }
 
   // Remove the first value from the stack of traversed values.

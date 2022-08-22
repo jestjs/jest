@@ -41,7 +41,9 @@ import type {
   AsyncExpectationResult,
   Expect,
   ExpectationResult,
+  MatcherContext,
   MatcherState,
+  MatcherUtils,
   MatchersObject,
   PromiseMatcherFn,
   RawMatcherFn,
@@ -49,13 +51,16 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
+export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
   AsymmetricMatchers,
   BaseExpect,
   Expect,
+  MatcherContext,
   MatcherFunction,
-  MatcherFunctionWithState,
+  MatcherFunctionWithContext,
   MatcherState,
+  MatcherUtils,
   Matchers,
 } from './types';
 
@@ -63,6 +68,7 @@ export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
@@ -72,7 +78,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
   return function (
-    this: MatcherState,
+    this: MatcherContext,
     received: any,
     testNameOrInlineSnapshot?: string,
   ) {
@@ -189,8 +195,12 @@ const makeResolveMatcher =
         ),
       reason => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise rejected instead of resolved\n' +
           `Rejected to value: ${matcherUtils.printReceived(reason)}`;
         return Promise.reject(outerErr);
@@ -236,8 +246,12 @@ const makeRejectMatcher =
     return actualWrapper.then(
       result => {
         outerErr.message =
-          matcherUtils.matcherHint(matcherName, undefined, '', options) +
-          '\n\n' +
+          `${matcherUtils.matcherHint(
+            matcherName,
+            undefined,
+            '',
+            options,
+          )}\n\n` +
           'Received promise resolved instead of rejected\n' +
           `Resolved to value: ${matcherUtils.printReceived(result)}`;
         return Promise.reject(outerErr);
@@ -259,21 +273,29 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils = {...matcherUtils, iterableEquality, subsetEquality};
+    const utils: MatcherUtils['utils'] = {
+      ...matcherUtils,
+      iterableEquality,
+      subsetEquality,
+    };
 
-    const matcherContext: MatcherState = {
+    const matcherUtilsThing: MatcherUtils = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
       dontThrow: () => (throws = false),
-      ...getState(),
       equals,
+      utils,
+    };
+
+    const matcherContext: MatcherContext = {
+      ...getState<MatcherState>(),
+      ...matcherUtilsThing,
       error: err,
       isNot,
       promise,
-      utils,
     };
 
     const processResult = (

@@ -1,4 +1,3 @@
-
 # Note: this file's config override the Netlify UI admin config
 
 # production build
@@ -10,6 +9,9 @@
 [build.environment]
   NODE_VERSION = "lts/*"
   NODE_OPTIONS = "--max_old_space_size=4096"
+  # default cache
+  YARN_ENABLE_GLOBAL_CACHE = "true"
+  YARN_GLOBAL_FOLDER = "/opt/buildhome/.yarn_cache"
 
 [context.production]
   # Do not build the site if there's no site-related changes
@@ -18,7 +20,6 @@
 # deploy preview build (faster config)
 [context.deploy-preview]
   command = "yarn workspace jest-website netlify:ci:deployPreview"
-
 
 [[plugins]]
   package = "netlify-plugin-cache"

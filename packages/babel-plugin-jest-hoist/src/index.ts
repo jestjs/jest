@@ -14,8 +14,10 @@ import {
   CallExpression,
   Expression,
   Identifier,
+  MemberExpression,
   Node,
   Program,
+  Super,
   VariableDeclaration,
   VariableDeclarator,
   callExpression,
@@ -91,7 +93,7 @@ const ALLOWED_IDENTIFIERS = new Set<string>(
     '__filename',
     '__dirname',
     'undefined',
-    ...Object.getOwnPropertyNames(global),
+    ...Object.getOwnPropertyNames(globalThis),
   ].sort(),
 );
 
@@ -166,12 +168,10 @@ FUNCTIONS.mock = args => {
           throw id.buildCodeFrameError(
             'The module factory of `jest.mock()` is not allowed to ' +
               'reference any out-of-scope variables.\n' +
-              'Invalid variable access: ' +
-              name +
-              '\n' +
-              'Allowed objects: ' +
-              Array.from(ALLOWED_IDENTIFIERS).join(', ') +
-              '.\n' +
+              `Invalid variable access: ${name}\n` +
+              `Allowed objects: ${Array.from(ALLOWED_IDENTIFIERS).join(
+                ', ',
+              )}.\n` +
               'Note: This is a precaution to guard against uninitialized mock ' +
               'variables. If it is ensured that the mock is required lazily, ' +
               'variable names prefixed with `mock` (case insensitive) are permitted.\n',
@@ -199,7 +199,9 @@ function GETTER_NAME() {
 }
 `;
 
-const isJestObject = (expression: NodePath<Expression>): boolean => {
+const isJestObject = (
+  expression: NodePath<Expression | Super>,
+): expression is NodePath<Identifier | MemberExpression> => {
   // global
   if (
     expression.isIdentifier() &&
@@ -233,8 +235,8 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
   return false;
 };
 
-const extractJestObjExprIfHoistable = <T extends Node>(
-  expr: NodePath<T>,
+const extractJestObjExprIfHoistable = (
+  expr: NodePath,
 ): NodePath<Expression> | null => {
   if (!expr.isCallExpression()) {
     return null;
@@ -307,6 +309,7 @@ export default function jestHoist(): PluginObj<{
     },
     // in `post` to make sure we come after an import transform and can unshift above the `require`s
     post({path: program}) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const self = this;
 
       visitBlock(program);

@@ -81,13 +81,26 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
-exports[`function as descriptor 1`] = `
+exports[`function as describe() descriptor 1`] = `
 "PASS __tests__/functionAsDescriptor.test.js
   Foo
     ✓ it"
 `;
 
-exports[`function as descriptor 2`] = `
+exports[`function as describe() descriptor 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`function as it() descriptor 1`] = `
+"PASS __tests__/functionAsDescriptor.test.js
+  ✓ Foo"
+`;
+
+exports[`function as it() descriptor 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total

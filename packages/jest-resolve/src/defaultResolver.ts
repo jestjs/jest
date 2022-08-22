@@ -13,44 +13,87 @@ import {
   resolve as resolveExports,
 } from 'resolve.exports';
 import {
-  PkgJson,
+  findClosestPackageJson,
   isDirectory,
   isFile,
   readPackageCached,
   realpathSync,
 } from './fileWalkers';
+import type {PackageJSON} from './types';
 
-// copy from `resolve`'s types so we don't have their types in our definition
-// files
-interface ResolverOptions {
+/**
+ * Allows transforming parsed `package.json` contents.
+ *
+ * @param pkg - Parsed `package.json` contents.
+ * @param file - Path to `package.json` file.
+ * @param dir - Directory that contains the `package.json`.
+ *
+ * @returns Transformed `package.json` contents.
+ */
+export type PackageFilter = (
+  pkg: PackageJSON,
+  file: string,
+  dir: string,
+) => PackageJSON;
+
+/**
+ * Allows transforming a path within a package.
+ *
+ * @param pkg - Parsed `package.json` contents.
+ * @param path - Path being resolved.
+ * @param relativePath - Path relative from the `package.json` location.
+ *
+ * @returns Relative path that will be joined from the `package.json` location.
+ */
+export type PathFilter = (
+  pkg: PackageJSON,
+  path: string,
+  relativePath: string,
+) => string;
+
+export type ResolverOptions = {
+  /** Directory to begin resolving from. */
   basedir: string;
-  browser?: boolean;
+  /** List of export conditions. */
   conditions?: Array<string>;
+  /** Instance of default resolver. */
   defaultResolver: typeof defaultResolver;
+  /** List of file extensions to search in order. */
   extensions?: Array<string>;
+  /**
+   * List of directory names to be looked up for modules recursively.
+   *
+   * @defaultValue
+   * The default is `['node_modules']`.
+   */
   moduleDirectory?: Array<string>;
+  /**
+   * List of `require.paths` to use if nothing is found in `node_modules`.
+   *
+   * @defaultValue
+   * The default is `undefined`.
+   */
   paths?: Array<string>;
+  /** Allows transforming parsed `package.json` contents. */
+  packageFilter?: PackageFilter;
+  /** Allows transforms a path within a package. */
+  pathFilter?: PathFilter;
+  /** Current root directory. */
   rootDir?: string;
-  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
-  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
-}
+};
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
-  Pick<ResolverOptions, 'conditions'>;
+  Pick<ResolverOptions, 'basedir' | 'conditions'>;
 
-// https://github.com/facebook/jest/pull/10617
-declare global {
-  namespace NodeJS {
-    export interface ProcessVersions {
-      pnp?: any;
-    }
-  }
-}
-
-export default function defaultResolver(
+export type SyncResolver = (path: string, options: ResolverOptions) => string;
+export type AsyncResolver = (
   path: string,
   options: ResolverOptions,
-): string {
+) => Promise<string>;
+
+export type Resolver = SyncResolver | AsyncResolver;
+
+const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
@@ -77,13 +120,15 @@ export default function defaultResolver(
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
-}
+};
+
+export default defaultResolver;
 
 /*
  * helper functions
  */
 
-function readPackageSync(_: unknown, file: string): PkgJson {
+function readPackageSync(_: unknown, file: string): PackageJSON {
   return readPackageCached(file);
 }
 
@@ -105,6 +150,30 @@ function getPathInModule(
       moduleName = `${moduleName}/${segments.shift()}`;
     }
 
+    // self-reference
+    const closestPackageJson = findClosestPackageJson(options.basedir);
+    if (closestPackageJson) {
+      const pkg = readPackageCached(closestPackageJson);
+
+      if (pkg.name === moduleName && pkg.exports) {
+        const subpath = segments.join('/') || '.';
+
+        const resolved = resolveExports(
+          pkg,
+          subpath,
+          createResolveOptions(options.conditions),
+        );
+
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
+        }
+
+        return pathResolve(dirname(closestPackageJson), resolved);
+      }
+    }
+
     let packageJsonPath = '';
 
     try {
@@ -117,9 +186,6 @@ function getPathInModule(
       const pkg = readPackageCached(packageJsonPath);
 
       if (pkg.exports) {
-        // we need to make sure resolve ignores `main`
-        delete pkg.main;
-
         const subpath = segments.join('/') || '.';
 
         const resolved = resolveExports(
@@ -128,10 +194,13 @@ function getPathInModule(
           createResolveOptions(options.conditions),
         );
 
-        // TODO: should we throw if not?
-        if (resolved) {
-          return pathResolve(dirname(packageJsonPath), resolved);
+        if (!resolved) {
+          throw new Error(
+            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
+          );
         }
+
+        return pathResolve(dirname(packageJsonPath), resolved);
       }
     }
   }

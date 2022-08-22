@@ -21,7 +21,7 @@ export const interpolateVariables = (
   Object.keys(template)
     .reduce(getMatchingKeyPaths(title), []) // aka flatMap
     .reduce(replaceKeyPathWithValue(template), title)
-    .replace('$#', '' + index);
+    .replace('$#', `${index}`);
 
 const getMatchingKeyPaths =
   (title: string) => (matches: Headings, key: string) =>

@@ -10,14 +10,18 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   ChildMessageCall,
   ChildMessageInitialize,
-  FunctionLike,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
+  ParentMessageMemUsage,
 } from '../types';
+
+type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -54,13 +58,30 @@ const messageListener = (request: any) => {
       end();
       break;
 
+    case CHILD_MESSAGE_MEM_USAGE:
+      reportMemoryUsage();
+      break;
+
     default:
       throw new TypeError(
-        'Unexpected request from parent process: ' + request[0],
+        `Unexpected request from parent process: ${request[0]}`,
       );
   }
 };
 parentPort!.on('message', messageListener);
+
+function reportMemoryUsage() {
+  if (isMainThread) {
+    throw new Error('Child can only be used on a forked process');
+  }
+
+  const msg: ParentMessageMemUsage = [
+    PARENT_MESSAGE_MEM_USAGE,
+    process.memoryUsage().heapUsed,
+  ];
+
+  parentPort!.postMessage(msg);
+}
 
 function reportSuccess(result: unknown) {
   if (isMainThread) {
@@ -116,7 +137,7 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: FunctionLike;
+  let fn: UnknownFunction;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -145,7 +166,7 @@ const isPromise = (obj: any): obj is PromiseLike<unknown> =>
   typeof obj.then === 'function';
 
 function execFunction(
-  fn: FunctionLike,
+  fn: UnknownFunction,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,

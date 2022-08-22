@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Options} from 'yargs';
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
@@ -68,6 +69,13 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.ignoreProjects && argv.ignoreProjects.length === 0) {
+    throw new Error(
+      'The --ignoreProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --ignoreProjects my-first-project my-second-project',
+    );
+  }
+
   if (
     argv.config &&
     !isJSONString(argv.config) &&
@@ -95,7 +103,7 @@ export const usage =
 export const docs = 'Documentation: https://jestjs.io/';
 
 // The default values are all set in jest-config
-export const options = {
+export const options: {[key: string]: Options} = {
   all: {
     description:
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
@@ -154,7 +162,7 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls, instances and results before every test. ' +
+      'Automatically clear mock calls, instances, contexts and results before every test. ' +
       'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
@@ -167,11 +175,6 @@ export const options = {
       'A glob pattern relative to <rootDir> matching the files that coverage ' +
       'info needs to be collected from.',
     type: 'string',
-  },
-  collectCoverageOnlyFrom: {
-    description: 'Explicit list of paths coverage will be restricted to.',
-    string: true,
-    type: 'array',
   },
   color: {
     description:
@@ -188,7 +191,7 @@ export const options = {
     description:
       'The path to a jest config file specifying how to find ' +
       'and execute tests. If no rootDir is set in the config, the directory ' +
-      'containing the config file is assumed to be the rootDir for the project.' +
+      'containing the config file is assumed to be the rootDir for the project. ' +
       'This can also be a JSON encoded value which Jest will use as configuration.',
     type: 'string',
   },
@@ -205,7 +208,7 @@ export const options = {
   coveragePathIgnorePatterns: {
     description:
       'An array of regexp pattern strings that are matched ' +
-      'against all file paths before executing the test. If the file path' +
+      'against all file paths before executing the test. If the file path ' +
       'matches any of the patterns, coverage information will be skipped.',
     string: true,
     type: 'array',
@@ -301,6 +304,13 @@ export const options = {
       'A JSON string with map of variables for the haste module system',
     type: 'string',
   },
+  ignoreProjects: {
+    description:
+      'Ignore the tests of the specified projects. ' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
+  },
   init: {
     description: 'Generate a basic configuration file',
     type: 'boolean',
@@ -337,7 +347,7 @@ export const options = {
   },
   maxConcurrency: {
     description:
-      'Specifies the maximum number of tests that are allowed to run' +
+      'Specifies the maximum number of tests that are allowed to run ' +
       'concurrently. This only affects tests using `test.concurrent`.',
     type: 'number',
   },
@@ -361,7 +371,7 @@ export const options = {
     description:
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
-      'extensions Jest will look for. ',
+      'extensions Jest will look for.',
     string: true,
     type: 'array',
   },
@@ -502,7 +512,7 @@ export const options = {
   },
   selectProjects: {
     description:
-      'Run only the tests of the specified projects.' +
+      'Run the tests of the specified projects. ' +
       'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',
@@ -510,16 +520,22 @@ export const options = {
   setupFiles: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing environment before each test. ',
+      'set up the testing environment before each test.',
     string: true,
     type: 'array',
   },
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
-      'set up the testing framework before each test ',
+      'set up the testing framework before each test',
     string: true,
     type: 'array',
+  },
+  shard: {
+    description:
+      'Shard tests and execute only the selected shard, specify in ' +
+      'the form "current/all". 1-based, for example "3/5".',
+    type: 'string',
   },
   showConfig: {
     description: 'Print your jest config and then exits.',
@@ -616,16 +632,6 @@ export const options = {
     description: 'This option sets the default timeouts of test cases.',
     type: 'number',
   },
-  testURL: {
-    description: 'This option sets the URL for the jsdom environment.',
-    type: 'string',
-  },
-  timers: {
-    description:
-      'Setting this value to fake allows the use of fake timers ' +
-      'for functions such as setTimeout.',
-    type: 'string',
-  },
   transform: {
     description:
       'A JSON string which maps from regular expressions to paths ' +
@@ -693,4 +699,4 @@ export const options = {
       '--no-watchman.',
     type: 'boolean',
   },
-} as const;
+};

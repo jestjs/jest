@@ -1,7 +1,7 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "28.0.0-alpha.3",
+  "version": "29.0.0-alpha.6",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -13,9 +13,14 @@
     "./bin/jest": "./bin/jest.js"
   },
   "dependencies": {
-    "@jest/core": "^28.0.0-alpha.3",
+    "@jest/core": "workspace:^",
+    "@jest/types": "workspace:^",
     "import-local": "^3.0.2",
-    "jest-cli": "^28.0.0-alpha.3"
+    "jest-cli": "workspace:^"
+  },
+  "devDependencies": {
+    "@tsd/typescript": "~4.7.4",
+    "tsd-lite": "^0.5.6"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
@@ -27,11 +32,12 @@
   },
   "bin": "./bin/jest.js",
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.13.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

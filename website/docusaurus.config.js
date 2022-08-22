@@ -5,11 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+'use strict';
+
 const path = require('path');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const i18n = require('./i18n');
 const ArchivedVersions = require('./archivedVersions.json');
 
 const JestThemeColor = '#15c213';
+
+const crowdinConfig = yaml.load(
+  fs.readFileSync(path.resolve(__dirname, '../crowdin.yaml'), 'utf8')
+);
+
+const localeMapping = new Map(
+  Object.entries(crowdinConfig.languages_mapping.locale).map(
+    ([translation, locale]) => [locale, translation]
+  )
+);
 
 module.exports = {
   i18n,
@@ -31,13 +45,19 @@ module.exports = {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
-            if (locale !== 'en') {
-              return `https://crowdin.com/project/jest-v2/${locale}`;
+            const translation =
+              locale === 'en' ? 'en' : localeMapping.get(locale) || locale;
+            if (translation !== 'en') {
+              return `https://crowdin.com/project/jest-v2/${translation}`;
             }
             return `https://github.com/facebook/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+            require('docusaurus-remark-plugin-tab-blocks'),
+          ],
         },
         blog: {
           path: 'blog',
@@ -50,10 +70,18 @@ module.exports = {
             path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
+            require.resolve(
+              'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css'
+            ),
           ],
         },
         gtag: {
           trackingID: 'UA-44373548-17',
+        },
+        pages: {
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+          ],
         },
       },
     ],
@@ -121,6 +149,14 @@ module.exports = {
     ],
   ],
   themeConfig: {
+    announcementBar: {
+      id: 'support_ukraine',
+      content:
+        'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.facebook.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
+      backgroundColor: '#20232a',
+      textColor: '#fff',
+      isCloseable: false,
+    },
     navbar: {
       title: 'Jest',
       items: [
@@ -253,7 +289,8 @@ module.exports = {
     },
     algolia: {
       indexName: 'jest-v2',
-      apiKey: '833906d7486e4059359fa58823c4ef56',
+      appId: 'HP439UUSOL',
+      apiKey: 'e5e670fd16f8f17caada79d6b0931682',
       contextualSearch: true,
     },
   },

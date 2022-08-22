@@ -11,7 +11,7 @@ const JSDOMEnvironment = require('jest-environment-jsdom').default;
 
 class TestEnvironment extends JSDOMEnvironment {
   handleTestEvent(event) {
-    console.log(event.name + (event.test ? ': ' + event.test.name : ''));
+    console.log(event.name + (event.test ? `: ${event.test.name}` : ''));
   }
 }
 

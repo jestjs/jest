@@ -19,8 +19,8 @@ export default function getConsoleOutput(
   config: StackTraceConfig,
   globalConfig: Config.GlobalConfig,
 ): string {
-  const TITLE_INDENT = globalConfig.verbose ? '  ' : '    ';
-  const CONSOLE_INDENT = TITLE_INDENT + '  ';
+  const TITLE_INDENT = globalConfig.verbose ? ' '.repeat(2) : ' '.repeat(4);
+  const CONSOLE_INDENT = TITLE_INDENT + ' '.repeat(2);
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {
     message = message
@@ -28,7 +28,7 @@ export default function getConsoleOutput(
       .map(line => CONSOLE_INDENT + line)
       .join('\n');
 
-    let typeMessage = 'console.' + type;
+    let typeMessage = `console.${type}`;
     let noStackTrace = true;
     let noCodeFrame = true;
 
@@ -51,17 +51,12 @@ export default function getConsoleOutput(
 
     const formattedStackTrace = formatStackTrace(origin, config, options);
 
-    return (
-      output +
-      TITLE_INDENT +
-      chalk.dim(typeMessage) +
-      '\n' +
-      message.trimRight() +
-      '\n' +
-      chalk.dim(formattedStackTrace.trimRight()) +
-      '\n\n'
-    );
+    return `${
+      output + TITLE_INDENT + chalk.dim(typeMessage)
+    }\n${message.trimRight()}\n${chalk.dim(
+      formattedStackTrace.trimRight(),
+    )}\n\n`;
   }, '');
 
-  return logEntries.trimRight() + '\n';
+  return `${logEntries.trimRight()}\n`;
 }

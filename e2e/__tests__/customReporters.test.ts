@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {onNodeVersions} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -142,7 +141,6 @@ describe('Custom Reporters Integration', () => {
       'package.json': JSON.stringify({
         jest: {
           reporters: ['default', '<rootDir>/reporter.js'],
-          testEnvironment: 'node',
         },
       }),
       'reporter.js': `
@@ -160,28 +158,25 @@ describe('Custom Reporters Integration', () => {
     expect(exitCode).toBe(1);
   });
 
-  onNodeVersions('>=12.17.0', () => {
-    test('supports reporter written in ESM', () => {
-      writeFiles(DIR, {
-        '__tests__/test.test.js': "test('test', () => {});",
-        'package.json': JSON.stringify({
-          jest: {
-            reporters: ['default', '<rootDir>/reporter.mjs'],
-            testEnvironment: 'node',
-          },
-        }),
-        'reporter.mjs': `
+  test('supports reporter written in ESM', () => {
+    writeFiles(DIR, {
+      '__tests__/test.test.js': "test('test', () => {});",
+      'package.json': JSON.stringify({
+        jest: {
+          reporters: ['default', '<rootDir>/reporter.mjs'],
+        },
+      }),
+      'reporter.mjs': `
         export default class Reporter {
           onRunStart() {
             throw new Error('ON_RUN_START_ERROR');
           }
         };
       `,
-      });
-
-      const {stderr, exitCode} = runJest(DIR);
-      expect(stderr).toMatch(/ON_RUN_START_ERROR/);
-      expect(exitCode).toBe(1);
     });
+
+    const {stderr, exitCode} = runJest(DIR);
+    expect(stderr).toMatch(/ON_RUN_START_ERROR/);
+    expect(exitCode).toBe(1);
   });
 });

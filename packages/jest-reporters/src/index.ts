@@ -5,37 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import formatTestPath from './formatTestPath';
 import getResultHeader from './getResultHeader';
-import {
-  formatTestPath,
-  getSummary,
-  printDisplayName,
-  relativePath,
-  trimAndFormatPath,
-} from './utils';
+import getSnapshotStatus from './getSnapshotStatus';
+import getSnapshotSummary from './getSnapshotSummary';
+import getSummary from './getSummary';
+import printDisplayName from './printDisplayName';
+import relativePath from './relativePath';
+import trimAndFormatPath from './trimAndFormatPath';
 
-export type {Config} from '@jest/types';
 export type {
   AggregatedResult,
   SnapshotSummary,
+  Test,
+  TestCaseResult,
+  TestContext,
   TestResult,
 } from '@jest/test-result';
+export type {Config} from '@jest/types';
 export {default as BaseReporter} from './BaseReporter';
 export {default as CoverageReporter} from './CoverageReporter';
 export {default as DefaultReporter} from './DefaultReporter';
+export {default as GitHubActionsReporter} from './GitHubActionsReporter';
 export {default as NotifyReporter} from './NotifyReporter';
 export {default as SummaryReporter} from './SummaryReporter';
 export {default as VerboseReporter} from './VerboseReporter';
 export type {
-  Context,
   Reporter,
   ReporterOnStartOptions,
+  ReporterContext,
   SummaryOptions,
-  Test,
 } from './types';
 export const utils = {
   formatTestPath,
   getResultHeader,
+  getSnapshotStatus,
+  getSnapshotSummary,
   getSummary,
   printDisplayName,
   relativePath,

@@ -32,6 +32,9 @@
       "tutorial-react",
       "tutorial-react-native",
       "testing-frameworks"
+    ],
+    "Upgrade Guides": [
+      "upgrading-to-jest29"
     ]
   },
   "api": [

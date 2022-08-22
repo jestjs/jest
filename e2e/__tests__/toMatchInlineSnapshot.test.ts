@@ -155,7 +155,7 @@ test('removes obsolete external snapshots', () => {
   const snapshotPath = path.join(
     TESTS_DIR,
     '__snapshots__',
-    filename + '.snap',
+    `${filename}.snap`,
   );
   const template = makeTemplate(`
     test('removes obsolete external snapshots', () => {
@@ -364,7 +364,7 @@ test('indentation is correct in the presences of existing snapshots', () => {
   const test = `
     test('existing snapshot', () => {
       expect({ hello: 'world' }).toMatchInlineSnapshot(\`
-        Object {
+        {
           "hello": "world",
         }
       \`);

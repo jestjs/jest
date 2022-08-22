@@ -35,11 +35,13 @@ describe('test/it error throwing', () => {
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
-  it("it throws an error when first argument isn't a string", () => {
+  it("it throws an error when first argument isn't valid", () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt(() => {});
-    }).toThrowError('Invalid first argument, () => {}. It must be a string.');
+    }).toThrowError(
+      'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
+    );
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
@@ -66,7 +68,9 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest(() => {});
-    }).toThrowError('Invalid first argument, () => {}. It must be a string.');
+    }).toThrowError(
+      'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
+    );
   });
   it('test throws an error when callback function is not a function', () => {
     expect(() => {

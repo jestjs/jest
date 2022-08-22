@@ -20,6 +20,7 @@
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
+    {"path": "../jest-watcher"},
     {"path": "../jest-worker"}
   ]
 }

@@ -25,14 +25,15 @@ export const formatPrettyObject = (value: unknown): string =>
     : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
-  name: string;
-  message: string;
+  override name: string;
+  override message: string;
 
   constructor(name: string, message: string, comment?: string | null) {
     super();
-    comment = comment ? '\n\n' + comment : '\n';
+    comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
-    this.message = chalk.red(chalk.bold(name) + ':\n\n' + message + comment);
+    this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});
   }
 }
@@ -42,8 +43,8 @@ export const logValidationWarning = (
   message: string,
   comment?: string | null,
 ): void => {
-  comment = comment ? '\n\n' + comment : '\n';
-  console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
+  comment = comment ? `\n\n${comment}` : '\n';
+  console.warn(chalk.yellow(`${chalk.bold(name)}:\n\n${message}${comment}`));
 };
 
 export const createDidYouMeanMessage = (

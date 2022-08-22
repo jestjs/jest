@@ -21,15 +21,15 @@ const commonOptions = {
 };
 
 test('watchman crawler and node crawler both include dotfiles', async () => {
-  const hasteMapWithWatchman = new HasteMap({
+  const hasteMapWithWatchman = await HasteMap.create({
     ...commonOptions,
-    name: 'withWatchman',
+    id: 'withWatchman',
     useWatchman: true,
   });
 
-  const hasteMapWithNode = new HasteMap({
+  const hasteMapWithNode = await HasteMap.create({
     ...commonOptions,
-    name: 'withNode',
+    id: 'withNode',
     useWatchman: false,
   });
 

@@ -9,20 +9,19 @@ import chalk = require('chalk');
 import stringLength = require('string-length');
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {ReporterOnStartOptions, Test} from './types';
-import {
-  getSummary,
-  printDisplayName,
-  trimAndFormatPath,
-  wrapAnsiString,
-} from './utils';
+import getSummary from './getSummary';
+import printDisplayName from './printDisplayName';
+import trimAndFormatPath from './trimAndFormatPath';
+import type {ReporterOnStartOptions} from './types';
+import wrapAnsiString from './wrapAnsiString';
 
 const RUNNING_TEXT = ' RUNS ';
-const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
+const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;
 
 /**
  * This class is a perf optimization for sorting the list of currently
@@ -168,28 +167,25 @@ export default class Status {
         const {config, testPath} = record;
 
         const projectDisplayName = config.displayName
-          ? printDisplayName(config) + ' '
+          ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
 
-        content +=
-          wrapAnsiString(
-            prefix +
-              trimAndFormatPath(stringLength(prefix), config, testPath, width),
-            width,
-          ) + '\n';
+        content += `${wrapAnsiString(
+          prefix +
+            trimAndFormatPath(stringLength(prefix), config, testPath, width),
+          width,
+        )}\n`;
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content +=
-        '\n' +
-        getSummary(this._aggregatedResults, {
-          currentTestCases: this._currentTestCases,
-          estimatedTime: this._estimatedTime,
-          roundTime: true,
-          width,
-        });
+      content += `\n${getSummary(this._aggregatedResults, {
+        currentTestCases: this._currentTestCases,
+        estimatedTime: this._estimatedTime,
+        roundTime: true,
+        width,
+      })}`;
     }
 
     let height = 0;

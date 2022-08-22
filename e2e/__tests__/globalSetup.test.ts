@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,
@@ -81,7 +80,7 @@ test('jest throws an error when globalSetup does not export a function', () => {
   );
 });
 
-test('globalSetup function gets jest config object as a parameter', () => {
+test('globalSetup function gets global config object and project config as parameters', () => {
   const setupPath = path.resolve(e2eDir, 'setupWithConfig.js');
 
   const testPathPattern = 'pass';
@@ -89,9 +88,10 @@ test('globalSetup function gets jest config object as a parameter', () => {
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
     `--testPathPattern=${testPathPattern}`,
+    '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(testPathPattern);
+  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
 });
 
 test('should call globalSetup function of multiple projects', () => {
@@ -145,9 +145,10 @@ test('globalSetup works with default export', () => {
   const result = runJest(e2eDir, [
     `--globalSetup=${setupPath}`,
     `--testPathPattern=${testPathPattern}`,
+    '--cache=true',
   ]);
 
-  expect(result.stdout).toBe(testPathPattern);
+  expect(result.stdout).toBe(`${testPathPattern}\ntrue`);
 });
 
 test('globalSetup throws with named export', () => {
@@ -197,12 +198,10 @@ test('properly handle rejections', () => {
   expect(stderr).toContain('reason: undefined');
 });
 
-onNodeVersions('>=12.17.0', () => {
-  test('globalSetup works with ESM modules', () => {
-    const {exitCode} = runJest('global-setup-esm', ['--no-cache'], {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-    });
-
-    expect(exitCode).toBe(0);
+test('globalSetup works with ESM modules', () => {
+  const {exitCode} = runJest('global-setup-esm', ['--no-cache'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
   });
+
+  expect(exitCode).toBe(0);
 });

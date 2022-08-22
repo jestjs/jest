@@ -8,12 +8,18 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
-import * as dependencyExtractor from './lib/dependencyExtractor';
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import {extractor as defaultDependencyExtractor} from './lib/dependencyExtractor';
+import type {
+  DependencyExtractor,
+  HasteImpl,
+  WorkerMessage,
+  WorkerMetadata,
+} from './types';
 
-const PACKAGE_JSON = path.sep + 'package.json';
+const PACKAGE_JSON = `${path.sep}package.json`;
 
 let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;
@@ -71,14 +77,18 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
     if (computeDependencies) {
       const content = getContent();
+      const extractor = data.dependencyExtractor
+        ? await requireOrImportModule<DependencyExtractor>(
+            data.dependencyExtractor,
+            false,
+          )
+        : defaultDependencyExtractor;
       dependencies = Array.from(
-        data.dependencyExtractor
-          ? require(data.dependencyExtractor).extract(
-              content,
-              filePath,
-              dependencyExtractor.extract,
-            )
-          : dependencyExtractor.extract(content),
+        extractor.extract(
+          content,
+          filePath,
+          defaultDependencyExtractor.extract,
+        ),
       );
     }
 
@@ -90,7 +100,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
   // If a SHA-1 is requested on update, compute it.
   if (computeSha1) {
-    sha1 = sha1hex(getContent() || fs.readFileSync(filePath));
+    sha1 = sha1hex(content || fs.readFileSync(filePath));
   }
 
   return {dependencies, id, module, sha1};

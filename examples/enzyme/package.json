@@ -7,13 +7,13 @@
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "@babel/preset-react": "*",
-    "babel-jest": "*",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.12.1",
+    "babel-jest": "workspace:*",
     "enzyme": "*",
     "enzyme-adapter-react-16": "*",
-    "jest": "*"
+    "jest": "workspace:*"
   },
   "scripts": {
     "test": "jest"

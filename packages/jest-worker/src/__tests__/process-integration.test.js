@@ -6,7 +6,12 @@
  */
 
 import EventEmitter from 'events';
-import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
+import {
+  CHILD_MESSAGE_CALL,
+  CHILD_MESSAGE_MEM_USAGE,
+  PARENT_MESSAGE_OK,
+  WorkerFarmOptions,
+} from '../types';
 
 let Farm;
 let mockForkedProcesses;
@@ -15,6 +20,7 @@ function mockBuildForkedProcess() {
   const mockChild = new EventEmitter();
 
   mockChild.send = jest.fn();
+  mockChild.connected = true;
 
   return mockChild;
 }
@@ -174,5 +180,37 @@ describe('Jest Worker Integration', () => {
     expect(await promise0).toBe('worker-0');
     expect(await promise1).toBe('worker-1');
     expect(await promise2).toBe('worker-2');
+  });
+
+  it('should check for memory limits', async () => {
+    /** @type WorkerFarmOptions */
+    const options = {
+      computeWorkerKey: () => '1234567890abcdef',
+      exposedMethods: ['foo', 'bar'],
+      idleMemoryLimit: 0.4,
+      numWorkers: 2,
+    };
+
+    const farm = new Farm('/tmp/baz.js', options);
+
+    // Send a call to the farm
+    const promise0 = farm.foo('param-0');
+
+    // Send different responses for each call (from the same child).
+    replySuccess(0, 'worker-0');
+
+    // Check that all the calls have been received by the same child).
+    // We're not using the assertCallsToChild helper because we need to check
+    // for other send types.
+    expect(mockForkedProcesses[0].send).toHaveBeenCalledTimes(3);
+    expect(mockForkedProcesses[0].send.mock.calls[1][0]).toEqual([
+      CHILD_MESSAGE_CALL,
+      true,
+      'foo',
+      ['param-0'],
+    ]);
+    expect(mockForkedProcesses[0].send.mock.calls[2][0]).toEqual([
+      CHILD_MESSAGE_MEM_USAGE,
+    ]);
   });
 });

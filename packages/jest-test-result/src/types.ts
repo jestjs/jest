@@ -42,15 +42,11 @@ export type AssertionLocation = {
 
 export type Status = AssertionResult['status'];
 
-export type Bytes = number;
-
-export type Milliseconds = TestResult.Milliseconds;
-
 export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
   AssertionResult,
-  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title'
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
 > & {
   failureMessages: AssertionResult['failureMessages'] | null;
 };
@@ -96,17 +92,17 @@ export type TestResult = {
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
-  memoryUsage?: Bytes;
+  memoryUsage?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
   numTodoTests: number;
   openHandles: Array<Error>;
   perfStats: {
-    end: Milliseconds;
-    runtime: Milliseconds;
+    end: number;
+    runtime: number;
     slow: boolean;
-    start: Milliseconds;
+    start: number;
   };
   skipped: boolean;
   snapshot: {
@@ -183,12 +179,12 @@ export type SnapshotSummary = {
 };
 
 export type Test = {
-  context: Context;
+  context: TestContext;
   duration?: number;
   path: string;
 };
 
-type Context = {
+export type TestContext = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;

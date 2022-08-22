@@ -408,7 +408,7 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
   });
 
-  it("doesn't escape string with {excapeString: false}", () => {
+  it("doesn't escape string with {escapeString: false}", () => {
     const val = '"\'\\n';
     expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
   });
@@ -420,7 +420,7 @@ describe('prettyFormat()', () => {
 
   it('prints a multiline string', () => {
     const val = ['line 1', 'line 2', 'line 3'].join('\n');
-    expect(prettyFormat(val)).toEqual('"' + val + '"');
+    expect(prettyFormat(val)).toEqual(`"${val}"`);
   });
 
   it('prints a multiline string as value of object property', () => {
@@ -892,9 +892,7 @@ describe('prettyFormat()', () => {
         callToJSON: false,
       }),
     ).toEqual(
-      'Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ' +
-        name +
-        '],\n  },\n}',
+      `Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ${name}],\n  },\n}`,
     );
     expect((set as any).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
@@ -914,15 +912,13 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"boolean": [false, true]',
-            '"null": null',
-            '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
-            '"string": ["", "non-empty"]',
-            '"undefined": undefined',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"boolean": [false, true]',
+          '"null": null',
+          '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
+          '"string": ["", "non-empty"]',
+          '"undefined": undefined',
+        ].join(', ')}}`,
       );
     });
 
@@ -948,23 +944,21 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"arguments empty": []',
-            '"arguments non-empty": ["arg"]',
-            '"array literal empty": []',
-            '"array literal non-empty": ["item"]',
-            '"extended array empty": []',
-            '"map empty": Map {}',
-            '"map non-empty": Map {"name" => "value"}',
-            '"object literal empty": {}',
-            '"object literal non-empty": {"name": "value"}',
-            '"object with constructor": {"name": "value"}',
-            '"object without constructor": {}',
-            '"set empty": Set {}',
-            '"set non-empty": Set {"value"}',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"arguments empty": []',
+          '"arguments non-empty": ["arg"]',
+          '"array literal empty": []',
+          '"array literal non-empty": ["item"]',
+          '"extended array empty": []',
+          '"map empty": Map {}',
+          '"map non-empty": Map {"name" => "value"}',
+          '"object literal empty": {}',
+          '"object literal non-empty": {"name": "value"}',
+          '"object with constructor": {"name": "value"}',
+          '"object without constructor": {}',
+          '"set empty": Set {}',
+          '"set non-empty": Set {"value"}',
+        ].join(', ')}}`,
       );
     });
 

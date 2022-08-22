@@ -11,6 +11,7 @@ import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
+import LiteYouTubeEmbed from 'react-lite-youtube-embed';
 
 import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimation';
 
@@ -510,16 +511,9 @@ class Index extends React.Component {
             className="section-container bottom-margin docs"
           >
             <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent ">
+              <div className="blockContent">
                 <div className="video">
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/cAKYQpTC7MA"
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                  />
+                  <LiteYouTubeEmbed id="cAKYQpTC7MA" />
                 </div>
               </div>
             </div>
@@ -548,16 +542,9 @@ class Index extends React.Component {
             className="section-container bottom-margin docs"
           >
             <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent ">
+              <div className="blockContent">
                 <div className="video">
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/SyHzgcFefBk"
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                  />
+                  <LiteYouTubeEmbed id="SyHzgcFefBk" />
                 </div>
               </div>
             </div>

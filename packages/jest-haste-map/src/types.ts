@@ -57,6 +57,7 @@ export type WorkerMessage = {
   rootDir: string;
   filePath: string;
   hasteImplModulePath?: string;
+  retainAllFiles?: boolean;
 };
 
 export type WorkerMetadata = {
@@ -121,7 +122,7 @@ export type RawModuleMap = {
   mocks: MockData;
 };
 
-type ModuleMapItem = {[platform: string]: ModuleMetaData};
+export type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [path: string, type: number];
 
 export type HType = {
@@ -152,4 +153,13 @@ export type ChangeEvent = {
   eventsQueue: EventsQueue;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
+};
+
+export type DependencyExtractor = {
+  extract: (
+    code: string,
+    filePath: string,
+    defaultExtract: DependencyExtractor['extract'],
+  ) => Iterable<string>;
+  getCacheKey?: () => string;
 };

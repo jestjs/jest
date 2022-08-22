@@ -9,7 +9,6 @@ import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
-  FarmOptions,
   OnCustomMessage,
   OnEnd,
   OnStart,
@@ -17,12 +16,13 @@ import {
   QueueChildMessage,
   TaskQueue,
   WorkerCallback,
+  WorkerFarmOptions,
   WorkerInterface,
   WorkerSchedulingPolicy,
 } from './types';
 
 export default class Farm {
-  private readonly _computeWorkerKey: FarmOptions['computeWorkerKey'];
+  private readonly _computeWorkerKey: WorkerFarmOptions['computeWorkerKey'];
   private readonly _workerSchedulingPolicy: WorkerSchedulingPolicy;
   private readonly _cacheKeys: Record<string, WorkerInterface> =
     Object.create(null);
@@ -33,7 +33,7 @@ export default class Farm {
   constructor(
     private _numOfWorkers: number,
     private _callback: WorkerCallback,
-    options: FarmOptions = {},
+    options: WorkerFarmOptions = {},
   ) {
     this._computeWorkerKey = options.computeWorkerKey;
     this._workerSchedulingPolicy =
@@ -127,9 +127,12 @@ export default class Farm {
     // Reference the task object outside so it won't be retained by onEnd,
     // and other properties of the task object, such as task.request can be
     // garbage collected.
-    const taskOnEnd = task.onEnd;
+    let taskOnEnd: OnEnd | null = task.onEnd;
     const onEnd: OnEnd = (error, result) => {
-      taskOnEnd(error, result);
+      if (taskOnEnd) {
+        taskOnEnd(error, result);
+      }
+      taskOnEnd = null;
 
       this._unlock(workerId);
       this._process(workerId);

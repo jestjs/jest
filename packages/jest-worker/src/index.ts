@@ -10,10 +10,9 @@ import {isAbsolute} from 'path';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
-  FarmOptions,
   PoolExitResult,
-  PromiseWithCustomMessage,
-  TaskQueue,
+  WorkerFarmOptions,
+  WorkerModule,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
@@ -21,11 +20,21 @@ import type {
 export {default as PriorityQueue} from './PriorityQueue';
 export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
-export type {PromiseWithCustomMessage, TaskQueue};
+
+export type {
+  PromiseWithCustomMessage,
+  TaskQueue,
+  WorkerFarmOptions,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
+
+export type JestWorkerFarm<T extends Record<string, unknown>> = Worker &
+  WorkerModule<T>;
 
 function getExposedMethods(
   workerPath: string,
-  options: FarmOptions,
+  options: WorkerFarmOptions,
 ): ReadonlyArray<string> {
   let exposedMethods = options.exposedMethods;
 
@@ -73,10 +82,10 @@ function getExposedMethods(
 export class Worker {
   private _ending: boolean;
   private _farm: Farm;
-  private _options: FarmOptions;
+  private _options: WorkerFarmOptions;
   private _workerPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: FarmOptions) {
+  constructor(workerPath: string, options?: WorkerFarmOptions) {
     this._options = {...options};
     this._ending = false;
 
@@ -87,6 +96,7 @@ export class Worker {
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
+      idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
       numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
@@ -117,7 +127,7 @@ export class Worker {
 
   private _bindExposedWorkerMethods(
     workerPath: string,
-    options: FarmOptions,
+    options: WorkerFarmOptions,
   ): void {
     getExposedMethods(workerPath, options).forEach(name => {
       if (name.startsWith('_')) {
@@ -126,7 +136,7 @@ export class Worker {
 
       // eslint-disable-next-line no-prototype-builtins
       if (this.constructor.prototype.hasOwnProperty(name)) {
-        throw new TypeError('Cannot define a method called ' + name);
+        throw new TypeError(`Cannot define a method called ${name}`);
       }
 
       // @ts-expect-error: dynamic extension of the class instance is expected.

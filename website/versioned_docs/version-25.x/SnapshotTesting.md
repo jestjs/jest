@@ -138,6 +138,8 @@ it('renders correctly', () => {
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
 
+The writing of snapshots into your source code is performed via [prettier](https://www.npmjs.com/package/prettier). If you're not already using it in your project but want to use inline snapshots, you'll just need to install it under your `devDependencies`.
+
 ### Property Matchers
 
 Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:
@@ -267,7 +269,7 @@ exports[`<UserName /> should render Alan Turing`] = `
 `;
 ```
 
-Since the later describes exactly what's expected in the output, it's more clear to see when it's wrong:
+Since the latter describes exactly what's expected in the output, it's more clear to see when it's wrong:
 
 ```js
 exports[`<UserName /> should render null`] = `

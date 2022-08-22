@@ -42,7 +42,7 @@ export function printIteratorEntries(
   // Too bad, so sad that separator for ECMAScript Map has been ' => '
   // What a distracting diff if you change a data structure to/from
   // ECMAScript Object or Immutable.Map/OrderedMap which use the default.
-  separator: string = ': ',
+  separator = ': ',
 ): string {
   let result = '';
   let width = 0;
@@ -81,7 +81,7 @@ export function printIteratorEntries(
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -128,7 +128,7 @@ export function printIteratorValues(
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -173,7 +173,7 @@ export function printListItems(
       }
 
       if (i < list.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -211,10 +211,10 @@ export function printObjectProperties(
       const name = printer(key, config, indentationNext, depth, refs);
       const value = printer(val[key], config, indentationNext, depth, refs);
 
-      result += indentationNext + name + ': ' + value;
+      result += `${indentationNext + name}: ${value}`;
 
       if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }

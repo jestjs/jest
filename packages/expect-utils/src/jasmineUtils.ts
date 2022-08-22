@@ -36,7 +36,7 @@ export type EqualsFunction = (
 // Extracted out of jasmine 2.5.2
 export const equals: EqualsFunction = (a, b, customTesters, strictCheck) => {
   customTesters = customTesters || [];
-  return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
+  return eq(a, b, [], [], customTesters, strictCheck);
 };
 
 function isAsymmetric(obj: any) {
@@ -68,7 +68,7 @@ function eq(
   aStack: Array<unknown>,
   bStack: Array<unknown>,
   customTesters: Array<Tester>,
-  hasKey: any,
+  strictCheck: boolean | undefined,
 ): boolean {
   var result = true;
 
@@ -149,17 +149,34 @@ function eq(
   bStack.push(b);
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
-  if (className == '[object Array]' && a.length !== b.length) {
+  if (strictCheck && className == '[object Array]' && a.length !== b.length) {
     return false;
   }
 
   // Deep compare objects.
   var aKeys = keys(a, hasKey),
     key;
-  var size = aKeys.length;
+
+  var bKeys = keys(b, hasKey);
+  // Add keys corresponding to asymmetric matchers if they miss in non strict check mode
+  if (!strictCheck) {
+    for (var index = 0; index !== bKeys.length; ++index) {
+      key = bKeys[index];
+      if ((isAsymmetric(b[key]) || b[key] === undefined) && !hasKey(a, key)) {
+        aKeys.push(key);
+      }
+    }
+    for (var index = 0; index !== aKeys.length; ++index) {
+      key = aKeys[index];
+      if ((isAsymmetric(a[key]) || a[key] === undefined) && !hasKey(b, key)) {
+        bKeys.push(key);
+      }
+    }
+  }
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, hasKey).length !== size) {
+  var size = aKeys.length;
+  if (bKeys.length !== size) {
     return false;
   }
 
@@ -167,9 +184,14 @@ function eq(
     key = aKeys[size];
 
     // Deep compare each member
-    result =
-      hasKey(b, key) &&
-      eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
+    if (strictCheck)
+      result =
+        hasKey(b, key) &&
+        eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
+    else
+      result =
+        (hasKey(b, key) || isAsymmetric(a[key]) || a[key] === undefined) &&
+        eq(a[key], b[key], aStack, bStack, customTesters, strictCheck);
 
     if (!result) {
       return false;
@@ -198,10 +220,6 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
   );
 }
 
-function hasDefinedKey(obj: any, key: string) {
-  return hasKey(obj, key) && obj[key] !== undefined;
-}
-
 function hasKey(obj: any, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
@@ -220,10 +238,12 @@ function isDomNode(obj: any): boolean {
   );
 }
 
-// SENTINEL constants are from https://github.com/facebook/immutable-js
+// SENTINEL constants are from https://github.com/immutable-js/immutable-js/tree/main/src/predicates
 const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+const IS_RECORD_SYMBOL = '@@__IMMUTABLE_RECORD__@@';
 
 export function isImmutableUnorderedKeyed(maybeKeyed: any) {
   return !!(
@@ -238,5 +258,36 @@ export function isImmutableUnorderedSet(maybeSet: any) {
     maybeSet &&
     maybeSet[IS_SET_SENTINEL] &&
     !maybeSet[IS_ORDERED_SENTINEL]
+  );
+}
+
+export function isImmutableList(maybeList: any) {
+  return !!(
+    maybeList &&
+    maybeList[IS_LIST_SENTINEL]
+  );
+}
+
+export function isImmutableOrderedKeyed(maybeKeyed: any) {
+  return !!(
+    maybeKeyed &&
+    maybeKeyed[IS_KEYED_SENTINEL] &&
+    maybeKeyed[IS_ORDERED_SENTINEL]
+  );
+}
+
+
+export function isImmutableOrderedSet(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_SET_SENTINEL] &&
+    maybeSet[IS_ORDERED_SENTINEL]
+  );
+}
+
+export function isImmutableRecord(maybeSet: any) {
+  return !!(
+    maybeSet &&
+    maybeSet[IS_RECORD_SYMBOL]
   );
 }

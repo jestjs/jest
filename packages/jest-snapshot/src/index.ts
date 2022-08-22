@@ -7,7 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-import type {MatcherFunctionWithState} from 'expect';
+import type {MatcherFunctionWithContext} from 'expect';
 import type {FS as HasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
@@ -61,15 +61,11 @@ const printSnapshotName = (
   const hasNames = concatenatedBlockNames.length !== 0;
   const hasHint = hint.length !== 0;
 
-  return (
-    'Snapshot name: `' +
-    (hasNames ? escapeBacktickString(concatenatedBlockNames) : '') +
-    (hasNames && hasHint ? ': ' : '') +
-    (hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : '') +
-    ' ' +
-    count +
-    '`'
-  );
+  return `Snapshot name: \`${
+    hasNames ? escapeBacktickString(concatenatedBlockNames) : ''
+  }${hasNames && hasHint ? ': ' : ''}${
+    hasHint ? BOLD_WEIGHT(escapeBacktickString(hint)) : ''
+  } ${count}\``;
 };
 
 function stripAddedIndentation(inlineSnapshot: string) {
@@ -126,7 +122,7 @@ export const cleanup = (
   filesRemoved: number;
   filesRemovedList: Array<string>;
 } => {
-  const pattern = '\\.' + EXTENSION + '$';
+  const pattern = `\\.${EXTENSION}$`;
   const files = hasteFS.matchFiles(pattern);
   let testIgnorePatternsRegex: RegExp | null = null;
   if (testPathIgnorePatterns && testPathIgnorePatterns.length > 0) {
@@ -157,7 +153,7 @@ export const cleanup = (
   };
 };
 
-export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
+export const toMatchSnapshot: MatcherFunctionWithContext<Context> = function (
   received: unknown,
   propertiesOrHint?: object | string,
   hint?: string,
@@ -215,7 +211,7 @@ export const toMatchSnapshot: MatcherFunctionWithState<Context> = function (
   });
 };
 
-export const toMatchInlineSnapshot: MatcherFunctionWithState<Context> =
+export const toMatchInlineSnapshot: MatcherFunctionWithContext<Context> =
   function (
     received: unknown,
     propertiesOrSnapshot?: object | string,
@@ -303,11 +299,9 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     // Call generic stringify from jest-matcher-utils package
     // because uninitialized snapshot state does not need snapshot serializers.
     throw new Error(
-      matcherHintFromConfig(config, false) +
-        '\n\n' +
+      `${matcherHintFromConfig(config, false)}\n\n` +
         'Snapshot state must be initialized' +
-        '\n\n' +
-        printWithType('Snapshot state', snapshotState, stringify),
+        `\n\n${printWithType('Snapshot state', snapshotState, stringify)}`,
     );
   }
 
@@ -342,11 +336,15 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       const count = matched === null ? 1 : Number(matched[1]);
 
       const message = () =>
-        matcherHintFromConfig(config, false) +
-        '\n\n' +
-        printSnapshotName(currentTestName, hint, count) +
-        '\n\n' +
-        printPropertiesAndReceived(properties, received, snapshotState.expand);
+        `${matcherHintFromConfig(config, false)}\n\n${printSnapshotName(
+          currentTestName,
+          hint,
+          count,
+        )}\n\n${printPropertiesAndReceived(
+          properties,
+          received,
+          snapshotState.expand,
+        )}`;
 
       return {
         message,
@@ -374,10 +372,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   const message =
     expected === undefined
       ? () =>
-          matcherHintFromConfig(config, true) +
-          '\n\n' +
-          printSnapshotName(currentTestName, hint, count) +
-          '\n\n' +
+          `${matcherHintFromConfig(config, true)}\n\n${printSnapshotName(
+            currentTestName,
+            hint,
+            count,
+          )}\n\n` +
           `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
           'must be explicitly passed to write a new snapshot.\n\n' +
           'This is likely because this test is run in a continuous integration ' +
@@ -386,16 +385,16 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             actual,
           )}`
       : () =>
-          matcherHintFromConfig(config, true) +
-          '\n\n' +
-          printSnapshotName(currentTestName, hint, count) +
-          '\n\n' +
-          printSnapshotAndReceived(
+          `${matcherHintFromConfig(config, true)}\n\n${printSnapshotName(
+            currentTestName,
+            hint,
+            count,
+          )}\n\n${printSnapshotAndReceived(
             expected,
             actual,
             received,
             snapshotState.expand,
-          );
+          )}`;
 
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
@@ -409,7 +408,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-export const toThrowErrorMatchingSnapshot: MatcherFunctionWithState<Context> =
+export const toThrowErrorMatchingSnapshot: MatcherFunctionWithContext<Context> =
   function (received: unknown, hint?: string, fromPromise?: boolean) {
     const matcherName = 'toThrowErrorMatchingSnapshot';
 
@@ -428,7 +427,7 @@ export const toThrowErrorMatchingSnapshot: MatcherFunctionWithState<Context> =
     );
   };
 
-export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithState<Context> =
+export const toThrowErrorMatchingInlineSnapshot: MatcherFunctionWithContext<Context> =
   function (received: unknown, inlineSnapshot?: string, fromPromise?: boolean) {
     const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 
@@ -512,7 +511,7 @@ const _toThrowErrorMatchingSnapshot = (
   if (error === undefined) {
     // Because the received value is a function, this is not a matcher error.
     throw new Error(
-      matcherHintFromConfig(config, false) + '\n\n' + DID_NOT_THROW,
+      `${matcherHintFromConfig(config, false)}\n\n${DID_NOT_THROW}`,
     );
   }
 

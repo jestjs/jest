@@ -24,8 +24,8 @@ describe('Runtime statics', () => {
     jest.clearAllMocks();
   });
 
-  test('Runtime.createHasteMap passes correct ignore files to HasteMap', () => {
-    Runtime.createHasteMap(projectConfig, options);
+  test('Runtime.createHasteMap passes correct ignore files to HasteMap', async () => {
+    await Runtime.createHasteMap(projectConfig, options);
     expect(HasteMap.create).toBeCalledWith(
       expect.objectContaining({
         ignorePattern: /\/root\/ignore-1|\/root\/ignore-2/,
@@ -33,8 +33,8 @@ describe('Runtime statics', () => {
     );
   });
 
-  test('Runtime.createHasteMap passes correct ignore files to HasteMap in watch mode', () => {
-    Runtime.createHasteMap(projectConfig, {...options, watch: true});
+  test('Runtime.createHasteMap passes correct ignore files to HasteMap in watch mode', async () => {
+    await Runtime.createHasteMap(projectConfig, {...options, watch: true});
     expect(HasteMap.create).toBeCalledWith(
       expect.objectContaining({
         ignorePattern:

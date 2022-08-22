@@ -12,13 +12,16 @@ import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
+  /** Resolves from `testPath` to snapshot path. */
+  resolveSnapshotPath(testPath: string, snapshotExtension?: string): string;
+  /** Resolves from `snapshotPath` to test path. */
+  resolveTestPath(snapshotPath: string, snapshotExtension?: string): string;
+  /** Example test path, used for preflight consistency check of the implementation above. */
   testPathForConsistencyCheck: string;
-  resolveSnapshotPath(testPath: string, extension?: string): string;
-  resolveTestPath(snapshotPath: string, extension?: string): string;
 };
 
 export const EXTENSION = 'snap';
-export const DOT_EXTENSION = '.' + EXTENSION;
+export const DOT_EXTENSION = `.${EXTENSION}`;
 
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
@@ -95,7 +98,7 @@ async function createCustomSnapshotResolver(
     }
   });
 
-  const customResolver = {
+  const customResolver: SnapshotResolver = {
     resolveSnapshotPath: (testPath: string) =>
       custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
     resolveTestPath: (snapshotPath: string) =>
@@ -109,12 +112,9 @@ async function createCustomSnapshotResolver(
 }
 
 function mustImplement(propName: string, requiredType: string) {
-  return (
-    chalk.bold(
-      `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
-    ) +
-    '\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string'
-  );
+  return `${chalk.bold(
+    `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
+  )}\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string`;
 }
 
 function verifyConsistentTransformations(custom: SnapshotResolver) {

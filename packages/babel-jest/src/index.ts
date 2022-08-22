@@ -19,14 +19,13 @@ import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
   SyncTransformer,
+  TransformerCreator,
 } from '@jest/transform';
 import {loadPartialConfig, loadPartialConfigAsync} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
-
-type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
 
 function assertLoadedBabelConfig(
   babelConfig: Readonly<PartialConfig> | null,
@@ -79,7 +78,7 @@ function getCacheKeyFromConfig(
 
   const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
 
-  return createHash('md5')
+  return createHash('sha256')
     .update(THIS_FILE)
     .update('\0', 'utf8')
     .update(JSON.stringify(babelOptions.options))
@@ -99,7 +98,8 @@ function getCacheKeyFromConfig(
     .update(process.env.BABEL_ENV || '')
     .update('\0', 'utf8')
     .update(process.version)
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function loadBabelConfig(
@@ -148,7 +148,10 @@ async function loadBabelOptionsAsync(
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
-export const createTransformer: CreateTransformer = userOptions => {
+export const createTransformer: TransformerCreator<
+  SyncTransformer<TransformOptions>,
+  TransformOptions
+> = userOptions => {
   const inputOptions = userOptions ?? {};
 
   const options = {
@@ -171,10 +174,11 @@ export const createTransformer: CreateTransformer = userOptions => {
     filename: string,
     transformOptions: JestTransformOptions,
   ): TransformOptions {
-    const {cwd} = transformOptions.config;
-    // `cwd` first to allow incoming options to override it
+    const {cwd, rootDir} = transformOptions.config;
+    // `cwd` and `root` first to allow incoming options to override it
     return {
       cwd,
+      root: rootDir,
       ...options,
       caller: {
         ...options.caller,
@@ -242,7 +246,7 @@ export const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelOptionsAsync(
@@ -264,16 +268,15 @@ export const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
   };
 };
 
-const transformer: SyncTransformer<TransformOptions> = {
-  ...createTransformer(),
-  // Assigned here so only the exported transformer has `createTransformer`,
-  // instead of all created transformers by the function
+const transformerFactory = {
+  // Assigned here, instead of as a separate export, due to limitations in Jest's
+  // requireOrImportModule, requiring all exports to be on the `default` export
   createTransformer,
 };
 
-export default transformer;
+export default transformerFactory;

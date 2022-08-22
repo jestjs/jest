@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`malformed custom resolver in project config inconsistent functions throws  1`] = `"<bold>Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('foo/__tests__/bar.test.js')) === foo/__SPECS__/bar.test.js</>"`;
+exports[`malformed custom resolver in project config inconsistent functions throws  1`] = `"<bold>Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('foo/__tests__/bar.test.js')) === foo/__SPECS__/bar.test.js</intensity>"`;
 
 exports[`malformed custom resolver in project config missing resolveSnapshotPath throws  1`] = `
-"<bold>Custom snapshot resolver must implement a \`resolveSnapshotPath\` as a function.</>
+"<bold>Custom snapshot resolver must implement a \`resolveSnapshotPath\` as a function.</intensity>
 Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;
 
 exports[`malformed custom resolver in project config missing resolveTestPath throws  1`] = `
-"<bold>Custom snapshot resolver must implement a \`resolveTestPath\` as a function.</>
+"<bold>Custom snapshot resolver must implement a \`resolveTestPath\` as a function.</intensity>
 Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;
 
 exports[`malformed custom resolver in project config missing testPathForConsistencyCheck throws  1`] = `
-"<bold>Custom snapshot resolver must implement a \`testPathForConsistencyCheck\` as a string.</>
+"<bold>Custom snapshot resolver must implement a \`testPathForConsistencyCheck\` as a string.</intensity>
 Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;

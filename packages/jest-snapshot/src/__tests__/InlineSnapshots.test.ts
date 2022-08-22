@@ -5,23 +5,43 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock(require.resolve('prettier'), () => require('../__mocks__/prettier'));
-
 import {tmpdir} from 'os';
 import * as path from 'path';
-const prettier = require(require.resolve('prettier'));
 import * as fs from 'graceful-fs';
-import {Frame} from 'jest-message-util';
+import prettier = require('prettier');
+import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
 
-let dir;
-beforeEach(() => {
-  (prettier.resolveConfig.sync as jest.Mock).mockReset();
+jest.mock('prettier', () => {
+  const realPrettier: typeof import('prettier') =
+    jest.requireActual('prettier');
+  const mockPrettier: typeof import('prettier') = {
+    format: (text, opts) =>
+      realPrettier.format(text, {
+        pluginSearchDirs: [
+          require('path').dirname(require.resolve('prettier')),
+        ],
+        ...opts,
+      }),
+    getFileInfo: {sync: () => ({inferredParser: 'babel'})},
+    resolveConfig: {sync: jest.fn()},
+    version: realPrettier.version,
+  };
+  return mockPrettier;
 });
 
 beforeEach(() => {
+  jest.mocked(prettier.resolveConfig.sync).mockReset();
+});
+
+let dir: string;
+beforeEach(() => {
   dir = path.join(tmpdir(), `jest-inline-snapshot-test-${Date.now()}`);
   fs.mkdirSync(dir);
+});
+
+afterEach(() => {
+  fs.rmSync(dir, {recursive: true});
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
@@ -35,6 +55,7 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
         snapshot: '1',
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -47,13 +68,13 @@ test('saveInlineSnapshots() without prettier leaves formatting outside of snapsh
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -61,6 +82,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
       frame: {column: 11, file: filename, line} as Frame,
       snapshot: '[1, 2]',
     })),
+    dir,
     null,
   );
 
@@ -77,13 +99,13 @@ test('saveInlineSnapshots() with bad prettier path leaves formatting outside of 
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -91,6 +113,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
       frame: {column: 11, file: filename, line} as Frame,
       snapshot: '[1, 2]',
     })),
+    dir,
     'bad-prettier',
   );
 
@@ -107,13 +130,13 @@ test('saveInlineSnapshots() can handle typescript without prettier', () => {
   const filename = path.join(dir, 'my.test.ts');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -123,17 +146,18 @@ expect(a).toMatchInlineSnapshot();
         snapshot: "[{ foo: 'one' }, { foo: 'two' }]",
       },
     ],
+    dir,
     null,
   );
 
   expect(fs.readFileSync(filename, 'utf8')).toBe(
-    `
+    `${`
 interface Foo {
   foo: string
 }
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -141,13 +165,13 @@ test('saveInlineSnapshots() can handle tsx without prettier', () => {
   const filename = path.join(dir, 'my.test.tsx');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 it('foos', async () => {
   const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
   const a = await Foo({ foo: "hello" });
   expect(a).toMatchInlineSnapshot();
 })
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -157,17 +181,18 @@ it('foos', async () => {
         snapshot: '<div>hello</div>',
       },
     ],
+    dir,
     null,
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
-    `
+    `${`
 it('foos', async () => {
   const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
   const a = await Foo({ foo: "hello" });
   expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
 })
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -175,11 +200,11 @@ test('saveInlineSnapshots() can handle flow and jsx without prettier', () => {
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
 const a = Foo({ foo: "hello" });
 expect(a).toMatchInlineSnapshot();
-`.trim() + '\n',
+`.trim()}\n`,
   );
   fs.writeFileSync(
     path.join(dir, '.babelrc'),
@@ -198,15 +223,16 @@ expect(a).toMatchInlineSnapshot();
         snapshot: '<div>hello</div>',
       },
     ],
+    dir,
     null,
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
-    `
+    `${`
 const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
 const a = Foo({ foo: "hello" });
 expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 });
 
@@ -214,13 +240,13 @@ test('saveInlineSnapshots() can use prettier to fix formatting for whole file', 
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(
     filename,
-    `
+    `${`
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
-`.trim() + '\n',
+`.trim()}\n`,
   );
 
   saveInlineSnapshots(
@@ -228,6 +254,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
       frame: {column: 11, file: filename, line} as Frame,
       snapshot: '[1, 2]',
     })),
+    dir,
     'prettier',
   );
 
@@ -246,7 +273,7 @@ test.each([['babel'], ['flow'], ['typescript']])(
     const filename = path.join(dir, 'my.test.js');
     fs.writeFileSync(filename, 'expect(1).toMatchInlineSnapshot(`2`);\n');
 
-    (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({parser});
+    jest.mocked(prettier.resolveConfig.sync).mockReturnValue({parser});
 
     saveInlineSnapshots(
       [
@@ -255,11 +282,12 @@ test.each([['babel'], ['flow'], ['typescript']])(
           snapshot: '1',
         },
       ],
+      dir,
       'prettier',
     );
 
     expect(
-      (prettier.resolveConfig.sync as jest.Mock).mock.results[0].value,
+      jest.mocked(prettier.resolveConfig.sync).mock.results[0].value,
     ).toEqual({parser});
 
     expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -279,6 +307,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
         snapshot: '1',
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -300,6 +329,7 @@ test.each(['prettier', null])(
           snapshot: '1',
         },
       ],
+      dir,
       prettierModule,
     );
 
@@ -325,6 +355,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
           snapshot: '1',
         },
       ],
+      dir,
       'prettier',
     );
 
@@ -342,6 +373,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
         {frame, snapshot: '1'},
         {frame, snapshot: '2'},
       ],
+      dir,
       'prettier',
     );
 
@@ -355,7 +387,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
   fs.writeFileSync(filename, 'expect("`").toMatchInlineSnapshot();\n');
 
   const frame = {column: 13, file: filename, line: 1} as Frame;
-  saveInlineSnapshots([{frame, snapshot: '`'}], 'prettier');
+  saveInlineSnapshots([{frame, snapshot: '`'}], dir, 'prettier');
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'expect("`").toMatchInlineSnapshot(`\\``);\n',
@@ -365,7 +397,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(dir, 'my.test.js');
   fs.writeFileSync(filename, "expect({a: 'a'}).toMatchInlineSnapshot();\n");
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -377,6 +409,7 @@ test('saveInlineSnapshots() works with non-literals in expect call', () => {
         snapshot: "{a: 'a'}",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -393,7 +426,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -405,6 +438,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
         snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -435,7 +469,7 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -447,6 +481,7 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
         snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -484,7 +519,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
       '  `);\n' +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -496,6 +531,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
         snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -525,7 +561,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n',
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
     useTabs: true,
@@ -538,6 +574,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
         snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -558,7 +595,7 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
     filename,
     "it('is a test', () => expect({a: 'a'}).toMatchInlineSnapshot());\n",
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -570,6 +607,7 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
         snapshot: "\nObject {\n  a: 'a'\n}\n",
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -589,7 +627,7 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
     filename,
     "it('is a test', () => expect(`hello\n\nworld`).toMatchInlineSnapshot());\n",
   );
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
   });
@@ -601,6 +639,7 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
         snapshot: '\nhello\n\nworld\n',
       },
     ],
+    dir,
     'prettier',
   );
 
@@ -611,5 +650,42 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
       '\n' +
       '    world\n' +
       '  `));\n',
+  );
+});
+
+test('saveInlineSnapshots() indents awaited snapshots with spaces', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(
+    filename,
+    "it('is a test', async () => {\n" +
+      "  const a = Promise.resolve({a: 'a'});\n" +
+      '  await expect(a).resolves.toMatchInlineSnapshot();\n' +
+      '});\n',
+  );
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 28, file: filename, line: 3} as Frame,
+        snapshot: "\nObject {\n  a: 'a'\n}\n",
+      },
+    ],
+    dir,
+    'prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    "it('is a test', async () => {\n" +
+      "  const a = Promise.resolve({a: 'a'});\n" +
+      '  await expect(a).resolves.toMatchInlineSnapshot(`\n' +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
   );
 });
