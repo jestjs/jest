@@ -232,9 +232,6 @@ export type InitialOptions = Partial<{
   changedSince: string;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
-  collectCoverageOnlyFrom: {
-    [key: string]: boolean;
-  };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
@@ -364,9 +361,6 @@ export type GlobalConfig = {
   ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
-  collectCoverageOnlyFrom?: {
-    [key: string]: boolean;
-  };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
@@ -497,7 +491,6 @@ export type Argv = Arguments<
     clearMocks: boolean;
     collectCoverage: boolean;
     collectCoverageFrom: string;
-    collectCoverageOnlyFrom: Array<string>;
     color: boolean;
     colors: boolean;
     config: string;
