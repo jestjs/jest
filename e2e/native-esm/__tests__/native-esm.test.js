@@ -18,11 +18,9 @@ import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
-/* eslint-disable import/no-duplicates */
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
-/* eslint-enable import/no-duplicates */
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -189,6 +187,15 @@ test('can mock module', async () => {
   });
 
   const importedMock = await import('../mockedModule.mjs');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toEqual('bar');
+});
+
+test('can mock transitive module', async () => {
+  jestObject.unstable_mockModule('../index.js', () => ({foo: 'bar'}));
+
+  const importedMock = await import('../reexport.js');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
   expect(importedMock.foo).toEqual('bar');

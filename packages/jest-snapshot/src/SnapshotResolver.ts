@@ -12,9 +12,12 @@ import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
+  /** Resolves from `testPath` to snapshot path. */
+  resolveSnapshotPath(testPath: string, snapshotExtension?: string): string;
+  /** Resolves from `snapshotPath` to test path. */
+  resolveTestPath(snapshotPath: string, snapshotExtension?: string): string;
+  /** Example test path, used for preflight consistency check of the implementation above. */
   testPathForConsistencyCheck: string;
-  resolveSnapshotPath(testPath: string, extension?: string): string;
-  resolveTestPath(snapshotPath: string, extension?: string): string;
 };
 
 export const EXTENSION = 'snap';
@@ -95,7 +98,7 @@ async function createCustomSnapshotResolver(
     }
   });
 
-  const customResolver = {
+  const customResolver: SnapshotResolver = {
     resolveSnapshotPath: (testPath: string) =>
       custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
     resolveTestPath: (snapshotPath: string) =>

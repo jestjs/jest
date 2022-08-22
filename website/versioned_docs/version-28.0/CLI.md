@@ -118,7 +118,7 @@ import TOCInline from '@theme/TOCInline';
 
 When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--bail`
+### `--bail[=<n>]`
 
 Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
@@ -204,7 +204,16 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--filter=<file>`
 
-Path to a module exporting a filtering function. This method receives a list of tests which can be manipulated to exclude tests from running. Especially useful when used in conjunction with a testing infrastructure to filter known broken.
+Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with the "filtered" property. Especially useful when used in conjunction with a testing infrastructure to filter known broken, e.g.
+
+```js title="my-filter.js"
+module.exports = testPaths => {
+  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
+  return {
+    filtered: allowedPaths,
+  };
+};
+```
 
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
@@ -350,7 +359,7 @@ The test suite shard to execute in a format of `(?<shardIndex>\d+)/(?<shardCount
 
 `shardIndex` and `shardCount` have to be 1-based, positive numbers, and `shardIndex` has to be lower than or equal to `shardCount`.
 
-When `shard` is specified the configured [`testSquencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
+When `shard` is specified the configured [`testSequencer`](Configuration.md#testsequencer-string) has to implement a `shard` method.
 
 For example, to split the suite into three shards, each running one third of the tests:
 

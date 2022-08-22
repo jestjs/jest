@@ -26,10 +26,12 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import {Worker} from 'jest-worker';
+import {JestWorkerFarm, Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
-import type {CoverageWorker, ReporterContext} from './types';
+import type {ReporterContext} from './types';
+
+type CoverageWorker = typeof import('./CoverageWorker');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -137,18 +139,19 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker: CoverageWorker | Worker;
+    let worker:
+      | JestWorkerFarm<CoverageWorker>
+      | typeof import('./CoverageWorker');
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./CoverageWorker');
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
-        // @ts-expect-error: option does not exist on the node 12 types
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,
-      });
+      }) as JestWorkerFarm<CoverageWorker>;
     }
 
     const instrumentation = files.map(async fileObj => {
@@ -269,7 +272,16 @@ export default class CoverageReporter extends BaseReporter {
         const pathOrGlobMatches = thresholdGroups.reduce<
           Array<[string, string]>
         >((agg, thresholdGroup) => {
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+          // Preserve trailing slash, but not required if root dir
+          // See https://github.com/facebook/jest/issues/12703
+          const resolvedThresholdGroup = path.resolve(thresholdGroup);
+          const suffix =
+            (thresholdGroup.endsWith(path.sep) ||
+              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
+            !resolvedThresholdGroup.endsWith(path.sep)
+              ? path.sep
+              : '';
+          const absoluteThresholdGroup = `${resolvedThresholdGroup}${suffix}`;
 
           // The threshold group might be a path:
 

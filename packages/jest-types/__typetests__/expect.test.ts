@@ -211,28 +211,28 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(3));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes(true));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 
+expectType<void>(expect(jest.fn()).toBeCalledWith());
 expectType<void>(expect(jest.fn()).toBeCalledWith('value'));
 expectType<void>(expect(jest.fn()).toBeCalledWith('value', 123));
-expectError(expect(jest.fn()).toBeCalledWith());
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
-expectError(expect(jest.fn()).toHaveBeenCalledWith());
 
+expectType<void>(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
 expectType<void>(expect(jest.fn()).lastCalledWith('value', 123));
-expectError(expect(jest.fn()).lastCalledWith());
+expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'));
-expectError(expect(jest.fn()).toHaveBeenLastCalledWith());
 
+expectType<void>(expect(jest.fn()).nthCalledWith(2));
 expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value', 123));
 expectError(expect(jest.fn()).nthCalledWith());
-expectError(expect(jest.fn()).nthCalledWith(2));
+expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(2));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));
 expectError(expect(jest.fn()).toHaveBeenNthCalledWith());
-expectError(expect(jest.fn()).toHaveBeenNthCalledWith(2));
 
 expectType<void>(expect(jest.fn()).toReturn());
 expectError(expect(jest.fn()).toReturn('value'));
@@ -361,16 +361,16 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
-      expectType<(() => void) | undefined>(this.dontThrow);
+      expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
       expectType<boolean | undefined>(this.expand);
-      expectType<number | null | undefined>(this.expectedAssertionsNumber);
+      expectType<number | null>(this.expectedAssertionsNumber);
       expectType<Error | undefined>(this.expectedAssertionsNumberError);
-      expectType<boolean | undefined>(this.isExpectingAssertions);
+      expectType<boolean>(this.isExpectingAssertions);
       expectType<Error | undefined>(this.isExpectingAssertionsError);
-      expectType<boolean>(this.isNot);
-      expectType<string>(this.promise);
+      expectType<boolean | undefined>(this.isNot);
+      expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);

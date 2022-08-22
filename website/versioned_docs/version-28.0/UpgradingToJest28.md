@@ -13,7 +13,7 @@ See [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md#2800) fo
 
 ## Compatibility
 
-The supported Node versions are 12.13, 14.15, 16.13 and above.
+The supported Node versions are 12.13, 14.15, 16.10 and above.
 
 If you plan to use type definitions of Jest (or any of its packages), make sure to install TypeScript version 4.3 or above.
 
@@ -49,7 +49,19 @@ The `testURL` option is removed. Now you should use [`testEnvironmentOptions`](C
 
 ## `expect`
 
-In versions prior to Jest 28, `toHaveProperty` checked for equality instead if existence, which means that e.g. `expect({}).toHaveProperty('a', undefined)` is a passing test. This has been changed in Jest 28 to fail.
+In versions prior to Jest 28, `toHaveProperty` checked for equality instead of existence, which means that e.g. `expect({}).toHaveProperty('a', undefined)` is a passing test. This has been changed in Jest 28 to fail.
+
+Additionally, if you import `expect` directly, it has been changed from default export to a named export.
+
+```diff
+- import expect from 'expect';
++ import {expect} from 'expect';
+```
+
+```diff
+- const expect = require('expect');
++ const {expect} = require('expect');
+```
 
 ## Fake Timers
 
@@ -128,6 +140,16 @@ The constructor of [test environment](Configuration.md#testenvironment-string) c
 +     const config = projectConfig;
 ```
 
+In addition, test environments are now exported with the name `TestEnvironment`, instead of simply exporting the class directly:
+
+```diff
+- const TestEnvironment = require('jest-environment-node');
++ const {TestEnvironment} = require('jest-environment-node');
+
+- const TestEnvironment = require('jest-environment-jsdom');
++ const {TestEnvironment} = require('jest-environment-jsdom');
+```
+
 ### `jsdom`
 
 If you are using JSDOM [test environment](Configuration.md#testenvironment-string), `jest-environment-jsdom` package now must be installed separately:
@@ -159,13 +181,17 @@ npm install --save-dev jest-jasmine2
 
 ## `package.json` `exports`
 
-Jest now includes full support for [package `exports`](https://nodejs.org/api/packages.html#exports), which might mean that files you import are not resolved correctly. Additionally, Jest now supplies more conditions. `jest-environment-node` has `node` and `node-addons`, while `jest-environment-jsdom` has `browser`. As a result, you might e.g. get browser code which assumes ESM, when Jest provides `['require', 'browser']`. You can either report a bug to the library (or Jest, the implementation is new and might have bugs!) or override the conditions Jest passes.
+Jest now includes full support for [package `exports`](https://nodejs.org/api/packages.html#exports), which might mean that files you import are not resolved correctly.
+
+Additionally, Jest now supplies more conditions. `jest-environment-node` has `node` and `node-addons`, while `jest-environment-jsdom` has `browser`. As a result, you might e.g. get browser code which assumes ESM, when Jest provides `['require', 'browser']`. You can either report a bug to the library (or Jest, the implementation is new and might have bugs!), override the conditions Jest passes (via a custom test environment and overriding `exportConditions()`), using a custom resolver or `moduleMapper`. Lots of options, and you'll need to pick the correct one for your project.
+
+Known examples of packages that fails in Jest 28 are [`uuid`](https://npmjs.com/package/uuid) and [`nanoid`](https://npmjs.com/package/nanoid) when using the `jest-environment-jsdom` environment. For an analysis, and a potential workaround, see [this comment](https://github.com/microsoft/accessibility-insights-web/pull/5421#issuecomment-1109168149).
 
 ## TypeScript
 
 :::info
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
+The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
 
 ```ts
 import {jest} from '@jest/globals';

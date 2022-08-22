@@ -58,6 +58,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "setupFilesAfterEnv": [],
       "skipFilter": false,
       "slowTestThreshold": 5,
+      "snapshotFormat": {
+        "escapeString": false,
+        "printBasicPrototype": false
+      },
       "snapshotSerializers": [],
       "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
@@ -122,6 +126,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
     "skipFilter": false,
+    "snapshotFormat": {
+      "escapeString": false,
+      "printBasicPrototype": false
+    },
     "testFailureExitCode": 1,
     "testPathPattern": "",
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",

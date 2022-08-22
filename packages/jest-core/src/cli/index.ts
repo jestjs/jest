@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import exit = require('exit');
-import rimraf = require('rimraf');
+import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -63,10 +63,13 @@ export async function runCLI(
   }
 
   if (argv.clearCache) {
-    configs.forEach(config => {
-      rimraf.sync(config.cacheDirectory);
-      process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
-    });
+    // stick in a Set to dedupe the deletions
+    new Set(configs.map(config => config.cacheDirectory)).forEach(
+      cacheDirectory => {
+        fs.rmSync(cacheDirectory, {force: true, recursive: true});
+        process.stdout.write(`Cleared ${cacheDirectory}\n`);
+      },
+    );
 
     exit(0);
   }
@@ -105,6 +108,7 @@ export async function runCLI(
     // If in watch mode, return the promise that will never resolve.
     // If the watch mode is interrupted, watch should handle the process
     // shutdown.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return new Promise(() => {});
   }
 
