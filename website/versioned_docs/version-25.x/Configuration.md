@@ -1346,7 +1346,9 @@ If you use `pnpm` and need to convert some packages under `node_modules`, you ne
 
 ```json
 {
-   "transformIgnorePatterns": ["<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)"]
+  "transformIgnorePatterns": [
+    "<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+  ]
 }
 ```
 
