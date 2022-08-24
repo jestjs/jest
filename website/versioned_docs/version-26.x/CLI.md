@@ -238,7 +238,7 @@ Lists all test files that Jest will run given the arguments, and exits.
 
 ### `--logHeapUsage`
 
-Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
+Logs the heap usage after every test. Useful to debug memory leaks. Can be used together with flags like `--runInBand` or `--expose-gc` to diagnose memory leaks, etc.
 
 ### `--maxConcurrency=<num>`
 
