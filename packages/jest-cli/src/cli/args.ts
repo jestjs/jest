@@ -285,6 +285,11 @@ export const options: {[key: string]: Options} = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  forceWorkers: {
+    description:
+      'Force Jest to use workers when it otherwise would try not to.',
+    type: 'boolean',
+  },
   globalSetup: {
     description: 'The path to a module that runs before All Tests.',
     type: 'string',

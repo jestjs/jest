@@ -23,24 +23,30 @@ const getTestMock = () => ({
 const getTestsMock = () => [getTestMock(), getTestMock()];
 
 test.each`
-  tests              | timings        | detectOpenHandles | maxWorkers   | watch    | expectedResult
-  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${true}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${2}         | ${true}  | ${false}
-  ${[getTestMock()]} | ${[2000, 500]} | ${false}          | ${undefined} | ${true}  | ${false}
-  ${getTestMock()}   | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${false} | ${true}
-  ${getTestMock()}   | ${[2000, 500]} | ${false}          | ${2}         | ${false} | ${false}
-  ${[getTestMock()]} | ${[2000]}      | ${false}          | ${undefined} | ${false} | ${true}
-  ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${undefined} | ${false} | ${true}
-  ${new Array(45)}   | ${[500]}       | ${false}          | ${undefined} | ${false} | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${undefined} | ${false} | ${false}
-  ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${undefined} | ${false} | ${true}
+  tests              | timings        | detectOpenHandles | maxWorkers   | watch    | forceWorkers | expectedResult
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${false}     | ${true}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${false}     | ${true}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${2}         | ${true}  | ${false}     | ${false}
+  ${[getTestMock()]} | ${[2000, 500]} | ${false}          | ${undefined} | ${true}  | ${false}     | ${false}
+  ${getTestMock()}   | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${false}     | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${false} | ${false}     | ${true}
+  ${getTestMock()}   | ${[2000, 500]} | ${false}          | ${2}         | ${false} | ${false}     | ${false}
+  ${[getTestMock()]} | ${[2000]}      | ${false}          | ${undefined} | ${false} | ${false}     | ${true}
+  ${getTestsMock()}  | ${[500, 500]}  | ${false}          | ${undefined} | ${false} | ${false}     | ${true}
+  ${new Array(45)}   | ${[500]}       | ${false}          | ${undefined} | ${false} | ${false}     | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${undefined} | ${false} | ${false}     | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${true}           | ${undefined} | ${false} | ${false}     | ${true}
+  ${[getTestMock()]} | ${[500, 500]}  | ${false}          | ${undefined} | ${true}  | ${true}      | ${false}
+  ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${true}      | ${false}
 `(
   'shouldRunInBand() - should return $expectedResult for runInBand mode',
-  ({tests, timings, detectOpenHandles, maxWorkers, watch, expectedResult}) => {
+  ({tests, timings, detectOpenHandles, maxWorkers, watch, forceWorkers, expectedResult}) => {
     expect(
-      shouldRunInBand(tests, timings, {detectOpenHandles, maxWorkers, watch}),
+      shouldRunInBand(tests, timings, {detectOpenHandles, maxWorkers, watch, forceWorkers}),
     ).toBe(expectedResult);
   },
 );
+
+test('should throw when forceWorkers & detectOpenHandles used together', () => {
+  expect(() => shouldRunInBand(getTestMock(), [2000,2000], { detectOpenHandles: true, forceWorkers: true})).toThrowError();
+})

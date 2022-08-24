@@ -13,11 +13,28 @@ const SLOW_TEST_TIME = 1000;
 export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
-  {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
+  {
+    detectOpenHandles,
+    maxWorkers,
+    watch,
+    watchAll,
+    forceWorkers,
+  }: Config.GlobalConfig,
 ): boolean {
+  console.log({detectOpenHandles, forceWorkers});
+
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
+    if (forceWorkers) {
+      throw new Error(
+        'forceWorkers & detectOpenHandles cannot be used together',
+      );
+    }
+
     return true;
+  }
+  if (forceWorkers) {
+    return false;
   }
 
   /*

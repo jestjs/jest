@@ -20,6 +20,11 @@ describe('getMaxWorkers', () => {
     expect(getMaxWorkers(argv)).toBe(1);
   });
 
+  it('Throws when runInBand & forceWorkers used together', () => {
+    const argv = {forceWorkers: true, runInBand: true};
+    expect(() => getMaxWorkers(argv)).toThrowError();
+  });
+
   it('Returns 1 when the OS CPUs are not available', () => {
     require('os').__setCpus(undefined);
     expect(getMaxWorkers({})).toBe(1);

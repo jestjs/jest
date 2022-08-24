@@ -910,6 +910,7 @@ export default async function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'forceWorkers':
       case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':

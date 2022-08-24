@@ -10,11 +10,18 @@ import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(
   argv: Partial<
-    Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>
+    Pick<
+      Config.Argv,
+      'maxWorkers' | 'runInBand' | 'watch' | 'watchAll' | 'forceWorkers'
+    >
   >,
   defaultOptions?: Partial<Pick<Config.Argv, 'maxWorkers'>>,
 ): number {
   if (argv.runInBand) {
+    if (argv.forceWorkers) {
+      throw new Error('forceWorkers & runInBand cannot be used together');
+    }
+
     return 1;
   } else if (argv.maxWorkers) {
     return parseWorkers(argv.maxWorkers);

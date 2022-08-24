@@ -131,6 +131,7 @@ const groupOptions = (
     filter: options.filter,
     findRelatedTests: options.findRelatedTests,
     forceExit: options.forceExit,
+    forceWorkers: options.forceWorkers,
     globalSetup: options.globalSetup,
     globalTeardown: options.globalTeardown,
     json: options.json,

@@ -229,6 +229,12 @@ This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, 
 
 :::
 
+### `--forceWorkers`
+
+Can be used to force workers to be used when they would not normally, for example with a single worker. 
+
+Note: This will throw an error when used with `--runInBand` or `--detectOpenHandles`, they are mutually exclusive. 
+
 ### `--help`
 
 Show the help information, similar to this page.
@@ -275,7 +281,7 @@ Lists all test files that Jest will run given the arguments, and exits.
 
 ### `--logHeapUsage`
 
-Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
+Logs the heap usage after every test. Useful to debug memory leaks. Can be used together with `--runInBand` and `--expose-gc` in node to diagnose memory leaks, etc. 
 
 ### `--maxConcurrency=<num>`
 

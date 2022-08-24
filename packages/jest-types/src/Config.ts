@@ -248,6 +248,7 @@ export type InitialOptions = Partial<{
   findRelatedTests: boolean;
   forceCoverageMatch: Array<string>;
   forceExit: boolean;
+  forceWorkers: boolean;
   json: boolean;
   globals: ConfigGlobals;
   globalSetup: string | null | undefined;
@@ -372,6 +373,7 @@ export type GlobalConfig = {
   filter?: string;
   findRelatedTests: boolean;
   forceExit: boolean;
+  forceWorkers?: boolean;
   json: boolean;
   globalSetup?: string;
   globalTeardown?: string;
@@ -504,6 +506,7 @@ export type Argv = Arguments<
     expand: boolean;
     findRelatedTests: boolean;
     forceExit: boolean;
+    forceWorkers: boolean;
     globals: string;
     globalSetup: string | null | undefined;
     globalTeardown: string | null | undefined;
