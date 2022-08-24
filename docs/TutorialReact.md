@@ -205,7 +205,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](https://enzymejs.github.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
@@ -265,7 +265,7 @@ npm install --save-dev enzyme
 
 If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
-Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](https://enzymejs.github.io/enzyme/docs/api/shallow.html) in this example.
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
 import Enzyme, {shallow} from 'enzyme';
