@@ -233,7 +233,11 @@ This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, 
 
 Can be used to force workers to be used when they would not normally, for example with a single worker.
 
-Note: This will throw an error when used with `--runInBand` or `--detectOpenHandles`, they are mutually exclusive.
+:::note
+
+This will throw an error when used with `--runInBand` or `--detectOpenHandles`, they are mutually exclusive.
+
+:::
 
 ### `--help`
 
