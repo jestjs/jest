@@ -21,8 +21,6 @@ export function shouldRunInBand(
     forceWorkers,
   }: Config.GlobalConfig,
 ): boolean {
-  console.log({detectOpenHandles, forceWorkers});
-
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
     if (forceWorkers) {

@@ -40,13 +40,31 @@ test.each`
   ${getTestsMock()}  | ${[2000, 500]} | ${false}          | ${1}         | ${true}  | ${true}      | ${false}
 `(
   'shouldRunInBand() - should return $expectedResult for runInBand mode',
-  ({tests, timings, detectOpenHandles, maxWorkers, watch, forceWorkers, expectedResult}) => {
+  ({
+    tests,
+    timings,
+    detectOpenHandles,
+    maxWorkers,
+    watch,
+    forceWorkers,
+    expectedResult,
+  }) => {
     expect(
-      shouldRunInBand(tests, timings, {detectOpenHandles, maxWorkers, watch, forceWorkers}),
+      shouldRunInBand(tests, timings, {
+        detectOpenHandles,
+        forceWorkers,
+        maxWorkers,
+        watch,
+      }),
     ).toBe(expectedResult);
   },
 );
 
 test('should throw when forceWorkers & detectOpenHandles used together', () => {
-  expect(() => shouldRunInBand(getTestMock(), [2000,2000], { detectOpenHandles: true, forceWorkers: true})).toThrowError();
-})
+  expect(() =>
+    shouldRunInBand(getTestMock(), [2000, 2000], {
+      detectOpenHandles: true,
+      forceWorkers: true,
+    }),
+  ).toThrowError();
+});
