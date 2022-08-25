@@ -6,10 +6,14 @@
  */
 
 import {resolve} from 'path';
-import {extractSummary} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm');
+
+beforeAll(() => {
+  runYarnInstall(DIR);
+});
 
 test('test config is without transform', () => {
   const {configs} = getConfig(DIR);

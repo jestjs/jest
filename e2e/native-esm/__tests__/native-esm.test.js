@@ -14,6 +14,7 @@ import prefixDns from 'node:dns';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
+import {Constants} from '../deepReexport.js';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
@@ -44,6 +45,9 @@ test('should support importing node core modules', () => {
   const packageJsonPath = resolve(dir, '../package.json');
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
+    devDependencies: {
+      'discord.js': '14.3.0',
+    },
     jest: {
       testEnvironment: 'node',
       transform: {},
@@ -298,4 +302,8 @@ test('can mock "data:" URI module', async () => {
   });
   const mocked = await import(dataModule);
   expect(mocked.foo).toBe('bar');
+});
+
+test('can reexport deep CJS requires', () => {
+  expect(Constants).toHaveProperty('NonSystemMessageTypes');
 });
