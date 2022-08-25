@@ -6,21 +6,17 @@
  */
 
 import {resolve} from 'path';
-import {onNodeVersions} from '@jest/test-utils';
 import {json as runJest} from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm-typescript');
 
-// The versions where vm.Module exists and commonjs with "exports" is not broken
-onNodeVersions('>=12.16.0', () => {
-  test('runs TS test with native ESM', () => {
-    const {exitCode, json} = runJest(DIR, [], {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-    });
-
-    expect(exitCode).toBe(0);
-
-    expect(json.numTotalTests).toBe(2);
-    expect(json.numPassedTests).toBe(2);
+test('runs TS test with native ESM', () => {
+  const {exitCode, json} = runJest(DIR, [], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
   });
+
+  expect(exitCode).toBe(0);
+
+  expect(json.numTotalTests).toBe(2);
+  expect(json.numPassedTests).toBe(2);
 });

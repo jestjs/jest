@@ -39,7 +39,7 @@
 - [Additional Configuration](#additional-configuration)
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
-  - [Using Webpack](#using-webpack)
+  - [Using webpack](#using-webpack)
   - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)

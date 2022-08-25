@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Resolver} from '../defaultResolver';
+import type {SyncResolver} from '../defaultResolver';
 
-declare const userResolver: Resolver;
+declare const userResolver: SyncResolver;
 
 export default userResolver;

@@ -1557,9 +1557,9 @@ class CustomSequencer extends Sequencer {
    * Sharding is applied before sorting
    */
   shard(tests, {shardIndex, shardCount}) {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardSize = Math.ceil(tests.length / shardCount);
+    const shardStart = shardSize * (shardIndex - 1);
+    const shardEnd = shardSize * shardIndex;
 
     return [...tests]
       .sort((a, b) => (a.path > b.path ? 1 : -1))
@@ -1650,6 +1650,22 @@ Example:
   ]
 }
 ```
+
+:::tip
+
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootdir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+
+```json
+{
+  "transformIgnorePatterns": [
+    "<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+  ]
+}
+```
+
+It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+:::
 
 ### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 

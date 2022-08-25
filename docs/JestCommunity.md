@@ -12,7 +12,7 @@ The community around Jest is working hard to make the testing experience even gr
 - [eslint-plugin-jest](https://github.com/jest-community/eslint-plugin-jest)
 - [awesome-jest](https://github.com/jest-community/awesome-jest)
 
-Community projects under one organisation are a great way for Jest to experiment with new ideas/techniques and approaches. Encourage contributions from the community and publish contributions independently at a faster pace.
+Community projects under one organization are a great way for Jest to experiment with new ideas/techniques and approaches. Encourage contributions from the community and publish contributions independently at a faster pace.
 
 ## Awesome Jest
 

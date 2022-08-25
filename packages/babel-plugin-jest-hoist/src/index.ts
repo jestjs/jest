@@ -14,8 +14,10 @@ import {
   CallExpression,
   Expression,
   Identifier,
+  MemberExpression,
   Node,
   Program,
+  Super,
   VariableDeclaration,
   VariableDeclarator,
   callExpression,
@@ -197,7 +199,9 @@ function GETTER_NAME() {
 }
 `;
 
-const isJestObject = (expression: NodePath<Expression>): boolean => {
+const isJestObject = (
+  expression: NodePath<Expression | Super>,
+): expression is NodePath<Identifier | MemberExpression> => {
   // global
   if (
     expression.isIdentifier() &&
@@ -231,8 +235,8 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
   return false;
 };
 
-const extractJestObjExprIfHoistable = <T extends Node>(
-  expr: NodePath<T>,
+const extractJestObjExprIfHoistable = (
+  expr: NodePath,
 ): NodePath<Expression> | null => {
   if (!expr.isCallExpression()) {
     return null;

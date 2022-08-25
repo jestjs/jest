@@ -259,6 +259,7 @@ describe('FakeTimers', () => {
         console.warn.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
       console.warn = consoleWarn;
+      timers.useRealTimers();
     });
 
     it('does nothing when no timers have been scheduled', () => {
@@ -901,14 +902,21 @@ describe('FakeTimers', () => {
   });
 
   describe('getTimerCount', () => {
-    it('returns the correct count', () => {
-      const timers = new FakeTimers({
+    let timers: FakeTimers;
+    beforeEach(() => {
+      timers = new FakeTimers({
         config: makeProjectConfig(),
         global: globalThis,
       });
 
       timers.useFakeTimers();
+    });
 
+    afterEach(() => {
+      timers.useRealTimers();
+    });
+
+    it('returns the correct count', () => {
       globalThis.setTimeout(() => {}, 0);
       globalThis.setTimeout(() => {}, 0);
       globalThis.setTimeout(() => {}, 10);
@@ -925,13 +933,6 @@ describe('FakeTimers', () => {
     });
 
     it('includes immediates and ticks', () => {
-      const timers = new FakeTimers({
-        config: makeProjectConfig(),
-        global: globalThis,
-      });
-
-      timers.useFakeTimers();
-
       globalThis.setTimeout(() => {}, 0);
       globalThis.setImmediate(() => {});
       process.nextTick(() => {});
@@ -940,13 +941,6 @@ describe('FakeTimers', () => {
     });
 
     it('not includes cancelled immediates', () => {
-      const timers = new FakeTimers({
-        config: makeProjectConfig(),
-        global: globalThis,
-      });
-
-      timers.useFakeTimers();
-
       globalThis.setImmediate(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();

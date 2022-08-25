@@ -334,11 +334,19 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Object {\n  "a": 2,\n  "b": 1,\n}');
   });
 
-  it('prints an object with keys in their original order', () => {
+  it('prints an object with keys in their original order with the appropriate comparing function', () => {
     // eslint-disable-next-line sort-keys
     const val = {b: 1, a: 2};
     const compareKeys = () => 0;
     expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 1,\n  "a": 2,\n}',
+    );
+  });
+
+  it('prints an object with keys in their original order with compareKeys set to null', () => {
+    // eslint-disable-next-line sort-keys
+    const val = {b: 1, a: 2};
+    expect(prettyFormat(val, {compareKeys: null})).toEqual(
       'Object {\n  "b": 1,\n  "a": 2,\n}',
     );
   });

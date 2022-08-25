@@ -63,7 +63,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  (console.warn as unknown as jest.SpyInstance).mockRestore();
+  jest.mocked(console.warn).mockRestore();
 });
 
 it('picks an id based on the rootDir', async () => {
@@ -148,7 +148,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         automock: false,
@@ -161,65 +161,8 @@ describe('automock', () => {
   });
 });
 
-describe('collectCoverageOnlyFrom', () => {
-  it('normalizes all paths relative to rootDir', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          'bar/baz': true,
-          'qux/quux/': true,
-        },
-        rootDir: '/root/path/foo/',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-    expected[expectedPathFooQux] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('does not change absolute paths', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '/an/abs/path': true,
-          '/another/abs/path': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathAbs] = true;
-    expected[expectedPathAbsAnother] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-
-  it('substitutes <rootDir> tokens', async () => {
-    const {options} = await normalize(
-      {
-        collectCoverageOnlyFrom: {
-          '<rootDir>/bar/baz': true,
-        },
-        rootDir: '/root/path/foo',
-      },
-      {} as Config.Argv,
-    );
-
-    const expected = Object.create(null);
-    expected[expectedPathFooBar] = true;
-
-    expect(options.collectCoverageOnlyFrom).toEqual(expected);
-  });
-});
-
 describe('collectCoverageFrom', () => {
-  it('substitutes <rootDir> tokens', async () => {
+  it('ignores <rootDir> tokens', async () => {
     const barBaz = 'bar/baz';
     const quxQuux = 'qux/quux/';
     const notQuxQuux = `!${quxQuux}`;
@@ -1639,9 +1582,7 @@ describe('testPathPattern', () => {
         const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('');
-        expect(
-          (console.log as unknown as jest.SpyInstance).mock.calls[0][0],
-        ).toMatchSnapshot();
+        expect(jest.mocked(console.log).mock.calls[0][0]).toMatchSnapshot();
       });
 
       it(`joins multiple ${opt.name} if set`, async () => {
@@ -1783,7 +1724,7 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1851,7 +1792,7 @@ describe('displayName', () => {
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,
@@ -2001,13 +1942,27 @@ describe('shards', () => {
 
 describe('logs a deprecation warning', () => {
   beforeEach(() => {
-    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
+    jest.mocked(console.warn).mockImplementation(() => {});
   });
 
   test("when 'browser' option is passed", async () => {
     await normalize(
       {
         browser: true,
+        rootDir: '/root/',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(console.warn).toMatchSnapshot();
+  });
+
+  test("when 'collectCoverageOnlyFrom' option is passed", async () => {
+    await normalize(
+      {
+        collectCoverageOnlyFrom: {
+          '<rootDir>/this-directory-is-covered/Covered.js': true,
+        },
         rootDir: '/root/',
       },
       {} as Config.Argv,
@@ -2111,4 +2066,16 @@ describe('logs a deprecation warning', () => {
 
     expect(console.warn).toMatchSnapshot();
   });
+});
+
+it('parses workerIdleMemoryLimit', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/',
+      workerIdleMemoryLimit: '45MiB',
+    },
+    {} as Config.Argv,
+  );
+
+  expect(options.workerIdleMemoryLimit).toEqual(47185920);
 });

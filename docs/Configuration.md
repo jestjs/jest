@@ -1614,7 +1614,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 ### `snapshotFormat` \[object]
 
-Default: `undefined`
+Default: `{escapeString: false, printBasicPrototype: false}`
 
 Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options), with the exceptions of `compareKeys` and `plugins`. For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
 
@@ -2031,9 +2031,9 @@ class CustomSequencer extends Sequencer {
    * Sharding is applied before sorting
    */
   shard(tests, {shardIndex, shardCount}) {
-    const shardSize = Math.ceil(tests.length / options.shardCount);
-    const shardStart = shardSize * (options.shardIndex - 1);
-    const shardEnd = shardSize * options.shardIndex;
+    const shardSize = Math.ceil(tests.length / shardCount);
+    const shardStart = shardSize * (shardIndex - 1);
+    const shardEnd = shardSize * shardIndex;
 
     return [...tests]
       .sort((a, b) => (a.path > b.path ? 1 : -1))
@@ -2183,6 +2183,37 @@ const config: Config = {
 export default config;
 ```
 
+:::tip
+
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootdir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+
+```js tab
+/** @type {import('jest').Config} */
+const config = {
+  transformIgnorePatterns: [
+    '<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+  ],
+};
+
+module.exports = config;
+```
+
+```ts tab
+import type {Config} from 'jest';
+
+const config: Config = {
+  transformIgnorePatterns: [
+    '<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+  ],
+};
+
+export default config;
+```
+
+It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+:::
+
 ### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 
 Default: `[]`
@@ -2253,6 +2284,47 @@ The values in the `watchPlugins` property value can omit the `jest-watch-` prefi
 Default: `true`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
+
+### `workerIdleMemoryLimit` \[number|string]
+
+Default: `undefined`
+
+Specifies the memory limit for workers before they are recycled and is primarily a work-around for [this issue](https://github.com/facebook/jest/issues/11956);
+
+After the worker has executed a test the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. The limit can be specified in a number of different ways and whatever the result is `Math.floor` is used to turn it into an integer value:
+
+- `<= 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
+- `\> 1` - Assumed to be a fixed byte value. Because of the previous rule if you wanted a value of 1 byte (I don't know why) you could use `1.1`.
+- With units
+  - `50%` - As above, a percentage of total system memory
+  - `100KB`, `65MB`, etc - With units to denote a fixed memory limit.
+    - `K` / `KB` - Kilobytes (x1000)
+    - `KiB` - Kibibytes (x1024)
+    - `M` / `MB` - Megabytes
+    - `MiB` - Mebibytes
+    - `G` / `GB` - Gigabytes
+    - `GiB` - Gibibytes
+
+**NOTE:** [% based memory does not work on Linux CircleCI workers](https://github.com/facebook/jest/issues/11956#issuecomment-1212925677) due to incorrect system memory being reported.
+
+```js tab
+/** @type {import('jest').Config} */
+const config = {
+  workerIdleMemoryLimit: 0.2,
+};
+
+module.exports = config;
+```
+
+```ts tab
+import type {Config} from 'jest';
+
+const config: Config = {
+  workerIdleMemoryLimit: 0.2,
+};
+
+export default config;
+```
 
 ### `//` \[string]
 

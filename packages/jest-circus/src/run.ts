@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
 import {rng, shuffleArray} from 'jest-util';
 import {dispatch, getState} from './state';
@@ -47,7 +47,7 @@ const _runTestsForDescribeBlock = async (
 
   if (isRootBlock) {
     const concurrentTests = collectConcurrentTests(describeBlock);
-    const mutex = throat(getState().maxConcurrency);
+    const mutex = pLimit(getState().maxConcurrency);
     for (const test of concurrentTests) {
       try {
         const promise = mutex(test.fn);
