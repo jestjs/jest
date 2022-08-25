@@ -44,6 +44,9 @@ test('should support importing node core modules', () => {
   const packageJsonPath = resolve(dir, '../package.json');
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
+    devDependencies: {
+      'discord.js': '14.3.0',
+    },
     jest: {
       testEnvironment: 'node',
       transform: {},

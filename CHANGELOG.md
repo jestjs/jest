@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.0.0
+
+### Features
+
 - `[expect]` [**BREAKING**] Differentiate between `MatcherContext` `MatcherUtils` and `MatcherState` types ([#13141](https://github.com/facebook/jest/pull/13141))
 - `[jest-circus]` Add support for `test.failing.each` ([#13142](https://github.com/facebook/jest/pull/13142))
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
@@ -22,6 +32,7 @@
 - `[jest-config]` Fix testing multiple projects with TypeScript config files ([#13099](https://github.com/facebook/jest/pull/13099))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Record ([#13055](https://github.com/facebook/jest/pull/13055))
 - `[jest-haste-map]` Increase the maximum possible file size that jest-haste-map can handle ([#13094](https://github.com/facebook/jest/pull/13094))
+- `[jest-runtime]` Properly support CJS re-exports from dual packages ([#13170](https://github.com/facebook/jest/pull/13170))
 - `[jest-snapshot]` Make `prettierPath` optional in `SnapshotState` ([#13149](https://github.com/facebook/jest/pull/13149))
 - `[jest-snapshot]` Fix parsing error from inline snapshot files with `JSX` ([#12760](https://github.com/facebook/jest/pull/12760))
 - `[jest-worker]` When a process runs out of memory worker exits correctly and doesn't spin indefinitely ([#13054](https://github.com/facebook/jest/pull/13054))
@@ -34,8 +45,6 @@
 - `[docs]` Update Enzyme URL ([#13166](https://github.com/facebook/jest/pull/13166))
 - `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
 - `[jest-snapshot]` [**BREAKING**] Require `rootDir` as argument to `SnapshotState` ([#13150](https://github.com/facebook/jest/pull/13150))
-
-### Performance
 
 ## 28.1.3
 
