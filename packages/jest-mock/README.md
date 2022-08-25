@@ -86,7 +86,7 @@ Sets the default mock implementation for the function.
 
 ##### `.mockReturnThis()`
 
-Syntactic sugar for:
+API sugar for:
 
 ```js
 mockFn.mockImplementation(function () {
