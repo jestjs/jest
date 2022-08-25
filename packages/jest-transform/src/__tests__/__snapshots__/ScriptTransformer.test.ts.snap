@@ -21,7 +21,6 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
         },
         "collectCoverage": true,
         "collectCoverageFrom": Array [],
-        "collectCoverageOnlyFrom": undefined,
         "config": Object {
           "automock": false,
           "cache": true,
@@ -154,7 +153,6 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
         },
         "collectCoverage": true,
         "collectCoverageFrom": Array [],
-        "collectCoverageOnlyFrom": undefined,
         "config": Object {
           "automock": false,
           "cache": true,
@@ -261,7 +259,6 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
         },
         "collectCoverage": true,
         "collectCoverageFrom": Array [],
-        "collectCoverageOnlyFrom": undefined,
         "config": Object {
           "automock": false,
           "cache": true,

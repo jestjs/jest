@@ -400,7 +400,10 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-export const DEFAULT_OPTIONS: Options = {
+// could be replaced by `satisfies` operator in the future: https://github.com/microsoft/TypeScript/issues/47920
+const toOptionsSubtype = <T extends Options>(options: T) => options;
+
+export const DEFAULT_OPTIONS = toOptionsSubtype({
   callToJSON: true,
   compareKeys: undefined,
   escapeRegex: false,
@@ -414,7 +417,7 @@ export const DEFAULT_OPTIONS: Options = {
   printBasicPrototype: true,
   printFunctionName: true,
   theme: DEFAULT_THEME,
-};
+});
 
 function validateOptions(options: OptionsReceived) {
   Object.keys(options).forEach(key => {
@@ -482,7 +485,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
   callToJSON: options?.callToJSON ?? DEFAULT_OPTIONS.callToJSON,
   colors: options?.highlight ? getColorsHighlight(options) : getColorsEmpty(),
   compareKeys:
-    typeof options?.compareKeys === 'function'
+    typeof options?.compareKeys === 'function' || options?.compareKeys === null
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),

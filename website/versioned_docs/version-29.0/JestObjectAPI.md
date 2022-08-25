@@ -282,6 +282,20 @@ Modules that are mocked with `jest.mock` are mocked only for the file that calls
 
 Returns the `jest` object for chaining.
 
+:::tip
+
+Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+
+:::
+
+### `jest.Mocked<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+
+### `jest.mocked(source, options?)`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
+
 ### `jest.unmock(moduleName)`
 
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -467,7 +481,7 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-:::note
+:::tip
 
 See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
@@ -597,50 +611,6 @@ Returns the `jest` object for chaining.
 ### `jest.restoreAllMocks()`
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
-
-### `jest.mocked<T>(item: T, deep = false)`
-
-The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
-
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
-
-Example:
-
-```ts
-// foo.ts
-export const foo = {
-  a: {
-    b: {
-      c: {
-        hello: (name: string) => `Hello, ${name}`,
-      },
-    },
-  },
-  name: () => 'foo',
-};
-```
-
-```ts
-// foo.spec.ts
-import {foo} from './foo';
-jest.mock('./foo');
-
-// here the whole foo var is mocked deeply
-const mockedFoo = jest.mocked(foo, true);
-
-test('deep', () => {
-  // there will be no TS error here, and you'll have completion in modern IDEs
-  mockedFoo.a.b.c.hello('me');
-  // same here
-  expect(mockedFoo.a.b.c.hello.mock.calls).toHaveLength(1);
-});
-
-test('direct', () => {
-  foo.name();
-  // here only foo.name is mocked (or its methods if it's an object)
-  expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
-});
-```
 
 ## Fake Timers
 

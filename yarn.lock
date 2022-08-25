@@ -2786,7 +2786,7 @@ __metadata:
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
-    jest-watch-typeahead: ^2.0.0
+    jest-watch-typeahead: ^2.1.1
     jquery: ^3.2.1
     js-yaml: ^4.1.0
     micromatch: ^4.0.4
@@ -12956,9 +12956,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-watch-typeahead@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jest-watch-typeahead@npm:2.0.0"
+"jest-watch-typeahead@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "jest-watch-typeahead@npm:2.1.1"
   dependencies:
     ansi-escapes: ^5.0.0
     chalk: ^4.0.0
@@ -12968,8 +12968,8 @@ __metadata:
     string-length: ^5.0.1
     strip-ansi: ^7.0.1
   peerDependencies:
-    jest: ^27.0.0 || ^28.0.0
-  checksum: c25fa793e56e0a316642a714c960b29359ddc1ce3f621ffb8a42a3ccfffb67c57223597e2fb387d5f49e2b93a22fc1f4b54e900e4fa80eca6602f70a30c22ffb
+    jest: ^27.0.0 || ^28.0.0 || ^29.0.0
+  checksum: ba5f619c82b382e93e3439dc262146c4aa71e126deb118418881c2cf6a83872cde115bef004b1d205df48f050c0cd6c88be1fba5d6ddc1d1aa11195a71ea8d07
   languageName: node
   linkType: hard
 
@@ -20315,7 +20315,7 @@ __metadata:
 
 "typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.7.4#~builtin<compat/typescript>":
   version: 4.7.4
-  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=f456af"
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

@@ -176,11 +176,6 @@ export const options: {[key: string]: Options} = {
       'info needs to be collected from.',
     type: 'string',
   },
-  collectCoverageOnlyFrom: {
-    description: 'Explicit list of paths coverage will be restricted to.',
-    string: true,
-    type: 'array',
-  },
   color: {
     description:
       'Forces test results output color highlighting (even if ' +

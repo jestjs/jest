@@ -254,27 +254,6 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
   }
 };
 
-const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptionsWithRootDir &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
-    initialCollectCoverageFrom,
-  )
-    ? initialCollectCoverageFrom // passed from argv
-    : Object.keys(initialCollectCoverageFrom); // passed from options
-  return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
-    map[filePath] = true;
-    return map;
-  }, Object.create(null));
-};
-
 const normalizeCollectCoverageFrom = (
   options: Config.InitialOptions &
     Required<Pick<Config.InitialOptions, 'collectCoverageFrom'>>,
@@ -530,7 +509,6 @@ export default async function normalize(
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
     recursiveDenylist: [
-      'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
       'coverageThreshold',
@@ -627,9 +605,6 @@ export default async function normalize(
       Required<Pick<Config.InitialOptions, typeof key>>;
     let value;
     switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-        break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
