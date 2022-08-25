@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.0.0
+
+### Features
+
 - `[expect]` [**BREAKING**] Differentiate between `MatcherContext` `MatcherUtils` and `MatcherState` types ([#13141](https://github.com/facebook/jest/pull/13141))
 - `[jest-circus]` Add support for `test.failing.each` ([#13142](https://github.com/facebook/jest/pull/13142))
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
@@ -34,8 +44,6 @@
 - `[docs]` Update Enzyme URL ([#13166](https://github.com/facebook/jest/pull/13166))
 - `[jest-leak-detector]` Remove support for `weak-napi` ([#13035](https://github.com/facebook/jest/pull/13035))
 - `[jest-snapshot]` [**BREAKING**] Require `rootDir` as argument to `SnapshotState` ([#13150](https://github.com/facebook/jest/pull/13150))
-
-### Performance
 
 ## 28.1.3
 
