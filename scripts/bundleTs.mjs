@@ -17,7 +17,6 @@ import chalk from 'chalk';
 import fs from 'graceful-fs';
 import {sync as pkgDir} from 'pkg-dir';
 import prettier from 'prettier';
-import rimraf from 'rimraf';
 import {getPackages} from './buildUtils.mjs';
 
 const prettierConfig = prettier.resolveConfig.sync(
@@ -166,10 +165,19 @@ const excludedPackages = new Set(['@jest/globals']);
 
       let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
-      rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
-      rimraf.sync(path.resolve(packageDir, 'dist/'));
+      fs.rmSync(path.resolve(packageDir, 'build/**/*.d.ts'), {
+        force: true,
+        recursive: true,
+      });
+      fs.rmSync(path.resolve(packageDir, 'dist/'), {
+        force: true,
+        recursive: true,
+      });
       // this is invalid now, so remove it to not confuse `tsc`
-      rimraf.sync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'));
+      fs.rmSync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'), {
+        force: true,
+        recursive: true,
+      });
 
       definitionFile = definitionFile.replace(/\r\n/g, '\n');
 

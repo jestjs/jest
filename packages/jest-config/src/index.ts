@@ -120,7 +120,6 @@ const groupOptions = (
     ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
-    collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
     coverageDirectory: options.coverageDirectory,
     coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
@@ -171,6 +170,7 @@ const groupOptions = (
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
+    workerIdleMemoryLimit: options.workerIdleMemoryLimit,
   }),
   projectConfig: Object.freeze({
     automock: options.automock,

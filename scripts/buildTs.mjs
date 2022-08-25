@@ -12,8 +12,8 @@ import chalk from 'chalk';
 import execa from 'execa';
 import globby from 'globby';
 import fs from 'graceful-fs';
+import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
-import throat from 'throat';
 import {getPackages} from './buildUtils.mjs';
 
 (async () => {
@@ -130,9 +130,10 @@ import {getPackages} from './buildUtils.mjs';
   const typesNodeReferenceDirective = `${typesReferenceDirective}="node" />`;
 
   try {
+    const mutex = pLimit(cpus);
     await Promise.all(
-      packagesWithTs.map(
-        throat(cpus, async ({packageDir, pkg}) => {
+      packagesWithTs.map(({packageDir, pkg}) =>
+        mutex(async () => {
           const buildDir = path.resolve(packageDir, 'build/**/*.d.ts');
 
           const globbed = await globby([buildDir]);

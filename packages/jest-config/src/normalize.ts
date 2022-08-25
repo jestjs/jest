@@ -6,6 +6,7 @@
  */
 
 import {createHash} from 'crypto';
+import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
@@ -36,6 +37,7 @@ import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
+import stringToBytes from './stringToBytes';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -250,27 +252,6 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-};
-
-const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptionsWithRootDir &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
-    initialCollectCoverageFrom,
-  )
-    ? initialCollectCoverageFrom // passed from argv
-    : Object.keys(initialCollectCoverageFrom); // passed from options
-  return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
-    map[filePath] = true;
-    return map;
-  }, Object.create(null));
 };
 
 const normalizeCollectCoverageFrom = (
@@ -528,7 +509,6 @@ export default async function normalize(
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
     recursiveDenylist: [
-      'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
       'coverageThreshold',
@@ -625,9 +605,6 @@ export default async function normalize(
       Required<Pick<Config.InitialOptions, typeof key>>;
     let value;
     switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-        break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
@@ -909,6 +886,11 @@ export default async function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'snapshotFormat': {
+        value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'automock':
       case 'cache':
       case 'changedSince':
@@ -952,7 +934,6 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
-      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -964,6 +945,9 @@ export default async function normalize(
       case 'watchAll':
       case 'watchman':
         value = oldOptions[key];
+        break;
+      case 'workerIdleMemoryLimit':
+        value = stringToBytes(oldOptions[key], totalmem());
         break;
       case 'watchPlugins':
         value = (oldOptions[key] || []).map(watchPlugin => {
