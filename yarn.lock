@@ -2786,7 +2786,7 @@ __metadata:
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
-    jest-watch-typeahead: ^2.0.0
+    jest-watch-typeahead: ^2.1.0
     jquery: ^3.2.1
     js-yaml: ^4.1.0
     micromatch: ^4.0.4
@@ -12956,9 +12956,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-watch-typeahead@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jest-watch-typeahead@npm:2.0.0"
+"jest-watch-typeahead@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "jest-watch-typeahead@npm:2.1.0"
   dependencies:
     ansi-escapes: ^5.0.0
     chalk: ^4.0.0
@@ -12968,8 +12968,8 @@ __metadata:
     string-length: ^5.0.1
     strip-ansi: ^7.0.1
   peerDependencies:
-    jest: ^27.0.0 || ^28.0.0
-  checksum: c25fa793e56e0a316642a714c960b29359ddc1ce3f621ffb8a42a3ccfffb67c57223597e2fb387d5f49e2b93a22fc1f4b54e900e4fa80eca6602f70a30c22ffb
+    jest: ^27.0.0 || ^28.0.0 || ^29.0.0
+  checksum: 34b1edee61bd4dae82a7da1e14f6253840b013c7d62e65947619a982c5b766c8a003d40f5ab08029f0f93f2428a81c73f927c8ed278f1ec00bc0721b2134dae0
   languageName: node
   linkType: hard
 
