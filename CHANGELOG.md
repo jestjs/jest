@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` `workerIdleMemoryLimit` now defaults runInBand to false unless an explicit runInBand option is set such as `--runInBand` or `--detectOpenHandles`. Allows for linear test runs with a single worker via `--maxWorkers=1 --workerIdleMemoryLimit=500MB`. ([#13171](https://github.com/facebook/jest/pull/13171))
+
 ### Fixes
 
 ### Chore & Maintenance
