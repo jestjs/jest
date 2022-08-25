@@ -18,11 +18,9 @@ import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
-/* eslint-disable import/no-duplicates */
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
-/* eslint-enable import/no-duplicates */
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -46,6 +44,9 @@ test('should support importing node core modules', () => {
   const packageJsonPath = resolve(dir, '../package.json');
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
+    devDependencies: {
+      'discord.js': '14.3.0',
+    },
     jest: {
       testEnvironment: 'node',
       transform: {},

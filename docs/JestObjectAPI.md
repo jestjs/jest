@@ -301,7 +301,24 @@ Modules that are mocked with `jest.mock` are mocked only for the file that calls
 
 Returns the `jest` object for chaining.
 
+
 :::
+
+
+:::tip
+
+Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+
+:::
+
+### `jest.Mocked<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+
+### `jest.mocked(source, options?)`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
+
 
 ### `jest.unmock(moduleName)`
 
@@ -492,7 +509,7 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-:::note
+:::tip
 
 See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
@@ -509,6 +526,15 @@ Creates a mock function similar to `jest.fn` but also tracks calls to `object[me
 :::note
 
 By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+
+:::
+
+:::tip
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
+
 
 Example:
 
@@ -527,14 +553,17 @@ Example test:
 ```js
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 ```
 
@@ -576,14 +605,17 @@ Example test:
 const audio = require('./audio');
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
   const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 
 test('plays audio', () => {
@@ -592,8 +624,6 @@ test('plays audio', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
-
-  spy.mockRestore();
 });
 ```
 
@@ -612,6 +642,7 @@ Returns the `jest` object for chaining.
 ### `jest.restoreAllMocks()`
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+
 
 ### `jest.mocked<T>(item: T, deep = false)`
 
@@ -660,6 +691,7 @@ test('direct', () => {
 ```
 
 :::
+
 
 ## Fake Timers
 

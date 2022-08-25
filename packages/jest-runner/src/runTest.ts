@@ -191,7 +191,6 @@ async function runTestInternal(
       changedFiles: context.changedFiles,
       collectCoverage: globalConfig.collectCoverage,
       collectCoverageFrom: globalConfig.collectCoverageFrom,
-      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
       coverageProvider: globalConfig.coverageProvider,
       sourcesRelatedToTestsInChangedFiles:
         context.sourcesRelatedToTestsInChangedFiles,

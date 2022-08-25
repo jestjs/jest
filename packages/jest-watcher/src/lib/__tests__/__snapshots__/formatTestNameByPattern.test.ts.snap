@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 1`] = `"<dim>should⏎ </></>name</><dim> the ⏎function you at...</>"`;
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 1`] = `"<dim>should⏎ </intensity></>name</><dim> the ⏎function you at...</intensity>"`;
 
-exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 2`] = `"<dim>should⏎ </></>name</><dim> the ⏎function you at...</>"`;
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 2`] = `"<dim>should⏎ </intensity></>name</><dim> the ⏎function you at...</intensity>"`;
 
-exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 3`] = `"<dim>should⏎ </></>name</><dim> the ⏎function you at...</>"`;
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 3`] = `"<dim>should⏎ </intensity></>name</><dim> the ⏎function you at...</intensity>"`;
 
-exports[`for one line test name pattern in the middle test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should </></>nam...</>"`;
+exports[`for one line test name pattern in the middle test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should </intensity></>nam...</>"`;
 
-exports[`for one line test name pattern in the middle test name with cutted tail and highlighted pattern 1`] = `"<dim>should </></>name</><dim> the functi...</>"`;
+exports[`for one line test name pattern in the middle test name with cutted tail and highlighted pattern 1`] = `"<dim>should </intensity></>name</><dim> the functi...</intensity>"`;
 
-exports[`for one line test name pattern in the middle test name with highlighted cutted 1`] = `"<dim>sho</></>...</>"`;
+exports[`for one line test name pattern in the middle test name with highlighted cutted 1`] = `"<dim>sho</intensity></>...</>"`;
 
-exports[`for one line test name pattern in the middle test name with highlighted pattern returns 1`] = `"<dim>should </></>name</><dim> the function you attach</>"`;
+exports[`for one line test name pattern in the middle test name with highlighted pattern returns 1`] = `"<dim>should </intensity></>name</><dim> the function you attach</intensity>"`;
 
-exports[`for one line test name pattern in the tail returns test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should name the function you </></>a...</>"`;
+exports[`for one line test name pattern in the tail returns test name with cutted tail and cutted highlighted pattern 1`] = `"<dim>should name the function you </intensity></>a...</>"`;
 
-exports[`for one line test name pattern in the tail returns test name with highlighted cutted 1`] = `"<dim>sho</></>...</>"`;
+exports[`for one line test name pattern in the tail returns test name with highlighted cutted 1`] = `"<dim>sho</intensity></>...</>"`;
 
-exports[`for one line test name pattern in the tail returns test name with highlighted pattern 1`] = `"<dim>should name the function you </></>attach</>"`;
+exports[`for one line test name pattern in the tail returns test name with highlighted pattern 1`] = `"<dim>should name the function you </intensity></>attach</>"`;
 
 exports[`for one line test name with pattern in the head returns test name with cutted tail and cutted highlighted pattern 1`] = `"</>shoul...</>"`;
 
-exports[`for one line test name with pattern in the head returns test name with cutted tail and highlighted pattern 1`] = `"</>should</><dim> name the function yo...</>"`;
+exports[`for one line test name with pattern in the head returns test name with cutted tail and highlighted pattern 1`] = `"</>should</><dim> name the function yo...</intensity>"`;
 
-exports[`for one line test name with pattern in the head returns test name with highlighted pattern 1`] = `"</>should</><dim> name the function you attach</>"`;
+exports[`for one line test name with pattern in the head returns test name with highlighted pattern 1`] = `"</>should</><dim> name the function you attach</intensity>"`;
