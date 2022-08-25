@@ -21,6 +21,7 @@
 - `[jest-config]` Fix testing multiple projects with TypeScript config files ([#13099](https://github.com/facebook/jest/pull/13099))
 - `[@jest/expect-utils]` Fix deep equality of ImmutableJS Record ([#13055](https://github.com/facebook/jest/pull/13055))
 - `[jest-haste-map]` Increase the maximum possible file size that jest-haste-map can handle ([#13094](https://github.com/facebook/jest/pull/13094))
+- `[jest-runtime]` Properly support CJS re-exports from dual packages ([#13170](https://github.com/facebook/jest/pull/13170))
 - `[jest-snapshot]` Make `prettierPath` optional in `SnapshotState` ([#13149](https://github.com/facebook/jest/pull/13149))
 - `[jest-snapshot]` Fix parsing error from inline snapshot files with `JSX` ([#12760](https://github.com/facebook/jest/pull/12760))
 - `[jest-worker]` When a process runs out of memory worker exits correctly and doesn't spin indefinitely ([#13054](https://github.com/facebook/jest/pull/13054))

@@ -6,10 +6,15 @@
  */
 
 import {resolve} from 'path';
-import {extractSummary} from '../Utils';
+import {onNodeVersions} from '@jest/test-utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm');
+
+beforeAll(() => {
+  runYarnInstall(DIR);
+});
 
 test('test config is without transform', () => {
   const {configs} = getConfig(DIR);
@@ -40,4 +45,21 @@ test('supports top-level await', () => {
   expect(summary).toMatchSnapshot();
   expect(stdout).toBe('');
   expect(exitCode).toBe(0);
+});
+
+// minimum version supported by discord.js
+onNodeVersions('>=16.9.0', () => {
+  test('support re-exports from CJS of dual packages', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-deep-cjs-reexport.test.js'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
 });
