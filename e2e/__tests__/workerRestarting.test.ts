@@ -14,3 +14,15 @@ it('all 3 test files should complete', () => {
   const {summary} = extractSummary(result.stderr);
   expect(summary).toMatchSnapshot();
 });
+
+it.each(['runInBand', 'detectOpenHandles'])(
+  'should warn when used with %s',
+  arg => {
+    const result = runJest('worker-restarting', [`--${arg}`]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toMatch(
+      `workerIdleMemoryLimit does not work in combination with ${arg}`,
+    );
+  },
+);

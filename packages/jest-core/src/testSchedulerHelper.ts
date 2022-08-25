@@ -13,11 +13,25 @@ const SLOW_TEST_TIME = 1000;
 export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
-  {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
+  {
+    detectOpenHandles,
+    maxWorkers,
+    watch,
+    watchAll,
+    workerIdleMemoryLimit,
+  }: Config.GlobalConfig,
 ): boolean {
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
+    if (workerIdleMemoryLimit) {
+      console.warn(
+        'workerIdleMemoryLimit does not work in combination with detectOpenHandles',
+      );
+    }
+
     return true;
+  } else if (workerIdleMemoryLimit) {
+    return false;
   }
 
   /*

@@ -8,7 +8,13 @@
 
 import getMaxWorkers from '../getMaxWorkers';
 
+const logWarnSpy = jest.spyOn(console, 'warn').mockReturnValue(undefined);
+
 jest.mock('os');
+
+beforeEach(() => {
+  logWarnSpy.mockClear();
+});
 
 describe('getMaxWorkers', () => {
   beforeEach(() => {
@@ -18,6 +24,27 @@ describe('getMaxWorkers', () => {
   it('Returns 1 when runInBand', () => {
     const argv = {runInBand: true};
     expect(getMaxWorkers(argv)).toBe(1);
+  });
+
+  it('Returns 1 when runInBand but also logs warning if an argv memory limit is set', () => {
+    const argv = {runInBand: true, workerIdleMemoryLimit: 6000};
+    expect(getMaxWorkers(argv)).toBe(1);
+
+    expect(logWarnSpy).toHaveBeenCalledTimes(1);
+    expect(logWarnSpy).toHaveBeenCalledWith(
+      'workerIdleMemoryLimit does not work in combination with runInBand',
+    );
+  });
+
+  it('Returns 1 when runInBand but also logs warning if a config memory limit is set', () => {
+    const argv = {runInBand: true};
+    const options = {workerIdleMemoryLimit: 6000};
+    expect(getMaxWorkers(argv, options)).toBe(1);
+
+    expect(logWarnSpy).toHaveBeenCalledTimes(1);
+    expect(logWarnSpy).toHaveBeenCalledWith(
+      'workerIdleMemoryLimit does not work in combination with runInBand',
+    );
   });
 
   it('Returns 1 when the OS CPUs are not available', () => {

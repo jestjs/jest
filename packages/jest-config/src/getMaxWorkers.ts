@@ -10,11 +10,29 @@ import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(
   argv: Partial<
-    Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>
+    Pick<
+      Config.Argv,
+      | 'maxWorkers'
+      | 'runInBand'
+      | 'watch'
+      | 'watchAll'
+      | 'workerIdleMemoryLimit'
+    >
   >,
-  defaultOptions?: Partial<Pick<Config.Argv, 'maxWorkers'>>,
+  defaultOptions?: Partial<
+    Pick<Config.Argv, 'maxWorkers' | 'workerIdleMemoryLimit'>
+  >,
 ): number {
+  const workerIdleMemoryLimit =
+    argv.workerIdleMemoryLimit ?? defaultOptions?.workerIdleMemoryLimit;
+
   if (argv.runInBand) {
+    if (workerIdleMemoryLimit) {
+      console.warn(
+        'workerIdleMemoryLimit does not work in combination with runInBand',
+      );
+    }
+
     return 1;
   } else if (argv.maxWorkers) {
     return parseWorkers(argv.maxWorkers);
