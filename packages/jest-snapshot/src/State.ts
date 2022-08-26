@@ -64,7 +64,7 @@ export default class SnapshotState {
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _prettierPath: string | null;
-  private _snapshotFormat: PrettyFormatOptions;
+  snapshotFormat: Omit<PrettyFormatOptions, 'compareKeys'>;
   private _rootDir: string;
 
   added: number;
@@ -93,7 +93,7 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-    this._snapshotFormat = options.snapshotFormat;
+    this.snapshotFormat = options.snapshotFormat;
     this._rootDir = options.rootDir;
   }
 
@@ -213,7 +213,7 @@ export default class SnapshotState {
     }
 
     const receivedSerialized = addExtraLineBreaks(
-      serialize(received, undefined, this._snapshotFormat),
+      serialize(received, undefined, this.snapshotFormat),
     );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;

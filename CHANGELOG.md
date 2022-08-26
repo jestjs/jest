@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Pass `snapshotFormat` through when diffing snapshots
+
 ### Chore & Maintenance
 
 ### Performance

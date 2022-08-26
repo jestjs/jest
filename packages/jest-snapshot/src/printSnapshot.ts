@@ -7,6 +7,7 @@
 
 import chalk = require('chalk');
 import {getObjectSubset} from '@jest/expect-utils';
+import type {SnapshotFormat} from '@jest/schemas';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -235,6 +236,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  snapshotFormat: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
@@ -303,7 +305,7 @@ export const printSnapshotAndReceived = (
 
     // Fall through to fix a regression for custom serializers
     // like jest-snapshot-serializer-raw that ignore the indent option.
-    const b0 = serialize(received, 0);
+    const b0 = serialize(received, 0, snapshotFormat);
     if (b0 !== b) {
       const aLines0 = dedentLines(aLines2);
 
