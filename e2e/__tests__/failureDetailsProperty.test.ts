@@ -94,7 +94,7 @@ test('that the failureDetails property is set', () => {
         "p1": "hello",
         "p2": "world",
       }",
-                "expected": "Object {
+                "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
@@ -102,11 +102,10 @@ test('that the failureDetails property is set', () => {
 
       Snapshot name: \`my test a snapshot failure 1\`
 
-      - Snapshot  - 2
-      + Received  + 2
+      - Snapshot  - 1
+      + Received  + 1
 
-      - Object {
-      + {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -121,11 +120,10 @@ test('that the failureDetails property is set', () => {
 
       Snapshot name: \`my test a snapshot failure 1\`
 
-      - Snapshot  - 2
-      + Received  + 2
+      - Snapshot  - 1
+      + Received  + 1
 
-      - Object {
-      + {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -135,11 +133,10 @@ test('that the failureDetails property is set', () => {
 
       Snapshot name: \`my test a snapshot failure 1\`
 
-      - Snapshot  - 2
-      + Received  + 2
+      - Snapshot  - 1
+      + Received  + 1
 
-      - Object {
-      + {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -222,7 +219,7 @@ test('that the failureDetails property is set', () => {
         "p1": "hello",
         "p2": "world",
       }",
-              "expected": "Object {
+              "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
@@ -230,11 +227,10 @@ test('that the failureDetails property is set', () => {
 
       Snapshot name: \`my test a snapshot failure 1\`
 
-      - Snapshot  - 2
-      + Received  + 2
+      - Snapshot  - 1
+      + Received  + 1
 
-      - Object {
-      + {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
