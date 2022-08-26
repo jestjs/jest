@@ -398,9 +398,9 @@ test('indentation is correct in the presences of existing snapshots, when the fi
 });
 
 test('diff with prototype is correct', () => {
-  const filename = 'existing-snapshot.test.js';
+  const filename = 'with-prototype-diff.test.js';
   const test = `
-    test('existing snapshot', () => {
+    test('diff with prototype is correct', () => {
       expect({ hello: 'world' }).toMatchInlineSnapshot(\`
         Object {
           "hello": "world",
