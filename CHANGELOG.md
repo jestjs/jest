@@ -4,11 +4,15 @@
 
 ### Fixes
 
-- `[jest-snapshot]` Pass `snapshotFormat` through when diffing snapshots ([#13181](https://github.com/facebook/jest/pull/13181))
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.0.1
+
+### Fixes
+
+- `[jest-snapshot]` Pass `snapshotFormat` through when diffing snapshots ([#13181](https://github.com/facebook/jest/pull/13181))
 
 ## 29.0.0
 
