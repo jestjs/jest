@@ -22,28 +22,28 @@ import {
 } from './utils';
 
 export type SnapshotStateOptions = {
-  updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath?: string | null;
-  expand?: boolean;
-  snapshotFormat: SnapshotFormat;
-  rootDir: string;
+  readonly updateSnapshot: Config.SnapshotUpdateState;
+  readonly prettierPath?: string | null;
+  readonly expand?: boolean;
+  readonly snapshotFormat: SnapshotFormat;
+  readonly rootDir: string;
 };
 
 export type SnapshotMatchOptions = {
-  testName: string;
-  received: unknown;
-  key?: string;
-  inlineSnapshot?: string;
-  isInline: boolean;
-  error?: Error;
+  readonly testName: string;
+  readonly received: unknown;
+  readonly key?: string;
+  readonly inlineSnapshot?: string;
+  readonly isInline: boolean;
+  readonly error?: Error;
 };
 
 type SnapshotReturnOptions = {
-  actual: string;
-  count: number;
-  expected?: string;
-  key: string;
-  pass: boolean;
+  readonly actual: string;
+  readonly count: number;
+  readonly expected?: string;
+  readonly key: string;
+  readonly pass: boolean;
 };
 
 type SaveStatus = {
@@ -56,15 +56,16 @@ export default class SnapshotState {
   private _dirty: boolean;
   // @ts-expect-error - seemingly unused?
   private _index: number;
-  private _updateSnapshot: Config.SnapshotUpdateState;
+  private readonly _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
-  private _initialData: SnapshotData;
-  private _snapshotPath: string;
+  private readonly _initialData: SnapshotData;
+  private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private _uncheckedKeys: Set<string>;
-  private _prettierPath: string | null;
-  snapshotFormat: SnapshotFormat;
-  private _rootDir: string;
+  private readonly _uncheckedKeys: Set<string>;
+  private readonly _prettierPath: string | null;
+  private readonly _rootDir: string;
+
+  readonly snapshotFormat: SnapshotFormat;
 
   added: number;
   expand: boolean;
