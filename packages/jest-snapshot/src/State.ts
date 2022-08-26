@@ -8,9 +8,8 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
-import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
 import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {SnapshotData} from './types';
+import type {SnapshotData, SnapshotFormat} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,
@@ -26,7 +25,7 @@ export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
   prettierPath?: string | null;
   expand?: boolean;
-  snapshotFormat: PrettyFormatOptions;
+  snapshotFormat: SnapshotFormat;
   rootDir: string;
 };
 
@@ -64,7 +63,7 @@ export default class SnapshotState {
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _prettierPath: string | null;
-  snapshotFormat: Omit<PrettyFormatOptions, 'compareKeys'>;
+  snapshotFormat: SnapshotFormat;
   private _rootDir: string;
 
   added: number;

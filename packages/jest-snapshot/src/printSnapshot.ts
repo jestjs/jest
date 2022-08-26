@@ -7,7 +7,6 @@
 
 import chalk = require('chalk');
 import {getObjectSubset} from '@jest/expect-utils';
-import type {SnapshotFormat} from '@jest/schemas';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -41,7 +40,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import type {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig, SnapshotFormat} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
