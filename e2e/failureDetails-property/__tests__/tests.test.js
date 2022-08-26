@@ -20,7 +20,7 @@ describe('my test', () => {
       p1: 'hello',
       p2: 'world',
     }).toMatchInlineSnapshot(`
-      Object {
+      {
         "p1": "hello",
         "p2": "sunshine",
       }
