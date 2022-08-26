@@ -2696,7 +2696,7 @@ __metadata:
     "@tsd/typescript": ~4.7.4
     expect: "workspace:^"
     jest-snapshot: "workspace:^"
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -2782,7 +2782,7 @@ __metadata:
     jest-changed-files: "workspace:*"
     jest-junit: ^14.0.0
     jest-mock: "workspace:*"
-    jest-runner-tsd: ^3.1.0
+    jest-runner-tsd: ^4.0.0
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:*"
@@ -2855,7 +2855,7 @@ __metadata:
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
@@ -3023,7 +3023,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^17.0.8
     chalk: ^4.0.0
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -7671,16 +7671,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-jest-runner@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "create-jest-runner@npm:0.11.1"
+"create-jest-runner@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "create-jest-runner@npm:0.12.0"
   dependencies:
     chalk: ^4.1.0
-    jest-worker: ^28.0.2
+    jest-worker: ^29.0.0
     throat: ^6.0.1
   peerDependencies:
-    "@jest/test-result": ^28.0.0
-    jest-runner: ^28.0.0
+    "@jest/test-result": ^28.0.0 || ^29.0.0
+    jest-runner: ^28.0.0 || ^29.0.0
   peerDependenciesMeta:
     "@jest/test-result":
       optional: true
@@ -7688,7 +7688,7 @@ __metadata:
       optional: true
   bin:
     create-jest-runner: generator/index.js
-  checksum: 6fc69d9fe3cd852155f73fbb423e834ba88e33d9f2f6f5bf76fbddc18ed54f73d3e037e83fe0c3f0a279b34f6b83555cd7a43557e20f58aa001c08fe5b3ccb0d
+  checksum: 0f10dc4a681a8ab83e414b26a8a27f7940a8f055ff76dbe92d2ae6fec5c56d7cfa143d3aca292b5558db21405c32256682c2d75aea418b2b35ba4315013e32ea
   languageName: node
   linkType: hard
 
@@ -9612,7 +9612,7 @@ __metadata:
     jest-matcher-utils: "workspace:^"
     jest-message-util: "workspace:^"
     jest-util: "workspace:^"
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -12617,7 +12617,7 @@ __metadata:
     "@jest/types": "workspace:^"
     "@tsd/typescript": ~4.7.4
     "@types/node": "*"
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -12717,21 +12717,21 @@ __metadata:
     resolve: ^1.20.0
     resolve.exports: ^1.1.0
     slash: ^3.0.0
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "jest-runner-tsd@npm:3.1.0"
+"jest-runner-tsd@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jest-runner-tsd@npm:4.0.0"
   dependencies:
     "@babel/code-frame": ^7.15.8
     chalk: ^4.1.2
-    create-jest-runner: ^0.11.1
-    tsd-lite: ^0.5.4
+    create-jest-runner: ^0.12.0
+    tsd-lite: ^0.6.0
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: c080b642cadac452c2a1da3e27abafe809a223f1f60c4929115a06d368e89417210599ae73b65bad514ae7b869c52dd6fefc71216f6e088e41cd86239cf17273
+  checksum: 61fcbb842ee2de12f807f42ce78770dc0abcba46d4f7cf2078ff0305f1c200a323f686b96da79ed3bdbfb00f593760af0b9be61410d2a787e5fd2090b099d850
   languageName: node
   linkType: hard
 
@@ -12765,7 +12765,7 @@ __metadata:
     jest-worker: "workspace:^"
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -12867,7 +12867,7 @@ __metadata:
     prettier: ^2.1.1
     pretty-format: "workspace:^"
     semver: ^7.3.5
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -13030,6 +13030,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"jest-worker@^29.0.0, jest-worker@workspace:^, jest-worker@workspace:packages/jest-worker":
+  version: 0.0.0-use.local
+  resolution: "jest-worker@workspace:packages/jest-worker"
+  dependencies:
+    "@tsd/typescript": ~4.7.4
+    "@types/merge-stream": ^1.1.2
+    "@types/node": "*"
+    "@types/supports-color": ^8.1.0
+    get-stream: ^6.0.0
+    jest-leak-detector: "workspace:^"
+    merge-stream: ^2.0.0
+    supports-color: ^8.0.0
+    tsd-lite: ^0.6.0
+    worker-farm: ^1.6.0
+  languageName: unknown
+  linkType: soft
+
 "jest-worker@npm:^26.2.1":
   version: 26.6.2
   resolution: "jest-worker@npm:26.6.2"
@@ -13052,34 +13069,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^28.0.2":
-  version: 28.1.3
-  resolution: "jest-worker@npm:28.1.3"
-  dependencies:
-    "@types/node": "*"
-    merge-stream: ^2.0.0
-    supports-color: ^8.0.0
-  checksum: e921c9a1b8f0909da9ea07dbf3592f95b653aef3a8bb0cbcd20fc7f9a795a1304adecac31eecb308992c167e8d7e75c522061fec38a5928ace0f9571c90169ca
-  languageName: node
-  linkType: hard
-
-"jest-worker@workspace:^, jest-worker@workspace:packages/jest-worker":
-  version: 0.0.0-use.local
-  resolution: "jest-worker@workspace:packages/jest-worker"
-  dependencies:
-    "@tsd/typescript": ~4.7.4
-    "@types/merge-stream": ^1.1.2
-    "@types/node": "*"
-    "@types/supports-color": ^8.1.0
-    get-stream: ^6.0.0
-    jest-leak-detector: "workspace:^"
-    merge-stream: ^2.0.0
-    supports-color: ^8.0.0
-    tsd-lite: ^0.5.6
-    worker-farm: ^1.6.0
-  languageName: unknown
-  linkType: soft
-
 "jest-zone-patch@npm:*":
   version: 0.0.10
   resolution: "jest-zone-patch@npm:0.0.10"
@@ -13098,7 +13087,7 @@ __metadata:
     "@tsd/typescript": ~4.7.4
     import-local: ^3.0.2
     jest-cli: "workspace:^"
-    tsd-lite: ^0.5.6
+    tsd-lite: ^0.6.0
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -20148,12 +20137,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsd-lite@npm:^0.5.4, tsd-lite@npm:^0.5.6":
-  version: 0.5.6
-  resolution: "tsd-lite@npm:0.5.6"
+"tsd-lite@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "tsd-lite@npm:0.6.0"
   peerDependencies:
     "@tsd/typescript": ^3.8.3 || ^4.0.7
-  checksum: b4773258ba3e2acfcac0c133060b09de4af8fca8385888eb5483163b40b87c5ba30420afeef3f6914cbd72546d47578d27d3f6862bf2e399c62822d0b75a8f1f
+  checksum: 7b603092411b9bf940b350475a741ffa6c5f3aa15e723a55d30069a47d25cecbedd4172740d8b894e08688500ec826f7d82a6252ea49e9fbd483c85199e662f0
   languageName: node
   linkType: hard
 
