@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-transform]` Expose `TransformFactory` type ([#13184](https://github.com/facebook/jest/pull/13184))
+
 ### Fixes
 
 ### Chore & Maintenance
