@@ -161,6 +161,19 @@ FUNCTIONS.mock = args => {
               hoistedVariables.add(node);
               isAllowedIdentifier = true;
             }
+          } else if (binding?.path.isImportSpecifier()) {
+            const importDecl = binding.path
+              .parentPath as NodePath<ImportDeclaration>;
+            const imported = binding.path.node.imported;
+            if (
+              importDecl.node.source.value === JEST_GLOBALS_MODULE_NAME &&
+              (isIdentifier(imported) ? imported.name : imported.value) ===
+                JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
+            ) {
+              isAllowedIdentifier = true;
+              // Imports are already hoisted, so we don't need to add it
+              // to hoistedVariables.
+            }
           }
         }
 

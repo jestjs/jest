@@ -40,6 +40,56 @@ function _getJestObj() {
 
 `;
 
+exports[`babel-plugin-jest-hoist global jest.mock within jest: global jest.mock within jest 1`] = `
+
+jest.mock('some-module', () => {
+  jest.mock('some-module');
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().mock('some-module');
+});
+
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+
+  _getJestObj = () => jest;
+
+  return jest;
+}
+
+
+`;
+
+exports[`babel-plugin-jest-hoist imported jest.mock within jest: imported jest.mock within jest 1`] = `
+
+import {jest} from '@jest/globals';
+
+jest.mock('some-module', () => {
+  jest.mock('some-module');
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().mock('some-module');
+});
+
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+
+  _getJestObj = () => jest;
+
+  return jest;
+}
+
+import {jest} from '@jest/globals';
+
+
+`;
+
 exports[`babel-plugin-jest-hoist required \`jest\` within \`jest\`: required \`jest\` within \`jest\` 1`] = `
 
 const {jest} = require('@jest/globals');

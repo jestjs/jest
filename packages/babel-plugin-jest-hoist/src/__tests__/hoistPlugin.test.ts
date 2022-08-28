@@ -90,10 +90,19 @@ pluginTester({
       formatResult,
       snapshot: true,
     },
-    'imported jest within jest': {
+    'imported jest.mock within jest': {
       code: formatResult(`
         import {jest} from '@jest/globals';
 
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.mock within jest': {
+      code: formatResult(`
         jest.mock('some-module', () => {
           jest.mock('some-module');
         });
