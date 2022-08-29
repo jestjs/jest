@@ -183,7 +183,6 @@ describe('toHaveBeenCalledTimes', () => {
 });
 
 [
-  'lastCalledWith',
   'toHaveBeenLastCalledWith',
   'nthCalledWith',
   'toHaveBeenNthCalledWith',
@@ -434,7 +433,6 @@ describe('toHaveBeenCalledTimes', () => {
     });
 
     const basicCalledWith = [
-      'lastCalledWith',
       'toHaveBeenLastCalledWith',
       'toHaveBeenCalledWith',
     ];

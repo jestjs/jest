@@ -133,10 +133,6 @@ type PromiseMatchers = {
 
 export interface Matchers<R extends void | Promise<void>> {
   /**
-   * Ensures the last call to a mock function was provided specific args.
-   */
-  lastCalledWith(...expected: Array<unknown>): R;
-  /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
   lastReturnedWith(expected: unknown): R;

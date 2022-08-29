@@ -195,28 +195,21 @@ expectType<void>(expect(() => {}).toThrow(new Error('error')));
 
 expectType<void>(expect(jest.fn()).toHaveBeenCalled());
 expectError(expect(jest.fn()).toHaveBeenCalled('value'));
-expectType<void>(expect(jest.fn()).toHaveBeenCalled());
 expectError(expect(jest.fn()).toHaveBeenCalled(false));
 
-expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(1));
-expectError(expect(jest.fn()).toHaveBeenCalledTimes('twice'));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(3));
+expectError(expect(jest.fn()).toHaveBeenCalledTimes('twice'));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes(true));
-expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value'));
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value', 123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value'));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
 
-expectType<void>(expect(jest.fn()).lastCalledWith());
-expectType<void>(expect(jest.fn()).lastCalledWith('value'));
-expectType<void>(expect(jest.fn()).lastCalledWith('value', 123));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123));
+expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith('value'));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'));
 
 expectType<void>(expect(jest.fn()).nthCalledWith(2));
