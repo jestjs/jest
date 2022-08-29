@@ -312,7 +312,7 @@ test('should bail after `n` failures', async () => {
     snapshot: {},
     testResults: [{}],
   });
-  expect(setState).toBeCalledWith({interrupted: true});
+  expect(setState).toHaveBeenCalledWith({interrupted: true});
 });
 
 test('should not bail if less than `n` failures', async () => {

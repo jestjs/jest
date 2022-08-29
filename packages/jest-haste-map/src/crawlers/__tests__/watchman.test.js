@@ -140,7 +140,7 @@ describe('watchman watch', () => {
     const calls = client.command.mock.calls;
 
     expect(client.on).toHaveBeenCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // Call 0 and 1 are for ['watch-project']
     expect(calls[0][0][0]).toEqual('watch-project');
@@ -482,7 +482,7 @@ describe('watchman watch', () => {
     const calls = client.command.mock.calls;
 
     expect(client.on).toHaveBeenCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // First 3 calls are for ['watch-project']
     expect(calls[0][0][0]).toEqual('watch-project');

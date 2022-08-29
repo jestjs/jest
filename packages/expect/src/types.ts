@@ -154,10 +154,6 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   toBe(expected: unknown): R;
   /**
-   * Ensure that a mock function is called with specific arguments.
-   */
-  toBeCalledWith(...expected: Array<unknown>): R;
-  /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
    * The default for `precision` is 2.

@@ -187,7 +187,6 @@ describe('toHaveBeenCalledTimes', () => {
   'toHaveBeenLastCalledWith',
   'nthCalledWith',
   'toHaveBeenNthCalledWith',
-  'toBeCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
   const caller = function (
@@ -437,7 +436,6 @@ describe('toHaveBeenCalledTimes', () => {
     const basicCalledWith = [
       'lastCalledWith',
       'toHaveBeenLastCalledWith',
-      'toBeCalledWith',
       'toHaveBeenCalledWith',
     ];
 

@@ -13,7 +13,7 @@ describe('timerGame', () => {
     timerGame();
 
     expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toBeCalledWith(expect.any(Function), 1000);
+    expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 1000);
   });
 
   it('calls the callback after 1 second via runAllTimers', () => {

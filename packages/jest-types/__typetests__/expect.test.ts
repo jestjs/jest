@@ -16,9 +16,9 @@ expectType<void>(expect('value').toEqual(expect.any(String)));
 expectError(expect(123).toEqual(expect.any()));
 expectError(expect('value').toEqual(expect.not.any(Number)));
 
-expectType<void>(expect(jest.fn()).toBeCalledWith(expect.anything()));
-expectError(expect(jest.fn()).toBeCalledWith(expect.anything(true)));
-expectError(expect(jest.fn()).toBeCalledWith(expect.not.anything()));
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(expect.anything()));
+expectError(expect(jest.fn()).toHaveBeenCalledWith(expect.anything(true)));
+expectError(expect(jest.fn()).toHaveBeenCalledWith(expect.not.anything()));
 
 expectType<void>(expect(['A', 'B']).toEqual(expect.arrayContaining(['A'])));
 expectError(expect(['A']).toEqual(expect.arrayContaining('A')));
@@ -205,9 +205,9 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(3));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes(true));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 
-expectType<void>(expect(jest.fn()).toBeCalledWith());
-expectType<void>(expect(jest.fn()).toBeCalledWith('value'));
-expectType<void>(expect(jest.fn()).toBeCalledWith('value', 123));
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value'));
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('value', 123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));

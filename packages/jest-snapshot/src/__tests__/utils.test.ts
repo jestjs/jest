@@ -49,7 +49,7 @@ test('saveSnapshotFile() works with \r\n', () => {
   };
 
   saveSnapshotFile(data, filename);
-  expect(fs.writeFileSync).toBeCalledWith(
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -63,7 +63,7 @@ test('saveSnapshotFile() works with \r', () => {
   };
 
   saveSnapshotFile(data, filename);
-  expect(fs.writeFileSync).toBeCalledWith(
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',

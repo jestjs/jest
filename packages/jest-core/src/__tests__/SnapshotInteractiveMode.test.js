@@ -38,7 +38,7 @@ describe('SnapshotInteractiveMode', () => {
     ];
     instance.run(assertions, mockCallback);
     expect(instance.isActive()).toBeTruthy();
-    expect(mockCallback).toBeCalledWith(assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledWith(assertions[0], false);
   });
 
   test('call to abort', () => {
@@ -51,7 +51,7 @@ describe('SnapshotInteractiveMode', () => {
     instance.abort();
     expect(instance.isActive()).toBeFalsy();
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).toBeCalledWith(null, false);
+    expect(mockCallback).toHaveBeenCalledWith(null, false);
   });
 
   test('call to reset', () => {
@@ -64,7 +64,7 @@ describe('SnapshotInteractiveMode', () => {
     instance.restart();
     expect(instance.isActive()).toBeTruthy();
     expect(instance.getSkippedNum()).toBe(0);
-    expect(mockCallback).toBeCalledWith(assertions[0], false);
+    expect(mockCallback).toHaveBeenCalledWith(assertions[0], false);
   });
 
   test('press Q or ESC triggers an abort', () => {

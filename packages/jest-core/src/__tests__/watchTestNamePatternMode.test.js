@@ -107,7 +107,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('t');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();

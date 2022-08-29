@@ -137,7 +137,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   forkInterface.emit('exit', 1);
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
-  expect(onProcessStart).toBeCalledWith(worker);
+  expect(onProcessStart).toHaveBeenCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');
