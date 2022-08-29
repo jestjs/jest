@@ -1059,9 +1059,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
-      /Cannot find module 'library-that-is-not-installed'/,
-    );
+    ).rejects.toThrow(/Cannot find module 'library-that-is-not-installed'/);
   });
 
   test('throws when preset is invalid', async () => {
@@ -1077,7 +1075,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
     );
   });
@@ -1103,7 +1101,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(errorMessage);
+    ).rejects.toThrow(errorMessage);
   });
 
   test('works with "react-native"', async () => {
@@ -1699,7 +1697,7 @@ describe('moduleFileExtensions', () => {
           },
           {} as Config.Argv,
         ),
-      ).rejects.toThrowError("moduleFileExtensions must include 'js'");
+      ).rejects.toThrow("moduleFileExtensions must include 'js'");
     },
   );
 

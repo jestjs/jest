@@ -16,7 +16,7 @@ test('readConfig() throws when an object is passed without a file path', async (
       false /* skipArgvConfigOption */,
       null /* parentConfigPath */,
     ),
-  ).rejects.toThrowError(
+  ).rejects.toThrow(
     'Jest: Cannot use configuration as an object without a file path',
   );
 });

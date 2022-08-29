@@ -82,7 +82,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           b: 1,
           expected: 2,
@@ -120,7 +120,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           a: 1,
           expected: 2,
@@ -158,7 +158,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           '(๑ఠ‿ఠ๑)＜expected': 2,
           a: 1,

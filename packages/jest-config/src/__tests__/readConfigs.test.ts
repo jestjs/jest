@@ -18,5 +18,5 @@ test('readConfigs() throws when called without project paths', async () => {
   await expect(
     // @ts-expect-error
     readConfigs(null /* argv */, [] /* projectPaths */),
-  ).rejects.toThrowError('jest: No configuration found for any project.');
+  ).rejects.toThrow('jest: No configuration found for any project.');
 });

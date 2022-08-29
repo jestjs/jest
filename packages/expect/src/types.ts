@@ -334,8 +334,4 @@ export interface Matchers<R extends void | Promise<void>> {
    * Used to test that a function throws when it is called.
    */
   toThrow(expected?: unknown): R;
-  /**
-   * If you want to test that a specific error is thrown inside a function.
-   */
-  toThrowError(expected?: unknown): R;
 }

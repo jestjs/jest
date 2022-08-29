@@ -85,8 +85,6 @@ describe('calc - mocks', () => {
     const calc = makeCalc(memory);
 
     // @ts-expect-error
-    expect(() => calc('Multiply', [2, 3])).toThrowError(
-      new Error('Invalid op'),
-    );
+    expect(() => calc('Multiply', [2, 3])).toThrow(new Error('Invalid op'));
   });
 });

@@ -10,7 +10,7 @@ describe('test/it error throwing', () => {
   it('it throws error with missing callback function', () => {
     expect(() => {
       it('test1');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -18,7 +18,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error
       it(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -26,14 +26,14 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error
       it('test3', 'test3b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test3b. It must be a callback function.',
     );
   });
   test('test throws error with missing callback function', () => {
     expect(() => {
       test('test4');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -41,7 +41,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error
       test(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -49,7 +49,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error
       test('test6', 'test6b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test6b. It must be a callback function.',
     );
   });

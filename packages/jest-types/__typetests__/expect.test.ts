@@ -191,12 +191,6 @@ expectType<void>(expect(() => {}).toThrow('error'));
 expectType<void>(expect(() => {}).toThrow(Error));
 expectType<void>(expect(() => {}).toThrow(new Error('error')));
 
-expectType<void>(expect(() => {}).toThrowError());
-expectType<void>(expect(() => {}).toThrowError(/error/));
-expectType<void>(expect(() => {}).toThrowError('error'));
-expectType<void>(expect(() => {}).toThrowError(Error));
-expectType<void>(expect(() => {}).toThrowError(new Error('error')));
-
 // mock matchers
 
 expectType<void>(expect(jest.fn()).toBeCalled());

@@ -366,10 +366,10 @@ describe('Runtime requireModule', () => {
     const runtime = await createRuntime(__filename);
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow();
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow();
   });
 
   it('overrides module.createRequire', async () => {

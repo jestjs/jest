@@ -359,7 +359,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
       'prettier',
     );
 
-  expect(save).toThrowError(/Couldn't locate all inline snapshots./);
+  expect(save).toThrow(/Couldn't locate all inline snapshots./);
 });
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
@@ -377,7 +377,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
       'prettier',
     );
 
-  expect(save).toThrowError(
+  expect(save).toThrow(
     /Multiple inline snapshots for the same call are not supported./,
   );
 });

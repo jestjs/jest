@@ -87,7 +87,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
 };
 
 const getPromiseMatcher = (name: string, matcher: RawMatcherFn) => {
-  if (name === 'toThrow' || name === 'toThrowError') {
+  if (name === 'toThrow') {
     return createThrowMatcher(name, true);
   } else if (
     name === 'toThrowErrorMatchingSnapshot' ||

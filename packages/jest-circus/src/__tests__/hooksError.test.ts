@@ -25,9 +25,7 @@ describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
       el => {
         expect(() => {
           circus[fn](el);
-        }).toThrowError(
-          'Invalid first argument. It must be a callback function.',
-        );
+        }).toThrow('Invalid first argument. It must be a callback function.');
       },
     );
   },
