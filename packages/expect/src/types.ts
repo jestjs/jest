@@ -295,10 +295,6 @@ export interface Matchers<R extends void | Promise<void>> {
     expected: Record<string, unknown> | Array<Record<string, unknown>>,
   ): R;
   /**
-   * Ensure that a mock function has returned a specified value at least once.
-   */
-  toReturnWith(expected: unknown): R;
-  /**
    * Use to test that objects have the same types as well as structure.
    */
   toStrictEqual(expected: unknown): R;

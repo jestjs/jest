@@ -851,7 +851,6 @@ describe('toHaveReturnedTimes', () => {
   'toHaveLastReturnedWith',
   'nthReturnedWith',
   'toHaveNthReturnedWith',
-  'toReturnWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
   const caller = function (
@@ -1039,8 +1038,7 @@ describe('toHaveReturnedTimes', () => {
       ).toThrowErrorMatchingSnapshot();
     });
 
-    const basicReturnedWith = ['toHaveReturnedWith', 'toReturnWith'];
-    if (basicReturnedWith.indexOf(returnedWith) >= 0) {
+    if (returnedWith === 'toHaveReturnedWith') {
       describe('returnedWith', () => {
         test('works with more calls than the limit', () => {
           const fn = jest.fn();

@@ -226,10 +226,9 @@ expectType<void>(expect(jest.fn()).toHaveReturnedTimes(3));
 expectError(expect(jest.fn()).toHaveReturnedTimes('twice'));
 expectError(expect(jest.fn()).toHaveReturnedTimes(true));
 
-expectType<void>(expect(jest.fn()).toReturnWith('value'));
-expectError(expect(jest.fn()).toReturnWith());
-expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
 expectError(expect(jest.fn()).toHaveReturnedWith());
+expectType<void>(expect(jest.fn()).toHaveReturnedWith('value'));
+expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
 
 expectType<void>(expect(jest.fn()).lastReturnedWith('value'));
 expectError(expect(jest.fn()).lastReturnedWith());

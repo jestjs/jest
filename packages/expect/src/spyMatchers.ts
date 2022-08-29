@@ -1152,7 +1152,6 @@ const spyMatchers: MatchersObject = {
   toHaveReturned: createToReturnMatcher('toHaveReturned'),
   toHaveReturnedTimes: createToReturnTimesMatcher('toHaveReturnedTimes'),
   toHaveReturnedWith: createToReturnWithMatcher('toHaveReturnedWith'),
-  toReturnWith: createToReturnWithMatcher('toReturnWith'),
 };
 
 const isMock = (received: any) =>
