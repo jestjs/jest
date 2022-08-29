@@ -816,7 +816,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit('o');
 
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: true,
       watch: true,
@@ -830,7 +830,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit('a');
 
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: false,
       watch: false,

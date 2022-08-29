@@ -63,7 +63,7 @@ describe('WorkerPool', () => {
       workerId: 0,
       workerPath: '/path',
     });
-    expect(NodeThreadWorker).not.toBeCalled();
+    expect(NodeThreadWorker).not.toHaveBeenCalled();
     expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,
@@ -93,7 +93,7 @@ describe('WorkerPool', () => {
       workerId: 0,
       workerPath: '/path',
     });
-    expect(ChildProcessWorker).not.toBeCalled();
+    expect(ChildProcessWorker).not.toHaveBeenCalled();
     expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,
@@ -122,7 +122,7 @@ describe('WorkerPool', () => {
       workerId: 0,
       workerPath: '/path',
     });
-    expect(NodeThreadWorker).not.toBeCalled();
+    expect(NodeThreadWorker).not.toHaveBeenCalled();
     expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,

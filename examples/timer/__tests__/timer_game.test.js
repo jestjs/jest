@@ -23,13 +23,13 @@ describe('timerGame', () => {
     timerGame(callback);
 
     // At this point in time, the callback should not have been called yet
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
 
     // Fast-forward until all timers have been executed
     jest.runAllTimers();
 
     // Now our callback should have been called!
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toBeCalledTimes(1);
   });
 
@@ -40,13 +40,13 @@ describe('timerGame', () => {
     timerGame(callback);
 
     // At this point in time, the callback should not have been called yet
-    expect(callback).not.toBeCalled();
+    expect(callback).not.toHaveBeenCalled();
 
     // Fast-forward until all timers have been executed
     jest.advanceTimersByTime(1000);
 
     // Now our callback should have been called!
-    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalled();
     expect(callback).toBeCalledTimes(1);
   });
 });

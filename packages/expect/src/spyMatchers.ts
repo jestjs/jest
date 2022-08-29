@@ -1140,7 +1140,6 @@ const spyMatchers: MatchersObject = {
   lastReturnedWith: createLastReturnedMatcher('lastReturnedWith'),
   nthCalledWith: createNthCalledWithMatcher('nthCalledWith'),
   nthReturnedWith: createNthReturnedWithMatcher('nthReturnedWith'),
-  toBeCalled: createToBeCalledMatcher('toBeCalled'),
   toBeCalledTimes: createToBeCalledTimesMatcher('toBeCalledTimes'),
   toBeCalledWith: createToBeCalledWithMatcher('toBeCalledWith'),
   toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),

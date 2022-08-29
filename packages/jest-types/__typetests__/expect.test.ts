@@ -193,8 +193,8 @@ expectType<void>(expect(() => {}).toThrow(new Error('error')));
 
 // mock matchers
 
-expectType<void>(expect(jest.fn()).toBeCalled());
-expectError(expect(jest.fn()).toBeCalled('value'));
+expectType<void>(expect(jest.fn()).toHaveBeenCalled());
+expectError(expect(jest.fn()).toHaveBeenCalled('value'));
 expectType<void>(expect(jest.fn()).toHaveBeenCalled());
 expectError(expect(jest.fn()).toHaveBeenCalled(false));
 

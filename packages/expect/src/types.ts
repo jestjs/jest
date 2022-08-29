@@ -154,10 +154,6 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   toBe(expected: unknown): R;
   /**
-   * Ensures that a mock function is called.
-   */
-  toBeCalled(): R;
-  /**
    * Ensures that a mock function is called an exact number of times.
    */
   toBeCalledTimes(expected: number): R;

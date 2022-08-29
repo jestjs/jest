@@ -21,7 +21,7 @@ it('schedules a 10-second timer after 1 second', () => {
   jest.runOnlyPendingTimers();
 
   // At this point, our 1-second timer should have fired its callback
-  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalled();
 
   // And it should have created a new timer to start the game over in
   // 10 seconds

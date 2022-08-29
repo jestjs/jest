@@ -1336,7 +1336,7 @@ describe('HasteMap', () => {
       ],
     ]);
 
-    expect(mockEnd).toBeCalled();
+    expect(mockEnd).toHaveBeenCalled();
   });
 
   it('tries to crawl using node as a fallback', async () => {
@@ -1360,8 +1360,8 @@ describe('HasteMap', () => {
     const {__hasteMapForTest: data} = await (
       await HasteMap.create(defaultConfig)
     ).build();
-    expect(watchman).toBeCalled();
-    expect(node).toBeCalled();
+    expect(watchman).toHaveBeenCalled();
+    expect(node).toHaveBeenCalled();
 
     expect(data.files).toEqual(
       createMap({
@@ -1401,8 +1401,8 @@ describe('HasteMap', () => {
       await HasteMap.create(defaultConfig)
     ).build();
 
-    expect(watchman).toBeCalled();
-    expect(node).toBeCalled();
+    expect(watchman).toHaveBeenCalled();
+    expect(node).toHaveBeenCalled();
 
     expect(data.files).toEqual(
       createMap({

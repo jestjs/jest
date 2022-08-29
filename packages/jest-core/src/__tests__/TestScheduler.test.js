@@ -348,7 +348,7 @@ test('should not bail if less than `n` failures', async () => {
     snapshot: {},
     testResults: [{}],
   });
-  expect(setState).not.toBeCalled();
+  expect(setState).not.toHaveBeenCalled();
 });
 
 test('should set runInBand to run in serial', async () => {

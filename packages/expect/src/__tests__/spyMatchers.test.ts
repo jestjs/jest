@@ -34,53 +34,61 @@ const createSpy = (fn: jest.Mock) => {
   return spy;
 };
 
-['toBeCalled', 'toHaveBeenCalled'].forEach(called => {
-  describe(`${called}`, () => {
-    test('works only on spies or jest.fn', () => {
-      const fn = function fn() {};
+describe('toHaveBeenCalled', () => {
+  test('works only on spies or jest.fn', () => {
+    const fn = function fn() {};
 
-      expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
-    });
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('passes when called', () => {
-      const fn = jest.fn();
-      fn('arg0', 'arg1', 'arg2');
-      jestExpect(createSpy(fn))[called]();
-      jestExpect(fn)[called]();
-      expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
-    });
+  test('passes when called', () => {
+    const fn = jest.fn();
+    fn('arg0', 'arg1', 'arg2');
+    jestExpect(createSpy(fn)).toHaveBeenCalled();
+    jestExpect(fn).toHaveBeenCalled();
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('.not passes when called', () => {
-      const fn = jest.fn();
-      const spy = createSpy(fn);
+  test('.not passes when called', () => {
+    const fn = jest.fn();
+    const spy = createSpy(fn);
 
-      jestExpect(spy).not[called]();
-      jestExpect(fn).not[called]();
-      expect(() => jestExpect(spy)[called]()).toThrowErrorMatchingSnapshot();
-    });
+    jestExpect(spy).not.toHaveBeenCalled();
+    jestExpect(fn).not.toHaveBeenCalled();
+    expect(() =>
+      jestExpect(spy).toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('fails with any argument passed', () => {
-      const fn = jest.fn();
+  test('fails with any argument passed', () => {
+    const fn = jest.fn();
 
-      fn();
-      expect(() => jestExpect(fn)[called](555)).toThrowErrorMatchingSnapshot();
-    });
+    fn();
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalled(555),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('.not fails with any argument passed', () => {
-      const fn = jest.fn();
+  test('.not fails with any argument passed', () => {
+    const fn = jest.fn();
 
-      expect(() =>
-        jestExpect(fn).not[called](555),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalled(555),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('includes the custom mock name in the error message', () => {
-      const fn = jest.fn().mockName('named-mock');
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn().mockName('named-mock');
 
-      fn();
-      jestExpect(fn)[called]();
-      expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
-    });
+    fn();
+    jestExpect(fn).toHaveBeenCalled();
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalled(),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 

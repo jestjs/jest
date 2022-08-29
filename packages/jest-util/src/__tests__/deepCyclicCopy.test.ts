@@ -31,7 +31,7 @@ it('does not execute getters/setters, but copies them', () => {
   const copy = deepCyclicCopy(obj);
 
   expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toBeDefined();
-  expect(fn).not.toBeCalled();
+  expect(fn).not.toHaveBeenCalled();
 });
 
 it('copies symbols', () => {
