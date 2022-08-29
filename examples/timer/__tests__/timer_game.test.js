@@ -12,7 +12,7 @@ describe('timerGame', () => {
     const timerGame = require('../timerGame');
     timerGame();
 
-    expect(setTimeout).toBeCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toBeCalledWith(expect.any(Function), 1000);
   });
 
@@ -30,7 +30,7 @@ describe('timerGame', () => {
 
     // Now our callback should have been called!
     expect(callback).toHaveBeenCalled();
-    expect(callback).toBeCalledTimes(1);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it('calls the callback after 1 second via advanceTimersByTime', () => {
@@ -47,6 +47,6 @@ describe('timerGame', () => {
 
     // Now our callback should have been called!
     expect(callback).toHaveBeenCalled();
-    expect(callback).toBeCalledTimes(1);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 });

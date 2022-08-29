@@ -81,7 +81,7 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write)).toHaveBeenCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
@@ -98,7 +98,7 @@ describe('logs error annotation', () => {
       } as TestResult,
     );
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write)).toHaveBeenCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 
@@ -112,7 +112,7 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
+    expect(jest.mocked(process.stderr.write)).toHaveBeenCalledTimes(1);
     expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
   });
 });
@@ -129,7 +129,7 @@ describe('logs warning annotation before logging errors', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(2);
+    expect(jest.mocked(process.stderr.write)).toHaveBeenCalledTimes(2);
     expect(jest.mocked(process.stderr.write).mock.calls).toMatchSnapshot();
   });
 });

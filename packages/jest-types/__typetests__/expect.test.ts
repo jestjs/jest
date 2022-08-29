@@ -198,9 +198,9 @@ expectError(expect(jest.fn()).toHaveBeenCalled('value'));
 expectType<void>(expect(jest.fn()).toHaveBeenCalled());
 expectError(expect(jest.fn()).toHaveBeenCalled(false));
 
-expectType<void>(expect(jest.fn()).toBeCalledTimes(1));
-expectError(expect(jest.fn()).toBeCalledTimes('twice'));
-expectError(expect(jest.fn()).toBeCalledTimes());
+expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(1));
+expectError(expect(jest.fn()).toHaveBeenCalledTimes('twice'));
+expectError(expect(jest.fn()).toHaveBeenCalledTimes());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(3));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes(true));
 expectError(expect(jest.fn()).toHaveBeenCalledTimes());

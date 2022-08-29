@@ -707,7 +707,7 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
       fsync: false,
@@ -737,7 +737,7 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
       fsync: false,
@@ -769,7 +769,7 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
       fsync: false,
@@ -803,7 +803,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
@@ -838,7 +838,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
@@ -873,7 +873,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
@@ -914,7 +914,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -954,7 +954,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -994,7 +994,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -1024,7 +1024,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
@@ -1131,7 +1131,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
@@ -1176,7 +1176,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
@@ -1223,7 +1223,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
@@ -1259,7 +1259,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
@@ -1295,7 +1295,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
@@ -1333,7 +1333,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),

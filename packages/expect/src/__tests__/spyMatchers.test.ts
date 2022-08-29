@@ -92,95 +92,93 @@ describe('toHaveBeenCalled', () => {
   });
 });
 
-['toBeCalledTimes', 'toHaveBeenCalledTimes'].forEach(calledTimes => {
-  describe(`${calledTimes}`, () => {
-    test('.not works only on spies or jest.fn', () => {
-      const fn = function fn() {};
+describe('toHaveBeenCalledTimes', () => {
+  test('.not works only on spies or jest.fn', () => {
+    const fn = function fn() {};
 
+    expect(() =>
+      jestExpect(fn).not.toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('only accepts a number argument', () => {
+    const fn = jest.fn();
+    fn();
+    jestExpect(fn).toHaveBeenCalledTimes(1);
+
+    [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
       expect(() =>
-        jestExpect(fn).not[calledTimes](2),
+        jestExpect(fn).toHaveBeenCalledTimes(value),
       ).toThrowErrorMatchingSnapshot();
     });
+  });
 
-    test('only accepts a number argument', () => {
-      const fn = jest.fn();
-      fn();
-      jestExpect(fn)[calledTimes](1);
+  test('.not only accepts a number argument', () => {
+    const fn = jest.fn();
+    jestExpect(fn).not.toHaveBeenCalledTimes(1);
 
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
-        expect(() =>
-          jestExpect(fn)[calledTimes](value),
-        ).toThrowErrorMatchingSnapshot();
-      });
-    });
-
-    test('.not only accepts a number argument', () => {
-      const fn = jest.fn();
-      jestExpect(fn).not[calledTimes](1);
-
-      [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
-        expect(() =>
-          jestExpect(fn).not[calledTimes](value),
-        ).toThrowErrorMatchingSnapshot();
-      });
-    });
-
-    test('passes if function called equal to expected times', () => {
-      const fn = jest.fn();
-      fn();
-      fn();
-
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](2);
-      jestExpect(fn)[calledTimes](2);
-
+    [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
       expect(() =>
-        jestExpect(spy).not[calledTimes](2),
+        jestExpect(fn).not.toHaveBeenCalledTimes(value),
       ).toThrowErrorMatchingSnapshot();
     });
+  });
 
-    test('.not passes if function called more than expected times', () => {
-      const fn = jest.fn();
-      fn();
-      fn();
-      fn();
+  test('passes if function called equal to expected times', () => {
+    const fn = jest.fn();
+    fn();
+    fn();
 
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](3);
-      jestExpect(spy).not[calledTimes](2);
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(2);
+    jestExpect(fn).toHaveBeenCalledTimes(2);
 
-      jestExpect(fn)[calledTimes](3);
-      jestExpect(fn).not[calledTimes](2);
+    expect(() =>
+      jestExpect(spy).not.toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('.not passes if function called more than expected times', () => {
+    const fn = jest.fn();
+    fn();
+    fn();
+    fn();
 
-    test('.not passes if function called less than expected times', () => {
-      const fn = jest.fn();
-      fn();
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(3);
+    jestExpect(spy).not.toHaveBeenCalledTimes(2);
 
-      const spy = createSpy(fn);
-      jestExpect(spy)[calledTimes](1);
-      jestExpect(spy).not[calledTimes](2);
+    jestExpect(fn).toHaveBeenCalledTimes(3);
+    jestExpect(fn).not.toHaveBeenCalledTimes(2);
 
-      jestExpect(fn)[calledTimes](1);
-      jestExpect(fn).not[calledTimes](2);
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('.not passes if function called less than expected times', () => {
+    const fn = jest.fn();
+    fn();
 
-    test('includes the custom mock name in the error message', () => {
-      const fn = jest.fn().mockName('named-mock');
-      fn();
+    const spy = createSpy(fn);
+    jestExpect(spy).toHaveBeenCalledTimes(1);
+    jestExpect(spy).not.toHaveBeenCalledTimes(2);
 
-      expect(() =>
-        jestExpect(fn)[calledTimes](2),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    jestExpect(fn).toHaveBeenCalledTimes(1);
+    jestExpect(fn).not.toHaveBeenCalledTimes(2);
+
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn().mockName('named-mock');
+    fn();
+
+    expect(() =>
+      jestExpect(fn).toHaveBeenCalledTimes(2),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 

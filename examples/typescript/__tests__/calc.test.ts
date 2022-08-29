@@ -78,7 +78,7 @@ describe('calc - mocks', () => {
     expect(memoryResult).toEqual(2);
     expect(sumResult2).toEqual(4);
     expect(clearResult).toEqual(4);
-    expect(MockMemory.prototype.reset).toBeCalledTimes(1);
+    expect(MockMemory.prototype.reset).toHaveBeenCalledTimes(1);
   });
 
   it('throws an error when invalid Op is passed', () => {

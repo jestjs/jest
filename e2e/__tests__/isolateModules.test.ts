@@ -45,7 +45,7 @@ test('works with mocks', () => {
           require("./read");
         });
 
-        expect(configGetMock).toBeCalledTimes(1);
+        expect(configGetMock).toHaveBeenCalledTimes(1);
       })
     `,
   });
