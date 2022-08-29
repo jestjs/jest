@@ -847,7 +847,6 @@ describe('toHaveReturnedTimes', () => {
 });
 
 [
-  'lastReturnedWith',
   'toHaveLastReturnedWith',
   'nthReturnedWith',
   'toHaveNthReturnedWith',
@@ -1208,9 +1207,8 @@ describe('toHaveReturnedTimes', () => {
       });
     }
 
-    const lastReturnedWith = ['toHaveLastReturnedWith', 'lastReturnedWith'];
-    if (lastReturnedWith.indexOf(returnedWith) >= 0) {
-      describe('lastReturnedWith', () => {
+    if (returnedWith === 'toHaveLastReturnedWith') {
+      describe('toHaveLastReturnedWith', () => {
         test('works with three calls', () => {
           const fn = jest.fn();
           fn.mockReturnValueOnce('foo1');

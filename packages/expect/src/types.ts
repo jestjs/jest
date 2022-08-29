@@ -133,10 +133,6 @@ type PromiseMatchers = {
 
 export interface Matchers<R extends void | Promise<void>> {
   /**
-   * Ensure that the last call to a mock function has returned a specified value.
-   */
-  lastReturnedWith(expected: unknown): R;
-  /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
   nthReturnedWith(nth: number, expected: unknown): R;

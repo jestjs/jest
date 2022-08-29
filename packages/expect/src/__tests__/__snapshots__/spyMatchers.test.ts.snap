@@ -1,148 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`lastReturnedWith a call that throws is not considered to have returned 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>undefined</>
-Received: function call threw an error
-
-Number of returns: <r>0</>
-Number of calls:   <r>1</>
-`;
-
-exports[`lastReturnedWith a call that throws undefined is not considered to have returned 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>undefined</>
-Received: function call threw an error
-
-Number of returns: <r>0</>
-Number of calls:   <r>1</>
-`;
-
-exports[`lastReturnedWith includes the custom mock name in the error message 1`] = `
-<d>expect(</><r>named-mock</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>"foo"</>
-
-Number of returns: <r>0</>
-`;
-
-exports[`lastReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>0</>
-Received
-       3: function call has not returned yet
-->     4: function call has not returned yet
-
-Number of returns: <r>0</>
-Number of calls:   <r>4</>
-`;
-
-exports[`lastReturnedWith lastReturnedWith works with three calls 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>"foo3"</>
-Received
-       2:     <r>"foo2"</>
-->     3:     <d>"foo3"</>
-
-Number of returns: <r>3</>
-`;
-
-exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
-<d>expect(</><r>received</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-<b>Matcher error</>: <r>received</> value must be a mock function
-
-Received has type:  function
-Received has value: <r>[Function fn]</>
-`;
-
-exports[`lastReturnedWith works when not called 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>"foo"</>
-
-Number of returns: <r>0</>
-`;
-
-exports[`lastReturnedWith works with Immutable.js objects directly created 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>Immutable.Map {"a": {"b": "c"}}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with Immutable.js objects indirectly created 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>Immutable.Map {"a": {"b": "c"}}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with Map 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>Map {1 => 2, 2 => 1}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with Map 2`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>Map {"a" => "b", "b" => "a"}</>
-Received: <r>Map {1 => 2, 2 => 1}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with Set 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>Set {1, 2}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with Set 2`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>Set {3, 4}</>
-Received: <r>Set {1, 2}</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with argument that does match 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>"foo"</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with argument that does not match 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: <g>"bar"</>
-Received: <r>"foo"</>
-
-Number of returns: <r>1</>
-`;
-
-exports[`lastReturnedWith works with undefined 1`] = `
-<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastReturnedWith<d>(</><g>expected</><d>)</>
-
-Expected: not <g>undefined</>
-
-Number of returns: <r>1</>
-`;
-
 exports[`nthReturnedWith a call that throws is not considered to have returned 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>nthReturnedWith<d>(</>n<d>, </><g>expected</><d>)</>
 
@@ -1234,7 +1091,7 @@ Expected: <g>"foo"</>
 Number of returns: <r>0</>
 `;
 
-exports[`toHaveLastReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveLastReturnedWith toHaveLastReturnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: <g>0</>
@@ -1246,7 +1103,7 @@ Number of returns: <r>0</>
 Number of calls:   <r>4</>
 `;
 
-exports[`toHaveLastReturnedWith lastReturnedWith works with three calls 1`] = `
+exports[`toHaveLastReturnedWith toHaveLastReturnedWith works with three calls 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
 Expected: not <g>"foo3"</>

@@ -230,10 +230,9 @@ expectError(expect(jest.fn()).toHaveReturnedWith());
 expectType<void>(expect(jest.fn()).toHaveReturnedWith('value'));
 expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
 
-expectType<void>(expect(jest.fn()).lastReturnedWith('value'));
-expectError(expect(jest.fn()).lastReturnedWith());
-expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
 expectError(expect(jest.fn()).toHaveLastReturnedWith());
+expectType<void>(expect(jest.fn()).toHaveLastReturnedWith('value'));
+expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
 
 expectType<void>(expect(jest.fn()).nthReturnedWith(1, 'value'));
 expectError(expect(jest.fn()).nthReturnedWith());
