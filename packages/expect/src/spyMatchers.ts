@@ -1152,7 +1152,6 @@ const spyMatchers: MatchersObject = {
   toHaveReturned: createToReturnMatcher('toHaveReturned'),
   toHaveReturnedTimes: createToReturnTimesMatcher('toHaveReturnedTimes'),
   toHaveReturnedWith: createToReturnWithMatcher('toHaveReturnedWith'),
-  toReturnTimes: createToReturnTimesMatcher('toReturnTimes'),
   toReturnWith: createToReturnWithMatcher('toReturnWith'),
 };
 
