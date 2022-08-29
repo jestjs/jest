@@ -32,4 +32,35 @@ jest.useFakeTimers();
 // etc.
 ```
 
+Additionally, since ESM evaluates static `import` statements before looking at the code, hoisting on `jest.mock` calls that happens in CJS modules won't work in ESM. To `mock` modules in ESM, you need to use dynamic `import()` after `jest.mock` calls to load the mocked modules, same applies to modules which have to load the mocked modules.
+
+```js
+// - main.cjs
+const { BrowserWindow, app } = require('electron');
+
+// etc.
+
+module.exports = { example };
+```
+
+```js
+// - main.test.js
+import { jest } from '@jest/globals';
+
+jest.mock('electron', () => ({
+  app: {
+    on: jest.fn(),
+    whenReady: jest.fn(() => Promise.resolve()),
+  },
+  BrowserWindow: jest.fn().mockImplementation(() => ({
+    // partial mocks.
+  }))
+}));
+
+const { BrowserWindow } = (await import('electron')).default;
+const exported = await import('main.cjs');
+
+// etc.
+```
+
 Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
