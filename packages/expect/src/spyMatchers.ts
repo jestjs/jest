@@ -1136,7 +1136,6 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
   };
 
 const spyMatchers: MatchersObject = {
-  nthReturnedWith: createNthReturnedWithMatcher('nthReturnedWith'),
   toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),
   toHaveBeenCalledTimes: createToBeCalledTimesMatcher('toHaveBeenCalledTimes'),
   toHaveBeenCalledWith: createToBeCalledWithMatcher('toHaveBeenCalledWith'),

@@ -848,7 +848,6 @@ describe('toHaveReturnedTimes', () => {
 
 [
   'toHaveLastReturnedWith',
-  'nthReturnedWith',
   'toHaveNthReturnedWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
@@ -856,10 +855,7 @@ describe('toHaveReturnedTimes', () => {
     callee: (...a: Array<unknown>) => void,
     ...args: Array<unknown>
   ) {
-    if (
-      returnedWith === 'nthReturnedWith' ||
-      returnedWith === 'toHaveNthReturnedWith'
-    ) {
+    if (returnedWith === 'toHaveNthReturnedWith') {
       callee(1, ...args);
     } else {
       callee(...args);
@@ -1086,9 +1082,8 @@ describe('toHaveReturnedTimes', () => {
       });
     }
 
-    const nthReturnedWith = ['toHaveNthReturnedWith', 'nthReturnedWith'];
-    if (nthReturnedWith.indexOf(returnedWith) >= 0) {
-      describe('nthReturnedWith', () => {
+    if (returnedWith === 'toHaveNthReturnedWith') {
+      describe('toHaveNthReturnedWith', () => {
         test('works with three calls', () => {
           const fn = jest.fn();
           fn.mockReturnValueOnce('foo1');

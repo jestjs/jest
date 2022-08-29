@@ -234,11 +234,8 @@ expectError(expect(jest.fn()).toHaveLastReturnedWith());
 expectType<void>(expect(jest.fn()).toHaveLastReturnedWith('value'));
 expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
 
-expectType<void>(expect(jest.fn()).nthReturnedWith(1, 'value'));
-expectError(expect(jest.fn()).nthReturnedWith());
-expectError(expect(jest.fn()).nthReturnedWith(2));
-expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1, 'value'));
 expectError(expect(jest.fn()).toHaveNthReturnedWith());
+expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1, 'value'));
 expectError(expect(jest.fn()).toHaveNthReturnedWith(2));
 
 // snapshot matchers

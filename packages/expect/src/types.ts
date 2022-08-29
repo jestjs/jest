@@ -133,10 +133,6 @@ type PromiseMatchers = {
 
 export interface Matchers<R extends void | Promise<void>> {
   /**
-   * Ensure that the nth call to a mock function has returned a specified value.
-   */
-  nthReturnedWith(nth: number, expected: unknown): R;
-  /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
    */
