@@ -212,10 +212,6 @@ expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith('value'));
 expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith(123, 'value'));
 
-expectType<void>(expect(jest.fn()).nthCalledWith(2));
-expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value'));
-expectType<void>(expect(jest.fn()).nthCalledWith(1, 'value', 123));
-expectError(expect(jest.fn()).nthCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(2));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));

@@ -184,7 +184,6 @@ describe('toHaveBeenCalledTimes', () => {
 
 [
   'toHaveBeenLastCalledWith',
-  'nthCalledWith',
   'toHaveBeenNthCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
@@ -192,15 +191,13 @@ describe('toHaveBeenCalledTimes', () => {
     callee: (...a: Array<unknown>) => void,
     ...args: Array<unknown>
   ) {
-    if (
-      calledWith === 'nthCalledWith' ||
-      calledWith === 'toHaveBeenNthCalledWith'
-    ) {
+    if (calledWith === 'toHaveBeenNthCalledWith') {
       callee(1, ...args);
     } else {
       callee(...args);
     }
   };
+
   describe(`${calledWith}`, () => {
     test('works only on spies or jest.fn', () => {
       const fn = function fn() {};
@@ -465,8 +462,7 @@ describe('toHaveBeenCalledTimes', () => {
       });
     }
 
-    const nthCalled = ['toHaveBeenNthCalledWith', 'nthCalledWith'];
-    if (nthCalled.indexOf(calledWith) >= 0) {
+    if (calledWith === 'toHaveBeenNthCalledWith') {
       test('works with three calls', () => {
         const fn = jest.fn();
         fn('foo1', 'bar');

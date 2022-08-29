@@ -137,10 +137,6 @@ export interface Matchers<R extends void | Promise<void>> {
    */
   lastReturnedWith(expected: unknown): R;
   /**
-   * Ensure that a mock function is called with specific arguments on an Nth call.
-   */
-  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
-  /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
   nthReturnedWith(nth: number, expected: unknown): R;
