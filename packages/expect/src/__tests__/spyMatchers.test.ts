@@ -519,153 +519,159 @@ describe('toHaveBeenCalledTimes', () => {
   });
 });
 
-['toReturn', 'toHaveReturned'].forEach(returned => {
-  describe(`${returned}`, () => {
-    test('.not works only on jest.fn', () => {
-      const fn = function fn() {};
+describe('toHaveReturned', () => {
+  test('.not works only on jest.fn', () => {
+    const fn = function fn() {};
 
-      expect(() =>
-        jestExpect(fn).not[returned](),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('throw matcher error if received is spy', () => {
-      const spy = createSpy(jest.fn());
+  test('throw matcher error if received is spy', () => {
+    const spy = createSpy(jest.fn());
 
-      expect(() => jestExpect(spy)[returned]()).toThrowErrorMatchingSnapshot();
-    });
+    expect(() =>
+      jestExpect(spy).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('passes when returned', () => {
-      const fn = jest.fn(() => 42);
-      fn();
-      jestExpect(fn)[returned]();
-      expect(() =>
-        jestExpect(fn).not[returned](),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('passes when returned', () => {
+    const fn = jest.fn(() => 42);
+    fn();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('passes when undefined is returned', () => {
-      const fn = jest.fn(() => undefined);
-      fn();
-      jestExpect(fn)[returned]();
-      expect(() =>
-        jestExpect(fn).not[returned](),
-      ).toThrowErrorMatchingSnapshot();
-    });
+  test('passes when undefined is returned', () => {
+    const fn = jest.fn(() => undefined);
+    fn();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
 
-    test('passes when at least one call does not throw', () => {
-      const fn = jest.fn(causeError => {
-        if (causeError) {
-          throw new Error('Error!');
-        }
-
-        return 42;
-      });
-
-      fn(false);
-
-      try {
-        fn(true);
-      } catch {
-        // ignore error
-      }
-
-      fn(false);
-
-      jestExpect(fn)[returned]();
-      expect(() =>
-        jestExpect(fn).not[returned](),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test('.not passes when not returned', () => {
-      const fn = jest.fn();
-
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
-    });
-
-    test('.not passes when all calls throw', () => {
-      const fn = jest.fn(() => {
+  test('passes when at least one call does not throw', () => {
+    const fn = jest.fn(causeError => {
+      if (causeError) {
         throw new Error('Error!');
-      });
-
-      try {
-        fn();
-      } catch {
-        // ignore error
       }
 
-      try {
-        fn();
-      } catch {
-        // ignore error
-      }
-
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      return 42;
     });
 
-    test('.not passes when a call throws undefined', () => {
-      const fn = jest.fn(() => {
-        // eslint-disable-next-line no-throw-literal
-        throw undefined;
-      });
+    fn(false);
 
-      try {
-        fn();
-      } catch {
-        // ignore error
-      }
+    try {
+      fn(true);
+    } catch {
+      // ignore error
+    }
 
-      jestExpect(fn).not[returned]();
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+    fn(false);
+
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not passes when not returned', () => {
+    const fn = jest.fn();
+
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not passes when all calls throw', () => {
+    const fn = jest.fn(() => {
+      throw new Error('Error!');
     });
 
-    test('fails with any argument passed', () => {
-      const fn = jest.fn();
-
+    try {
       fn();
-      expect(() =>
-        jestExpect(fn)[returned](555),
-      ).toThrowErrorMatchingSnapshot();
-    });
+    } catch {
+      // ignore error
+    }
 
-    test('.not fails with any argument passed', () => {
-      const fn = jest.fn();
-
-      expect(() =>
-        jestExpect(fn).not[returned](555),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    test('includes the custom mock name in the error message', () => {
-      const fn = jest.fn(() => 42).mockName('named-mock');
+    try {
       fn();
-      jestExpect(fn)[returned]();
-      expect(() =>
-        jestExpect(fn).not[returned](),
-      ).toThrowErrorMatchingSnapshot();
+    } catch {
+      // ignore error
+    }
+
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not passes when a call throws undefined', () => {
+    const fn = jest.fn(() => {
+      // eslint-disable-next-line no-throw-literal
+      throw undefined;
     });
 
-    test('incomplete recursive calls are handled properly', () => {
-      // sums up all integers from 0 -> value, using recursion
-      const fn: jest.Mock = jest.fn(value => {
-        if (value === 0) {
-          // Before returning from the base case of recursion, none of the
-          // calls have returned yet.
-          jestExpect(fn).not[returned]();
-          expect(() =>
-            jestExpect(fn)[returned](),
-          ).toThrowErrorMatchingSnapshot();
-          return 0;
-        } else {
-          return value + fn(value - 1);
-        }
-      });
+    try {
+      fn();
+    } catch {
+      // ignore error
+    }
 
-      fn(3);
+    jestExpect(fn).not.toHaveReturned();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('fails with any argument passed', () => {
+    const fn = jest.fn();
+
+    fn();
+    expect(() =>
+      jestExpect(fn).toHaveReturned(555),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('.not fails with any argument passed', () => {
+    const fn = jest.fn();
+
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(555),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn(() => 42).mockName('named-mock');
+    fn();
+    jestExpect(fn).toHaveReturned();
+    expect(() =>
+      jestExpect(fn).not.toHaveReturned(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('incomplete recursive calls are handled properly', () => {
+    // sums up all integers from 0 -> value, using recursion
+    const fn: jest.Mock = jest.fn(value => {
+      if (value === 0) {
+        // Before returning from the base case of recursion, none of the
+        // calls have returned yet.
+        jestExpect(fn).not.toHaveReturned();
+        expect(() =>
+          jestExpect(fn).toHaveReturned(),
+        ).toThrowErrorMatchingSnapshot();
+        return 0;
+      } else {
+        return value + fn(value - 1);
+      }
     });
+
+    fn(3);
   });
 });
 

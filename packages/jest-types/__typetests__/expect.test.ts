@@ -217,9 +217,8 @@ expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));
 expectError(expect(jest.fn()).toHaveBeenNthCalledWith());
 
-expectType<void>(expect(jest.fn()).toReturn());
-expectError(expect(jest.fn()).toReturn('value'));
 expectType<void>(expect(jest.fn()).toHaveReturned());
+expectError(expect(jest.fn()).toHaveReturned('value'));
 expectError(expect(jest.fn()).toHaveReturned(false));
 
 expectType<void>(expect(jest.fn()).toReturnTimes(1));

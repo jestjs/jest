@@ -295,10 +295,6 @@ export interface Matchers<R extends void | Promise<void>> {
     expected: Record<string, unknown> | Array<Record<string, unknown>>,
   ): R;
   /**
-   * Ensure that a mock function has returned (as opposed to thrown) at least once.
-   */
-  toReturn(): R;
-  /**
    * Ensure that a mock function has returned (as opposed to thrown) a specified number of times.
    */
   toReturnTimes(expected: number): R;
