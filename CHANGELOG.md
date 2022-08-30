@@ -10,6 +10,9 @@
 
 ### Chore & Maintenance
 
+- `[expect]` [**BREAKING**] Remove `.toBeCalled()`, `.toBeCalledTimes()`, `.toBeCalledWith()`, `.lastCalledWith()`, `.nthCalledWith()`, `.toReturn()`, `.toReturnTimes()`, `.toReturnWith()`, `.lastReturnedWith()`, `.nthReturnedWith()` and `.toThrowError()` matchers ([#13192](https://github.com/facebook/jest/pull/13192))
+- `[docs]` Remove `.toBeCalled()`, `.toBeCalledTimes()`, `.toBeCalledWith()`, `.lastCalledWith()`, `.nthCalledWith()`, `.toReturn()`, `.toReturnTimes()`, `.toReturnWith()`, `.lastReturnedWith()`, `.nthReturnedWith()` and `.toThrowError()` matchers from docs ([#13192](https://github.com/facebook/jest/pull/13192))
+
 ### Performance
 
 ## 29.0.1
