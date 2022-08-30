@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[]` Expose `TransformFactory` type ([#13188](https://github.com/facebook/jest/pull/13188
+
 ### Chore & Maintenance
 
 ### Performance
@@ -21,10 +23,10 @@
 ### Features
 
 - `[expect]` [**BREAKING**] Differentiate between `MatcherContext` `MatcherUtils` and `MatcherState` types ([#13141](https://github.com/facebook/jest/pull/13141))
-- `[jest-circus]` Add support for `test.failing.each` ([#13142](https://github.com/facebook/jest/pull/13142))
+- `[jest-circus]` Add supprt for `test.failing.each` ([#13142](https://github.com/facebook/jest/pull/13142))
 - `[jest-config]` [**BREAKING**] Make `snapshotFormat` default to `escapeString: false` and `printBasicPrototype: false` ([#13036](https://github.com/facebook/jest/pull/13036))
 - `[jest-config]` [**BREAKING**] Remove undocumented `collectCoverageOnlyFrom` option ([#13156](https://github.com/facebook/jest/pull/13156))
-- `[jest-environment-jsdom]` [**BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
+- `[jest-environment-jsdom]` **BREAKING**] Upgrade to `jsdom@20` ([#13037](https://github.com/facebook/jest/pull/13037), [#13058](https://github.com/facebook/jest/pull/13058))
 - `[@jest/globals]` Add `jest.Mocked`, `jest.MockedClass`, `jest.MockedFunction` and `jest.MockedObject` utility types ([#12727](https://github.com/facebook/jest/pull/12727))
 - `[jest-mock]` [**BREAKING**] Refactor `Mocked*` utility types. `MaybeMockedDeep` and `MaybeMocked` became `Mocked` and `MockedShallow` respectively; only deep mocked variants of `MockedClass`, `MockedFunction` and `MockedObject` are exported ([#13123](https://github.com/facebook/jest/pull/13123), [#13124](https://github.com/facebook/jest/pull/13124))
 - `[jest-mock]` [**BREAKING**] Change the default `jest.mocked` helper’s behavior to deep mocked ([#13125](https://github.com/facebook/jest/pull/13125))
