@@ -7,6 +7,16 @@ When you're writing tests, you often need to check that values meet certain cond
 
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
 
+:::info
+
+The TypeScript examples from this page will only work as documented if you import `expect` from `'@jest/globals'`:
+
+```ts
+import {expect} from '@jest/globals';
+```
+
+:::
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
