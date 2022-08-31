@@ -197,7 +197,7 @@ The type declaration of the matcher can live in a `.d.ts` file or in an imported
 
 :::tip
 
-To enable the matcher for all tests, move the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
+Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
 
 ```js
 import {expect} from '@jest/globals';
