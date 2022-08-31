@@ -1710,7 +1710,7 @@ export default class Runtime {
     return Module;
   }
 
-  private _generateMock(from: string, moduleName: string) {
+  private _generateMock<T extends object>(from: string, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveCjsModule(from, moduleName);
@@ -1747,7 +1747,7 @@ export default class Runtime {
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
     }
-    return this._moduleMocker.generateFromMetadata(
+    return this._moduleMocker.generateFromMetadata<T>(
       // added above if missing
       this._mockMetaDataCache.get(modulePath)!,
     );

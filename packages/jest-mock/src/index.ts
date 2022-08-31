@@ -862,8 +862,8 @@ export class ModuleMocker {
     return createConstructor(mockConstructor);
   }
 
-  private _generateMock<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+  private _generateMock<T extends object>(
+    metadata: MockFunctionMetadata<UnknownFunction>,
     callbacks: Array<Function>,
     refs: {
       [key: string]:
@@ -872,9 +872,9 @@ export class ModuleMocker {
         | RegExp
         | UnknownFunction
         | undefined
-        | Mock<T>;
+        | Mock<UnknownFunction>;
     },
-  ): Mock<T> {
+  ): Mocked<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
     // @ts-expect-error - unsure why TSC complains here?
@@ -905,7 +905,7 @@ export class ModuleMocker {
       mock.prototype.constructor = mock;
     }
 
-    return mock as Mock<T>;
+    return mock as Mocked<T>;
   }
 
   /**
@@ -913,12 +913,12 @@ export class ModuleMocker {
    * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
-  ): Mock<T> {
+  generateFromMetadata<T extends object>(
+    metadata: MockFunctionMetadata<UnknownFunction>,
+  ): Mocked<T> {
     const callbacks: Array<Function> = [];
     const refs = {};
-    const mock = this._generateMock(metadata, callbacks, refs);
+    const mock = this._generateMock<T>(metadata, callbacks, refs);
     callbacks.forEach(setter => setter());
     return mock;
   }
