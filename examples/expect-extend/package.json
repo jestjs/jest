@@ -9,7 +9,8 @@
     "@jest/globals": "workspace:*",
     "babel-jest": "workspace:*",
     "expect": "workspace:*",
-    "jest": "workspace:*"
+    "jest": "workspace:*",
+    "typescript": "^4.8.2"
   },
   "scripts": {
     "test": "jest"

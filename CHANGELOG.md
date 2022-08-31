@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Support imported `jest` in mock factory ([#13188](https://github.com/facebook/jest/pull/13188))
+
 ### Chore & Maintenance
 
 ### Performance

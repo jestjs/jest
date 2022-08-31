@@ -156,7 +156,7 @@ npm install --save-dev ts-jest
 
 #### Type definitions
 
-There are two ways have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.
+There are two ways to have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.
 
 You can use type definitions which ships with Jest and will update each time you update Jest. Simply import the APIs from `@jest/globals` package:
 
