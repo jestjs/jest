@@ -43,7 +43,10 @@ module.exports = { example };
 ```
 
 ```js title="main.test.cjs"
+import { createRequire } from 'node:module';
 import { jest } from '@jest/globals';
+
+const require = createRequire(import.meta.url);
 
 jest.mock('electron', () => ({
   app: {
@@ -55,8 +58,8 @@ jest.mock('electron', () => ({
   }))
 }));
 
-const { BrowserWindow } = (await import('electron')).default;
-const exported = await import('main.cjs');
+const { BrowserWindow } = require('electron');
+const exported = require('main.cjs');
 
 // etc.
 ```
