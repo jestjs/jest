@@ -40,7 +40,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import type {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig, SnapshotFormat} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
@@ -235,6 +235,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  snapshotFormat: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
@@ -303,7 +304,7 @@ export const printSnapshotAndReceived = (
 
     // Fall through to fix a regression for custom serializers
     // like jest-snapshot-serializer-raw that ignore the indent option.
-    const b0 = serialize(received, 0);
+    const b0 = serialize(received, 0, snapshotFormat);
     if (b0 !== b) {
       const aLines0 = dedentLines(aLines2);
 

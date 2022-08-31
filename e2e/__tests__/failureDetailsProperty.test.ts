@@ -94,7 +94,7 @@ test('that the failureDetails property is set', () => {
         "p1": "hello",
         "p2": "world",
       }",
-                "expected": "Object {
+                "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
@@ -219,7 +219,7 @@ test('that the failureDetails property is set', () => {
         "p1": "hello",
         "p2": "world",
       }",
-              "expected": "Object {
+              "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
