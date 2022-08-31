@@ -92,7 +92,7 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  createMockFromModule(moduleName: string): unknown;
+  createMockFromModule<T>(moduleName: string): T;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module and its dependencies.
