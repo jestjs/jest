@@ -487,7 +487,7 @@ test('has lemon in it', () => {
 });
 ```
 
-Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well. For more details see [Testing Asynchronous Code](TestingAsyncCode.md) guide.
+Even though the call to `test` will return right away, the test doesn't complete until the promise resolves. For more details see [Testing Asynchronous Code](TestingAsyncCode.md) page.
 
 :::tip
 
