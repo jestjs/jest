@@ -71,3 +71,18 @@ const exported = require('main.cjs');
 ```
 
 Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
+
+In short, `jest.unstable_mockModule` is needed to mock ESM for now. Its usage is essentially the same as `jest.mock`. See the example below:
+
+```js
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('node:child_process', () => ({
+  execSync: jest.fn(),
+  // etc.
+}));
+
+const { execSync } = await import('node:child_process');
+
+// etc.
+```
