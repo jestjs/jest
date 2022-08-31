@@ -38,7 +38,7 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 `jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. Note that _if_ you use `jest-environment-jsdom`, the minimum TypeScript version is set to `4.5`.
 
-Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means packages like `jsdom` and `nanoid`, which doesn't work properly in Jest@28, can work without extra polyfills.
+Notably, `jsdom@20` includes support for `crypto.getRandomValues()`, which means packages like `uuid` and `nanoid`, which doesn't work properly in Jest@28, can work without extra polyfills.
 
 ## `pretty-format`
 
