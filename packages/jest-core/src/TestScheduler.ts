@@ -231,7 +231,7 @@ class TestScheduler {
     const testRunners: Record<string, JestTestRunner> = Object.create(null);
     const contextsByTestRunner = new WeakMap<JestTestRunner, TestContext>();
 
-    try{
+    try {
       await Promise.all(
         Array.from(testContexts).map(async context => {
           const {config} = context;
@@ -306,7 +306,7 @@ class TestScheduler {
           }
         }
       }
-    } catch(error){
+    } catch (error) {
       aggregatedResults.runExecError = buildExecError(error);
       await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
       throw error;

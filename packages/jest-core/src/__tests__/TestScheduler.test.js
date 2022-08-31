@@ -15,9 +15,9 @@ import {
   VerboseReporter,
 } from '@jest/reporters';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import * as transform from '@jest/transform';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
-import * as transform from '@jest/transform';
 
 jest
   .mock('ci-info', () => ({GITHUB_ACTIONS: true}))
@@ -35,7 +35,7 @@ jest
       __esModule: true,
       ...jest.requireActual('@jest/transform'),
     };
-  })
+  });
 const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
@@ -241,8 +241,8 @@ test('.addReporter() .removeReporter()', async () => {
 
 describe('scheduleTests should always dispatch runStart and runComplete events', () => {
   const mockReporter = {
-    onRunStart: jest.fn(),
     onRunComplete: jest.fn(),
+    onRunStart: jest.fn(),
   };
 
   const errorMsg = 'runtime-error';
