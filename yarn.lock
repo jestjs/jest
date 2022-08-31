@@ -9392,6 +9392,7 @@ __metadata:
     babel-jest: "workspace:*"
     expect: "workspace:*"
     jest: "workspace:*"
+    typescript: ^4.8.2
   languageName: unknown
   linkType: soft
 
