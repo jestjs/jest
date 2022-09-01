@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import {cleanup, extractSummary, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
@@ -395,4 +395,22 @@ test('indentation is correct in the presences of existing snapshots, when the fi
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
   expect(fileAfter).toMatchSnapshot('existing snapshot');
+});
+
+test('diff with prototype is correct', () => {
+  const filename = 'with-prototype-diff.test.js';
+  const test = `
+    test('diff with prototype is correct', () => {
+      expect({ hello: 'world' }).toMatchInlineSnapshot(\`
+        Object {
+          "hello": "world",
+        }
+      \`);
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['--run-in-band', filename]);
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });

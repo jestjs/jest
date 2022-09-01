@@ -2305,7 +2305,11 @@ After the worker has executed a test the memory usage of it is checked. If it ex
     - `G` / `GB` - Gigabytes
     - `GiB` - Gibibytes
 
-**NOTE:** [% based memory does not work on Linux CircleCI workers](https://github.com/facebook/jest/issues/11956#issuecomment-1212925677) due to incorrect system memory being reported.
+:::caution
+
+Percentage based memory limit [does not work on Linux CircleCI workers](https://github.com/facebook/jest/issues/11956#issuecomment-1212925677) due to incorrect system memory being reported.
+
+:::
 
 ```js tab
 /** @type {import('jest').Config} */

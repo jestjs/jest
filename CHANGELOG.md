@@ -2,11 +2,21 @@
 
 ### Features
 
+- `[jest-transform]` Expose `TransformFactory` type ([#13184](https://github.com/facebook/jest/pull/13184))
+
 ### Fixes
+
+- `[babel-plugin-jest-hoist]` Support imported `jest` in mock factory ([#13188](https://github.com/facebook/jest/pull/13188))
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.0.1
+
+### Fixes
+
+- `[jest-snapshot]` Pass `snapshotFormat` through when diffing snapshots ([#13181](https://github.com/facebook/jest/pull/13181))
 
 ## 29.0.0
 

@@ -90,29 +90,16 @@ function verifyDirectoryExists(path: string, key: string) {
   }
 }
 
-// TS 3.5 forces us to split these into 2
-const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
+const mergeOptionWithPreset = <T extends 'moduleNameMapper' | 'transform'>(
+  options: Config.InitialOptions,
   preset: Config.InitialOptions,
+  optionName: T,
 ) => {
-  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
-    options['moduleNameMapper'] = {
-      ...options['moduleNameMapper'],
-      ...preset['moduleNameMapper'],
-      ...options['moduleNameMapper'],
-    };
-  }
-};
-
-const mergeTransformWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
-  preset: Config.InitialOptions,
-) => {
-  if (options['transform'] && preset['transform']) {
-    options['transform'] = {
-      ...options['transform'],
-      ...preset['transform'],
-      ...options['transform'],
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
     };
   }
 };
@@ -206,8 +193,8 @@ const setupPreset = async (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeModuleNameMapperWithPreset(options, preset);
-  mergeTransformWithPreset(options, preset);
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
   mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
