@@ -167,7 +167,7 @@ const excludedPackages = new Set(['@jest/globals']);
       let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
       rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
-      fs.rmSync(path.resolve(packageDir, 'dist/'), {
+      fs.rmSync(path.resolve(packageDir, 'dist/**'), {
         force: true,
         recursive: true,
       });
