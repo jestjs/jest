@@ -16,7 +16,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   private _snapshotInteractiveMode: SnapshotInteractiveMode =
     new SnapshotInteractiveMode(this._stdout);
   private _failedSnapshotTestAssertions: Array<AssertionLocation> = [];
-  isInternal: true = true;
+  isInternal = true as const;
 
   getFailedSnapshotTestAssertions(
     testResults: AggregatedResult,
