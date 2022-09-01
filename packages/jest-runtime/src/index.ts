@@ -50,7 +50,7 @@ import {
 import type {Config, Global} from '@jest/types';
 import HasteMap, {IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
+import type {MetaDataValue, MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
@@ -168,7 +168,7 @@ export default class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
   private readonly _mockFactories: Map<string, () => unknown>;
-  private readonly _mockMetaDataCache: Map<string, MockFunctionMetadata>;
+  private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
   private _moduleMockRegistry: Map<string, VMModule>;
@@ -1710,7 +1710,7 @@ export default class Runtime {
     return Module;
   }
 
-  private _generateMock<T extends object>(from: string, moduleName: string) {
+  private _generateMock<T>(from: string, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveCjsModule(from, moduleName);
@@ -1720,7 +1720,7 @@ export default class Runtime {
 
       this._mockMetaDataCache.set(
         modulePath,
-        this._moduleMocker.getMetadata({}) || {},
+        this._moduleMocker.getMetadata({} as MetaDataValue<T>) || {},
       );
 
       // In order to avoid it being possible for automocking to potentially
@@ -1732,7 +1732,10 @@ export default class Runtime {
       this._mockRegistry = new Map();
       this._moduleRegistry = new Map();
 
-      const moduleExports = this.requireModule(from, moduleName);
+      const moduleExports = this.requireModule<MetaDataValue<T>>(
+        from,
+        moduleName,
+      );
 
       // Restore the "real" module/mock registries
       this._mockRegistry = origMockRegistry;

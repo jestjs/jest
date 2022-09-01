@@ -7,7 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
-export type MockFunctionMetadataType =
+export type MockMetadataType =
   | 'object'
   | 'array'
   | 'regexp'
@@ -17,19 +17,26 @@ export type MockFunctionMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockFunctionMetadata<
-  T extends UnknownFunction = UnknownFunction,
-  MetadataType = MockFunctionMetadataType,
-> = {
+// TODO remove re-export in Jest 30
+export type MockFunctionMetadataType = MockMetadataType;
+
+export type MetaDataValue<T> = T extends UnknownFunction
+  ? ReturnType<T>
+  : undefined;
+
+export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
-  members?: Record<string, MockFunctionMetadata<T>>;
+  members?: Record<string, MockMetadata<T>>;
   mockImpl?: T;
   name?: string;
   refID?: number;
   type?: MetadataType;
-  value?: ReturnType<T>;
+  value?: MetaDataValue<T>;
   length?: number;
 };
+
+// TODO remove re-export in Jest 30
+export type MockFunctionMetadata<T, U = MockMetadataType> = MockMetadata<T, U>;
 
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
@@ -75,7 +82,7 @@ type MockedObjectShallow<T extends object> = {
     : T[K];
 } & T;
 
-export type Mocked<T extends object> = T extends ClassLike
+export type Mocked<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunction<T>
@@ -83,7 +90,7 @@ export type Mocked<T extends object> = T extends ClassLike
   ? MockedObject<T>
   : T;
 
-export type MockedShallow<T extends object> = T extends ClassLike
+export type MockedShallow<T> = T extends ClassLike
   ? MockedClass<T>
   : T extends FunctionLike
   ? MockedFunctionShallow<T>
@@ -386,7 +393,7 @@ function getObjectType(value: unknown): string {
   return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
-function getType(ref?: unknown): MockFunctionMetadataType | null {
+function getType(ref?: unknown): MockMetadataType | null {
   const typeName = getObjectType(ref);
   if (
     typeName === 'Function' ||
@@ -560,31 +567,28 @@ export class ModuleMocker {
     };
   }
 
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'object'>,
+  private _makeComponent<T>(
+    metadata: MockMetadata<T, 'object'>,
     restore?: () => void,
   ): Record<string, any>;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'array'>,
+  private _makeComponent<T>(
+    metadata: MockMetadata<T, 'array'>,
     restore?: () => void,
   ): Array<unknown>;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'regexp'>,
+  private _makeComponent<T>(
+    metadata: MockMetadata<T, 'regexp'>,
     restore?: () => void,
   ): RegExp;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<
-      T,
-      'constant' | 'collection' | 'null' | 'undefined'
-    >,
+  private _makeComponent<T>(
+    metadata: MockMetadata<T, 'constant' | 'collection' | 'null' | 'undefined'>,
     restore?: () => void,
   ): T;
   private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'function'>,
+    metadata: MockMetadata<T, 'function'>,
     restore?: () => void,
   ): Mock<T>;
   private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+    metadata: MockMetadata<T>,
     restore?: () => void,
   ):
     | Record<string, any>
@@ -808,7 +812,7 @@ export class ModuleMocker {
   }
 
   private _createMockFunction<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+    metadata: MockMetadata<T>,
     mockConstructor: Function,
   ): Function {
     let name = metadata.name;
@@ -862,8 +866,8 @@ export class ModuleMocker {
     return createConstructor(mockConstructor);
   }
 
-  private _generateMock<T extends object>(
-    metadata: MockFunctionMetadata<UnknownFunction>,
+  private _generateMock<T>(
+    metadata: MockMetadata<T>,
     callbacks: Array<Function>,
     refs: {
       [key: string]:
@@ -913,9 +917,7 @@ export class ModuleMocker {
    * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata<T extends object>(
-    metadata: MockFunctionMetadata<UnknownFunction>,
-  ): Mocked<T> {
+  generateFromMetadata<T>(metadata: MockMetadata<T>): Mocked<T> {
     const callbacks: Array<Function> = [];
     const refs = {};
     const mock = this._generateMock<T>(metadata, callbacks, refs);
@@ -927,11 +929,11 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata<T extends UnknownFunction>(
-    component: ReturnType<T>,
-    _refs?: Map<ReturnType<T>, number>,
-  ): MockFunctionMetadata<T> | null {
-    const refs = _refs || new Map<ReturnType<T>, number>();
+  getMetadata<T>(
+    component: MetaDataValue<T>,
+    _refs?: Map<MetaDataValue<T>, number>,
+  ): MockMetadata<T> | null {
+    const refs = _refs || new Map<MetaDataValue<T>, number>();
     const ref = refs.get(component);
     if (ref != null) {
       return {ref};
@@ -942,7 +944,7 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockFunctionMetadata<T> = {type};
+    const metadata: MockMetadata<T> = {};
     if (
       type === 'constant' ||
       type === 'collection' ||
@@ -967,7 +969,7 @@ export class ModuleMocker {
     refs.set(component, metadata.refID);
 
     let members: {
-      [key: string]: MockFunctionMetadata<T>;
+      [key: string]: MockMetadata<T>;
     } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
@@ -1007,7 +1009,7 @@ export class ModuleMocker {
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction> {
-    return fn != null && (fn as any)._isMockFunction === true;
+    return fn != null && (fn as Mock)._isMockFunction === true;
   }
 
   fn<T extends FunctionLike = UnknownFunction>(implementation?: T): Mock<T> {

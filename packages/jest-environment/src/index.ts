@@ -92,7 +92,7 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  createMockFromModule<T extends object>(moduleName: string): Mocked<T>;
+  createMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module and its dependencies.
@@ -138,7 +138,7 @@ export interface Jest {
    *
    * @deprecated Use `jest.createMockFromModule()` instead
    */
-  genMockFromModule<T extends object>(moduleName: string): Mocked<T>;
+  genMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * When mocking time, `Date.now()` will also be mocked. If you for some reason
    * need access to the real current time, you can invoke this function.
