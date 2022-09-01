@@ -944,7 +944,7 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockMetadata<T> = {};
+    const metadata: MockMetadata<T> = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
