@@ -589,13 +589,7 @@ export class ModuleMocker {
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T>,
     restore?: () => void,
-  ):
-    | Record<string, any>
-    | Array<unknown>
-    | RegExp
-    | ReturnType<T>
-    | undefined
-    | Mock<T> {
+  ): Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -870,12 +864,7 @@ export class ModuleMocker {
     callbacks: Array<Function>,
     refs: Record<
       number,
-      | Record<string, any>
-      | Array<unknown>
-      | RegExp
-      | UnknownFunction
-      | Mock
-      | undefined
+      Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined
     >,
   ): Mocked<T> {
     // metadata not compatible but it's the same type, maybe problem with
