@@ -50,7 +50,7 @@ import {
 import type {Config, Global} from '@jest/types';
 import HasteMap, {IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import type {MetaDataValue, MockMetadata, ModuleMocker} from 'jest-mock';
+import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
@@ -1720,7 +1720,7 @@ export default class Runtime {
 
       this._mockMetaDataCache.set(
         modulePath,
-        this._moduleMocker.getMetadata({} as MetaDataValue<T>) || {},
+        this._moduleMocker.getMetadata({}) || {},
       );
 
       // In order to avoid it being possible for automocking to potentially
@@ -1732,10 +1732,7 @@ export default class Runtime {
       this._mockRegistry = new Map();
       this._moduleRegistry = new Map();
 
-      const moduleExports = this.requireModule<MetaDataValue<T>>(
-        from,
-        moduleName,
-      );
+      const moduleExports = this.requireModule(from, moduleName);
 
       // Restore the "real" module/mock registries
       this._mockRegistry = origMockRegistry;

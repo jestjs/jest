@@ -20,9 +20,7 @@ export type MockMetadataType =
 // TODO remove re-export in Jest 30
 export type MockFunctionMetadataType = MockMetadataType;
 
-export type MetaDataValue<T> = T extends UnknownFunction
-  ? ReturnType<T>
-  : undefined;
+type MetaDataValue<T> = T extends UnknownFunction ? ReturnType<T> : undefined;
 
 export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
@@ -930,10 +928,10 @@ export class ModuleMocker {
    * @param component The component for which to retrieve metadata.
    */
   getMetadata<T>(
-    component: MetaDataValue<T>,
-    _refs?: Map<MetaDataValue<T>, number>,
+    component: unknown,
+    _refs?: Map<unknown, number>,
   ): MockMetadata<T> | null {
-    const refs = _refs || new Map<MetaDataValue<T>, number>();
+    const refs = _refs || new Map<unknown, number>();
     const ref = refs.get(component);
     if (ref != null) {
       return {ref};
@@ -944,7 +942,7 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockMetadata<T> = {type};
+    const metadata: MockMetadata<any> = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
