@@ -868,15 +868,15 @@ export class ModuleMocker {
   private _generateMock<T>(
     metadata: MockMetadata<T>,
     callbacks: Array<Function>,
-    refs: {
-      [key: string]:
-        | Record<string, any>
-        | Array<unknown>
-        | RegExp
-        | UnknownFunction
-        | undefined
-        | Mock<UnknownFunction>;
-    },
+    refs: Record<
+      number,
+      | Record<string, any>
+      | Array<unknown>
+      | RegExp
+      | UnknownFunction
+      | Mock
+      | undefined
+    >,
   ): Mocked<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
