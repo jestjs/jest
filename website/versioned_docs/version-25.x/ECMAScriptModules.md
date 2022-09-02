@@ -42,7 +42,6 @@ const {BrowserWindow, app} = require('electron');
 module.exports = {example};
 ```
 
-<!-- eslint-disable no-redeclare -->
 ```js title="main.test.cjs"
 import {createRequire} from 'node:module';
 import {jest} from '@jest/globals';
