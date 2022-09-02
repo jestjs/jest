@@ -32,7 +32,10 @@ export type MockMetadata<T, MetadataType = MockMetadataType> = {
 };
 
 // TODO remove re-export in Jest 30
-export type MockFunctionMetadata<T, U = MockMetadataType> = MockMetadata<T, U>;
+export type MockFunctionMetadata<
+  T = unknown,
+  MetadataType = MockMetadataType,
+> = MockMetadata<T, MetadataType>;
 
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
