@@ -32,19 +32,20 @@ jest.useFakeTimers();
 // etc.
 ```
 
-Additionally, since ESM evaluates static `import` statements before looking at the code, hoisting on `jest.mock` calls that happens in CJS modules won't work in ESM. To `mock` modules in ESM, you need to use dynamic `import()` after `jest.mock` calls to load the mocked modules, same applies to modules which have to load the mocked modules.
+Additionally, since ESM evaluates static `import` statements before looking at the code, hoisting on `jest.mock` calls that happens in CJS modules won't work in ESM. To `mock` modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules, same applies to modules which have to load the mocked modules.
 
 ```js title="main.cjs"
-const { BrowserWindow, app } = require('electron');
+const {BrowserWindow, app} = require('electron');
 
 // etc.
 
-module.exports = { example };
+module.exports = {example};
 ```
 
+<!-- eslint-disable no-redeclare -->
 ```js title="main.test.cjs"
-import { createRequire } from 'node:module';
-import { jest } from '@jest/globals';
+import {createRequire} from 'node:module';
+import {jest} from '@jest/globals';
 
 const require = createRequire(import.meta.url);
 
@@ -55,11 +56,15 @@ jest.mock('electron', () => ({
   },
   BrowserWindow: jest.fn().mockImplementation(() => ({
     // partial mocks.
-  }))
+  })),
 }));
 
-const { BrowserWindow } = require('electron');
-const exported = require('main.cjs');
+const {BrowserWindow} = require('electron');
+const exported = require('./main.cjs');
+
+// alternatively
+const {BrowserWindow} = (await import('electron')).default;
+const exported = await import('./main.cjs');
 
 // etc.
 ```
