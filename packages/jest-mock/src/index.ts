@@ -563,18 +563,18 @@ export class ModuleMocker {
     };
   }
 
-  private _makeComponent<T>(
+  private _makeComponent<T extends Record<string, any>>(
     metadata: MockMetadata<T, 'object'>,
     restore?: () => void,
-  ): Record<string, any>;
-  private _makeComponent<T>(
+  ): T;
+  private _makeComponent<T extends Array<unknown>>(
     metadata: MockMetadata<T, 'array'>,
     restore?: () => void,
-  ): Array<unknown>;
-  private _makeComponent<T>(
+  ): T;
+  private _makeComponent<T extends RegExp>(
     metadata: MockMetadata<T, 'regexp'>,
     restore?: () => void,
-  ): RegExp;
+  ): T;
   private _makeComponent<T>(
     metadata: MockMetadata<T, 'constant' | 'collection' | 'null' | 'undefined'>,
     restore?: () => void,
