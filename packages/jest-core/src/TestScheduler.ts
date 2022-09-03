@@ -201,26 +201,26 @@ class TestScheduler {
           aggregatedResults.snapshot.filesRemoved)
       );
     };
-    const buildExecError = (err: unknown): SerializableError => {
-      const fromString = (errString: string): SerializableError => {
-        const {message, stack} = separateMessageFromStack(errString);
-        if (stack.length > 0) {
-          return {message, stack};
-        }
-        const error = new ErrorWithStack(message, buildExecError);
-        return {message, stack: error.stack || ''};
-      };
-      if (typeof err === 'string' || err == null) {
-        return fromString(err || 'Error');
+    const strToError = (errString: string): SerializableError => {
+      const {message, stack} = separateMessageFromStack(errString);
+      if (stack.length > 0) {
+        return {message, stack};
       }
-      const anyErr: any = err as any;
+      const error = new ErrorWithStack(message, buildExecError);
+      return {message, stack: error.stack || ''};
+    };
+    const buildExecError = (err: unknown): SerializableError => {
+      if (typeof err === 'string' || err == null) {
+        return strToError(err || 'Error');
+      }
+      const anyErr = err as any;
       if (typeof anyErr.message === 'string') {
         if (typeof anyErr.stack === 'string' && anyErr.stack.length > 0) {
           return anyErr;
         }
-        return fromString(anyErr.message);
+        return strToError(anyErr.message);
       }
-      return fromString(JSON.stringify(err));
+      return strToError(JSON.stringify(err));
     };
 
     await this._dispatcher.onRunStart(aggregatedResults, {

@@ -5,9 +5,5 @@
   },
   "javascript.validate.enable": false,
   "jest.jestCommandLine": "yarn jest",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "jest.autoRun": {
-    "watch": false,
-    "onSave": "test-src-file",
-  }
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
