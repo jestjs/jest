@@ -10,7 +10,7 @@ Ran all test suites matching /native-esm-deep-cjs-reexport.test.js/i."
 
 exports[`runs test with native ESM 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       33 passed, 33 total
+Tests:       34 passed, 34 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /native-esm.test.js/i."
