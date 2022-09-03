@@ -182,6 +182,7 @@ module.exports = {
     {
       files: ['docs/**/*', 'website/**/*'],
       rules: {
+        'no-redeclare': 'off',
         'import/order': 'off',
         'import/sort-keys': 'off',
         'no-restricted-globals': ['off'],
