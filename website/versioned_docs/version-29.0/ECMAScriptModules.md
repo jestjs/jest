@@ -40,9 +40,9 @@ import.meta.jest.useFakeTimers();
 
 ## Module mocking in ESM
 
-Since ESM evaluates static `import` statements before looking at the code, hoisting on `jest.mock` calls that happens in CJS modules won't work in ESM. To `mock` modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules, same applies to modules which have to load the mocked modules.
+Since ESM evaluates static `import` statements before looking at the code, the hoisting of `jest.mock` calls that happens in CJS won't work for ESM. To mock modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules - the same applies to modules which load the mocked modules.
 
-ESM module mocking is supported through `jest.unstable_mockModule`. As the name suggest works are in progress, please follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
+ESM mocking is supported through `jest.unstable_mockModule`. As the name suggests, this API is still work in progress, please follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
 
 The usage of `jest.unstable_mockModule` is essentially the same as `jest.mock` with two differences: the factory function is required and it can be sync or async:
 

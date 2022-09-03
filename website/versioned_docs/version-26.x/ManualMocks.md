@@ -132,7 +132,7 @@ If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web
 
 :::caution
 
-`jest.mock` calls cannot be hoisted to the top of the module if you enabled ECMAScript modules support. The ESM module loader always evaluates the imports before executing code. See [ECMAScriptModules](ECMAScriptModules.md) for details.
+`jest.mock` calls cannot be hoisted to the top of the module if you enabled ECMAScript modules support. The ESM module loader always evaluates the static imports before executing code. See [ECMAScriptModules](ECMAScriptModules.md) for details.
 
 :::
 
