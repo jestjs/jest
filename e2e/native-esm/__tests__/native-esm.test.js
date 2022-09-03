@@ -46,6 +46,7 @@ test('should support importing node core modules', () => {
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
     devDependencies: {
       'discord.js': '14.3.0',
+      yargs: '^17.5.1',
     },
     jest: {
       testEnvironment: 'node',
@@ -301,4 +302,22 @@ test('can mock "data:" URI module', async () => {
   });
   const mocked = await import(dataModule);
   expect(mocked.foo).toBe('bar');
+});
+
+test('can import with module reset', async () => {
+  const {default: yargs} = await import('yargs');
+
+  let args = yargs().parse([]);
+
+  expect(args._).toEqual([]);
+
+  import.meta.jest.resetModules();
+
+  const {default: yargsAgain} = await import('yargs');
+
+  expect(yargs).not.toBe(yargsAgain);
+
+  args = yargsAgain().parse([]);
+
+  expect(args._).toEqual([]);
 });
