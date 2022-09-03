@@ -1109,6 +1109,7 @@ export default class Runtime {
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
+    this._fileTransformsMutex.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
@@ -1278,7 +1279,6 @@ export default class Runtime {
     this._sourceMapRegistry.clear();
 
     this._fileTransforms.clear();
-    this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
     this._v8CoverageSources?.clear();

@@ -7,7 +7,8 @@
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Support imported `jest` in mock factory ([#13188](https://github.com/facebook/jest/pull/13188))
-- `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters. ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-runtime]` Support `jest.resetModules()` with ESM ([#13211](https://github.com/facebook/jest/pull/13211))
 
 ### Chore & Maintenance
 
