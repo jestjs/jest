@@ -22,11 +22,12 @@ import {
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed} = getState();
   await dispatch({name: 'run_start'});
-  let rng: undefined | (() => number) = undefined;
+  let nextRng: undefined | (() => number) = undefined;
   if (seed) {
-    rng = () => rngBuilder(seed).next();
+    const rng = rngBuilder(seed);
+    nextRng = () => rng.next();
   }
-  await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
+  await _runTestsForDescribeBlock(rootDescribeBlock, nextRng, true);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -74,7 +75,6 @@ const _runTestsForDescribeBlock = async (
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
-  // jhwang I did this :)
   if (rng) {
     describeBlock.children = shuffleArray(describeBlock.children, rng);
   }
