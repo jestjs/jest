@@ -311,7 +311,7 @@ test('can import with module reset', async () => {
 
   expect(args._).toEqual([]);
 
-  import.meta.jest.resetModules();
+  jestObject.resetModules();
 
   const {default: yargsAgain} = await import('yargs');
 
