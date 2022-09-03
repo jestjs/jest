@@ -281,7 +281,7 @@ const runWithoutWatch = async (
     }
 
     if (globalConfig.seed) {
-      console.log("Seed is", globalConfig.seed);
+      outputStream.write(`Seed is ${globalConfig.seed}\n`);
     }
 
     return runJest({
