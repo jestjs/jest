@@ -234,31 +234,29 @@ test('supports imports from "data:text/javascript" URI without explicit encoding
 
 test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
   const code = 'export const something = "some value"';
-  await expect(
-    async () =>
-      await import(
-        `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
-      ),
+  await expect(() =>
+    import(
+      `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+    ),
   ).rejects.toThrow('Invalid data URI');
 });
 
 test('imports from "data:" URI with invalid mime type fail', async () => {
   const code = 'export const something = "some value"';
-  await expect(
-    async () => await import(`data:something/else,${encodeURIComponent(code)}`),
+  await expect(() =>
+    import(`data:something/else,${encodeURIComponent(code)}`),
   ).rejects.toThrow('Invalid data URI');
 });
 
 test('imports from "data:text/javascript" URI with invalid data fail', async () => {
-  await expect(
-    async () =>
-      await import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
+  await expect(() =>
+    import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
   ).rejects.toThrow("Unexpected token '.'");
 });
 
 test('imports from "data:application/wasm" URI not supported', async () => {
-  await expect(
-    async () => await import('data:application/wasm,96cafe00babe'),
+  await expect(() =>
+    import('data:application/wasm,96cafe00babe'),
   ).rejects.toThrow('WASM is currently not supported');
 });
 
