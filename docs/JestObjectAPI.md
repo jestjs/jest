@@ -5,6 +5,16 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
+:::info
+
+The TypeScript examples from this page will only work as documented if you import global APIs from `'@jest/globals'`:
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+```
+
+:::
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
@@ -96,18 +106,12 @@ _Note: this method was previously called `autoMockOn`. When using `babel-jest`, 
 
 ### `jest.createMockFromModule(moduleName)`
 
-##### renamed in Jest **26.0.0+**
-
-Also under the alias: `.genMockFromModule(moduleName)`
-
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior:
 
-Example:
-
-```js title="utils.js"
-export default {
+```js tab={"span":2} title="utils.js"
+module.exports = {
   authorize: () => {
     return 'token';
   },
@@ -116,12 +120,34 @@ export default {
 ```
 
 ```js title="__tests__/createMockFromModule.test.js"
-const utils = jest.createMockFromModule('../utils').default;
+const utils = jest.createMockFromModule('../utils');
+
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
-  expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
+});
+```
+
+```ts tab={"span":2} title="utils.ts"
+export const utils = {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: (secret: string) => secret === 'wizard',
+};
+```
+
+```ts title="__tests__/createMockFromModule.test.ts"
+const {utils} =
+  jest.createMockFromModule<typeof import('../utils')>('../utils');
+
+utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
+
+test('implementation created by jest.createMockFromModule', () => {
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
 
@@ -180,7 +206,7 @@ module.exports = {
 ```
 
 ```js title="__tests__/example.test.js"
-const example = jest.createMockFromModule('./example');
+const example = jest.createMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
