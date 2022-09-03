@@ -279,6 +279,11 @@ const runWithoutWatch = async (
     if (!globalConfig.listTests) {
       preRunMessagePrint(outputStream);
     }
+
+    if (globalConfig.seed) {
+      console.log("Seed is", globalConfig.seed);
+    }
+
     return runJest({
       changedFilesPromise,
       contexts,

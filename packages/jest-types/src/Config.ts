@@ -390,7 +390,6 @@ export type GlobalConfig = {
   onlyFailures: boolean;
   passWithNoTests: boolean;
   projects: Array<string>;
-  randomize: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
