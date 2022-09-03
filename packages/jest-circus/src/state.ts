@@ -33,6 +33,7 @@ const createState = (): Circus.State => {
     testNamePattern: null,
     testTimeout: 5000,
     unhandledErrors: [],
+    seed: undefined,
   };
 };
 

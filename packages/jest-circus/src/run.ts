@@ -7,7 +7,7 @@
 
 import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
-import {rng, shuffleArray} from 'jest-util';
+import {rngBuilder, shuffleArray} from 'jest-util';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {
@@ -20,9 +20,13 @@ import {
 } from './utils';
 
 const run = async (): Promise<Circus.RunResult> => {
-  const {rootDescribeBlock} = getState();
+  const {rootDescribeBlock, seed} = getState();
   await dispatch({name: 'run_start'});
-  await _runTestsForDescribeBlock(rootDescribeBlock, true);
+  let rng = undefined;
+  if (seed) {
+    rng = rngBuilder(seed).next;
+  }
+  await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -32,6 +36,7 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
+  rng: (() => number) | undefined,
   isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
@@ -70,12 +75,13 @@ const _runTestsForDescribeBlock = async (
   const deferredRetryTests = [];
 
   // jhwang I did this :)
-  const r = rng(3);
-  describeBlock.children = shuffleArray(describeBlock.children, r.next);
+  if (rng) {
+    describeBlock.children = shuffleArray(describeBlock.children, rng);
+  }
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
-        await _runTestsForDescribeBlock(child);
+        await _runTestsForDescribeBlock(child, rng);
         break;
       }
       case 'test': {

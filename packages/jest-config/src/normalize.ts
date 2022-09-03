@@ -1152,6 +1152,11 @@ export default async function normalize(
     newOptions.shard = parseShardPair(argv.shard);
   }
 
+  if (argv.randomize) {
+    // at time of writing we use mulberry32 pseudorandom number generator so 32 bits
+    newOptions.seed = argv.seed ?? Math.floor(Math.random() * 4294967296);
+  }
+
   return {
     hasDeprecationWarnings,
     options: newOptions,

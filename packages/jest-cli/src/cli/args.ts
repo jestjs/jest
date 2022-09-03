@@ -10,6 +10,10 @@ import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
+  if (argv.seed && !argv.randomize) {
+    throw new Error('--seed requires --randomize to be specified.');
+  }
+
   if (
     argv.runInBand &&
     Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
@@ -449,6 +453,10 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
+  randomize: {
+    description: 'Randomise the order of the tests in each describe block',
+    type: 'boolean',
+  },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
     string: true,
@@ -509,6 +517,11 @@ export const options: {[key: string]: Options} = {
     description:
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
+  },
+  seed: {
+    description:
+      'Must be used with the randomize flag. Specify the seed to randomize with.',
+    type: 'number',
   },
   selectProjects: {
     description:

@@ -14,7 +14,7 @@ export function mulberry32(seed: number): {next: () => number} {
   return {next};
 }
 
-export const rng = mulberry32;
+export const rngBuilder = mulberry32;
 
 // Fisher-Yates shuffle
 // This is performed in-place
