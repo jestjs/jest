@@ -92,7 +92,6 @@ exports[`prints the config object 1`] = `
     "onlyFailures": false,
     "passWithNoTests": false,
     "projects": [],
-    "randomize": false,
     "reporters": [],
     "rootDir": "/test_root_dir/",
     "runTestsByPath": false,

@@ -276,12 +276,12 @@ const runWithoutWatch = async (
   filter?: Filter,
 ) => {
   const startRun = async (): Promise<void | null> => {
-    if (!globalConfig.listTests) {
-      preRunMessagePrint(outputStream);
-    }
-
     if (globalConfig.seed) {
       outputStream.write(`Seed is ${globalConfig.seed}\n`);
+    }
+
+    if (!globalConfig.listTests) {
+      preRunMessagePrint(outputStream);
     }
 
     return runJest({
