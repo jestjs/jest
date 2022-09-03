@@ -288,7 +288,7 @@ export default async function watch(
     testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && outputStream.write(specialChars.CLEAR);
     if (globalConfig.seed) {
-      console.log("Seed is", globalConfig.seed);
+      outputStream.write(`Seed is ${globalConfig.seed}\n`);
     }
     preRunMessagePrint(outputStream);
     isRunning = true;
