@@ -306,6 +306,9 @@ test('can mock "data:" URI module', async () => {
 
 test('can import with module reset', async () => {
   const {default: yargs} = await import('yargs');
+  const {default: yargsAgain} = await import('yargs');
+
+  expect(yargs).toBe(yargsAgain);
 
   let args = yargs().parse([]);
 
@@ -313,11 +316,11 @@ test('can import with module reset', async () => {
 
   jestObject.resetModules();
 
-  const {default: yargsAgain} = await import('yargs');
+  const {default: yargsYetAgain} = await import('yargs');
 
-  expect(yargs).not.toBe(yargsAgain);
+  expect(yargs).not.toBe(yargsYetAgain);
 
-  args = yargsAgain().parse([]);
+  args = yargsYetAgain().parse([]);
 
   expect(args._).toEqual([]);
 });
