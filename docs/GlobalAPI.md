@@ -5,6 +5,10 @@ title: Globals
 
 In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from '@jest/globals'`.
 
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
+
+<TypeScriptExamplesNote />
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
@@ -969,16 +973,6 @@ test.todo('add should be associative');
 
 ## TypeScript Usage
 
-:::info
-
-These TypeScript usage tips and caveats are only applicable if you import from `'@jest/globals'`:
-
-```ts
-import {describe, test} from '@jest/globals';
-```
-
-:::
-
 ### `.each`
 
 The `.each` modifier offers few different ways to define a table of the test cases. Some of the APIs have caveats related with the type inference of the arguments which are passed to `describe` or `test` callback functions. Let's take a look at each of them.
@@ -994,6 +988,8 @@ For simplicity `test.each` is picked for the examples, but the type inference is
 The array of objects API is most verbose, but it makes the type inference a painless task. A `table` can be inlined:
 
 ```ts
+import {test} from '@jest/globals';
+
 test.each([
   {name: 'a', path: 'path/to/a', count: 1, write: true},
   {name: 'b', path: 'path/to/b', count: 3},
@@ -1005,6 +1001,8 @@ test.each([
 Or declared separately as a variable:
 
 ```ts
+import {test} from '@jest/globals';
+
 const table = [
   {a: 1, b: 2, expected: 'three', extra: true},
   {a: 3, b: 4, expected: 'seven', extra: false},
@@ -1021,6 +1019,8 @@ test.each(table)('table as a variable', ({a, b, expected, extra}) => {
 The array of arrays style will work smoothly with inlined tables:
 
 ```ts
+import {test} from '@jest/globals';
+
 test.each([
   [1, 2, 'three', true],
   [3, 4, 'seven', false],
@@ -1033,6 +1033,8 @@ test.each([
 However, if a table is declared as a separate variable, it must be typed as an array of tuples for correct type inference (this is not needed only if all elements of a row are of the same type):
 
 ```ts
+import {test} from '@jest/globals';
+
 const table: Array<[number, number, string, boolean?]> = [
   [1, 2, 'three', true],
   [3, 4, 'seven', false],
@@ -1049,6 +1051,8 @@ test.each(table)('table as a variable example', (a, b, expected, extra) => {
 If all values are of the same type, the template literal API will type the arguments correctly:
 
 ```ts
+import {test} from '@jest/globals';
+
 test.each`
   a    | b    | expected
   ${1} | ${2} | ${3}
@@ -1062,6 +1066,8 @@ test.each`
 Otherwise it will require a generic type argument:
 
 ```ts
+import {test} from '@jest/globals';
+
 test.each<{a: number; b: number; expected: string; extra?: boolean}>`
   a    | b    | expected    | extra
   ${1} | ${2} | ${'three'}  | ${true}

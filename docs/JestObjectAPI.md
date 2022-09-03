@@ -5,15 +5,9 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
-:::info
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
-The TypeScript examples from this page will only work as documented if you import global APIs from `'@jest/globals'`:
-
-```ts
-import {expect, jest, test} from '@jest/globals';
-```
-
-:::
+<TypeScriptExamplesNote />
 
 ## Methods
 
