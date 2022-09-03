@@ -43,7 +43,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   outputFile: undefined,
   passWithNoTests: false,
   projects: [],
-  randomize: false,
   replname: undefined,
   reporters: [],
   rootDir: '/test_root_dir/',

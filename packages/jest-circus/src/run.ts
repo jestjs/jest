@@ -22,9 +22,9 @@ import {
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed} = getState();
   await dispatch({name: 'run_start'});
-  let rng = undefined;
+  let rng: undefined | (() => number) = undefined;
   if (seed) {
-    rng = rngBuilder(seed).next;
+    rng = () => rngBuilder(seed).next();
   }
   await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
   await dispatch({name: 'run_finish'});
