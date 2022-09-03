@@ -825,15 +825,13 @@ export class ModuleMocker {
       } while (name && name.startsWith(boundFunctionPrefix));
     }
 
-    // Special case functions named `mockConstructor` to guard for infinite
-    // loops.
+    // Special case functions named `mockConstructor` to guard for infinite loops
     if (name === MOCK_CONSTRUCTOR_NAME) {
       return mockConstructor;
     }
 
     if (
-      // It's a syntax error to define functions with a reserved keyword
-      // as name.
+      // It's a syntax error to define functions with a reserved keyword as name
       RESERVED_KEYWORDS.has(name) ||
       // It's also a syntax error to define functions with a name that starts with a number
       /^\d/.test(name)
@@ -956,9 +954,7 @@ export class ModuleMocker {
     metadata.refID = refs.size;
     refs.set(component, metadata.refID);
 
-    let members: {
-      [key: string]: MockMetadata<T>;
-    } | null = null;
+    let members: Record<string, MockMetadata<T>> | null = null;
     // Leave arrays alone
     if (type !== 'array') {
       // @ts-expect-error component is object
