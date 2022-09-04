@@ -201,27 +201,6 @@ class TestScheduler {
           aggregatedResults.snapshot.filesRemoved)
       );
     };
-    const strToError = (errString: string): SerializableError => {
-      const {message, stack} = separateMessageFromStack(errString);
-      if (stack.length > 0) {
-        return {message, stack};
-      }
-      const error = new ErrorWithStack(message, buildExecError);
-      return {message, stack: error.stack || ''};
-    };
-    const buildExecError = (err: unknown): SerializableError => {
-      if (typeof err === 'string' || err == null) {
-        return strToError(err || 'Error');
-      }
-      const anyErr = err as any;
-      if (typeof anyErr.message === 'string') {
-        if (typeof anyErr.stack === 'string' && anyErr.stack.length > 0) {
-          return anyErr;
-        }
-        return strToError(anyErr.message);
-      }
-      return strToError(JSON.stringify(err));
-    };
 
     await this._dispatcher.onRunStart(aggregatedResults, {
       estimatedTime,
@@ -458,4 +437,27 @@ const getEstimatedTime = (timings: Array<number>, workers: number) => {
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
+};
+
+const strToError = (errString: string): SerializableError => {
+  const {message, stack} = separateMessageFromStack(errString);
+  if (stack.length > 0) {
+    return {message, stack};
+  }
+  const error = new ErrorWithStack(message, buildExecError);
+  return {message, stack: error.stack || ''};
+};
+
+const buildExecError = (err: unknown): SerializableError => {
+  if (typeof err === 'string' || err == null) {
+    return strToError(err || 'Error');
+  }
+  const anyErr = err as any;
+  if (typeof anyErr.message === 'string') {
+    if (typeof anyErr.stack === 'string' && anyErr.stack.length > 0) {
+      return anyErr;
+    }
+    return strToError(anyErr.message);
+  }
+  return strToError(JSON.stringify(err));
 };
