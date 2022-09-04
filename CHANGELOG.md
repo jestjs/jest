@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+
 ### Chore & Maintenance
 
 ### Performance
