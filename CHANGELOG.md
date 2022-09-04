@@ -2,6 +2,18 @@
 
 ### Features
 
+- `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.0.2
+
+### Features
+
 - `[jest-transform]` Expose `TransformFactory` type ([#13184](https://github.com/facebook/jest/pull/13184))
 
 ### Fixes
@@ -10,10 +22,6 @@
 - `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
 - `[jest-mock]` Align the behavior and return type of `generateFromMetadata` method ([#13207](https://github.com/facebook/jest/pull/13207))
 - `[jest-runtime]` Support `jest.resetModules()` with ESM ([#13211](https://github.com/facebook/jest/pull/13211))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 29.0.1
 
