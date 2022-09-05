@@ -1,6 +1,6 @@
 import Prando from 'prando';
 
-export const rngBuilder = (seed: number) => new Prando(seed);
+export const rngBuilder: (seed: number) => { next: () => number } = (seed: number) => new Prando(seed);
 
 // Fisher-Yates shuffle
 // This is performed in-place
