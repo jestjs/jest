@@ -6,6 +6,7 @@
  */
 
 import type {MatcherContext} from 'expect';
+import type {PrettyFormatOptions} from 'pretty-format';
 import type SnapshotState from './State';
 
 export interface Context extends MatcherContext {
@@ -63,3 +64,5 @@ export interface SnapshotMatchers<R extends void | Promise<void>, T> {
    */
   toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
 }
+
+export type SnapshotFormat = Omit<PrettyFormatOptions, 'compareKeys'>;

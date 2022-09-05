@@ -68,6 +68,7 @@ export type AggregatedResultWithoutCoverage = {
   success: boolean;
   testResults: Array<TestResult>;
   wasInterrupted: boolean;
+  runExecError?: SerializableError;
 };
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {

@@ -394,6 +394,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
             actual,
             received,
             snapshotState.expand,
+            snapshotState.snapshotFormat,
           )}`;
 
   // Passing the actual and expected objects so that a custom reporter

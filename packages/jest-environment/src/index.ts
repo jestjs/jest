@@ -8,7 +8,7 @@
 import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
-import type {ModuleMocker} from 'jest-mock';
+import type {Mocked, ModuleMocker} from 'jest-mock';
 
 export type EnvironmentContext = {
   console: Console;
@@ -92,7 +92,7 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  createMockFromModule(moduleName: string): unknown;
+  createMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module and its dependencies.
@@ -129,6 +129,7 @@ export interface Jest {
    * Creates a mock function. Optionally takes a mock implementation.
    */
   fn: ModuleMocker['fn'];
+  // TODO remove `genMockFromModule()` in Jest 30
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -138,7 +139,7 @@ export interface Jest {
    *
    * @deprecated Use `jest.createMockFromModule()` instead
    */
-  genMockFromModule(moduleName: string): unknown;
+  genMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * When mocking time, `Date.now()` will also be mocked. If you for some reason
    * need access to the real current time, you can invoke this function.
