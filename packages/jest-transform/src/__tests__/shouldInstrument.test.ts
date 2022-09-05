@@ -77,16 +77,6 @@ describe('shouldInstrument', () => {
       });
     });
 
-    it('should return true when file is in collectCoverageOnlyFrom when provided', () => {
-      testShouldInstrument(
-        'collect/only/from/here.js',
-        {
-          collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
-        },
-        defaultConfig,
-      );
-    });
-
     it('should return true when filename matches collectCoverageFrom', () => {
       testShouldInstrument(
         'do/collect/coverage.js',
@@ -154,27 +144,17 @@ describe('shouldInstrument', () => {
     });
 
     it('when testRegex and testPathIgnorePatterns are provided and filename is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testPathIgnorePatterns: ['src/'],
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
 
     it('when testMatch and testPathIgnorePatterns are provided and file is a test file', () => {
-      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+      testShouldInstrument(`test/${defaultFilename}`, defaultOptions, {
         testMatch: ['**/?(*.)(test).js'],
         testPathIgnorePatterns: ['src/'],
       });
-    });
-
-    it('when file is not in collectCoverageOnlyFrom when provided', () => {
-      testShouldInstrument(
-        'source_file.js',
-        {
-          collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
-        },
-        defaultConfig,
-      );
     });
 
     it('when filename does not match collectCoverageFrom', () => {

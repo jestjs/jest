@@ -1,9 +1,10 @@
 {
   "jest": {
-    "timers": "fake",
+    "fakeTimers": {
+      "enableGlobally": true
+    },
     "setupFiles": [
       "<rootDir>/fake-promises"
-    ],
-    "testEnvironment": "node"
+    ]
   }
 }

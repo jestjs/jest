@@ -42,15 +42,11 @@ export type AssertionLocation = {
 
 export type Status = AssertionResult['status'];
 
-export type Bytes = number;
-
-export type Milliseconds = TestResult.Milliseconds;
-
 export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
   AssertionResult,
-  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title'
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
 > & {
   failureMessages: AssertionResult['failureMessages'] | null;
 };
@@ -72,6 +68,7 @@ export type AggregatedResultWithoutCoverage = {
   success: boolean;
   testResults: Array<TestResult>;
   wasInterrupted: boolean;
+  runExecError?: SerializableError;
 };
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
@@ -96,17 +93,17 @@ export type TestResult = {
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
-  memoryUsage?: Bytes;
+  memoryUsage?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
   numTodoTests: number;
   openHandles: Array<Error>;
   perfStats: {
-    end: Milliseconds;
-    runtime: Milliseconds;
+    end: number;
+    runtime: number;
     slow: boolean;
-    start: Milliseconds;
+    start: number;
   };
   skipped: boolean;
   snapshot: {
@@ -119,7 +116,7 @@ export type TestResult = {
     updated: number;
   };
   testExecError?: SerializableError;
-  testFilePath: Config.Path;
+  testFilePath: string;
   testResults: Array<AssertionResult>;
   v8Coverage?: V8CoverageResult;
 };
@@ -183,12 +180,12 @@ export type SnapshotSummary = {
 };
 
 export type Test = {
-  context: Context;
+  context: TestContext;
   duration?: number;
-  path: Config.Path;
+  path: string;
 };
 
-type Context = {
+export type TestContext = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
@@ -200,7 +197,7 @@ export type TestEvents = {
   'test-file-start': [Test];
   'test-file-success': [Test, TestResult];
   'test-file-failure': [Test, SerializableError];
-  'test-case-result': [Config.Path, AssertionResult];
+  'test-case-result': [string, AssertionResult];
 };
 
 export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (

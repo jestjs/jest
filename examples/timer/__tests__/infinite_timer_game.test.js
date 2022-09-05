@@ -5,7 +5,7 @@
 jest.useFakeTimers();
 
 it('schedules a 10-second timer after 1 second', () => {
-  jest.spyOn(global, 'setTimeout');
+  jest.spyOn(globalThis, 'setTimeout');
   const infiniteTimerGame = require('../infiniteTimerGame');
   const callback = jest.fn();
 

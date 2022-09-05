@@ -19,7 +19,7 @@ type QueueItem = {
 
 /**
  * Priority queue that processes tasks in natural ordering (lower priority first)
- * accoridng to the priority computed by the function passed in the constructor.
+ * according to the priority computed by the function passed in the constructor.
  *
  * FIFO ordering isn't guaranteed for tasks with the same priority.
  *

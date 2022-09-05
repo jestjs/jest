@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "27.4.2",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,23 +15,25 @@
       "default": "./build/index.js"
     },
     "./package.json": "./package.json",
-    "./build/utils": "./build/utils.js",
     "./build/matchers": "./build/matchers.js"
   },
   "dependencies": {
-    "@jest/types": "^27.4.2",
-    "jest-get-type": "^27.4.0",
-    "jest-matcher-utils": "^27.4.2",
-    "jest-message-util": "^27.4.2"
+    "@jest/expect-utils": "workspace:^",
+    "jest-get-type": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.4.2",
+    "@jest/test-utils": "workspace:^",
+    "@tsd/typescript": "~4.8.2",
     "chalk": "^4.0.0",
-    "fast-check": "^2.0.0",
-    "immutable": "^4.0.0"
+    "fast-check": "^3.0.0",
+    "immutable": "^4.0.0",
+    "tsd-lite": "^0.6.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,22 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>\\"preprocessorIgnorePatterns\\"</> was replaced by <bold>\\"transformIgnorePatterns\\"</>, which support multiple preprocessors.</>
-<yellow></>
-<yellow>  Jest now treats your current configuration as:</>
-<yellow>  {</>
-<yellow>    <bold>\\"transformIgnorePatterns\\"</>: <bold>[\\"bar/baz\\", \\"qux/quux\\"]</></>
-<yellow>  }</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>"
-`;
-
 exports[`displayName generates a default color for the runner jest-runner 1`] = `"yellow"`;
 
 exports[`displayName generates a default color for the runner jest-runner-eslint 1`] = `"magenta"`;
@@ -28,209 +11,497 @@ exports[`displayName generates a default color for the runner jest-runner-tslint
 exports[`displayName generates a default color for the runner undefined 1`] = `"white"`;
 
 exports[`displayName should throw an error when displayName is is an empty object 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
-<red></>
-<red>  {</>
-<red>    name: string;</>
-<red>    color: string;</>
-<red>  }</>
-<red></>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option "<bold>displayName</intensity>" must be of type:</color>
+<red></color>
+<red>  {</color>
+<red>    name: string;</color>
+<red>    color: string;</color>
+<red>  }</color>
+<red></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`displayName should throw an error when displayName is missing color 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
-<red></>
-<red>  {</>
-<red>    name: string;</>
-<red>    color: string;</>
-<red>  }</>
-<red></>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option "<bold>displayName</intensity>" must be of type:</color>
+<red></color>
+<red>  {</color>
+<red>    name: string;</color>
+<red>    color: string;</color>
+<red>  }</color>
+<red></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`displayName should throw an error when displayName is missing name 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
-<red></>
-<red>  {</>
-<red>    name: string;</>
-<red>    color: string;</>
-<red>  }</>
-<red></>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option "<bold>displayName</intensity>" must be of type:</color>
+<red></color>
+<red>  {</color>
+<red>    name: string;</color>
+<red>    color: string;</color>
+<red>  }</color>
+<red></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`displayName should throw an error when displayName is using invalid values 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Option \\"<bold>displayName</>\\" must be of type:</>
-<red></>
-<red>  {</>
-<red>    name: string;</>
-<red>    color: string;</>
-<red>  }</>
-<red></>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option "<bold>displayName</intensity>" must be of type:</color>
+<red></color>
+<red>  {</color>
+<red>    name: string;</color>
+<red>    color: string;</color>
+<red>  }</color>
+<red></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`extensionsToTreatAsEsm should enforce leading dots 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['ts'] includes a string that does not start with a period (.).
-  Please change your configuration to extensionsToTreatAsEsm: ['.ts'].
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['ts']</intensity> includes a string that does not start with a period (<bold>.</intensity>).</color>
+<red>  Please change your configuration to <bold>extensionsToTreatAsEsm: ['.ts']</intensity>.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .cjs 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['.cjs'] includes '.cjs' which is always treated as CommonJS.
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.cjs']</intensity> includes <bold>'.cjs'</intensity> which is always treated as CommonJS.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .js 1`] = `
-● Validation Error:
-
-  Option: extensionsToTreatAsEsm: ['.js'] includes '.js' which is always inferred based on type in its nearest package.json.
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.js']</intensity> includes <bold>'.js'</intensity> which is always inferred based on <bold>type</intensity> in its nearest <bold>package.json</intensity>.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
-● Validation Error:
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option: <bold>extensionsToTreatAsEsm: ['.mjs']</intensity> includes <bold>'.mjs'</intensity> which is always treated as an ECMAScript Module.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
+`;
 
-  Option: extensionsToTreatAsEsm: ['.mjs'] includes '.mjs' which is always treated as an ECMAScript Module.
+exports[`logs a deprecation warning when 'browser' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"browser"</intensity> has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
 
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
+exports[`logs a deprecation warning when 'collectCoverageOnlyFrom' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"collectCoverageOnlyFrom"</intensity> was replaced by <bold>"collectCoverageFrom"</intensity>.</color>
+<yellow></color>
+<yellow>    Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'extraGlobals' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"extraGlobals"</intensity> was replaced by <bold>"sandboxInjectedGlobals"</intensity>.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'moduleLoader' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"moduleLoader"</intensity> was replaced by <bold>"runtime"</intensity>.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'preprocessorIgnorePatterns' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"preprocessorIgnorePatterns"</intensity> was replaced by <bold>"transformIgnorePatterns"</intensity>, which support multiple preprocessors.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'scriptPreprocessor' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"scriptPreprocessor"</intensity> was replaced by <bold>"transform"</intensity>, which support multiple preprocessors.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'setupTestFrameworkScriptFile' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"setupTestFrameworkScriptFile"</intensity> was replaced by configuration <bold>"setupFilesAfterEnv"</intensity>, which supports multiple paths.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'testPathDirs' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"testPathDirs"</intensity> was replaced by <bold>"roots"</intensity>.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow>  </color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'testURL' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"testURL"</intensity> was replaced by passing the URL via <bold>"testEnvironmentOptions.url"</intensity>.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`logs a deprecation warning when 'timers' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"timers"</intensity> was replaced by <bold>"fakeTimers"</intensity>.</color>
+<yellow></color>
+<yellow>  Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
 `;
 
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Module <bold>exist-but-no-jest-preset</intensity> should have "jest-preset.js" or "jest-preset.json" file at the root.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`preset throws when preset not found 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Preset <bold>doesnt-exist</> not found.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Preset <bold>doesnt-exist</intensity> not found.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
+`;
+
+exports[`reporters throws an error if first value in the tuple is not a string 1`] = `
+"<red><bold><bold>● </intensity><bold>Reporter Validation Error</intensity>:</color>
+<red></color>
+<red>  Unexpected value for Path at index 0 of reporter at index 0</color>
+<red>  Expected:</color>
+<red>    <bold><red>string</color><red></intensity></color>
+<red>  Got:</color>
+<red>    <bold><green>number</color><red></intensity></color>
+<red>  Reporter configuration:</color>
+<red>    <bold><green>[</color><red></intensity></color>
+<red><bold><green>      123</color><red></intensity></color>
+<red><bold><green>    ]</color><red></intensity></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
+`;
+
+exports[`reporters throws an error if second value in the tuple is not an object 1`] = `
+"<red><bold><bold>● </intensity><bold>Reporter Validation Error</intensity>:</color>
+<red></color>
+<red>  Unexpected value for Reporter Configuration at index 1 of reporter at index 0</color>
+<red>  Expected:</color>
+<red>    <bold><red>object</color><red></intensity></color>
+<red>  Got:</color>
+<red>    <bold><green>boolean</color><red></intensity></color>
+<red>  Reporter configuration:</color>
+<red>    <bold><green>[</color><red></intensity></color>
+<red><bold><green>      "some-reporter",</color><red></intensity></color>
+<red><bold><green>      true</color><red></intensity></color>
+<red><bold><green>    ]</color><red></intensity></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
+`;
+
+exports[`reporters throws an error if second value is missing in the tuple 1`] = `
+"<red><bold><bold>● </intensity><bold>Reporter Validation Error</intensity>:</color>
+<red></color>
+<red>  Unexpected value for Reporter Configuration at index 1 of reporter at index 0</color>
+<red>  Expected:</color>
+<red>    <bold><red>object</color><red></intensity></color>
+<red>  Got:</color>
+<red>    <bold><green>undefined</color><red></intensity></color>
+<red>  Reporter configuration:</color>
+<red>    <bold><green>[</color><red></intensity></color>
+<red><bold><green>      "some-reporter"</color><red></intensity></color>
+<red><bold><green>    ]</color><red></intensity></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
+`;
+
+exports[`reporters throws an error if value is neither string nor array 1`] = `
+"<red><bold><bold>● </intensity><bold>Reporter Validation Error</intensity>:</color>
+<red></color>
+<red>  Reporter at index 0 must be of type:</color>
+<red>    <bold><green>array or string</color><red></intensity></color>
+<red>  but instead received:</color>
+<red>    <bold><red>number</color><red></intensity></color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`rootDir throws if the options is missing a rootDir property 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Configuration option <bold>rootDir</> must be specified.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Configuration option <bold>rootDir</intensity> must be specified.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`runner throw error when a runner is not found 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Jest Runner <bold>missing-runner</> cannot be found. Make sure the <bold>runner</> configuration option points to an existing node module.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
-`;
-
-exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
-"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
-<yellow></>
-<yellow>  Option <bold>\\"setupTestFrameworkScriptFile\\"</> was replaced by configuration <bold>\\"setupFilesAfterEnv\\"</>, which supports multiple paths.</>
-<yellow></>
-<yellow>  Please update your configuration.</>
-<yellow></>
-<yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration</>
-<yellow></>"
-`;
-
-exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
-<red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Jest Runner <bold>missing-runner</intensity> cannot be found. Make sure the <bold>runner</intensity> configuration option points to an existing node module.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Test environment <bold>phantom</> cannot be found. Make sure the <bold>testEnvironment</> configuration option points to an existing node module.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Test environment <bold>phantom</intensity> cannot be found. Make sure the <bold>testEnvironment</intensity> configuration option points to an existing node module.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Configuration options <bold>testMatch</> and <bold>testRegex</> cannot be used together.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Configuration options <bold>testMatch</intensity> and <bold>testRegex</intensity> cannot be used together.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
-exports[`testPathPattern <regexForTestFiles> ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</>"`;
+exports[`testPathPattern <regexForTestFiles> ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
 
-exports[`testPathPattern --testPathPattern ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</>"`;
+exports[`testPathPattern --testPathPattern ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</color>"`;
 
 exports[`testTimeout should throw an error if timeout is a negative number 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Option \\"<bold>testTimeout</>\\" must be a natural number.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Option "<bold>testTimeout</intensity>" must be a natural number.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;
 
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Watch plugin <bold>missing-plugin</> cannot be found. Make sure the <bold>watchPlugins</> configuration option points to an existing node module.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration</>
-<red></>"
+"<red><bold><bold>● </intensity><bold>Validation Error</intensity>:</color>
+<red></color>
+<red>  Watch plugin <bold>missing-plugin</intensity> cannot be found. Make sure the <bold>watchPlugins</intensity> configuration option points to an existing node module.</color>
+<red></color>
+<red>  <bold>Configuration Documentation:</intensity></color>
+<red>  https://jestjs.io/docs/configuration</color>
+<red></color>"
 `;

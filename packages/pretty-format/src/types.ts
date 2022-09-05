@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {SnapshotFormat} from '@jest/schemas';
+
 export type Colors = {
   comment: {close: string; open: string};
   content: {close: string; open: string};
@@ -16,52 +18,22 @@ type Indent = (arg0: string) => string;
 export type Refs = Array<unknown>;
 type Print = (arg0: unknown) => string;
 
-export type Theme = {
-  comment: string;
-  content: string;
-  prop: string;
-  tag: string;
-  value: string;
-};
+export type Theme = Options['theme'];
 
-type ThemeReceived = {
-  comment?: string;
-  content?: string;
-  prop?: string;
-  tag?: string;
-  value?: string;
-};
+export type CompareKeys = ((a: string, b: string) => number) | null | undefined;
 
-export type CompareKeys = ((a: string, b: string) => number) | undefined;
+type RequiredOptions = Required<PrettyFormatOptions>;
 
-export type Options = {
-  callToJSON: boolean;
+export interface Options
+  extends Omit<RequiredOptions, 'compareKeys' | 'theme'> {
   compareKeys: CompareKeys;
-  escapeRegex: boolean;
-  escapeString: boolean;
-  highlight: boolean;
-  indent: number;
-  maxDepth: number;
-  min: boolean;
-  plugins: Plugins;
-  printBasicPrototype: boolean;
-  printFunctionName: boolean;
-  theme: Theme;
-};
+  theme: Required<RequiredOptions['theme']>;
+}
 
-export interface PrettyFormatOptions {
-  callToJSON?: boolean;
+export interface PrettyFormatOptions
+  extends Omit<SnapshotFormat, 'compareKeys'> {
   compareKeys?: CompareKeys;
-  escapeRegex?: boolean;
-  escapeString?: boolean;
-  highlight?: boolean;
-  indent?: number;
-  maxDepth?: number;
-  min?: boolean;
   plugins?: Plugins;
-  printBasicPrototype?: boolean;
-  printFunctionName?: boolean;
-  theme?: ThemeReceived;
 }
 
 export type OptionsReceived = PrettyFormatOptions;
@@ -74,6 +46,7 @@ export type Config = {
   escapeString: boolean;
   indent: string;
   maxDepth: number;
+  maxWidth: number;
   min: boolean;
   plugins: Plugins;
   printBasicPrototype: boolean;

@@ -5,11 +5,21 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
+:::info
+
+The TypeScript examples from this page will only work as documented if you import global APIs from `'@jest/globals'`:
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+```
+
+:::
+
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -96,18 +106,12 @@ _Note: this method was previously called `autoMockOn`. When using `babel-jest`, 
 
 ### `jest.createMockFromModule(moduleName)`
 
-##### renamed in Jest **26.0.0+**
-
-Also under the alias: `.genMockFromModule(moduleName)`
-
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior:
 
-Example:
-
-```js title="utils.js"
-export default {
+```js tab={"span":2} title="utils.js"
+module.exports = {
   authorize: () => {
     return 'token';
   },
@@ -116,12 +120,34 @@ export default {
 ```
 
 ```js title="__tests__/createMockFromModule.test.js"
-const utils = jest.createMockFromModule('../utils').default;
+const utils = jest.createMockFromModule('../utils');
+
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
-  expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
+});
+```
+
+```ts tab={"span":2} title="utils.ts"
+export const utils = {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: (secret: string) => secret === 'wizard',
+};
+```
+
+```ts title="__tests__/createMockFromModule.test.ts"
+const {utils} =
+  jest.createMockFromModule<typeof import('../utils')>('../utils');
+
+utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
+
+test('implementation created by jest.createMockFromModule', () => {
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
 
@@ -180,7 +206,7 @@ module.exports = {
 ```
 
 ```js title="__tests__/example.test.js"
-const example = jest.createMockFromModule('./example');
+const example = jest.createMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
@@ -281,6 +307,20 @@ jest.mock(
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
+
+:::tip
+
+Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+
+:::
+
+### `jest.Mocked<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+
+### `jest.mocked(source, options?)`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
 
 ### `jest.unmock(moduleName)`
 
@@ -453,7 +493,7 @@ const otherCopyOfMyModule = require('myModule');
 
 ## Mock Functions
 
-### `jest.fn(implementation)`
+### `jest.fn(implementation?)`
 
 Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
@@ -467,6 +507,12 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
+:::tip
+
+See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
+
+:::
+
 ### `jest.isMockFunction(fn)`
 
 Determines if the given function is a mocked function.
@@ -475,7 +521,17 @@ Determines if the given function is a mocked function.
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
-_Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
+:::note
+
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+
+:::
+
+:::tip
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
 
 Example:
 
@@ -494,14 +550,17 @@ Example test:
 ```js
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 ```
 
@@ -541,14 +600,17 @@ Example test:
 const audio = require('./audio');
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
   const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 
 test('plays audio', () => {
@@ -557,14 +619,12 @@ test('plays audio', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
-
-  spy.mockRestore();
 });
 ```
 
 ### `jest.clearAllMocks()`
 
-Clears the `mock.calls`, `mock.instances` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
 
 Returns the `jest` object for chaining.
 
@@ -578,63 +638,118 @@ Returns the `jest` object for chaining.
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
-### `jest.mocked<T>(item: T, deep = false)`
+## Fake Timers
 
-The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
+### `jest.useFakeTimers(fakeTimersConfig?)`
 
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
+Instructs Jest to use fake versions of the global date, performance, time and timer APIs. Fake timers implementation is backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
-Example:
+Fake timers will swap out `Date`, `performance.now()`, `queueMicrotask()`, `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with an implementation that gets its time from the fake clock.
+
+In Node environment `process.hrtime`, `process.nextTick()` and in JSDOM environment `requestAnimationFrame()`, `cancelAnimationFrame()`, `requestIdleCallback()`, `cancelIdleCallback()` will be replaced as well.
+
+Configuration options:
 
 ```ts
-// foo.ts
-export const foo = {
-  a: {
-    b: {
-      c: {
-        hello: (name: string) => `Hello, ${name}`,
-      },
-    },
-  },
-  name: () => 'foo',
+type FakeableAPI =
+  | 'Date'
+  | 'hrtime'
+  | 'nextTick'
+  | 'performance'
+  | 'queueMicrotask'
+  | 'requestAnimationFrame'
+  | 'cancelAnimationFrame'
+  | 'requestIdleCallback'
+  | 'cancelIdleCallback'
+  | 'setImmediate'
+  | 'clearImmediate'
+  | 'setInterval'
+  | 'clearInterval'
+  | 'setTimeout'
+  | 'clearTimeout';
+
+type FakeTimersConfig = {
+  /**
+   * If set to `true` all timers will be advanced automatically by 20 milliseconds
+   * every 20 milliseconds. A custom time delta may be provided by passing a number.
+   * The default is `false`.
+   */
+  advanceTimers?: boolean | number;
+  /**
+   * List of names of APIs that should not be faked. The default is `[]`, meaning
+   * all APIs are faked.
+   */
+  doNotFake?: Array<FakeableAPI>;
+  /**
+   * Use the old fake timers implementation instead of one backed by `@sinonjs/fake-timers`.
+   * The default is `false`.
+   */
+  legacyFakeTimers?: boolean;
+  /** Sets current system time to be used by fake timers. The default is `Date.now()`. */
+  now?: number | Date;
+  /**
+   * The maximum number of recursive timers that will be run when calling `jest.runAllTimers()`.
+   * The default is `100_000` timers.
+   */
+  timerLimit?: number;
 };
 ```
 
-```ts
-// foo.spec.ts
-import {foo} from './foo';
-jest.mock('./foo');
+Calling `jest.useFakeTimers()` will use fake timers for all tests within the file, until original timers are restored with `jest.useRealTimers()`.
 
-// here the whole foo var is mocked deeply
-const mockedFoo = jest.mocked(foo, true);
+You can call `jest.useFakeTimers()` or `jest.useRealTimers()` from anywhere: top level, inside an `test` block, etc. Keep in mind that this is a **global operation** and will affect other tests within the same file. Calling `jest.useFakeTimers()` once again in the same test file would reset the internal state (e.g. timer count) and reinstall fake timers using the provided options:
 
-test('deep', () => {
-  // there will be no TS error here, and you'll have completion in modern IDEs
-  mockedFoo.a.b.c.hello('me');
-  // same here
-  expect(mockedFoo.a.b.c.hello.mock.calls).toHaveLength(1);
+```js
+test('advance the timers automatically', () => {
+  jest.useFakeTimers({advanceTimers: true});
+  // ...
 });
 
-test('direct', () => {
-  foo.name();
-  // here only foo.name is mocked (or its methods if it's an object)
-  expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
+test('do not advance the timers and do not fake `performance`', () => {
+  jest.useFakeTimers({doNotFake: ['performance']});
+  // ...
+});
+
+test('uninstall fake timers for the rest of tests in the file', () => {
+  jest.useRealTimers();
+  // ...
 });
 ```
 
-## Mock Timers
+:::info Legacy Fake Timers
 
-### `jest.useFakeTimers(implementation?: 'modern' | 'legacy')`
+For some reason you might have to use legacy implementation of fake timers. It can be enabled like this (additional options are not supported):
 
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate` as well as `Date`).
+```js
+jest.useFakeTimers({
+  legacyFakeTimers: true,
+});
+```
 
-If you pass `'legacy'` as an argument, Jest's legacy implementation will be used rather than one based on [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
+Legacy fake timers will swap out `setImmediate()`, `clearImmediate()`, `setInterval()`, `clearInterval()`, `setTimeout()`, `clearTimeout()` with Jest [mock functions](MockFunctionAPI.md). In Node environment `process.nextTick()` and in JSDOM environment `requestAnimationFrame()`, `cancelAnimationFrame()` will be also replaced.
+
+:::
 
 Returns the `jest` object for chaining.
 
 ### `jest.useRealTimers()`
 
-Instructs Jest to use the real versions of the standard timer functions.
+Instructs Jest to restore the original implementations of the global date, performance, time and timer APIs. For example, you may call `jest.useRealTimers()` inside `afterEach` hook to restore timers after each test:
+
+```js
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+test('do something with fake timers', () => {
+  jest.useFakeTimers();
+  // ...
+});
+
+test('do something with real timers', () => {
+  // ...
+});
+```
 
 Returns the `jest` object for chaining.
 
@@ -656,7 +771,11 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 Exhausts all tasks queued by `setImmediate()`.
 
-> Note: This function is not available when using modern fake timers implementation
+:::info
+
+This function is only available when using legacy fake timers implementation.
+
+:::
 
 ### `jest.advanceTimersByTime(msToRun)`
 
@@ -690,19 +809,29 @@ Returns the number of fake timers still left to run.
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
-> Note: This function is only available when using modern fake timers implementation
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
 
 ### `jest.getRealSystemTime()`
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
-> Note: This function is only available when using modern fake timers implementation
+:::info
+
+This function is not available when using legacy fake timers implementation.
+
+:::
 
 ## Misc
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 
@@ -714,14 +843,23 @@ Example:
 jest.setTimeout(1000); // 1 second
 ```
 
-### `jest.retryTimes()`
+### `jest.retryTimes(numRetries, options)`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner!
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. `options` are optional. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus) runner! This must live at the top-level of a test file or in a describe block. Retries _will not_ work if `jest.retryTimes()` is called in a `beforeEach` or a `test` block.
 
 Example in a test:
 
 ```js
 jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+If `logErrorsBeforeRetry` is enabled, Jest will log the error(s) that caused the test to fail to the console, providing visibility on why a retry occurred.
+
+```js
+jest.retryTimes(3, {logErrorsBeforeRetry: true});
 test('will fail', () => {
   expect(true).toBe(false);
 });

@@ -6,8 +6,7 @@
  */
 
 import type {AssertionError} from 'assert';
-import type {Config} from '@jest/types';
-import expect = require('expect');
+import type {AsymmetricMatchers, JestExpect} from '@jest/expect';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -24,25 +23,6 @@ export type SpecDefinitionsFn = () => void;
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
-
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: unknown,
-  actual: unknown,
-  options?: unknown,
-) => ExpectationResult;
-// -------END-------
 
 export type RunDetails = {
   totalSpecsDefined?: number;
@@ -67,8 +47,8 @@ export interface Spy extends Record<string, any> {
 
 type JasmineMatcher = {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
+  compare(...args: Array<unknown>): unknown;
+  negativeCompare(...args: Array<unknown>): unknown;
 };
 
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
@@ -87,15 +67,29 @@ export type Jasmine = {
   Suite: typeof Suite;
   Timer: typeof Timer;
   version: string;
-  testPath: Config.Path;
+  testPath: string;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & typeof expect &
-  typeof globalThis;
+} & AsymmetricMatchers & {process: NodeJS.Process};
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      expect: typeof expect;
+      expect: JestExpect;
+      jasmine: Jasmine;
+    }
+  }
+}
+
+declare module '@jest/types' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Global {
+    interface GlobalAdditions {
+      jasmine: Jasmine;
+      fail: () => void;
+      pending: () => void;
+      spyOn: () => void;
+      spyOnProperty: () => void;
     }
   }
 }

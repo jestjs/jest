@@ -9,7 +9,6 @@ import * as path from 'path';
 import dedent = require('dedent');
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
-import rimraf = require('rimraf');
 import type {PackageJson} from 'type-fest';
 import which = require('which');
 import type {Config} from '@jest/types';
@@ -20,7 +19,7 @@ interface RunResult extends ExecaReturnValue {
 }
 export const run = (
   cmd: string,
-  cwd?: Config.Path,
+  cwd?: string,
   env?: Record<string, string>,
 ): RunResult => {
   const args = cmd.split(/\s/).slice(1);
@@ -44,10 +43,7 @@ export const run = (
   return result;
 };
 
-export const runYarnInstall = (
-  cwd: Config.Path,
-  env?: Record<string, string>,
-) => {
+export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
   let exists = true;
 
@@ -57,15 +53,19 @@ export const runYarnInstall = (
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
+  return run(
+    exists ? 'yarn install --immutable' : 'yarn install --no-immutable',
+    cwd,
+    env,
+  );
 };
 
-export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
+export const linkJestPackage = (packageName: string, cwd: string) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
   fs.mkdirSync(destination, {recursive: true});
-  rimraf.sync(destination);
+  fs.rmSync(destination, {force: true, recursive: true});
   fs.symlinkSync(packagePath, destination, 'junction');
 };
 
@@ -79,7 +79,8 @@ export const makeTemplate =
       return values[number - 1];
     });
 
-export const cleanup = (directory: string) => rimraf.sync(directory);
+export const cleanup = (directory: string) =>
+  fs.rmSync(directory, {force: true, recursive: true});
 
 /**
  * Creates a nested directory with files and their contents
@@ -171,7 +172,7 @@ export const sortLines = (output: string) =>
     .map(str => str.trim())
     .join('\n');
 
-interface JestPackageJson extends PackageJson {
+export interface JestPackageJson extends PackageJson {
   jest: Config.InitialOptions;
 }
 
@@ -182,8 +183,8 @@ const DEFAULT_PACKAGE_JSON: JestPackageJson = {
 };
 
 export const createEmptyPackage = (
-  directory: Config.Path,
-  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
+  directory: string,
+  packageJson: JestPackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
   const packageJsonWithDefaults = {
     ...packageJson,
@@ -280,10 +281,10 @@ export const normalizeIcons = (str: string) => {
     return str;
   }
 
-  // Make sure to keep in sync with `jest-cli/src/constants`
+  // Make sure to keep in sync with `jest-util/src/specialChars`
   return str
-    .replace(new RegExp('\u00D7', 'g'), '\u2715')
-    .replace(new RegExp('\u221A', 'g'), '\u2713');
+    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
+    .replace(new RegExp('\u221A', 'gu'), '\u2713');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

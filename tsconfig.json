@@ -1,19 +1,18 @@
 {
-  "extends": "@tsconfig/node10/tsconfig.json",
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    // Object.fromEntries
-    "lib": ["es2019.object"],
-    "declaration": true,
     "composite": true,
+    "declaration": true,
     "emitDeclarationOnly": true,
-    "isolatedModules": true,
     "importsNotUsedAsValues": "error",
+    "stripInternal": true,
 
     "strict": true,
 
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
@@ -21,14 +20,8 @@
     "moduleResolution": "node",
     /* This needs to be false so our types are possible to consume without setting this */
     "esModuleInterop": false,
+    "isolatedModules": true,
     "skipLibCheck": false,
     "resolveJsonModule": true
-  },
-  "exclude": [
-    ".yarn/releases/*",
-    "**/__mocks__/**/*",
-    "**/__tests__/**/*",
-    "**/__typechecks__/**/*",
-    "**/build/**/*"
-  ]
+  }
 }

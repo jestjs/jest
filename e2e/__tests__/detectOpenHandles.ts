@@ -5,26 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
-
-try {
-  require('async_hooks');
-} catch (e: any) {
-  if (e.code === 'MODULE_NOT_FOUND') {
-    // eslint-disable-next-line jest/no-focused-tests
-    fit('skip test for unsupported nodes', () => {
-      console.warn('Skipping test for node ' + process.version);
-    });
-  } else {
-    throw e;
-  }
-}
 
 function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
+
+beforeAll(() => {
+  jest.retryTimes(3);
+});
 
 it('prints message about flag on slow tests', async () => {
   const run = runContinuous('detect-open-handles', ['outside']);
@@ -36,7 +26,7 @@ it('prints message about flag on slow tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints message about flag on forceExit', async () => {
@@ -45,7 +35,7 @@ it('prints message about flag on forceExit', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers', async () => {
@@ -57,7 +47,7 @@ it('prints out info about open handlers', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
@@ -82,16 +72,14 @@ it('does not report crypto random data', () => {
   expect(textAfterTest).toBe('');
 });
 
-onNodeVersions('>=12', () => {
-  it('does not report ELD histograms', () => {
-    const {stderr} = runJest('detect-open-handles', [
-      'histogram',
-      '--detectOpenHandles',
-    ]);
-    const textAfterTest = getTextAfterTest(stderr);
+it('does not report ELD histograms', () => {
+  const {stderr} = runJest('detect-open-handles', [
+    'histogram',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
 
-    expect(textAfterTest).toBe('');
-  });
+  expect(textAfterTest).toBe('');
 });
 
 describe('notify', () => {
@@ -110,11 +98,33 @@ describe('notify', () => {
   });
 });
 
-onNodeVersions('>=12', () => {
-  it('does not report timeouts using unref', () => {
+it('does not report timeouts using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'unref',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+it('does not report child_process using unref', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'child_process',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
+onNodeVersions('>=18.1.0', () => {
+  it('does not report worker using unref', () => {
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
     const {stderr} = runJest('detect-open-handles', [
-      'unref',
+      'worker',
       '--detectOpenHandles',
     ]);
     const textAfterTest = getTextAfterTest(stderr);
@@ -132,7 +142,7 @@ it('prints out info about open handlers from inside tests', async () => {
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers from tests with a `done` callback', async () => {
@@ -144,7 +154,7 @@ it('prints out info about open handlers from tests with a `done` callback', asyn
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('prints out info about open handlers from lifecycle functions with a `done` callback', async () => {
@@ -164,7 +174,7 @@ it('prints out info about open handlers from lifecycle functions with a `done` c
     'at setTimeout',
   );
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not print info about open handlers for a server that is already closed', async () => {
@@ -176,5 +186,5 @@ it('does not print info about open handlers for a server that is already closed'
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(wrap(textAfterTest)).toMatchSnapshot();
+  expect(textAfterTest).toMatchSnapshot();
 });

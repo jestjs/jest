@@ -31,7 +31,7 @@ const hasUnmatchedDoubleQuoteMarks = (string: string): boolean => {
   return n % 2 !== 0;
 };
 
-const isFirstLineOfTag = (line: string) => /^( {2})*\</.test(line);
+const isFirstLineOfTag = (line: string) => /^( {2})*</.test(line);
 
 // The length of the output array is the index of the next input line.
 

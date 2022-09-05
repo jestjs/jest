@@ -8,9 +8,8 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
-import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
 import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {SnapshotData} from './types';
+import type {SnapshotData, SnapshotFormat} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,
@@ -23,27 +22,28 @@ import {
 } from './utils';
 
 export type SnapshotStateOptions = {
-  updateSnapshot: Config.SnapshotUpdateState;
-  prettierPath: Config.Path;
-  expand?: boolean;
-  snapshotFormat: PrettyFormatOptions;
+  readonly updateSnapshot: Config.SnapshotUpdateState;
+  readonly prettierPath?: string | null;
+  readonly expand?: boolean;
+  readonly snapshotFormat: SnapshotFormat;
+  readonly rootDir: string;
 };
 
 export type SnapshotMatchOptions = {
-  testName: string;
-  received: unknown;
-  key?: string;
-  inlineSnapshot?: string;
-  isInline: boolean;
-  error?: Error;
+  readonly testName: string;
+  readonly received: unknown;
+  readonly key?: string;
+  readonly inlineSnapshot?: string;
+  readonly isInline: boolean;
+  readonly error?: Error;
 };
 
 type SnapshotReturnOptions = {
-  actual: string;
-  count: number;
-  expected?: string;
-  key: string;
-  pass: boolean;
+  readonly actual: string;
+  readonly count: number;
+  readonly expected?: string;
+  readonly key: string;
+  readonly pass: boolean;
 };
 
 type SaveStatus = {
@@ -54,16 +54,18 @@ type SaveStatus = {
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
-  // @ts-expect-error
+  // @ts-expect-error - seemingly unused?
   private _index: number;
-  private _updateSnapshot: Config.SnapshotUpdateState;
+  private readonly _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
-  private _initialData: SnapshotData;
-  private _snapshotPath: Config.Path;
+  private readonly _initialData: SnapshotData;
+  private readonly _snapshotPath: string;
   private _inlineSnapshots: Array<InlineSnapshot>;
-  private _uncheckedKeys: Set<string>;
-  private _prettierPath: Config.Path;
-  private _snapshotFormat: PrettyFormatOptions;
+  private readonly _uncheckedKeys: Set<string>;
+  private readonly _prettierPath: string | null;
+  private readonly _rootDir: string;
+
+  readonly snapshotFormat: SnapshotFormat;
 
   added: number;
   expand: boolean;
@@ -71,7 +73,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: string, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
@@ -80,7 +82,7 @@ export default class SnapshotState {
     this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
-    this._prettierPath = options.prettierPath;
+    this._prettierPath = options.prettierPath ?? null;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
@@ -91,7 +93,8 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-    this._snapshotFormat = options.snapshotFormat;
+    this.snapshotFormat = options.snapshotFormat;
+    this._rootDir = options.rootDir;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -154,7 +157,11 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        saveInlineSnapshots(this._inlineSnapshots, this._prettierPath);
+        saveInlineSnapshots(
+          this._inlineSnapshots,
+          this._rootDir,
+          this._prettierPath,
+        );
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
@@ -206,7 +213,7 @@ export default class SnapshotState {
     }
 
     const receivedSerialized = addExtraLineBreaks(
-      serialize(received, undefined, this._snapshotFormat),
+      serialize(received, undefined, this.snapshotFormat),
     );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;

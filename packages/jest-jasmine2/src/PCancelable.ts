@@ -17,6 +17,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
   private _canceled = false;
   private _promise: Promise<T>;
   private _cancel?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _reject: (reason?: unknown) => void = () => {};
 
   constructor(
@@ -75,7 +76,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
     if (typeof this._cancel === 'function') {
       try {
         this._cancel();
-      } catch (err: unknown) {
+      } catch (err) {
         this._reject(err);
       }
     }

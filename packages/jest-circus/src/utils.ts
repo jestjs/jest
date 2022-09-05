@@ -56,20 +56,25 @@ export const makeDescribe = (
 export const makeTest = (
   fn: Circus.TestFn,
   mode: Circus.TestMode,
+  concurrent: boolean,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
   asyncError: Circus.Exception,
+  failing: boolean,
 ): Circus.TestEntry => ({
   type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
+  concurrent,
   duration: null,
   errors: [],
+  failing,
   fn,
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
   parent,
+  retryReasons: [],
   seenDone: false,
   startedAt: null,
   status: null,
@@ -127,13 +132,16 @@ type TestHooks = {
 
 export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
   const result: TestHooks = {afterEach: [], beforeEach: []};
+  if (test.concurrent) {
+    // *Each hooks are not run for concurrent tests
+    return result;
+  }
+
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
-    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
-    let hook: Circus.Hook;
-    for (hook of block.hooks) {
+    for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -164,7 +172,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setTimeout, clearTimeout} = global;
+const {setTimeout, clearTimeout} = globalThis;
 
 function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
@@ -172,7 +180,7 @@ function checkIsError(error: unknown): error is Error {
 
 export const callAsyncCircusFn = (
   testOrHook: Circus.TestEntry | Circus.Hook,
-  testContext: Circus.TestContext | undefined,
+  testContext: Circus.TestContext,
   {isHook, timeout}: {isHook: boolean; timeout: number},
 ): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
@@ -200,8 +208,9 @@ export const callAsyncCircusFn = (
             'Expected done to be called once, but it was called multiple times.';
 
           if (reason) {
-            errorAtDone.message +=
-              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+            errorAtDone.message += ` Reason: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
           }
           reject(errorAtDone);
           throw errorAtDone;
@@ -231,9 +240,7 @@ export const callAsyncCircusFn = (
 
           // Consider always throwing, regardless if `reason` is set or not
           if (completed && reason) {
-            errorAsErrorObject.message =
-              'Caught error after test environment was torn down\n\n' +
-              errorAsErrorObject.message;
+            errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
             throw errorAsErrorObject;
           }
@@ -253,7 +260,7 @@ export const callAsyncCircusFn = (
     } else {
       try {
         returnedValue = fn.call(testContext);
-      } catch (error: unknown) {
+      } catch (error) {
         reject(error);
         return;
       }
@@ -357,6 +364,7 @@ export const makeSingleTestResult = (
     errorsDetailed,
     invocations: test.invocations,
     location,
+    retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
     status,
     testPath: Array.from(testPath),
   };
@@ -478,6 +486,7 @@ export const parseSingleTestResult = (
     invocations: testResult.invocations,
     location: testResult.location,
     numPassingAsserts: 0,
+    retryReasons: Array.from(testResult.retryReasons),
     status,
     title: testResult.testPath[testResult.testPath.length - 1],
   };

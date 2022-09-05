@@ -4,5 +4,6 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
   "references": [{"path": "../jest-types"}, {"path": "../pretty-format"}]
 }

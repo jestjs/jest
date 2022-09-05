@@ -100,9 +100,9 @@ jest --update-snapshot --detectOpenHandles
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -112,7 +112,7 @@ import TOCInline from "@theme/TOCInline"
 
 When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--bail`
+### `--bail[=<n>]`
 
 Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
@@ -234,7 +234,7 @@ Run all tests affected by file changes in the last commit made. Behaves similarl
 
 ### `--listTests`
 
-Lists all tests as JSON that Jest will run given the arguments, and exits. This can be used together with `--findRelatedTests` to know which tests Jest will run.
+Lists all test files that Jest will run given the arguments, and exits.
 
 ### `--logHeapUsage`
 
@@ -326,6 +326,10 @@ Note that `column` is 0-indexed while `line` is not.
   "line": 5
 }
 ```
+
+### `--testMatch glob1 ... globN`
+
+The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
 
 ### `--testNamePattern=<regex>`
 

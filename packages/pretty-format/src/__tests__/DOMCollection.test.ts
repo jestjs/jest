@@ -125,10 +125,8 @@ describe('DOMCollection plugin for list items', () => {
     expect(select.options).toPrettyPrintTo(expectedHTMLOptionsCollection);
   });
 
-  // When Jest upgrades to a version of jsdom later than 12.2.0,
-  // the class name might become HTMLFormControlsCollection
   const expectedHTMLFormControlsCollection = [
-    'HTMLCollection [',
+    'HTMLFormControlsCollection [',
     '  <select>',
     '    <option',
     '      value="1"',
