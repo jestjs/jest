@@ -5,6 +5,10 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
+
+<TypeScriptExamplesNote />
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
@@ -96,18 +100,12 @@ _Note: this method was previously called `autoMockOn`. When using `babel-jest`, 
 
 ### `jest.createMockFromModule(moduleName)`
 
-##### renamed in Jest **26.0.0+**
-
-Also under the alias: `.genMockFromModule(moduleName)`
-
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior:
 
-Example:
-
-```js title="utils.js"
-export default {
+```js tab={"span":2} title="utils.js"
+module.exports = {
   authorize: () => {
     return 'token';
   },
@@ -116,12 +114,34 @@ export default {
 ```
 
 ```js title="__tests__/createMockFromModule.test.js"
-const utils = jest.createMockFromModule('../utils').default;
+const utils = jest.createMockFromModule('../utils');
+
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
-  expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
+});
+```
+
+```ts tab={"span":2} title="utils.ts"
+export const utils = {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: (secret: string) => secret === 'wizard',
+};
+```
+
+```ts title="__tests__/createMockFromModule.test.ts"
+const {utils} =
+  jest.createMockFromModule<typeof import('../utils')>('../utils');
+
+utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
+
+test('implementation created by jest.createMockFromModule', () => {
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
 
@@ -180,7 +200,7 @@ module.exports = {
 ```
 
 ```js title="__tests__/example.test.js"
-const example = jest.createMockFromModule('./example');
+const example = jest.createMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
@@ -281,6 +301,20 @@ jest.mock(
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
+
+:::tip
+
+Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+
+:::
+
+### `jest.Mocked<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Functions page for documentation.
+
+### `jest.mocked(source, options?)`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
 
 ### `jest.unmock(moduleName)`
 
@@ -467,7 +501,7 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-:::note
+:::tip
 
 See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
@@ -481,7 +515,17 @@ Determines if the given function is a mocked function.
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
-_Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
+:::note
+
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+
+:::
+
+:::tip
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
 
 Example:
 
@@ -500,14 +544,17 @@ Example test:
 ```js
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 ```
 
@@ -547,14 +594,17 @@ Example test:
 const audio = require('./audio');
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
   const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 
 test('plays audio', () => {
@@ -563,8 +613,6 @@ test('plays audio', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
-
-  spy.mockRestore();
 });
 ```
 
@@ -583,50 +631,6 @@ Returns the `jest` object for chaining.
 ### `jest.restoreAllMocks()`
 
 Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
-
-### `jest.mocked<T>(item: T, deep = false)`
-
-The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
-
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
-
-Example:
-
-```ts
-// foo.ts
-export const foo = {
-  a: {
-    b: {
-      c: {
-        hello: (name: string) => `Hello, ${name}`,
-      },
-    },
-  },
-  name: () => 'foo',
-};
-```
-
-```ts
-// foo.spec.ts
-import {foo} from './foo';
-jest.mock('./foo');
-
-// here the whole foo var is mocked deeply
-const mockedFoo = jest.mocked(foo, true);
-
-test('deep', () => {
-  // there will be no TS error here, and you'll have completion in modern IDEs
-  mockedFoo.a.b.c.hello('me');
-  // same here
-  expect(mockedFoo.a.b.c.hello.mock.calls).toHaveLength(1);
-});
-
-test('direct', () => {
-  foo.name();
-  // here only foo.name is mocked (or its methods if it's an object)
-  expect(jest.mocked(foo.name).mock.calls).toHaveLength(1);
-});
-```
 
 ## Fake Timers
 

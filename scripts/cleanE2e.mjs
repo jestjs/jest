@@ -8,7 +8,7 @@
 import {dirname, normalize, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import glob from 'glob';
-import rimraf from 'rimraf';
+import fs from 'graceful-fs';
 
 const excludedModules = [
   'e2e/global-setup-node-modules/node_modules/',
@@ -30,5 +30,5 @@ const e2eNodeModules = glob.sync('e2e/{*,*/*}/node_modules/', {
 });
 
 e2eNodeModules.forEach(dir => {
-  rimraf.sync(dir, {glob: false});
+  fs.rmSync(dir, {force: true, recursive: true});
 });

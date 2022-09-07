@@ -75,6 +75,15 @@ List of method names that can be called on the child processes from the parent p
 
 Allow customizing all options passed to `child_process.fork`. By default, some values are set (`cwd`, `env`, `execArgv` and `serialization`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
 
+#### `idleMemoryLimit: number` (optional)
+
+Specifies the memory limit for workers before they are recycled and is primarily a work-around for [this issue](https://github.com/facebook/jest/issues/11956);
+
+After the worker has executed a task the memory usage of it is checked. If it exceeds the value specified the worker is killed and restarted. If no limit is set this process does not occur. The limit can be specified in 2 ways:
+
+- `<= 1` - The value is assumed to be a percentage of system memory. So 0.5 sets the memory limit of the worker to half of the total system memory
+- `\> 1` - Assumed to be a fixed byte value. Because of the previous rule if you wanted a value of 1 byte (I don't know why) you could use `1.1`.
+
 #### `maxRetries: number` (optional)
 
 Maximum amount of times that a dead child can be re-spawned, per call. Defaults to `3`, pass `Infinity` to allow endless retries.
@@ -86,6 +95,12 @@ Amount of workers to spawn. Defaults to the number of CPUs minus 1.
 #### `resourceLimits: ResourceLimits` (optional)
 
 The `resourceLimits` option which will be passed to `worker_threads` workers.
+
+#### `silent: Boolean` (optional)
+
+Set to false for `stdout` and `stderr` to be logged to console.
+
+By default this is true.
 
 #### `setupArgs: Array<unknown>` (optional)
 

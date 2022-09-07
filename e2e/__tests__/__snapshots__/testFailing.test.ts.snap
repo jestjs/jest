@@ -6,6 +6,9 @@ exports[`works with all statuses 1`] = `
   ✕ fails
   ✓ failing fails = passes
   ✓ failing fails = passes with test syntax
+  ✕ .add(1, 1)
+  ✕ .add(1, 2)
+  ✕ .add(2, 1)
   ✕ failing passes = fails
   ○ skipped skips
   ○ skipped skipped failing 1
@@ -31,25 +34,76 @@ exports[`works with all statuses 1`] = `
 
       at Object.toBe (__tests__/statuses.test.js:13:14)
 
+  ● .add(1, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      28 | });
+      29 |
+    > 30 | test.failing.each([
+         | ^
+      31 |   {a: 1, b: 1, expected: 2},
+      32 |   {a: 1, b: 2, expected: 3},
+      33 |   {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+
+  ● .add(1, 2)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      28 | });
+      29 |
+    > 30 | test.failing.each([
+         | ^
+      31 |   {a: 1, b: 1, expected: 2},
+      32 |   {a: 1, b: 2, expected: 3},
+      33 |   {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+
+  ● .add(2, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      28 | });
+      29 |
+    > 30 | test.failing.each([
+         | ^
+      31 |   {a: 1, b: 1, expected: 2},
+      32 |   {a: 1, b: 2, expected: 3},
+      33 |   {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+
   ● failing passes = fails
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      36 | });
-      37 |
-    > 38 | it.failing('failing passes = fails', () => {
+      44 | });
+      45 |
+    > 46 | it.failing('failing passes = fails', () => {
          |    ^
-      39 |   expect(10).toBe(10);
-      40 | });
-      41 |
+      47 |   expect(10).toBe(10);
+      48 | });
+      49 |
 
-      at Object.failing (__tests__/statuses.test.js:38:4)"
+      at Object.failing (__tests__/statuses.test.js:46:4)"
 `;
 
 exports[`works with concurrent and only mode 1`] = `
 "FAIL __tests__/worksWithConcurrentOnlyMode.test.js
   block with concurrent
     ✕ failing passes = fails
+    ✕ .add(1, 1)
+    ✕ .add(1, 2)
+    ✕ .add(2, 1)
     ✓ failing fails = passes
     ○ skipped skipped failing test
     ○ skipped skipped failing fails
@@ -67,6 +121,57 @@ exports[`works with concurrent and only mode 1`] = `
       16 |
 
       at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
+      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+
+  ● block with concurrent › .add(1, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.only.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+
+  ● block with concurrent › .add(1, 2)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.only.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
+      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+
+  ● block with concurrent › .add(2, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.only.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
 `;
 
@@ -75,6 +180,9 @@ exports[`works with concurrent mode 1`] = `
   block with concurrent
     ✕ failing test
     ✕ failing passes = fails
+    ✕ .add(1, 1)
+    ✕ .add(1, 2)
+    ✕ .add(2, 1)
     ✓ failing fails = passes
     ○ skipped skipped failing fails
 
@@ -108,6 +216,57 @@ exports[`works with concurrent mode 1`] = `
       16 |
 
       at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
+      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+
+  ● block with concurrent › .add(1, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+
+  ● block with concurrent › .add(1, 2)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentMode.test.js:17:3
+      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+
+  ● block with concurrent › .add(2, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      15 |   });
+      16 |
+    > 17 |   test.concurrent.failing.each([
+         |   ^
+      18 |     {a: 1, b: 1, expected: 2},
+      19 |     {a: 1, b: 2, expected: 3},
+      20 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithConcurrentMode.test.js:17:3
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
 `;
 
@@ -115,6 +274,9 @@ exports[`works with only mode 1`] = `
 "FAIL __tests__/worksWithOnlyMode.test.js
   block with only, should pass
     ✓ failing fails = passes, should pass
+    ✕ .add(1, 1)
+    ✕ .add(1, 2)
+    ✕ .add(2, 1)
     ○ skipped failing test but skipped
     ○ skipped passing test but skipped
   block with only, should fail
@@ -131,20 +293,71 @@ exports[`works with only mode 1`] = `
     ○ skipped failing test but skipped
     ○ skipped passing test but skipped
 
+  ● block with only, should pass › .add(1, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.only.failing.each([
+         |   ^
+      14 |     {a: 1, b: 1, expected: 2},
+      15 |     {a: 1, b: 2, expected: 3},
+      16 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithOnlyMode.test.js:13:3
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+
+  ● block with only, should pass › .add(1, 2)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.only.failing.each([
+         |   ^
+      14 |     {a: 1, b: 1, expected: 2},
+      15 |     {a: 1, b: 2, expected: 3},
+      16 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithOnlyMode.test.js:13:3
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+
+  ● block with only, should pass › .add(2, 1)
+
+    Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
+
+      11 |   });
+      12 |
+    > 13 |   it.only.failing.each([
+         |   ^
+      14 |     {a: 1, b: 1, expected: 2},
+      15 |     {a: 1, b: 2, expected: 3},
+      16 |     {a: 2, b: 1, expected: 3},
+
+      at ../../packages/jest-each/build/bind.js:45:11
+          at Array.forEach (<anonymous>)
+      at __tests__/worksWithOnlyMode.test.js:13:3
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+
   ● block with only, should fail › failing passes = fails, should fail
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      21 |
-      22 | describe('block with only, should fail', () => {
-    > 23 |   it.only.failing('failing passes = fails, should fail', () => {
+      29 |
+      30 | describe('block with only, should fail', () => {
+    > 31 |   it.only.failing('failing passes = fails, should fail', () => {
          |           ^
-      24 |     expect(10).toBe(10);
-      25 |   });
-      26 |
+      32 |     expect(10).toBe(10);
+      33 |   });
+      34 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:23:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:22:1)
+      at failing (__tests__/worksWithOnlyMode.test.js:31:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:30:1)
 
   ● block with only in other it, should skip › failing test
 
@@ -153,45 +366,45 @@ exports[`works with only mode 1`] = `
     Expected: 101
     Received: 10
 
-      40 |
-      41 |   it.only('failing test', () => {
-    > 42 |     expect(10).toBe(101);
+      48 |
+      49 |   it.only('failing test', () => {
+    > 50 |     expect(10).toBe(101);
          |                ^
-      43 |   });
-      44 |
-      45 |   it('passing test but skipped', () => {
+      51 |   });
+      52 |
+      53 |   it('passing test but skipped', () => {
 
-      at Object.toBe (__tests__/worksWithOnlyMode.test.js:42:16)
+      at Object.toBe (__tests__/worksWithOnlyMode.test.js:50:16)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 1
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      49 |
-      50 | describe('block with only with different syntax, should fail', () => {
-    > 51 |   fit.failing('failing passes = fails, should fail 1', () => {
+      57 |
+      58 | describe('block with only with different syntax, should fail', () => {
+    > 59 |   fit.failing('failing passes = fails, should fail 1', () => {
          |       ^
-      52 |     expect(10).toBe(10);
-      53 |   });
-      54 |
+      60 |     expect(10).toBe(10);
+      61 |   });
+      62 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:51:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:50:1)
+      at failing (__tests__/worksWithOnlyMode.test.js:59:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:58:1)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      53 |   });
-      54 |
-    > 55 |   test.only.failing('failing passes = fails, should fail 2', () => {
+      61 |   });
+      62 |
+    > 63 |   test.only.failing('failing passes = fails, should fail 2', () => {
          |             ^
-      56 |     expect(10).toBe(10);
-      57 |   });
-      58 |
+      64 |     expect(10).toBe(10);
+      65 |   });
+      66 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:55:13)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:50:1)"
+      at failing (__tests__/worksWithOnlyMode.test.js:63:13)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:58:1)"
 `;
 
 exports[`works with skip mode 1`] = `
@@ -200,6 +413,9 @@ exports[`works with skip mode 1`] = `
     ✕ failing test
     ✓ failing fails = passes
     ○ skipped skipped failing fails = passes, should pass
+    ○ skipped .add(1, 1)
+    ○ skipped .add(1, 2)
+    ○ skipped .add(2, 1)
     ○ skipped passing test
   block with only, should fail
     ✓ passing test
@@ -214,13 +430,13 @@ exports[`works with skip mode 1`] = `
     Expected: 101
     Received: 10
 
-      12 |
-      13 |   it('failing test', () => {
-    > 14 |     expect(10).toBe(101);
+      20 |
+      21 |   it('failing test', () => {
+    > 22 |     expect(10).toBe(101);
          |                ^
-      15 |   });
-      16 |
-      17 |   it.skip('passing test', () => {
+      23 |   });
+      24 |
+      25 |   it.skip('passing test', () => {
 
-      at Object.toBe (__tests__/worksWithSkipMode.test.js:14:16)"
+      at Object.toBe (__tests__/worksWithSkipMode.test.js:22:16)"
 `;

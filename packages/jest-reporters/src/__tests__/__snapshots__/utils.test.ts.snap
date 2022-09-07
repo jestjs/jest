@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`printDisplayName should correctly print the displayName when color and name are valid values 1`] = `"</><inverse><green> hello </></></>"`;
+exports[`printDisplayName should correctly print the displayName when color and name are valid values 1`] = `"</><inverse><green> hello </color></inverse></>"`;
 
-exports[`printDisplayName should default displayName color to white when color is not a valid value 1`] = `"</><inverse><white> hello </></></>"`;
+exports[`printDisplayName should default displayName color to white when color is not a valid value 1`] = `"</><inverse><white> hello </color></inverse></>"`;
 
-exports[`printDisplayName should default displayName color to white when displayName is a string 1`] = `"</><inverse><white> hello </></></>"`;
+exports[`printDisplayName should default displayName color to white when displayName is a string 1`] = `"</><inverse><white> hello </color></inverse></>"`;
 
-exports[`trimAndFormatPath() does not trim anything 1`] = `"<dim>1234567890/1234567890/</><bold>1234.js</>"`;
+exports[`trimAndFormatPath() does not trim anything 1`] = `"<dim>1234567890/1234567890/</intensity><bold>1234.js</intensity>"`;
 
-exports[`trimAndFormatPath() split at the path.sep index 1`] = `"<dim>.../</><bold>1234.js</>"`;
+exports[`trimAndFormatPath() split at the path.sep index 1`] = `"<dim>.../</intensity><bold>1234.js</intensity>"`;
 
-exports[`trimAndFormatPath() trims dirname (longer line width) 1`] = `"<dim>...890/1234567890/</><bold>1234.js</>"`;
+exports[`trimAndFormatPath() trims dirname (longer line width) 1`] = `"<dim>...890/1234567890/</intensity><bold>1234.js</intensity>"`;
 
-exports[`trimAndFormatPath() trims dirname 1`] = `"<dim>...234567890/</><bold>1234.js</>"`;
+exports[`trimAndFormatPath() trims dirname 1`] = `"<dim>...234567890/</intensity><bold>1234.js</intensity>"`;
 
-exports[`trimAndFormatPath() trims dirname and basename 1`] = `"<bold>...1234.js</>"`;
+exports[`trimAndFormatPath() trims dirname and basename 1`] = `"<bold>...1234.js</intensity>"`;
 
 exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 1`] = `"This string shouldn't cause you any trouble"`;
 
@@ -22,8 +22,8 @@ exports[`wrapAnsiString() returns the string unaltered if given a terminal width
 
 exports[`wrapAnsiString() wraps a long string containing ansi chars 1`] = `
 "abcde <red><bold>red-
-bold</></> 12344
-56<dim>bcd</> 123t
+bold</intensity></color> 12344
+56<dim>bcd</intensity> 123t
 tttttththt
 hththththt
 hththththt
@@ -31,8 +31,8 @@ hththththt
 hthththtet
 etetetette
 tetetetete
-tetete<bold>stnh
-snthsnth</>ss
+tetete<underline><bold>stnh
+snthsnth</intensity></underline>ss
 ot"
 `;
 

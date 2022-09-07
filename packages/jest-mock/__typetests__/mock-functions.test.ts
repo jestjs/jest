@@ -279,6 +279,34 @@ const spiedObject = {
   },
 };
 
+type IndexSpiedObject = {
+  [key: string]: Record<string, any>;
+
+  methodA(): boolean;
+  methodB(a: string, b: number): void;
+  methodC: (c: number) => boolean;
+  methodE: (e: any) => never;
+
+  propertyA: {a: string};
+};
+
+const indexSpiedObject: IndexSpiedObject = {
+  methodA() {
+    return true;
+  },
+  methodB(a: string, b: number) {
+    return;
+  },
+  methodC(c: number) {
+    return true;
+  },
+  methodE(e: any) {
+    throw new Error();
+  },
+
+  propertyA: {a: 'abc'},
+};
+
 const spy = spyOn(spiedObject, 'methodA');
 
 expectNotAssignable<Function>(spy); // eslint-disable-line @typescript-eslint/ban-types
@@ -330,3 +358,28 @@ expectType<SpyInstance<(value: string | number | Date) => Date>>(
   spyOn(globalThis, 'Date'),
 );
 expectType<SpyInstance<() => number>>(spyOn(Date, 'now'));
+
+// object with index signatures
+
+expectType<SpyInstance<typeof indexSpiedObject.methodA>>(
+  spyOn(indexSpiedObject, 'methodA'),
+);
+expectType<SpyInstance<typeof indexSpiedObject.methodB>>(
+  spyOn(indexSpiedObject, 'methodB'),
+);
+expectType<SpyInstance<typeof indexSpiedObject.methodC>>(
+  spyOn(indexSpiedObject, 'methodC'),
+);
+expectType<SpyInstance<typeof indexSpiedObject.methodE>>(
+  spyOn(indexSpiedObject, 'methodE'),
+);
+
+expectType<SpyInstance<() => {a: string}>>(
+  spyOn(indexSpiedObject, 'propertyA', 'get'),
+);
+expectType<SpyInstance<(value: {a: string}) => void>>(
+  spyOn(indexSpiedObject, 'propertyA', 'set'),
+);
+expectError(spyOn(indexSpiedObject, 'propertyA'));
+
+expectError(spyOn(indexSpiedObject, 'notThere'));

@@ -15,6 +15,7 @@ import {
   VerboseReporter,
 } from '@jest/reporters';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import * as transform from '@jest/transform';
 import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
@@ -28,8 +29,13 @@ jest
         onTestStart() {},
       })),
     {virtual: true},
-  );
-
+  )
+  .mock('@jest/transform', () => {
+    return {
+      __esModule: true,
+      ...jest.requireActual('@jest/transform'),
+    };
+  });
 const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
@@ -231,6 +237,134 @@ test('.addReporter() .removeReporter()', async () => {
   expect(scheduler._dispatcher._reporters).toContain(reporter);
   scheduler.removeReporter(SummaryReporter);
   expect(scheduler._dispatcher._reporters).not.toContain(reporter);
+});
+
+describe('scheduleTests should always dispatch runStart and runComplete events', () => {
+  const mockReporter = {
+    onRunComplete: jest.fn(),
+    onRunStart: jest.fn(),
+  };
+
+  const errorMsg = 'runtime-error';
+  let scheduler, t;
+
+  beforeEach(async () => {
+    mockReporter.onRunStart.mockClear();
+    mockReporter.onRunComplete.mockClear();
+
+    t = {
+      context: {
+        config: makeProjectConfig({
+          moduleFileExtensions: ['.js'],
+          rootDir: './',
+          runner: 'jest-runner-serial',
+          transform: [],
+        }),
+        hasteFS: {
+          matchFiles: jest.fn(() => []),
+        },
+      },
+      path: './test/path.js',
+    };
+
+    scheduler = await createTestScheduler(makeGlobalConfig(), {}, {});
+    scheduler.addReporter(mockReporter);
+  });
+
+  test('during normal run', async () => {
+    expect.hasAssertions();
+    const result = await scheduler.scheduleTests([t], {
+      isInterrupted: jest.fn(),
+      isWatchMode: () => true,
+      setState: jest.fn(),
+    });
+
+    expect(result.numTotalTestSuites).toEqual(1);
+
+    expect(mockReporter.onRunStart).toBeCalledTimes(1);
+    expect(mockReporter.onRunComplete).toBeCalledTimes(1);
+    const aggregatedResult = mockReporter.onRunComplete.mock.calls[0][1];
+    expect(aggregatedResult.runExecError).toBeUndefined();
+
+    expect(aggregatedResult).toEqual(result);
+  });
+  test.each`
+    runtimeError                                  | message
+    ${errorMsg}                                   | ${errorMsg}
+    ${123}                                        | ${'123'}
+    ${new Error(errorMsg)}                        | ${errorMsg}
+    ${{message: errorMsg}}                        | ${errorMsg}
+    ${{message: errorMsg, stack: 'stack-string'}} | ${errorMsg}
+    ${`${errorMsg}\n Require stack:xxxx`}         | ${errorMsg}
+  `('with runtime error: $runtimeError', async ({runtimeError, message}) => {
+    expect.hasAssertions();
+
+    const spyCreateScriptTransformer = jest.spyOn(
+      transform,
+      'createScriptTransformer',
+    );
+    spyCreateScriptTransformer.mockImplementation(async () => {
+      throw runtimeError;
+    });
+
+    await expect(
+      scheduler.scheduleTests([t], {
+        isInterrupted: jest.fn(),
+        isWatchMode: () => true,
+        setState: jest.fn(),
+      }),
+    ).rejects.toEqual(runtimeError);
+
+    expect(mockReporter.onRunStart).toBeCalledTimes(1);
+    expect(mockReporter.onRunComplete).toBeCalledTimes(1);
+    const aggregatedResult = mockReporter.onRunComplete.mock.calls[0][1];
+    expect(aggregatedResult.runExecError.message).toEqual(message);
+    expect(aggregatedResult.runExecError.stack.length).toBeGreaterThan(0);
+
+    spyCreateScriptTransformer.mockRestore();
+  });
+  test.each`
+    watchMode | isInterrupted | hasExecError
+    ${false}  | ${false}      | ${true}
+    ${true}   | ${false}      | ${true}
+    ${true}   | ${true}       | ${false}
+  `(
+    'with runner exception: watchMode=$watchMode, isInterrupted=$isInterrupted',
+    async ({watchMode, isInterrupted, hasExecError}) => {
+      expect.hasAssertions();
+
+      mockSerialRunner.runTests.mockImplementation(() => {
+        throw errorMsg;
+      });
+
+      try {
+        const result = await scheduler.scheduleTests([t], {
+          isInterrupted: () => isInterrupted,
+          isWatchMode: () => watchMode,
+          setState: jest.fn(),
+        });
+        if (hasExecError) {
+          throw new Error('should throw exception');
+        }
+        expect(result.runExecError).toBeUndefined();
+      } catch (e) {
+        expect(e).toEqual(errorMsg);
+      }
+
+      expect(mockReporter.onRunStart).toBeCalledTimes(1);
+      expect(mockReporter.onRunComplete).toBeCalledTimes(1);
+
+      const aggregatedResult = mockReporter.onRunComplete.mock.calls[0][1];
+      if (hasExecError) {
+        expect(aggregatedResult.runExecError.message).toEqual(errorMsg);
+        expect(aggregatedResult.runExecError.stack.length).toBeGreaterThan(0);
+      } else {
+        expect(aggregatedResult.runExecError).toBeUndefined();
+      }
+
+      mockSerialRunner.runTests.mockReset();
+    },
+  );
 });
 
 test('schedule tests run in parallel per default', async () => {

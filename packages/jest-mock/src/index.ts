@@ -7,7 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
-export type MockFunctionMetadataType =
+export type MockMetadataType =
   | 'object'
   | 'array'
   | 'regexp'
@@ -17,100 +17,85 @@ export type MockFunctionMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockFunctionMetadata<
-  T extends UnknownFunction = UnknownFunction,
-  MetadataType = MockFunctionMetadataType,
-> = {
+// TODO remove re-export in Jest 30
+export type MockFunctionMetadataType = MockMetadataType;
+
+export type MockMetadata<T, MetadataType = MockMetadataType> = {
   ref?: number;
-  members?: Record<string, MockFunctionMetadata<T>>;
+  members?: Record<string, MockMetadata<T>>;
   mockImpl?: T;
   name?: string;
   refID?: number;
   type?: MetadataType;
-  value?: ReturnType<T>;
+  value?: T;
   length?: number;
 };
+
+// TODO remove re-export in Jest 30
+export type MockFunctionMetadata<
+  T = unknown,
+  MetadataType = MockMetadataType,
+> = MockMetadata<T, MetadataType>;
 
 export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
-export type ConstructorLikeKeys<T> = {
-  [K in keyof T]: T[K] extends ClassLike ? K : never;
-}[keyof T];
-
-export type MethodLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike ? K : never;
-}[keyof T];
-
-export type PropertyLikeKeys<T> = {
-  [K in keyof T]: T[K] extends FunctionLike
-    ? never
-    : T[K] extends ClassLike
-    ? never
-    : K;
-}[keyof T];
-
-// TODO Figure out how to replace this with TS ConstructorParameters utility type
-// https://www.typescriptlang.org/docs/handbook/utility-types.html#constructorparameterstype
-type ConstructorParameters<T> = T extends new (...args: infer P) => any
-  ? P
-  : never;
-
-export type MaybeMockedConstructor<T> = T extends new (
-  ...args: Array<any>
-) => infer R
-  ? MockInstance<(...args: ConstructorParameters<T>) => R>
-  : T;
-
-export interface MockWithArgs<T extends FunctionLike> extends MockInstance<T> {
-  new (...args: ConstructorParameters<T>): T;
-  (...args: Parameters<T>): ReturnType<T>;
-}
-
-export type MockedFunction<T extends FunctionLike> = MockWithArgs<T> & {
-  [K in keyof T]: T[K];
+export type ConstructorLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends ClassLike ? K : never]: T[K];
 };
 
-export type MockedFunctionDeep<T extends FunctionLike> = MockWithArgs<T> &
-  MockedObjectDeep<T>;
+export type MethodLikeKeys<T> = keyof {
+  [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
+};
 
-export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
+export type PropertyLikeKeys<T> = Exclude<
+  keyof T,
+  ConstructorLikeKeys<T> | MethodLikeKeys<T>
+>;
+
+export type MockedClass<T extends ClassLike> = MockInstance<
+  (...args: ConstructorParameters<T>) => Mocked<InstanceType<T>>
+> &
+  MockedObject<T>;
+
+export type MockedFunction<T extends FunctionLike> = MockInstance<T> &
+  MockedObject<T>;
+
+type MockedFunctionShallow<T extends FunctionLike> = MockInstance<T> & T;
+
+export type MockedObject<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
     ? MockedFunction<T[K]>
+    : T[K] extends object
+    ? MockedObject<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: T[K]};
+} & T;
 
-export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodLikeKeys<T>]: T[K] extends FunctionLike
-    ? MockedFunctionDeep<T[K]>
+type MockedObjectShallow<T extends object> = {
+  [K in keyof T]: T[K] extends ClassLike
+    ? MockedClass<T[K]>
+    : T[K] extends FunctionLike
+    ? MockedFunctionShallow<T[K]>
     : T[K];
-} & {[K in PropertyLikeKeys<T>]: MaybeMockedDeep<T[K]>};
+} & T;
 
-export type MaybeMocked<T> = T extends FunctionLike
+export type Mocked<T> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
   ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
   : T;
 
-export type MaybeMockedDeep<T> = T extends FunctionLike
-  ? MockedFunctionDeep<T>
+export type MockedShallow<T> = T extends ClassLike
+  ? MockedClass<T>
+  : T extends FunctionLike
+  ? MockedFunctionShallow<T>
   : T extends object
-  ? MockedObjectDeep<T>
+  ? MockedObjectShallow<T>
   : T;
-
-export type Mocked<T> = {
-  [P in keyof T]: T[P] extends FunctionLike
-    ? MockInstance<T[P]>
-    : T[P] extends ClassLike
-    ? MockedClass<T[P]>
-    : T[P];
-} & T;
-
-export type MockedClass<T extends ClassLike> = MockInstance<
-  (args: T extends new (...args: infer P) => any ? P : never) => InstanceType<T>
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
 
@@ -407,7 +392,7 @@ function getObjectType(value: unknown): string {
   return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
-function getType(ref?: unknown): MockFunctionMetadataType | null {
+function getType(ref?: unknown): MockMetadataType | null {
   const typeName = getObjectType(ref);
   if (
     typeName === 'Function' ||
@@ -581,39 +566,30 @@ export class ModuleMocker {
     };
   }
 
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'object'>,
+  private _makeComponent<T extends Record<string, any>>(
+    metadata: MockMetadata<T, 'object'>,
     restore?: () => void,
-  ): Record<string, any>;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'array'>,
+  ): T;
+  private _makeComponent<T extends Array<unknown>>(
+    metadata: MockMetadata<T, 'array'>,
     restore?: () => void,
-  ): Array<unknown>;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'regexp'>,
+  ): T;
+  private _makeComponent<T extends RegExp>(
+    metadata: MockMetadata<T, 'regexp'>,
     restore?: () => void,
-  ): RegExp;
-  private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<
-      T,
-      'constant' | 'collection' | 'null' | 'undefined'
-    >,
+  ): T;
+  private _makeComponent<T>(
+    metadata: MockMetadata<T, 'constant' | 'collection' | 'null' | 'undefined'>,
     restore?: () => void,
   ): T;
   private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T, 'function'>,
+    metadata: MockMetadata<T, 'function'>,
     restore?: () => void,
   ): Mock<T>;
   private _makeComponent<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+    metadata: MockMetadata<T>,
     restore?: () => void,
-  ):
-    | Record<string, any>
-    | Array<unknown>
-    | RegExp
-    | ReturnType<T>
-    | undefined
-    | Mock<T> {
+  ): Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -829,7 +805,7 @@ export class ModuleMocker {
   }
 
   private _createMockFunction<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+    metadata: MockMetadata<T>,
     mockConstructor: Function,
   ): Function {
     let name = metadata.name;
@@ -849,15 +825,13 @@ export class ModuleMocker {
       } while (name && name.startsWith(boundFunctionPrefix));
     }
 
-    // Special case functions named `mockConstructor` to guard for infinite
-    // loops.
+    // Special case functions named `mockConstructor` to guard for infinite loops
     if (name === MOCK_CONSTRUCTOR_NAME) {
       return mockConstructor;
     }
 
     if (
-      // It's a syntax error to define functions with a reserved keyword
-      // as name.
+      // It's a syntax error to define functions with a reserved keyword as name
       RESERVED_KEYWORDS.has(name) ||
       // It's also a syntax error to define functions with a name that starts with a number
       /^\d/.test(name)
@@ -883,19 +857,14 @@ export class ModuleMocker {
     return createConstructor(mockConstructor);
   }
 
-  private _generateMock<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
+  private _generateMock<T>(
+    metadata: MockMetadata<T>,
     callbacks: Array<Function>,
-    refs: {
-      [key: string]:
-        | Record<string, any>
-        | Array<unknown>
-        | RegExp
-        | UnknownFunction
-        | undefined
-        | Mock<T>;
-    },
-  ): Mock<T> {
+    refs: Record<
+      number,
+      Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined
+    >,
+  ): Mocked<T> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
     // @ts-expect-error - unsure why TSC complains here?
@@ -926,7 +895,7 @@ export class ModuleMocker {
       mock.prototype.constructor = mock;
     }
 
-    return mock as Mock<T>;
+    return mock as Mocked<T>;
   }
 
   /**
@@ -934,12 +903,10 @@ export class ModuleMocker {
    * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata<T extends UnknownFunction>(
-    metadata: MockFunctionMetadata<T>,
-  ): Mock<T> {
+  generateFromMetadata<T>(metadata: MockMetadata<T>): Mocked<T> {
     const callbacks: Array<Function> = [];
     const refs = {};
-    const mock = this._generateMock(metadata, callbacks, refs);
+    const mock = this._generateMock<T>(metadata, callbacks, refs);
     callbacks.forEach(setter => setter());
     return mock;
   }
@@ -948,11 +915,11 @@ export class ModuleMocker {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata<T extends UnknownFunction>(
-    component: ReturnType<T>,
-    _refs?: Map<ReturnType<T>, number>,
-  ): MockFunctionMetadata<T> | null {
-    const refs = _refs || new Map<ReturnType<T>, number>();
+  getMetadata<T = unknown>(
+    component: T,
+    _refs?: Map<T, number>,
+  ): MockMetadata<T> | null {
+    const refs = _refs || new Map<T, number>();
     const ref = refs.get(component);
     if (ref != null) {
       return {ref};
@@ -963,7 +930,7 @@ export class ModuleMocker {
       return null;
     }
 
-    const metadata: MockFunctionMetadata<T> = {type};
+    const metadata: MockMetadata<T> = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
@@ -987,9 +954,7 @@ export class ModuleMocker {
     metadata.refID = refs.size;
     refs.set(component, metadata.refID);
 
-    let members: {
-      [key: string]: MockFunctionMetadata<T>;
-    } | null = null;
+    let members: Record<string, MockMetadata<T>> | null = null;
     // Leave arrays alone
     if (type !== 'array') {
       // @ts-expect-error component is object
@@ -1028,7 +993,7 @@ export class ModuleMocker {
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction> {
-    return fn != null && (fn as any)._isMockFunction === true;
+    return fn != null && (fn as Mock)._isMockFunction === true;
   }
 
   fn<T extends FunctionLike = UnknownFunction>(implementation?: T): Mock<T> {
@@ -1237,13 +1202,16 @@ export class ModuleMocker {
     return value == null ? `${value}` : typeof value;
   }
 
-  // the typings test helper
-  mocked<T>(item: T, deep?: false): MaybeMocked<T>;
-
-  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
-
-  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
-    return item as any;
+  mocked<T extends object>(source: T, options?: {shallow: false}): Mocked<T>;
+  mocked<T extends object>(
+    source: T,
+    options: {shallow: true},
+  ): MockedShallow<T>;
+  mocked<T extends object>(
+    source: T,
+    _options?: {shallow: boolean},
+  ): Mocked<T> | MockedShallow<T> {
+    return source as Mocked<T> | MockedShallow<T>;
   }
 }
 

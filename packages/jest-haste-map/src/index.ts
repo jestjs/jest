@@ -746,7 +746,6 @@ export default class HasteMap extends EventEmitter {
       } else {
         this._worker = new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
-          // @ts-expect-error: option does not exist on the node 12 types
           forkOptions: {serialization: 'json'},
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,

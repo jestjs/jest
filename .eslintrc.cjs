@@ -16,7 +16,8 @@ function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
-    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+    .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
     return pkg.name;
@@ -179,8 +180,9 @@ module.exports = {
       },
     },
     {
-      files: ['website/**/*'],
+      files: ['docs/**/*', 'website/**/*'],
       rules: {
+        'no-redeclare': 'off',
         'import/order': 'off',
         'import/sort-keys': 'off',
         'no-restricted-globals': ['off'],
@@ -343,7 +345,6 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
-    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -413,6 +414,7 @@ module.exports = {
     'no-dupe-class-members': 'error',
     'no-dupe-keys': 'error',
     'no-duplicate-case': 'error',
+    'no-duplicate-imports': 'error',
     'no-else-return': 'off',
     'no-empty': 'off',
     'no-empty-character-class': 'warn',

@@ -157,7 +157,6 @@ For stability and safety reasons, only part of the global configuration keys can
 - [`changedSince`](cli#--changedsince)
 - [`collectCoverage`](configuration#collectcoverage-boolean)
 - [`collectCoverageFrom`](configuration#collectcoveragefrom-array)
-- [`collectCoverageOnlyFrom`](configuration#collectcoverageonlyfrom-array)
 - [`coverageDirectory`](configuration#coveragedirectory-string)
 - [`coverageReporters`](configuration#coveragereporters-arraystring)
 - [`notify`](configuration#notify-boolean)
