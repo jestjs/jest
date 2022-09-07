@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Fix inconsistent workspace prefixes ([#13217](https://github.com/facebook/jest/pull/13217))
+
 ### Performance
 
 ## 29.0.2
