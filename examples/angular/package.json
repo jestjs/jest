@@ -24,9 +24,9 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.0.0",
     "@types/jest": "^27.4.0",
-    "babel-jest": "workspace:*",
+    "babel-jest": "workspace:^",
     "babel-plugin-transform-typescript-metadata": "*",
-    "jest": "workspace:*",
+    "jest": "workspace:^",
     "jest-zone-patch": "*"
   }
 }
