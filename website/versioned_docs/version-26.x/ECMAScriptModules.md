@@ -11,7 +11,7 @@ The implementation may have bugs and lack features. For the latest status check 
 
 Also note that the APIs Jest uses to implement ESM support are still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `18.8.0`).
 
-:::caution
+:::
 
 With the warnings out of the way, this is how you activate ESM support in your tests.
 
