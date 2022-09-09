@@ -5,6 +5,5 @@
   "browser": {
     "./nope.js": "./main.js"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

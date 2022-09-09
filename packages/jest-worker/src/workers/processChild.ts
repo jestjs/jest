@@ -9,13 +9,18 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   ChildMessageCall,
   ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
+  ParentMessageMemUsage,
 } from '../types';
+
+type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -34,7 +39,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-const messageListener: NodeJS.MessageListener = request => {
+const messageListener: NodeJS.MessageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -51,9 +56,13 @@ const messageListener: NodeJS.MessageListener = request => {
       end();
       break;
 
+    case CHILD_MESSAGE_MEM_USAGE:
+      reportMemoryUsage();
+      break;
+
     default:
       throw new TypeError(
-        'Unexpected request from parent process: ' + request[0],
+        `Unexpected request from parent process: ${request[0]}`,
       );
   }
 };
@@ -73,6 +82,19 @@ function reportClientError(error: Error) {
 
 function reportInitializeError(error: Error) {
   return reportError(error, PARENT_MESSAGE_SETUP_ERROR);
+}
+
+function reportMemoryUsage() {
+  if (!process || !process.send) {
+    throw new Error('Child can only be used on a forked process');
+  }
+
+  const msg: ParentMessageMemUsage = [
+    PARENT_MESSAGE_MEM_USAGE,
+    process.memoryUsage().heapUsed,
+  ];
+
+  process.send(msg);
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
@@ -113,7 +135,7 @@ function exitProcess(): void {
 function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
-  let fn: (...args: Array<unknown>) => unknown;
+  let fn: UnknownFunction;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -142,17 +164,17 @@ const isPromise = (obj: any): obj is PromiseLike<unknown> =>
   typeof obj.then === 'function';
 
 function execFunction(
-  fn: (...args: Array<unknown>) => unknown | Promise<unknown>,
+  fn: UnknownFunction,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,
   onError: (error: Error) => void,
 ): void {
-  let result;
+  let result: unknown;
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err) {
+  } catch (err: any) {
     onError(err);
 
     return;

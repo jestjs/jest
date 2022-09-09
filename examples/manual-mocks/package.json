@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "name": "example-manual-mocks",
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/preset-env": "*",
-    "babel-jest": "*",
-    "jest": "*"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.1.0",
+    "babel-jest": "workspace:^",
+    "jest": "workspace:^"
   },
   "scripts": {
     "test": "jest"

@@ -26,7 +26,7 @@ describe('Runtime', () => {
   });
 
   it('uses NODE_PATH to find modules', async () => {
-    const nodePath = __dirname + '/NODE_PATH_dir';
+    const nodePath = `${__dirname}/NODE_PATH_dir`;
     const runtime = await createLocalRuntime(nodePath);
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
@@ -36,7 +36,7 @@ describe('Runtime', () => {
   });
 
   it('uses modulePaths to find modules', async () => {
-    const nodePath = __dirname + '/NODE_PATH_dir';
+    const nodePath = `${__dirname}/NODE_PATH_dir`;
     const runtime = await createLocalRuntime(null, {modulePaths: [nodePath]});
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
@@ -46,8 +46,7 @@ describe('Runtime', () => {
   });
 
   it('finds modules in NODE_PATH containing multiple paths', async () => {
-    const nodePath =
-      cwd + '/some/other/path' + path.delimiter + __dirname + '/NODE_PATH_dir';
+    const nodePath = `${cwd}/some/other/path${path.delimiter}${__dirname}/NODE_PATH_dir`;
     const runtime = await createLocalRuntime(nodePath);
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
@@ -57,8 +56,9 @@ describe('Runtime', () => {
   });
 
   it('does not find modules if NODE_PATH is relative', async () => {
-    const nodePath =
-      cwd.substr(path.sep.length) + 'src/Runtime/__tests__/NODE_PATH_dir';
+    const nodePath = `${cwd.substr(
+      path.sep.length,
+    )}src/Runtime/__tests__/NODE_PATH_dir`;
     const runtime = await createLocalRuntime(nodePath);
     expect(() => {
       runtime.requireModuleOrMock(
@@ -67,7 +67,7 @@ describe('Runtime', () => {
       );
     }).toThrow(
       new Error(
-        `Cannot find module 'regular_module_in_node_path' from 'root.js'`,
+        "Cannot find module 'regular_module_in_node_path' from 'root.js'",
       ),
     );
   });

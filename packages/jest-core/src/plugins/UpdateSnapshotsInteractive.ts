@@ -13,11 +13,10 @@ import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
-  private _snapshotInteractiveMode: SnapshotInteractiveMode = new SnapshotInteractiveMode(
-    this._stdout,
-  );
+  private _snapshotInteractiveMode: SnapshotInteractiveMode =
+    new SnapshotInteractiveMode(this._stdout);
   private _failedSnapshotTestAssertions: Array<AssertionLocation> = [];
-  isInternal: true = true;
+  isInternal = true as const;
 
   getFailedSnapshotTestAssertions(
     testResults: AggregatedResult,
@@ -43,24 +42,23 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     return failedTestPaths;
   }
 
-  apply(hooks: JestHookSubscriber): void {
+  override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._failedSnapshotTestAssertions = this.getFailedSnapshotTestAssertions(
-        results,
-      );
+      this._failedSnapshotTestAssertions =
+        this.getFailedSnapshotTestAssertions(results);
       if (this._snapshotInteractiveMode.isActive()) {
         this._snapshotInteractiveMode.updateWithResults(results);
       }
     });
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     if (this._snapshotInteractiveMode.isActive()) {
       this._snapshotInteractiveMode.put(key);
     }
   }
 
-  run(
+  override run(
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
@@ -87,7 +85,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     }
   }
 
-  getUsageInfo(): UsageData | null {
+  override getUsageInfo(): UsageData | null {
     if (this._failedSnapshotTestAssertions?.length > 0) {
       return {
         key: 'i',

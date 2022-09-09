@@ -9,15 +9,16 @@
     "transformIgnorePatterns": [
       "jest-circus",
       "jest-environment-node",
-      "jest-jasmine2"
+      "jest-jasmine2",
+      "jest-runner"
     ]
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "react": "*",
-    "react-dom": "*",
-    "react-test-renderer": "*"
+    "react": "17.0.2",
+    "react-dom": "^17.0.1",
+    "react-test-renderer": "17.0.2"
   }
 }

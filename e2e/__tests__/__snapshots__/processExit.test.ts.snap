@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prints stack trace pointing to process.exit call 1`] = `
-  ●  process.exit called with "1"
+"  ●  process.exit called with "1"
 
        6 |  */
        7 |
@@ -11,5 +11,5 @@ exports[`prints stack trace pointing to process.exit call 1`] = `
       10 | test('something', () => {
       11 |   expect(true).toBe(true);
 
-      at Object.exit (__tests__/test.js:8:9)
+      at Object.exit (__tests__/test.js:8:9)"
 `;

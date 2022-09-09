@@ -21,7 +21,10 @@ describe('runJest', () => {
     await runJest({
       changedFilesPromise: Promise.resolve({repos: {git: {size: 0}}}),
       contexts: [],
-      globalConfig: {testSequencer: '@jest/test-sequencer', watch: true},
+      globalConfig: {
+        testSequencer: require.resolve('@jest/test-sequencer'),
+        watch: true,
+      },
       onComplete: () => null,
       outputStream: {},
       startRun: {},

@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import type {Config} from '@jest/types';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
@@ -22,6 +21,13 @@ type WatchmanRoots = Map<string, Array<string>>;
 
 type WatchmanListCapabilitiesResponse = {
   capabilities: Array<string>;
+};
+
+type WatchmanCapabilityCheckResponse = {
+  // { 'suffix-set': true }
+  capabilities: Record<string, boolean>;
+  // '2021.06.07.00'
+  version: string;
 };
 
 type WatchmanWatchProjectResponse = {
@@ -57,22 +63,62 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-export = async function watchmanCrawl(
-  options: CrawlerOptions,
-): Promise<{
+/**
+ * Wrap watchman capabilityCheck method as a promise.
+ *
+ * @param client watchman client
+ * @param caps capabilities to verify
+ * @returns a promise resolving to a list of verified capabilities
+ */
+async function capabilityCheck(
+  client: watchman.Client,
+  caps: Partial<watchman.Capabilities>,
+): Promise<WatchmanCapabilityCheckResponse> {
+  return new Promise((resolve, reject) => {
+    client.capabilityCheck(
+      // @ts-expect-error: incorrectly typed
+      caps,
+      (error, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      },
+    );
+  });
+}
+
+export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
-  const defaultWatchExpression = [
-    'allof',
-    ['type', 'f'],
-    ['anyof', ...extensions.map(extension => ['suffix', extension])],
-  ];
+  const defaultWatchExpression: Array<any> = ['allof', ['type', 'f']];
   const clocks = data.clocks;
   const client = new watchman.Client();
+
+  // https://facebook.github.io/watchman/docs/capabilities.html
+  // Check adds about ~28ms
+  const capabilities = await capabilityCheck(client, {
+    // If a required capability is missing then an error will be thrown,
+    // we don't need this assertion, so using optional instead.
+    optional: ['suffix-set'],
+  });
+
+  if (capabilities?.capabilities['suffix-set']) {
+    // If available, use the optimized `suffix-set` operation:
+    // https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
+    defaultWatchExpression.push(['suffix', extensions]);
+  } else {
+    // Otherwise use the older and less optimal suffix tuple array
+    defaultWatchExpression.push([
+      'anyof',
+      ...extensions.map(extension => ['suffix', extension]),
+    ]);
+  }
 
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
@@ -95,7 +141,7 @@ export = async function watchmanCrawl(
   }
 
   async function getWatchmanRoots(
-    roots: Array<Config.Path>,
+    roots: Array<string>,
   ): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(
@@ -306,4 +352,4 @@ export = async function watchmanCrawl(
     hasteMap: data,
     removedFiles,
   };
-};
+}

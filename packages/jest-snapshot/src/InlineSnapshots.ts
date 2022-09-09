@@ -6,26 +6,27 @@
  */
 
 import * as path from 'path';
-import type {PluginItem} from '@babel/core';
-import type {Expression, File, Program} from '@babel/types';
+import type {ParseResult, PluginItem} from '@babel/core';
+import {Expression, File, Program, isAwaitExpression} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier';
 import semver = require('semver');
-import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
-// @ts-expect-error requireOutside Babel transform
-const babelTraverse = (requireOutside(
-  '@babel/traverse',
-) as typeof import('@babel/traverse')).default;
-// @ts-expect-error requireOutside Babel transform
-const generate = (requireOutside(
-  '@babel/generator',
-) as typeof import('@babel/generator')).default;
+// prettier-ignore
+const babelTraverse = (
+  // @ts-expect-error requireOutside Babel transform
+  requireOutside('@babel/traverse') as typeof import('@babel/traverse')
+).default;
+// prettier-ignore
+const generate = (
+  // @ts-expect-error requireOutside Babel transform
+  requireOutside('@babel/generator') as typeof import('@babel/generator')
+).default;
 // @ts-expect-error requireOutside Babel transform
 const {file, templateElement, templateLiteral} = requireOutside(
   '@babel/types',
@@ -45,12 +46,18 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettierPath: Config.Path,
+  rootDir: string,
+  prettierPath: string | null,
 ): void {
-  const prettier = prettierPath
-    ? // @ts-expect-error requireOutside Babel transform
-      (requireOutside(prettierPath) as Prettier)
-    : undefined;
+  let prettier: Prettier | null = null;
+  if (prettierPath) {
+    try {
+      // @ts-expect-error requireOutside Babel transform
+      prettier = requireOutside(prettierPath) as Prettier;
+    } catch {
+      // Continue even if prettier is not installed.
+    }
+  }
 
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
@@ -58,6 +65,7 @@ export function saveInlineSnapshots(
     saveSnapshotsForFile(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
+      rootDir,
       prettier && semver.gte(prettier.version, '1.5.0') ? prettier : undefined,
     );
   }
@@ -65,8 +73,9 @@ export function saveInlineSnapshots(
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Config.Path,
-  prettier?: Prettier,
+  sourceFilePath: string,
+  rootDir: string,
+  prettier: Prettier | undefined,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -86,12 +95,39 @@ const saveSnapshotsForFile = (
   // by one to formatting parser.
   const snapshotMatcherNames: Array<string> = [];
 
-  const ast = parseSync(sourceFile, {
-    filename: sourceFilePath,
-    plugins,
-    presets,
-    root: path.dirname(sourceFilePath),
-  });
+  let ast: ParseResult | null = null;
+
+  try {
+    ast = parseSync(sourceFile, {
+      filename: sourceFilePath,
+      plugins,
+      presets,
+      root: rootDir,
+    });
+  } catch (error: any) {
+    // attempt to recover from missing jsx plugin
+    if (error.message.includes('@babel/plugin-syntax-jsx')) {
+      try {
+        const jsxSyntaxPlugin: PluginItem = [
+          require.resolve('@babel/plugin-syntax-jsx'),
+          {},
+          // unique name to make sure Babel does not complain about a possible duplicate plugin.
+          'JSX syntax plugin added by Jest snapshot',
+        ];
+        ast = parseSync(sourceFile, {
+          filename: sourceFilePath,
+          plugins: [...plugins, jsxSyntaxPlugin],
+          presets,
+          root: rootDir,
+        });
+      } catch {
+        throw error;
+      }
+    } else {
+      throw error;
+    }
+  }
+
   if (!ast) {
     throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
   }
@@ -130,16 +166,16 @@ const saveSnapshotsForFile = (
   }
 };
 
-const groupSnapshotsBy = (
-  createKey: (inlineSnapshot: InlineSnapshot) => string,
-) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
-    (object, inlineSnapshot) => {
-      const key = createKey(inlineSnapshot);
-      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-    },
-    {},
-  );
+const groupSnapshotsBy =
+  (createKey: (inlineSnapshot: InlineSnapshot) => string) =>
+  (snapshots: Array<InlineSnapshot>) =>
+    snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
+      (object, inlineSnapshot) => {
+        const key = createKey(inlineSnapshot);
+        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+      },
+      {},
+    );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -245,7 +281,7 @@ const traverseAst = (
   });
 
   if (remainingSnapshots.size) {
-    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
+    throw new Error("Jest: Couldn't locate all inline snapshots.");
   }
 };
 
@@ -263,11 +299,12 @@ const runPrettier = (
 
   // Detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
-  // @ts-expect-error
-  const inferredParser: PrettierParserName | undefined = prettier.getFileInfo
-    ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-    : (config && typeof config.parser === 'string' && config.parser) ||
-      simpleDetectParser(sourceFilePath);
+  // @ts-expect-error - `inferredParser` is `string`
+  const inferredParser: PrettierParserName | null | undefined =
+    prettier.getFileInfo
+      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+      : (config && typeof config.parser === 'string' && config.parser) ||
+        simpleDetectParser(sourceFilePath);
 
   if (!inferredParser) {
     throw new Error(
@@ -278,85 +315,90 @@ const runPrettier = (
   // Snapshots have now been inserted. Run prettier to make sure that the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
   // after the initial format because we don't know where the call expression
-  // will be placed (specifically its indentation).
-  let newSourceFile = prettier.format(sourceFileWithSnapshots, {
-    ...config,
-    filepath: sourceFilePath,
-  });
-
-  if (newSourceFile !== sourceFileWithSnapshots) {
-    // prettier moved things around, run it again to fix snapshot indentations.
-    newSourceFile = prettier.format(newSourceFile, {
+  // will be placed (specifically its indentation), so we have to do two
+  // prettier.format calls back-to-back.
+  return prettier.format(
+    prettier.format(sourceFileWithSnapshots, {
+      ...config,
+      filepath: sourceFilePath,
+    }),
+    {
       ...config,
       filepath: sourceFilePath,
       parser: createFormattingParser(snapshotMatcherNames, inferredParser),
-    });
-  }
-
-  return newSourceFile;
+    },
+  );
 };
 
 // This parser formats snapshots to the correct indentation.
-const createFormattingParser = (
-  snapshotMatcherNames: Array<string>,
-  inferredParser: PrettierParserName,
-): PrettierCustomParser => (text, parsers, options) => {
-  // Workaround for https://github.com/prettier/prettier/issues/3150
-  options.parser = inferredParser;
+const createFormattingParser =
+  (
+    snapshotMatcherNames: Array<string>,
+    inferredParser: PrettierParserName,
+  ): PrettierCustomParser =>
+  (text, parsers, options) => {
+    // Workaround for https://github.com/prettier/prettier/issues/3150
+    options.parser = inferredParser;
 
-  const ast = resolveAst(parsers[inferredParser](text, options));
-  babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}) {
-      if (
-        callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier' ||
-        !snapshotMatcherNames.includes(callee.property.name) ||
-        !callee.loc ||
-        callee.computed
-      ) {
-        return;
-      }
-
-      let snapshotIndex: number | undefined;
-      let snapshot: string | undefined;
-      for (let i = 0; i < args.length; i++) {
-        const node = args[i];
-        if (node.type === 'TemplateLiteral') {
-          snapshotIndex = i;
-          snapshot = node.quasis[0].value.raw;
+    const ast = resolveAst(parsers[inferredParser](text, options));
+    babelTraverse(ast, {
+      CallExpression({node: {arguments: args, callee}, parent}) {
+        if (
+          callee.type !== 'MemberExpression' ||
+          callee.property.type !== 'Identifier' ||
+          !snapshotMatcherNames.includes(callee.property.name) ||
+          !callee.loc ||
+          callee.computed
+        ) {
+          return;
         }
-      }
-      if (snapshot === undefined || snapshotIndex === undefined) {
-        return;
-      }
 
-      const useSpaces = !options.useTabs;
-      snapshot = indent(
-        snapshot,
-        Math.ceil(
-          useSpaces
-            ? callee.loc.start.column / (options.tabWidth ?? 1)
-            : callee.loc.start.column / 2, // Each tab is 2 characters.
-        ),
-        useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
-      );
+        let snapshotIndex: number | undefined;
+        let snapshot: string | undefined;
+        for (let i = 0; i < args.length; i++) {
+          const node = args[i];
+          if (node.type === 'TemplateLiteral') {
+            snapshotIndex = i;
+            snapshot = node.quasis[0].value.raw;
+          }
+        }
+        if (snapshot === undefined || snapshotIndex === undefined) {
+          return;
+        }
 
-      const replacementNode = templateLiteral(
-        [
-          templateElement({
-            raw: snapshot,
-          }),
-        ],
-        [],
-      );
-      args[snapshotIndex] = replacementNode;
-    },
-  });
+        const startColumn =
+          isAwaitExpression(parent) && parent.loc
+            ? parent.loc.start.column
+            : callee.loc.start.column;
 
-  return ast;
-};
+        const useSpaces = !options.useTabs;
+        snapshot = indent(
+          snapshot,
+          Math.ceil(
+            useSpaces
+              ? startColumn / (options.tabWidth ?? 1)
+              : // Each tab is 2 characters.
+                startColumn / 2,
+          ),
+          useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
+        );
 
-const simpleDetectParser = (filePath: Config.Path): PrettierParserName => {
+        const replacementNode = templateLiteral(
+          [
+            templateElement({
+              raw: snapshot,
+            }),
+          ],
+          [],
+        );
+        args[snapshotIndex] = replacementNode;
+      },
+    });
+
+    return ast;
+  };
+
+const simpleDetectParser = (filePath: string): PrettierParserName => {
   const extname = path.extname(filePath);
   if (/\.tsx?$/.test(extname)) {
     return 'typescript';

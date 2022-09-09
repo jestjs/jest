@@ -23,8 +23,9 @@ afterEach(() => {
 });
 
 test('creation of a cache key', () => {
-  const createCacheKeyFunction = interopRequireDefault(require('../index'))
-    .default;
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
   const createCacheKey = createCacheKeyFunction([], ['value']);
   const hashA = createCacheKey('test', 'test.js', null, {
     config: {},

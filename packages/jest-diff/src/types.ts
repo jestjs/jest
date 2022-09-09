@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import type {CompareKeys} from 'pretty-format';
 
 export type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
 
@@ -25,6 +26,7 @@ export type DiffOptions = {
   includeChangeCounts?: boolean;
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
+  compareKeys?: CompareKeys;
 };
 
 export type DiffOptionsNormalized = {
@@ -39,6 +41,7 @@ export type DiffOptionsNormalized = {
   commonColor: DiffOptionsColor;
   commonIndicator: string;
   commonLineTrailingSpaceColor: DiffOptionsColor;
+  compareKeys: CompareKeys;
   contextLines: number;
   emptyFirstOrLastLinePlaceholder: string;
   expand: boolean;

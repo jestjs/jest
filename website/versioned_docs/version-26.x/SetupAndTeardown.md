@@ -63,7 +63,7 @@ test('city database has San Juan', () => {
 
 ## Scoping
 
-By default, the `before` and `after` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `before` and `after` blocks only apply to the tests within that `describe` block.
+By default, the `beforeAll` and `afterAll` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `beforeAll` and `afterAll` blocks only apply to the tests within that `describe` block.
 
 For example, let's say we had not just a city database, but also a food database. We could do different setup for different tests:
 
@@ -87,8 +87,8 @@ describe('matching cities to foods', () => {
     return initializeFoodDatabase();
   });
 
-  test('Vienna <3 sausage', () => {
-    expect(isValidCityFoodPair('Vienna', 'Wiener Würstchen')).toBe(true);
+  test('Vienna <3 veal', () => {
+    expect(isValidCityFoodPair('Vienna', 'Wiener Schnitzel')).toBe(true);
   });
 
   test('San Juan <3 plantains', () => {

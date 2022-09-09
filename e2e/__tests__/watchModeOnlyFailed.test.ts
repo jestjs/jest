@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -16,11 +15,6 @@ const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
-
-expect.addSnapshotSerializer({
-  print: val => val.replace(/\[s\[u/g, '\n'),
-  test: val => typeof val === 'string' && val.includes('[s[u'),
-});
 
 const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
@@ -48,8 +42,8 @@ test('can press "f" to run only failed tests', () => {
 
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(exitCode).toBe(0);
 });

@@ -66,18 +66,21 @@ console.log(prettyFormat(onClick, options));
 ```
 
 <!-- prettier-ignore -->
-| key                 | type      | default    | description                                             |
-| :------------------ | :-------- | :--------- | :------------------------------------------------------ |
-| `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
-| `escapeRegex`       | `boolean` | `false`    | escape special characters in regular expressions        |
-| `escapeString`      | `boolean` | `true`     | escape special characters in strings                    |
-| `highlight`         | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
-| `indent`            | `number`  | `2`        | spaces in each level of indentation                     |
-| `maxDepth`          | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
-| `min`               | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
-| `plugins`           | `array`   | `[]`       | plugins to serialize application-specific data types    |
-| `printFunctionName` | `boolean` | `true`     | include or omit the name of a function                  |
-| `theme`             | `object`  |            | colors to highlight syntax in terminal                  |
+| key                   | type             | default     | description                                                                             |
+| :-------------------- | :--------------- | :---------- | :-------------------------------------------------------------------------------------- |
+| `callToJSON`          | `boolean`        | `true`      | call `toJSON` method (if it exists) on objects                                          |
+| `compareKeys`         | `function\|null` | `undefined` | compare function used when sorting object keys, `null` can be used to skip over sorting |
+| `escapeRegex`         | `boolean`        | `false`     | escape special characters in regular expressions                                        |
+| `escapeString`        | `boolean`        | `true`      | escape special characters in strings                                                    |
+| `highlight`           | `boolean`        | `false`     | highlight syntax with colors in terminal (some plugins)                                 |
+| `indent`              | `number`         | `2`         | spaces in each level of indentation                                                     |
+| `maxDepth`            | `number`         | `Infinity`  | levels to print in arrays, objects, elements, and so on                                 |
+| `maxWidth`            | `number`         | `Infinity`  | number of elements to print in arrays, sets, and so on                                  |
+| `min`                 | `boolean`        | `false`     | minimize added space: no indentation nor line breaks                                    |
+| `plugins`             | `array`          | `[]`        | plugins to serialize application-specific data types                                    |
+| `printBasicPrototype` | `boolean`        | `false`     | print the prototype for plain objects and arrays                                        |
+| `printFunctionName`   | `boolean`        | `true`      | include or omit the name of a function                                                  |
+| `theme`               | `object`         |             | colors to highlight syntax in terminal                                                  |
 
 Property values of `theme` are from [ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
 
@@ -203,19 +206,20 @@ Write `serialize` to return a string, given the arguments:
 ### config
 
 <!-- prettier-ignore -->
-| key                 | type      | description                                             |
-| :------------------ | :-------- | :------------------------------------------------------ |
-| `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |
-| `colors`            | `Object`  | escape codes for colors to highlight syntax             |
-| `escapeRegex`       | `boolean` | escape special characters in regular expressions        |
-| `escapeString`      | `boolean` | escape special characters in strings                    |
-| `indent`            | `string`  | spaces in each level of indentation                     |
-| `maxDepth`          | `number`  | levels to print in arrays, objects, elements, and so on |
-| `min`               | `boolean` | minimize added space: no indentation nor line breaks    |
-| `plugins`           | `array`   | plugins to serialize application-specific data types    |
-| `printFunctionName` | `boolean` | include or omit the name of a function                  |
-| `spacingInner`      | `strong`  | spacing to separate items in a list                     |
-| `spacingOuter`      | `strong`  | spacing to enclose a list of items                      |
+| key                 | type             | description                                                                             |
+| :------------------ | :--------------- | :-------------------------------------------------------------------------------------- |
+| `callToJSON`        | `boolean`        | call `toJSON` method (if it exists) on objects                                          |
+| `compareKeys`       | `function\|null` | compare function used when sorting object keys, `null` can be used to skip over sorting |
+| `colors`            | `Object`         | escape codes for colors to highlight syntax                                             |
+| `escapeRegex`       | `boolean`        | escape special characters in regular expressions                                        |
+| `escapeString`      | `boolean`        | escape special characters in strings                                                    |
+| `indent`            | `string`         | spaces in each level of indentation                                                     |
+| `maxDepth`          | `number`         | levels to print in arrays, objects, elements, and so on                                 |
+| `min`               | `boolean`        | minimize added space: no indentation nor line breaks                                    |
+| `plugins`           | `array`          | plugins to serialize application-specific data types                                    |
+| `printFunctionName` | `boolean`        | include or omit the name of a function                                                  |
+| `spacingInner`      | `string`         | spacing to separate items in a list                                                     |
+| `spacingOuter`      | `string`         | spacing to enclose a list of items                                                      |
 
 Each property of `colors` in `config` corresponds to a property of `theme` in `options`:
 
@@ -262,11 +266,15 @@ const plugin = {
   serialize(array, config, indentation, depth, refs, printer) {
     const name = array.constructor.name;
     return ++depth > config.maxDepth
-      ? '[' + name + ']'
-      : (config.min ? '' : name + ' ') +
-          '[' +
-          serializeItems(array, config, indentation, depth, refs, printer) +
-          ']';
+      ? `[${name}]`
+      : `${config.min ? '' : `${name} `}[${serializeItems(
+          array,
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}]`;
   },
 };
 ```

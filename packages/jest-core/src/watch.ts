@@ -10,14 +10,13 @@ import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
+import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {
   ChangeEvent as HasteChangeEvent,
   default as HasteMap,
 } from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
-import Resolver from 'jest-resolve';
-import type {Context} from 'jest-runtime';
 import {
   isInteractive,
   preRunMessage,
@@ -29,12 +28,12 @@ import {
   AllowedConfigOptions,
   JestHook,
   KEYS,
+  TestWatcher,
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import TestWatcher from './TestWatcher';
 import getChangedFilesPromise from './getChangedFilesPromise';
 import activeFilters from './lib/activeFiltersMessage';
 import createContext from './lib/createContext';
@@ -92,7 +91,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 
 export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
@@ -114,7 +113,6 @@ export default async function watch(
     changedSince,
     collectCoverage,
     collectCoverageFrom,
-    collectCoverageOnlyFrom,
     coverageDirectory,
     coverageReporters,
     findRelatedTests,
@@ -135,7 +133,6 @@ export default async function watch(
       changedSince,
       collectCoverage,
       collectCoverageFrom,
-      collectCoverageOnlyFrom,
       coverageDirectory,
       coverageReporters,
       findRelatedTests,
@@ -200,7 +197,7 @@ export default async function watch(
           stdin,
           stdout: outputStream,
         });
-      } catch (error) {
+      } catch (error: any) {
         const errorWithContext = new Error(
           `Failed to initialize watch plugin "${chalk.bold(
             slash(path.relative(process.cwd(), pluginWithConfig.path)),
@@ -294,8 +291,6 @@ export default async function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-    // Clear cache for required modules
-    Resolver.clearDefaultResolverCache();
 
     return runJest({
       changedFilesPromise,
@@ -339,8 +334,9 @@ export default async function watch(
       // terminal and give just a little bit of extra space so they fit below
       // `preRunMessagePrint` message nicely.
       console.error(
-        '\n\n' +
-          formatExecError(error, contexts[0].config, {noStackTrace: false}),
+        `\n\n${formatExecError(error, contexts[0].config, {
+          noStackTrace: false,
+        })}`,
       ),
     );
   };
@@ -363,10 +359,9 @@ export default async function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(
-      watchPlugins,
-      globalConfig,
-    ).map(usage => Number(usage.key).toString(16));
+    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
+      usage => Number(usage.key).toString(16),
+    );
     if (
       isRunning &&
       testWatcher &&
@@ -543,51 +538,48 @@ const usage = (
     activeFilters(globalConfig),
 
     globalConfig.testPathPattern || globalConfig.testNamePattern
-      ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
+      ? `${chalk.dim(' \u203A Press ')}c${chalk.dim(' to clear filters.')}`
       : null,
-    '\n' + chalk.bold('Watch Usage'),
+    `\n${chalk.bold('Watch Usage')}`,
 
     globalConfig.watch
-      ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
+      ? `${chalk.dim(' \u203A Press ')}a${chalk.dim(' to run all tests.')}`
       : null,
 
     globalConfig.onlyFailures
-      ? chalk.dim(' \u203A Press ') +
-        'f' +
-        chalk.dim(' to quit "only failed tests" mode.')
-      : chalk.dim(' \u203A Press ') +
-        'f' +
-        chalk.dim(' to run only failed tests.'),
+      ? `${chalk.dim(' \u203A Press ')}f${chalk.dim(
+          ' to quit "only failed tests" mode.',
+        )}`
+      : `${chalk.dim(' \u203A Press ')}f${chalk.dim(
+          ' to run only failed tests.',
+        )}`,
 
     (globalConfig.watchAll ||
       globalConfig.testPathPattern ||
       globalConfig.testNamePattern) &&
     !globalConfig.noSCM
-      ? chalk.dim(' \u203A Press ') +
-        'o' +
-        chalk.dim(' to only run tests related to changed files.')
+      ? `${chalk.dim(' \u203A Press ')}o${chalk.dim(
+          ' to only run tests related to changed files.',
+        )}`
       : null,
 
     ...getSortedUsageRows(watchPlugins, globalConfig).map(
       plugin =>
-        chalk.dim(' \u203A Press') +
-        ' ' +
-        plugin.key +
-        ' ' +
-        chalk.dim(`to ${plugin.prompt}.`),
+        `${chalk.dim(' \u203A Press')} ${plugin.key} ${chalk.dim(
+          `to ${plugin.prompt}.`,
+        )}`,
     ),
 
-    chalk.dim(' \u203A Press ') +
-      'Enter' +
-      chalk.dim(' to trigger a test run.'),
+    `${chalk.dim(' \u203A Press ')}Enter${chalk.dim(
+      ' to trigger a test run.',
+    )}`,
   ];
 
-  return messages.filter(message => !!message).join(delimiter) + '\n';
+  return `${messages.filter(message => !!message).join(delimiter)}\n`;
 };
 
 const showToggleUsagePrompt = () =>
   '\n' +
-  chalk.bold('Watch Usage: ') +
-  chalk.dim('Press ') +
-  'w' +
-  chalk.dim(' to show more.');
+  `${chalk.bold('Watch Usage: ')}${chalk.dim('Press ')}w${chalk.dim(
+    ' to show more.',
+  )}`;

@@ -43,7 +43,7 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
-test('shuold not skips non-enumerables', () => {
+test('should not skips non-enumerables', () => {
   const obj = {};
   Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
 

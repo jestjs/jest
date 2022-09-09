@@ -13,10 +13,10 @@ type ExtraConfigOptions = Partial<
   Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
 >;
 
-export default (
+export default function updateGlobalConfig(
   globalConfig: Config.GlobalConfig,
   options: AllowedConfigOptions & ExtraConfigOptions = {},
-): Config.GlobalConfig => {
+): Config.GlobalConfig {
   const newConfig: Config.GlobalConfig = {...globalConfig};
 
   if (options.mode === 'watch') {
@@ -36,7 +36,6 @@ export default (
       replacePathSepForRegex(options.testPathPattern) || '';
   }
 
-  newConfig.onlyChanged = false;
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&
@@ -58,10 +57,6 @@ export default (
 
   if (options.collectCoverageFrom !== undefined) {
     newConfig.collectCoverageFrom = options.collectCoverageFrom;
-  }
-
-  if (options.collectCoverageOnlyFrom !== undefined) {
-    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
   }
 
   if (options.coverageDirectory !== undefined) {
@@ -113,4 +108,4 @@ export default (
   }
 
   return Object.freeze(newConfig);
-};
+}

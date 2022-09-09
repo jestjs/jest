@@ -25,9 +25,8 @@ type WorkerQueueValue = {
  * across the worker specific and shared queue.
  */
 export default class FifoQueue implements TaskQueue {
-  private _workerQueues: Array<
-    InternalQueue<WorkerQueueValue> | undefined
-  > = [];
+  private _workerQueues: Array<InternalQueue<WorkerQueueValue> | undefined> =
+    [];
   private _sharedQueue = new InternalQueue<QueueChildMessage>();
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
@@ -38,9 +37,8 @@ export default class FifoQueue implements TaskQueue {
 
     let workerQueue = this._workerQueues[workerId];
     if (workerQueue == null) {
-      workerQueue = this._workerQueues[
-        workerId
-      ] = new InternalQueue<WorkerQueueValue>();
+      workerQueue = this._workerQueues[workerId] =
+        new InternalQueue<WorkerQueueValue>();
     }
 
     const sharedTop = this._sharedQueue.peekLast();
@@ -56,8 +54,8 @@ export default class FifoQueue implements TaskQueue {
 
     // Process the top task from the shared queue if
     // - there's no task in the worker specific queue or
-    // - if the non-worker-specific task after which this worker specifif task
-    //   hasn been queued wasn't processed yet
+    // - if the non-worker-specific task after which this worker specific task
+    //   has been queued wasn't processed yet
     if (workerTop != null && sharedTaskIsProcessed) {
       return this._workerQueues[workerId]?.dequeue()?.task ?? null;
     }

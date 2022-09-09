@@ -7,11 +7,15 @@ When you're writing tests, you often need to check that values meet certain cond
 
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
 
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
+
+<TypeScriptExamplesNote />
+
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc[toc.length - 1].children}/>
+<TOCInline toc={toc.slice(2)} />
 
 ---
 
@@ -37,29 +41,56 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a `toBeWithinRange` matcher:
 
-```js
-expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
-    const pass = received >= floor && received <= ceiling;
-    if (pass) {
-      return {
-        message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
-        pass: false,
-      };
-    }
-  },
-});
+```js tab={"span":3} title="toBeWithinRange.js"
+import {expect} from '@jest/globals';
 
-test('numeric ranges', () => {
-  expect(100).toBeWithinRange(90, 110);
-  expect(101).not.toBeWithinRange(0, 100);
+function toBeWithinRange(actual, floor, ceiling) {
+  if (
+    typeof actual !== 'number' ||
+    typeof floor !== 'number' ||
+    typeof ceiling !== 'number'
+  ) {
+    throw new Error('These must be of type number!');
+  }
+
+  const pass = actual >= floor && actual <= ceiling;
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} not to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () =>
+        `expected ${this.utils.printReceived(
+          actual,
+        )} to be within range ${this.utils.printExpected(
+          `${floor} - ${ceiling}`,
+        )}`,
+      pass: false,
+    };
+  }
+}
+
+expect.extend({
+  toBeWithinRange,
+});
+```
+
+```js title="__tests__/ranges.test.js"
+import {expect, test} from '@jest/globals';
+import '../toBeWithinRange';
+
+test('is within range', () => expect(100).toBeWithinRange(90, 110));
+
+test('is NOT within range', () => expect(101).not.toBeWithinRange(0, 100));
+
+test('asymmetric ranges', () => {
   expect({apples: 6, bananas: 3}).toEqual({
     apples: expect.toBeWithinRange(1, 10),
     bananas: expect.not.toBeWithinRange(11, 20),
@@ -67,17 +98,112 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+```ts title="toBeWithinRange.d.ts"
+// optionally add a type declaration, e.g. it enables autocompletion in IDEs
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
+  }
+}
 
-```ts
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
+export {};
+```
+
+```ts tab={"span":2} title="toBeWithinRange.ts"
+import {expect} from '@jest/globals';
+import type {MatcherFunction} from 'expect';
+
+const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
+  // `floor` and `ceiling` get types from the line above
+  // it is recommended to type them as `unknown` and to validate the values
+  function (actual, floor, ceiling) {
+    if (
+      typeof actual !== 'number' ||
+      typeof floor !== 'number' ||
+      typeof ceiling !== 'number'
+    ) {
+      throw new Error('These must be of type number!');
     }
+
+    const pass = actual >= floor && actual <= ceiling;
+    if (pass) {
+      return {
+        message: () =>
+          // `this` context will have correct typings
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${this.utils.printExpected(
+            `${floor} - ${ceiling}`,
+          )}`,
+        pass: false,
+      };
+    }
+  };
+
+expect.extend({
+  toBeWithinRange,
+});
+
+declare module 'expect' {
+  interface AsymmetricMatchers {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
   }
 }
 ```
+
+```ts tab title="__tests__/ranges.test.ts"
+import {expect, test} from '@jest/globals';
+import '../toBeWithinRange';
+
+test('is within range', () => expect(100).toBeWithinRange(90, 110));
+
+test('is NOT within range', () => expect(101).not.toBeWithinRange(0, 100));
+
+test('asymmetric ranges', () => {
+  expect({apples: 6, bananas: 3}).toEqual({
+    apples: expect.toBeWithinRange(1, 10),
+    bananas: expect.not.toBeWithinRange(11, 20),
+  });
+});
+```
+
+:::tip
+
+The type declaration of the matcher can live in a `.d.ts` file or in an imported `.ts` module (see JS and TS examples above respectively). If you keep the declaration in a `.d.ts` file, make sure that it is included in the program and that it is a valid module, i.e. it has at least an empty `export {}`.
+
+:::
+
+:::tip
+
+Instead of importing `toBeWithinRange` module to the test file, you can enable the matcher for all tests by moving the `expect.extend` call to a [`setupFilesAfterEnv`](Configuration.md/#setupfilesafterenv-array) script:
+
+```js
+import {expect} from '@jest/globals';
+// remember to export `toBeWithinRange` as well
+import {toBeWithinRange} from './toBeWithinRange';
+
+expect.extend({
+  toBeWithinRange,
+});
+```
+
+:::
 
 #### Async Matchers
 
@@ -151,12 +277,12 @@ A boolean to let you know this matcher was called with an `expand` option. When 
 
 #### `this.utils`
 
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/main/packages/jest-matcher-utils).
 
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
 ```js
-const diff = require('jest-diff');
+const {diff} = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
     const options = {
@@ -169,6 +295,7 @@ expect.extend({
 
     const message = pass
       ? () =>
+          // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${this.utils.printExpected(expected)}\n` +
@@ -178,6 +305,7 @@ expect.extend({
             expand: this.expand,
           });
           return (
+            // eslint-disable-next-line prefer-template
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -292,6 +420,48 @@ it('observes something', async () => {
 });
 ```
 
+#### Bail out
+
+Usually `jest` tries to match every snapshot that is expected in a test.
+
+Sometimes it might not make sense to continue the test if a prior snapshot failed. For example, when you make snapshots of a state-machine after various transitions you can abort the test once one transition produced the wrong state.
+
+In that case you can implement a custom snapshot matcher that throws on the first mismatch instead of collecting every mismatch.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchStateInlineSnapshot(...args) {
+    this.dontThrow = () => {};
+
+    return toMatchInlineSnapshot.call(this, ...args);
+  },
+});
+
+let state = 'initial';
+
+function transition() {
+  // Typo in the implementation should cause the test to fail
+  if (state === 'INITIAL') {
+    state = 'pending';
+  } else if (state === 'pending') {
+    state = 'done';
+  }
+}
+
+it('transitions as expected', () => {
+  expect(state).toMatchStateInlineSnapshot(`"initial"`);
+
+  transition();
+  // Already produces a mismatch. No point in continuing the test.
+  expect(state).toMatchStateInlineSnapshot(`"loading"`);
+
+  transition();
+  expect(state).toMatchStateInlineSnapshot(`"done"`);
+});
+```
+
 ### `expect.anything()`
 
 `expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
@@ -306,9 +476,20 @@ test('map calls its argument with a non-null argument', () => {
 
 ### `expect.any(constructor)`
 
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+`expect.any(constructor)` matches anything that was created with the given constructor or if it's a primitive that is of the passed type. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
 ```js
+class Cat {}
+function getCat(fn) {
+  return fn(new Cat());
+}
+
+test('randocall calls its callback with a class instance', () => {
+  const mock = jest.fn();
+  getCat(mock);
+  expect(mock).toBeCalledWith(expect.any(Cat));
+});
+
 function randocall(fn) {
   return fn(Math.floor(Math.random() * 6 + 1));
 }
@@ -378,6 +559,26 @@ test('doAsync calls both callbacks', () => {
 ```
 
 The `expect.assertions(2)` call ensures that both callbacks actually get called.
+
+### `expect.closeTo(number, numDigits?)`
+
+`expect.closeTo(number, numDigits?)` is useful when comparing floating point numbers in object properties or array item. If you need to compare a number, please use `.toBeCloseTo` instead.
+
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005 (that is, 10 ** -2 / 2)`.
+
+For example, this test passes with a precision of 5 digits:
+
+```js
+test('compare float in object properties', () => {
+  expect({
+    title: '0.1 + 0.2',
+    sum: 0.1 + 0.2,
+  }).toEqual({
+    title: '0.1 + 0.2',
+    sum: expect.closeTo(0.3, 5),
+  });
+});
+```
 
 ### `expect.hasAssertions()`
 
@@ -632,7 +833,7 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
-Use `.toHaveBeenCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
@@ -678,7 +879,7 @@ test('drinkEach drinks each drink', () => {
 
 Also under the alias: `.toBeCalledWith()`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments. The arguments are checked with the same algorithm that `.toEqual` uses.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -721,7 +922,11 @@ test('drinkEach drinks each drink', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveReturned()`
 
@@ -820,7 +1025,11 @@ test('drink returns expected nth calls', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveLength(number)`
 
@@ -853,6 +1062,16 @@ const houseForSale = {
     wallColor: 'white',
     'nice.oven': true,
   },
+  livingroom: {
+    amenities: [
+      {
+        couch: [
+          ['large', {dimensions: [20, 20]}],
+          ['small', {dimensions: [10, 10]}],
+        ],
+      },
+    ],
+  },
   'ceiling.height': 2,
 };
 
@@ -880,6 +1099,10 @@ test('this house has my desired features', () => {
     ['oven', 'stove', 'washer'],
   );
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+  expect(houseForSale).toHaveProperty(
+    'livingroom.amenities[0].couch[0][1].dimensions[0]',
+    20,
+  );
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 
@@ -1071,6 +1294,8 @@ test('the flavor list contains lime', () => {
 });
 ```
 
+This matcher also accepts others iterables such as strings, sets, node lists and HTML collections.
+
 ### `.toContainEqual(item)`
 
 Use `.toContainEqual` when you want to check that an item with a specific structure and values is contained in an array. For testing the items in the array, this matcher recursively checks the equality of all fields, rather than checking for object identity.
@@ -1110,7 +1335,11 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-> Note: `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+:::tip
+
+`.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+
+:::
 
 If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
 
@@ -1245,7 +1474,11 @@ test('throws on octopus', () => {
 });
 ```
 
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+:::tip
+
+You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
+:::
 
 You can provide an optional argument to test that a specific error is thrown:
 

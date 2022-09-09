@@ -6,7 +6,6 @@
  */
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, writeFiles, writeSymlinks} from '../Utils';
 import runJest from '../runJest';
 
@@ -73,12 +72,12 @@ test('Should throw if watchman used with haste.enableSymlinks', () => {
   const {exitCode, stderr, stdout} = run1;
 
   expect(stdout).toEqual('');
-  expect(wrap(stderr)).toMatchInlineSnapshot(`
-    Validation Error:
+  expect(stderr).toMatchInlineSnapshot(`
+    "Validation Error:
 
     haste.enableSymlinks is incompatible with watchman
 
-    Either set haste.enableSymlinks to false or do not use watchman
+    Either set haste.enableSymlinks to false or do not use watchman"
   `);
   expect(exitCode).toEqual(1);
 });

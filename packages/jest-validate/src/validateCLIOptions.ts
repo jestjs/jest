@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://jestjs.io/docs/cli\n`;
+    '  https://jestjs.io/docs/cli\n';
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -35,13 +35,13 @@ const createCLIValidationError = (
       unrecognized.length > 1
         ? createDidYouMeanMessage(unrecognized, Array.from(allowedOptions))
         : '';
-    message =
-      `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
-      (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');
+    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.${
+      didYouMeanMessage ? ` ${didYouMeanMessage}` : ''
+    }`;
   } else {
     title += 's';
     message =
-      `  Following options were not recognized:\n` +
+      '  Following options were not recognized:\n' +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 
@@ -78,7 +78,7 @@ export default function validateCLIOptions(
   );
   const unrecognizedOptions = Object.keys(argv).filter(
     arg =>
-      !allowedOptions.has(camelcase(arg)) &&
+      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
       (!rawArgv.length || rawArgv.includes(arg)),
     [],

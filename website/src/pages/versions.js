@@ -24,7 +24,7 @@ export default function VersionsPage() {
         <Container className="mainContainerV1">
           <div>
             <header>
-              <h2>{siteConfig.title + ' Versions'}</h2>
+              <h2>{`${siteConfig.title} Versions`}</h2>
             </header>
             <h3 id="latest">Current version (Stable)</h3>
             <p>Latest stable version of Jest</p>
@@ -33,10 +33,10 @@ export default function VersionsPage() {
                 <tr>
                   <th>{latestVersion}</th>
                   <td>
-                    <Link to={`/docs/getting-started`}>Documentation</Link>
+                    <Link to="/docs/getting-started">Documentation</Link>
                   </td>
                   <td>
-                    <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">
+                    <a href="https://github.com/facebook/jest/blob/main/CHANGELOG.md">
                       Release Notes
                     </a>
                   </td>
@@ -50,9 +50,9 @@ export default function VersionsPage() {
             <table>
               <tbody>
                 <tr>
-                  <th>master</th>
+                  <th>main</th>
                   <td>
-                    <Link to={`/docs/next/getting-started`}>Documentation</Link>
+                    <Link to="/docs/next/getting-started">Documentation</Link>
                   </td>
                   <td>
                     <a href="https://github.com/facebook/jest">Source Code</a>

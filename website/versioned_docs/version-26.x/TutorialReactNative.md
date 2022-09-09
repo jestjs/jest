@@ -30,8 +30,7 @@ Run `yarn test` to run tests with Jest.
 
 Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
-```tsx
-// Intro.js
+```tsx title="Intro.js"
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
@@ -72,8 +71,7 @@ export default Intro;
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx
-// __tests__/Intro-test.js
+```tsx title="__tests__/Intro-test.js"
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
@@ -86,8 +84,7 @@ test('renders correctly', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript
-// __tests__/__snapshots__/Intro-test.js.snap
+```javascript title="__tests__/__snapshots__/Intro-test.js.snap"
 exports[`Intro renders correctly 1`] = `
 <View
   style={
@@ -124,7 +121,7 @@ exports[`Intro renders correctly 1`] = `
 
 The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
-The code for this example is available at [examples/react-native](https://github.com/facebook/jest/tree/master/examples/react-native).
+The code for this example is available at [examples/react-native](https://github.com/facebook/jest/tree/main/examples/react-native).
 
 ## Preset configuration
 
@@ -136,15 +133,25 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many `react-native` npm modules unfortunately don't pre-compile their source code before publishing.
 
-By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:
+By default the `jest-react-native` preset only processes the project's own source files and `react-native`. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than `react-native` by grouping them and separating them with the `|` operator:
 
 ```json
 {
   "transformIgnorePatterns": [
     "node_modules/(?!(react-native|my-project|react-native-button)/)"
   ]
+}
+```
+
+You can test which paths would match (and thus be excluded from transformation) with a tool [like this](https://regex101.com/r/JsLIDM/1).
+
+`transformIgnorePatterns` will exclude a file from transformation if the path matches against **any** pattern provided. Splitting into multiple patterns could therefore have unintended results if you are not careful. In the example below, the exclusion (also known as a negative lookahead assertion) for `foo` and `bar` cancel each other out:
+
+```json
+{
+  "transformIgnorePatterns": ["node_modules/(?!foo/)", "node_modules/(?!bar/)"] // not what you want
 }
 ```
 

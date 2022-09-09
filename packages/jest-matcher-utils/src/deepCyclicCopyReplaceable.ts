@@ -49,7 +49,7 @@ export default function deepCyclicCopyReplaceable<T>(
   } else if (isBuiltInObject(value)) {
     return value;
   } else if (plugins.DOMElement.test(value)) {
-    return (((value as unknown) as Element).cloneNode(true) as unknown) as T;
+    return (value as unknown as Element).cloneNode(true) as unknown as T;
   } else {
     return deepCyclicCopyObject(value, cycles);
   }

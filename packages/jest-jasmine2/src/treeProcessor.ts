@@ -25,14 +25,12 @@ export type TreeNode = {
   children?: Array<TreeNode>;
 } & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
 export default function treeProcessor(options: Options): void {
-  const {
-    nodeComplete,
-    nodeStart,
-    queueRunnerFactory,
-    runnableIds,
-    tree,
-  } = options;
+  const {nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} =
+    options;
 
   function isEnabled(node: TreeNode, parentEnabled: boolean) {
     return parentEnabled || runnableIds.indexOf(node.id) !== -1;
@@ -46,13 +44,13 @@ export default function treeProcessor(options: Options): void {
   }
 
   function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
-    return function fn(done: (error?: unknown) => void = () => {}) {
+    return function fn(done: (error?: unknown) => void = noop) {
       node.execute(done, enabled);
     };
   }
 
   function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
-    return async function fn(done: (error?: unknown) => void = () => {}) {
+    return async function fn(done: (error?: unknown) => void = noop) {
       nodeStart(node);
       await queueRunnerFactory({
         onException: (error: Error) => node.onException(error),

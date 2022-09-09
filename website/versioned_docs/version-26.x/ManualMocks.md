@@ -9,7 +9,7 @@ Manual mocks are used to stub out functionality with mock data. For example, ins
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we require that module in our tests, explicitly calling `jest.mock('./moduleName')` is **required**.
+> When we require that module in our tests (meaning we want to use the manual mock instead of the real implementation), explicitly calling `jest.mock('./moduleName')` is **required**.
 
 ## Mocking Node modules
 
@@ -40,8 +40,7 @@ When a manual mock exists for a given module, Jest's module system will use that
 
 Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
-```javascript
-// FileSummarizer.js
+```javascript title="FileSummarizer.js"
 'use strict';
 
 const fs = require('fs');
@@ -58,8 +57,7 @@ exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 
 Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending an automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
 
-```javascript
-// __mocks__/fs.js
+```javascript title="__mocks__/fs.js"
 'use strict';
 
 const path = require('path');
@@ -96,8 +94,7 @@ module.exports = fs;
 
 Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
 
-```javascript
-// __tests__/FileSummarizer-test.js
+```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
 
 jest.mock('fs');
@@ -115,9 +112,8 @@ describe('listFilesInDirectorySync', () => {
 
   test('includes all files in the directory in the summary', () => {
     const FileSummarizer = require('../FileSummarizer');
-    const fileSummary = FileSummarizer.summarizeFilesInDirectorySync(
-      '/path/to',
-    );
+    const fileSummary =
+      FileSummarizer.summarizeFilesInDirectorySync('/path/to');
 
     expect(fileSummary.length).toBe(2);
   });
@@ -128,11 +124,17 @@ The example mock shown here uses [`jest.createMockFromModule`](JestObjectAPI.md#
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
+The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/main/examples/manual-mocks).
 
 ## Using with ES module imports
 
 If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) then you'll normally be inclined to put your `import` statements at the top of the test file. But often you need to instruct Jest to use a mock before modules use it. For this reason, Jest will automatically hoist `jest.mock` calls to the top of the module (before any imports). To learn more about this and see it in action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+
+:::caution
+
+`jest.mock` calls cannot be hoisted to the top of the module if you enabled ECMAScript modules support. The ESM module loader always evaluates the static imports before executing code. See [ECMAScriptModules](ECMAScriptModules.md) for details.
+
+:::
 
 ## Mocking methods which are not implemented in JSDOM
 

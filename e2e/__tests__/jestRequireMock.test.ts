@@ -23,8 +23,8 @@ test('understands dependencies using jest.requireMock', () => {
 
       test('a', () => {});
     `,
-    '__tests__/b.test.js': `test('b', () => {});`,
-    'a.js': `module.exports = {}`,
+    '__tests__/b.test.js': "test('b', () => {});",
+    'a.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {}}),
   });
 

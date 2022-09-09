@@ -1,9 +1,20 @@
 <p align="center">
-  <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
-  <a href="https://github.com/facebook/jest/blob/master/LICENSE">
+  <a href="https://badge.fury.io/js/jest">
+    <img src="https://badge.fury.io/js/jest.svg" alt="npm version">
+  </a>
+  <a href="https://github.com/facebook/jest/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
   </a>
-  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="center" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
+  <a href="https://twitter.com/intent/follow?screen_name=fbjest">
+    <img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter" />
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/facebook/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/workflow/status/facebook/jest/Node%20CI?label=CI&logo=GitHub"></a>
+  <a href="https://codecov.io/github/facebook/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/facebook/jest/main.svg?maxAge=43200"></a>
+</p>
+<p align="center">
+  <a href="https://gitpod.io/#https://github.com/facebook/jest"><img alt="Gitpod ready-to-code" src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod"></a>
 </p>
 
 <!-- A spacer -->
@@ -28,7 +39,7 @@
 - [Additional Configuration](#additional-configuration)
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
-  - [Using Webpack](#using-webpack)
+  - [Using webpack](#using-webpack)
   - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)
@@ -89,7 +100,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+Finally, run `yarn test` or `npm test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -176,7 +187,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
 ### Using TypeScript
 
@@ -213,11 +224,12 @@ Learn more about using [Jest on the official site!](https://jestjs.io)
 
 ## Badge
 
-Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 <!-- prettier-ignore -->
 ```md
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg?logo=jest)](https://github.com/facebook/jest)
+[![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest)
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 ```
 

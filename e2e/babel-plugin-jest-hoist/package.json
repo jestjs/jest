@@ -3,7 +3,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
-    "react": "*"
+    "react": "17.0.2"
   },
   "jest": {
     "automock": true,
@@ -11,7 +11,8 @@
     "transformIgnorePatterns": [
       "jest-circus",
       "jest-environment-node",
-      "jest-jasmine2"
+      "jest-jasmine2",
+      "jest-runner"
     ]
   }
 }

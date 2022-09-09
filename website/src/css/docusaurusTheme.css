@@ -21,6 +21,8 @@
   --grey: #aaaaaa;
   --grey2: #ededed;
   --grey3: #545454;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 :root[data-theme='dark'] {
@@ -39,6 +41,8 @@
   --grey: #aaaaaa;
   --grey2: #545454;
   --grey3: #ededed;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
 .header-github-link:hover {
