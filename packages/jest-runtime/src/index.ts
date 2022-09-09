@@ -880,20 +880,23 @@ export default class Runtime {
         filename: modulePath,
         id: modulePath,
         loaded: false,
-      path: path.dirname(modulePath),};
+        path: path.dirname(modulePath),
+      };
       moduleRegistry.set(modulePath, localModule);
 
-      try {this._loadModule(
-        localModule,
-        from,
-        moduleName,
-        modulePath,
-        options,
-        moduleRegistry,
-      );} catch (error) {
-      moduleRegistry.delete(modulePath);
-      throw error;
-    }
+      try {
+        this._loadModule(
+          localModule,
+          from,
+          moduleName,
+          modulePath,
+          options,
+          moduleRegistry,
+        );
+      } catch (error) {
+        moduleRegistry.delete(modulePath);
+        throw error;
+      }
 
       module = localModule;
     }
