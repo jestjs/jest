@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+- `[@jest/globals]` Add `jest.Mock` type helper ([#13235](https://github.com/facebook/jest/pull/13235))
 
 ### Fixes
 
