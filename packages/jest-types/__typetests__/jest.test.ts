@@ -227,6 +227,11 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
+// Mock<T>
+
+expectType<Mock<() => boolean>>({} as jest.Mock<() => boolean>);
+expectType<Mock<(a: string) => string>>({} as jest.Mock<(a: string) => string>);
+
 // Mocked*<T>
 
 class SomeClass {

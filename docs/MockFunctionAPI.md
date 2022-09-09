@@ -515,6 +515,22 @@ test('calculate calls add', () => {
 });
 ```
 
+### `jest.Mock<T>`
+
+Constructs the type of a mock function, e.g. the return type of `jest.fn()`. It can be useful if you have to defined a recursive mock function:
+
+```ts
+import {jest} from '@jest/globals';
+
+const sumRecursively: jest.Mock<(value: number) => number> = jest.fn(value => {
+  if (value === 0) {
+    return 0;
+  } else {
+    return value + fn(value - 1);
+  }
+});
+```
+
 ### `jest.Mocked<Source>`
 
 The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
