@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
-import type {Config} from '@jest/types';
+import * as path from 'path';
 import {tryRealpath} from 'jest-util';
 
-const getCacheDirectory: () => Config.Path = () => {
+const getCacheDirectory: () => string = () => {
   const {getuid} = process;
   const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
   if (getuid == null) {

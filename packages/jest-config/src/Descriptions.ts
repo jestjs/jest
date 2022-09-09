@@ -12,7 +12,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   bail: 'Stop running tests after `n` failures',
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
-  clearMocks: 'Automatically clear mock calls and instances between every test',
+  clearMocks:
+    'Automatically clear mock calls, instances, contexts and results before every test',
   collectCoverage:
     'Indicates whether the coverage information should be collected while executing the test',
   collectCoverageFrom:
@@ -21,6 +22,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The directory where Jest should output its coverage files',
   coveragePathIgnorePatterns:
     'An array of regexp pattern strings used to skip coverage collection',
+  coverageProvider:
+    'Indicates which provider should be used to instrument code for coverage',
   coverageReporters:
     'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
@@ -28,6 +31,7 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   dependencyExtractor: 'A path to a custom dependency extractor',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
+  fakeTimers: 'The default configuration for fake timers',
   forceCoverageMatch:
     'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
@@ -51,10 +55,11 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   preset: "A preset that is used as a base for Jest's configuration",
   projects: 'Run tests from one or more projects',
   reporters: 'Use this configuration option to add custom reporters to Jest',
-  resetMocks: 'Automatically reset mock state between every test',
+  resetMocks: 'Automatically reset mock state before every test',
   resetModules: 'Reset the module registry before running each individual test',
   resolver: 'A path to a custom resolver',
-  restoreMocks: 'Automatically restore mock state between every test',
+  restoreMocks:
+    'Automatically restore mock state and implementation before every test',
   rootDir:
     'The root directory that Jest should scan for tests and modules within',
   roots:
@@ -65,6 +70,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The paths to modules that run some code to configure or set up the testing environment before each test',
   setupFilesAfterEnv:
     'A list of paths to modules that run some code to configure or set up the testing framework before each test',
+  slowTestThreshold:
+    'The number of seconds after which a test is considered as slow and reported as such in the results.',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
   testEnvironment: 'The test environment that will be used for testing',
@@ -78,10 +85,6 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   testResultsProcessor:
     'This option allows the use of a custom results processor',
   testRunner: 'This option allows use of a custom test runner',
-  testURL:
-    'This option sets the URL for the jsdom environment. It is reflected in properties such as location.href',
-  timers:
-    'Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"',
   transform: 'A map from regular expressions to paths to transformers',
   transformIgnorePatterns:
     'An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation',

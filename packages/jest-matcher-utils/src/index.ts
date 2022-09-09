@@ -5,18 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import chalk = require('chalk');
-import diffDefault, {
+import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
   DiffOptions as ImportDiffOptions,
+  diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
-import prettyFormat = require('pretty-format');
+import {getType, isPrimitive} from 'jest-get-type';
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
 import Replaceable from './Replaceable';
 import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
@@ -27,7 +33,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,
@@ -83,28 +89,38 @@ export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
 );
 
-export const stringify = (object: unknown, maxDepth: number = 10): string => {
+export const stringify = (
+  object: unknown,
+  maxDepth = 10,
+  maxWidth = 10,
+): string => {
   const MAX_LENGTH = 10000;
   let result;
 
   try {
     result = prettyFormat(object, {
       maxDepth,
+      maxWidth,
       min: true,
       plugins: PLUGINS,
     });
-  } catch (e) {
+  } catch {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
+      maxWidth,
       min: true,
       plugins: PLUGINS,
     });
   }
 
-  return result.length >= MAX_LENGTH && maxDepth > 1
-    ? stringify(object, Math.floor(maxDepth / 2))
-    : result;
+  if (result.length >= MAX_LENGTH && maxDepth > 1) {
+    return stringify(object, Math.floor(maxDepth / 2), maxWidth);
+  } else if (result.length >= MAX_LENGTH && maxWidth > 1) {
+    return stringify(object, maxDepth, Math.floor(maxWidth / 2));
+  } else {
+    return result;
+  }
 };
 
 export const highlightTrailingWhitespace = (text: string): string =>
@@ -120,11 +136,11 @@ export const printReceived = (object: unknown): string =>
 export const printExpected = (value: unknown): string =>
   EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
-export const printWithType = (
-  name: string, // 'Expected' or 'Received'
-  value: unknown,
-  print: (value: unknown) => string, // printExpected or printReceived
-): string => {
+export function printWithType<T>(
+  name: string,
+  value: T,
+  print: (value: T) => string,
+): string {
   const type = getType(value);
   const hasType =
     type !== 'null' && type !== 'undefined'
@@ -132,7 +148,7 @@ export const printWithType = (
       : '';
   const hasValue = `${name} has value: ${print(value)}`;
   return hasType + hasValue;
-};
+}
 
 export const ensureNoExpected = (
   expected: unknown,
@@ -262,7 +278,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (getType.isPrimitive(expected)) {
+  if (isPrimitive(expected)) {
     // Print generic line diff for strings only:
     // * if neither string is empty
     // * if either string has more than one line
@@ -284,13 +300,6 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   }
 
   if (expected instanceof Error && received instanceof Error) {
-    return false;
-  }
-
-  if (
-    expectedType === 'object' &&
-    typeof (expected as any).asymmetricMatch === 'function'
-  ) {
     return false;
   }
 
@@ -349,19 +358,17 @@ export const printDiffOrStringify = (
         getCommonAndChangedSubstrings(diffs, DIFF_INSERT, hasCommonDiff),
       );
 
-    return expectedLine + '\n' + receivedLine;
+    return `${expectedLine}\n${receivedLine}`;
   }
 
   if (isLineDiffable(expected, received)) {
-    const {
-      replacedExpected,
-      replacedReceived,
-    } = replaceMatchedToAsymmetricMatcher(
-      deepCyclicCopyReplaceable(expected),
-      deepCyclicCopyReplaceable(received),
-      [],
-      [],
-    );
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(
+        deepCyclicCopyReplaceable(expected),
+        deepCyclicCopyReplaceable(received),
+        [],
+        [],
+      );
     const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
@@ -371,8 +378,8 @@ export const printDiffOrStringify = (
 
     if (
       typeof difference === 'string' &&
-      difference.includes('- ' + expectedLabel) &&
-      difference.includes('+ ' + receivedLabel)
+      difference.includes(`- ${expectedLabel}`) &&
+      difference.includes(`+ ${receivedLabel}`)
     ) {
       return difference;
     }
@@ -386,7 +393,7 @@ export const printDiffOrStringify = (
       ? 'serializes to the same string'
       : printReceived(received));
 
-  return expectedLine + '\n' + receivedLine;
+  return `${expectedLine}\n${receivedLine}`;
 };
 
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
@@ -408,8 +415,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 function replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
   replacedReceived: unknown,
-  expectedCycles: Array<any>,
-  receivedCycles: Array<any>,
+  expectedCycles: Array<unknown>,
+  receivedCycles: Array<unknown>,
 ) {
   if (!Replaceable.isReplaceable(replacedExpected, replacedReceived)) {
     return {replacedExpected, replacedReceived};
@@ -472,7 +479,7 @@ export const diff = (
 ): string | null => (shouldPrintDiff(a, b) ? diffDefault(a, b, options) : null);
 
 export const pluralize = (word: string, count: number): string =>
-  (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
+  `${NUMBERS[count] || count} ${word}${count === 1 ? '' : 's'}`;
 
 // To display lines of labeled values as two columns with monospace alignment:
 // given the strings which will describe the values,
@@ -496,7 +503,7 @@ export const matcherErrorMessage = (
   specific?: string, // incorrect value returned from call to printWithType
 ): string =>
   `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}${
-    typeof specific === 'string' ? '\n\n' + specific : ''
+    typeof specific === 'string' ? `\n\n${specific}` : ''
   }`;
 
 // Display assertion for the report when a test fails.
@@ -504,8 +511,8 @@ export const matcherErrorMessage = (
 // Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
-  received: string = 'received',
-  expected: string = 'expected',
+  received = 'received',
+  expected = 'expected',
   options: MatcherHintOptions = {},
 ): string => {
   const {
@@ -522,17 +529,17 @@ export const matcherHint = (
   let dimString = 'expect'; // concatenate adjacent dim substrings
 
   if (!isDirectExpectCall && received !== '') {
-    hint += DIM_COLOR(dimString + '(') + receivedColor(received);
+    hint += DIM_COLOR(`${dimString}(`) + receivedColor(received);
     dimString = ')';
   }
 
   if (promise !== '') {
-    hint += DIM_COLOR(dimString + '.') + promise;
+    hint += DIM_COLOR(`${dimString}.`) + promise;
     dimString = '';
   }
 
   if (isNot) {
-    hint += DIM_COLOR(dimString + '.') + 'not';
+    hint += `${DIM_COLOR(`${dimString}.`)}not`;
     dimString = '';
   }
 
@@ -542,14 +549,14 @@ export const matcherHint = (
     dimString += matcherName;
   } else {
     // New format: omit period from matcherName arg
-    hint += DIM_COLOR(dimString + '.') + matcherName;
+    hint += DIM_COLOR(`${dimString}.`) + matcherName;
     dimString = '';
   }
 
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += DIM_COLOR(dimString + '(') + expectedColor(expected);
+    hint += DIM_COLOR(`${dimString}(`) + expectedColor(expected);
     if (secondArgument) {
       hint += DIM_COLOR(', ') + secondArgumentColor(secondArgument);
     }
@@ -557,7 +564,7 @@ export const matcherHint = (
   }
 
   if (comment !== '') {
-    dimString += ' // ' + comment;
+    dimString += ` // ${comment}`;
   }
 
   if (dimString !== '') {

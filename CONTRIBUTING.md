@@ -1,6 +1,8 @@
 # How to Contribute
 
-Jest is one of Facebook's open source projects that is both under very active development and is also being used to ship code to everybody on [facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully this document makes the process for contributing clear and answers some questions that you may have.
+Jest is one of Facebook's open-source projects that is both under very active development and is also being used to ship code to everybody on [Facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully, this document makes the process for contributing clear and answers some questions that you may have.
+
+If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
 
 ## [Code of Conduct](https://code.facebook.com/codeofconduct)
 
@@ -10,17 +12,17 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 All work on Jest happens directly on [GitHub](/). Both core team members and external contributors send pull requests which go through the same review process.
 
-### `master` is unsafe
+### `main` is unsafe
 
-We will do our best to keep `master` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
+We will do our best to keep `main` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
 
 ### Workflow and Pull Requests
 
-The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delay. We'll do our best to provide updates and feedback throughout the process.
+The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delays. We'll do our best to provide updates and feedback throughout the process.
 
 _Before_ submitting a pull request, please make sure the following is done…
 
-1.  Fork the repo and create your branch from `master`. A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
+1.  Fork the repo and create your branch from `main`. A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
 
     Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
 
@@ -34,7 +36,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-1.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
     To check your version of Python and ensure it's installed you can type:
 
@@ -42,7 +44,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 25th 2019, `v12.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of October 29th, 2021, `v16.x` is recommended).
 
     ```sh
     node -v
@@ -60,17 +62,23 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
-    On Windows `yarn install` may fail with `gyp ERR! build error`. One of possible solutions:
+    On Windows `yarn install` may fail with `gyp ERR! build error`. One of the possible solutions:
 
     ```sh
      yarn global add windows-build-tools
+    ```
+
+1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
+
+    ```sh
+    yarn build
     ```
 
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
-    yarn run watch
+    yarn watch
     ```
 
 1.  If you've changed APIs, update the documentation.
@@ -92,7 +100,7 @@ For significant changes to the documentation or website and things like cleanup,
 
 You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
 
-Make sure to alphabetically order your entry based on package name. If you have changed multiple packages, separate them with a comma.
+Make sure to alphabetically order your entry based on the package name. If you have changed multiple packages, separate them with a comma.
 
 #### Testing
 
@@ -100,7 +108,7 @@ Code that is written needs to be tested to ensure that it achieves the desired b
 
 ##### Unit tests
 
-Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much if any setup.
+Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much of any setup.
 
 ##### Integration tests
 
@@ -121,6 +129,18 @@ Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
+## Checking Constraints
+
+We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/facebook/jest/blob/main/constraints.pro) and their purposes are documented with comments.
+
+Constraints can be checked with `yarn constraints`, and fixed with `yarn constraints --fix`. Generally speaking:
+
+- Workspaces must not depend on conflicting ranges of dependencies. Use the `-i,--interactive` flag and select "Reuse" when installing dependencies and you shouldn't ever have to deal with this rule.
+
+- A dependency doesn't appear in both `dependencies` and `devDependencies` of the same workspace.
+
+- Workspaces must point our repository through the `repository` field.
+
 ##### Using jest-circus
 
 There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situations like this, set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
@@ -137,6 +157,7 @@ If you are making changes to the website or documentation, test the website fold
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
+    $ node fetchSupporters.js
     $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
@@ -150,13 +171,6 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 [Complete your CLA here.](https://code.facebook.com/cla)
 
 ## How to try a development build of Jest in another project
-
-To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
-
-```sh-session
-$ cd /path/to/your/Jest_clone/packages/jest-cli
-$ yarn link
-```
 
 To build Jest:
 
@@ -177,19 +191,10 @@ To run tests in another project with the development build of Jest:
 ```sh-session
 $ cd /path/to/another/project
 
-# link development build to the other project
-$ yarn link jest-cli
-
-$ jest [options] # run jest-cli/bin/jest.js in the development build
+$ node /path/to/your/JestClone/packages/jest/bin/jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
 - To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
-
-To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
-
-```sh
-yarn unlink jest-cli
-```
 
 ## Bugs
 
@@ -203,7 +208,7 @@ The best way to get your bug fixed is to provide a reduced test case. Please pro
 
 ### Docs translation
 
-We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any and all help is very much appreciated!
 
 ### Security Bugs
 
@@ -211,12 +216,12 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-- Discord - [#jest](https://discord.gg/MWRhKCj) on [Reactiflux](http://www.reactiflux.com/)
+[`#testing` on Reactiflux](https://discord.gg/j6FKKQQrW9)
 
 ## Code Conventions
 
 - 2 spaces for indentation (no tabs).
-- 80 character line length strongly preferred.
+- 80 character line length is strongly preferred.
 - Prefer `'` over `"`.
 - ES6 syntax when possible.
 - Use [TypeScript](https://www.typescriptlang.org/).
@@ -226,7 +231,9 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## Credits
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+
+<a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

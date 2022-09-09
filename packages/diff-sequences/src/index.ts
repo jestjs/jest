@@ -756,10 +756,9 @@ const findSubsequences = (
   }
 };
 
-const validateLength = (name: string, arg: any) => {
-  const type = typeof arg;
-  if (type !== 'number') {
-    throw new TypeError(`${pkg}: ${name} typeof ${type} is not a number`);
+const validateLength = (name: string, arg: unknown) => {
+  if (typeof arg !== 'number') {
+    throw new TypeError(`${pkg}: ${name} typeof ${typeof arg} is not a number`);
   }
   if (!Number.isSafeInteger(arg)) {
     throw new RangeError(`${pkg}: ${name} value ${arg} is not a safe integer`);
@@ -769,7 +768,7 @@ const validateLength = (name: string, arg: any) => {
   }
 };
 
-const validateCallback = (name: string, arg: any) => {
+const validateCallback = (name: string, arg: unknown) => {
   const type = typeof arg;
   if (type !== 'function') {
     throw new TypeError(`${pkg}: ${name} typeof ${type} is not a function`);
@@ -780,12 +779,12 @@ const validateCallback = (name: string, arg: any) => {
 // Given lengths of sequences and input function to compare items at indexes,
 // return by output function the number of adjacent items and starting indexes
 // of each common subsequence.
-export default (
+export default function diffSequence(
   aLength: number,
   bLength: number,
   isCommon: IsCommon,
   foundSubsequence: FoundSubsequence,
-): void => {
+): void {
   validateLength('aLength', aLength);
   validateLength('bLength', bLength);
   validateCallback('isCommon', isCommon);
@@ -870,4 +869,4 @@ export default (
       foundSubsequence(nCommonR, aEnd, bEnd);
     }
   }
-};
+}

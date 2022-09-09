@@ -17,41 +17,35 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-typescript-strip-namespaces',
-        'babel-plugin-replace-ts-export-assignment',
         require.resolve(
           './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
       ],
-      presets: ['@babel/preset-typescript'],
-      test: /\.tsx?$/,
-    },
-    // we want this file to keep `import()`, so exclude the transform for it
-    {
-      plugins: ['@babel/plugin-syntax-dynamic-import'],
       presets: [
-        '@babel/preset-typescript',
         [
-          '@babel/preset-env',
+          '@babel/preset-typescript',
           {
-            exclude: ['@babel/plugin-proposal-dynamic-import'],
-            shippedProposals: true,
-            targets: {node: supportedNodeVersion},
+            // will be the default in Babel 8, so let's just turn it on now
+            allowDeclareFields: true,
+            // will be default in the future, but we don't want to use it
+            allowNamespaces: false,
           },
         ],
       ],
-      test: 'packages/jest-config/src/readConfigFileAndSetRootDir.ts',
+      test: /\.tsx?$/,
     },
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
-    '@babel/plugin-transform-strict-mode',
-    '@babel/plugin-proposal-class-properties',
+    require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [
     [
       '@babel/preset-env',
       {
+        bugfixes: true,
+        // we manually include the CJS plugin above, so let's make preset-env do less work
+        modules: false,
         shippedProposals: true,
         targets: {node: supportedNodeVersion},
       },

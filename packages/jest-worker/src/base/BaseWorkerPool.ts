@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import mergeStream = require('merge-stream');
-
 import {
   CHILD_MESSAGE_END,
   PoolExitResult,
@@ -21,6 +19,7 @@ import {
 const FORCE_EXIT_DELAY = 500;
 
 /* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
@@ -33,19 +32,17 @@ export default class BaseWorkerPool {
     this._options = options;
     this._workers = new Array(options.numWorkers);
 
-    if (!path.isAbsolute(workerPath)) {
-      workerPath = require.resolve(workerPath);
-    }
-
     const stdout = mergeStream();
     const stderr = mergeStream();
 
-    const {forkOptions, maxRetries, setupArgs} = options;
+    const {forkOptions, maxRetries, resourceLimits, setupArgs} = options;
 
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
         forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
         maxRetries,
+        resourceLimits,
         setupArgs,
         workerId: i,
         workerPath,
@@ -94,7 +91,12 @@ export default class BaseWorkerPool {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
     const workerExitPromises = this._workers.map(async worker => {
-      worker.send([CHILD_MESSAGE_END, false], emptyMethod, emptyMethod);
+      worker.send(
+        [CHILD_MESSAGE_END, false],
+        emptyMethod,
+        emptyMethod,
+        emptyMethod,
+      );
 
       // Schedule a force exit in case worker fails to exit gracefully so
       // await worker.waitForExit() never takes longer than FORCE_EXIT_DELAY

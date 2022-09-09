@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest, {json as runWithJson} from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, exitCode} = runJest('module-name-mapper-wrong-config');
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper wrong array configuration', () => {
@@ -22,7 +21,7 @@ test('moduleNameMapper wrong array configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -32,7 +31,7 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration mocking module of absolute path', () => {
@@ -46,7 +45,7 @@ test('moduleNameMapper correct configuration mocking module of absolute path', (
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('moduleNameMapper with mocking', () => {

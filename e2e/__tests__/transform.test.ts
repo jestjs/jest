@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {
   cleanup,
   copyDir,
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
-  run,
+  runYarnInstall,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -22,7 +22,7 @@ describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -40,7 +40,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -51,7 +51,7 @@ describe('babel-jest ignored', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {exitCode, stderr} = runJest(dir, ['--no-cache']);
     expect(exitCode).toBe(1);
-    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
+    expect(extractSummary(stderr).rest).toMatchSnapshot();
   });
 });
 
@@ -59,7 +59,7 @@ describe('babel-jest with manual transformer', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -99,7 +99,7 @@ describe('no babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -110,10 +110,12 @@ describe('custom transformer', () => {
     'transform/custom-instrumenting-preprocessor',
   );
 
-  it('proprocesses files', () => {
+  it('preprocesses files', () => {
     const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
-    expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
+    expect(stderr).toMatch(
+      /instruments by setting.*globalThis\.__INSTRUMENTED__/,
+    );
     expect(json.numTotalTests).toBe(2);
     expect(json.numPassedTests).toBe(1);
     expect(json.numFailedTests).toBe(1);
@@ -124,7 +126,7 @@ describe('custom transformer', () => {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(exitCode).toBe(0);
   });
 });
@@ -133,7 +135,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
@@ -164,7 +166,7 @@ describe('transformer-config', () => {
   const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -182,7 +184,7 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -203,5 +205,141 @@ describe('transformer caching', () => {
 
     // We run with 2 workers, so the file should be transformed twice
     expect(loggedFiles).toHaveLength(2);
+  });
+});
+
+describe('transform-snapshotResolver', () => {
+  const dir = path.resolve(
+    __dirname,
+    '..',
+    'transform/transform-snapshotResolver',
+  );
+  const snapshotDir = path.resolve(dir, '__snapshots__');
+  const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
+
+  const cleanupTest = () => {
+    if (fs.existsSync(snapshotFile)) {
+      fs.unlinkSync(snapshotFile);
+    }
+    if (fs.existsSync(snapshotDir)) {
+      fs.rmdirSync(snapshotDir);
+    }
+  };
+
+  beforeAll(() => {
+    runYarnInstall(dir);
+  });
+  beforeEach(cleanupTest);
+  afterAll(cleanupTest);
+
+  it('should transform the snapshotResolver', () => {
+    const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false']);
+
+    expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
+
+    const contents = require(snapshotFile);
+    expect(contents).toHaveProperty(
+      'snapshots are written to custom location 1',
+    );
+  });
+});
+
+describe('transform-environment', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-environment');
+
+  it('should transform the environment', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-runner');
+
+  it('should transform runner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-testrunner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-testrunner');
+
+  it('should transform testRunner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('esm-transformer', () => {
+  const dir = path.resolve(__dirname, '../transform/esm-transformer');
+
+  it('should transform with transformer written in ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('async-transformer', () => {
+  const dir = path.resolve(__dirname, '../transform/async-transformer');
+
+  it('should transform with transformer with only async transforms', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(2);
+  });
+});
+
+describe('babel-jest-async', () => {
+  const dir = path.resolve(__dirname, '../transform/babel-jest-async');
+
+  beforeAll(() => {
+    runYarnInstall(dir);
+  });
+
+  it("should use babel-jest's async transforms", () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-esm-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
+  test('runs test with native ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-esm-testrunner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-esm-testrunner');
+  test('runs test with native ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
   });
 });

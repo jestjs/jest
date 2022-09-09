@@ -28,6 +28,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+/* eslint-disable local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+
 import type {Reporter, RunDetails} from '../types';
 import type {SpecResult} from './Spec';
 import type {SuiteResult} from './Suite';
@@ -37,17 +40,17 @@ export default class ReportDispatcher implements Reporter {
   provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
 
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   jasmineDone: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   jasmineStarted: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   specDone: (result: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   specStarted: (spec: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   suiteDone: (result: SuiteResult) => void;
-  // @ts-ignore
+  // @ts-expect-error: confused by loop in ctor
   suiteStarted: (result: SuiteResult) => void;
 
   constructor(methods: Array<keyof Reporter>) {
@@ -79,14 +82,14 @@ export default class ReportDispatcher implements Reporter {
 
     return this;
 
-    function dispatch(method: keyof Reporter, args: any) {
+    function dispatch(method: keyof Reporter, args: unknown) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
       for (let i = 0; i < reporters.length; i++) {
         const reporter = reporters[i];
         if (reporter[method]) {
-          // @ts-ignore
+          // @ts-expect-error: wrong context
           reporter[method].apply(reporter, args);
         }
       }

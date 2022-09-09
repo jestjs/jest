@@ -13,7 +13,7 @@ import type {
   WatchPlugin,
 } from './types';
 
-class BaseWatchPlugin implements WatchPlugin {
+abstract class BaseWatchPlugin implements WatchPlugin {
   protected _stdin: NodeJS.ReadStream;
   protected _stdout: NodeJS.WriteStream;
 
@@ -28,12 +28,14 @@ class BaseWatchPlugin implements WatchPlugin {
     this._stdout = stdout;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   apply(_hooks: JestHookSubscriber): void {}
 
   getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onKey(_key: string): void {}
 
   run(

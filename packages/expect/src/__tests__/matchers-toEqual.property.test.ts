@@ -16,7 +16,7 @@ import {
 describe('toEqual', () => {
   it('should be reflexive', () => {
     fc.assert(
-      fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
+      fc.property(fc.clone(fc.anything(anythingSettings), 2), ([a, b]) => {
         // Given: a and b identical values
         expect(a).toEqual(b);
       }),
@@ -29,7 +29,7 @@ describe('toEqual', () => {
       try {
         expect(a).toEqual(b);
         return true;
-      } catch (err) {
+      } catch {
         return false;
       }
     };

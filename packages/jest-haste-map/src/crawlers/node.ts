@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {spawn} from 'child_process';
+import * as path from 'path';
 import * as fs from 'graceful-fs';
-import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import type {
@@ -25,13 +24,33 @@ type Callback = (result: Result) => void;
 async function hasNativeFindSupport(
   forceNodeFilesystemAPI: boolean,
 ): Promise<boolean> {
-  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+  if (forceNodeFilesystemAPI) {
     return false;
   }
 
   try {
-    await which('find');
-    return true;
+    return await new Promise(resolve => {
+      // Check the find binary supports the non-POSIX -iname parameter wrapped in parens.
+      const args = [
+        '.',
+        '-type',
+        'f',
+        '(',
+        '-iname',
+        '*.ts',
+        '-o',
+        '-iname',
+        '*.js',
+        ')',
+      ];
+      const child = spawn('find', args, {cwd: __dirname});
+      child.on('error', () => {
+        resolve(false);
+      });
+      child.on('exit', code => {
+        resolve(code === 0);
+      });
+    });
   } catch {
     return false;
   }
@@ -41,6 +60,7 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  enableSymlinks: boolean,
   callback: Callback,
 ): void {
   const result: Result = [];
@@ -51,35 +71,31 @@ function find(
     fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
-        callback(result);
+        if (activeCalls === 0) {
+          callback(result);
+        }
         return;
       }
-      // node < v10.10 does not support the withFileTypes option, and
-      // entry will be a string.
-      entries.forEach((entry: string | fs.Dirent) => {
-        const file = path.join(
-          directory,
-          typeof entry === 'string' ? entry : entry.name,
-        );
+      entries.forEach(entry => {
+        const file = path.join(directory, entry.name);
 
         if (ignore(file)) {
           return;
         }
 
-        if (typeof entry !== 'string') {
-          if (entry.isSymbolicLink()) {
-            return;
-          }
-
-          if (entry.isDirectory()) {
-            search(file);
-            return;
-          }
+        if (entry.isSymbolicLink()) {
+          return;
+        }
+        if (entry.isDirectory()) {
+          search(file);
+          return;
         }
 
         activeCalls++;
 
-        fs.lstat(file, (err, stat) => {
+        const stat = enableSymlinks ? fs.stat : fs.lstat;
+
+        stat(file, (err, stat) => {
           activeCalls--;
 
           // This logic is unnecessary for node > v10.10, but leaving it in
@@ -118,10 +134,16 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  enableSymlinks: boolean,
   callback: Callback,
 ): void {
   const args = Array.from(roots);
-  args.push('-type', 'f');
+  if (enableSymlinks) {
+    args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
+  } else {
+    args.push('-type', 'f');
+  }
+
   if (extensions.length) {
     args.push('(');
   }
@@ -130,7 +152,7 @@ function findNative(
       args.push('-o');
     }
     args.push('-iname');
-    args.push('*.' + ext);
+    args.push(`*.${ext}`);
   });
   if (extensions.length) {
     args.push(')');
@@ -158,7 +180,8 @@ function findNative(
     } else {
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
-          if (!err && stat) {
+          // Filter out symlinks that describe directories
+          if (!err && stat && !stat.isDirectory()) {
             result.push([path, stat.mtime.getTime(), stat.size]);
           }
           if (--count === 0) {
@@ -170,9 +193,7 @@ function findNative(
   });
 }
 
-export = async function nodeCrawl(
-  options: CrawlerOptions,
-): Promise<{
+export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
@@ -182,6 +203,7 @@ export = async function nodeCrawl(
     forceNodeFilesystemAPI,
     ignore,
     rootDir,
+    enableSymlinks,
     roots,
   } = options;
 
@@ -212,9 +234,9 @@ export = async function nodeCrawl(
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, callback);
+      findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
-      find(roots, extensions, ignore, callback);
+      find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
-};
+}

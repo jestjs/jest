@@ -12,17 +12,19 @@ const config: ValidationOptions = {
   condition: () => true,
   deprecate: () => false,
   deprecatedConfig: {
-    key: () => {},
+    key: (): string => 'Deprecation message',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   error: () => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
-  recursiveBlacklist: [],
+  recursiveDenylist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',
     warning: 'Validation Warning',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unknown: () => {},
 };
 

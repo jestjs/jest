@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {shouldInstrument} from '@jest/transform';
+import os from 'os';
+import path from 'path';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import {shouldInstrument} from '@jest/transform';
 import generateEmptyCoverage from '../generateEmptyCoverage';
-
-import path from 'path';
-import os from 'os';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/transform', () => ({
   ...jest.requireActual('@jest/transform'),
@@ -25,7 +24,7 @@ describe('generateEmptyCoverage', () => {
   const rootDir = __dirname;
   const filepath = path.join(rootDir, './sum.js');
 
-  it('generates an empty coverage object for a file without running it', () => {
+  it('generates an empty coverage object for a file without running it', async () => {
     const src = `
     throw new Error('this should not be thrown');
 
@@ -43,7 +42,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(true);
 
-    const emptyCoverage = generateEmptyCoverage(
+    const emptyCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),
@@ -51,7 +50,7 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 
@@ -72,7 +71,7 @@ describe('generateEmptyCoverage', () => {
     });
   });
 
-  it('generates a null coverage result when using /* istanbul ignore file */', () => {
+  it('generates a null coverage result when using /* istanbul ignore file */', async () => {
     const src = `
     /* istanbul ignore file */
     const a = (b, c) => {
@@ -87,7 +86,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(true);
 
-    const nullCoverage = generateEmptyCoverage(
+    const nullCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),
@@ -95,14 +94,14 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 
     expect(nullCoverage).toBeNull();
   });
 
-  it('generates a null coverage result when collectCoverage global config is false', () => {
+  it('generates a null coverage result when collectCoverage global config is false', async () => {
     const src = `
     const a = (b, c) => {
       if (b) {
@@ -116,7 +115,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(false);
 
-    const nullCoverage = generateEmptyCoverage(
+    const nullCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),
@@ -124,7 +123,7 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 

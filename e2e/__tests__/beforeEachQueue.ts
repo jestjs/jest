@@ -6,7 +6,6 @@
  */
 
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 
 skipSuiteOnJestCircus(); // Circus does not support funky async definitions
@@ -14,6 +13,6 @@ skipSuiteOnJestCircus(); // Circus does not support funky async definitions
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {
     const result = runJest('before-each-queue');
-    expect(wrap(result.stdout.replace(/\\/g, '/'))).toMatchSnapshot();
+    expect(result.stdout.replace(/\\/g, '/')).toMatchSnapshot();
   });
 });

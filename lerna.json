@@ -1,7 +1,12 @@
 {
-  "version": "26.0.1",
-  "npmClient": "yarn",
   "packages": [
     "packages/*"
-  ]
+  ],
+  "npmClient": "yarn",
+  "command": {
+    "version": {
+      "syncWorkspaceLock": true
+    }
+  },
+  "version": "29.0.2"
 }

@@ -12,15 +12,18 @@ type Process = NodeJS.Process;
 export type DoneFn = Global.DoneFn;
 export type BlockFn = Global.BlockFn;
 export type BlockName = Global.BlockName;
+export type BlockNameLike = Global.BlockNameLike;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
+export type TestNameLike = Global.TestNameLike;
 export type TestFn = Global.TestFn;
+export type ConcurrentTestFn = Global.ConcurrentTestFn;
 export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, any>;
+export type TestContext = Global.TestContext;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -28,6 +31,7 @@ export type Hook = {
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
+  seenDone: boolean;
   timeout: number | undefined | null;
 };
 
@@ -37,6 +41,11 @@ export interface EventHandler {
 }
 
 export type Event = SyncEvent | AsyncEvent;
+
+interface JestGlobals extends Global.TestFrameworkGlobals {
+  // we cannot type `expect` properly as it'd create circular dependencies
+  expect: unknown;
+}
 
 export type SyncEvent =
   | {
@@ -61,9 +70,11 @@ export type SyncEvent =
       asyncError: Error;
       name: 'add_test';
       testName: TestName;
-      fn?: TestFn;
+      fn: TestFn;
       mode?: TestMode;
+      concurrent: boolean;
       timeout: number | undefined;
+      failing: boolean;
     }
   | {
       // Any unhandled error that happened outside of test/hooks (unless it is
@@ -77,6 +88,7 @@ export type AsyncEvent =
       // first action to dispatch. Good time to initialize all settings
       name: 'setup';
       testNamePattern?: string;
+      runtimeGlobals: JestGlobals;
       parentProcess: Process;
     }
   | {
@@ -158,13 +170,22 @@ export type AsyncEvent =
       name: 'teardown';
     };
 
+export type MatcherResults = {
+  actual: unknown;
+  expected: unknown;
+  name: string;
+  pass: boolean;
+};
+
 export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
+  errorsDetailed: Array<MatcherResults | unknown>;
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
+  retryReasons: Array<FormattedError>;
   testPath: Array<TestName | BlockName>;
 };
 
@@ -178,7 +199,7 @@ export type TestResults = Array<TestResult>;
 export type GlobalErrorHandlers = {
   uncaughtException: Array<(exception: Exception) => void>;
   unhandledRejection: Array<
-    (exception: Exception, promise: Promise<any>) => void
+    (exception: Exception, promise: Promise<unknown>) => void
   >;
 };
 
@@ -198,6 +219,7 @@ export type State = {
   testTimeout: number;
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
+  maxConcurrency: number;
 };
 
 export type DescribeBlock = {
@@ -217,13 +239,17 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
-  fn?: TestFn;
+  retryReasons: Array<TestError>;
+  fn: TestFn;
   invocations: number;
   mode: TestMode;
+  concurrent: boolean;
   name: TestName;
   parent: DescribeBlock;
   startedAt?: number | null;
   duration?: number | null;
+  seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
+  failing: boolean;
 };

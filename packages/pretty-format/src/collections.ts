@@ -6,10 +6,15 @@
  *
  */
 
-import type {Config, Printer, Refs} from './types';
+import type {CompareKeys, Config, Printer, Refs} from './types';
 
-const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
-  const keys: Array<string | symbol> = Object.keys(object).sort();
+const getKeysOfEnumerableProperties = (
+  object: Record<string, unknown>,
+  compareKeys: CompareKeys,
+) => {
+  const rawKeys = Object.keys(object);
+  const keys: Array<string | symbol> =
+    compareKeys !== null ? rawKeys.sort(compareKeys) : rawKeys;
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
@@ -37,9 +42,10 @@ export function printIteratorEntries(
   // Too bad, so sad that separator for ECMAScript Map has been ' => '
   // What a distracting diff if you change a data structure to/from
   // ECMAScript Object or Immutable.Map/OrderedMap which use the default.
-  separator: string = ': ',
+  separator = ': ',
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -48,6 +54,13 @@ export function printIteratorEntries(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '…';
+        break;
+      }
+
       const name = printer(
         current.value[0],
         config,
@@ -63,12 +76,12 @@ export function printIteratorEntries(
         refs,
       );
 
-      result += indentationNext + name + separator + value;
+      result += name + separator + value;
 
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -94,6 +107,7 @@ export function printIteratorValues(
   printer: Printer,
 ): string {
   let result = '';
+  let width = 0;
   let current = iterator.next();
 
   if (!current.done) {
@@ -102,14 +116,19 @@ export function printIteratorValues(
     const indentationNext = indentation + config.indent;
 
     while (!current.done) {
-      result +=
-        indentationNext +
-        printer(current.value, config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (width++ === config.maxWidth) {
+        result += '…';
+        break;
+      }
+
+      result += printer(current.value, config, indentationNext, depth, refs);
 
       current = iterator.next();
 
       if (!current.done) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -142,12 +161,19 @@ export function printListItems(
     const indentationNext = indentation + config.indent;
 
     for (let i = 0; i < list.length; i++) {
-      result +=
-        indentationNext +
-        printer(list[i], config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (i === config.maxWidth) {
+        result += '…';
+        break;
+      }
+
+      if (i in list) {
+        result += printer(list[i], config, indentationNext, depth, refs);
+      }
 
       if (i < list.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }
@@ -173,7 +199,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  const keys = getKeysOfEnumerableProperties(val);
+  const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
   if (keys.length) {
     result += config.spacingOuter;
@@ -185,10 +211,10 @@ export function printObjectProperties(
       const name = printer(key, config, indentationNext, depth, refs);
       const value = printer(val[key], config, indentationNext, depth, refs);
 
-      result += indentationNext + name + ': ' + value;
+      result += `${indentationNext + name}: ${value}`;
 
       if (i < keys.length - 1) {
-        result += ',' + config.spacingInner;
+        result += `,${config.spacingInner}`;
       } else if (!config.min) {
         result += ',';
       }

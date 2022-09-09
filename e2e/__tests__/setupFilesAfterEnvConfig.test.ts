@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {json as runWithJson} from '../runJest';
 import {writeFiles} from '../Utils';
+import {json as runWithJson} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../setup-files-after-env-config');
 

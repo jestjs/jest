@@ -7,7 +7,6 @@
 
 import * as ReactIs from 'react-is';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {
   printChildren,
   printElement,
@@ -17,7 +16,7 @@ import {
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
-const getChildren = (arg: Array<unknown>, children = []) => {
+const getChildren = (arg: unknown, children: Array<unknown> = []) => {
   if (Array.isArray(arg)) {
     arg.forEach(item => {
       getChildren(item, children);
@@ -59,16 +58,14 @@ const getType = (element: any) => {
 
       const functionName = type.render.displayName || type.render.name || '';
 
-      return functionName !== ''
-        ? 'ForwardRef(' + functionName + ')'
-        : 'ForwardRef';
+      return functionName !== '' ? `ForwardRef(${functionName})` : 'ForwardRef';
     }
 
     if (ReactIs.isMemo(element)) {
       const functionName =
         type.displayName || type.type.displayName || type.type.name || '';
 
-      return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
+      return functionName !== '' ? `Memo(${functionName})` : 'Memo';
     }
   }
   return 'UNDEFINED';
@@ -116,7 +113,7 @@ export const serialize: NewPlugin['serialize'] = (
       );
 
 export const test: NewPlugin['test'] = (val: unknown) =>
-  val && ReactIs.isElement(val);
+  val != null && ReactIs.isElement(val);
 
 const plugin: NewPlugin = {serialize, test};
 

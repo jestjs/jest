@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve('../promise-reject');
 

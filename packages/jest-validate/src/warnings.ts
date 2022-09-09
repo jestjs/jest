@@ -15,8 +15,8 @@ import {
 } from './utils';
 
 export const unknownOptionWarning = (
-  config: Record<string, any>,
-  exampleConfig: Record<string, any>,
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
   option: string,
   options: ValidationOptions,
   path?: Array<string>,
@@ -25,12 +25,11 @@ export const unknownOptionWarning = (
     option,
     Object.keys(exampleConfig),
   );
-  const message =
-    `  Unknown option ${chalk.bold(
-      `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
-    )} with value ${chalk.bold(format(config[option]))} was found.` +
-    (didYouMean && ` ${didYouMean}`) +
-    `\n  This is probably a typing mistake. Fixing it will remove this message.`;
+  const message = `  Unknown option ${chalk.bold(
+    `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
+  )} with value ${chalk.bold(format(config[option]))} was found.${
+    didYouMean && ` ${didYouMean}`
+  }\n  This is probably a typing mistake. Fixing it will remove this message.`;
 
   const comment = options.comment;
   const name = (options.title && options.title.warning) || WARNING;

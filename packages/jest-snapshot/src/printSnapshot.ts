@@ -6,10 +6,7 @@
  */
 
 import chalk = require('chalk');
-// Temporary hack because getObjectSubset has known limitations,
-// is not in the public interface of the expect package,
-// and the long-term goal is to use a non-serialization diff.
-import {getObjectSubset} from 'expect/build/utils';
+import {getObjectSubset} from '@jest/expect-utils';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -21,7 +18,7 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -31,8 +28,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat = require('pretty-format');
-
+import {format as prettyFormat} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -44,7 +40,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import type {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig, SnapshotFormat} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
@@ -166,10 +162,10 @@ const joinDiffs = (
     '',
   );
 
-const isLineDiffable = (received: any): boolean => {
+const isLineDiffable = (received: unknown): boolean => {
   const receivedType = getType(received);
 
-  if (getType.isPrimitive(received)) {
+  if (isPrimitive(received)) {
     return typeof received === 'string';
   }
 
@@ -227,13 +223,9 @@ export const printPropertiesAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    printExpected(properties) +
-    '\n' +
-    printLabel(bAnnotation) +
-    printReceived(received)
-  );
+  return `${printLabel(aAnnotation) + printExpected(properties)}\n${printLabel(
+    bAnnotation,
+  )}${printReceived(received)}`;
 };
 
 const MAX_DIFF_STRING_LENGTH = 20000;
@@ -243,6 +235,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  snapshotFormat: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
@@ -282,18 +275,14 @@ export const printSnapshotAndReceived = (
         ) {
           const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
           const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
-          aQuoted = '"' + joinDiffs(diffs, DIFF_DELETE, hasCommon) + '"';
-          bQuoted = '"' + joinDiffs(diffs, DIFF_INSERT, hasCommon) + '"';
+          aQuoted = `"${joinDiffs(diffs, DIFF_DELETE, hasCommon)}"`;
+          bQuoted = `"${joinDiffs(diffs, DIFF_INSERT, hasCommon)}"`;
         }
 
         const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-        return (
-          printLabel(aAnnotation) +
-          aColor(aQuoted) +
-          '\n' +
-          printLabel(bAnnotation) +
-          bColor(bQuoted)
-        );
+        return `${printLabel(aAnnotation) + aColor(aQuoted)}\n${printLabel(
+          bAnnotation,
+        )}${bColor(bQuoted)}`;
       }
 
       // Else either string is multiline, so display as unquoted strings.
@@ -315,7 +304,7 @@ export const printSnapshotAndReceived = (
 
     // Fall through to fix a regression for custom serializers
     // like jest-snapshot-serializer-raw that ignore the indent option.
-    const b0 = serialize(received, 0);
+    const b0 = serialize(received, 0, snapshotFormat);
     if (b0 !== b) {
       const aLines0 = dedentLines(aLines2);
 
@@ -335,11 +324,7 @@ export const printSnapshotAndReceived = (
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
-  return (
-    printLabel(aAnnotation) +
-    aColor(a) +
-    '\n' +
-    printLabel(bAnnotation) +
-    bColor(b)
-  );
+  return `${printLabel(aAnnotation) + aColor(a)}\n${printLabel(
+    bAnnotation,
+  )}${bColor(b)}`;
 };

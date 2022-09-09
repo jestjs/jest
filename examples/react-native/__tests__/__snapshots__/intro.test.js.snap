@@ -3,7 +3,7 @@
 exports[`renders correctly 1`] = `
 <View
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "#F5FCFF",
       "flex": 1,
@@ -13,7 +13,7 @@ exports[`renders correctly 1`] = `
 >
   <Text
     style={
-      Object {
+      {
         "fontSize": 20,
         "margin": 10,
         "textAlign": "center",
@@ -24,7 +24,7 @@ exports[`renders correctly 1`] = `
   </Text>
   <Text
     style={
-      Object {
+      {
         "color": "#333333",
         "marginBottom": 5,
         "textAlign": "center",
@@ -39,8 +39,6 @@ exports[`renders correctly 1`] = `
 exports[`renders the ActivityIndicator component 1`] = `
 <ActivityIndicator
   animating={true}
-  color="#999999"
-  hidesWhenStopped={true}
   size="small"
 />
 `;
@@ -48,22 +46,18 @@ exports[`renders the ActivityIndicator component 1`] = `
 exports[`renders the FlatList component 1`] = `
 <RCTScrollView
   data={
-    Array [
+    [
       "apple",
       "banana",
       "kiwi",
     ]
   }
-  disableVirtualization={false}
   getItem={[Function]}
   getItemCount={[Function]}
-  horizontal={false}
-  initialNumToRender={10}
   keyExtractor={[Function]}
-  maxToRenderPerBatch={10}
   onContentSizeChange={[Function]}
-  onEndReachedThreshold={2}
   onLayout={[Function]}
+  onMomentumScrollBegin={[Function]}
   onMomentumScrollEnd={[Function]}
   onScroll={[Function]}
   onScrollBeginDrag={[Function]}
@@ -71,10 +65,8 @@ exports[`renders the FlatList component 1`] = `
   removeClippedSubviews={false}
   renderItem={[Function]}
   scrollEventThrottle={50}
-  stickyHeaderIndices={Array []}
-  updateCellsBatchingPeriod={50}
-  viewabilityConfigCallbackPairs={Array []}
-  windowSize={21}
+  stickyHeaderIndices={[]}
+  viewabilityConfigCallbackPairs={[]}
 >
   <View>
     <View
@@ -107,10 +99,7 @@ exports[`renders the FlatList component 1`] = `
 
 exports[`renders the TextInput component 1`] = `
 <TextInput
-  allowFontScaling={true}
   autoCorrect={false}
-  rejectResponderTermination={true}
-  underlineColorAndroid="transparent"
   value="apple banana kiwi"
 />
 `;

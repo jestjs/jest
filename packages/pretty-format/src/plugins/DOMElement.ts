@@ -6,7 +6,6 @@
  */
 
 import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {
   printChildren,
   printComment,
@@ -23,17 +22,32 @@ const FRAGMENT_NODE = 11;
 
 const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
-const testNode = (nodeType: number, name: string) =>
-  (nodeType === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
-  (nodeType === TEXT_NODE && name === 'Text') ||
-  (nodeType === COMMENT_NODE && name === 'Comment') ||
-  (nodeType === FRAGMENT_NODE && name === 'DocumentFragment');
+const testHasAttribute = (val: any) => {
+  try {
+    return typeof val.hasAttribute === 'function' && val.hasAttribute('is');
+  } catch {
+    return false;
+  }
+};
+
+const testNode = (val: any) => {
+  const constructorName = val.constructor.name;
+  const {nodeType, tagName} = val;
+  const isCustomElement =
+    (typeof tagName === 'string' && tagName.includes('-')) ||
+    testHasAttribute(val);
+
+  return (
+    (nodeType === ELEMENT_NODE &&
+      (ELEMENT_REGEXP.test(constructorName) || isCustomElement)) ||
+    (nodeType === TEXT_NODE && constructorName === 'Text') ||
+    (nodeType === COMMENT_NODE && constructorName === 'Comment') ||
+    (nodeType === FRAGMENT_NODE && constructorName === 'DocumentFragment')
+  );
+};
 
 export const test: NewPlugin['test'] = (val: any) =>
-  val &&
-  val.constructor &&
-  val.constructor.name &&
-  testNode(val.nodeType, val.constructor.name);
+  val?.constructor?.name && testNode(val);
 
 type HandledType = Element | Text | Comment | DocumentFragment;
 
@@ -66,7 +80,7 @@ export const serialize: NewPlugin['serialize'] = (
   }
 
   const type = nodeIsFragment(node)
-    ? `DocumentFragment`
+    ? 'DocumentFragment'
     : node.tagName.toLowerCase();
 
   if (++depth > config.maxDepth) {

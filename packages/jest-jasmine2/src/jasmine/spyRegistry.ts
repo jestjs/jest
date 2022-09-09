@@ -31,12 +31,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Spy} from '../types';
 import CallTracker from './CallTracker';
-import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
+import createSpy from './createSpy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
-  const usageDefinition = usage ? '\nUsage: ' + usage : '';
-  return (msg: string) => domain + ' : ' + msg + usageDefinition;
+  const usageDefinition = usage ? `\nUsage: ${usage}` : '';
+  return (msg: string) => `${domain} : ${msg}${usageDefinition}`;
 };
 
 function isSpy(putativeSpy: {
@@ -87,7 +87,7 @@ export default class SpyRegistry {
       if (obj === void 0) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + methodName + '()',
+            `could not find an object to spy upon for ${methodName}()`,
           ),
         );
       }
@@ -97,7 +97,7 @@ export default class SpyRegistry {
       }
 
       if (obj[methodName] === void 0) {
-        throw new Error(getErrorMsg(methodName + '() method does not exist'));
+        throw new Error(getErrorMsg(`${methodName}() method does not exist`));
       }
 
       if (obj[methodName] && isSpy(obj[methodName])) {
@@ -105,7 +105,7 @@ export default class SpyRegistry {
           return obj[methodName];
         } else {
           throw new Error(
-            getErrorMsg(methodName + ' has already been spied upon'),
+            getErrorMsg(`${methodName} has already been spied upon`),
           );
         }
       }
@@ -113,14 +113,14 @@ export default class SpyRegistry {
       let descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(
           getErrorMsg(
-            methodName + ' is not declared writable or has no setter',
+            `${methodName} is not declared writable or has no setter`,
           ),
         );
       }
@@ -154,7 +154,7 @@ export default class SpyRegistry {
       if (!obj) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + propertyName,
+            `could not find an object to spy upon for ${propertyName}`,
           ),
         );
       }
@@ -166,27 +166,24 @@ export default class SpyRegistry {
       let descriptor: PropertyDescriptor | undefined;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
       if (!descriptor) {
-        throw new Error(getErrorMsg(propertyName + ' property does not exist'));
+        throw new Error(getErrorMsg(`${propertyName} property does not exist`));
       }
 
       if (!descriptor.configurable) {
         throw new Error(
-          getErrorMsg(propertyName + ' is not declared configurable'),
+          getErrorMsg(`${propertyName} is not declared configurable`),
         );
       }
 
       if (!descriptor[accessType]) {
         throw new Error(
           getErrorMsg(
-            'Property ' +
-              propertyName +
-              ' does not have access type ' +
-              accessType,
+            `Property ${propertyName} does not have access type ${accessType}`,
           ),
         );
       }
@@ -196,7 +193,7 @@ export default class SpyRegistry {
           return obj[propertyName];
         } else {
           throw new Error(
-            getErrorMsg(propertyName + ' has already been spied upon'),
+            getErrorMsg(`${propertyName} has already been spied upon`),
           );
         }
       }

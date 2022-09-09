@@ -7,7 +7,7 @@
 
 import assert = require('assert');
 import {Console} from 'console';
-import {format} from 'util';
+import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {ErrorWithStack, formatTime} from 'jest-util';
 import type {
@@ -19,24 +19,21 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _buffer: ConsoleBuffer = [];
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  override Console: typeof Console = Console;
 
   constructor() {
-    const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message, null);
 
         return true;
       },
     } as NodeJS.WritableStream);
-    this._buffer = buffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   static write(
@@ -74,15 +71,15 @@ export default class BufferedConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): void {
+  override assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._log('assert', error.toString());
     }
   }
 
-  count(label: string = 'default'): void {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -90,27 +87,28 @@ export default class BufferedConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default'): void {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: unknown, ...rest: Array<unknown>): void {
+  override debug(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('debug', format(firstArg, ...rest));
   }
 
-  dir(firstArg: unknown, ...rest: Array<unknown>): void {
-    this._log('dir', format(firstArg, ...rest));
+  override dir(firstArg: unknown, options: InspectOptions = {}): void {
+    const representation = inspect(firstArg, options);
+    this._log('dir', formatWithOptions(options, representation));
   }
 
-  dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
+  override dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...rest));
   }
 
-  error(firstArg: unknown, ...rest: Array<unknown>): void {
+  override error(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('error', format(firstArg, ...rest));
   }
 
-  group(title?: string, ...rest: Array<unknown>): void {
+  override group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -118,7 +116,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupCollapsed(title?: string, ...rest: Array<unknown>): void {
+  override groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -126,21 +124,21 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupEnd(): void {
+  override groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: unknown, ...rest: Array<unknown>): void {
+  override info(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('info', format(firstArg, ...rest));
   }
 
-  log(firstArg: unknown, ...rest: Array<unknown>): void {
+  override log(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('log', format(firstArg, ...rest));
   }
 
-  time(label: string = 'default'): void {
+  override time(label = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -148,7 +146,7 @@ export default class BufferedConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default'): void {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {
@@ -159,7 +157,17 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  warn(firstArg: unknown, ...rest: Array<unknown>): void {
+  override timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
+    }
+  }
+
+  override warn(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('warn', format(firstArg, ...rest));
   }
 

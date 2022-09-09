@@ -9,12 +9,12 @@
 
 import LeakDetector from '../index';
 
-const gc = global.gc;
+const gc = globalThis.gc;
 
 // Some tests override the "gc" value. Let's make sure we roll it back to its
 // previous value after executing the test.
 afterEach(() => {
-  global.gc = gc;
+  globalThis.gc = gc;
 });
 
 it('complains if the value is a primitive', () => {
@@ -31,18 +31,18 @@ it('complains if the value is a primitive', () => {
 it('does not show the GC if hidden', async () => {
   const detector = new LeakDetector({});
 
-  // @ts-ignore: purposefully removed
-  global.gc = undefined;
+  // @ts-expect-error: purposefully removed
+  globalThis.gc = undefined;
   await detector.isLeaking();
-  expect(global.gc).not.toBeDefined();
+  expect(globalThis.gc).not.toBeDefined();
 });
 
 it('does not hide the GC if visible', async () => {
   const detector = new LeakDetector({});
 
-  global.gc = () => {};
+  globalThis.gc = () => {};
   await detector.isLeaking();
-  expect(global.gc).toBeDefined();
+  expect(globalThis.gc).toBeDefined();
 });
 
 it('correctly checks simple leaks', async () => {

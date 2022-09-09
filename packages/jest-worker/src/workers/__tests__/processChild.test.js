@@ -18,7 +18,9 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
 } from '../../types';
 
@@ -43,7 +45,7 @@ beforeEach(() => {
         },
 
         fooPromiseWorks() {
-          return new Promise((resolve, reject) => {
+          return new Promise(resolve => {
             setTimeout(() => resolve(1989), 5);
           });
         },
@@ -139,6 +141,19 @@ it('lazily requires the file', () => {
 
   expect(mockCount).toBe(1);
   expect(initializeParm).toBe(undefined);
+});
+
+it('should return memory usage', () => {
+  process.send = jest.fn();
+
+  expect(mockCount).toBe(0);
+
+  process.emit('message', [CHILD_MESSAGE_MEM_USAGE]);
+
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_MEM_USAGE,
+    expect.any(Number),
+  ]);
 });
 
 it('calls initialize with the correct arguments', () => {
@@ -241,8 +256,6 @@ it('returns results immediately when function is synchronous', () => {
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
-  jest.useRealTimers();
-
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.

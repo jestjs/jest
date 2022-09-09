@@ -1,7 +1,6 @@
 ---
-id: version-25.x-jest-platform
+id: jest-platform
 title: Jest Platform
-original_id: jest-platform
 ---
 
 You can cherry pick specific features of Jest and use them as standalone packages. Here's a list of the available packages:
@@ -24,7 +23,7 @@ getChangedFilesForRoots(['./'], {
 }).then(result => console.log(result.changedFiles));
 ```
 
-You can read more about `jest-changed-files` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-changed-files/README.md).
+You can read more about `jest-changed-files` in the [readme file](https://github.com/facebook/jest/blob/main/packages/jest-changed-files/README.md).
 
 ## jest-diff
 
@@ -69,7 +68,7 @@ const parsed = parseWithComments(code);
 console.log(parsed);
 ```
 
-You can read more about `jest-docblock` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-docblock/README.md).
+You can read more about `jest-docblock` in the [readme file](https://github.com/facebook/jest/blob/main/packages/jest-docblock/README.md).
 
 ## jest-get-type
 
@@ -116,17 +115,15 @@ const result = validate(configByUser, {
 console.log(result);
 ```
 
-You can read more about `jest-validate` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md).
+You can read more about `jest-validate` in the [readme file](https://github.com/facebook/jest/blob/main/packages/jest-validate/README.md).
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `JestWorker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
+Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
 
 ### Example
 
-```javascript
-// heavy-task.js
-
+```javascript title="heavy-task.js"
 module.exports = {
   myHeavyTask: args => {
     // long running CPU intensive task.
@@ -134,9 +131,7 @@ module.exports = {
 };
 ```
 
-```javascript
-// main.js
-
+```javascript title="main.js"
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 
@@ -152,7 +147,7 @@ async function main() {
 main();
 ```
 
-You can read more about `jest-worker` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-worker/README.md).
+You can read more about `jest-worker` in the [readme file](https://github.com/facebook/jest/blob/main/packages/jest-worker/README.md).
 
 ## pretty-format
 
@@ -172,4 +167,4 @@ val.array = [-0, Infinity, NaN];
 console.log(prettyFormat(val));
 ```
 
-You can read more about `pretty-format` in the [readme file](https://github.com/facebook/jest/blob/master/packages/pretty-format/README.md).
+You can read more about `pretty-format` in the [readme file](https://github.com/facebook/jest/blob/main/packages/pretty-format/README.md).

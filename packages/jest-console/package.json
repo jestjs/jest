@@ -1,29 +1,36 @@
 {
   "name": "@jest/console",
-  "version": "26.0.1",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-console"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/types": "^26.0.1",
+    "@jest/types": "workspace:^",
+    "@types/node": "*",
     "chalk": "^4.0.0",
-    "jest-message-util": "^26.0.1",
-    "jest-util": "^26.0.1",
+    "jest-message-util": "workspace:^",
+    "jest-util": "workspace:^",
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "*"
+    "@jest/test-utils": "workspace:^"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

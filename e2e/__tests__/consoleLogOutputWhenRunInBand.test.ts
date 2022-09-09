@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -32,7 +31,7 @@ test('prints console.logs when run with forceExit', () => {
   const {rest, summary} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });

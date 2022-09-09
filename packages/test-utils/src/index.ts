@@ -8,9 +8,10 @@
 export {alignedAnsiStyleSerializer} from './alignedAnsiStyleSerializer';
 
 export {
-  isJestCircusRun,
+  isJestJasmineRun,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
-  skipSuiteOnWindows,
   onNodeVersions,
 } from './ConditionalTest';
+
+export {makeGlobalConfig, makeProjectConfig} from './config';

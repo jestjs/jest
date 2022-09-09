@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {printListItems, printObjectProperties} from '../collections';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const asymmetricMatcher =
   typeof Symbol === 'function' && Symbol.for
@@ -30,15 +29,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ArrayNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '[' +
-      printListItems(val.sample, config, indentation, depth, refs, printer) +
-      ']'
-    );
+    return `${stringedValue + SPACE}[${printListItems(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}]`;
   }
 
   if (
@@ -46,22 +46,16 @@ export const serialize: NewPlugin['serialize'] = (
     stringedValue === 'ObjectNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '{' +
-      printObjectProperties(
-        val.sample,
-        config,
-        indentation,
-        depth,
-        refs,
-        printer,
-      ) +
-      '}'
-    );
+    return `${stringedValue + SPACE}{${printObjectProperties(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}}`;
   }
 
   if (
@@ -83,6 +77,12 @@ export const serialize: NewPlugin['serialize'] = (
       stringedValue +
       SPACE +
       printer(val.sample, config, indentation, depth, refs)
+    );
+  }
+
+  if (typeof val.toAsymmetricMatcher !== 'function') {
+    throw new Error(
+      `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
     );
   }
 

@@ -6,9 +6,8 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
 
@@ -20,7 +19,7 @@ test('show error message with matching files', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });
 
 test('show error message when no js moduleFileExtensions', () => {
@@ -47,5 +46,5 @@ test('show error message when no js moduleFileExtensions', () => {
   const {exitCode, stderr} = runJest('resolve-no-extensions-no-js');
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toMatchSnapshot();
 });

@@ -1,14 +1,9 @@
 {
   "editor.rulers": [80],
-  "files.exclude": {
-    "**/.git": true,
-    "**/node_modules": true,
-    "**/build": true
-  },
-  "javascript.validate.enable": false,
-  "jest.pathToJest": "yarn jest --",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "javascript.validate.enable": false,
+  "jest.jestCommandLine": "yarn jest",
   "typescript.tsdk": "node_modules/typescript/lib"
 }

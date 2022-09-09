@@ -17,16 +17,18 @@
 /node_modules
 
 /packages/*/build/
+/packages/*/dist/
 /packages/*/coverage/
 /packages/*/node_modules/
-/packages/*/package-lock.json
 
+/website/.docusaurus
 /website/build
 /website/backers.json
 /website/node_modules
 /website/yarn.lock
-/website/translated_docs
 /website/i18n/*
+
+/benchmarks/*/node_modules/
 
 /reports/*
 
@@ -36,10 +38,21 @@ npm-debug.log
 npm-debug.log*
 yarn-error.log*
 junit.xml
+package-lock.json
 
 *.tsbuildinfo
+api-extractor.json
 
-.pnp.js
-.yarn/unplugged/
-.yarn/build-state.yml
-e2e/async-regenerator/.yarn/
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored but nested for e2e directories
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/releases
+!**/.yarn/plugins
+!**/.yarn/sdks
+!**/.yarn/versions
+**/.pnp.*
+
+crowdin-cli.jar
+
+# We don't want these temp files
+packages/jest-worker/src/workers/__tests__/__temp__

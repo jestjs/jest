@@ -5,39 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import wrap from 'jest-snapshot-serializer-raw';
+import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
-const normalizeCircusJasmine = (str: string) =>
-  wrap(
-    str
-      .replace(/console\.log .+:\d+/, 'console.log')
-      .replace(/.+addSpecsToSuite (.+:\d+:\d+).+\n/g, '')
-      .replace(/.+_dispatchDescribe (.+:\d+:\d+).+\n/g, ''),
-  );
+const extractMessage = (str: string) =>
+  extractSummary(str)
+    .rest.replace(
+      // circus-jasmine normalization
+      /.+addSpecsToSuite (.+:\d+:\d+).+\n/g,
+      '',
+    )
+    .match(
+      // all lines from the first to the last mentioned "describe" after the "●" line
+      /●(.|\n)*?\n(?<lines>.*describe((.|\n)*describe)*.*)(\n|$)/imu,
+    )?.groups?.lines ?? '';
 
-it('warns if describe returns a Promise', () => {
+it('errors if describe returns a Promise', () => {
   const result = runJest('declaration-errors', [
     'describeReturnPromise.test.js',
   ]);
 
-  expect(result.exitCode).toBe(0);
-  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
+  expect(result.exitCode).toBe(1);
+  expect(extractMessage(result.stderr)).toMatchSnapshot();
 });
 
-it('warns if describe returns something', () => {
+it('errors if describe returns something', () => {
   const result = runJest('declaration-errors', [
     'describeReturnSomething.test.js',
   ]);
 
-  expect(result.exitCode).toBe(0);
-  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
+  expect(result.exitCode).toBe(1);
+  expect(extractMessage(result.stderr)).toMatchSnapshot();
 });
 
 it('errors if describe throws', () => {
   const result = runJest('declaration-errors', ['describeThrow.test.js']);
 
   expect(result.exitCode).toBe(1);
-  expect(result.stdout).toBe('');
   expect(result.stderr).toContain('whoops');
 });

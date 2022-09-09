@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {
   AssertionResult,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
@@ -26,12 +26,12 @@ export default class Jasmine2Reporter implements Reporter {
   private _resolve: any;
   private _resultsPromise: Promise<TestResult>;
   private _startTimes: Map<string, Microseconds>;
-  private _testPath: Config.Path;
+  private _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
-    testPath: Config.Path,
+    testPath: string,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -43,6 +43,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   jasmineStarted(_runDetails: RunDetails): void {}
 
   specStarted(spec: SpecResult): void {
@@ -128,10 +129,13 @@ export default class Jasmine2Reporter implements Reporter {
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
-    const start = this._startTimes.get(specResult.id);
-    const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
+    const start = this._startTimes.get(specResult.id);
+    const duration =
+      start && !['pending', 'skipped'].includes(status)
+        ? Date.now() - start
+        : null;
     const location = specResult.__callsite
       ? {
           column: specResult.__callsite.getColumnNumber(),
@@ -141,6 +145,7 @@ export default class Jasmine2Reporter implements Reporter {
     const results: AssertionResult = {
       ancestorTitles,
       duration,
+      failureDetails: [],
       failureMessages: [],
       fullName: specResult.fullName,
       location,
@@ -151,10 +156,11 @@ export default class Jasmine2Reporter implements Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message =
-        !failed.matcherName && failed.stack
+        !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
+      results.failureDetails.push(failed);
     });
 
     return results;

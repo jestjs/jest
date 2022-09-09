@@ -5,101 +5,73 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus, Config, Global} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
+import {JestExpect, jestExpect} from '@jest/expect';
 import {
   AssertionResult,
   Status,
+  TestFileEvent,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import type {Circus, Config, Global} from '@jest/types';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
-  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import throat from 'throat';
+import globals from '..';
+import run from '../run';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
 } from '../state';
+import testCaseReportHandler from '../testCaseReportHandler';
 import {getTestID} from '../utils';
-import run from '../run';
-import globals from '..';
 
-type Process = NodeJS.Process;
+interface RuntimeGlobals extends Global.TestFrameworkGlobals {
+  expect: JestExpect;
+}
 
-// TODO: hard to type
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const initialize = async ({
   config,
   environment,
-  getPrettier,
-  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
+  sendMessageToJest,
+  setGlobalsForRuntime,
   testPath,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  getPrettier: () => null | any;
-  getBabelTraverse: () => Function;
   globalConfig: Config.GlobalConfig;
-  localRequire: (path: Config.Path) => any;
-  testPath: Config.Path;
-  parentProcess: Process;
-}) => {
+  localRequire: <T = unknown>(path: string) => T;
+  testPath: string;
+  parentProcess: NodeJS.Process;
+  sendMessageToJest?: TestFileEvent;
+  setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
+}): Promise<{
+  globals: Global.TestFrameworkGlobals;
+  snapshotState: SnapshotState;
+}> => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
+  getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
 
-  const mutex = throat(globalConfig.maxConcurrency);
-
-  const nodeGlobal = global as Global.Global;
-  Object.assign(nodeGlobal, globals);
-
-  nodeGlobal.xit = nodeGlobal.it.skip;
-  nodeGlobal.xtest = nodeGlobal.it.skip;
-  nodeGlobal.xdescribe = nodeGlobal.describe.skip;
-  nodeGlobal.fit = nodeGlobal.it.only;
-  nodeGlobal.fdescribe = nodeGlobal.describe.only;
-
-  nodeGlobal.test.concurrent = (test => {
-    const concurrent = (
-      testName: string,
-      testFn: () => Promise<any>,
-      timeout?: number,
-    ) => {
-      // For concurrent tests we first run the function that returns promise, and then register a
-      // nomral test that will be waiting on the returned promise (when we start the test, the promise
-      // will already be in the process of execution).
-      // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
-      // that will result in this test to be skipped, so we'll be executing the promise function anyway,
-      // even if it ends up being skipped.
-      const promise = mutex(() => testFn());
-      nodeGlobal.test(testName, () => promise, timeout);
-    };
-
-    concurrent.only = (
-      testName: string,
-      testFn: () => Promise<any>,
-      timeout?: number,
-    ) => {
-      const promise = mutex(() => testFn());
-      // eslint-disable-next-line jest/no-focused-tests
-      test.only(testName, () => promise, timeout);
-    };
-
-    concurrent.skip = test.skip;
-
-    return concurrent;
-  })(nodeGlobal.test);
+  // @ts-expect-error: missing `concurrent` which is added later
+  const globalsObject: Global.TestFrameworkGlobals = {
+    ...globals,
+    fdescribe: globals.describe.only,
+    fit: globals.it.only,
+    xdescribe: globals.describe.skip,
+    xit: globals.it.skip,
+    xtest: globals.it.skip,
+  };
 
   addEventHandler(eventHandler);
 
@@ -107,16 +79,27 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
+  jestExpect.setState({expand: globalConfig.expand});
+
+  const runtimeGlobals: RuntimeGlobals = {
+    ...globalsObject,
+    expect: jestExpect,
+  };
+  setGlobalsForRuntime(runtimeGlobals);
+
+  if (config.injectGlobals) {
+    Object.assign(environment.global, runtimeGlobals);
+  }
+
   await dispatch({
     name: 'setup',
     parentProcess,
+    runtimeGlobals,
     testNamePattern: globalConfig.testNamePattern,
   });
 
   if (config.testLocationInResults) {
-    await dispatch({
-      name: 'include_test_location_in_result',
-    });
+    await dispatch({name: 'include_test_location_in_result'});
   }
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
@@ -124,25 +107,27 @@ export const initialize = async ({
   config.snapshotSerializers
     .concat()
     .reverse()
-    .forEach(path => {
-      addSerializer(localRequire(path));
-    });
+    .forEach(path => addSerializer(localRequire(path)));
 
-  const {expand, updateSnapshot} = globalConfig;
-  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
-    expand,
-    getBabelTraverse,
-    getPrettier,
-    updateSnapshot,
+    expand: globalConfig.expand,
+    prettierPath: config.prettierPath,
+    rootDir: config.rootDir,
+    snapshotFormat: config.snapshotFormat,
+    updateSnapshot: globalConfig.updateSnapshot,
   });
-  setState({snapshotState, testPath});
+
+  jestExpect.setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+  if (sendMessageToJest) {
+    addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
+  }
 
   // Return it back to the outer scope (test runner outside the VM).
-  return {globals, snapshotState};
+  return {globals: globalsObject, snapshotState};
 };
 
 export const runAndTransformResultsToJestFormat = async ({
@@ -186,6 +171,7 @@ export const runAndTransformResultsToJestFormat = async ({
       return {
         ancestorTitles,
         duration: testResult.duration,
+        failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
           ? ancestorTitles.concat(title).join(' ')
@@ -193,6 +179,7 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: 0,
+        retryReasons: testResult.retryReasons,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
       };
@@ -212,12 +199,9 @@ export const runAndTransformResultsToJestFormat = async ({
       message: '',
       stack: runResult.unhandledErrors.join('\n'),
     };
-    failureMessage =
-      (failureMessage || '') +
-      '\n\n' +
-      runResult.unhandledErrors
-        .map(err => formatExecError(err, config, globalConfig))
-        .join('\n');
+    failureMessage = `${failureMessage || ''}\n\n${runResult.unhandledErrors
+      .map(err => formatExecError(err, config, globalConfig))
+      .join('\n')}`;
   }
 
   await dispatch({name: 'teardown'});
@@ -231,28 +215,26 @@ export const runAndTransformResultsToJestFormat = async ({
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    sourceMaps: {},
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
   };
 };
 
-const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
-  event: Circus.Event,
-) => {
-  switch (event.name) {
-    case 'test_retry': {
-      // Clear any snapshot data that occurred in previous test run
-      snapshotState.clear();
+const handleSnapshotStateAfterRetry =
+  (snapshotState: SnapshotState) => (event: Circus.Event) => {
+    switch (event.name) {
+      case 'test_retry': {
+        // Clear any snapshot data that occurred in previous test run
+        snapshotState.clear();
+      }
     }
-  }
-};
+  };
 
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
-      setState({currentTestName: getTestID(event.test)});
+      jestExpect.setState({currentTestName: getTestID(event.test)});
       break;
     }
     case 'test_done': {
@@ -264,7 +246,7 @@ const eventHandler = async (event: Circus.Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
-  const failures = extractExpectedAssertionsErrors();
+  const failures = jestExpect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
@@ -273,8 +255,8 @@ const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const _addSuppressedErrors = (test: Circus.TestEntry) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = jestExpect.getState();
+  jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     test.errors = test.errors.concat(suppressedErrors);
   }

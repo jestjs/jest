@@ -6,18 +6,32 @@
  */
 
 import * as path from 'path';
+import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {replacePathSepForGlob} from 'jest-util';
-import micromatch = require('micromatch');
+import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
-  escapePathForRegex(path.sep + '__mocks__' + path.sep),
+  escapePathForRegex(`${path.sep}__mocks__${path.sep}`),
 );
 
+const cachedRegexes = new Map<string, RegExp>();
+const getRegex = (regexStr: string) => {
+  if (!cachedRegexes.has(regexStr)) {
+    cachedRegexes.set(regexStr, new RegExp(regexStr));
+  }
+
+  const regex = cachedRegexes.get(regexStr)!;
+
+  // prevent stateful regexes from breaking, just in case
+  regex.lastIndex = 0;
+
+  return regex;
+};
+
 export default function shouldInstrument(
-  filename: Config.Path,
+  filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {
@@ -33,36 +47,25 @@ export default function shouldInstrument(
   }
 
   if (
-    !config.testPathIgnorePatterns.some(pattern => !!filename.match(pattern))
+    !config.testPathIgnorePatterns.some(pattern =>
+      getRegex(pattern).test(filename),
+    )
   ) {
     if (config.testRegex.some(regex => new RegExp(regex).test(filename))) {
       return false;
     }
 
-    if (
-      micromatch([replacePathSepForGlob(filename)], config.testMatch).length
-    ) {
+    if (globsToMatcher(config.testMatch)(replacePathSepForGlob(filename))) {
       return false;
     }
   }
 
   if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    options.collectCoverageOnlyFrom &&
-    !options.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
     // still cover if `only` is specified
-    !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom.length &&
-    micromatch(
-      [replacePathSepForGlob(path.relative(config.rootDir, filename))],
-      options.collectCoverageFrom,
-    ).length === 0
+    !globsToMatcher(options.collectCoverageFrom)(
+      replacePathSepForGlob(path.relative(config.rootDir, filename)),
+    )
   ) {
     return false;
   }

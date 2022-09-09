@@ -5,16 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
-import {convertDescriptorToString, formatTime} from 'jest-util';
-import isGeneratorFn from 'is-generator-fn';
+import * as path from 'path';
 import co from 'co';
 import dedent = require('dedent');
+import isGeneratorFn from 'is-generator-fn';
+import slash = require('slash');
 import StackUtils = require('stack-utils');
-import prettyFormat = require('pretty-format');
-import {getState} from './state';
+import type {AssertionResult, Status} from '@jest/test-result';
+import type {Circus, Global} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
+import {format as prettyFormat} from 'pretty-format';
+import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
+
+const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
+
+function takesDoneCallback(fn: Circus.AsyncFn): fn is Global.DoneTakingTestFn {
+  return fn.length > 0;
+}
+
+function isGeneratorFunction(
+  fn: Global.PromiseReturningTestFn | Global.GeneratorReturningTestFn,
+): fn is Global.GeneratorReturningTestFn {
+  return isGeneratorFn(fn);
+}
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -39,22 +54,28 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: Circus.TestFn | undefined,
+  fn: Circus.TestFn,
   mode: Circus.TestMode,
+  concurrent: boolean,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
   asyncError: Circus.Exception,
+  failing: boolean,
 ): Circus.TestEntry => ({
   type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
+  concurrent,
   duration: null,
   errors: [],
+  failing,
   fn,
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
   parent,
+  retryReasons: [],
+  seenDone: false,
   startedAt: null,
   status: null,
   timeout,
@@ -111,13 +132,16 @@ type TestHooks = {
 
 export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
   const result: TestHooks = {afterEach: [], beforeEach: []};
+  if (test.concurrent) {
+    // *Each hooks are not run for concurrent tests
+    return result;
+  }
+
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
-    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
-    let hook: Circus.Hook;
-    for (hook of block.hooks) {
+    for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -148,34 +172,52 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
-const {setTimeout, clearTimeout} = global;
+const {setTimeout, clearTimeout} = globalThis;
 
-function checkIsError(error: any): error is Error {
+function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
 }
 
 export const callAsyncCircusFn = (
-  fn: Circus.AsyncFn,
-  testContext: Circus.TestContext | undefined,
-  asyncError: Circus.Exception,
-  {isHook, timeout}: {isHook?: boolean | null; timeout: number},
-): Promise<any> => {
+  testOrHook: Circus.TestEntry | Circus.Hook,
+  testContext: Circus.TestContext,
+  {isHook, timeout}: {isHook: boolean; timeout: number},
+): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 
-  return new Promise((resolve, reject) => {
+  const {fn, asyncError} = testOrHook;
+
+  return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (fn.length) {
+    if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
+
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
-        const errorAtDone = new Error();
+        const errorAtDone = new ErrorWithStack(undefined, done);
+
+        if (!completed && testOrHook.seenDone) {
+          errorAtDone.message =
+            'Expected done to be called once, but it was called multiple times.';
+
+          if (reason) {
+            errorAtDone.message += ` Reason: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
+          }
+          reject(errorAtDone);
+          throw errorAtDone;
+        } else {
+          testOrHook.seenDone = true;
+        }
+
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -187,7 +229,6 @@ export const callAsyncCircusFn = (
           }
 
           let errorAsErrorObject: Error;
-
           if (checkIsError(reason)) {
             errorAsErrorObject = reason;
           } else {
@@ -199,9 +240,7 @@ export const callAsyncCircusFn = (
 
           // Consider always throwing, regardless if `reason` is set or not
           if (completed && reason) {
-            errorAsErrorObject.message =
-              'Caught error after test environment was torn down\n\n' +
-              errorAsErrorObject.message;
+            errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
             throw errorAsErrorObject;
           }
@@ -215,8 +254,8 @@ export const callAsyncCircusFn = (
       return;
     }
 
-    let returnedValue;
-    if (isGeneratorFn(fn)) {
+    let returnedValue: Global.TestReturnValue;
+    if (isGeneratorFunction(fn)) {
       returnedValue = co.wrap(fn).call({});
     } else {
       try {
@@ -234,7 +273,7 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      returnedValue.then(resolve, reject);
+      returnedValue.then(() => resolve(), reject);
       return;
     }
 
@@ -258,12 +297,12 @@ export const callAsyncCircusFn = (
       completed = true;
       // If timeout is not cleared/unrefed the node process won't exit until
       // it's resolved.
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
     })
     .catch(error => {
       completed = true;
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
       throw error;
     });
@@ -279,63 +318,73 @@ export const makeRunResult = (
   unhandledErrors: Array<Error>,
 ): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_formatError),
+  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
+
+export const makeSingleTestResult = (
+  test: Circus.TestEntry,
+): Circus.TestResult => {
+  const {includeTestLocationInResult} = getState();
+  const testPath = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+
+  const {status} = test;
+  invariant(status, 'Status should be present after tests are run.');
+
+  do {
+    testPath.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  let location = null;
+  if (includeTestLocationInResult) {
+    const stackLines = test.asyncError.stack.split('\n');
+    const stackLine = stackLines[1];
+    let parsedLine = stackUtils.parseLine(stackLine);
+    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
+      const stackLine = stackLines[4];
+      parsedLine = stackUtils.parseLine(stackLine);
+    }
+    if (
+      parsedLine &&
+      typeof parsedLine.column === 'number' &&
+      typeof parsedLine.line === 'number'
+    ) {
+      location = {
+        column: parsedLine.column,
+        line: parsedLine.line,
+      };
+    }
+  }
+
+  const errorsDetailed = test.errors.map(_getError);
+
+  return {
+    duration: test.duration,
+    errors: errorsDetailed.map(getErrorStack),
+    errorsDetailed,
+    invocations: test.invocations,
+    location,
+    retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    status,
+    testPath: Array.from(testPath),
+  };
+};
 
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const {includeTestLocationInResult} = getState();
   const testResults: Circus.TestResults = [];
+
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
         testResults.push(...makeTestResults(child));
         break;
       }
-      case 'test':
-        {
-          const testPath = [];
-          let parent:
-            | Circus.TestEntry
-            | Circus.DescribeBlock
-            | undefined = child;
-          do {
-            testPath.unshift(parent.name);
-          } while ((parent = parent.parent));
-
-          const {status} = child;
-
-          if (!status) {
-            throw new Error('Status should be present after tests are run.');
-          }
-
-          let location = null;
-          if (includeTestLocationInResult) {
-            const stackLine = child.asyncError.stack.split('\n')[1];
-            const parsedLine = stackUtils.parseLine(stackLine);
-            if (
-              parsedLine &&
-              typeof parsedLine.column === 'number' &&
-              typeof parsedLine.line === 'number'
-            ) {
-              location = {
-                column: parsedLine.column,
-                line: parsedLine.line,
-              };
-            }
-          }
-
-          testResults.push({
-            duration: child.duration,
-            errors: child.errors.map(_formatError),
-            invocations: child.invocations,
-            location,
-            status,
-            testPath,
-          });
-        }
+      case 'test': {
+        testResults.push(makeSingleTestResult(child));
         break;
+      }
     }
   }
 
@@ -355,9 +404,9 @@ export const getTestID = (test: Circus.TestEntry): string => {
   return titles.join(' ');
 };
 
-const _formatError = (
+const _getError = (
   errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
-): string => {
+): Error => {
   let error;
   let asyncError;
 
@@ -369,19 +418,17 @@ const _formatError = (
     asyncError = new Error();
   }
 
-  if (error) {
-    if (error.stack) {
-      return error.stack;
-    }
-    if (error.message) {
-      return error.message;
-    }
+  if (error && (typeof error.stack === 'string' || error.message)) {
+    return error;
   }
 
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
-  return asyncError.stack;
+  return asyncError;
 };
+
+const getErrorStack = (error: Error): string =>
+  typeof error.stack === 'string' ? error.stack : error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
@@ -408,3 +455,39 @@ export function invariant(
     throw new Error(message);
   }
 }
+
+export const parseSingleTestResult = (
+  testResult: Circus.TestResult,
+): AssertionResult => {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length > 0) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
+    failureMessages: Array.from(testResult.errors),
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    retryReasons: Array.from(testResult.retryReasons),
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
+};
