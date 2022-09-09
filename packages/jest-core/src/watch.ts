@@ -238,7 +238,7 @@ export default async function watch(
   emitFileChange();
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
-   hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+    hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) =>
         isValidPath(globalConfig, filePath),
       );

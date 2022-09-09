@@ -9,8 +9,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {ModuleMap} from 'jest-haste-map';
-import type {IModuleMap} from 'jest-haste-map';
+import type {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver from '../defaultResolver';

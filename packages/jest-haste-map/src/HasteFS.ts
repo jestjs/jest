@@ -8,9 +8,9 @@
 import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import H from './constants';
 import * as fastPath from './lib/fast_path';
-import type {FileData,IHasteFS} from './types';
+import type {FileData, IHasteFS} from './types';
 
-export default class implements IHasteFS {
+export default class HasteFS implements IHasteFS {
   private readonly _rootDir: string;
   private readonly _files: FileData;
 
