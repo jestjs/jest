@@ -8332,14 +8332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff-sequences@npm:^26.6.2":
-  version: 26.6.2
-  resolution: "diff-sequences@npm:26.6.2"
-  checksum: 79af871776ef149a7ff3345d6b1bf37fe6e81f68632aa5542787851f6f60fba19b0be22fdd1e06046f56ae7382763ccfe94a982c39ee72bd107aef435ecbc0cf
-  languageName: node
-  linkType: hard
-
-"diff-sequences@npm:^27.0.0-next.0, diff-sequences@npm:^27.5.1":
+"diff-sequences@npm:^27.5.1":
   version: 27.5.1
   resolution: "diff-sequences@npm:27.5.1"
   checksum: a00db5554c9da7da225db2d2638d85f8e41124eccbd56cbaefb3b276dcbb1c1c2ad851c32defe2055a54a4806f030656cbf6638105fd6ce97bb87b90b32a33ca
@@ -9599,18 +9592,6 @@ __metadata:
     snapdragon: ^0.8.1
     to-regex: ^3.0.1
   checksum: 1781d422e7edfa20009e2abda673cadb040a6037f0bd30fcd7357304f4f0c284afd420d7622722ca4a016f39b6d091841ab57b401c1f7e2e5131ac65b9f14fa1
-  languageName: node
-  linkType: hard
-
-"expect@npm:^27.0.0-next.6":
-  version: 27.5.1
-  resolution: "expect@npm:27.5.1"
-  dependencies:
-    "@jest/types": ^27.5.1
-    jest-get-type: ^27.5.1
-    jest-matcher-utils: ^27.5.1
-    jest-message-util: ^27.5.1
-  checksum: b2c66beb52de53ef1872165aace40224e722bca3c2274c54cfa74b6d617d55cf0ccdbf36783ccd64dbea501b280098ed33fd0b207d4f15bc03cd3c7a24364a6a
   languageName: node
   linkType: hard
 
@@ -12388,26 +12369,14 @@ __metadata:
   resolution: "jest-deep-diff@workspace:packages/jest-deep-diff"
   dependencies:
     chalk: ^4.0.0
-    diff-sequences: ^27.0.0-next.0
-    expect: ^27.0.0-next.6
+    diff-sequences: "workspace:^"
+    expect: "workspace:^"
     fast-check: ^1.23.0
-    jest-diff: ^26.1.0
-    pretty-format: ^27.0.0-next.6
+    jest-diff: "workspace:^"
+    pretty-format: "workspace:^"
     strip-ansi: ^6.0.0
   languageName: unknown
   linkType: soft
-
-"jest-diff@npm:^26.1.0":
-  version: 26.6.2
-  resolution: "jest-diff@npm:26.6.2"
-  dependencies:
-    chalk: ^4.0.0
-    diff-sequences: ^26.6.2
-    jest-get-type: ^26.3.0
-    pretty-format: ^26.6.2
-  checksum: d00d297f31e1ac0252127089892432caa7a11c69bde29cf3bb6c7a839c8afdb95cf1fd401f9df16a4422745da2e6a5d94b428b30666a2540c38e1c5699915c2d
-  languageName: node
-  linkType: hard
 
 "jest-diff@npm:^27.5.1":
   version: 27.5.1
@@ -12601,7 +12570,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-matcher-utils@npm:^27.0.0, jest-matcher-utils@npm:^27.5.1":
+"jest-matcher-utils@npm:^27.0.0":
   version: 27.5.1
   resolution: "jest-matcher-utils@npm:27.5.1"
   dependencies:
@@ -12625,23 +12594,6 @@ __metadata:
     pretty-format: "workspace:^"
   languageName: unknown
   linkType: soft
-
-"jest-message-util@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "jest-message-util@npm:27.5.1"
-  dependencies:
-    "@babel/code-frame": ^7.12.13
-    "@jest/types": ^27.5.1
-    "@types/stack-utils": ^2.0.0
-    chalk: ^4.0.0
-    graceful-fs: ^4.2.9
-    micromatch: ^4.0.4
-    pretty-format: ^27.5.1
-    slash: ^3.0.0
-    stack-utils: ^2.0.3
-  checksum: eb6d637d1411c71646de578c49826b6da8e33dd293e501967011de9d1916d53d845afbfb52a5b661ff1c495be7c13f751c48c7f30781fd94fbd64842e8195796
-  languageName: node
-  linkType: hard
 
 "jest-message-util@npm:^28.1.3":
   version: 28.1.3
@@ -16933,7 +16885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.0-next.6, pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
+"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
   version: 27.5.1
   resolution: "pretty-format@npm:27.5.1"
   dependencies:
