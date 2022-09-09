@@ -342,7 +342,7 @@ export default class Runtime {
         ? new RegExp(ignorePatternParts.join('|'))
         : undefined;
 
-    return HasteMap.create({
+    return IHasteMap.create({
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
       console: options?.console,
