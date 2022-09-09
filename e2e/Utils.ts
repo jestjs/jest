@@ -9,7 +9,6 @@ import * as path from 'path';
 import dedent = require('dedent');
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
-import type {PackageJson} from 'type-fest';
 import which = require('which');
 import type {Config} from '@jest/types';
 
@@ -172,11 +171,13 @@ export const sortLines = (output: string) =>
     .map(str => str.trim())
     .join('\n');
 
-export interface JestPackageJson extends PackageJson {
-  jest: Config.InitialOptions;
+export interface PackageJson {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  jest?: Config.InitialOptions;
 }
 
-const DEFAULT_PACKAGE_JSON: JestPackageJson = {
+const DEFAULT_PACKAGE_JSON: PackageJson = {
   jest: {
     testEnvironment: 'node',
   },
@@ -184,7 +185,7 @@ const DEFAULT_PACKAGE_JSON: JestPackageJson = {
 
 export const createEmptyPackage = (
   directory: string,
-  packageJson: JestPackageJson = DEFAULT_PACKAGE_JSON,
+  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
 ) => {
   const packageJsonWithDefaults = {
     ...packageJson,
