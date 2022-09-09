@@ -5,40 +5,51 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import glob from 'glob';
-import {Config} from '@jest/types';
-import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob} from 'jest-util';
-import chalk from 'chalk';
-import micromatch from 'micromatch';
-import {sync as realpath} from 'realpath-native';
-import Resolver from 'jest-resolve';
+import {createHash} from 'crypto';
+import {totalmem} from 'os';
+import * as path from 'path';
+import chalk = require('chalk');
+import merge = require('deepmerge');
+import {sync as glob} from 'glob';
+import {statSync} from 'graceful-fs';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import getType from 'jest-get-type';
-import validatePattern from './validatePattern';
+import Resolver, {
+  resolveRunner,
+  resolveSequencer,
+  resolveTestEnvironment,
+  resolveWatchPlugin,
+} from 'jest-resolve';
+import {
+  clearLine,
+  replacePathSepForGlob,
+  requireOrImportModule,
+  tryRealpath,
+} from 'jest-util';
+import {ValidationError, validate} from 'jest-validate';
+import DEFAULT_CONFIG from './Defaults';
+import DEPRECATED_CONFIG from './Deprecated';
+import {validateReporters} from './ReporterValidationErrors';
+import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
+import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import {parseShardPair} from './parseShardPair';
+import setFromArgv from './setFromArgv';
+import stringToBytes from './stringToBytes';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getTestEnvironment,
-  getRunner,
-  getWatchPlugin,
+  replaceRootDirInPath,
   resolve,
-  getSequencer,
 } from './utils';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
-import {validateReporters} from './ReporterValidationErrors';
-import DEFAULT_CONFIG from './Defaults';
-import DEPRECATED_CONFIG from './Deprecated';
-import setFromArgv from './setFromArgv';
-import VALID_CONFIG from './ValidConfig';
+import validatePattern from './validatePattern';
+
 const ERROR = `${BULLET}Validation Error`;
-const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
@@ -46,13 +57,43 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const mergeOptionWithPreset = (
+function verifyDirectoryExists(path: string, key: string) {
+  try {
+    const rootStat = statSync(path);
+
+    if (!rootStat.isDirectory()) {
+      throw createConfigError(
+        `  ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option is not a directory.`,
+      );
+    }
+  } catch (err: any) {
+    if (err instanceof ValidationError) {
+      throw err;
+    }
+
+    if (err.code === 'ENOENT') {
+      throw createConfigError(
+        `  Directory ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option was not found.`,
+      );
+    }
+
+    // Not sure in which cases `statSync` can throw, so let's just show the underlying error to the user
+    throw createConfigError(
+      `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
+        key,
+      )} option.\n\n  Error was: ${err.message}`,
+    );
+  }
+}
+
+const mergeOptionWithPreset = <T extends 'moduleNameMapper' | 'transform'>(
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: keyof Pick<
-    Config.InitialOptions,
-    'moduleNameMapper' | 'transform'
-  >,
+  optionName: T,
 ) => {
   if (options[optionName] && preset[optionName]) {
     options[optionName] = {
@@ -63,10 +104,19 @@ const mergeOptionWithPreset = (
   }
 };
 
-const setupPreset = (
+const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['globals'] && preset['globals']) {
+    options['globals'] = merge(preset['globals'], options['globals']);
+  }
+};
+
+const setupPreset = async (
+  options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptions => {
+): Promise<Config.InitialOptionsWithRootDir> => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -80,16 +130,17 @@ const setupPreset = (
   );
 
   try {
+    if (!presetModule) {
+      throw new Error(`Cannot find module '${presetPath}'`);
+    }
+
     // Force re-evaluation to support multiple projects
     try {
-      if (presetModule) {
-        delete require.cache[require.resolve(presetModule)];
-      }
-    } catch (e) {}
+      delete require.cache[require.resolve(presetModule)];
+    } catch {}
 
-    // @ts-ignore: `presetModule` can be null?
-    preset = require(presetModule);
-  } catch (error) {
+    preset = await requireOrImportModule(presetModule);
+  } catch (error: any) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
         `  Preset ${chalk.bold(presetPath)} is invalid:\n\n  ${
@@ -98,23 +149,44 @@ const setupPreset = (
       );
     }
 
-    const preset = Resolver.findNodeModule(presetPath, {
-      basedir: options.rootDir,
-    });
+    if (error.message.includes('Cannot find module')) {
+      if (error.message.includes(presetPath)) {
+        const preset = Resolver.findNodeModule(presetPath, {
+          basedir: options.rootDir,
+        });
 
-    if (preset) {
+        if (preset) {
+          throw createConfigError(
+            `  Module ${chalk.bold(
+              presetPath,
+            )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+          );
+        }
+        throw createConfigError(
+          `  Preset ${chalk.bold(presetPath)} not found.`,
+        );
+      }
       throw createConfigError(
-        `  Module ${chalk.bold(
-          presetPath,
-        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+        `  Missing dependency in ${chalk.bold(presetPath)}:\n\n  ${
+          error.message
+        }\n  ${error.stack}`,
       );
     }
 
-    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+    throw createConfigError(
+      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
+        error.message
+      }\n  ${error.stack}`,
+    );
   }
 
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
+  }
+  if (options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = (preset.setupFilesAfterEnv || []).concat(
+      options.setupFilesAfterEnv,
+    );
   }
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
@@ -123,11 +195,12 @@ const setupPreset = (
   }
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
+  mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
 };
 
-const setupBabelJest = (options: Config.InitialOptions) => {
+const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
   const transform = options.transform;
   let babelJest;
   if (transform) {
@@ -140,27 +213,26 @@ const setupBabelJest = (options: Config.InitialOptions) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    if (customJSPattern) {
-      const customJSTransformer = transform[customJSPattern];
-
-      if (customJSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customJSPattern] = babelJest;
-      } else if (customJSTransformer.includes('babel-jest')) {
-        babelJest = customJSTransformer;
+    [customJSPattern, customTSPattern].forEach(pattern => {
+      if (pattern) {
+        const customTransformer = transform[pattern];
+        if (Array.isArray(customTransformer)) {
+          if (customTransformer[0] === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            customTransformer[0] = babelJest;
+          } else if (customTransformer[0].includes('babel-jest')) {
+            babelJest = customTransformer[0];
+          }
+        } else {
+          if (customTransformer === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            transform[pattern] = babelJest;
+          } else if (customTransformer.includes('babel-jest')) {
+            babelJest = customTransformer;
+          }
+        }
       }
-    }
-
-    if (customTSPattern) {
-      const customTSTransformer = transform[customTSPattern];
-
-      if (customTSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customTSPattern] = babelJest;
-      } else if (customTSTransformer.includes('babel-jest')) {
-        babelJest = customTSTransformer;
-      }
-    }
+    });
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -169,34 +241,13 @@ const setupBabelJest = (options: Config.InitialOptions) => {
   }
 };
 
-const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptions &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
-    initialCollectCoverageFrom,
-  )
-    ? initialCollectCoverageFrom // passed from argv
-    : Object.keys(initialCollectCoverageFrom); // passed from options
-  return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
-    map[filePath] = true;
-    return map;
-  }, Object.create(null));
-};
-
 const normalizeCollectCoverageFrom = (
   options: Config.InitialOptions &
     Required<Pick<Config.InitialOptions, 'collectCoverageFrom'>>,
   key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  let value: Array<Config.Glob> | undefined;
+  let value: Array<string> | undefined;
   if (!initialCollectCoverageFrom) {
     value = [];
   }
@@ -204,7 +255,7 @@ const normalizeCollectCoverageFrom = (
   if (!Array.isArray(initialCollectCoverageFrom)) {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
-    } catch (e) {}
+    } catch {}
 
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
@@ -223,7 +274,7 @@ const normalizeCollectCoverageFrom = (
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   key: keyof Pick<
     Config.InitialOptions,
     | 'coveragePathIgnorePatterns'
@@ -244,57 +295,19 @@ const normalizeUnmockedModulePathPatterns = (
     replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
   );
 
-const normalizePreprocessor = (
-  options: Config.InitialOptions,
-): Config.InitialOptions => {
-  if (options.scriptPreprocessor && options.transform) {
-    throw createConfigError(
-      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
-        'transform',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`,
-    );
-  }
-
-  if (options.preprocessorIgnorePatterns && options.transformIgnorePatterns) {
-    throw createConfigError(
-      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
-        'transformIgnorePatterns',
-      )} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'transformIgnorePatterns',
-  )}.`,
-    );
-  }
-
-  if (options.scriptPreprocessor) {
-    options.transform = {
-      '.*': options.scriptPreprocessor,
-    };
-  }
-
-  if (options.preprocessorIgnorePatterns) {
-    options.transformIgnorePatterns = options.preprocessorIgnorePatterns;
-  }
-
-  delete options.scriptPreprocessor;
-  delete options.preprocessorIgnorePatterns;
-  return options;
-};
-
 const normalizeMissingOptions = (
-  options: Config.InitialOptions,
-  configPath: Config.Path | null | undefined,
+  options: Config.InitialOptionsWithRootDir,
+  configPath: string | null | undefined,
   projectIndex: number,
-): Config.InitialOptions => {
-  if (!options.name) {
-    options.name = crypto
-      .createHash('md5')
+): Config.InitialOptionsWithRootDir => {
+  if (!options.id) {
+    options.id = createHash('sha256')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
       .update(String(projectIndex))
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   if (!options.setupFiles) {
@@ -306,9 +319,9 @@ const normalizeMissingOptions = (
 
 const normalizeRootDir = (
   options: Config.InitialOptions,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   // Assert that there *is* a rootDir
-  if (!options.hasOwnProperty('rootDir')) {
+  if (!options.rootDir) {
     throw createConfigError(
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
@@ -317,22 +330,32 @@ const normalizeRootDir = (
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    options.rootDir = realpath(options.rootDir);
-  } catch (e) {
+    options.rootDir = tryRealpath(options.rootDir);
+  } catch {
     // ignored
   }
 
-  return options;
+  verifyDirectoryExists(options.rootDir, 'rootDir');
+
+  return {
+    ...options,
+    rootDir: options.rootDir,
+  };
 };
 
-const normalizeReporters = (options: Config.InitialOptions) => {
-  const reporters = options.reporters;
+const normalizeReporters = ({
+  reporters,
+  rootDir,
+}: Config.InitialOptionsWithRootDir):
+  | Array<Config.ReporterConfig>
+  | undefined => {
   if (!reporters || !Array.isArray(reporters)) {
-    return options;
+    return undefined;
   }
 
   validateReporters(reporters);
-  options.reporters = reporters.map(reporterConfig => {
+
+  return reporters.map(reporterConfig => {
     const normalizedReporterConfig: Config.ReporterConfig =
       typeof reporterConfig === 'string'
         ? // if reporter config is a string, we wrap it in an array
@@ -342,17 +365,17 @@ const normalizeReporters = (options: Config.InitialOptions) => {
         : reporterConfig;
 
     const reporterPath = replaceRootDirInPath(
-      options.rootDir,
+      rootDir,
       normalizedReporterConfig[0],
     );
 
-    if (reporterPath !== DEFAULT_REPORTER_LABEL) {
+    if (!['default', 'github-actions', 'summary'].includes(reporterPath)) {
       const reporter = Resolver.findNodeModule(reporterPath, {
-        basedir: options.rootDir,
+        basedir: rootDir,
       });
       if (!reporter) {
-        throw new Error(
-          `Could not resolve a module for a custom reporter.\n` +
+        throw new Resolver.ModuleNotFoundError(
+          'Could not resolve a module for a custom reporter.\n' +
             `  Module name: ${reporterPath}`,
         );
       }
@@ -360,8 +383,6 @@ const normalizeReporters = (options: Config.InitialOptions) => {
     }
     return normalizedReporterConfig;
   });
-
-  return options;
 };
 
 const buildTestPathPattern = (argv: Config.Argv): string => {
@@ -374,11 +395,13 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string) => {
+  const replacePosixSep = (pattern: string | number) => {
+    // yargs coerces positional args into numbers
+    const patternAsString = pattern.toString();
     if (path.sep === '/') {
-      return pattern;
+      return patternAsString;
     }
-    return pattern.replace(/\//g, '\\\\');
+    return patternAsString.replace(/\//g, '\\\\');
   };
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
@@ -393,29 +416,86 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
+  // eslint-disable-next-line no-console
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
-        `Running all tests instead.`,
+        'Running all tests instead.',
     ),
   );
 };
 
-export default function normalize(
-  options: Config.InitialOptions,
+function validateExtensionsToTreatAsEsm(
+  extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
+) {
+  if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
+    return;
+  }
+
+  function printConfig(opts: Array<string>) {
+    const string = opts.map(ext => `'${ext}'`).join(', ');
+
+    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  }
+
+  const extensionWithoutDot = extensionsToTreatAsEsm.some(
+    ext => !ext.startsWith('.'),
+  );
+
+  if (extensionWithoutDot) {
+    throw createConfigError(
+      `  Option: ${printConfig(
+        extensionsToTreatAsEsm,
+      )} includes a string that does not start with a period (${chalk.bold(
+        '.',
+      )}).
+  Please change your configuration to ${printConfig(
+    extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
+  )}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.js')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.js'",
+      )} which is always inferred based on ${chalk.bold(
+        'type',
+      )} in its nearest ${chalk.bold('package.json')}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.cjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.cjs'",
+      )} which is always treated as CommonJS.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.mjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.mjs'",
+      )} which is always treated as an ECMAScript Module.`,
+    );
+  }
+}
+
+export default async function normalize(
+  initialOptions: Config.InitialOptions,
   argv: Config.Argv,
-  configPath?: Config.Path | null,
-  projectIndex: number = Infinity,
-): {
+  configPath?: string | null,
+  projectIndex = Infinity,
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
-} {
-  const {hasDeprecationWarnings} = validate(options, {
+}> {
+  const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
-    recursiveBlacklist: [
-      'collectCoverageOnlyFrom',
+    recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
       'coverageThreshold',
@@ -426,56 +506,51 @@ export default function normalize(
     ],
   });
 
-  options = normalizePreprocessor(
-    normalizeReporters(
-      normalizeMissingOptions(
-        normalizeRootDir(setFromArgv(options, argv)),
-        configPath,
-        projectIndex,
-      ),
-    ),
+  let options = normalizeMissingOptions(
+    normalizeRootDir(setFromArgv(initialOptions, argv)),
+    configPath,
+    projectIndex,
   );
 
   if (options.preset) {
-    options = setupPreset(options, options.preset);
+    options = await setupPreset(options, options.preset);
   }
 
   if (!options.setupFilesAfterEnv) {
     options.setupFilesAfterEnv = [];
   }
 
-  if (
-    options.setupTestFrameworkScriptFile &&
-    options.setupFilesAfterEnv.length > 0
-  ) {
-    throw createConfigError(`  Options: ${chalk.bold(
-      'setupTestFrameworkScriptFile',
-    )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold(
-    'setupFilesAfterEnv',
-  )}.`);
-  }
-
-  if (options.setupTestFrameworkScriptFile) {
-    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
-  }
-
-  options.testEnvironment = getTestEnvironment({
+  options.testEnvironment = resolveTestEnvironment({
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+    testEnvironment:
+      options.testEnvironment ||
+      require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
-
-  if (!options.roots && options.testPathDirs) {
-    options.roots = options.testPathDirs;
-    delete options.testPathDirs;
-  }
 
   if (!options.roots) {
     options.roots = [options.rootDir];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
-    options.testRunner = require.resolve('jest-jasmine2');
+  if (
+    !options.testRunner ||
+    options.testRunner === 'circus' ||
+    options.testRunner === 'jest-circus' ||
+    options.testRunner === 'jest-circus/runner'
+  ) {
+    options.testRunner = require.resolve('jest-circus/runner');
+  } else if (options.testRunner === 'jasmine2') {
+    try {
+      options.testRunner = require.resolve('jest-jasmine2');
+    } catch (error: any) {
+      if (error.code === 'MODULE_NOT_FOUND') {
+        throw createConfigError(
+          'jest-jasmine is no longer shipped by default with Jest, you need to install it explicitly or provide an absolute path to Jest',
+        );
+      }
+
+      throw error;
+    }
   }
 
   if (!options.coverageDirectory) {
@@ -484,9 +559,9 @@ export default function normalize(
 
   setupBabelJest(options);
   // TODO: Type this properly
-  const newOptions = ({
+  const newOptions = {
     ...DEFAULT_CONFIG,
-  } as unknown) as AllOptions;
+  } as unknown as AllOptions;
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -494,6 +569,12 @@ export default function normalize(
       key: 'resolver',
       rootDir: options.rootDir,
     });
+  }
+
+  validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
+
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
   }
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
@@ -511,9 +592,6 @@ export default function normalize(
       Required<Pick<Config.InitialOptions, typeof key>>;
     let value;
     switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-        break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
@@ -562,7 +640,7 @@ export default function normalize(
       case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
-      case 'moduleLoader':
+      case 'runtime':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -583,8 +661,9 @@ export default function normalize(
           const option = oldOptions[key];
           value =
             option &&
-            getRunner(newOptions.resolver, {
+            resolveRunner(newOptions.resolver, {
               filePath: option,
+              requireResolveFunction: require.resolve,
               rootDir: options.rootDir,
             });
         }
@@ -620,14 +699,23 @@ export default function normalize(
         const transform = oldOptions[key];
         value =
           transform &&
-          Object.keys(transform).map(regex => [
-            regex,
-            resolve(newOptions.resolver, {
-              filePath: transform[regex],
-              key,
-              rootDir: options.rootDir,
-            }),
-          ]);
+          Object.keys(transform).map(regex => {
+            const transformElement = transform[regex];
+            return [
+              regex,
+              resolve(newOptions.resolver, {
+                filePath: Array.isArray(transformElement)
+                  ? transformElement[0]
+                  : transformElement,
+                key,
+                rootDir: options.rootDir,
+              }),
+              Array.isArray(transformElement) ? transformElement[1] : {},
+            ];
+          });
+        break;
+      case 'reporters':
+        value = normalizeReporters(oldOptions);
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -659,14 +747,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob.sync(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce<Array<string | Config.InitialProjectOptions>>(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [],
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -705,8 +798,8 @@ export default function normalize(
           !value.includes('js')
         ) {
           const errorMessage =
-            `  moduleFileExtensions must include 'js':\n` +
-            `  but instead received:\n` +
+            "  moduleFileExtensions must include 'js':\n" +
+            '  but instead received:\n' +
             `    ${chalk.bold.red(JSON.stringify(value))}`;
 
           // If `js` is not included, any dependency Jest itself injects into
@@ -718,8 +811,7 @@ export default function normalize(
           // `require('some-package/package') without the trailing `.json` as it
           // works in Node normally.
           throw createConfigError(
-            errorMessage +
-              "\n  Please change your configuration to include 'js'.",
+            `${errorMessage}\n  Please change your configuration to include 'js'.`,
           );
         }
 
@@ -742,35 +834,11 @@ export default function normalize(
       }
       case 'displayName': {
         const displayName = oldOptions[key] as Config.DisplayName;
-        if (typeof displayName === 'string') {
-          value = displayName;
-          break;
-        }
         /**
          * Ensuring that displayName shape is correct here so that the
          * reporters can trust the shape of the data
-         * TODO: Normalize "displayName" such that given a config option
-         * {
-         *  "displayName": "Test"
-         * }
-         * becomes
-         * {
-         *   displayName: {
-         *     name: "Test",
-         *     color: "white"
-         *   }
-         * }
-         *
-         * This can't be done now since this will be a breaking change
-         * for custom reporters
          */
-        if (getType(displayName) === 'object') {
-          const errorMessage =
-            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
-            '  {\n' +
-            '    name: string;\n' +
-            '    color: string;\n' +
-            '  }\n';
+        if (typeof displayName === 'object') {
           const {name, color} = displayName;
           if (
             !name ||
@@ -778,59 +846,86 @@ export default function normalize(
             typeof name !== 'string' ||
             typeof color !== 'string'
           ) {
+            const errorMessage =
+              `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+              '  {\n' +
+              '    name: string;\n' +
+              '    color: string;\n' +
+              '  }\n';
             throw createConfigError(errorMessage);
           }
+          value = oldOptions[key];
+        } else {
+          value = {
+            color: getDisplayNameColor(options.runner),
+            name: displayName,
+          };
         }
+        break;
+      }
+      case 'testTimeout': {
+        if (oldOptions[key] < 0) {
+          throw createConfigError(
+            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+          );
+        }
+
         value = oldOptions[key];
         break;
       }
+      case 'snapshotFormat': {
+        value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
+      case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
       case 'detectOpenHandles':
       case 'errorOnDeprecated':
       case 'expand':
-      case 'extraGlobals':
+      case 'extensionsToTreatAsEsm':
       case 'globals':
+      case 'fakeTimers':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'mapCoverage':
-      case 'name':
+      case 'id':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':
       case 'onlyChanged':
+      case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
-      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'restoreMocks':
       case 'rootDir':
       case 'runTestsByPath':
+      case 'sandboxInjectedGlobals':
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
+      case 'slowTestThreshold':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testURL':
-      case 'timers':
       case 'useStderr':
       case 'verbose':
       case 'watch':
@@ -838,21 +933,26 @@ export default function normalize(
       case 'watchman':
         value = oldOptions[key];
         break;
+      case 'workerIdleMemoryLimit':
+        value = stringToBytes(oldOptions[key], totalmem());
+        break;
       case 'watchPlugins':
         value = (oldOptions[key] || []).map(watchPlugin => {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -860,29 +960,47 @@ export default function normalize(
         });
         break;
     }
-    // @ts-ignore: automock is missing in GlobalConfig, so what
+    // @ts-expect-error: automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
 
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
+
+  newOptions.roots.forEach((root, i) => {
+    verifyDirectoryExists(root, `roots[${i}]`);
+  });
+
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(process.cwd());
-  } catch (e) {
+    newOptions.cwd = tryRealpath(process.cwd());
+  } catch {
     // ignored
   }
 
-  newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+  newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
+    filePath:
+      options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
   });
 
-  newOptions.nonFlagArgs = argv._;
+  if (newOptions.runner === DEFAULT_CONFIG.runner) {
+    newOptions.runner = require.resolve(newOptions.runner);
+  }
+
+  newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
-    (newOptions.testFailureExitCode as unknown) as string,
+    newOptions.testFailureExitCode as unknown as string,
     10,
   );
 
@@ -896,24 +1014,52 @@ export default function normalize(
 
   if (argv.all) {
     newOptions.onlyChanged = false;
+    newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  if (!newOptions.onlyChanged) {
+    newOptions.onlyChanged = false;
+  }
+
+  if (!newOptions.lastCommit) {
+    newOptions.lastCommit = false;
+  }
+
+  if (!newOptions.onlyFailures) {
+    newOptions.onlyFailures = false;
+  }
+
+  if (!newOptions.watchAll) {
+    newOptions.watchAll = false;
+  }
+
+  // as unknown since it can happen. We really need to fix the types here
+  if (
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
+  ) {
+    newOptions.moduleNameMapper = [];
+  }
+
+  if (argv.ci != null) {
+    newOptions.ci = argv.ci;
+  }
+
   newOptions.updateSnapshot =
-    argv.ci && !argv.updateSnapshot
+    newOptions.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
       ? 'all'
       : 'new';
 
   newOptions.maxConcurrency = parseInt(
-    (newOptions.maxConcurrency as unknown) as string,
+    newOptions.maxConcurrency as unknown as string,
     10,
   );
-  newOptions.maxWorkers = getMaxWorkers(argv);
+  newOptions.maxWorkers = getMaxWorkers(argv, options);
 
   if (newOptions.testRegex!.length && options.testMatch) {
     throw createConfigError(
@@ -942,7 +1088,7 @@ export default function normalize(
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = newOptions.nonFlagArgs.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
@@ -953,10 +1099,10 @@ export default function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch.some(
-            replacePathSepForGlob(path.relative(options.rootDir, filename)),
+          micromatch(
+            [replacePathSepForGlob(path.relative(options.rootDir, filename))],
             newOptions.collectCoverageFrom!,
-          )
+          ).length === 0
         ) {
           return patterns;
         }
@@ -965,6 +1111,32 @@ export default function normalize(
     }
 
     newOptions.collectCoverageFrom = collectCoverageFrom;
+  } else if (!newOptions.collectCoverageFrom) {
+    newOptions.collectCoverageFrom = [];
+  }
+
+  if (!newOptions.findRelatedTests) {
+    newOptions.findRelatedTests = false;
+  }
+
+  if (!newOptions.projects) {
+    newOptions.projects = [];
+  }
+
+  if (!newOptions.sandboxInjectedGlobals) {
+    newOptions.sandboxInjectedGlobals = [];
+  }
+
+  if (!newOptions.forceExit) {
+    newOptions.forceExit = false;
+  }
+
+  if (!newOptions.logHeapUsage) {
+    newOptions.logHeapUsage = false;
+  }
+
+  if (argv.shard) {
+    newOptions.shard = parseShardPair(argv.shard);
   }
 
   return {

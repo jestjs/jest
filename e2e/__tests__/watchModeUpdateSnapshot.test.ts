@@ -5,24 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch-mode-update-snapshot');
+const DIR = path.resolve(tmpdir(), 'watch-mode-update-snapshot');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
-  print: val => val.replace(/\[s\[u/g, '\n'),
+  print: val => (val as string).replace(/\[s\[u/g, '\n'),
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
-const setupFiles = input => {
+const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
     '__tests__/__snapshots__/bar.spec.js.snap': `// Jest Snapshot v1, https://goo.gl/fbAQLP
 
@@ -44,12 +43,12 @@ test('can press "u" to update snapshots', () => {
   const input = [{keys: ['u']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
+  const {exitCode, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
   const results = extractSummaries(stderr);
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(wrap(rest)).toMatchSnapshot('test results');
-    expect(wrap(summary)).toMatchSnapshot('test summary');
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 
 let circusIt: Global.It;
 
@@ -22,7 +22,7 @@ aliasCircusIt();
 describe('test/it.todo error throwing', () => {
   it('todo throws error when given no arguments', () => {
     expect(() => {
-      // @ts-ignore: Testing runtime errors here
+      // @ts-expect-error: Testing runtime errors here
       circusIt.todo();
     }).toThrowError('Todo must be called with only a description.');
   });
@@ -33,7 +33,7 @@ describe('test/it.todo error throwing', () => {
   });
   it('todo throws error when given none string description', () => {
     expect(() => {
-      // @ts-ignore: Testing runtime errors here
+      // @ts-expect-error: Testing runtime errors here
       circusIt.todo(() => {});
     }).toThrowError('Todo must be called with only a description.');
   });

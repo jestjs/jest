@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import getType from 'jest-get-type';
-import {formatPrettyObject, ValidationError, ERROR} from './utils';
+import chalk = require('chalk');
+import {getType} from 'jest-get-type';
 import {getValues} from './condition';
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
+import {ERROR, ValidationError, formatPrettyObject} from './utils';
 
 export const errorMessage = (
   option: string,
-  received: any,
-  defaultValue: any,
+  received: unknown,
+  defaultValue: unknown,
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {
@@ -24,7 +24,7 @@ export const errorMessage = (
   );
 
   const message = `  Option ${chalk.bold(
-    `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
+    `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
   )} must be of type:
     ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
   but instead received:
@@ -39,7 +39,7 @@ ${formatExamples(option, conditions)}`;
   throw new ValidationError(name, message, comment);
 };
 
-function formatExamples(option: string, examples: Array<any>) {
+function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
     e => `  {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}

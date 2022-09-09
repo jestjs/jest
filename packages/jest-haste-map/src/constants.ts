@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-/* eslint-disable sort-keys */
 
 /*
  * This file exports a set of constants that are used for Jest's haste map
@@ -15,8 +14,9 @@
  * a custom serialization library.
  */
 
-import {HType} from './types';
+import type {HType} from './types';
 
+/* eslint-disable sort-keys */
 const constants: HType = {
   /* dependency serialization */
   DEPENDENCY_DELIM: '\0',
@@ -41,5 +41,6 @@ const constants: HType = {
   GENERIC_PLATFORM: 'g',
   NATIVE_PLATFORM: 'native',
 };
+/* eslint-enable */
 
 export default constants;

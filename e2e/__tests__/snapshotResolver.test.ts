@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import runJest from '../runJest';
 
 const snapshotDir = path.resolve(
@@ -33,7 +33,6 @@ describe('Custom snapshot resolver', () => {
 
     expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
 
-    // $FlowFixMe dynamic require
     const content = require(snapshotFile);
     expect(content).toHaveProperty(
       'snapshots are written to custom location 1',

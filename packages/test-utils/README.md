@@ -1,25 +1,30 @@
-# babel-jest
+# test-utils
 
-[Babel](https://github.com/babel/babel) [jest](https://github.com/facebook/jest) plugin
+Private package exports utilities for multiple end-to-end tests or packages.
 
-## Usage
+## alignedAnsiStyleSerializer
 
-If you are already using `jest-cli`, just add `babel-jest` and it will automatically compile JavaScript code using Babel.
+Display colors concisely and clearly so we can review changes quickly and confidently:
 
-```bash
-yarn add --dev babel-jest @babel/core
-```
+- reports when matchers fail
+- annotation and comparison lines from differences
 
-If you would like to write your own preprocessor, uninstall and delete babel-jest and set the [config.transform](https://jestjs.io/docs/configuration#transform-object-string-string) option to your preprocessor.
+Raw snapshot avoids distracting `\\` or `\"` escape sequences from default string serialization.
 
-## Setup
+Tag names have consistent length to align columns like `Expected` and `Received` or comparison lines:
 
-_Note: this step is only required if you are using `babel-jest` with additional code preprocessors._
+|     | style      |
+| --: | :--------- |
+| `b` | `bold`     |
+| `d` | `dim`      |
+| `g` | `green`    |
+| `i` | `inverse`  |
+| `r` | `red`      |
+| `y` | `yellow`   |
+| `Y` | `bgYellow` |
 
-To explicitly define `babel-jest` as a transformer for your JavaScript code, map _.js_ files to the `babel-jest` module.
+```js
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 
-```json
-"transform": {
-  "^.+\\.jsx?$": "babel-jest"
-},
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 ```

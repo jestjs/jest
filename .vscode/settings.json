@@ -1,13 +1,9 @@
 {
   "editor.rulers": [80],
-  "files.exclude": {
-    "**/.git": true,
-    "**/node_modules": true,
-    "**/build": true
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
   },
-  "editor.formatOnSave": true,
-  "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
-  "jest.pathToJest": "yarn jest --",
-  "prettier.eslintIntegration": true
+  "jest.jestCommandLine": "yarn jest",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

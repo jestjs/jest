@@ -6,8 +6,14 @@
  *
  */
 
+import {getType} from 'jest-get-type';
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import {Expect, MatchersObject, SyncExpectationResult} from './types';
+import type {
+  Expect,
+  MatcherState,
+  MatchersObject,
+  SyncExpectationResult,
+} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -17,35 +23,49 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
-if (!(global as any)[JEST_MATCHERS_OBJECT]) {
-  Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
+if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
+  const defaultState: MatcherState = {
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+    suppressedErrors: [], // errors that are not thrown immediately.
+  };
+  Object.defineProperty(globalThis, JEST_MATCHERS_OBJECT, {
     value: {
       matchers: Object.create(null),
-      state: {
-        assertionCalls: 0,
-        expectedAssertionsNumber: null,
-        isExpectingAssertions: false,
-        suppressedErrors: [], // errors that are not thrown immediately.
-      },
+      state: defaultState,
     },
   });
 }
 
-export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
+export const getState = <State extends MatcherState = MatcherState>(): State =>
+  (globalThis as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: object) => {
-  Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
+export const setState = <State extends MatcherState = MatcherState>(
+  state: Partial<State>,
+): void => {
+  Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = (): MatchersObject =>
+  (globalThis as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
   matchers: MatchersObject,
   isInternal: boolean,
   expect: Expect,
-) => {
+): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
+
+    if (typeof matcher !== 'function') {
+      throw new TypeError(
+        `expect.extend: \`${key}\` is not a valid matcher. Must be a function, is "${getType(
+          matcher,
+        )}"`,
+      );
+    }
+
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
       value: isInternal,
     });
@@ -53,14 +73,16 @@ export const setMatchers = (
     if (!isInternal) {
       // expect is defined
 
-      class CustomMatcher extends AsymmetricMatcher<[unknown, unknown]> {
-        constructor(inverse: boolean = false, ...sample: [unknown, unknown]) {
-          super(sample);
-          this.inverse = inverse;
+      class CustomMatcher extends AsymmetricMatcher<
+        [unknown, ...Array<unknown>]
+      > {
+        constructor(inverse = false, ...sample: [unknown, ...Array<unknown>]) {
+          super(sample, inverse);
         }
 
         asymmetricMatch(other: unknown) {
-          const {pass} = matcher(
+          const {pass} = matcher.call(
+            this.getMatcherContext(),
             other,
             ...this.sample,
           ) as SyncExpectationResult;
@@ -72,24 +94,31 @@ export const setMatchers = (
           return `${this.inverse ? 'not.' : ''}${key}`;
         }
 
-        getExpectedType() {
+        override getExpectedType() {
           return 'any';
         }
 
-        toAsymmetricMatcher() {
-          return `${this.toString()}<${this.sample.join(', ')}>`;
+        override toAsymmetricMatcher() {
+          return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
         }
       }
 
-      expect[key] = (...sample: [unknown, unknown]) =>
-        new CustomMatcher(false, ...sample);
-      if (!expect.not) {
-        expect.not = {};
-      }
-      expect.not[key] = (...sample: [unknown, unknown]) =>
-        new CustomMatcher(true, ...sample);
+      Object.defineProperty(expect, key, {
+        configurable: true,
+        enumerable: true,
+        value: (...sample: [unknown, ...Array<unknown>]) =>
+          new CustomMatcher(false, ...sample),
+        writable: true,
+      });
+      Object.defineProperty(expect.not, key, {
+        configurable: true,
+        enumerable: true,
+        value: (...sample: [unknown, ...Array<unknown>]) =>
+          new CustomMatcher(true, ...sample),
+        writable: true,
+      });
     }
   });
 
-  Object.assign((global as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
+  Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
 };

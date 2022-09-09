@@ -5,19 +5,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
-import {replacePathSepForGlob} from 'jest-util';
-import micromatch from 'micromatch';
-import {ShouldInstrumentOptions} from './types';
+import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
+import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
-  escapePathForRegex(path.sep + '__mocks__' + path.sep),
+  escapePathForRegex(`${path.sep}__mocks__${path.sep}`),
 );
 
+const cachedRegexes = new Map<string, RegExp>();
+const getRegex = (regexStr: string) => {
+  if (!cachedRegexes.has(regexStr)) {
+    cachedRegexes.set(regexStr, new RegExp(regexStr));
+  }
+
+  const regex = cachedRegexes.get(regexStr)!;
+
+  // prevent stateful regexes from breaking, just in case
+  regex.lastIndex = 0;
+
+  return regex;
+};
+
 export default function shouldInstrument(
-  filename: Config.Path,
+  filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {
@@ -33,33 +47,24 @@ export default function shouldInstrument(
   }
 
   if (
-    !config.testPathIgnorePatterns.some(pattern => !!filename.match(pattern))
+    !config.testPathIgnorePatterns.some(pattern =>
+      getRegex(pattern).test(filename),
+    )
   ) {
     if (config.testRegex.some(regex => new RegExp(regex).test(filename))) {
       return false;
     }
 
-    if (micromatch.some(replacePathSepForGlob(filename), config.testMatch)) {
+    if (globsToMatcher(config.testMatch)(replacePathSepForGlob(filename))) {
       return false;
     }
   }
 
   if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    options.collectCoverageOnlyFrom &&
-    !options.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
     // still cover if `only` is specified
-    !options.collectCoverageOnlyFrom &&
-    options.collectCoverageFrom &&
-    !micromatch.some(
+    options.collectCoverageFrom.length &&
+    !globsToMatcher(options.collectCoverageFrom)(
       replacePathSepForGlob(path.relative(config.rootDir, filename)),
-      options.collectCoverageFrom,
     )
   ) {
     return false;
@@ -79,11 +84,11 @@ export default function shouldInstrument(
     return false;
   }
 
-  if (config.setupFiles.some(setupFile => setupFile === filename)) {
+  if (config.setupFiles.includes(filename)) {
     return false;
   }
 
-  if (config.setupFilesAfterEnv.some(setupFile => setupFile === filename)) {
+  if (config.setupFilesAfterEnv.includes(filename)) {
     return false;
   }
 
@@ -92,7 +97,12 @@ export default function shouldInstrument(
   }
 
   if (options.changedFiles && !options.changedFiles.has(filename)) {
-    return false;
+    if (!options.sourcesRelatedToTestsInChangedFiles) {
+      return false;
+    }
+    if (!options.sourcesRelatedToTestsInChangedFiles.has(filename)) {
+      return false;
+    }
   }
 
   return true;

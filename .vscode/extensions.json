@@ -4,7 +4,6 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "redhat.vscode-yaml",
-    "flowtype.flow-for-vscode",
     "esbenp.prettier-vscode",
     "Orta.vscode-jest"
   ]

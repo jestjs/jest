@@ -15,7 +15,7 @@ describe('promise beforeAll', () => {
       process.nextTick(resolve);
     }).then(() => {
       flag = 1;
-    })
+    }),
   );
 
   beforeAll(() => new Promise(resolve => setTimeout(resolve, 10)), 500);
@@ -35,7 +35,8 @@ describe('promise beforeAll', () => {
   describe('done - with error thrown', () => {
     beforeAll(done => {
       throw new Error('fail');
-      done(); // eslint-disable-line
+      // eslint-disable-next-line no-unreachable
+      done();
     });
     it('fails', () => {});
   });

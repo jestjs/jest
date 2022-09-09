@@ -5,21 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {printListItems, printObjectProperties} from '../collections';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
-const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
+const asymmetricMatcher =
+  typeof Symbol === 'function' && Symbol.for
+    ? Symbol.for('jest.asymmetricMatcher')
+    : 0x1357a5;
 const SPACE = ' ';
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   val: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
+) => {
   const stringedValue = val.toString();
 
   if (
@@ -27,15 +29,16 @@ export const serialize = (
     stringedValue === 'ArrayNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '[' +
-      printListItems(val.sample, config, indentation, depth, refs, printer) +
-      ']'
-    );
+    return `${stringedValue + SPACE}[${printListItems(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}]`;
   }
 
   if (
@@ -43,22 +46,16 @@ export const serialize = (
     stringedValue === 'ObjectNotContaining'
   ) {
     if (++depth > config.maxDepth) {
-      return '[' + stringedValue + ']';
+      return `[${stringedValue}]`;
     }
-    return (
-      stringedValue +
-      SPACE +
-      '{' +
-      printObjectProperties(
-        val.sample,
-        config,
-        indentation,
-        depth,
-        refs,
-        printer,
-      ) +
-      '}'
-    );
+    return `${stringedValue + SPACE}{${printObjectProperties(
+      val.sample,
+      config,
+      indentation,
+      depth,
+      refs,
+      printer,
+    )}}`;
   }
 
   if (
@@ -83,10 +80,17 @@ export const serialize = (
     );
   }
 
+  if (typeof val.toAsymmetricMatcher !== 'function') {
+    throw new Error(
+      `Asymmetric matcher ${val.constructor.name} does not implement toAsymmetricMatcher()`,
+    );
+  }
+
   return val.toAsymmetricMatcher();
 };
 
-export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
+export const test: NewPlugin['test'] = (val: any) =>
+  val && val.$$typeof === asymmetricMatcher;
 
 const plugin: NewPlugin = {serialize, test};
 

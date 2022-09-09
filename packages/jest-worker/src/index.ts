@@ -5,23 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import WorkerPool from './WorkerPool';
+import {cpus} from 'os';
+import {isAbsolute} from 'path';
 import Farm from './Farm';
-import {WorkerPoolInterface, WorkerPoolOptions, FarmOptions} from './types';
+import WorkerPool from './WorkerPool';
+import type {
+  PoolExitResult,
+  WorkerFarmOptions,
+  WorkerModule,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
+
+export {default as PriorityQueue} from './PriorityQueue';
+export {default as FifoQueue} from './FifoQueue';
+export {default as messageParent} from './workers/messageParent';
+
+export type {
+  PromiseWithCustomMessage,
+  TaskQueue,
+  WorkerFarmOptions,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
+
+export type JestWorkerFarm<T extends Record<string, unknown>> = Worker &
+  WorkerModule<T>;
 
 function getExposedMethods(
   workerPath: string,
-  options: FarmOptions,
+  options: WorkerFarmOptions,
 ): ReadonlyArray<string> {
   let exposedMethods = options.exposedMethods;
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Record<string, any> = require(workerPath);
+    const module: Record<string, unknown> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
-      // @ts-ignore: no index
       name => typeof module[name] === 'function',
     );
 
@@ -58,26 +79,31 @@ function getExposedMethods(
  *     processed by the same worker. This is specially useful if your workers
  *     are caching results.
  */
-export default class JestWorker {
+export class Worker {
   private _ending: boolean;
   private _farm: Farm;
-  private _options: FarmOptions;
+  private _options: WorkerFarmOptions;
   private _workerPool: WorkerPoolInterface;
 
-  constructor(workerPath: string, options?: FarmOptions) {
+  constructor(workerPath: string, options?: WorkerFarmOptions) {
     this._options = {...options};
     this._ending = false;
 
+    if (!isAbsolute(workerPath)) {
+      throw new Error(`'workerPath' must be absolute, got '${workerPath}'`);
+    }
+
     const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads || false,
-      forkOptions: this._options.forkOptions || {},
-      maxRetries: this._options.maxRetries || 3,
-      numWorkers: this._options.numWorkers || Math.max(os.cpus().length - 1, 1),
-      setupArgs: this._options.setupArgs || [],
+      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
+      forkOptions: this._options.forkOptions ?? {},
+      idleMemoryLimit: this._options.idleMemoryLimit,
+      maxRetries: this._options.maxRetries ?? 3,
+      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      resourceLimits: this._options.resourceLimits ?? {},
+      setupArgs: this._options.setupArgs ?? [],
     };
 
     if (this._options.WorkerPool) {
-      // @ts-ignore: constructor target any?
       this._workerPool = new this._options.WorkerPool(
         workerPath,
         workerPoolOptions,
@@ -89,7 +115,11 @@ export default class JestWorker {
     this._farm = new Farm(
       workerPoolOptions.numWorkers,
       this._workerPool.send.bind(this._workerPool),
-      this._options.computeWorkerKey,
+      {
+        computeWorkerKey: this._options.computeWorkerKey,
+        taskQueue: this._options.taskQueue,
+        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
+      },
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
@@ -97,26 +127,27 @@ export default class JestWorker {
 
   private _bindExposedWorkerMethods(
     workerPath: string,
-    options: FarmOptions,
+    options: WorkerFarmOptions,
   ): void {
     getExposedMethods(workerPath, options).forEach(name => {
       if (name.startsWith('_')) {
         return;
       }
 
+      // eslint-disable-next-line no-prototype-builtins
       if (this.constructor.prototype.hasOwnProperty(name)) {
-        throw new TypeError('Cannot define a method called ' + name);
+        throw new TypeError(`Cannot define a method called ${name}`);
       }
 
-      // @ts-ignore: dynamic extension of the class instance is expected.
+      // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
     });
   }
 
   private _callFunctionWithArgs(
     method: string,
-    ...args: Array<any>
-  ): Promise<any> {
+    ...args: Array<unknown>
+  ): Promise<unknown> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
@@ -132,13 +163,12 @@ export default class JestWorker {
     return this._workerPool.getStdout();
   }
 
-  end(): void {
+  async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
-
-    this._workerPool.end();
-
     this._ending = true;
+
+    return this._workerPool.end();
   }
 }

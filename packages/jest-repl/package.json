@@ -1,34 +1,48 @@
 {
   "name": "jest-repl",
-  "version": "24.7.1",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-repl"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/jest-repl": "./bin/jest-repl.js",
+    "./bin/jest-runtime-cli": "./bin/jest-runtime-cli.js"
+  },
   "dependencies": {
-    "@jest/transform": "^24.7.1",
-    "@jest/types": "^24.7.0",
-    "jest-config": "^24.7.1",
-    "jest-runtime": "^24.7.1",
-    "jest-validate": "^24.7.0",
+    "@jest/console": "workspace:^",
+    "@jest/environment": "workspace:^",
+    "@jest/transform": "workspace:^",
+    "@jest/types": "workspace:^",
+    "chalk": "^4.0.0",
+    "jest-config": "workspace:^",
+    "jest-runtime": "workspace:^",
+    "jest-util": "workspace:^",
+    "jest-validate": "workspace:^",
     "repl": "^0.1.3",
-    "yargs": "^12.0.2"
+    "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@types/yargs": "^12.0.2"
+    "@types/yargs": "^17.0.8",
+    "execa": "^5.0.0"
   },
   "bin": {
-    "jest-repl": "./bin/jest-repl.js"
+    "jest-repl": "./bin/jest-repl.js",
+    "jest-runtime": "./bin/jest-runtime-cli.js"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

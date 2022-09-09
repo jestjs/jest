@@ -6,14 +6,16 @@
  */
 
 module.exports = {
-  process(src, filename, config, options) {
-    return `
-      module.exports = {
-        root: 'App-root',
-        header: 'App-header',
-        logo: 'App-logo',
-        intro: 'App-intro',
-      };
-    `;
+  process() {
+    const code = `
+    module.exports = {
+      root: 'App-root',
+      header: 'App-header',
+      logo: 'App-logo',
+      intro: 'App-intro',
+    };
+  `;
+
+    return {code};
   },
 };

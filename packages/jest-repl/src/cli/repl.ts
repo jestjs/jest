@@ -1,28 +1,29 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
- * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 declare const jestGlobalConfig: Config.GlobalConfig;
 declare const jestProjectConfig: Config.ProjectConfig;
 
-import path from 'path';
-import repl from 'repl';
-import vm from 'vm';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import * as repl from 'repl';
+import {runInThisContext} from 'vm';
+import type {SyncTransformer} from '@jest/transform';
+import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 
-let transformer: Transformer;
+// TODO: support async as well
+let transformer: SyncTransformer;
+let transformerConfig: unknown;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
-  _context: any,
+  _context: unknown,
   _filename: string,
-  callback: (e: Error | null, result?: any) => void,
+  callback: (e: Error | null, result?: unknown) => void,
 ) => {
   let result;
   try {
@@ -30,15 +31,25 @@ const evalCommand: repl.REPLEval = (
       const transformResult = transformer.process(
         cmd,
         jestGlobalConfig.replname || 'jest.js',
-        jestProjectConfig,
+        {
+          cacheFS: new Map<string, string>(),
+          config: jestProjectConfig,
+          configString: JSON.stringify(jestProjectConfig),
+          instrument: false,
+          supportsDynamicImport: false,
+          supportsExportNamespaceFrom: false,
+          supportsStaticESM: false,
+          supportsTopLevelAwait: false,
+          transformerConfig,
+        },
       );
       cmd =
         typeof transformResult === 'string'
           ? transformResult
           : transformResult.code;
     }
-    result = vm.runInThisContext(cmd);
-  } catch (e) {
+    result = runInThisContext(cmd);
+  } catch (e: any) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
@@ -62,11 +73,21 @@ if (jestProjectConfig.transform) {
   for (let i = 0; i < jestProjectConfig.transform.length; i++) {
     if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
       transformerPath = jestProjectConfig.transform[i][1];
+      transformerConfig = jestProjectConfig.transform[i][2];
       break;
     }
   }
   if (transformerPath) {
-    transformer = require(transformerPath);
+    const transformerOrFactory = interopRequireDefault(
+      require(transformerPath),
+    ).default;
+
+    if (typeof transformerOrFactory.createTransformer === 'function') {
+      transformer = transformerOrFactory.createTransformer(transformerConfig);
+    } else {
+      transformer = transformerOrFactory;
+    }
+
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',

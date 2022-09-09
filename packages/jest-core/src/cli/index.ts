@@ -5,43 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import chalk = require('chalk');
+import exit = require('exit');
+import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
-import {createDirectory, preRunMessage} from 'jest-util';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
-import Runtime, {Context} from 'jest-runtime';
-import {ChangedFilesPromise} from 'jest-changed-files';
-import HasteMap from 'jest-haste-map';
-import chalk from 'chalk';
-import rimraf from 'rimraf';
-import exit from 'exit';
-import {Filter} from '../types';
-import createContext from '../lib/create_context';
-import getChangedFilesPromise from '../getChangedFilesPromise';
+import type HasteMap from 'jest-haste-map';
+import Runtime from 'jest-runtime';
+import {createDirectory, preRunMessage} from 'jest-util';
+import {TestWatcher} from 'jest-watcher';
 import {formatHandleErrors} from '../collectHandles';
-import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
-import runJest from '../runJest';
-import TestWatcher from '../TestWatcher';
-import watch from '../watch';
+import getChangedFilesPromise from '../getChangedFilesPromise';
+import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
+import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
+import getSelectProjectsMessage from '../getSelectProjectsMessage';
+import createContext from '../lib/createContext';
+import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
+import logDebugMessages from '../lib/logDebugMessages';
 import pluralize from '../pluralize';
-import logDebugMessages from '../lib/log_debug_messages';
+import runJest from '../runJest';
+import type {Filter} from '../types';
+import watch from '../watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
-export const runCLI = async (
+export async function runCLI(
   argv: Config.Argv,
-  projects: Array<Config.Path>,
+  projects: Array<string>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
-}> => {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
+}> {
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -49,7 +48,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );
@@ -64,26 +63,52 @@ export const runCLI = async (
   }
 
   if (argv.clearCache) {
-    configs.forEach(config => {
-      rimraf.sync(config.cacheDirectory);
-      process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
-    });
+    // stick in a Set to dedupe the deletions
+    new Set(configs.map(config => config.cacheDirectory)).forEach(
+      cacheDirectory => {
+        fs.rmSync(cacheDirectory, {force: true, recursive: true});
+        process.stdout.write(`Cleared ${cacheDirectory}\n`);
+      },
+    );
 
     exit(0);
   }
 
-  await _run(
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(configs, {
+    ignoreProjects: argv.ignoreProjects,
+    selectProjects: argv.selectProjects,
+  });
+  if (argv.selectProjects || argv.ignoreProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs, {
+      ignoreProjects: argv.ignoreProjects,
+      selectProjects: argv.selectProjects,
+    });
+    if (namesMissingWarning) {
+      outputStream.write(namesMissingWarning);
+    }
+    outputStream.write(
+      getSelectProjectsMessage(configsOfProjectsToRun, {
+        ignoreProjects: argv.ignoreProjects,
+        selectProjects: argv.selectProjects,
+      }),
+    );
+  }
+
+  await _run10000(
     globalConfig,
-    configs,
+    configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
-    r => (results = r),
+    r => {
+      results = r;
+    },
   );
 
   if (argv.watch || argv.watchAll) {
     // If in watch mode, return the promise that will never resolve.
     // If the watch mode is interrupted, watch should handle the process
     // shutdown.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return new Promise(() => {});
   }
 
@@ -109,20 +134,23 @@ export const runCLI = async (
   }
 
   return {globalConfig, results};
-};
+}
 
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
+      const hasteMapInstance = await Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
-        maxWorkers: globalConfig.maxWorkers,
+        maxWorkers: Math.max(
+          1,
+          Math.floor(globalConfig.maxWorkers / configs.length),
+        ),
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,
@@ -135,7 +163,7 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-const _run = async (
+const _run10000 = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
@@ -151,7 +179,7 @@ const _run = async (
   let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const rawFilter = require(globalConfig.filter);
-    let filterSetupPromise: Promise<Error | undefined> | undefined;
+    let filterSetupPromise: Promise<unknown | undefined> | undefined;
     if (rawFilter.setup) {
       // Wrap filter setup Promise to avoid "uncaught Promise" error.
       // If an error is returned, we surface it in the return value.
@@ -203,7 +231,7 @@ const _run = async (
 };
 
 const runWatch = async (
-  contexts: Array<Context>,
+  contexts: Array<TestContext>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -223,7 +251,7 @@ const runWatch = async (
         undefined,
         filter,
       );
-    } catch (e) {
+    } catch {
       exit(0);
     }
   }
@@ -241,8 +269,8 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
-  outputStream: NodeJS.WritableStream,
+  contexts: Array<TestContext>,
+  outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,

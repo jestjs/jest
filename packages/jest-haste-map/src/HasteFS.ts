@@ -5,33 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import micromatch from 'micromatch';
-import {replacePathSepForGlob} from 'jest-util';
-import {Config} from '@jest/types';
-import {FileData} from './types';
-import * as fastPath from './lib/fast_path';
+import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import H from './constants';
+import * as fastPath from './lib/fast_path';
+import type {FileData} from './types';
 
 export default class HasteFS {
-  private readonly _rootDir: Config.Path;
+  private readonly _rootDir: string;
   private readonly _files: FileData;
 
-  constructor({rootDir, files}: {rootDir: Config.Path; files: FileData}) {
+  constructor({rootDir, files}: {rootDir: string; files: FileData}) {
     this._rootDir = rootDir;
     this._files = files;
   }
 
-  getModuleName(file: Config.Path): string | null {
+  getModuleName(file: string): string | null {
     const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.ID]) || null;
   }
 
-  getSize(file: Config.Path): number | null {
+  getSize(file: string): number | null {
     const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.SIZE]) || null;
   }
 
-  getDependencies(file: Config.Path): Array<string> | null {
+  getDependencies(file: string): Array<string> | null {
     const fileMetadata = this._getFileData(file);
 
     if (fileMetadata) {
@@ -43,30 +41,30 @@ export default class HasteFS {
     }
   }
 
-  getSha1(file: Config.Path): string | null {
+  getSha1(file: string): string | null {
     const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.SHA1]) || null;
   }
 
-  exists(file: Config.Path): boolean {
+  exists(file: string): boolean {
     return this._getFileData(file) != null;
   }
 
-  getAllFiles(): Array<Config.Path> {
+  getAllFiles(): Array<string> {
     return Array.from(this.getAbsoluteFileIterator());
   }
 
-  getFileIterator(): Iterable<Config.Path> {
+  getFileIterator(): Iterable<string> {
     return this._files.keys();
   }
 
-  *getAbsoluteFileIterator(): Iterable<Config.Path> {
+  *getAbsoluteFileIterator(): Iterable<string> {
     for (const file of this.getFileIterator()) {
       yield fastPath.resolve(this._rootDir, file);
     }
   }
 
-  matchFiles(pattern: RegExp | string): Array<Config.Path> {
+  matchFiles(pattern: RegExp | string): Array<string> {
     if (!(pattern instanceof RegExp)) {
       pattern = new RegExp(pattern);
     }
@@ -79,21 +77,20 @@ export default class HasteFS {
     return files;
   }
 
-  matchFilesWithGlob(
-    globs: Array<Config.Glob>,
-    root: Config.Path | null,
-  ): Set<Config.Path> {
-    const files = new Set();
+  matchFilesWithGlob(globs: Array<string>, root: string | null): Set<string> {
+    const files = new Set<string>();
+    const matcher = globsToMatcher(globs);
+
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
-      if (micromatch.some(replacePathSepForGlob(filePath), globs)) {
+      if (matcher(replacePathSepForGlob(filePath))) {
         files.add(file);
       }
     }
     return files;
   }
 
-  private _getFileData(file: Config.Path) {
+  private _getFileData(file: string) {
     const relativePath = fastPath.relative(this._rootDir, file);
     return this._files.get(relativePath);
   }

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import JestHasteMap from 'jest-haste-map';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'haste_map_sha1');
+const DIR = path.resolve(tmpdir(), 'haste_map_sha1');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -26,14 +26,14 @@ test('exits the process after test are done but before timers complete', async (
     'node_modules/bar/index.js': '"node modules bar"',
   });
 
-  const haste = new JestHasteMap({
+  const haste = await JestHasteMap.create({
     computeSha1: true,
     extensions: ['js', 'json', 'png'],
     forceNodeFilesystemAPI: true,
+    id: 'tmp',
     ignorePattern: / ^/,
     maxWorkers: 2,
     mocksPattern: '',
-    name: 'tmp',
     platforms: ['ios', 'android'],
     retainAllFiles: true,
     rootDir: DIR,

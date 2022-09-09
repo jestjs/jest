@@ -69,7 +69,7 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides foo specified by Jest config in package.json
     expect.addSnapshotSerializer({
       print: (val, serialize) => `Foo: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
   });
@@ -87,8 +87,24 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides preceding added plugin
     expect.addSnapshotSerializer({
       print: (val, serialize) => `FOO: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
+  });
+
+  it('works with array of strings in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: ['stream'],
+    });
+  });
+
+  it('works with expect.XXX within array in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: [expect.any(String)],
+    });
   });
 });

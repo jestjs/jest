@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import * as path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -34,27 +33,27 @@ test('Tests are executed only once even in an MPR', () => {
 
   /* eslint-disable sort-keys */
   writeFiles(DIR, {
-    'foo/folder/my-test-bar.js': `test('bar', () => console.log('Bar!'));`,
+    'foo/folder/my-test-bar.js': "test('bar', () => console.log('Bar!'));",
     'foo/folder/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/directory/my-test-baz.js': `test('baz', () => console.log('Baz!'));`,
+    'foo/directory/my-test-baz.js': "test('baz', () => console.log('Baz!'));",
     'foo/directory/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/whatever/my-test-qux.js': `test('qux', () => console.log('Qux!'));`,
+    'foo/whatever/my-test-qux.js': "test('qux', () => console.log('Qux!'));",
     'foo/whatever/package.json': JSON.stringify(childConfig, null, 2),
 
     'package.json': JSON.stringify(config, null, 2),
   });
   /* eslint-enable sort-keys */
 
-  const {stderr, status} = runJest(DIR, ['foo/folder/my-test-bar.js']);
+  const {stderr, exitCode} = runJest(DIR, ['foo/folder/my-test-bar.js']);
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 
   const {rest, summary} = extractSummary(stderr);
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatch(/1 total/);
 });

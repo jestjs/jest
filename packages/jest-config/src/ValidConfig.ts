@@ -5,30 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
+import {DEFAULT_OPTIONS as PRETTY_FORMAT_DEFAULTS} from 'pretty-format';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const initialOptions: Config.InitialOptions = {
   automock: false,
-  // @ts-ignore TODO: type this properly
   bail: multipleValidOptions(false, 0),
-  browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
   changedSince: 'master',
+  ci: false,
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
-  collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/Covered.js': true,
-  },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageProvider: 'v8',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -39,14 +37,39 @@ const initialOptions: Config.InitialOptions = {
     },
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-  // @ts-ignore TODO: type this properly
+  detectLeaks: false,
+  detectOpenHandles: false,
   displayName: multipleValidOptions('test-config', {
     color: 'blue',
     name: 'test-config',
-  }),
+  } as const),
   errorOnDeprecated: false,
   expand: false,
-  extraGlobals: [],
+  extensionsToTreatAsEsm: [],
+  fakeTimers: {
+    advanceTimers: multipleValidOptions(40, true),
+    doNotFake: [
+      'Date',
+      'hrtime',
+      'nextTick',
+      'performance',
+      'queueMicrotask',
+      'requestAnimationFrame',
+      'cancelAnimationFrame',
+      'requestIdleCallback',
+      'cancelIdleCallback',
+      'setImmediate',
+      'clearImmediate',
+      'setInterval',
+      'clearInterval',
+      'setTimeout',
+      'clearTimeout',
+    ],
+    enableGlobally: true,
+    legacyFakeTimers: false,
+    now: 1483228800000,
+    timerLimit: 1000,
+  },
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,
@@ -56,28 +79,44 @@ const initialOptions: Config.InitialOptions = {
   haste: {
     computeSha1: true,
     defaultPlatform: 'ios',
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: true,
     hasteImplModulePath: '<rootDir>/haste_impl.js',
+    hasteMapModulePath: '',
     platforms: ['ios', 'android'],
-    providesModuleNodeModules: ['react', 'react-native'],
+    retainAllFiles: false,
     throwOnModuleCollision: false,
   },
+  id: 'string',
+  injectGlobals: true,
   json: false,
   lastCommit: false,
+  listTests: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
-  moduleLoader: '<rootDir>',
+  moduleFileExtensions: [
+    'js',
+    'mjs',
+    'cjs',
+    'json',
+    'jsx',
+    'ts',
+    'tsx',
+    'node',
+  ],
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
-  name: 'string',
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
   onlyChanged: false,
+  onlyFailures: false,
+  passWithNoTests: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
@@ -94,15 +133,22 @@ const initialOptions: Config.InitialOptions = {
   roots: ['<rootDir>'],
   runTestsByPath: false,
   runner: 'jest-runner',
+  runtime: '<rootDir>',
+  sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
+  slowTestThreshold: 5,
+  snapshotFormat: PRETTY_FORMAT_DEFAULTS,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
-  testEnvironment: 'jest-environment-jsdom',
-  testEnvironmentOptions: {userAgent: 'Agent/007'},
+  testEnvironment: 'jest-environment-node',
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+    userAgent: 'Agent/007',
+  },
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
@@ -113,12 +159,11 @@ const initialOptions: Config.InitialOptions = {
     ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
   ),
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
-  testURL: 'http://localhost',
-  timers: 'real',
+  testTimeout: 5000,
   transform: {
-    '^.+\\.js$': '<rootDir>/preprocessor.js',
+    '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
@@ -126,6 +171,7 @@ const initialOptions: Config.InitialOptions = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   watchPlugins: [
     'path/to/yourWatchPlugin',
@@ -138,6 +184,7 @@ const initialOptions: Config.InitialOptions = {
     ],
   ],
   watchman: true,
+  workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };
 
 export default initialOptions;

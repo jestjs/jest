@@ -5,29 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
-import {RawSourceMap} from 'source-map';
-import {Config} from '@jest/types';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
+import type {Config, TransformTypes} from '@jest/types';
 
-export type ShouldInstrumentOptions = Pick<
-  Config.GlobalConfig,
-  'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
-> & {
-  changedFiles: Set<Config.Path> | undefined;
-};
+export interface ShouldInstrumentOptions
+  extends Pick<
+    Config.GlobalConfig,
+    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
+  > {
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
+}
 
-export type Options = ShouldInstrumentOptions &
-  Pick<Config.GlobalConfig, 'extraGlobals'> & {
-    isCoreModule?: boolean;
-    isInternalModule?: boolean;
-  };
+export interface Options
+  extends ShouldInstrumentOptions,
+    CallerTransformOptions {
+  isInternalModule?: boolean;
+}
 
-// https://stackoverflow.com/a/48216010/1850276
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
-// This is fixed in a newer version, but that depends on Node 8 which is a
-// breaking change (engine warning when installing)
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+// `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
+interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 
@@ -36,37 +33,129 @@ export type TransformedSource = {
   map?: FixedRawSourceMap | string | null;
 };
 
-export type TransformResult = {
-  script: Script;
-  mapCoverage: boolean;
-  sourceMapPath: string | null;
-};
+export type TransformResult = TransformTypes.TransformResult;
 
-export type TransformOptions = {
+export interface CallerTransformOptions {
+  // names are copied from babel: https://babeljs.io/docs/en/options#caller
+  supportsDynamicImport: boolean;
+  supportsExportNamespaceFrom: boolean;
+  supportsStaticESM: boolean;
+  supportsTopLevelAwait: boolean;
+}
+
+export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
-};
+}
 
-export type CacheKeyOptions = {
+export interface RequireAndTranspileModuleOptions
+  extends ReducedTransformOptions {
+  applyInteropRequireDefault: boolean;
+}
+
+export type StringMap = Map<string, string>;
+
+export interface TransformOptions<TransformerConfig = unknown>
+  extends ReducedTransformOptions {
+  /** Cached file system which is used by `jest-runtime` to improve performance. */
+  cacheFS: StringMap;
+  /** Jest configuration of currently running project. */
   config: Config.ProjectConfig;
-  instrument: boolean;
-  rootDir: string;
-};
+  /** Stringified version of the `config` - useful in cache busting. */
+  configString: string;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig: TransformerConfig;
+}
 
-export interface Transformer {
+export interface SyncTransformer<TransformerConfig = unknown> {
+  /**
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
   canInstrument?: boolean;
-  createTransformer?: (options?: any) => Transformer;
 
-  getCacheKey: (
-    fileData: string,
-    filePath: Config.Path,
-    configStr: string,
-    options: CacheKeyOptions,
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<string>;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
-    config: Config.ProjectConfig,
-    options?: TransformOptions,
-  ) => string | TransformedSource;
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<TransformedSource>;
 }
+
+export interface AsyncTransformer<TransformerConfig = unknown> {
+  /**
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
+  canInstrument?: boolean;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<TransformedSource>;
+}
+
+/**
+ * We have both sync (`process`) and async (`processAsync`) code transformation, which both can be provided.
+ * `require` will always use `process`, and `import` will use `processAsync` if it exists, otherwise fall back to `process`.
+ * Meaning, if you use `import` exclusively you do not need `process`, but in most cases supplying both makes sense:
+ * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+ *
+ * For more info on the sync vs async model, see https://jestjs.io/docs/code-transformation#writing-custom-transformers
+ */
+export type Transformer<TransformerConfig = unknown> =
+  | SyncTransformer<TransformerConfig>
+  | AsyncTransformer<TransformerConfig>;
+
+export type TransformerCreator<
+  X extends Transformer<TransformerConfig>,
+  TransformerConfig = unknown,
+> = (transformerConfig?: TransformerConfig) => X;
+
+/**
+ * Instead of having your custom transformer implement the Transformer interface
+ * directly, you can choose to export a factory function to dynamically create
+ * transformers. This is to allow having a transformer config in your jest config.
+ */
+export type TransformerFactory<X extends Transformer> = {
+  createTransformer: TransformerCreator<X>;
+};

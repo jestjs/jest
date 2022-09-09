@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, SerializableError, TestResult} from './types';
+import type {AggregatedResult, SerializableError, TestResult} from './types';
 
 export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
   numFailedTestSuites: 0,
@@ -27,6 +26,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
     filesAdded: 0,
     // combines individual test results + removed files after the full run
     filesRemoved: 0,
+    filesRemovedList: [],
     filesUnmatched: 0,
     filesUpdated: 0,
     matched: 0,
@@ -43,11 +43,11 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
 });
 
 export const buildFailureTestResult = (
-  testPath: Config.Path,
+  testPath: string,
   err: SerializableError,
 ): TestResult => ({
   console: undefined,
-  displayName: '',
+  displayName: undefined,
   failureMessage: null,
   leaks: false,
   numFailingTests: 0,
@@ -57,6 +57,8 @@ export const buildFailureTestResult = (
   openHandles: [],
   perfStats: {
     end: 0,
+    runtime: 0,
+    slow: false,
     start: 0,
   },
   skipped: false,
@@ -69,7 +71,6 @@ export const buildFailureTestResult = (
     unmatched: 0,
     updated: 0,
   },
-  sourceMaps: {},
   testExecError: err,
   testFilePath: testPath,
   testResults: [],
@@ -144,3 +145,30 @@ export const addResult = (
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
 };
+
+export const createEmptyTestResult = (): TestResult => ({
+  leaks: false, // That's legacy code, just adding it as needed for typing
+  numFailingTests: 0,
+  numPassingTests: 0,
+  numPendingTests: 0,
+  numTodoTests: 0,
+  openHandles: [],
+  perfStats: {
+    end: 0,
+    runtime: 0,
+    slow: false,
+    start: 0,
+  },
+  skipped: false,
+  snapshot: {
+    added: 0,
+    fileDeleted: false,
+    matched: 0,
+    unchecked: 0,
+    uncheckedKeys: [],
+    unmatched: 0,
+    updated: 0,
+  },
+  testFilePath: '',
+  testResults: [],
+});

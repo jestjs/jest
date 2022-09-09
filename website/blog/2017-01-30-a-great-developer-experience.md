@@ -11,11 +11,11 @@ We strongly believe that great documentation is crucial to providing a great dev
 
 One of the changes you'll notice upon visiting our docs is the updated sidebar. The documentation is now divided into three main areas: an introduction to Jest, detailed guides to Jest's features, and a comprehensive API reference.
 
-The **Introduction** section will guide you from installing Jest and writing your first case, to using Jest's matchers and testing async code. If you're new to Jest or need a quick refresher, these docs should get you up to speed in no time. If you've used Jest before and only need a quick reference on how it's installed, you need to go no further than the [Getting Started](/docs/getting-started.html) guide.
+The **Introduction** section will guide you from installing Jest and writing your first case, to using Jest's matchers and testing async code. If you're new to Jest or need a quick refresher, these docs should get you up to speed in no time. If you've used Jest before and only need a quick reference on how it's installed, you need to go no further than the [Getting Started](/docs/getting-started) guide.
 
-Once you feel comfortable using Jest, proceed to the advanced **Guides** section. The new [Snapshot Testing guide](/docs/snapshot-testing.html) covers everything you need to know about creating and maintaining snapshot test cases.
+Once you feel comfortable using Jest, proceed to the advanced **Guides** section. The new [Snapshot Testing guide](/docs/snapshot-testing) covers everything you need to know about creating and maintaining snapshot test cases.
 
-Finally, we've completely overhauled our API reference docs. You can now find detailed information on all of Jest's [Globals](/docs/api.html), [matchers](/docs/expect.html), and [every flag](/docs/cli.html) supported by the `jest` CLI.
+Finally, we've completely overhauled our API reference docs. You can now find detailed information on all of Jest's [Globals](/docs/api), [matchers](/docs/expect), and [every flag](/docs/cli) supported by the `jest` CLI.
 
 <!--truncate-->
 
@@ -25,7 +25,7 @@ The colors in the Jest logo and on the website have felt outdated to us for a wh
 
 ## Who's using Jest?
 
-We have created a [showcase of users](/users.html) to highlight some of the companies that are using Jest. We're thankful to all of these companies for using Jest to test their websites, mobile apps, and APIs. If you're using Jest, check out the guidelines on GitHub and send us a pull request!
+We have created a [showcase of users](/) to highlight some of the companies that are using Jest. We're thankful to all of these companies for using Jest to test their websites, mobile apps, and APIs. If you're using Jest, check out the guidelines on GitHub and send us a pull request!
 
 <div class="productShowcaseSection">
  <div class="logos">
@@ -39,7 +39,7 @@ We have created a [showcase of users](/users.html) to highlight some of the comp
 
 ## Jest in the browser
 
-As highlighted [last month](/blog/2016/12/15/2016-in-jest.html), it is now possible to use Jest directly in the browser using [repl.it](https://repl.it/languages/jest). If you want to try out Jest before installing it, you can easily do so below or directly from the Jest homepage. Go ahead and give it a try!
+As highlighted [last month](/blog/2016/12/15/2016-in-jest), it is now possible to use Jest directly in the browser using [repl.it](https://repl.it/languages/jest). If you want to try out Jest before installing it, you can easily do so below or directly from the Jest homepage. Go ahead and give it a try!
 
 <div class="jest-repl">
   <iframe src="https://repl.it/@amasad/try-jest?lite=true"></iframe>

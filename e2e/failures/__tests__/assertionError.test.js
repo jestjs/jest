@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+jsinfra
  */
 
 'use strict';
@@ -79,4 +78,12 @@ test('assert.throws', () => {
 
 test('async', async () => {
   assert.equal('hello\ngoodbye', 'hello', 'hmmm');
+});
+
+test('assert.fail', () => {
+  assert.fail();
+});
+
+test('assert.fail with a message', () => {
+  assert.fail('error!');
 });

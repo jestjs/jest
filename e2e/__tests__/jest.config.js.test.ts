@@ -5,28 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
+import * as path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../jest.config.js');
+const DIR = path.resolve(__dirname, '../jest-config-js');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('works with jest.config.js', () => {
   writeFiles(DIR, {
-    '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
-    'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
+    '__tests__/a-banana.js': "test('banana', () => expect(1).toBe(1));",
+    'jest.config.js': "module.exports = {testRegex: '.*-banana.js'};",
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('traverses directory tree up until it finds jest.config', () => {
@@ -36,36 +35,34 @@ test('traverses directory tree up until it finds jest.config', () => {
     test('banana', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,
-    'jest.config.js': `module.exports = {testRegex: '.*-banana.js'};`,
+    'jest.config.js': "module.exports = {testRegex: '.*-banana.js'};",
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
 
-  const {stderr, status, stdout} = runJest(
+  const {stderr, exitCode, stdout} = runJest(
     path.join(DIR, 'some', 'nested', 'directory'),
     ['-w=1', '--ci=false'],
     {skipPkgJsonCheck: true},
   );
 
   // Snapshot the console.loged `process.cwd()` and make sure it stays the same
-  expect(
-    wrap(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')),
-  ).toMatchSnapshot();
+  expect(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('invalid JS in jest.config.js', () => {
   writeFiles(DIR, {
-    '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
-    'jest.config.js': `module.exports = i'll break this file yo`,
+    '__tests__/a-banana.js': "test('banana', () => expect(1).toBe(1));",
+    'jest.config.js': "module.exports = i'll break this file yo",
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   expect(stderr).toMatch('SyntaxError: ');
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

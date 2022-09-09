@@ -5,30 +5,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {Plugin} from 'pretty-format';
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import {jestExpect} from '@jest/expect';
+import type {Config} from '@jest/types';
 import {
-  buildSnapshotResolver,
   SnapshotState,
   addSerializer,
+  buildSnapshotResolver,
 } from 'jest-snapshot';
-import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
-import {Jasmine} from './types';
+import type {Plugin} from 'pretty-format';
+import type {
+  Attributes,
+  default as JasmineSpec,
+  SpecResult,
+} from './jasmine/Spec';
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   localRequire: (moduleName: string) => Plugin;
-  testPath: Config.Path;
+  testPath: string;
 };
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = (result: SpecResult) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = jestExpect.getState();
+  jestExpect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     result.status = 'failed';
 
@@ -46,7 +49,7 @@ const addSuppressedErrors = (result: SpecResult) => {
 };
 
 const addAssertionErrors = (result: SpecResult) => {
-  const assertionErrors = extractExpectedAssertionsErrors();
+  const assertionErrors = jestExpect.extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
@@ -60,18 +63,19 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  (global.jasmine as Jasmine).Spec = (realSpec => {
+  // @ts-expect-error: jasmine doesn't exist on globalThis
+  globalThis.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
-        attr.resultCallback = function(result: SpecResult) {
+        attr.resultCallback = function (result: SpecResult) {
           addSuppressedErrors(result);
           addAssertionErrors(result);
           resultCallback.call(attr, result);
         };
         const onStart = attr.onStart;
         attr.onStart = (context: JasmineSpec) => {
-          setState({currentTestName: context.getFullName()});
+          jestExpect.setState({currentTestName: context.getFullName()});
           onStart && onStart.call(attr, context);
         };
         super(attr);
@@ -79,15 +83,16 @@ const patchJasmine = () => {
     }
 
     return Spec;
-  })((global.jasmine as Jasmine).Spec);
+    // @ts-expect-error: jasmine doesn't exist on globalThis
+  })(globalThis.jasmine.Spec);
 };
 
-export default ({
+export default async function setupJestGlobals({
   config,
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions) => {
+}: SetupOptions): Promise<SnapshotState> {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
@@ -99,16 +104,18 @@ export default ({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotResolver = buildSnapshotResolver(config);
+  const {prettierPath, rootDir, snapshotFormat} = config;
+  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () => require('@babel/traverse').default,
-    getPrettier: () =>
-      config.prettierPath ? require(config.prettierPath) : null,
+    prettierPath,
+    rootDir,
+    snapshotFormat,
     updateSnapshot,
   });
-  setState({snapshotState, testPath});
+
+  jestExpect.setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
-};
+}

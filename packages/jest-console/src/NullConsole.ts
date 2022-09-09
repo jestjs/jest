@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -8,14 +9,18 @@
 import CustomConsole from './CustomConsole';
 
 export default class NullConsole extends CustomConsole {
-  assert() {}
-  debug() {}
-  dir() {}
-  error() {}
-  info() {}
-  log() {}
-  time() {}
-  timeEnd() {}
-  trace() {}
-  warn() {}
+  override assert(): void {}
+  override debug(): void {}
+  override dir(): void {}
+  override error(): void {}
+  override info(): void {}
+  override log(): void {}
+  override time(): void {}
+  override timeEnd(): void {}
+  override timeLog(): void {}
+  override trace(): void {}
+  override warn(): void {}
+  override group(): void {}
+  override groupCollapsed(): void {}
+  override groupEnd(): void {}
 }

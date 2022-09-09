@@ -5,17 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import mergeStream from 'merge-stream';
-
+import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_END,
-  WorkerPoolOptions,
-  WorkerOptions,
+  PoolExitResult,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolOptions,
 } from '../types';
 
+// How long to wait for the child process to terminate
+// after CHILD_MESSAGE_END before sending force exiting.
+const FORCE_EXIT_DELAY = 500;
+
 /* istanbul ignore next */
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
@@ -28,19 +32,17 @@ export default class BaseWorkerPool {
     this._options = options;
     this._workers = new Array(options.numWorkers);
 
-    if (!path.isAbsolute(workerPath)) {
-      workerPath = require.resolve(workerPath);
-    }
-
     const stdout = mergeStream();
     const stderr = mergeStream();
 
-    const {forkOptions, maxRetries, setupArgs} = options;
+    const {forkOptions, maxRetries, resourceLimits, setupArgs} = options;
 
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
         forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
         maxRetries,
+        resourceLimits,
         setupArgs,
         workerId: i,
         workerPath,
@@ -85,15 +87,38 @@ export default class BaseWorkerPool {
     throw Error('Missing method createWorker in WorkerPool');
   }
 
-  end(): void {
+  async end(): Promise<PoolExitResult> {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
-    for (let i = 0; i < this._workers.length; i++) {
-      this._workers[i].send(
+    const workerExitPromises = this._workers.map(async worker => {
+      worker.send(
         [CHILD_MESSAGE_END, false],
         emptyMethod,
         emptyMethod,
+        emptyMethod,
       );
-    }
+
+      // Schedule a force exit in case worker fails to exit gracefully so
+      // await worker.waitForExit() never takes longer than FORCE_EXIT_DELAY
+      let forceExited = false;
+      const forceExitTimeout = setTimeout(() => {
+        worker.forceExit();
+        forceExited = true;
+      }, FORCE_EXIT_DELAY);
+
+      await worker.waitForExit();
+      // Worker ideally exited gracefully, don't send force exit then
+      clearTimeout(forceExitTimeout);
+
+      return forceExited;
+    });
+
+    const workerExits = await Promise.all(workerExitPromises);
+    return workerExits.reduce<PoolExitResult>(
+      (result, forceExited) => ({
+        forceExited: result.forceExited || forceExited,
+      }),
+      {forceExited: false},
+    );
   }
 }

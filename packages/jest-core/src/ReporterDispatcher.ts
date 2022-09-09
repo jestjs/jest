@@ -5,10 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult, TestResult} from '@jest/test-result';
-import {Test} from 'jest-runner';
-import {Context} from 'jest-runtime';
-import {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import type {
+  AggregatedResult,
+  Test,
+  TestCaseResult,
+  TestContext,
+  TestResult,
+} from '@jest/test-result';
+import type {ReporterConstructor} from './TestScheduler';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;
@@ -21,44 +26,68 @@ export default class ReporterDispatcher {
     this._reporters.push(reporter);
   }
 
-  unregister(ReporterClass: Function) {
+  unregister(reporterConstructor: ReporterConstructor): void {
     this._reporters = this._reporters.filter(
-      reporter => !(reporter instanceof ReporterClass),
+      reporter => !(reporter instanceof reporterConstructor),
     );
   }
 
-  async onTestResult(
+  async onTestFileResult(
     test: Test,
     testResult: TestResult,
     results: AggregatedResult,
-  ) {
+  ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onTestResult &&
-        (await reporter.onTestResult(test, testResult, results));
+      if (reporter.onTestFileResult) {
+        await reporter.onTestFileResult(test, testResult, results);
+      } else if (reporter.onTestResult) {
+        await reporter.onTestResult(test, testResult, results);
+      }
     }
 
     // Release memory if unused later.
-    testResult.sourceMaps = undefined;
     testResult.coverage = undefined;
     testResult.console = undefined;
   }
 
-  async onTestStart(test: Test) {
+  async onTestFileStart(test: Test): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onTestStart && (await reporter.onTestStart(test));
+      if (reporter.onTestFileStart) {
+        await reporter.onTestFileStart(test);
+      } else if (reporter.onTestStart) {
+        await reporter.onTestStart(test);
+      }
     }
   }
 
-  async onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
+  async onRunStart(
+    results: AggregatedResult,
+    options: ReporterOnStartOptions,
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onRunStart && (await reporter.onRunStart(results, options));
     }
   }
 
-  async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
+  async onTestCaseResult(
+    test: Test,
+    testCaseResult: TestCaseResult,
+  ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onRunComplete &&
-        (await reporter.onRunComplete(contexts, results));
+      if (reporter.onTestCaseResult) {
+        await reporter.onTestCaseResult(test, testCaseResult);
+      }
+    }
+  }
+
+  async onRunComplete(
+    testContexts: Set<TestContext>,
+    results: AggregatedResult,
+  ): Promise<void> {
+    for (const reporter of this._reporters) {
+      if (reporter.onRunComplete) {
+        await reporter.onRunComplete(testContexts, results);
+      }
     }
   }
 

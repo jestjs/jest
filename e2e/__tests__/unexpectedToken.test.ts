@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
-import runJest from '../runJest';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'unexpected-token');
+const DIR = path.resolve(tmpdir(), 'unexpected-token');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -23,7 +23,8 @@ test('triggers unexpected token error message for non-JS assets', () => {
   });
 
   writeFiles(DIR, {
-    '__tests__/asset.test.js': `require('../asset.css'); test('asset', () => {});`,
+    '__tests__/asset.test.js':
+      "require('../asset.css'); test('asset', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
@@ -42,7 +43,8 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   });
 
   writeFiles(DIR, {
-    '__tests__/untranspiledModule.test.js': `require('untranspiled-module'); test('untranspiled', () => {});`,
+    '__tests__/untranspiledModule.test.js':
+      "require('untranspiled-module'); test('untranspiled', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);
@@ -50,7 +52,9 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   expect(stdout).toBe('');
   expect(stderr).toMatch(/Jest encountered an unexpected token/);
   expect(stderr).toMatch(/import {module}/);
-  expect(stderr).toMatch(/Unexpected token/);
+  expect(stderr).toMatch(
+    /SyntaxError: Cannot use import statement outside a module/,
+  );
 });
 
 test('does not trigger unexpected token error message for regular syntax errors', () => {
@@ -62,8 +66,10 @@ test('does not trigger unexpected token error message for regular syntax errors'
   });
 
   writeFiles(DIR, {
-    '__tests__/faulty.test.js': `require('../faulty'); test('faulty', () => {});`,
-    '__tests__/faulty2.test.js': `require('../faulty2'); test('faulty2', () => {});`,
+    '__tests__/faulty.test.js':
+      "require('../faulty'); test('faulty', () => {});",
+    '__tests__/faulty2.test.js':
+      "require('../faulty2'); test('faulty2', () => {});",
   });
 
   const {stdout, stderr} = runJest(DIR, ['']);

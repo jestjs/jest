@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 import FailedTestsCache from '../FailedTestsCache';
 
@@ -54,11 +59,5 @@ describe('FailedTestsCache', () => {
         path: '/path/to/failed_2.js',
       },
     ]);
-    expect(failedTestsCache.updateConfig({})).toMatchObject({
-      enabledTestsMap: {
-        '/path/to/failed_1.js': {'test 3': true, 'test 4': true},
-        '/path/to/failed_2.js': {'test 5': true},
-      },
-    });
   });
 });

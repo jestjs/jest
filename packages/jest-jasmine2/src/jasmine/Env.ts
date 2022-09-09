@@ -28,24 +28,29 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import chalk from 'chalk';
-import {formatExecError} from 'jest-message-util';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import type {Circus} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
+import assertionErrorMessage from '../assertionErrorMessage';
+import isError from '../isError';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
 } from '../queueRunner';
 import treeProcessor, {TreeNode} from '../treeProcessor';
-import isError from '../isError';
-import assertionErrorMessage from '../assertionErrorMessage';
-import {Jasmine, AssertionErrorWithStack, Reporter, Spy} from '../types';
-import Spec, {SpecResult} from './Spec';
-import Suite from './Suite';
+import type {
+  AssertionErrorWithStack,
+  Jasmine,
+  Reporter,
+  SpecDefinitionsFn,
+  Spy,
+} from '../types';
+import type {default as Spec, SpecResult} from './Spec';
+import type Suite from './Suite';
 
-export default function(j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -55,18 +60,25 @@ export default function(j$: Jasmine) {
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
-    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => void;
+    fit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     throwingExpectationFailures: () => boolean;
     randomizeTests: (value: unknown) => void;
     randomTests: () => boolean;
     seed: (value: unknown) => unknown;
     execute: (
-      runnablesToRun: Array<string>,
+      runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
-    fdescribe: (description: string, specDefinitions: Function) => Suite;
+    fdescribe: (
+      description: Circus.TestNameLike,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
     spyOn: (
-      obj: {[key: string]: any},
+      obj: Record<string, Spy>,
       methodName: string,
       accessType?: keyof PropertyDescriptor,
     ) => Spy;
@@ -77,24 +89,38 @@ export default function(j$: Jasmine) {
     afterEach: (afterEachFunction: QueueableFn['fn'], timeout?: number) => void;
     clearReporters: () => void;
     addReporter: (reporterToAdd: Reporter) => void;
-    it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
-    xdescribe: (description: string, specDefinitions: Function) => Suite;
-    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => any;
+    it: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
+    xdescribe: (
+      description: Circus.TestNameLike,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
+    xit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
-    describe: (description: string, specDefinitions: Function) => Suite;
+    describe: (
+      description: Circus.TestNameLike,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
 
-    constructor(_options?: object) {
+    constructor() {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
 
-      const realSetTimeout = global.setTimeout;
-      const realClearTimeout = global.clearTimeout;
+      const realSetTimeout = globalThis.setTimeout;
+      const realClearTimeout = globalThis.clearTimeout;
 
-      const runnableResources: {[key: string]: {spies: Array<Spy>}} = {};
+      const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
       let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;
@@ -103,12 +129,12 @@ export default function(j$: Jasmine) {
       let nextSpecId = 0;
       let nextSuiteId = 0;
 
-      const getNextSpecId = function() {
-        return 'spec' + nextSpecId++;
+      const getNextSpecId = function () {
+        return `spec${nextSpecId++}`;
       };
 
-      const getNextSuiteId = function() {
-        return 'suite' + nextSuiteId++;
+      const getNextSuiteId = function () {
+        return `suite${nextSuiteId++}`;
       };
 
       const topSuite = new j$.Suite({
@@ -120,11 +146,11 @@ export default function(j$: Jasmine) {
       });
       let currentDeclarationSuite = topSuite;
 
-      const currentSuite = function() {
+      const currentSuite = function () {
         return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
       };
 
-      const currentRunnable = function() {
+      const currentRunnable = function () {
         return currentSpec || currentSuite();
       };
 
@@ -137,11 +163,11 @@ export default function(j$: Jasmine) {
         'specDone',
       ]);
 
-      this.specFilter = function() {
+      this.specFilter = function () {
         return true;
       };
 
-      const defaultResourcesForRunnable = function(
+      const defaultResourcesForRunnable = function (
         id: string,
         _parentRunnableId?: string,
       ) {
@@ -150,13 +176,13 @@ export default function(j$: Jasmine) {
         runnableResources[id] = resources;
       };
 
-      const clearResourcesForRunnable = function(id: string) {
+      const clearResourcesForRunnable = function (id: string) {
         spyRegistry.clearSpies();
         delete runnableResources[id];
       };
 
-      const beforeAndAfterFns = function(suite: Suite) {
-        return function() {
+      const beforeAndAfterFns = function (suite: Suite) {
+        return function () {
           let afters: Array<QueueableFn> = [];
           let befores: Array<QueueableFn> = [];
 
@@ -174,7 +200,7 @@ export default function(j$: Jasmine) {
         };
       };
 
-      const getSpecName = function(spec: Spec, suite: Suite) {
+      const getSpecName = function (spec: Spec, suite: Suite) {
         const fullName = [spec.description];
         const suiteFullName = suite.getFullName();
 
@@ -185,32 +211,32 @@ export default function(j$: Jasmine) {
         return fullName.join(' ');
       };
 
-      this.catchExceptions = function(value) {
+      this.catchExceptions = function (value) {
         catchExceptions = !!value;
         return catchExceptions;
       };
 
-      this.catchingExceptions = function() {
+      this.catchingExceptions = function () {
         return catchExceptions;
       };
 
-      this.throwOnExpectationFailure = function(value) {
+      this.throwOnExpectationFailure = function (value) {
         throwOnExpectationFailure = !!value;
       };
 
-      this.throwingExpectationFailures = function() {
+      this.throwingExpectationFailures = function () {
         return throwOnExpectationFailure;
       };
 
-      this.randomizeTests = function(value) {
+      this.randomizeTests = function (value) {
         random = !!value;
       };
 
-      this.randomTests = function() {
+      this.randomTests = function () {
         return random;
       };
 
-      this.seed = function(value) {
+      this.seed = function (value) {
         if (value) {
           seed = value;
         }
@@ -224,7 +250,7 @@ export default function(j$: Jasmine) {
         return queueRunner(options);
       };
 
-      this.topSuite = function() {
+      this.topSuite = function () {
         return topSuite;
       };
 
@@ -241,7 +267,7 @@ export default function(j$: Jasmine) {
 
       let oldListenersException: Array<NodeJS.UncaughtExceptionListener>;
       let oldListenersRejection: Array<NodeJS.UnhandledRejectionListener>;
-      const executionSetup = function() {
+      const executionSetup = function () {
         // Need to ensure we are the only ones handling these exceptions.
         oldListenersException = process.listeners('uncaughtException').slice();
         oldListenersRejection = process.listeners('unhandledRejection').slice();
@@ -253,7 +279,7 @@ export default function(j$: Jasmine) {
         j$.process.on('unhandledRejection', uncaught);
       };
 
-      const executionTeardown = function() {
+      const executionTeardown = function () {
         j$.process.removeListener('uncaughtException', uncaught);
         j$.process.removeListener('unhandledRejection', uncaught);
 
@@ -267,7 +293,7 @@ export default function(j$: Jasmine) {
         });
       };
 
-      this.execute = async function(runnablesToRun, suiteTree = topSuite) {
+      this.execute = async function (runnablesToRun, suiteTree = topSuite) {
         if (!runnablesToRun) {
           if (focusedRunnables.length) {
             runnablesToRun = focusedRunnables;
@@ -320,15 +346,15 @@ export default function(j$: Jasmine) {
         }
       };
 
-      this.addReporter = function(reporterToAdd) {
+      this.addReporter = function (reporterToAdd) {
         reporter.addReporter(reporterToAdd);
       };
 
-      this.provideFallbackReporter = function(reporterToAdd) {
+      this.provideFallbackReporter = function (reporterToAdd) {
         reporter.provideFallbackReporter(reporterToAdd);
       };
 
-      this.clearReporters = function() {
+      this.clearReporters = function () {
         reporter.clearReporters();
       };
 
@@ -343,15 +369,15 @@ export default function(j$: Jasmine) {
         },
       });
 
-      this.allowRespy = function(allow) {
+      this.allowRespy = function (allow) {
         spyRegistry.allowRespy(allow);
       };
 
-      this.spyOn = function(...args) {
+      this.spyOn = function (...args) {
         return spyRegistry.spyOn.apply(spyRegistry, args);
       };
 
-      const suiteFactory = function(description: string) {
+      const suiteFactory = function (description: Circus.TestNameLike) {
         const suite = new j$.Suite({
           id: getNextSuiteId(),
           description,
@@ -365,11 +391,14 @@ export default function(j$: Jasmine) {
         return suite;
       };
 
-      this.describe = function(description: string, specDefinitions) {
+      this.describe = function (
+        description: Circus.TestNameLike,
+        specDefinitions,
+      ) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {
@@ -384,14 +413,14 @@ export default function(j$: Jasmine) {
           suite.pend();
         }
         if (currentDeclarationSuite.markedTodo) {
-          // @ts-ignore TODO Possible error: Suite does not have todo method
+          // @ts-expect-error TODO Possible error: Suite does not have todo method
           suite.todo();
         }
         addSpecsToSuite(suite, specDefinitions);
         return suite;
       };
 
-      this.xdescribe = function(description, specDefinitions) {
+      this.xdescribe = function (description, specDefinitions) {
         const suite = suiteFactory(description);
         suite.pend();
         addSpecsToSuite(suite, specDefinitions);
@@ -400,7 +429,7 @@ export default function(j$: Jasmine) {
 
       const focusedRunnables: Array<string> = [];
 
-      this.fdescribe = function(description, specDefinitions) {
+      this.fdescribe = function (description, specDefinitions) {
         const suite = suiteFactory(description);
         suite.isFocused = true;
 
@@ -411,45 +440,29 @@ export default function(j$: Jasmine) {
         return suite;
       };
 
-      const addSpecsToSuite = (suite: Suite, specDefinitions: Function) => {
+      const addSpecsToSuite = (
+        suite: Suite,
+        specDefinitions: SpecDefinitionsFn,
+      ) => {
         const parentSuite = currentDeclarationSuite;
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
-        let declarationError: null | Error = null;
-        let describeReturnValue: null | Error = null;
+        let declarationError: undefined | Error = undefined;
+        let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e) {
+        } catch (e: any) {
           declarationError = e;
         }
 
-        // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
           );
         } else if (describeReturnValue !== undefined) {
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'A "describe" callback must not return a value.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'A "describe" callback must not return a value.',
           );
         }
 
@@ -486,7 +499,7 @@ export default function(j$: Jasmine) {
       }
 
       const specFactory = (
-        description: string,
+        description: Circus.TestNameLike,
         fn: QueueableFn['fn'],
         suite: Suite,
         timeout?: number,
@@ -536,12 +549,8 @@ export default function(j$: Jasmine) {
         }
       };
 
-      this.it = function(description, fn, timeout) {
-        if (typeof description !== 'string') {
-          throw new Error(
-            `Invalid first argument, ${description}. It must be a string.`,
-          );
-        }
+      this.it = function (description, fn, timeout) {
+        description = convertDescriptorToString(description);
         if (fn === undefined) {
           throw new Error(
             'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -566,43 +575,44 @@ export default function(j$: Jasmine) {
         // This check throws an error to warn the user about the edge-case.
         if (currentSpec !== null) {
           throw new Error(
-            'Tests cannot be nested. Test `' +
-              spec.description +
-              '` cannot run because it is nested within `' +
-              currentSpec.description +
-              '`.',
+            `Tests cannot be nested. Test "${spec.description}" cannot run because it is nested within "${currentSpec.description}".`,
           );
         }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
 
-      this.xit = function(...args) {
+      this.xit = function (...args) {
         const spec = this.it.apply(this, args);
         spec.pend('Temporarily disabled with xit');
         return spec;
       };
 
-      this.todo = function() {
+      this.todo = function () {
         const description = arguments[0];
         if (arguments.length !== 1 || typeof description !== 'string') {
           throw new ErrorWithStack(
             'Todo must be called with only a description.',
-            test.todo,
+            this.todo,
           );
         }
 
         const spec = specFactory(
           description,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {},
           currentDeclarationSuite,
         );
-        spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
 
-      this.fit = function(description, fn, timeout) {
+      this.fit = function (description, fn, timeout) {
         const spec = specFactory(
           description,
           fn,
@@ -610,12 +620,16 @@ export default function(j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };
 
-      this.beforeEach = function(beforeEachFunction, timeout) {
+      this.beforeEach = function (beforeEachFunction, timeout) {
         currentDeclarationSuite.beforeEach({
           fn: beforeEachFunction,
           timeout() {
@@ -624,7 +638,7 @@ export default function(j$: Jasmine) {
         });
       };
 
-      this.beforeAll = function(beforeAllFunction, timeout) {
+      this.beforeAll = function (beforeAllFunction, timeout) {
         currentDeclarationSuite.beforeAll({
           fn: beforeAllFunction,
           timeout() {
@@ -633,7 +647,7 @@ export default function(j$: Jasmine) {
         });
       };
 
-      this.afterEach = function(afterEachFunction, timeout) {
+      this.afterEach = function (afterEachFunction, timeout) {
         currentDeclarationSuite.afterEach({
           fn: afterEachFunction,
           timeout() {
@@ -642,7 +656,7 @@ export default function(j$: Jasmine) {
         });
       };
 
-      this.afterAll = function(afterAllFunction, timeout) {
+      this.afterAll = function (afterAllFunction, timeout) {
         currentDeclarationSuite.afterAll({
           fn: afterAllFunction,
           timeout() {
@@ -651,7 +665,7 @@ export default function(j$: Jasmine) {
         });
       };
 
-      this.pending = function(message) {
+      this.pending = function (message) {
         let fullMessage = j$.Spec.pendingSpecExceptionMessage;
         if (message) {
           fullMessage += message;
@@ -659,13 +673,16 @@ export default function(j$: Jasmine) {
         throw fullMessage;
       };
 
-      this.fail = function(error) {
+      this.fail = function (error) {
         let checkIsError;
         let message;
 
-        if (error instanceof AssertionError) {
+        if (
+          error instanceof AssertionError ||
+          (error && error.name === AssertionError.name)
+        ) {
           checkIsError = false;
-          // @ts-ignore TODO Possible error: j$.Spec does not have expand property
+          // @ts-expect-error TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});
         } else {
           const check = isError(error);
@@ -677,9 +694,7 @@ export default function(j$: Jasmine) {
         const runnable = currentRunnable();
 
         if (!runnable) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
           throw errorAsErrorObject;
         }

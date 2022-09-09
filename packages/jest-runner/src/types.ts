@@ -5,33 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
-import HasteResolver from 'jest-resolve';
-import Runtime from 'jest-runtime';
+import type {JestEnvironment} from '@jest/environment';
+import type {
+  SerializableError,
+  Test,
+  TestEvents,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type RuntimeType from 'jest-runtime';
+import type {TestWatcher} from 'jest-watcher';
 
 export type ErrorWithCode = Error & {code?: string};
-export type Test = {
-  context: Context;
-  duration?: number;
-  path: Config.Path;
-};
-
-export type Context = {
-  config: Config.ProjectConfig;
-  hasteFS: HasteFS;
-  moduleMap: ModuleMap;
-  resolver: HasteResolver;
-};
 
 export type OnTestStart = (test: Test) => Promise<void>;
+
 export type OnTestFailure = (
   test: Test,
   serializableError: SerializableError,
 ) => Promise<void>;
+
 export type OnTestSuccess = (
   test: Test,
   testResult: TestResult,
@@ -41,8 +35,9 @@ export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
-  runtime: Runtime,
+  runtime: RuntimeType,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
@@ -50,21 +45,90 @@ export type TestRunnerOptions = {
 };
 
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 };
+
+type SerializeSet<T> = T extends Set<infer U> ? Array<U> : T;
 
 export type TestRunnerSerializedContext = {
-  changedFiles?: Array<Config.Path>;
+  [K in keyof TestRunnerContext]: SerializeSet<TestRunnerContext[K]>;
 };
 
-// TODO: Should live in `@jest/core` or `jest-watcher`
-export type WatcherState = {
-  interrupted: boolean;
-};
-export interface TestWatcher extends EventEmitter {
-  state: WatcherState;
-  new ({isWatchMode}: {isWatchMode: boolean}): TestWatcher;
-  setState(state: WatcherState): void;
-  isInterrupted(): boolean;
-  isWatchMode(): boolean;
+export type UnsubscribeFn = () => void;
+
+export interface CallbackTestRunnerInterface {
+  readonly isSerial?: boolean;
+  readonly supportsEventEmitters?: boolean;
+
+  runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void>;
 }
+
+export interface EmittingTestRunnerInterface {
+  readonly isSerial?: boolean;
+  readonly supportsEventEmitters: true;
+
+  runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+
+  on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn;
+}
+
+abstract class BaseTestRunner {
+  readonly isSerial?: boolean;
+  abstract readonly supportsEventEmitters: boolean;
+
+  constructor(
+    protected readonly _globalConfig: Config.GlobalConfig,
+    protected readonly _context: TestRunnerContext,
+  ) {}
+}
+
+export abstract class CallbackTestRunner
+  extends BaseTestRunner
+  implements CallbackTestRunnerInterface
+{
+  readonly supportsEventEmitters = false;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart,
+    onResult: OnTestSuccess,
+    onFailure: OnTestFailure,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+}
+
+export abstract class EmittingTestRunner
+  extends BaseTestRunner
+  implements EmittingTestRunnerInterface
+{
+  readonly supportsEventEmitters = true;
+
+  abstract runTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    options: TestRunnerOptions,
+  ): Promise<void>;
+
+  abstract on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): UnsubscribeFn;
+}
+
+export type JestTestRunner = CallbackTestRunner | EmittingTestRunner;

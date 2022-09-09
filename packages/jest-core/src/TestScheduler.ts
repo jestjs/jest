@@ -5,77 +5,100 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import {formatExecError} from 'jest-message-util';
-import {Config} from '@jest/types';
-import snapshot from 'jest-snapshot';
-import TestRunner, {Test} from 'jest-runner';
-import {Context} from 'jest-runtime';
+import chalk = require('chalk');
+import {GITHUB_ACTIONS} from 'ci-info';
+import exit = require('exit');
 import {
   CoverageReporter,
   DefaultReporter,
+  GitHubActionsReporter,
+  BaseReporter as JestReporter,
   NotifyReporter,
+  Reporter,
+  ReporterContext,
   SummaryReporter,
   VerboseReporter,
-  Reporter,
 } from '@jest/reporters';
-import exit from 'exit';
 import {
-  addResult,
   AggregatedResult,
+  SerializableError,
+  Test,
+  TestContext,
+  TestResult,
+  addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
-  SerializableError,
-  TestResult,
 } from '@jest/test-result';
+import {createScriptTransformer} from '@jest/transform';
+import type {Config} from '@jest/types';
+import {formatExecError, separateMessageFromStack} from 'jest-message-util';
+import type {JestTestRunner, TestRunnerContext} from 'jest-runner';
+import {
+  buildSnapshotResolver,
+  cleanup as cleanupSnapshots,
+} from 'jest-snapshot';
+import {ErrorWithStack, requireOrImportModule} from 'jest-util';
+import type {TestWatcher} from 'jest-watcher';
 import ReporterDispatcher from './ReporterDispatcher';
-import TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
 
-// The default jest-runner is required because it is the default test runner
-// and required implicitly through the `runner` ProjectConfig option.
-TestRunner;
+export type ReporterConstructor = new (
+  globalConfig: Config.GlobalConfig,
+  reporterConfig: Record<string, unknown>,
+  reporterContext: ReporterContext,
+) => JestReporter;
 
-export type TestSchedulerOptions = {
-  startRun: (globalConfig: Config.GlobalConfig) => void;
-};
-export type TestSchedulerContext = {
-  firstRun: boolean;
-  previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
-};
-export default class TestScheduler {
-  private _dispatcher: ReporterDispatcher;
-  private _globalConfig: Config.GlobalConfig;
-  private _options: TestSchedulerOptions;
-  private _context: TestSchedulerContext;
+type TestRunnerConstructor = new (
+  globalConfig: Config.GlobalConfig,
+  testRunnerContext: TestRunnerContext,
+) => JestTestRunner;
+
+export type TestSchedulerContext = ReporterContext & TestRunnerContext;
+
+export async function createTestScheduler(
+  globalConfig: Config.GlobalConfig,
+  context: TestSchedulerContext,
+): Promise<TestScheduler> {
+  const scheduler = new TestScheduler(globalConfig, context);
+
+  await scheduler._setupReporters();
+
+  return scheduler;
+}
+
+class TestScheduler {
+  private readonly _context: TestSchedulerContext;
+  private readonly _dispatcher: ReporterDispatcher;
+  private readonly _globalConfig: Config.GlobalConfig;
 
   constructor(
     globalConfig: Config.GlobalConfig,
-    options: TestSchedulerOptions,
     context: TestSchedulerContext,
   ) {
+    this._context = context;
     this._dispatcher = new ReporterDispatcher();
     this._globalConfig = globalConfig;
-    this._options = options;
-    this._context = context;
-    this._setupReporters();
   }
 
-  addReporter(reporter: Reporter) {
+  addReporter(reporter: Reporter): void {
     this._dispatcher.register(reporter);
   }
 
-  removeReporter(ReporterClass: Function) {
-    this._dispatcher.unregister(ReporterClass);
+  removeReporter(reporterConstructor: ReporterConstructor): void {
+    this._dispatcher.unregister(reporterConstructor);
   }
 
-  async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
-    const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
+  async scheduleTests(
+    tests: Array<Test>,
+    watcher: TestWatcher,
+  ): Promise<AggregatedResult> {
+    const onTestFileStart = this._dispatcher.onTestFileStart.bind(
+      this._dispatcher,
+    );
     const timings: Array<number> = [];
-    const contexts = new Set();
+    const testContexts = new Set<TestContext>();
     tests.forEach(test => {
-      contexts.add(test.context);
+      testContexts.add(test.context);
       if (test.duration) {
         timings.push(test.duration);
       }
@@ -105,8 +128,9 @@ export default class TestScheduler {
       // Throws when the context is leaked after executing a test.
       if (testResult.leaks) {
         const message =
-          chalk.red.bold('EXPERIMENTAL FEATURE!\n') +
-          'Your test suite is leaking memory. Please ensure all references are cleaned.\n' +
+          `${chalk.red.bold(
+            'EXPERIMENTAL FEATURE!\n',
+          )}Your test suite is leaking memory. Please ensure all references are cleaned.\n` +
           '\n' +
           'There is a number of things that can leak memory:\n' +
           '  - Async operations that have not finished (e.g. fs.readFile).\n' +
@@ -120,8 +144,12 @@ export default class TestScheduler {
       }
 
       addResult(aggregatedResults, testResult);
-      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
-      return this._bailIfNeeded(contexts, aggregatedResults, watcher);
+      await this._dispatcher.onTestFileResult(
+        test,
+        testResult,
+        aggregatedResults,
+      );
+      return this._bailIfNeeded(testContexts, aggregatedResults, watcher);
     };
 
     const onFailure = async (test: Test, error: SerializableError) => {
@@ -136,18 +164,33 @@ export default class TestScheduler {
         test.path,
       );
       addResult(aggregatedResults, testResult);
-      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
+      await this._dispatcher.onTestFileResult(
+        test,
+        testResult,
+        aggregatedResults,
+      );
     };
 
-    const updateSnapshotState = () => {
-      contexts.forEach(context => {
-        const status = snapshot.cleanup(
+    const updateSnapshotState = async () => {
+      const contextsWithSnapshotResolvers = await Promise.all(
+        Array.from(testContexts).map(
+          async context =>
+            [context, await buildSnapshotResolver(context.config)] as const,
+        ),
+      );
+
+      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
+        const status = cleanupSnapshots(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
-          snapshot.buildSnapshotResolver(context.config),
+          snapshotResolver,
+          context.config.testPathIgnorePatterns,
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+        aggregatedResults.snapshot.filesRemovedList = (
+          aggregatedResults.snapshot.filesRemovedList || []
+        ).concat(status.filesRemovedList);
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
@@ -164,42 +207,93 @@ export default class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners = Object.create(null);
-    contexts.forEach(({config}) => {
-      if (!testRunners[config.runner]) {
-        const Runner: typeof TestRunner = require(config.runner);
-        testRunners[config.runner] = new Runner(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-        });
-      }
-    });
+    const testRunners: Record<string, JestTestRunner> = Object.create(null);
+    const contextsByTestRunner = new WeakMap<JestTestRunner, TestContext>();
 
-    const testsByRunner = this._partitionTests(testRunners, tests);
+    try {
+      await Promise.all(
+        Array.from(testContexts).map(async context => {
+          const {config} = context;
+          if (!testRunners[config.runner]) {
+            const transformer = await createScriptTransformer(config);
+            const Runner: TestRunnerConstructor =
+              await transformer.requireAndTranspileModule(config.runner);
+            const runner = new Runner(this._globalConfig, {
+              changedFiles: this._context.changedFiles,
+              sourcesRelatedToTestsInChangedFiles:
+                this._context.sourcesRelatedToTestsInChangedFiles,
+            });
+            testRunners[config.runner] = runner;
+            contextsByTestRunner.set(runner, context);
+          }
+        }),
+      );
 
-    if (testsByRunner) {
-      try {
-        for (const runner of Object.keys(testRunners)) {
-          await testRunners[runner].runTests(
-            testsByRunner[runner],
-            watcher,
-            onStart,
-            onResult,
-            onFailure,
-            {
-              serial: runInBand || Boolean(testRunners[runner].isSerial),
-            },
-          );
-        }
-      } catch (error) {
-        if (!watcher.isInterrupted()) {
-          throw error;
+      const testsByRunner = this._partitionTests(testRunners, tests);
+
+      if (testsByRunner) {
+        try {
+          for (const runner of Object.keys(testRunners)) {
+            const testRunner = testRunners[runner];
+            const context = contextsByTestRunner.get(testRunner);
+
+            invariant(context);
+
+            const tests = testsByRunner[runner];
+
+            const testRunnerOptions = {
+              serial: runInBand || Boolean(testRunner.isSerial),
+            };
+
+            if (testRunner.supportsEventEmitters) {
+              const unsubscribes = [
+                testRunner.on('test-file-start', ([test]) =>
+                  onTestFileStart(test),
+                ),
+                testRunner.on('test-file-success', ([test, testResult]) =>
+                  onResult(test, testResult),
+                ),
+                testRunner.on('test-file-failure', ([test, error]) =>
+                  onFailure(test, error),
+                ),
+                testRunner.on(
+                  'test-case-result',
+                  ([testPath, testCaseResult]) => {
+                    const test: Test = {context, path: testPath};
+                    this._dispatcher.onTestCaseResult(test, testCaseResult);
+                  },
+                ),
+              ];
+
+              await testRunner.runTests(tests, watcher, testRunnerOptions);
+
+              unsubscribes.forEach(sub => sub());
+            } else {
+              await testRunner.runTests(
+                tests,
+                watcher,
+                onTestFileStart,
+                onResult,
+                onFailure,
+                testRunnerOptions,
+              );
+            }
+          }
+        } catch (error) {
+          if (!watcher.isInterrupted()) {
+            throw error;
+          }
         }
       }
+    } catch (error) {
+      aggregatedResults.runExecError = buildExecError(error);
+      await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
+      throw error;
     }
 
-    updateSnapshotState();
+    await updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
-    await this._dispatcher.onRunComplete(contexts, aggregatedResults);
+    await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
 
     const anyTestFailures = !(
       aggregatedResults.numFailedTests === 0 &&
@@ -217,9 +311,9 @@ export default class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: {[key: string]: TestRunner},
+    testRunners: Record<string, JestTestRunner>,
     tests: Array<Test>,
-  ) {
+  ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
         const runner = test.context.config.runner;
@@ -239,107 +333,65 @@ export default class TestScheduler {
     }
   }
 
-  private _shouldAddDefaultReporters(
-    reporters?: Array<string | Config.ReporterConfig>,
-  ): boolean {
-    return (
-      !reporters ||
-      !!reporters.find(
-        reporter => this._getReporterProps(reporter).path === 'default',
-      )
-    );
-  }
+  async _setupReporters() {
+    const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
+    const reporters = this._globalConfig.reporters || [['default', {}]];
+    let summary = false;
 
-  private _setupReporters() {
-    const {collectCoverage, notify, reporters} = this._globalConfig;
-    const isDefault = this._shouldAddDefaultReporters(reporters);
-
-    if (isDefault) {
-      this._setupDefaultReporters(collectCoverage);
-    }
-
-    if (!isDefault && collectCoverage) {
-      this.addReporter(
-        new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-        }),
-      );
+    for (const [reporter, options] of reporters) {
+      switch (reporter) {
+        case 'default':
+          summary = true;
+          verbose
+            ? this.addReporter(new VerboseReporter(this._globalConfig))
+            : this.addReporter(new DefaultReporter(this._globalConfig));
+          break;
+        case 'github-actions':
+          GITHUB_ACTIONS && this.addReporter(new GitHubActionsReporter());
+          break;
+        case 'summary':
+          summary = true;
+          break;
+        default:
+          await this._addCustomReporter(reporter, options);
+      }
     }
 
     if (notify) {
-      this.addReporter(
-        new NotifyReporter(
-          this._globalConfig,
-          this._options.startRun,
-          this._context,
-        ),
-      );
+      this.addReporter(new NotifyReporter(this._globalConfig, this._context));
     }
 
-    if (reporters && Array.isArray(reporters)) {
-      this._addCustomReporters(reporters);
+    if (coverage) {
+      this.addReporter(new CoverageReporter(this._globalConfig, this._context));
+    }
+
+    if (summary) {
+      this.addReporter(new SummaryReporter(this._globalConfig));
     }
   }
 
-  private _setupDefaultReporters(collectCoverage: boolean) {
-    this.addReporter(
-      this._globalConfig.verbose
-        ? new VerboseReporter(this._globalConfig)
-        : new DefaultReporter(this._globalConfig),
-    );
-
-    if (collectCoverage) {
-      this.addReporter(
-        new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-        }),
-      );
-    }
-
-    this.addReporter(new SummaryReporter(this._globalConfig));
-  }
-
-  private _addCustomReporters(
-    reporters: Array<string | Config.ReporterConfig>,
+  private async _addCustomReporter(
+    reporter: string,
+    options: Record<string, unknown>,
   ) {
-    reporters.forEach(reporter => {
-      const {options, path} = this._getReporterProps(reporter);
+    try {
+      const Reporter: ReporterConstructor = await requireOrImportModule(
+        reporter,
+      );
 
-      if (path === 'default') return;
-
-      try {
-        const Reporter = require(path);
-        this.addReporter(new Reporter(this._globalConfig, options));
-      } catch (error) {
-        throw new Error(
-          'An error occurred while adding the reporter at path "' +
-            path +
-            '".' +
-            error.message,
-        );
-      }
-    });
-  }
-
-  /**
-   * Get properties of a reporter in an object
-   * to make dealing with them less painful.
-   */
-  private _getReporterProps(
-    reporter: string | Config.ReporterConfig,
-  ): {path: string; options: {[key: string]: unknown}} {
-    if (typeof reporter === 'string') {
-      return {options: this._options, path: reporter};
-    } else if (Array.isArray(reporter)) {
-      const [path, options] = reporter;
-      return {options, path};
+      this.addReporter(
+        new Reporter(this._globalConfig, options, this._context),
+      );
+    } catch (error: any) {
+      error.message = `An error occurred while adding the reporter at path "${chalk.bold(
+        reporter,
+      )}".\n${error instanceof Error ? error.message : ''}`;
+      throw error;
     }
-
-    throw new Error('Reporter should be either a string or an array');
   }
 
-  private _bailIfNeeded(
-    contexts: Set<Context>,
+  private async _bailIfNeeded(
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
   ): Promise<void> {
@@ -348,17 +400,23 @@ export default class TestScheduler {
       aggregatedResults.numFailedTests >= this._globalConfig.bail
     ) {
       if (watcher.isWatchMode()) {
-        watcher.setState({interrupted: true});
-      } else {
-        const failureExit = () => exit(1);
+        await watcher.setState({interrupted: true});
+        return;
+      }
 
-        return this._dispatcher
-          .onRunComplete(contexts, aggregatedResults)
-          .then(failureExit)
-          .catch(failureExit);
+      try {
+        await this._dispatcher.onRunComplete(testContexts, aggregatedResults);
+      } finally {
+        const exitCode = this._globalConfig.testFailureExitCode;
+        exit(exitCode);
       }
     }
-    return Promise.resolve();
+  }
+}
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
 }
 
@@ -371,12 +429,35 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 };
 
 const getEstimatedTime = (timings: Array<number>, workers: number) => {
-  if (!timings.length) {
+  if (timings.length === 0) {
     return 0;
   }
 
-  const max = Math.max.apply(null, timings);
+  const max = Math.max(...timings);
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
+};
+
+const strToError = (errString: string): SerializableError => {
+  const {message, stack} = separateMessageFromStack(errString);
+  if (stack.length > 0) {
+    return {message, stack};
+  }
+  const error = new ErrorWithStack(message, buildExecError);
+  return {message, stack: error.stack || ''};
+};
+
+const buildExecError = (err: unknown): SerializableError => {
+  if (typeof err === 'string' || err == null) {
+    return strToError(err || 'Error');
+  }
+  const anyErr = err as any;
+  if (typeof anyErr.message === 'string') {
+    if (typeof anyErr.stack === 'string' && anyErr.stack.length > 0) {
+      return anyErr;
+    }
+    return strToError(anyErr.message);
+  }
+  return strToError(JSON.stringify(err));
 };

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
+import type {
   AggregatedResult,
   AssertionResult,
   CodeCoverageFormatter,
@@ -58,6 +58,7 @@ function formatTestAssertion(
 ): FormattedAssertionResult {
   const result: FormattedAssertionResult = {
     ancestorTitles: assertion.ancestorTitles,
+    duration: assertion.duration,
     failureMessages: null,
     fullName: assertion.fullName,
     location: assertion.location,

@@ -5,24 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 const config: ValidationOptions = {
   comment: '  A comment',
   condition: () => true,
   deprecate: () => false,
   deprecatedConfig: {
-    key: () => {},
+    key: (): string => 'Deprecation message',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   error: () => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
-  recursiveBlacklist: [],
+  recursiveDenylist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',
     warning: 'Validation Warning',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unknown: () => {},
 };
 

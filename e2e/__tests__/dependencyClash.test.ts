@@ -5,23 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-skipSuiteOnWindows();
-
 // doing test in a temp directory because we don't want jest node_modules affect it
-const tempDir = path.resolve(os.tmpdir(), 'clashing-dependencies-test');
-const hasteImplModulePath = path.resolve(
-  './packages/jest-haste-map/src/__tests__/haste_impl.js',
-);
+const tempDir = path.resolve(tmpdir(), 'clashing-dependencies-test');
+const hasteImplModulePath = path
+  .resolve('./packages/jest-haste-map/src/__tests__/haste_impl.js')
+  .replace(/\\/g, '\\\\');
 
 beforeEach(() => {
   cleanup(tempDir);
-  createEmptyPackage(tempDir);
+  createEmptyPackage(tempDir, {});
 });
 
 // This test case is checking that when having both
@@ -67,19 +64,21 @@ test('does not require project modules from inside node_modules', () => {
           if (!threw) {
             throw new Error('It used the wrong invariant module!');
           }
-          return script.replace(
-            'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
-            ''
-          );
+          return {
+            code: script.replace(
+              'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
+              '',
+            ),
+          };
         },
       };
     `,
   });
-  const {stderr, status} = runJest(tempDir, ['--no-cache', '--no-watchman']);
+  const {stderr, exitCode} = runJest(tempDir, ['--no-cache', '--no-watchman']);
   // make sure there are no errors that lead to invariant.js (if we were to
   // require a wrong `invariant.js` we'd have a syntax error, because jest
   // internals wouldn't be able to parse flow annotations)
   expect(stderr).not.toMatch('invariant');
   expect(stderr).toMatch('PASS');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

@@ -1,43 +1,51 @@
 {
   "name": "@jest/transform",
-  "version": "24.7.1",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-transform"
   },
   "license": "MIT",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@babel/core": "^7.1.0",
-    "@jest/types": "^24.7.0",
-    "babel-plugin-istanbul": "^5.1.0",
-    "chalk": "^2.0.1",
+    "@babel/core": "^7.11.6",
+    "@jest/types": "workspace:^",
+    "@jridgewell/trace-mapping": "^0.3.15",
+    "babel-plugin-istanbul": "^6.1.1",
+    "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
-    "fast-json-stable-stringify": "^2.0.0",
-    "graceful-fs": "^4.1.15",
-    "jest-haste-map": "^24.7.1",
-    "jest-regex-util": "^24.3.0",
-    "jest-util": "^24.7.1",
-    "micromatch": "^3.1.10",
-    "realpath-native": "^1.1.0",
-    "slash": "^2.0.0",
-    "source-map": "^0.6.1",
-    "write-file-atomic": "2.4.1"
+    "fast-json-stable-stringify": "^2.1.0",
+    "graceful-fs": "^4.2.9",
+    "jest-haste-map": "workspace:^",
+    "jest-regex-util": "workspace:^",
+    "jest-util": "workspace:^",
+    "micromatch": "^4.0.4",
+    "pirates": "^4.0.4",
+    "slash": "^3.0.0",
+    "write-file-atomic": "^4.0.1"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.1.0",
+    "@jest/test-utils": "workspace:^",
+    "@types/babel__core": "^7.1.14",
     "@types/convert-source-map": "^1.5.1",
-    "@types/fast-json-stable-stringify": "^2.0.0",
-    "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^3.1.0",
-    "@types/write-file-atomic": "^2.1.1"
+    "@types/graceful-fs": "^4.1.3",
+    "@types/micromatch": "^4.0.1",
+    "@types/write-file-atomic": "^4.0.0",
+    "dedent": "^0.7.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

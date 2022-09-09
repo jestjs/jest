@@ -29,17 +29,20 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import {Spy} from '../types';
+import type {Spy} from '../types';
 import CallTracker from './CallTracker';
-import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
+import createSpy from './createSpy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
-  const usageDefinition = usage ? '\nUsage: ' + usage : '';
-  return (msg: string) => domain + ' : ' + msg + usageDefinition;
+  const usageDefinition = usage ? `\nUsage: ${usage}` : '';
+  return (msg: string) => `${domain} : ${msg}${usageDefinition}`;
 };
 
-function isSpy(putativeSpy: any) {
+function isSpy(putativeSpy: {
+  and: unknown;
+  calls: unknown;
+}): putativeSpy is Spy {
   if (!putativeSpy) {
     return false;
   }
@@ -54,7 +57,7 @@ const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 export default class SpyRegistry {
   allowRespy: (allow: unknown) => void;
   spyOn: (
-    obj: {[key: string]: any},
+    obj: Record<string, Spy>,
     methodName: string,
     accessType?: keyof PropertyDescriptor,
   ) => Spy;
@@ -62,7 +65,7 @@ export default class SpyRegistry {
   respy: unknown;
 
   private _spyOnProperty: (
-    obj: {[key: string]: any},
+    obj: Record<string, Spy>,
     propertyName: string,
     accessType: keyof PropertyDescriptor,
   ) => Spy;
@@ -72,7 +75,7 @@ export default class SpyRegistry {
   }: {
     currentSpies?: () => Array<Spy>;
   } = {}) {
-    this.allowRespy = function(allow) {
+    this.allowRespy = function (allow) {
       this.respy = allow;
     };
 
@@ -84,7 +87,7 @@ export default class SpyRegistry {
       if (obj === void 0) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + methodName + '()',
+            `could not find an object to spy upon for ${methodName}()`,
           ),
         );
       }
@@ -94,7 +97,7 @@ export default class SpyRegistry {
       }
 
       if (obj[methodName] === void 0) {
-        throw new Error(getErrorMsg(methodName + '() method does not exist'));
+        throw new Error(getErrorMsg(`${methodName}() method does not exist`));
       }
 
       if (obj[methodName] && isSpy(obj[methodName])) {
@@ -102,7 +105,7 @@ export default class SpyRegistry {
           return obj[methodName];
         } else {
           throw new Error(
-            getErrorMsg(methodName + ' has already been spied upon'),
+            getErrorMsg(`${methodName} has already been spied upon`),
           );
         }
       }
@@ -110,14 +113,14 @@ export default class SpyRegistry {
       let descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(
           getErrorMsg(
-            methodName + ' is not declared writable or has no setter',
+            `${methodName} is not declared writable or has no setter`,
           ),
         );
       }
@@ -127,11 +130,11 @@ export default class SpyRegistry {
       let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, methodName)) {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           obj[methodName] = originalMethod;
         };
       } else {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           if (!delete obj[methodName]) {
             obj[methodName] = originalMethod;
           }
@@ -147,11 +150,11 @@ export default class SpyRegistry {
       return spiedMethod;
     };
 
-    this._spyOnProperty = function(obj, propertyName, accessType = 'get') {
+    this._spyOnProperty = function (obj, propertyName, accessType = 'get') {
       if (!obj) {
         throw new Error(
           getErrorMsg(
-            'could not find an object to spy upon for ' + propertyName,
+            `could not find an object to spy upon for ${propertyName}`,
           ),
         );
       }
@@ -163,27 +166,24 @@ export default class SpyRegistry {
       let descriptor: PropertyDescriptor | undefined;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
       if (!descriptor) {
-        throw new Error(getErrorMsg(propertyName + ' property does not exist'));
+        throw new Error(getErrorMsg(`${propertyName} property does not exist`));
       }
 
       if (!descriptor.configurable) {
         throw new Error(
-          getErrorMsg(propertyName + ' is not declared configurable'),
+          getErrorMsg(`${propertyName} is not declared configurable`),
         );
       }
 
       if (!descriptor[accessType]) {
         throw new Error(
           getErrorMsg(
-            'Property ' +
-              propertyName +
-              ' does not have access type ' +
-              accessType,
+            `Property ${propertyName} does not have access type ${accessType}`,
           ),
         );
       }
@@ -193,7 +193,7 @@ export default class SpyRegistry {
           return obj[propertyName];
         } else {
           throw new Error(
-            getErrorMsg(propertyName + ' has already been spied upon'),
+            getErrorMsg(`${propertyName} has already been spied upon`),
           );
         }
       }
@@ -203,11 +203,11 @@ export default class SpyRegistry {
       let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           Object.defineProperty(obj, propertyName, originalDescriptor);
         };
       } else {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           delete obj[propertyName];
         };
       }
@@ -223,7 +223,7 @@ export default class SpyRegistry {
       return spiedProperty;
     };
 
-    this.clearSpies = function() {
+    this.clearSpies = function () {
       const spies = currentSpies();
       for (let i = spies.length - 1; i >= 0; i--) {
         const spyEntry = spies[i];

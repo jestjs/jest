@@ -5,15 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import fs from 'fs';
-import {Config} from '@jest/types';
-import {JEST_CONFIG, PACKAGE_JSON} from './constants';
+import * as path from 'path';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import slash = require('slash');
+import {ValidationError} from 'jest-validate';
+import {
+  JEST_CONFIG_BASE_NAME,
+  JEST_CONFIG_EXT_ORDER,
+  PACKAGE_JSON,
+} from './constants';
+import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
-const isFile = (filePath: Config.Path) =>
+const isFile = (filePath: string) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
-export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
+const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
+
+export default function resolveConfigPath(
+  pathToResolve: string,
+  cwd: string,
+  skipMultipleConfigError = false,
+): string {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -30,35 +43,48 @@ export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
   // e.g.
   // With a directory structure like this:
   //   my_project/
-  //     packcage.json
+  //     package.json
   //
   // Passing a `my_project/some_directory_that_doesnt_exist` as a project
   // name will resolve into a (possibly empty) `my_project/package.json` and
   // try to run all tests it finds under `my_project` directory.
   if (!fs.existsSync(absolutePath)) {
     throw new Error(
-      `Can't find a root directory while resolving a config file path.\n` +
+      "Can't find a root directory while resolving a config file path.\n" +
         `Provided path to resolve: ${pathToResolve}\n` +
         `cwd: ${cwd}`,
     );
   }
 
-  return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
-};
+  return resolveConfigPathByTraversing(
+    absolutePath,
+    pathToResolve,
+    cwd,
+    skipMultipleConfigError,
+  );
+}
 
 const resolveConfigPathByTraversing = (
-  pathToResolve: Config.Path,
-  initialPath: Config.Path,
-  cwd: Config.Path,
-): Config.Path => {
-  const jestConfig = path.resolve(pathToResolve, JEST_CONFIG);
-  if (isFile(jestConfig)) {
-    return jestConfig;
+  pathToResolve: string,
+  initialPath: string,
+  cwd: string,
+  skipMultipleConfigError: boolean,
+): string => {
+  const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
+    path.resolve(pathToResolve, getConfigFilename(ext)),
+  ).filter(isFile);
+
+  const packageJson = findPackageJson(pathToResolve);
+  if (packageJson && hasPackageJsonJestKey(packageJson)) {
+    configFiles.push(packageJson);
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packageJson)) {
-    return packageJson;
+  if (!skipMultipleConfigError && configFiles.length > 1) {
+    throw new ValidationError(...makeMultipleConfigsErrorMessage(configFiles));
+  }
+
+  if (configFiles.length > 0 || packageJson) {
+    return configFiles[0] ?? packageJson;
   }
 
   // This is the system root.
@@ -72,17 +98,59 @@ const resolveConfigPathByTraversing = (
     path.dirname(pathToResolve),
     initialPath,
     cwd,
+    skipMultipleConfigError,
   );
 };
 
-const makeResolutionErrorMessage = (
-  initialPath: Config.Path,
-  cwd: Config.Path,
-) =>
+const findPackageJson = (pathToResolve: string) => {
+  const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
+  if (isFile(packagePath)) {
+    return packagePath;
+  }
+
+  return undefined;
+};
+
+const hasPackageJsonJestKey = (packagePath: string) => {
+  const content = fs.readFileSync(packagePath, 'utf8');
+  try {
+    return 'jest' in JSON.parse(content);
+  } catch {
+    // If package is not a valid JSON
+    return false;
+  }
+};
+
+const makeResolutionErrorMessage = (initialPath: string, cwd: string) =>
   'Could not find a config file based on provided values:\n' +
   `path: "${initialPath}"\n` +
   `cwd: "${cwd}"\n` +
   'Config paths must be specified by either a direct path to a config\n' +
   'file, or a path to a directory. If directory is given, Jest will try to\n' +
-  `traverse directory tree up, until it finds either "${JEST_CONFIG}" or\n` +
-  `"${PACKAGE_JSON}".`;
+  `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
+    ext => `"${getConfigFilename(ext)}"`,
+  ).join(' or ')}.`;
+
+function extraIfPackageJson(configPath: string) {
+  if (configPath.endsWith(PACKAGE_JSON)) {
+    return '`jest` key in ';
+  }
+
+  return '';
+}
+
+const makeMultipleConfigsErrorMessage = (
+  configPaths: Array<string>,
+): [string, string, string] => [
+  `${BULLET}${chalk.bold('Multiple configurations found')}`,
+  [
+    ...configPaths.map(
+      configPath =>
+        `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+    ),
+    '',
+    '  Implicit config resolution does not allow multiple configuration files.',
+    '  Either remove unused config files or select one explicitly with `--config`.',
+  ].join('\n'),
+  DOCUMENTATION_NOTE,
+];

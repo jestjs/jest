@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {realpathSync} from 'graceful-fs';
 import HasteMap from 'jest-haste-map';
-import {sync as realpath} from 'realpath-native';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(realpath(os.tmpdir()), 'haste_map_size');
+const DIR = path.resolve(realpathSync.native(tmpdir()), 'haste_map_size');
 
 beforeEach(() => {
   cleanup(DIR);
@@ -24,10 +24,10 @@ afterEach(() => cleanup(DIR));
 const options = {
   extensions: ['js'],
   forceNodeFilesystemAPI: true,
+  id: 'tmp',
   ignorePattern: / ^/,
   maxWorkers: 2,
   mocksPattern: '',
-  name: 'tmp',
   platforms: [],
   retainAllFiles: true,
   rootDir: DIR,
@@ -37,13 +37,13 @@ const options = {
 };
 
 test('reports the correct file size', async () => {
-  const hasteMap = new HasteMap(options);
+  const hasteMap = await HasteMap.create(options);
   const hasteFS = (await hasteMap.build()).hasteFS;
   expect(hasteFS.getSize(path.join(DIR, 'file.js'))).toBe(5);
 });
 
 test('updates the file size when a file changes', async () => {
-  const hasteMap = new HasteMap({...options, watch: true});
+  const hasteMap = await HasteMap.create({...options, watch: true});
   await hasteMap.build();
 
   writeFiles(DIR, {

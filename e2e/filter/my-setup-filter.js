@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
@@ -6,7 +11,7 @@ const setupData = {
   filterText: 'this will return no tests',
 };
 
-module.exports = function(tests) {
+module.exports = function (tests) {
   return {
     filtered: tests
       .filter(t => t.indexOf(setupData.filterText) !== -1)
@@ -14,7 +19,7 @@ module.exports = function(tests) {
   };
 };
 
-module.exports.setup = function() {
+module.exports.setup = function () {
   return new Promise(resolve => {
     setTimeout(() => {
       setupData.filterText = 'foo';

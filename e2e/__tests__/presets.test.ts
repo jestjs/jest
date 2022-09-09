@@ -9,10 +9,17 @@ import runJest from '../runJest';
 
 test('supports json preset', () => {
   const result = runJest('presets/json');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
-test('supports js preset', () => {
-  const result = runJest('presets/js');
-  expect(result.status).toBe(0);
+test.each(['js', 'cjs'])('supports %s preset', presetDir => {
+  const result = runJest(`presets/${presetDir}`);
+
+  expect(result.exitCode).toBe(0);
+});
+
+test.each(['mjs', 'js-type-module'])('supports %s preset', presetDir => {
+  const result = runJest(`presets/${presetDir}`);
+
+  expect(result.exitCode).toBe(0);
 });

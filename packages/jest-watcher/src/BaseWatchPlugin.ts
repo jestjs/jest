@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   JestHookSubscriber,
   UpdateConfigCallback,
   UsageData,
   WatchPlugin,
 } from './types';
 
-class BaseWatchPlugin implements WatchPlugin {
+abstract class BaseWatchPlugin implements WatchPlugin {
   protected _stdin: NodeJS.ReadStream;
   protected _stdout: NodeJS.WriteStream;
 
@@ -28,13 +28,15 @@ class BaseWatchPlugin implements WatchPlugin {
     this._stdout = stdout;
   }
 
-  apply(_hooks: JestHookSubscriber) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  apply(_hooks: JestHookSubscriber): void {}
 
   getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
     return null;
   }
 
-  onKey(_key: string) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onKey(_key: string): void {}
 
   run(
     _globalConfig: Config.GlobalConfig,

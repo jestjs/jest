@@ -5,12 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm, {Script, Context} from 'vm';
-import {Global, Config} from '@jest/types';
+import {Context, createContext, runInContext} from 'vm';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment} from '@jest/environment';
 
 type Timer = {
   id: number;
@@ -18,40 +22,110 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment {
+// some globals we do not want, either because deprecated or we set it ourselves
+const denyList = new Set([
+  'GLOBAL',
+  'root',
+  'global',
+  'Buffer',
+  'ArrayBuffer',
+  'Uint8Array',
+  // if env is loaded within a jest test
+  'jest-symbol-do-not-touch',
+]);
+
+const nodeGlobals = new Map(
+  Object.getOwnPropertyNames(globalThis)
+    .filter(global => !denyList.has(global))
+    .map(nodeGlobalsKey => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        globalThis,
+        nodeGlobalsKey,
+      );
+
+      if (!descriptor) {
+        throw new Error(
+          `No property descriptor for ${nodeGlobalsKey}, this is a bug in Jest.`,
+        );
+      }
+
+      return [nodeGlobalsKey, descriptor];
+    }),
+);
+
+export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
-  fakeTimers: FakeTimers<Timer> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
+  fakeTimersModern: ModernFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['node', 'node-addons'];
 
-  constructor(config: Config.ProjectConfig) {
-    this.context = vm.createContext();
-    const global = (this.global = vm.runInContext(
+  // while `context` is unused, it should always be passed
+  constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
+    const {projectConfig} = config;
+    this.context = createContext();
+    const global = (this.global = runInContext(
       'this',
-      Object.assign(this.context, config.testEnvironmentOptions),
+      Object.assign(this.context, projectConfig.testEnvironmentOptions),
     ));
+
+    const contextGlobals = new Set(Object.getOwnPropertyNames(global));
+    for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
+      if (!contextGlobals.has(nodeGlobalsKey)) {
+        Object.defineProperty(global, nodeGlobalsKey, {
+          configurable: descriptor.configurable,
+          enumerable: descriptor.enumerable,
+          get() {
+            // @ts-expect-error: no index signature
+            const val = globalThis[nodeGlobalsKey];
+
+            // override lazy getter
+            Object.defineProperty(global, nodeGlobalsKey, {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              value: val,
+              writable: descriptor.writable,
+            });
+            return val;
+          },
+          set(val) {
+            // override lazy getter
+            Object.defineProperty(global, nodeGlobalsKey, {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              value: val,
+              writable: true,
+            });
+          },
+        });
+      }
+    }
+
     global.global = global;
-    global.clearInterval = clearInterval;
-    global.clearTimeout = clearTimeout;
-    global.setInterval = setInterval;
-    global.setTimeout = setTimeout;
+    global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
-    // URL and URLSearchParams are global in Node >= 10
-    if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      /* global URL, URLSearchParams */
-      global.URL = URL;
-      global.URLSearchParams = URLSearchParams;
+    // TextEncoder (global or via 'util') references a Uint8Array constructor
+    // different than the global one used by users in tests. This makes sure the
+    // same constructor is referenced by both.
+    global.Uint8Array = Uint8Array;
+
+    installCommonGlobals(global, projectConfig.globals);
+
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(item => typeof item === 'string')
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
     }
-    // TextDecoder and TextDecoder are global in Node >= 11
-    if (
-      typeof TextEncoder !== 'undefined' &&
-      typeof TextDecoder !== 'undefined'
-    ) {
-      /* global TextEncoder, TextDecoder */
-      global.TextEncoder = TextEncoder;
-      global.TextDecoder = TextDecoder;
-    }
-    installCommonGlobals(global, config.globals);
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
@@ -67,40 +141,44 @@ class NodeEnvironment implements JestEnvironment {
     const timerRefToId = (timer: Timer): number | undefined =>
       (timer && timer.id) || undefined;
 
-    const timerConfig = {
-      idToRef: timerIdToRef,
-      refToId: timerRefToId,
-    };
-
-    this.fakeTimers = new FakeTimers({
-      config,
+    this.fakeTimers = new LegacyFakeTimers({
+      config: projectConfig,
       global,
       moduleMocker: this.moduleMocker,
-      timerConfig,
+      timerConfig: {
+        idToRef: timerIdToRef,
+        refToId: timerRefToId,
+      },
+    });
+
+    this.fakeTimersModern = new ModernFakeTimers({
+      config: projectConfig,
+      global,
     });
   }
 
-  setup() {
-    return Promise.resolve();
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async setup(): Promise<void> {}
 
-  teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
+    if (this.fakeTimersModern) {
+      this.fakeTimersModern.dispose();
+    }
     this.context = null;
     this.fakeTimers = null;
-    return Promise.resolve();
+    this.fakeTimersModern = null;
   }
 
-  // TS infers the return type to be `any`, since that's what `runInContext`
-  // returns.
-  runScript(script: Script) {
-    if (this.context) {
-      return script.runInContext(this.context);
-    }
-    return null;
+  exportConditions(): Array<string> {
+    return this.customExportConditions;
+  }
+
+  getVmContext(): Context | null {
+    return this.context;
   }
 }
 
-export = NodeEnvironment;
+export const TestEnvironment = NodeEnvironment;

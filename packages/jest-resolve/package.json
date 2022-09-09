@@ -1,30 +1,43 @@
 {
   "name": "jest-resolve",
-  "version": "24.7.1",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-resolve"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/types": "^24.7.0",
-    "browser-resolve": "^1.11.3",
-    "chalk": "^2.0.1",
-    "jest-pnp-resolver": "^1.2.1",
-    "realpath-native": "^1.1.0"
+    "chalk": "^4.0.0",
+    "graceful-fs": "^4.2.9",
+    "jest-haste-map": "workspace:^",
+    "jest-pnp-resolver": "^1.2.2",
+    "jest-util": "workspace:^",
+    "jest-validate": "workspace:^",
+    "resolve": "^1.20.0",
+    "resolve.exports": "^1.1.0",
+    "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@types/browser-resolve": "^0.0.5",
-    "jest-haste-map": "^24.7.1"
+    "@tsd/typescript": "~4.8.2",
+    "@types/graceful-fs": "^4.1.3",
+    "@types/pnpapi": "^0.0.2",
+    "@types/resolve": "^1.20.2",
+    "tsd-lite": "^0.6.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

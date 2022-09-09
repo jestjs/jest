@@ -5,41 +5,34 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
-import {format} from 'util';
+import assert = require('assert');
 import {Console} from 'console';
-import chalk from 'chalk';
-import {LogCounters, LogMessage, LogTimers, LogType} from './types';
-
-// TODO: Copied from `jest-util`. Import from it in Jest 25
-function clearLine(stream: NodeJS.WritableStream & {isTTY?: boolean}) {
-  if (stream.isTTY) {
-    stream.write('\x1b[999D\x1b[K');
-  }
-}
+import {InspectOptions, format, formatWithOptions, inspect} from 'util';
+import chalk = require('chalk');
+import {clearLine, formatTime} from 'jest-util';
+import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WritableStream;
-  private _stderr: NodeJS.WritableStream;
+  private _stdout: NodeJS.WriteStream;
+  private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  override Console: typeof Console = Console;
 
   constructor(
-    stdout: NodeJS.WritableStream,
-    stderr: NodeJS.WritableStream,
+    stdout: NodeJS.WriteStream,
+    stderr: NodeJS.WriteStream,
     formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
     this._stderr = stderr;
     this._formatBuffer = formatBuffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   private _log(type: LogType, message: string) {
@@ -56,15 +49,15 @@ export default class CustomConsole extends Console {
     );
   }
 
-  assert(value: any, message?: string | Error) {
+  override assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._logError('assert', error.toString());
     }
   }
 
-  count(label: string = 'default') {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -72,27 +65,28 @@ export default class CustomConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default') {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: any, ...args: Array<any>) {
+  override debug(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('debug', format(firstArg, ...args));
   }
 
-  dir(firstArg: any, ...args: Array<any>) {
-    this._log('dir', format(firstArg, ...args));
+  override dir(firstArg: unknown, options: InspectOptions = {}): void {
+    const representation = inspect(firstArg, options);
+    this._log('dir', formatWithOptions(options, representation));
   }
 
-  dirxml(firstArg: any, ...args: Array<any>) {
+  override dirxml(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...args));
   }
 
-  error(firstArg: any, ...args: Array<any>) {
+  override error(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('error', format(firstArg, ...args));
   }
 
-  group(title?: string, ...args: Array<any>) {
+  override group(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || args.length > 0) {
@@ -100,7 +94,7 @@ export default class CustomConsole extends Console {
     }
   }
 
-  groupCollapsed(title?: string, ...args: Array<any>) {
+  override groupCollapsed(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || args.length > 0) {
@@ -108,21 +102,21 @@ export default class CustomConsole extends Console {
     }
   }
 
-  groupEnd() {
+  override groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: any, ...args: Array<any>) {
+  override info(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('info', format(firstArg, ...args));
   }
 
-  log(firstArg: any, ...args: Array<any>) {
+  override log(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('log', format(firstArg, ...args));
   }
 
-  time(label: string = 'default') {
+  override time(label = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -130,22 +124,32 @@ export default class CustomConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default') {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
     }
   }
 
-  warn(firstArg: any, ...args: Array<any>) {
+  override timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
+    }
+  }
+
+  override warn(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('warn', format(firstArg, ...args));
   }
 
-  getBuffer() {
+  getBuffer(): undefined {
     return undefined;
   }
 }

@@ -6,8 +6,8 @@
  */
 
 import {resolve} from 'path';
-import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const workdirNodeModules = resolve(
   __dirname,
@@ -27,6 +27,6 @@ afterAll(() => {
 });
 
 test('require.resolve with paths', () => {
-  const {status} = runJest('resolve-with-paths');
-  expect(status).toBe(0);
+  const {exitCode} = runJest('resolve-with-paths');
+  expect(exitCode).toBe(0);
 });

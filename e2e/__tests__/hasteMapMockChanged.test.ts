@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import JestHasteMap from 'jest-haste-map';
 import {cleanup, writeFiles} from '../Utils';
 
@@ -20,10 +20,10 @@ test('should not warn when a mock file changes', async () => {
     computeSha1: false,
     extensions: ['js', 'json', 'png'],
     forceNodeFilesystemAPI: false,
+    id: `tmp_${Date.now()}`,
     ignorePattern: / ^/,
     maxWorkers: 2,
     mocksPattern: '__mocks__',
-    name: 'tmp_' + Date.now(),
     platforms: [],
     retainAllFiles: false,
     rootDir: DIR,
@@ -37,11 +37,11 @@ test('should not warn when a mock file changes', async () => {
   writeFiles(DIR, {
     '__mocks__/fs.js': '"foo fs"',
   });
-  await new JestHasteMap(hasteConfig).build();
+  await (await JestHasteMap.create(hasteConfig)).build();
 
   // This will throw if the mock file being updated triggers a warning.
   writeFiles(DIR, {
     '__mocks__/fs.js': '"foo fs!"',
   });
-  await new JestHasteMap(hasteConfig).build();
+  await (await JestHasteMap.create(hasteConfig)).build();
 });

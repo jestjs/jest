@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-import os from 'os';
-import path from 'path';
-import runJest from '../runJest';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'jest-path-pattern-reporter-message');
+const DIR = path.resolve(tmpdir(), 'jest-path-pattern-reporter-message');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -20,8 +18,8 @@ afterEach(() => cleanup(DIR));
 test('prints a message with path pattern at the end', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/a.test.js': `test('a', () => {});`,
-    '__tests__/b.test.js': `test('b', () => {});`,
+    '__tests__/a.test.js': "test('a', () => {});",
+    '__tests__/b.test.js': "test('b', () => {});",
     'package.json': '{}',
   });
   let stderr;

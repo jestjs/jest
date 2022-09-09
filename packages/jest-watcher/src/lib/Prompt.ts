@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
+import type {ScrollOptions} from '../types';
 
 export default class Prompt {
   private _entering: boolean;
@@ -26,12 +26,14 @@ export default class Prompt {
     this._offset = -1;
     this._promptLength = 0;
 
+    /* eslint-disable @typescript-eslint/no-empty-function */
     this._onChange = () => {};
     this._onSuccess = () => {};
     this._onCancel = () => {};
+    /* eslint-enable */
   }
 
-  private _onResize = () => {
+  private _onResize = (): void => {
     this._onChange();
   };
 
@@ -39,7 +41,7 @@ export default class Prompt {
     onChange: (pattern: string, options: ScrollOptions) => void,
     onSuccess: (pattern: string) => void,
     onCancel: () => void,
-  ) {
+  ): void {
     this._entering = true;
     this._value = '';
     this._onSuccess = onSuccess;
@@ -58,15 +60,15 @@ export default class Prompt {
     process.stdout.on('resize', this._onResize);
   }
 
-  setPromptLength(length: number) {
+  setPromptLength(length: number): void {
     this._promptLength = length;
   }
 
-  setPromptSelection(selected: string) {
+  setPromptSelection(selected: string): void {
     this._selection = selected;
   }
 
-  put(key: string) {
+  put(key: string): void {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
@@ -89,6 +91,12 @@ export default class Prompt {
       case KEYS.ARROW_LEFT:
       case KEYS.ARROW_RIGHT:
         break;
+      case KEYS.CONTROL_U:
+        this._value = '';
+        this._offset = -1;
+        this._selection = null;
+        this._onChange();
+        break;
       default:
         this._value =
           key === KEYS.BACKSPACE ? this._value.slice(0, -1) : this._value + key;
@@ -99,13 +107,13 @@ export default class Prompt {
     }
   }
 
-  abort() {
+  abort(): void {
     this._entering = false;
     this._value = '';
     process.stdout.removeListener('resize', this._onResize);
   }
 
-  isEntering() {
+  isEntering(): boolean {
     return this._entering;
   }
 }

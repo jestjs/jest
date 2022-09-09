@@ -14,8 +14,8 @@ export default function request(url) {
       users[userID]
         ? resolve(users[userID])
         : reject({
-            error: 'User with ' + userID + ' not found.',
-          })
+            error: `User with ${userID} not found.`,
+          }),
     );
   });
 }

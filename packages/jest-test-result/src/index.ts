@@ -9,17 +9,26 @@ export {default as formatTestResults} from './formatTestResults';
 export {
   addResult,
   buildFailureTestResult,
+  createEmptyTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
-export {
+export type {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,
   FailedAssertion,
-  Milliseconds,
+  FormattedTestResults,
+  RuntimeTransformResult,
   SerializableError,
   SnapshotSummary,
   Status,
   Suite,
+  Test,
+  TestContext,
+  TestEvents,
+  TestFileEvent,
   TestResult,
+  TestResultsProcessor,
+  TestCaseResult,
+  V8CoverageResult,
 } from './types';

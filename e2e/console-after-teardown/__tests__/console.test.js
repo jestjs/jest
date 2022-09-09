@@ -7,8 +7,7 @@
 'use strict';
 
 test('throws error', () => {
-  // To have the function be named the same in jasmine and circus
-  // eslint-disable-next-line prefer-arrow-callback
+  // Named function to have the function be named the same in jasmine and circus
   new Promise(resolve => setTimeout(resolve, 500)).then(function log() {
     console.log('hello!');
   });

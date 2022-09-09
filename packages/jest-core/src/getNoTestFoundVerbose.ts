@@ -1,13 +1,19 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import pluralize from './pluralize';
-import {Stats, TestRunData} from './types';
+import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
+  willExitWith0: boolean,
 ): string {
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || ({} as Stats);
@@ -17,7 +23,7 @@ export default function getNoTestFoundVerbose(
         if (key === 'roots' && config.roots.length === 1) {
           return null;
         }
-        const value = (config as {[key: string]: unknown})[key];
+        const value = (config as Record<string, unknown>)[key];
         if (value) {
           const valueAsString = Array.isArray(value)
             ? value.join(', ')
@@ -32,13 +38,16 @@ export default function getNoTestFoundVerbose(
 
     return testRun.matches.total
       ? `In ${chalk.bold(config.rootDir)}\n` +
-          `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
-          statsMessage
+          `  ${pluralize(
+            'file',
+            testRun.matches.total || 0,
+            's',
+          )} checked.\n${statsMessage}`
       : `No files found in ${config.rootDir}.\n` +
-          `Make sure Jest's configuration does not exclude this directory.` +
-          `\nTo set up Jest, make sure a package.json file exists.\n` +
-          `Jest Documentation: ` +
-          `facebook.github.io/jest/docs/configuration.html`;
+          "Make sure Jest's configuration does not exclude this directory." +
+          '\nTo set up Jest, make sure a package.json file exists.\n' +
+          'Jest Documentation: ' +
+          'https://jestjs.io/docs/configuration';
   });
   let dataMessage;
 
@@ -52,13 +61,15 @@ export default function getNoTestFoundVerbose(
     )} - 0 matches`;
   }
 
+  if (willExitWith0) {
+    return `${chalk.bold(
+      'No tests found, exiting with code 0',
+    )}\n${individualResults.join('\n')}\n${dataMessage}`;
+  }
+
   return (
-    chalk.bold('No tests found, exiting with code 1') +
-    '\n' +
+    `${chalk.bold('No tests found, exiting with code 1')}\n` +
     'Run with `--passWithNoTests` to exit with code 0' +
-    '\n' +
-    individualResults.join('\n') +
-    '\n' +
-    dataMessage
+    `\n${individualResults.join('\n')}\n${dataMessage}`
   );
 }

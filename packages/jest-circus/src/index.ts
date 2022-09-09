@@ -5,32 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
-import {formatExecError} from 'jest-message-util';
-import {ErrorWithStack, isPromise} from 'jest-util';
-import {Global} from '@jest/types';
-import {
-  BlockFn,
-  HookFn,
-  HookType,
-  TestFn,
-  BlockMode,
-  BlockName,
-  TestName,
-  TestMode,
-} from './types';
-import {dispatch} from './state';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
+import {dispatchSync} from './state';
 
-type THook = (fn: HookFn, timeout?: number) => void;
-type DescribeFn = (blockName: BlockName, blockFn: BlockFn) => void;
+export {setState, getState, resetState} from './state';
+export {default as run} from './run';
+
+type THook = (fn: Circus.HookFn, timeout?: number) => void;
+type DescribeFn = (
+  blockName: Circus.BlockNameLike,
+  blockFn: Circus.BlockFn,
+) => void;
 
 const describe = (() => {
-  const describe = (blockName: BlockName, blockFn: BlockFn) =>
+  const describe = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, describe);
-  const only = (blockName: BlockName, blockFn: BlockFn) =>
+  const only = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, only, 'only');
-  const skip = (blockName: BlockName, blockFn: BlockFn) =>
+  const skip = (blockName: Circus.BlockNameLike, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, skip, 'skip');
 
   describe.each = bindEach(describe, false);
@@ -45,21 +39,29 @@ const describe = (() => {
 })();
 
 const _dispatchDescribe = (
-  blockFn: BlockFn,
-  blockName: BlockName,
+  blockFn: Circus.BlockFn,
+  blockName: Circus.BlockNameLike,
   describeFn: DescribeFn,
-  mode?: BlockMode,
+  mode?: Circus.BlockMode,
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
-    asyncError.message = `Missing second argument. It must be a callback function.`;
+    asyncError.message =
+      'Missing second argument. It must be a callback function.';
     throw asyncError;
   }
   if (typeof blockFn !== 'function') {
     asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
-  dispatch({
+  try {
+    blockName = convertDescriptorToString(blockName);
+  } catch (error) {
+    asyncError.message = (error as Error).message;
+    throw asyncError;
+  }
+
+  dispatchSync({
     asyncError,
     blockName,
     mode,
@@ -67,43 +69,24 @@ const _dispatchDescribe = (
   });
   const describeReturn = blockFn();
 
-  // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+      describeFn,
     );
   } else if (describeReturn !== undefined) {
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'A "describe" callback must not return a value.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'A "describe" callback must not return a value.',
+      describeFn,
     );
   }
 
-  dispatch({blockName, mode, name: 'finish_describe_definition'});
+  dispatchSync({blockName, mode, name: 'finish_describe_definition'});
 };
 
 const _addHook = (
-  fn: HookFn,
-  hookType: HookType,
+  fn: Circus.HookFn,
+  hookType: Circus.HookType,
   hookFn: THook,
   timeout?: number,
 ) => {
@@ -116,7 +99,7 @@ const _addHook = (
     throw asyncError;
   }
 
-  dispatch({asyncError, fn, hookType, name: 'add_hook', timeout});
+  dispatchSync({asyncError, fn, hookType, name: 'add_hook', timeout});
 };
 
 // Hooks have to pass themselves to the HOF in order for us to trim stack traces.
@@ -130,37 +113,78 @@ const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
 const test: Global.It = (() => {
-  const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
-    _addTest(testName, undefined, fn, test, timeout);
-  const skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
-    _addTest(testName, 'skip', fn, skip, timeout);
-  const only = (testName: TestName, fn: TestFn, timeout?: number): void =>
-    _addTest(testName, 'only', fn, test.only, timeout);
+  const test = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, false, fn, test, timeout);
+  const skip = (
+    testName: Circus.TestNameLike,
+    fn?: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'skip', false, fn, skip, timeout);
+  const only = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', false, fn, test.only, timeout);
+  const concurrentTest = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, true, fn, concurrentTest, timeout);
+  const concurrentOnly = (
+    testName: Circus.TestNameLike,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
-  test.todo = (testName: TestName, ...rest: Array<any>): void => {
+  const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
+    type FailingReturn = typeof concurrent extends true
+      ? Global.ConcurrentTestFn
+      : Global.TestFn;
+    const failing: Global.Failing<FailingReturn> = (
+      testName: Circus.TestNameLike,
+      fn?: Circus.TestFn,
+      timeout?: number,
+    ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
+    failing.each = bindEach(failing, false);
+    return failing;
+  };
+
+  test.todo = (testName: Circus.TestNameLike, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
       throw new ErrorWithStack(
         'Todo must be called with only a description.',
         test.todo,
       );
     }
-    return _addTest(testName, 'todo', () => {}, test.todo);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 
   const _addTest = (
-    testName: TestName,
-    mode: TestMode,
-    fn: TestFn | undefined,
-    testFn: (testName: TestName, fn: TestFn, timeout?: number) => void,
+    testName: Circus.TestNameLike,
+    mode: Circus.TestMode,
+    concurrent: boolean,
+    fn: Circus.TestFn | undefined,
+    testFn: (
+      testName: Circus.TestNameLike,
+      fn: Circus.TestFn,
+      timeout?: number,
+    ) => void,
     timeout?: number,
+    failing?: boolean,
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
 
-    if (typeof testName !== 'string') {
-      asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
-
+    try {
+      testName = convertDescriptorToString(testName);
+    } catch (error) {
+      asyncError.message = (error as Error).message;
       throw asyncError;
     }
+
     if (fn === undefined) {
       asyncError.message =
         'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
@@ -173,8 +197,10 @@ const test: Global.It = (() => {
       throw asyncError;
     }
 
-    return dispatch({
+    return dispatchSync({
       asyncError,
+      concurrent,
+      failing: failing === undefined ? false : failing,
       fn,
       mode,
       name: 'add_test',
@@ -187,15 +213,30 @@ const test: Global.It = (() => {
   only.each = bindEach(only);
   skip.each = bindEach(skip);
 
+  concurrentTest.each = bindEach(concurrentTest, false);
+  concurrentOnly.each = bindEach(concurrentOnly, false);
+
+  only.failing = bindFailing(false, 'only');
+  skip.failing = bindFailing(false, 'skip');
+
+  test.failing = bindFailing(false);
   test.only = only;
   test.skip = skip;
+  test.concurrent = concurrentTest;
+  concurrentTest.only = concurrentOnly;
+  concurrentTest.skip = skip;
+  concurrentTest.failing = bindFailing(true);
+  concurrentOnly.failing = bindFailing(true, 'only');
 
   return test;
 })();
 
 const it: Global.It = test;
 
-export = {
+export type Event = Circus.Event;
+export type State = Circus.State;
+export {afterAll, afterEach, beforeAll, beforeEach, describe, it, test};
+export default {
   afterAll,
   afterEach,
   beforeAll,

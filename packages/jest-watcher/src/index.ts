@@ -8,8 +8,9 @@
 export {default as BaseWatchPlugin} from './BaseWatchPlugin';
 export {default as JestHook} from './JestHooks';
 export {default as PatternPrompt} from './PatternPrompt';
+export {default as TestWatcher} from './TestWatcher';
 export * from './constants';
-export {
+export type {
   AllowedConfigOptions,
   JestHookEmitter,
   JestHookSubscriber,

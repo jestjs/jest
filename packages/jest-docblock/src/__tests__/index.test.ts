@@ -1,92 +1,43 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
- * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import {EOL} from 'os';
 import * as docblock from '..';
 
 describe('docblock', () => {
   it('extracts valid docblock with line comment', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * @team foo' +
-      os.EOL +
-      '* // TODO: test' +
-      os.EOL +
-      '*/' +
-      os.EOL +
-      'const x = foo;';
+    const code = `/**${EOL} * @team foo${EOL}* // TODO: test${EOL}*/${EOL}const x = foo;`;
     expect(docblock.extract(code)).toBe(
-      '/**' +
-        os.EOL +
-        ' * @team foo' +
-        os.EOL +
-        '* // TODO: test' +
-        os.EOL +
-        '*/',
+      `/**${EOL} * @team foo${EOL}* // TODO: test${EOL}*/`,
     );
   });
 
   it('extracts valid docblock', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * @team foo' +
-      os.EOL +
-      '*/' +
-      os.EOL +
-      'const x = foo;';
-    expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @team foo' + os.EOL + '*/',
-    );
+    const code = `/**${EOL} * @team foo${EOL}*/${EOL}const x = foo;`;
+    expect(docblock.extract(code)).toBe(`/**${EOL} * @team foo${EOL}*/`);
   });
 
   it('extracts valid docblock with more comments', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * @team foo' +
-      os.EOL +
-      '*/' +
-      os.EOL +
-      'const x = foo;' +
-      os.EOL +
-      '/**foo*/';
-    expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @team foo' + os.EOL + '*/',
-    );
+    const code = `/**${EOL} * @team foo${EOL}*/${EOL}const x = foo;${EOL}/**foo*/`;
+    expect(docblock.extract(code)).toBe(`/**${EOL} * @team foo${EOL}*/`);
   });
 
   it('extracts from invalid docblock', () => {
-    const code =
-      '/*' +
-      os.EOL +
-      ' * @team foo' +
-      os.EOL +
-      '*/' +
-      os.EOL +
-      'const x = foo;';
-    expect(docblock.extract(code)).toBe(
-      '/*' + os.EOL + ' * @team foo' + os.EOL + '*/',
-    );
+    const code = `/*${EOL} * @team foo${EOL}*/${EOL}const x = foo;`;
+    expect(docblock.extract(code)).toBe(`/*${EOL} * @team foo${EOL}*/`);
+  });
+
+  it('extracts from invalid docblock singleline', () => {
+    const code = `/* some comment @team foo */${EOL}const x = foo;`;
+    expect(docblock.extract(code)).toBe('/* some comment @team foo */');
   });
 
   it('returns extract and parsedocblock', () => {
-    const code =
-      '/** @provides module-name */' +
-      os.EOL +
-      '' +
-      '' +
-      os.EOL +
-      '' +
-      '.dummy {}' +
-      os.EOL +
-      '';
+    const code = `/** @provides module-name */${EOL}${EOL}.dummy {}${EOL}`;
 
     expect(docblock.parse(docblock.extract(code))).toEqual({
       provides: 'module-name',
@@ -95,18 +46,10 @@ describe('docblock', () => {
 
   it('parses directives out of a docblock', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * @team foo' +
-      os.EOL +
-      '' +
-      ' * @css a b' +
-      os.EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * @team foo${EOL}` +
+      ` * @css a b${EOL}` +
+      ` * @preserve-whitespace${EOL}` +
       ' */';
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
@@ -117,18 +60,10 @@ describe('docblock', () => {
 
   it('parses multiple of the same directives out of a docblock', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * @x foo' +
-      os.EOL +
-      '' +
-      ' * @x bar' +
-      os.EOL +
-      '' +
-      ' * @y' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * @x foo${EOL}` +
+      ` * @x bar${EOL}` +
+      ` * @y${EOL}` +
       ' */';
     expect(docblock.parse(code)).toEqual({
       x: ['foo', 'bar'],
@@ -138,18 +73,10 @@ describe('docblock', () => {
 
   it('parses >=3 of the same directives out of a docblock', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * @x foo' +
-      os.EOL +
-      '' +
-      ' * @x bar' +
-      os.EOL +
-      '' +
-      ' * @x baz' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * @x foo${EOL}` +
+      ` * @x bar${EOL}` +
+      ` * @x baz${EOL}` +
       ' */';
     expect(docblock.parse(code)).toEqual({
       x: ['foo', 'bar', 'baz'],
@@ -158,27 +85,13 @@ describe('docblock', () => {
 
   it('parses directives out of a docblock with comments', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      os.EOL +
-      '' +
-      ' * @team foo' +
-      os.EOL +
-      '' +
-      ' * @css a b' +
-      os.EOL +
-      '' +
-      ' *' +
-      os.EOL +
-      '' +
-      ' * And some license here' +
-      os.EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * @team foo${EOL}` +
+      ` * @css a b${EOL}` +
+      ` *${EOL}` +
+      ` * And some license here${EOL}` +
+      ` * @preserve-whitespace${EOL}` +
       ' */';
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
@@ -188,17 +101,7 @@ describe('docblock', () => {
   });
 
   it('parses directives out of a docblock with line comments', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * @team foo' +
-      os.EOL +
-      '' +
-      ' * // TODO: test' +
-      os.EOL +
-      '' +
-      ' */';
+    const code = `/**${EOL} * @team foo${EOL} * // TODO: test${EOL} */`;
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// TODO: test',
       pragmas: {team: 'foo'},
@@ -207,27 +110,13 @@ describe('docblock', () => {
 
   it('parses multiline directives', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      os.EOL +
-      '' +
-      ' * @class A long declaration of a class' +
-      os.EOL +
-      '' +
-      ' *        goes here, so we can read it and enjoy' +
-      os.EOL +
-      '' +
-      ' *' +
-      os.EOL +
-      '' +
-      ' * And some license here' +
-      os.EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * @class A long declaration of a class${EOL}` +
+      ` *        goes here, so we can read it and enjoy${EOL}` +
+      ` *${EOL}` +
+      ` * And some license here${EOL}` +
+      ` * @preserve-whitespace${EOL}` +
       ' */';
     expect(docblock.parse(code)).toEqual({
       class:
@@ -239,37 +128,17 @@ describe('docblock', () => {
 
   it('parses multiline directives even if there are linecomments within the docblock', () => {
     const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-      os.EOL +
-      '' +
-      ' * @class A long declaration of a class' +
-      os.EOL +
-      '' +
-      ' *        goes here, so we can read it and enjoy' +
-      os.EOL +
-      '' +
-      ' *' +
-      os.EOL +
-      '' +
-      ' * And some license here' +
-      os.EOL +
-      '' +
-      ' * @preserve-whitespace' +
-      os.EOL +
-      '' +
+      `/**${EOL}` +
+      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * @class A long declaration of a class${EOL}` +
+      ` *        goes here, so we can read it and enjoy${EOL}` +
+      ` *${EOL}` +
+      ` * And some license here${EOL}` +
+      ` * @preserve-whitespace${EOL}` +
       '// heres a comment' +
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
-      comments:
-        'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
-        os.EOL +
-        os.EOL +
-        'And some license here' +
-        os.EOL +
-        '// heres a comment',
+      comments: `Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}${EOL}And some license here${EOL}// heres a comment`,
       pragmas: {
         class:
           'A long declaration of a class goes here, ' +
@@ -280,21 +149,14 @@ describe('docblock', () => {
   });
 
   it('supports slashes in @team directive', () => {
-    const code = '/**' + os.EOL + ' * @team apple/banana' + os.EOL + ' */';
+    const code = `/**${EOL} * @team apple/banana${EOL} */`;
     expect(docblock.parse(code)).toEqual({
       team: 'apple/banana',
     });
   });
 
   it('extracts comments from docblock', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * hello world' +
-      os.EOL +
-      ' * @flow yes' +
-      os.EOL +
-      ' */';
+    const code = `/**${EOL} * hello world${EOL} * @flow yes${EOL} */`;
     expect(docblock.parseWithComments(code)).toEqual({
       comments: 'hello world',
       pragmas: {flow: 'yes'},
@@ -302,68 +164,37 @@ describe('docblock', () => {
   });
 
   it('extracts multiline comments from docblock', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * hello' +
-      os.EOL +
-      ' * world' +
-      os.EOL +
-      ' * @flow yes' +
-      os.EOL +
-      ' */';
+    const code = `/**${EOL} * hello${EOL} * world${EOL} * @flow yes${EOL} */`;
     expect(docblock.parseWithComments(code)).toEqual({
-      comments: 'hello' + os.EOL + 'world',
+      comments: `hello${EOL}world`,
       pragmas: {flow: 'yes'},
     });
   });
 
   it('preserves leading whitespace in multiline comments from docblock', () => {
-    const code =
-      '/**' + os.EOL + ' *  hello' + os.EOL + ' *   world' + os.EOL + ' */';
+    const code = `/**${EOL} *  hello${EOL} *   world${EOL} */`;
 
     expect(docblock.parseWithComments(code).comments).toEqual(
-      ' hello' + os.EOL + '  world',
+      ` hello${EOL}  world`,
     );
   });
 
   it('removes leading newlines in multiline comments from docblock', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * @snailcode' +
-      os.EOL +
-      ' *' +
-      os.EOL +
-      ' *  hello world' +
-      os.EOL +
-      ' */';
+    const code = `/**${EOL} * @snailcode${EOL} *${EOL} *  hello world${EOL} */`;
 
     expect(docblock.parseWithComments(code).comments).toEqual(' hello world');
   });
 
   it('extracts comments from beginning and end of docblock', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      ' * hello' +
-      os.EOL +
-      ' * @flow yes' +
-      os.EOL +
-      ' * ' +
-      os.EOL +
-      ' * world' +
-      os.EOL +
-      ' */';
+    const code = `/**${EOL} * hello${EOL} * @flow yes${EOL} * ${EOL} * world${EOL} */`;
     expect(docblock.parseWithComments(code)).toEqual({
-      comments: 'hello' + os.EOL + os.EOL + 'world',
+      comments: `hello${EOL}${EOL}world`,
       pragmas: {flow: 'yes'},
     });
   });
 
   it("preserve urls within a pragma's values", () => {
-    const code =
-      '/**' + os.EOL + ' * @see: https://example.com' + os.EOL + ' */';
+    const code = `/**${EOL} * @see: https://example.com${EOL} */`;
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '',
       pragmas: {'see:': 'https://example.com'},
@@ -371,11 +202,26 @@ describe('docblock', () => {
   });
 
   it('strip linecomments from pragmas but preserve for comments', () => {
-    const code =
-      '/**' + os.EOL + ' * @format: everything' + os.EOL + '// keep me */';
+    const code = `/**${EOL} * @format: everything${EOL}// keep me */`;
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// keep me',
       pragmas: {'format:': 'everything'},
+    });
+  });
+
+  it('extract from invalid docblock', () => {
+    const code = `/* @format: everything${EOL}// keep me */`;
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: '// keep me',
+      pragmas: {'format:': 'everything'},
+    });
+  });
+
+  it('extract from invalid docblock singleline', () => {
+    const code = '/* some test */';
+    expect(docblock.parseWithComments(code)).toEqual({
+      comments: ' some test',
+      pragmas: {},
     });
   });
 
@@ -421,7 +267,7 @@ describe('docblock', () => {
       format: '',
     };
     expect(docblock.print({pragmas})).toEqual(
-      '/**' + os.EOL + ' * @flow' + os.EOL + ' * @format' + os.EOL + ' */',
+      `/**${EOL} * @flow${EOL} * @format${EOL} */`,
     );
   });
 
@@ -431,15 +277,7 @@ describe('docblock', () => {
       y: 'c',
     };
     expect(docblock.print({pragmas})).toEqual(
-      '/**' +
-        os.EOL +
-        ' * @x a' +
-        os.EOL +
-        ' * @x b' +
-        os.EOL +
-        ' * @y c' +
-        os.EOL +
-        ' */',
+      `/**${EOL} * @x a${EOL} * @x b${EOL} * @y c${EOL} */`,
     );
   });
   it('prints docblocks with pragmas', () => {
@@ -448,13 +286,7 @@ describe('docblock', () => {
       team: 'x/y/z',
     };
     expect(docblock.print({pragmas})).toEqual(
-      '/**' +
-        os.EOL +
-        ' * @flow foo' +
-        os.EOL +
-        ' * @team x/y/z' +
-        os.EOL +
-        ' */',
+      `/**${EOL} * @flow foo${EOL} * @team x/y/z${EOL} */`,
     );
   });
 
@@ -462,15 +294,7 @@ describe('docblock', () => {
     const pragmas = {flow: 'foo'};
     const comments = 'hello';
     expect(docblock.print({comments, pragmas})).toEqual(
-      '/**' +
-        os.EOL +
-        ' * hello' +
-        os.EOL +
-        ' *' +
-        os.EOL +
-        ' * @flow foo' +
-        os.EOL +
-        ' */',
+      `/**${EOL} * hello${EOL} *${EOL} * @flow foo${EOL} */`,
     );
   });
 
@@ -479,15 +303,15 @@ describe('docblock', () => {
     const comments =
       'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
     expect(docblock.print({comments, pragmas})).toEqual(
-      '/**' + os.EOL + ' * ' + comments + os.EOL + ' */',
+      `/**${EOL} * ${comments}${EOL} */`,
     );
   });
 
   it('prints docblocks with multiline comments', () => {
     const pragmas = {};
-    const comments = 'hello' + os.EOL + 'world';
+    const comments = `hello${EOL}world`;
     expect(docblock.print({comments, pragmas})).toEqual(
-      '/**' + os.EOL + ' * hello' + os.EOL + ' * world' + os.EOL + ' */',
+      `/**${EOL} * hello${EOL} * world${EOL} */`,
     );
   });
 
@@ -500,23 +324,12 @@ describe('docblock', () => {
   });
 
   it('can augment existing docblocks with comments', () => {
-    const before =
-      '/**' + os.EOL + ' * Legalese' + os.EOL + ' * @flow' + os.EOL + ' */';
+    const before = `/**${EOL} * Legalese${EOL} * @flow${EOL} */`;
     const {comments, pragmas} = docblock.parseWithComments(before);
     pragmas.format = '';
     const after = docblock.print({comments, pragmas});
     expect(after).toEqual(
-      '/**' +
-        os.EOL +
-        ' * Legalese' +
-        os.EOL +
-        ' *' +
-        os.EOL +
-        ' * @flow' +
-        os.EOL +
-        ' * @format' +
-        os.EOL +
-        ' */',
+      `/**${EOL} * Legalese${EOL} *${EOL} * @flow${EOL} * @format${EOL} */`,
     );
   });
 

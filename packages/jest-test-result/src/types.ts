@@ -5,28 +5,34 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
-import {ConsoleBuffer} from '@jest/console';
-import {Config} from '@jest/types';
+import type {V8Coverage} from 'collect-v8-coverage';
+import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
+import type {ConsoleBuffer} from '@jest/console';
+import type {Config, TestResult, TransformTypes} from '@jest/types';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
 
-export type SerializableError = {
-  code?: unknown;
-  message: string;
-  stack: string | null | undefined;
-  type?: string;
-};
+export interface RuntimeTransformResult extends TransformTypes.TransformResult {
+  wrapperLength: number;
+}
+
+export type V8CoverageResult = Array<{
+  codeTransformResult: RuntimeTransformResult | undefined;
+  result: V8Coverage[number];
+}>;
+
+export type SerializableError = TestResult.SerializableError;
 
 export type FailedAssertion = {
   matcherName?: string;
   message?: string;
-  actual?: any;
+  actual?: unknown;
   pass?: boolean;
   passed?: boolean;
-  expected?: any;
+  expected?: unknown;
   isNot?: boolean;
   stack?: string;
-  error?: any;
+  error?: unknown;
 };
 
 export type AssertionLocation = {
@@ -34,41 +40,15 @@ export type AssertionLocation = {
   path: string;
 };
 
-export type Status =
-  | 'passed'
-  | 'failed'
-  | 'skipped'
-  | 'pending'
-  | 'todo'
-  | 'disabled';
+export type Status = AssertionResult['status'];
 
-export type Bytes = number;
+export type AssertionResult = TestResult.AssertionResult;
 
-export type Milliseconds = number;
-type Callsite = {
-  column: number;
-  line: number;
-};
-
-export type AssertionResult = {
-  ancestorTitles: Array<string>;
-  duration?: Milliseconds | null | undefined;
-  failureMessages: Array<string>;
-  fullName: string;
-  invocations?: number;
-  location: Callsite | null | undefined;
-  numPassingAsserts: number;
-  status: Status;
-  title: string;
-};
-
-export type FormattedAssertionResult = {
-  ancestorTitles: Array<string>;
-  failureMessages: Array<string> | null;
-  fullName: string;
-  location: Callsite | null | undefined;
-  status: Status;
-  title: string;
+export type FormattedAssertionResult = Pick<
+  AssertionResult,
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title' | 'duration'
+> & {
+  failureMessages: AssertionResult['failureMessages'] | null;
 };
 
 export type AggregatedResultWithoutCoverage = {
@@ -88,11 +68,16 @@ export type AggregatedResultWithoutCoverage = {
   success: boolean;
   testResults: Array<TestResult>;
   wasInterrupted: boolean;
+  runExecError?: SerializableError;
 };
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
   coverageMap?: CoverageMap | null;
 };
+
+export type TestResultsProcessor = (
+  results: AggregatedResult,
+) => AggregatedResult;
 
 export type Suite = {
   title: string;
@@ -100,21 +85,25 @@ export type Suite = {
   tests: Array<AssertionResult>;
 };
 
+export type TestCaseResult = AssertionResult;
+
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
-  memoryUsage?: Bytes;
+  memoryUsage?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
   numTodoTests: number;
   openHandles: Array<Error>;
   perfStats: {
-    end: Milliseconds;
-    start: Milliseconds;
+    end: number;
+    runtime: number;
+    slow: boolean;
+    start: number;
   };
   skipped: boolean;
   snapshot: {
@@ -126,12 +115,10 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
-  sourceMaps?: {
-    [sourcePath: string]: string;
-  };
   testExecError?: SerializableError;
   testFilePath: string;
   testResults: Array<AssertionResult>;
+  v8Coverage?: V8CoverageResult;
 };
 
 export type FormattedTestResult = {
@@ -141,7 +128,7 @@ export type FormattedTestResult = {
   status: 'failed' | 'passed';
   startTime: number;
   endTime: number;
-  coverage: any;
+  coverage: unknown;
   assertionResults: Array<FormattedAssertionResult>;
 };
 
@@ -163,12 +150,12 @@ export type FormattedTestResults = {
   wasInterrupted: boolean;
 };
 
-export type CodeCoverageReporter = any;
+export type CodeCoverageReporter = unknown;
 
 export type CodeCoverageFormatter = (
   coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
-) => Record<string, any> | null | undefined;
+) => Record<string, unknown> | null | undefined;
 
 export type UncheckedSnapshot = {
   filePath: string;
@@ -181,6 +168,7 @@ export type SnapshotSummary = {
   failure: boolean;
   filesAdded: number;
   filesRemoved: number;
+  filesRemovedList: Array<string>;
   filesUnmatched: number;
   filesUpdated: number;
   matched: number;
@@ -190,3 +178,29 @@ export type SnapshotSummary = {
   unmatched: number;
   updated: number;
 };
+
+export type Test = {
+  context: TestContext;
+  duration?: number;
+  path: string;
+};
+
+export type TestContext = {
+  config: Config.ProjectConfig;
+  hasteFS: HasteFS;
+  moduleMap: ModuleMap;
+  resolver: Resolver;
+};
+
+// Typings for `sendMessageToJest` events
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [string, AssertionResult];
+};
+
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
+) => unknown;

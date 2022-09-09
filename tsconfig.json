@@ -1,32 +1,27 @@
 {
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "lib": ["dom", "es2017"],
-    "declaration": true,
-    "declarationMap": true,
     "composite": true,
+    "declaration": true,
     "emitDeclarationOnly": true,
-    // "importHelpers": true,
-    // "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
+    "stripInternal": true,
 
     "strict": true,
 
     /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "esModuleInterop": true,
+    /* This needs to be false so our types are possible to consume without setting this */
+    "esModuleInterop": false,
+    "isolatedModules": true,
+    "skipLibCheck": false,
     "resolveJsonModule": true
-  },
-  "exclude": [
-    ".yarn/releases/*",
-    "**/__tests__/**/*",
-    "**/build/**/*",
-    "**/build-es5/**/*"
-  ]
+  }
 }

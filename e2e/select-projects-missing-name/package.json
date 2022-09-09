@@ -1,0 +1,20 @@
+{
+  "description": "Testing the behaviour of --selectProjects when a project does not have a name",
+  "jest": {
+    "projects": [
+      {
+        "displayName": "first-project",
+        "testMatch": [
+          "<rootDir>/__tests__/first-project.test.js"
+        ],
+        "testEnvironment": "node"
+      },
+      {
+        "testMatch": [
+          "<rootDir>/__tests__/second-project.test.js"
+        ],
+        "testEnvironment": "node"
+      }
+    ]
+  }
+}

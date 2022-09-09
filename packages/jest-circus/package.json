@@ -1,45 +1,57 @@
 {
   "name": "jest-circus",
-  "version": "24.7.1",
+  "version": "29.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-circus"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json",
+    "./runner": "./runner.js"
+  },
   "dependencies": {
-    "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^24.7.1",
-    "@jest/test-result": "^24.7.1",
-    "@jest/types": "^24.7.0",
-    "chalk": "^2.0.1",
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/test-result": "workspace:^",
+    "@jest/types": "workspace:^",
+    "@types/node": "*",
+    "chalk": "^4.0.0",
     "co": "^4.6.0",
-    "expect": "^24.7.1",
+    "dedent": "^0.7.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^24.7.1",
-    "jest-matcher-utils": "^24.7.0",
-    "jest-message-util": "^24.7.1",
-    "jest-snapshot": "^24.7.1",
-    "jest-util": "^24.7.1",
-    "pretty-format": "^24.7.0",
-    "stack-utils": "^1.0.1",
-    "throat": "^4.0.0"
+    "jest-each": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-runtime": "workspace:^",
+    "jest-snapshot": "workspace:^",
+    "jest-util": "workspace:^",
+    "p-limit": "^3.1.0",
+    "pretty-format": "workspace:^",
+    "slash": "^3.0.0",
+    "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "@jest/test-utils": "^24.4.0",
-    "@types/babel__traverse": "^7.0.4",
-    "@types/co": "^4.6.0",
-    "@types/stack-utils": "^1.0.1",
-    "execa": "^1.0.0",
-    "jest-runtime": "^24.7.1"
+    "@babel/core": "^7.11.6",
+    "@babel/register": "^7.0.0",
+    "@types/co": "^4.6.2",
+    "@types/dedent": "^0.7.0",
+    "@types/graceful-fs": "^4.1.3",
+    "@types/stack-utils": "^2.0.0",
+    "execa": "^5.0.0",
+    "graceful-fs": "^4.2.9"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  }
 }

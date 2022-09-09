@@ -7,27 +7,26 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-
-import prettyFormat from '..';
-import {OptionsReceived} from '../types';
+import prettyFormat, {plugins} from '..';
+import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+const {ReactElement, ReactTestComponent} = plugins;
 
-const formatElement = (element: any, options?: OptionsReceived) =>
+const formatElement = (element: unknown, options?: OptionsReceived) =>
   prettyFormat(element, {plugins: [ReactElement], ...options});
 
-const formatTestObject = (object: any, options?: OptionsReceived) =>
+const formatTestObject = (object: unknown, options?: OptionsReceived) =>
   prettyFormat(object, {
     plugins: [ReactTestComponent, ReactElement],
     ...options,
   });
 
 function assertPrintedJSX(
-  val: any,
+  val: unknown,
   expected: string,
   options?: OptionsReceived,
 ) {
@@ -114,7 +113,7 @@ test('supports props with numbers', () => {
 
 test('supports a single element with a function prop', () => {
   assertPrintedJSX(
-    React.createElement<{onclick: any}>('Mouse', {
+    React.createElement<{onclick: unknown}>('Mouse', {
       onclick: function onclick() {},
     }),
     '<Mouse\n  onclick={[Function onclick]}\n/>',
@@ -141,7 +140,7 @@ test('supports an element with and object prop and children', () => {
 
 test('supports an element with complex props and mixed children', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -167,11 +166,11 @@ test('escapes children properly', () => {
 
 test('supports everything all together', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
-      React.createElement<{customProp: any; onclick: any}>(
+      React.createElement<{customProp: unknown; onclick: unknown}>(
         'Mouse',
         {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
         'HELLO',
@@ -266,7 +265,7 @@ test('supports a single element with custom React elements with props (using ano
 });
 
 test('supports a single element with custom React elements with a child', () => {
-  function Cat(props: any) {
+  function Cat(props: unknown) {
     return React.createElement('div', props);
   }
   assertPrintedJSX(
@@ -577,7 +576,7 @@ describe('maxDepth option', () => {
 
 test('min option', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -634,11 +633,8 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
-    // @ts-ignore
-    formatElement(jsx, {
-      highlight: true,
-      theme: null,
-    });
+    // @ts-expect-error
+    formatElement(jsx, {highlight: true, theme: null});
   }).toThrow('pretty-format: Option "theme" must not be null.');
 });
 
@@ -649,11 +645,8 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    // @ts-ignore
-    formatElement(jsx, {
-      highlight: true,
-      theme: 'beautiful',
-    });
+    // @ts-expect-error
+    formatElement(jsx, {highlight: true, theme: 'beautiful'});
   }).toThrow(
     'pretty-format: Option "theme" must be of type "object" but instead received "string".',
   );
@@ -713,7 +706,7 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
 });
 
 test('supports forwardRef with a child', () => {
-  function Cat(props: any) {
+  function Cat(props: any, _ref: any) {
     return React.createElement('div', props, props.children);
   }
 
@@ -722,14 +715,41 @@ test('supports forwardRef with a child', () => {
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });
 
-test('supports memo with a child', () => {
-  function Dog(props: any) {
-    return React.createElement('div', props, props.children);
-  }
+describe('React.memo', () => {
+  describe('without displayName', () => {
+    test('renders the component name', () => {
+      function Dog(props: any) {
+        return React.createElement('div', props, props.children);
+      }
 
-  expect(
-    formatElement(React.createElement(React.memo(Dog), null, 'cat')),
-  ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+      expect(
+        formatElement(React.createElement(React.memo(Dog), null, 'cat')),
+      ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+    });
+  });
+
+  describe('with displayName', () => {
+    test('renders the displayName of component before memoizing', () => {
+      const Foo = () => React.createElement('div');
+      Foo.displayName = 'DisplayNameBeforeMemoizing(Foo)';
+      const MemoFoo = React.memo(Foo);
+
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+        '<Memo(DisplayNameBeforeMemoizing(Foo))>\n  cat\n</Memo(DisplayNameBeforeMemoizing(Foo))>',
+      );
+    });
+
+    test('renders the displayName of memoized component', () => {
+      const Foo = () => React.createElement('div');
+      Foo.displayName = 'DisplayNameThatWillBeIgnored(Foo)';
+      const MemoFoo = React.memo(Foo);
+      MemoFoo.displayName = 'DisplayNameForMemoized(Foo)';
+
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+        '<Memo(DisplayNameForMemoized(Foo))>\n  cat\n</Memo(DisplayNameForMemoized(Foo))>',
+      );
+    });
+  });
 });
 
 test('supports context Provider with a child', () => {

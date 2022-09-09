@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Circus} from '@jest/types';
 import circus from '../';
-import {HookType} from '../types';
 
 describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
   '%s hooks error throwing',
-  (fn: HookType) => {
+  (fn: Circus.HookType) => {
     test.each([
       ['String'],
       [1],

@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 
 // rootDir and filename must be absolute paths (resolved)
 export function relative(rootDir: string, filename: string): string {
   return filename.indexOf(rootDir + path.sep) === 0
-    ? filename.substr(rootDir.length + 1)
+    ? filename.substring(rootDir.length + 1)
     : path.relative(rootDir, filename);
 }
 
-const INDIRECTION_FRAGMENT = '..' + path.sep;
+const INDIRECTION_FRAGMENT = `..${path.sep}`;
 
 // rootDir must be an absolute path and relativeFilename must be simple
 // (e.g.: foo/bar or ../foo/bar, but never ./foo or foo/../bar)

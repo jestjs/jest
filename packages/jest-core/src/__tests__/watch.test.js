@@ -6,15 +6,13 @@
  *
  */
 
-'use strict';
-
 import chalk from 'chalk';
-import TestWatcher from '../TestWatcher';
-import {JestHook, KEYS} from 'jest-watcher';
+// eslint-disable-next-line import/order
+import {JestHook, KEYS, TestWatcher} from 'jest-watcher';
 
 const runJestMock = jest.fn();
-const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
-const watchPlugin2Path = `${__dirname}/__fixtures__/watch_plugin2`;
+const watchPluginPath = `${__dirname}/__fixtures__/watchPlugin`;
+const watchPlugin2Path = `${__dirname}/__fixtures__/watchPlugin2`;
 let results;
 
 jest.mock(
@@ -42,11 +40,11 @@ jest.mock(
     },
 );
 
-jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 jest.doMock(
   '../runJest',
   () =>
-    function() {
+    function () {
       const args = Array.from(arguments);
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
@@ -86,12 +84,19 @@ jest.doMock(
   {virtual: true},
 );
 
-const regularUpdateGlobalConfig = require('../lib/update_global_config')
-  .default;
+const regularUpdateGlobalConfig = require('../lib/updateGlobalConfig').default;
 const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
-jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
+jest.doMock('../lib/updateGlobalConfig', () => updateGlobalConfig);
 
 const nextTick = () => new Promise(res => process.nextTick(res));
+
+beforeAll(() => {
+  jest.spyOn(process, 'on').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  jest.restoreAllMocks();
+});
 
 afterEach(runJestMock.mockReset);
 
@@ -108,7 +113,12 @@ describe('Watch mode flows', () => {
     isInteractive = true;
     jest.doMock('jest-util/build/isInteractive', () => isInteractive);
     watch = require('../watch').default;
-    const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
+    const config = {
+      rootDir: __dirname,
+      roots: [],
+      testPathIgnorePatterns: [],
+      testRegex: [],
+    };
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];
@@ -131,7 +141,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -145,7 +157,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
   });
 
@@ -156,7 +170,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
@@ -172,7 +188,9 @@ describe('Watch mode flows', () => {
       globalConfig,
       onComplete: expect.any(Function),
       outputStream: pipe,
-      testWatcher: new TestWatcher({isWatchMode: true}),
+      testWatcher: JSON.parse(
+        JSON.stringify(new TestWatcher({isWatchMode: true})),
+      ),
     });
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
@@ -194,7 +212,7 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -366,7 +384,7 @@ describe('Watch mode flows', () => {
       ${'i'} | ${'UpdateSnapshotsInteractive'}
     `(
       'forbids WatchPlugins overriding reserved internal plugins',
-      ({key, plugin}) => {
+      async ({key}) => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${key}`;
         jest.doMock(
@@ -386,7 +404,7 @@ describe('Watch mode flows', () => {
           {virtual: true},
         );
 
-        expect(() => {
+        await expect(
           watch(
             {
               ...globalConfig,
@@ -397,8 +415,8 @@ describe('Watch mode flows', () => {
             pipe,
             hasteMapInstances,
             stdin,
-          );
-        }).toThrowError(
+          ),
+        ).rejects.toThrowError(
           new RegExp(
             `Watch plugin OffendingWatchPlugin attempted to register key <${key}>,\\s+that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
             'm',
@@ -415,7 +433,7 @@ describe('Watch mode flows', () => {
       ${'p'} | ${'TestPathPattern'}
     `(
       'allows WatchPlugins to override non-reserved internal plugins',
-      ({key, plugin}) => {
+      ({key}) => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_valid_override_${key}`;
         jest.doMock(
@@ -449,7 +467,7 @@ describe('Watch mode flows', () => {
       },
     );
 
-    it('forbids third-party WatchPlugins overriding each other', () => {
+    it('forbids third-party WatchPlugins overriding each other', async () => {
       const pluginPaths = ['Foo', 'Bar'].map(ident => {
         const run = jest.fn(() => Promise.resolve());
         const pluginPath = `${__dirname}/__fixtures__/plugin_bad_override_${ident.toLowerCase()}`;
@@ -475,7 +493,7 @@ describe('Watch mode flows', () => {
         return pluginPath;
       });
 
-      expect(() => {
+      await expect(
         watch(
           {
             ...globalConfig,
@@ -486,8 +504,8 @@ describe('Watch mode flows', () => {
           pipe,
           hasteMapInstances,
           stdin,
-        );
-      }).toThrowError(
+        ),
+      ).rejects.toThrowError(
         /Watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
       );
     });
@@ -515,7 +533,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -549,7 +567,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -571,6 +589,24 @@ describe('Watch mode flows', () => {
     });
   });
 
+  it('makes watch plugin initialization errors look nice', async () => {
+    const pluginPath = `${__dirname}/__fixtures__/watchPluginThrows`;
+
+    await expect(
+      watch(
+        {
+          ...globalConfig,
+          rootDir: __dirname,
+          watchPlugins: [{config: {}, path: pluginPath}],
+        },
+        contexts,
+        pipe,
+        hasteMapInstances,
+        stdin,
+      ),
+    ).rejects.toMatchSnapshot();
+  });
+
   it.each`
     ok      | option
     ${'✔︎'} | ${'bail'}
@@ -578,17 +614,15 @@ describe('Watch mode flows', () => {
     ${'✔︎'} | ${'changedSince'}
     ${'✔︎'} | ${'collectCoverage'}
     ${'✔︎'} | ${'collectCoverageFrom'}
-    ${'✔︎'} | ${'collectCoverageOnlyFrom'}
     ${'✔︎'} | ${'coverageDirectory'}
     ${'✔︎'} | ${'coverageReporters'}
     ${'✖︎'} | ${'coverageThreshold'}
     ${'✖︎'} | ${'detectLeaks'}
     ${'✖︎'} | ${'detectOpenHandles'}
-    ${'✖︎'} | ${'enabledTestsMap'}
     ${'✖︎'} | ${'errorOnDeprecated'}
     ${'✖︎'} | ${'expand'}
     ${'✖︎'} | ${'filter'}
-    ${'✖︎'} | ${'findRelatedTests'}
+    ${'✔︎'} | ${'findRelatedTests'}
     ${'✖︎'} | ${'forceExit'}
     ${'✖︎'} | ${'globalSetup'}
     ${'✖︎'} | ${'globalTeardown'}
@@ -597,7 +631,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'listTests'}
     ${'✖︎'} | ${'logHeapUsage'}
     ${'✖︎'} | ${'maxWorkers'}
-    ${'✖︎'} | ${'nonFlagArgs'}
+    ${'✔︎'} | ${'nonFlagArgs'}
     ${'✖︎'} | ${'noSCM'}
     ${'✖︎'} | ${'noStackTrace'}
     ${'✔︎'} | ${'notify'}
@@ -689,7 +723,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -750,7 +784,7 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    watch(
+    await watch(
       {
         ...globalConfig,
         rootDir: __dirname,

@@ -3,28 +3,30 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
-import fs from 'fs';
-import path from 'path';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import dedent = require('dedent');
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
+import which = require('which');
+import type {Config} from '@jest/types';
 
-import {sync as spawnSync, ExecaReturns} from 'execa';
-import {createDirectory} from 'jest-util';
-import rimraf from 'rimraf';
-
-export type RunResult = ExecaReturns & {
+interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
-};
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+}
+export const run = (
+  cmd: string,
+  cwd?: string,
+  env?: Record<string, string>,
+): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, preferLocal: false, reject: false};
+  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `
@@ -40,26 +42,44 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   return result;
 };
 
-export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
+export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
+  const lockfilePath = path.resolve(cwd, 'yarn.lock');
+  let exists = true;
+
+  // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
+  if (!fs.existsSync(lockfilePath)) {
+    exists = false;
+    fs.writeFileSync(lockfilePath, '');
+  }
+
+  return run(
+    exists ? 'yarn install --immutable' : 'yarn install --no-immutable',
+    cwd,
+    env,
+  );
+};
+
+export const linkJestPackage = (packageName: string, cwd: string) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  createDirectory(destination);
-  rimraf.sync(destination);
-  fs.symlinkSync(packagePath, destination, 'dir');
+  fs.mkdirSync(destination, {recursive: true});
+  fs.rmSync(destination, {force: true, recursive: true});
+  fs.symlinkSync(packagePath, destination, 'junction');
 };
 
-export const makeTemplate = (
-  str: string,
-): ((values?: Array<any>) => string) => (values?: Array<any>) =>
-  str.replace(/\$(\d+)/g, (_match, number) => {
-    if (!Array.isArray(values)) {
-      throw new Error('Array of values must be passed to the template.');
-    }
-    return values[number - 1];
-  });
+export const makeTemplate =
+  (str: string): ((values?: Array<unknown>) => string) =>
+  (values = []) =>
+    str.replace(/\$(\d+)/g, (_match, number) => {
+      if (!Array.isArray(values)) {
+        throw new Error('Array of values must be passed to the template.');
+      }
+      return values[number - 1];
+    });
 
-export const cleanup = (directory: string) => rimraf.sync(directory);
+export const cleanup = (directory: string) =>
+  fs.rmSync(directory, {force: true, recursive: true});
 
 /**
  * Creates a nested directory with files and their contents
@@ -75,18 +95,53 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  createDirectory(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      createDirectory(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      files[fileOrPath],
+      dedent(files[fileOrPath]),
     );
   });
+};
+
+export const writeSymlinks = (
+  directory: string,
+  symlinks: {[existingFile: string]: string},
+) => {
+  fs.mkdirSync(directory, {recursive: true});
+  Object.keys(symlinks).forEach(fileOrPath => {
+    const symLinkPath = symlinks[fileOrPath];
+    const dirname = path.dirname(symLinkPath);
+
+    if (dirname !== '/') {
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
+    }
+    fs.symlinkSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      path.resolve(directory, ...symLinkPath.split('/')),
+      'junction',
+    );
+  });
+};
+
+const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
+/**
+ * Forces Jest to use workers by generating many test files to run.
+ * Slow and modifies the test output. Use sparingly.
+ */
+export const generateTestFilesToForceUsingWorkers = () => {
+  const testFiles: Record<string, string> = {};
+  for (let i = 0; i <= NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS; i++) {
+    testFiles[`__tests__/test${i}.test.js`] = `
+      test.todo('test ${i}');
+    `;
+  }
+  return testFiles;
 };
 
 export const copyDir = (src: string, dest: string) => {
@@ -105,7 +160,7 @@ export const copyDir = (src: string, dest: string) => {
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
@@ -114,25 +169,32 @@ export const sortLines = (output: string) =>
     .split('\n')
     .sort()
     .map(str => str.trim())
-    .filter(Boolean)
     .join('\n');
 
-export const createEmptyPackage = (
-  directory: Config.Path,
-  packageJson?: {[keys: string]: any},
-) => {
-  const DEFAULT_PACKAGE_JSON = {
-    description: 'THIS IS AN AUTOGENERATED FILE AND SHOULD NOT BE ADDED TO GIT',
-    jest: {
-      testEnvironment: 'node',
-    },
-  };
+export interface PackageJson {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  jest?: Config.InitialOptions;
+}
 
-  createDirectory(directory);
-  packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
+const DEFAULT_PACKAGE_JSON: PackageJson = {
+  jest: {
+    testEnvironment: 'node',
+  },
+};
+
+export const createEmptyPackage = (
+  directory: string,
+  packageJson: PackageJson = DEFAULT_PACKAGE_JSON,
+) => {
+  const packageJsonWithDefaults = {
+    ...packageJson,
+    description: 'THIS IS AN AUTOGENERATED FILE AND SHOULD NOT BE ADDED TO GIT',
+  };
+  fs.mkdirSync(directory, {recursive: true});
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
-    JSON.stringify(packageJson, null, 2),
+    JSON.stringify(packageJsonWithDefaults, null, 2),
   );
 };
 
@@ -157,7 +219,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
+    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),
@@ -168,21 +230,20 @@ export const extractSummary = (stdout: string) => {
 const sortTests = (stdout: string) =>
   stdout
     .split('\n')
-    .reduce((tests: Array<Array<string>>, line) => {
+    .reduce<Array<Array<string>>>((tests, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
-        tests.push([line.trimRight()]);
-      } else if (line) {
-        tests[tests.length - 1].push(line.trimRight());
+        tests.push([line]);
+      } else {
+        tests[tests.length - 1].push(line);
       }
       return tests;
     }, [])
     .sort(([a], [b]) => (a > b ? 1 : -1))
-    .reduce(
-      (array, lines = []) =>
-        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
-      [],
+    .map(strings =>
+      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
     )
-    .join('\n');
+    .join('\n')
+    .trim();
 
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
@@ -195,7 +256,8 @@ export const extractSortedSummary = (stdout: string) => {
 export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
-  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+  const regex =
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];
@@ -220,8 +282,24 @@ export const normalizeIcons = (str: string) => {
     return str;
   }
 
-  // Make sure to keep in sync with `jest-cli/src/constants`
+  // Make sure to keep in sync with `jest-util/src/specialChars`
   return str
-    .replace(new RegExp('\u00D7', 'g'), '\u2715')
-    .replace(new RegExp('\u221A', 'g'), '\u2713');
+    .replace(new RegExp('\u00D7', 'gu'), '\u2715')
+    .replace(new RegExp('\u221A', 'gu'), '\u2713');
+};
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+let hgIsInstalled: boolean | null = null;
+
+export const testIfHg = (...args: Parameters<typeof test>) => {
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Mercurial (hg) is not installed - skipping some tests');
+    test.skip(...args);
+  }
 };

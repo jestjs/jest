@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
-import {TestResult} from '@jest/test-result';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import Runtime from 'jest-runtime';
-import {SnapshotStateType} from 'jest-snapshot';
+import type {JestEnvironment} from '@jest/environment';
+import type {TestFileEvent, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type Runtime from 'jest-runtime';
+import type {SnapshotState} from 'jest-snapshot';
+import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -21,35 +20,31 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
-  const {
-    initialize,
-    runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
+  const {initialize, runAndTransformResultsToJestFormat} =
+    runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+      FRAMEWORK_INITIALIZER,
+    );
 
-  runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
-    .default({
-      expand: globalConfig.expand,
-    });
-
-  const getPrettier = () =>
-    config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('@babel/traverse').default;
-
-  const {globals, snapshotState} = initialize({
+  const {globals, snapshotState} = await initialize({
     config,
-    getBabelTraverse,
-    getPrettier,
+    environment,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
+    sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake') {
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimers!.useFakeTimers();
+  if (config.fakeTimers.enableGlobally) {
+    if (config.fakeTimers.legacyFakeTimers) {
+      // during setup, this cannot be null (and it's fine to explode if it is)
+      environment.fakeTimers!.useFakeTimers();
+    } else {
+      environment.fakeTimersModern!.useFakeTimers();
+    }
   }
 
   globals.beforeEach(() => {
@@ -64,7 +59,10 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (
+        config.fakeTimers.enableGlobally &&
+        config.fakeTimers.legacyFakeTimers
+      ) {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
@@ -75,20 +73,40 @@ const jestAdapter = async (
     }
   });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFilesAfterEnv) {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
-  runtime.requireModule(testPath);
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
     testPath,
   });
-  return _addSnapshotData(results, snapshotState);
+
+  _addSnapshotData(results, snapshotState);
+
+  // We need to copy the results object to ensure we don't leaks the prototypes
+  // from the VM. Jasmine creates the result objects in the parent process, we
+  // should consider doing that for circus as well.
+  return deepCyclicCopy(results, {keepPrototype: false});
 };
 
 const _addSnapshotData = (
   results: TestResult,
-  snapshotState: SnapshotStateType,
+  snapshotState: SnapshotState,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
@@ -113,7 +131,6 @@ const _addSnapshotData = (
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
-  return results;
 };
 
-export = jestAdapter;
+export default jestAdapter;

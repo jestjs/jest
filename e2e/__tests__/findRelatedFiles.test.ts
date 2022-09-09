@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'find-related-tests-test');
+const DIR = path.resolve(tmpdir(), 'find-related-tests-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -35,6 +34,32 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch('PASS __tests__/test.test.js');
 
     const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
+
+  test('runs tests related to uppercased filename on case-insensitive os', () => {
+    if (process.platform !== 'win32') {
+      // This test is Windows specific, skip it on other platforms.
+      return;
+    }
+
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.js': `
+      const a = require('../a');
+      test('a', () => {});
+    `,
+      'a.js': 'module.exports = {};',
+      'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    });
+
+    const {stdout} = runJest(DIR, ['A.JS']);
+    expect(stdout).toMatch('');
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'A.JS']);
+    expect(stderr).toMatch('PASS __tests__/test.test.js');
+
+    const summaryMsg = 'Ran all test suites related to files matching /A.JS/i.';
     expect(stderr).toMatch(summaryMsg);
   });
 
@@ -91,6 +116,56 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch(summaryMsg);
   });
 
+  test('runs tests related to filename with a custom dependency extractor written in ESM', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test-skip-deps.test.js': `
+      const dynamicImport = path => Promise.resolve(require(path));
+      test('a', () => dynamicImport('../a').then(a => {
+        expect(a.foo).toBe(5);
+      }));
+      `,
+      '__tests__/test.test.js': `
+        const dynamicImport = path => Promise.resolve(require(path));
+        test('a', () => dynamicImport('../a').then(a => {
+          expect(a.foo).toBe(5);
+        }));
+      `,
+      'a.js': 'module.exports = {foo: 5};',
+      'dependencyExtractor.mjs': `
+        const DYNAMIC_IMPORT_RE = /(?:^|[^.]\\s*)(\\bdynamicImport\\s*?\\(\\s*?)([\`'"])([^\`'"]+)(\\2\\s*?\\))/g;
+        export function extract(code, filePath) {
+          const dependencies = new Set();
+          if (filePath.includes('skip-deps')) {
+            return dependencies;
+          }
+          const addDependency = (match, pre, quot, dep, post) => {
+            dependencies.add(dep);
+            return match;
+          };
+          code.replace(DYNAMIC_IMPORT_RE, addDependency);
+          return dependencies;
+        };
+      `,
+      'package.json': JSON.stringify({
+        jest: {
+          dependencyExtractor: '<rootDir>/dependencyExtractor.mjs',
+          testEnvironment: 'node',
+        },
+      }),
+    });
+
+    const {stdout} = runJest(DIR, ['a.js']);
+    expect(stdout).toMatch('');
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
+    expect(stderr).toMatch('PASS __tests__/test.test.js');
+    expect(stderr).not.toMatch('PASS __tests__/test-skip-deps.test.js');
+
+    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
+
   test('generates coverage report for filename', () => {
     writeFiles(DIR, {
       '.watchmanconfig': '',
@@ -117,19 +192,17 @@ describe('--findRelatedTests flag', () => {
     let summary;
     let rest;
     ({summary, rest} = extractSummary(stderr));
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(
-      wrap(
-        rest
-          .split('\n')
-          .map(s => s.trim())
-          .sort()
-          .join('\n'),
-      ),
+      rest
+        .split('\n')
+        .map(s => s.trim())
+        .sort()
+        .join('\n'),
     ).toMatchSnapshot();
 
     // both a.js and b.js should be in the coverage
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
 
     ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js'], {
       stripAnsi: true,
@@ -137,11 +210,11 @@ describe('--findRelatedTests flag', () => {
 
     ({summary, rest} = extractSummary(stderr));
 
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     // should only run a.js
-    expect(wrap(rest)).toMatchSnapshot();
+    expect(rest).toMatchSnapshot();
     // coverage should be collected only for a.js
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 
   test('coverage configuration is applied correctly', () => {
@@ -169,19 +242,17 @@ describe('--findRelatedTests flag', () => {
     }));
 
     const {summary, rest} = extractSummary(stderr);
-    expect(wrap(summary)).toMatchSnapshot();
+    expect(summary).toMatchSnapshot();
     expect(
-      wrap(
-        rest
-          .split('\n')
-          .map(s => s.trim())
-          .sort()
-          .join('\n'),
-      ),
+      rest
+        .split('\n')
+        .map(s => s.trim())
+        .sort()
+        .join('\n'),
     ).toMatchSnapshot();
 
     // Only a.js should be in the report
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(stdout).toMatch('a.js');
     expect(stdout).not.toMatch('b.js');
 

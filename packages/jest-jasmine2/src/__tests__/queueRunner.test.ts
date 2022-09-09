@@ -26,7 +26,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fnTwo).toHaveBeenCalled();
@@ -50,7 +50,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fail).toHaveBeenCalled();
@@ -79,7 +79,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(onException).toHaveBeenCalledWith(error);
@@ -107,13 +107,13 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(onException).toHaveBeenCalled();
     // i.e. the `message` of the error passed to `onException`.
     expect(onException.mock.calls[0][0].message).toEqual(
-      'Timeout - Async callback was not invoked within the 0ms timeout ' +
+      'Timeout - Async callback was not invoked within the 0 ms timeout ' +
         'specified by jest.setTimeout.',
     );
     expect(fnTwo).toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe('queueRunner', () => {
       queueableFns: [{fn: failFn}],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
 
     expect(options.fail).toHaveBeenCalledWith('miserably', 'failed');
@@ -152,7 +152,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
-    // @ts-ignore
+    // @ts-expect-error
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fail).toHaveBeenCalledWith(error);

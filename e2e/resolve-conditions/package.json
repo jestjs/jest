@@ -1,0 +1,14 @@
+{
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "cjs",
+      "mjs",
+      "json"
+    ],
+    "testMatch": [
+      "<rootDir>/**/*.test.*"
+    ],
+    "transform": {}
+  }
+}

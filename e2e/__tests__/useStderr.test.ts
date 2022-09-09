@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
-import runJest from '../runJest';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'use-stderr-test');
+const DIR = path.resolve(tmpdir(), 'use-stderr-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -29,7 +29,7 @@ test('no tests found message is redirected to stderr', () => {
   expect(stderr).toMatch('No tests found');
 
   writeFiles(DIR, {
-    '__tests__/test.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/test.test.js': "require('../file1'); test('file1', () => {});",
   });
 
   ({stdout, stderr} = runJest(DIR, ['--useStderr']));

@@ -15,11 +15,13 @@ const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 import {
-  CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
-  PARENT_MESSAGE_OK,
+  CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
+  PARENT_MESSAGE_OK,
 } from '../../types';
 
 let ended;
@@ -43,7 +45,7 @@ beforeEach(() => {
         },
 
         fooPromiseWorks() {
-          return new Promise((resolve, reject) => {
+          return new Promise(resolve => {
             setTimeout(() => resolve(1989), 5);
           });
         },
@@ -139,6 +141,19 @@ it('lazily requires the file', () => {
 
   expect(mockCount).toBe(1);
   expect(initializeParm).toBe(undefined);
+});
+
+it('should return memory usage', () => {
+  process.send = jest.fn();
+
+  expect(mockCount).toBe(0);
+
+  process.emit('message', [CHILD_MESSAGE_MEM_USAGE]);
+
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_MEM_USAGE,
+    expect.any(Number),
+  ]);
 });
 
 it('calls initialize with the correct arguments', () => {
@@ -241,8 +256,6 @@ it('returns results immediately when function is synchronous', () => {
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
-  jest.useRealTimers();
-
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
@@ -314,19 +327,17 @@ it('calls the main export if the method call is "default" and it is a Babel tran
   expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
-it('finishes the process with exit code 0 if requested', () => {
+it('removes the message listener on END message', () => {
+  // So that there are no more open handles preventing Node from exiting
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
   ]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_END,
-    true, // Not really used here, but for flow type purity.
-  ]);
+  process.emit('message', [CHILD_MESSAGE_END]);
 
-  expect(process.exit.mock.calls[0]).toEqual([0]);
+  expect(process.listenerCount('message')).toBe(0);
 });
 
 it('calls the teardown method ', () => {
