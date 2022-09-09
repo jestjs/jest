@@ -685,6 +685,8 @@ export default class Runtime {
   async unstable_importModule(
     from: string,
     moduleName?: string,
+    // TODO: implement this
+    _isImportActual = false,
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
@@ -2008,16 +2010,22 @@ export default class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return jestObject;
     };
-    const mockModule: Jest['unstable_mockModule'] = (
+    const mockModule: Jest['mockModule'] = (
       moduleName,
       mockFactory,
       options,
     ) => {
-      if (typeof mockFactory !== 'function') {
-        throw new Error('`unstable_mockModule` must be passed a mock factory');
+      if (mockFactory !== undefined) {
+        this.setModuleMock(from, moduleName, mockFactory, options);
+        return jestObject;
       }
 
-      this.setModuleMock(from, moduleName, mockFactory, options);
+      const moduleID = this._resolver.getModuleID(
+        this._virtualMocks,
+        from,
+        moduleName,
+      );
+      this._explicitShouldMockModule.set(moduleID, true);
       return jestObject;
     };
     const clearAllMocks = () => {
@@ -2128,6 +2136,7 @@ export default class Runtime {
       isolateModules,
       mock,
       mocked,
+      mockModule,
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
@@ -2164,7 +2173,6 @@ export default class Runtime {
       setTimeout,
       spyOn,
       unmock,
-      unstable_mockModule: mockModule,
       useFakeTimers,
       useRealTimers,
     };
