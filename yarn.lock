@@ -2742,7 +2742,7 @@ __metadata:
     "@lerna-lite/cli": ^1.10.0
     "@microsoft/api-extractor": ^7.29.0
     "@tsconfig/node14": ^1.0.3
-    "@tsd/typescript": ~4.8.3
+    "@tsd/typescript": ~4.8.2
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
@@ -2809,7 +2809,7 @@ __metadata:
     tempy: ^1.0.0
     ts-node: ^10.5.0
     type-fest: ^2.11.2
-    typescript: ^4.8.3
+    typescript: ^4.8.2
     which: ^2.0.1
   languageName: unknown
   linkType: soft
@@ -4275,7 +4275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:~4.8.2, @tsd/typescript@npm:~4.8.3":
+"@tsd/typescript@npm:~4.8.2":
   version: 4.8.3
   resolution: "@tsd/typescript@npm:4.8.3"
   checksum: 79a4d53f24b4a1d4a368223722565a729af6383533c520d5c2d6c2f4afa07ce4691ef29185d075f3362005e107ca7e2648150fddd504ab95d5ff318ffe7d167e
@@ -20269,7 +20269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.8.2, typescript@npm:^4.8.3":
+"typescript@npm:^4.8.2":
   version: 4.8.3
   resolution: "typescript@npm:4.8.3"
   bin:
@@ -20289,7 +20289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.3#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
   version: 4.8.3
   resolution: "typescript@patch:typescript@npm%3A4.8.3#~builtin<compat/typescript>::version=4.8.3&hash=a1c5e5"
   bin:
