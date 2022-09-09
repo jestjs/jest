@@ -12,7 +12,7 @@ import Runtime from 'jest-runtime';
 
 export default function createContext(
   config: Config.ProjectConfig,
-  {hasteFS:IHasteFS, moduleMap:ImoduleMap}: HasteMapObject,
+  {hasteFS:IHasteFS, moduleMap:ImoduleMap}:
 ): TestContext {
   return {
     config,

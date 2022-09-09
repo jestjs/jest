@@ -48,7 +48,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import {IHasteMap, IModuleMap} from 'jest-haste-map';
+import type {IHasteMap, IModuleMap} from 'jest-haste-map';
 import HasteMap from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
