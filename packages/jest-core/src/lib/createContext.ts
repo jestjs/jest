@@ -7,12 +7,12 @@
 
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {HasteMapObject} from 'jest-haste-map';
+import type {IHasteFS,ImoduleMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
 
 export default function createContext(
   config: Config.ProjectConfig,
-  {hasteFS, moduleMap}: HasteMapObject,
+  {hasteFS:IHasteFS, moduleMap:ImoduleMap}: HasteMapObject,
 ): TestContext {
   return {
     config,
