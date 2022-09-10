@@ -313,29 +313,29 @@ __metadata:
   linkType: hard
 
 "@babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.14.0, @babel/core@npm:^7.18.5, @babel/core@npm:^7.18.6":
-  version: 7.19.0
-  resolution: "@babel/core@npm:7.19.0"
+  version: 7.18.10
+  resolution: "@babel/core@npm:7.18.10"
   dependencies:
     "@ampproject/remapping": ^2.1.0
     "@babel/code-frame": ^7.18.6
-    "@babel/generator": ^7.19.0
-    "@babel/helper-compilation-targets": ^7.19.0
-    "@babel/helper-module-transforms": ^7.19.0
-    "@babel/helpers": ^7.19.0
-    "@babel/parser": ^7.19.0
+    "@babel/generator": ^7.18.10
+    "@babel/helper-compilation-targets": ^7.18.9
+    "@babel/helper-module-transforms": ^7.18.9
+    "@babel/helpers": ^7.18.9
+    "@babel/parser": ^7.18.10
     "@babel/template": ^7.18.10
-    "@babel/traverse": ^7.19.0
-    "@babel/types": ^7.19.0
+    "@babel/traverse": ^7.18.10
+    "@babel/types": ^7.18.10
     convert-source-map: ^1.7.0
     debug: ^4.1.0
     gensync: ^1.0.0-beta.2
     json5: ^2.2.1
     semver: ^6.3.0
-  checksum: 0d5b52b552e215802d2fd7b266611c390d90b28dece09db8a142666c32928c5d404eb72a95630b4cb726c4d80a53fcdc2d6464cd7ad28bb26087475f1b2205e2
+  checksum: 3a3fcd878430a9e1cb165f755c89fff45acc4efe4dd3a2ba356e89af331cb1947886b9782d56902a49af19ba3c24f08cf638a632699b9c5a4d8305c57c6a150d
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.12.5, @babel/generator@npm:^7.14.0, @babel/generator@npm:^7.18.7, @babel/generator@npm:^7.19.0, @babel/generator@npm:^7.7.2":
+"@babel/generator@npm:^7.12.5, @babel/generator@npm:^7.14.0, @babel/generator@npm:^7.18.10, @babel/generator@npm:^7.18.7, @babel/generator@npm:^7.19.0, @babel/generator@npm:^7.7.2":
   version: 7.19.0
   resolution: "@babel/generator@npm:7.19.0"
   dependencies:
@@ -477,7 +477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-transforms@npm:^7.12.1, @babel/helper-module-transforms@npm:^7.18.6, @babel/helper-module-transforms@npm:^7.19.0":
+"@babel/helper-module-transforms@npm:^7.12.1, @babel/helper-module-transforms@npm:^7.18.6, @babel/helper-module-transforms@npm:^7.18.9, @babel/helper-module-transforms@npm:^7.19.0":
   version: 7.19.0
   resolution: "@babel/helper-module-transforms@npm:7.19.0"
   dependencies:
@@ -603,7 +603,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helpers@npm:^7.12.5, @babel/helpers@npm:^7.19.0":
+"@babel/helpers@npm:^7.12.5, @babel/helpers@npm:^7.18.9":
   version: 7.19.0
   resolution: "@babel/helpers@npm:7.19.0"
   dependencies:
@@ -1831,7 +1831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.12.9, @babel/traverse@npm:^7.14.0, @babel/traverse@npm:^7.18.11, @babel/traverse@npm:^7.18.8, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.19.0, @babel/traverse@npm:^7.7.2":
+"@babel/traverse@npm:^7.12.9, @babel/traverse@npm:^7.14.0, @babel/traverse@npm:^7.18.10, @babel/traverse@npm:^7.18.11, @babel/traverse@npm:^7.18.8, @babel/traverse@npm:^7.18.9, @babel/traverse@npm:^7.19.0, @babel/traverse@npm:^7.7.2":
   version: 7.19.0
   resolution: "@babel/traverse@npm:7.19.0"
   dependencies:
