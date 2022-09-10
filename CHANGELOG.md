@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244))
 - `[@jest/globals]` Add `jest.Mock` type helper ([#13235](https://github.com/facebook/jest/pull/13235))
 
 ### Fixes
