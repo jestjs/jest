@@ -9,7 +9,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {ModuleMap} from 'jest-haste-map';
+import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver from '../defaultResolver';
@@ -372,7 +372,7 @@ describe('findNodeModuleAsync', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -477,7 +477,7 @@ describe('resolveModule', () => {
 });
 
 describe('resolveModuleAsync', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -640,7 +640,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
