@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.0.3
+
+### Features
+
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
 - `[expect]` Expose `ExpectationResult` type ([#13240])(https://github.com/facebook/jest/pull/13240))
 - `[jest-snapshot]` Expose `Context` type ([#13240])(https://github.com/facebook/jest/pull/13240))
@@ -18,8 +28,6 @@
 
 - `[*]` Fix inconsistent workspace prefixes ([#13217](https://github.com/facebook/jest/pull/13217))
 - `[jest-haste-map]` Expose a minimal public API to TypeScript ([#13023](https://github.com/facebook/jest/pull/13023))
-
-### Performance
 
 ## 29.0.2
 
