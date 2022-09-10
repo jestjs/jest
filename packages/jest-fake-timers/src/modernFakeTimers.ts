@@ -123,7 +123,10 @@ export default class FakeTimers {
   }
 
   now(): number {
-    return this._clock.now;
+    if (this._fakingTime) {
+      return this._clock.now;
+    }
+    return Date.now();
   }
 
   getTimerCount(): number {
