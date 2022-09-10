@@ -220,6 +220,20 @@ describe('findNodeModule', () => {
       );
     });
 
+    test('supports nested paths with wildcard and no extension', () => {
+      const result = Resolver.findNodeModule('exports/directory/file', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          conditionsRoot,
+          './node_modules/exports/some-other-directory/file.js',
+        ),
+      );
+    });
+
     test('supports nested conditions', () => {
       const resultRequire = Resolver.findNodeModule('exports/deeplyNested', {
         basedir: conditionsRoot,

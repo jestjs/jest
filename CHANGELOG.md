@@ -10,6 +10,7 @@
 ### Fixes
 
 - `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-resolver]` Make sure to resolve module paths after looking at `exports`
 - `[jest-snapshot]` Fix typings of snapshot matchers ([#13240])(https://github.com/facebook/jest/pull/13240))
 
 ### Chore & Maintenance
