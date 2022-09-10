@@ -506,23 +506,20 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
-      const consoleWarn = jest
-        .spyOn(console, 'warn')
-        .mockImplementation(() => {});
+      const mockConsole = {warn: jest.fn()};
       const timers = new FakeTimers({
         config: {
           rootDir: __dirname,
           testMatch: [],
         },
-        global: globalThis,
+        global: {console: mockConsole} as unknown as typeof globalThis,
         moduleMocker,
         timerConfig,
       });
       timers.runAllTimers();
       expect(
-        consoleWarn.mock.calls[0][0].split('\nStack Trace')[0],
+        mockConsole.warn.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
-      consoleWarn.mockRestore();
     });
 
     it('does nothing when no timers have been scheduled', () => {
@@ -1508,19 +1505,33 @@ describe('FakeTimers', () => {
   });
 
   describe('getTimerCount', () => {
-    it('returns the correct count', () => {
-      const timers = new FakeTimers({
+    let timers: FakeTimers<number>;
+    let fakedGlobal: typeof globalThis;
+
+    beforeEach(() => {
+      fakedGlobal = {
+        Date,
+        cancelAnimationFrame: () => {},
+        clearTimeout,
+        process,
+        requestAnimationFrame: () => {},
+        setImmediate,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      timers = new FakeTimers({
         config,
-        global: globalThis,
+        global: fakedGlobal,
         moduleMocker,
         timerConfig,
       });
+    });
 
+    it('returns the correct count', () => {
       timers.useFakeTimers();
 
-      globalThis.setTimeout(() => {}, 0);
-      globalThis.setTimeout(() => {}, 0);
-      globalThis.setTimeout(() => {}, 10);
+      fakedGlobal.setTimeout(() => {}, 0);
+      fakedGlobal.setTimeout(() => {}, 0);
+      fakedGlobal.setTimeout(() => {}, 10);
 
       expect(timers.getTimerCount()).toEqual(3);
 
@@ -1534,33 +1545,19 @@ describe('FakeTimers', () => {
     });
 
     it('includes immediates and ticks', () => {
-      const timers = new FakeTimers({
-        config,
-        global: globalThis,
-        moduleMocker,
-        timerConfig,
-      });
-
       timers.useFakeTimers();
 
-      globalThis.setTimeout(() => {}, 0);
-      globalThis.setImmediate(() => {});
+      fakedGlobal.setTimeout(() => {}, 0);
+      fakedGlobal.setImmediate(() => {});
       process.nextTick(() => {});
 
       expect(timers.getTimerCount()).toEqual(3);
     });
 
     it('not includes cancelled immediates', () => {
-      const timers = new FakeTimers({
-        config,
-        global: globalThis,
-        moduleMocker,
-        timerConfig,
-      });
-
       timers.useFakeTimers();
 
-      globalThis.setImmediate(() => {});
+      fakedGlobal.setImmediate(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();
 
@@ -1568,21 +1565,9 @@ describe('FakeTimers', () => {
     });
 
     it('includes animation frames', () => {
-      const global = {
-        cancelAnimationFrame: () => {},
-        process,
-        requestAnimationFrame: () => {},
-      } as unknown as typeof globalThis & Window;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-
       timers.useFakeTimers();
 
-      global.requestAnimationFrame(() => {});
+      fakedGlobal.requestAnimationFrame(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();
 
@@ -1591,17 +1576,28 @@ describe('FakeTimers', () => {
   });
 
   describe('now', () => {
-    it('returns the current clock', () => {
-      const timers = new FakeTimers({
+    let timers: FakeTimers<number>;
+    let fakedGlobal: typeof globalThis;
+
+    beforeEach(() => {
+      fakedGlobal = {
+        Date,
+        clearTimeout,
+        process,
+        setTimeout,
+      } as unknown as typeof globalThis;
+      timers = new FakeTimers({
         config,
-        global: globalThis,
+        global: fakedGlobal,
         moduleMocker,
         timerConfig,
       });
+    });
 
+    it('returns the current clock', () => {
       timers.useFakeTimers();
-      globalThis.setTimeout(() => {}, 2);
-      globalThis.setTimeout(() => {}, 100);
+      fakedGlobal.setTimeout(() => {}, 2);
+      fakedGlobal.setTimeout(() => {}, 100);
 
       expect(timers.now()).toEqual(0);
 
@@ -1619,15 +1615,23 @@ describe('FakeTimers', () => {
 
       // Verify that runOnlyPendingTimers advances now only up to the first
       // recursive timer
-      globalThis.setTimeout(function infinitelyRecursingCallback() {
-        globalThis.setTimeout(infinitelyRecursingCallback, 20);
+      fakedGlobal.setTimeout(function infinitelyRecursingCallback() {
+        fakedGlobal.setTimeout(infinitelyRecursingCallback, 20);
       }, 10);
       timers.runOnlyPendingTimers();
       expect(timers.now()).toEqual(110);
 
-      // Reset should set now back to 0
+      // For legacy timers, reset() sets the clock to 0
       timers.reset();
       expect(timers.now()).toEqual(0);
+    });
+
+    it('returns the real time if useFakeTimers is not called', () => {
+      const before = Date.now();
+      const now = timers.now();
+      const after = Date.now();
+      expect(now).toBeGreaterThanOrEqual(before);
+      expect(now).toBeLessThanOrEqual(after);
     });
   });
 });

@@ -801,7 +801,7 @@ Returns the number of fake timers still left to run.
 
 ### `jest.now()`
 
-Returns the time in ms of the current fake clock. This is equivalent to `Date.now()` if `Date` has been mocked.
+Returns the time in ms of the current clock. This is equivalent to `Date.now()` if real timers are in use, or if `Date` is mocked. In other cases (such as legacy timers) it may be useful for implementing custom mocks of `Date.now()`, `performance.now()`, etc.
 
 ### `jest.setSystemTime(now?: number | Date)`
 

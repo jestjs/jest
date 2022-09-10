@@ -69,6 +69,7 @@ export default class FakeTimers<TimerRef = unknown> {
   private _config: StackTraceConfig;
   private _disposed?: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
+  private _fakingTime = false;
   private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private _maxLoops: number;
@@ -135,7 +136,10 @@ export default class FakeTimers<TimerRef = unknown> {
   }
 
   now(): number {
-    return this._now;
+    if (this._fakingTime) {
+      return this._now;
+    }
+    return Date.now();
   }
 
   runAllTicks(): void {
@@ -365,6 +369,8 @@ export default class FakeTimers<TimerRef = unknown> {
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
     global.process.nextTick = this._timerAPIs.nextTick;
+
+    this._fakingTime = false;
   }
 
   useFakeTimers(): void {
@@ -397,6 +403,8 @@ export default class FakeTimers<TimerRef = unknown> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
+
+    this._fakingTime = true;
   }
 
   getTimerCount(): number {
@@ -406,8 +414,7 @@ export default class FakeTimers<TimerRef = unknown> {
   }
 
   private _checkFakeTimers() {
-    // @ts-expect-error: condition always returns 'true'
-    if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
+    if (!this._fakingTime) {
       this._global.console.warn(
         'A function to advance timers was called but the timers APIs are not mocked ' +
           'with fake timers. Call `jest.useFakeTimers({legacyFakeTimers: true})` ' +
