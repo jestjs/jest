@@ -1147,7 +1147,10 @@ function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
 
-export default HasteMap as HasteMapStatic & {
+// Export the smallest API surface required by Jest
+type IJestHasteMap = HasteMapStatic & {
   create(options: Options): Promise<IHasteMap>;
   getStatic(config: Config.ProjectConfig): HasteMapStatic;
 };
+const JestHasteMap: IJestHasteMap = HasteMap;
+export default JestHasteMap;
