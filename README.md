@@ -39,7 +39,7 @@
 - [Additional Configuration](#additional-configuration)
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
-  - [Using Webpack](#using-webpack)
+  - [Using webpack](#using-webpack)
   - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)
@@ -224,11 +224,12 @@ Learn more about using [Jest on the official site!](https://jestjs.io)
 
 ## Badge
 
-Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 <!-- prettier-ignore -->
 ```md
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg?logo=jest)](https://github.com/facebook/jest)
+[![jest tested](https://img.shields.io/badge/Jest-tested-eee.svg?logo=jest&labelColor=99424f)](https://github.com/facebook/jest)
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 ```
 

@@ -102,7 +102,6 @@ export async function run(
         changedFiles: undefined,
         collectCoverage: false,
         collectCoverageFrom: [],
-        collectCoverageOnlyFrom: undefined,
         coverageProvider: 'v8',
         sourcesRelatedToTestsInChangedFiles: undefined,
       },

@@ -1823,7 +1823,6 @@ function getCoverageOptions(
   return {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
     supportsDynamicImport: false,
     supportsExportNamespaceFrom: false,

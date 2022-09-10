@@ -19,17 +19,21 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type MatcherFunctionWithState<
-  State extends MatcherState = MatcherState,
+export type MatcherFunctionWithContext<
+  Context extends MatcherContext = MatcherContext,
   Expected extends Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
-> = (this: State, actual: unknown, ...expected: Expected) => ExpectationResult;
+> = (
+  this: Context,
+  actual: unknown,
+  ...expected: Expected
+) => ExpectationResult;
 
 export type MatcherFunction<Expected extends Array<unknown> = []> =
-  MatcherFunctionWithState<MatcherState, Expected>;
+  MatcherFunctionWithContext<MatcherContext, Expected>;
 
 // TODO should be replaced with `MatcherFunctionWithContext`
-export type RawMatcherFn<State extends MatcherState = MatcherState> = {
-  (this: State, actual: any, ...expected: Array<any>): ExpectationResult;
+export type RawMatcherFn<Context extends MatcherContext = MatcherContext> = {
+  (this: Context, actual: any, ...expected: Array<any>): ExpectationResult;
   /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
@@ -41,26 +45,31 @@ export type MatchersObject = {
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export interface MatcherState {
-  assertionCalls: number;
-  currentTestName?: string;
-  dontThrow?(): void;
-  error?: Error;
+export interface MatcherUtils {
+  dontThrow(): void;
   equals: EqualsFunction;
-  expand?: boolean;
-  expectedAssertionsNumber?: number | null;
-  expectedAssertionsNumberError?: Error;
-  isExpectingAssertions?: boolean;
-  isExpectingAssertionsError?: Error;
-  isNot: boolean;
-  promise: string;
-  suppressedErrors: Array<Error>;
-  testPath?: string;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
 }
+
+export interface MatcherState {
+  assertionCalls: number;
+  currentTestName?: string;
+  error?: Error;
+  expand?: boolean;
+  expectedAssertionsNumber: number | null;
+  expectedAssertionsNumberError?: Error;
+  isExpectingAssertions: boolean;
+  isExpectingAssertionsError?: Error;
+  isNot?: boolean;
+  promise?: string;
+  suppressedErrors: Array<Error>;
+  testPath?: string;
+}
+
+export type MatcherContext = MatcherUtils & Readonly<MatcherState>;
 
 export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;

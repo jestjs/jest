@@ -69,9 +69,6 @@ export function getPackages() {
         ...(pkg.name === 'expect'
           ? {'./build/matchers': './build/matchers.js'}
           : {}),
-        ...(pkg.name === 'pretty-format'
-          ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
-          : {}),
       },
       `Package "${pkg.name}" does not export correct files`,
     );

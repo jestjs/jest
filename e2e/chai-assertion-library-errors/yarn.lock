@@ -51,11 +51,11 @@ __metadata:
   linkType: hard
 
 "loupe@npm:^2.3.1":
-  version: 2.3.3
-  resolution: "loupe@npm:2.3.3"
+  version: 2.3.4
+  resolution: "loupe@npm:2.3.4"
   dependencies:
     get-func-name: ^2.0.0
-  checksum: 9eaf76fa5e93c30a193b5b7fbb2161ee9a4e4d385bad6d9f146f0d804f9a4157afa2ee9934d1bf66396b858368531db46bad653930fafb7dc444d9592e634088
+  checksum: 5af91db61aa18530f1749a64735ee194ac263e65e9f4d1562bf3036c591f1baa948289c193e0e34c7b5e2c1b75d3c1dc4fce87f5edb3cee10b0c0df46bc9ffb3
   languageName: node
   linkType: hard
 
