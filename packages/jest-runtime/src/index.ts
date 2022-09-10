@@ -2128,6 +2128,7 @@ export default class Runtime {
       isolateModules,
       mock,
       mocked,
+      now: () => _getFakeTimers().now(),
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,

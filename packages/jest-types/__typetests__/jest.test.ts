@@ -413,6 +413,8 @@ expectError(jest.clearAllTimers(false));
 expectType<number>(jest.getTimerCount());
 expectError(jest.getTimerCount(true));
 
+expectType<number>(jest.now());
+
 expectType<number>(jest.getRealSystemTime());
 expectError(jest.getRealSystemTime(true));
 

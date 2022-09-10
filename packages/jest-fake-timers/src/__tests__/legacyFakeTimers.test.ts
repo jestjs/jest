@@ -1589,4 +1589,45 @@ describe('FakeTimers', () => {
       expect(timers.getTimerCount()).toEqual(0);
     });
   });
+
+  describe('now', () => {
+    it('returns the current clock', () => {
+      const timers = new FakeTimers({
+        config,
+        global: globalThis,
+        moduleMocker,
+        timerConfig,
+      });
+
+      timers.useFakeTimers();
+      globalThis.setTimeout(() => {}, 2);
+      globalThis.setTimeout(() => {}, 100);
+
+      expect(timers.now()).toEqual(0);
+
+      // This should run the 2ms timer, and then advance _now by 3ms
+      timers.advanceTimersByTime(5);
+      expect(timers.now()).toEqual(5);
+
+      // Advance _now even though there are no timers to run
+      timers.advanceTimersByTime(5);
+      expect(timers.now()).toEqual(10);
+
+      // Run up to the 100ms timer
+      timers.runAllTimers();
+      expect(timers.now()).toEqual(100);
+
+      // Verify that runOnlyPendingTimers advances now only up to the first
+      // recursive timer
+      globalThis.setTimeout(function infinitelyRecursingCallback() {
+        globalThis.setTimeout(infinitelyRecursingCallback, 20);
+      }, 10);
+      timers.runOnlyPendingTimers();
+      expect(timers.now()).toEqual(110);
+
+      // Reset should set now back to 0
+      timers.reset();
+      expect(timers.now()).toEqual(0);
+    });
+  });
 });
