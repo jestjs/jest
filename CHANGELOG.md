@@ -2,11 +2,9 @@
 
 ### Features
 
-- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244))
+- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [13246](https://github.com/facebook/jest/pull/13246))
 
 ### Fixes
-
-- `[@jest/fake-timers]` `jest.now()` returns `Date.now()` if real timers are in use ([13246](https://github.com/facebook/jest/pull/13246))
 
 ### Chore & Maintenance
 
