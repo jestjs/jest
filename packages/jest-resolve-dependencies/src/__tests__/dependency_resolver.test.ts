@@ -16,11 +16,11 @@ import {DependencyResolver} from '../index';
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
-let Runtime: typeof import('jest-runtime');
+let Runtime: typeof import('jest-runtime').default;
 let config: Config.ProjectConfig;
-const cases: Record<string, jest.Mock> = {
-  fancyCondition: jest.fn(path => path.length > 10),
-  testRegex: jest.fn(path => /.test.js$/.test(path)),
+const cases: Record<string, (path: string) => boolean> = {
+  fancyCondition: path => path.length > 10,
+  testRegex: path => /.test.js$/.test(path),
 };
 const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
@@ -84,7 +84,7 @@ test('resolves dependencies for scoped packages', () => {
 });
 
 test('resolves no inverse dependencies for empty paths set', () => {
-  const paths = new Set();
+  const paths = new Set<string>();
   const resolved = dependencyResolver.resolveInverse(paths, filter);
   expect(resolved.length).toEqual(0);
 });
