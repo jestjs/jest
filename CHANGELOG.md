@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[@jest/fake-timers]` `jest.now()` returns `Date.now()` if real timers are in use ([13246](https://github.com/facebook/jest/pull/13246))
+
 ### Chore & Maintenance
 
 ### Performance
