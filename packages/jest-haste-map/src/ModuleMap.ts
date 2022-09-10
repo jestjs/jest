@@ -19,7 +19,7 @@ import type {
 const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
 
-export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
+export default class ModuleMap implements IModuleMap {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;

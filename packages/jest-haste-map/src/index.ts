@@ -34,6 +34,8 @@ import type {
   FileMetaData,
   HasteMapStatic,
   HasteRegExp,
+  IHasteMap,
+  IModuleMap,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
@@ -109,11 +111,12 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
-export type {default as FS} from './HasteFS';
-export {default as ModuleMap} from './ModuleMap';
+export const ModuleMap = HasteModuleMap as {
+  create: (rootPath: string) => IModuleMap;
+};
 export type {
-  ChangeEvent,
-  HasteMap as HasteMapObject,
+  IHasteFS,
+  IHasteMap,
   IModuleMap,
   SerializableModuleMap,
 } from './types';
@@ -210,7 +213,7 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-export default class HasteMap extends EventEmitter {
+class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
@@ -227,7 +230,7 @@ export default class HasteMap extends EventEmitter {
     return HasteMap;
   }
 
-  static async create(options: Options): Promise<HasteMap> {
+  static async create(options: Options): Promise<IHasteMap> {
     if (options.hasteMapModulePath) {
       const CustomHasteMap = require(options.hasteMapModulePath);
       return new CustomHasteMap(options);
@@ -1143,3 +1146,11 @@ function copy<T extends Record<string, unknown>>(object: T): T {
 function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
+
+// Export the smallest API surface required by Jest
+type IJestHasteMap = HasteMapStatic & {
+  create(options: Options): Promise<IHasteMap>;
+  getStatic(config: Config.ProjectConfig): HasteMapStatic;
+};
+const JestHasteMap: IJestHasteMap = HasteMap;
+export default JestHasteMap;

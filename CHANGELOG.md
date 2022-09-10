@@ -3,15 +3,21 @@
 ### Features
 
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+- `[expect]` Expose `ExpectationResult` type ([#13240])(https://github.com/facebook/jest/pull/13240))
+- `[jest-snapshot]` Expose `Context` type ([#13240])(https://github.com/facebook/jest/pull/13240))
+- `[@jest/globals]` Add `jest.Mock` type helper ([#13235](https://github.com/facebook/jest/pull/13235))
 
 ### Fixes
 
 - `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-resolve]` Make sure to resolve module paths after looking at `exports` ([#13242](https://github.com/facebook/jest/pull/13242))
 - `[jest-resolve]` Improve error on module not found deep in the `require` stack ([#8704](https://github.com/facebook/jest/pull/8704)
+- `[jest-snapshot]` Fix typings of snapshot matchers ([#13240])(https://github.com/facebook/jest/pull/13240))
 
 ### Chore & Maintenance
 
 - `[*]` Fix inconsistent workspace prefixes ([#13217](https://github.com/facebook/jest/pull/13217))
+- `[jest-haste-map]` Expose a minimal public API to TypeScript ([#13023](https://github.com/facebook/jest/pull/13023))
 
 ### Performance
 
