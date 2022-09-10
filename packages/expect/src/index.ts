@@ -56,6 +56,7 @@ export type {
   AsymmetricMatchers,
   BaseExpect,
   Expect,
+  ExpectationResult,
   MatcherContext,
   MatcherFunction,
   MatcherFunctionWithContext,
