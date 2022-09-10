@@ -413,6 +413,9 @@ expectError(jest.clearAllTimers(false));
 expectType<number>(jest.getTimerCount());
 expectError(jest.getTimerCount(true));
 
+expectType<number>(jest.now());
+expectError(jest.now('1995-12-17T03:24:00'));
+
 expectType<number>(jest.getRealSystemTime());
 expectError(jest.getRealSystemTime(true));
 

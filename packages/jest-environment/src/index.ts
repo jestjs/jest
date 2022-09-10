@@ -153,6 +153,10 @@ export interface Jest {
    */
   getTimerCount(): number;
   /**
+   * Returns the current time in ms of the fake timer clock.
+   */
+  now(): number;
+  /**
    * Determines if the given function is a mocked function.
    */
   isMockFunction: ModuleMocker['isMockFunction'];
