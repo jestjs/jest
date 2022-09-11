@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
+
 ### Chore & Maintenance
 
 ### Performance
