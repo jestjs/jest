@@ -422,8 +422,6 @@ expectType<SpyInstance<(one: string, two: boolean) => SomeClass>>(
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'get'));
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'set'));
 
-// x.mockReturnValue(undefined);
-
 expectType<SpyInstance<(a: boolean) => void>>(
   spyOn(optionalSpiedObject, 'methodA'),
 );
