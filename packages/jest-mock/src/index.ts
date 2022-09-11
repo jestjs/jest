@@ -41,11 +41,11 @@ export type ClassLike = {new (...args: any): any};
 export type FunctionLike = (...args: any) => any;
 
 export type ConstructorLikeKeys<T> = keyof {
-  [K in keyof T as T[K] extends ClassLike ? K : never]: T[K];
+  [K in keyof T as Required<T>[K] extends ClassLike ? K : never]: T[K];
 };
 
 export type MethodLikeKeys<T> = keyof {
-  [K in keyof T as T[K] extends FunctionLike ? K : never]: T[K];
+  [K in keyof T as Required<T>[K] extends FunctionLike ? K : never]: T[K];
 };
 
 export type PropertyLikeKeys<T> = Exclude<
@@ -1010,19 +1010,19 @@ export class ModuleMocker {
 
   spyOn<
     T extends object,
-    K extends PropertyLikeKeys<Required<T>>,
+    K extends PropertyLikeKeys<T>,
     V extends Required<T>[K],
   >(object: T, methodKey: K, accessType: 'get'): SpyInstance<() => V>;
 
   spyOn<
     T extends object,
-    K extends PropertyLikeKeys<Required<T>>,
+    K extends PropertyLikeKeys<T>,
     V extends Required<T>[K],
   >(object: T, methodKey: K, accessType: 'set'): SpyInstance<(arg: V) => void>;
 
   spyOn<
     T extends object,
-    K extends ConstructorLikeKeys<Required<T>>,
+    K extends ConstructorLikeKeys<T>,
     V extends Required<T>[K],
   >(
     object: T,
@@ -1033,7 +1033,7 @@ export class ModuleMocker {
 
   spyOn<
     T extends object,
-    K extends MethodLikeKeys<Required<T>>,
+    K extends MethodLikeKeys<T>,
     V extends Required<T>[K],
   >(
     object: T,
