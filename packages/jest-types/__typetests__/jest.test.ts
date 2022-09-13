@@ -118,9 +118,15 @@ expectType<typeof jest>(
 );
 
 expectType<unknown>(jest.requireActual('./pathToModule'));
+expectType<{some: 'module'}>(
+  jest.requireActual<{some: 'module'}>('./pathToModule'),
+);
 expectError(jest.requireActual());
 
 expectType<unknown>(jest.requireMock('./pathToModule'));
+expectType<{some: 'module'}>(
+  jest.requireMock<{some: 'module'}>('./pathToModule'),
+);
 expectError(jest.requireMock());
 
 expectType<typeof jest>(jest.resetModules());
