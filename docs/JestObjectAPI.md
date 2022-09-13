@@ -424,7 +424,7 @@ jest.mock('../myModule', () => {
   return {
     __esModule: true, // Use it when dealing with esModules
     ...originalModule,
-    getRandom: jest.fn().mockReturnValue(10),
+    getRandom: jest.fn(() => 10),
   };
 });
 
@@ -442,7 +442,7 @@ jest.mock('../myModule', () => {
   return {
     __esModule: true, // Use it when dealing with esModules
     ...originalModule,
-    getRandom: jest.fn<() => number>().mockReturnValue(10),
+    getRandom: jest.fn(() => 10),
   };
 });
 
@@ -507,7 +507,7 @@ const otherCopyOfMyModule = require('myModule');
 
 Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
-```js tab
+```js
 const mockFn = jest.fn();
 mockFn();
 expect(mockFn).toHaveBeenCalled();
@@ -517,19 +517,9 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-```ts tab
-const mockFn = jest.fn<() => void>();
-mockFn();
-expect(mockFn).toHaveBeenCalled();
-
-// With a mock implementation:
-const returnsTrue = jest.fn<() => boolean>(() => true);
-console.log(returnsTrue()); // true;
-```
-
 :::tip
 
-See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for more details on TypeScript usage.
+See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
 :::
 
