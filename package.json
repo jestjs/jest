@@ -174,8 +174,7 @@
     "babel-jest": "workspace:^",
     "enzyme/cheerio": "=1.0.0-rc.3",
     "jest": "workspace:^",
-    "jest-environment-node": "workspace:^",
-    "react-native@0.69.2": "patch:react-native@npm:0.69.2#.yarn/patches/react-native-npm-0.68.1-8830b7be0d.patch"
+    "jest-environment-node": "workspace:^"
   },
   "packageManager": "yarn@3.2.3"
 }

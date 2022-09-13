@@ -205,7 +205,7 @@ export interface Jest {
      getRandom(); // Always returns 10
      ```
     */
-  requireActual: (moduleName: string) => unknown;
+  requireActual<T = unknown>(moduleName: string): T;
   /**
    * Wraps types of the `source` object and its deep members with type definitions
    * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
@@ -216,7 +216,7 @@ export interface Jest {
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
-  requireMock: (moduleName: string) => unknown;
+  requireMock<T = unknown>(moduleName: string): T;
   /**
    * Resets the state of all mocks. Equivalent to calling `.mockReset()` on
    * every mocked function.
