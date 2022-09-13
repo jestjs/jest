@@ -416,9 +416,7 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 
 Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
 
-Example:
-
-```js
+```js tab
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../myModule');
@@ -427,6 +425,24 @@ jest.mock('../myModule', () => {
     __esModule: true, // Use it when dealing with esModules
     ...originalModule,
     getRandom: jest.fn().mockReturnValue(10),
+  };
+});
+
+const getRandom = require('../myModule').getRandom;
+
+getRandom(); // Always returns 10
+```
+
+```ts tab
+jest.mock('../myModule', () => {
+  // Require the original module to not be mocked...
+  const originalModule =
+    jest.requireActual<typeof import('../myModule')>('../myModule');
+
+  return {
+    __esModule: true, // Use it when dealing with esModules
+    ...originalModule,
+    getRandom: jest.fn<() => number>().mockReturnValue(10),
   };
 });
 
@@ -491,7 +507,7 @@ const otherCopyOfMyModule = require('myModule');
 
 Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
-```js
+```js tab
 const mockFn = jest.fn();
 mockFn();
 expect(mockFn).toHaveBeenCalled();
@@ -501,9 +517,19 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
+```ts tab
+const mockFn = jest.fn<() => void>();
+mockFn();
+expect(mockFn).toHaveBeenCalled();
+
+// With a mock implementation:
+const returnsTrue = jest.fn<() => boolean>(() => true);
+console.log(returnsTrue()); // true;
+```
+
 :::tip
 
-See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
+See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for more details on TypeScript usage.
 
 :::
 
