@@ -78,9 +78,13 @@ expectError(jest.deepUnmock());
 
 expectType<typeof jest>(jest.doMock('moduleName'));
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn()));
+expectType<typeof jest>(
+  jest.doMock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
+);
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {}));
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {virtual: true}));
 expectError(jest.doMock());
+expectError(jest.doMock<{some: 'test'}>('moduleName', () => false));
 
 expectType<typeof jest>(jest.dontMock('moduleName'));
 expectError(jest.dontMock());
@@ -96,13 +100,29 @@ expectError(jest.isolateModules());
 
 expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
+expectType<typeof jest>(
+  jest.mock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
+);
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {}));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {virtual: true}));
 expectError(jest.mock());
+expectError(jest.mock<{some: 'test'}>('moduleName', () => false));
 
 expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn()));
 expectType<typeof jest>(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () => ({
+    some: 'test',
+  })),
+);
+expectType<typeof jest>(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn())),
+);
+expectType<typeof jest>(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
+    Promise.resolve({
+      some: 'test',
+    }),
+  ),
 );
 expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn(), {}));
 expectType<typeof jest>(
@@ -115,6 +135,15 @@ expectType<typeof jest>(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn()), {
     virtual: true,
   }),
+);
+expectError(jest.unstable_mockModule('moduleName'));
+expectError(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () => false),
+);
+expectError(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
+    Promise.resolve(false),
+  ),
 );
 
 expectType<unknown>(jest.requireActual('./pathToModule'));
