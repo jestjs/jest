@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Remove `__proto__` usage ([#13256](https://github.com/facebook/jest/pull/13256))
 - `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
 
 ### Chore & Maintenance
