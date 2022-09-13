@@ -110,9 +110,9 @@ export interface Jest {
    * to the top of the code block. Use this method if you want to explicitly
    * avoid this behavior.
    */
-  doMock(
+  doMock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -170,9 +170,9 @@ export interface Jest {
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
-  mock(
+  mock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -180,7 +180,7 @@ export interface Jest {
    */
   unstable_mockModule<T = unknown>(
     moduleName: string,
-    moduleFactory: () => Promise<T> | T,
+    moduleFactory: () => T | Promise<T>,
     options?: {virtual?: boolean},
   ): Jest;
   /**
