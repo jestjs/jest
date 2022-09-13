@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[feat(@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))
 - `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [13246](https://github.com/facebook/jest/pull/13246))
 
 ### Fixes
