@@ -34,7 +34,6 @@ export default function WatchmanWatcher(dir, opts) {
   this.init();
 }
 
-// eslint-disable-next-line no-proto
 Object.setPrototypeOf(WatchmanWatcher.prototype, EventEmitter.prototype);
 
 /**
