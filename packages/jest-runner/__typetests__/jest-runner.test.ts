@@ -6,10 +6,11 @@
  */
 
 import {expectType} from 'tsd-lite';
-import {CallbackTestRunner, EmittingTestRunner} from 'jest-runner';
-import type {
+import {
+  CallbackTestRunner,
   CallbackTestRunnerInterface,
   Config,
+  EmittingTestRunner,
   EmittingTestRunnerInterface,
   OnTestFailure,
   OnTestStart,

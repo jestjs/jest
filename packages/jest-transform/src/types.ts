@@ -11,10 +11,7 @@ import type {Config, TransformTypes} from '@jest/types';
 export interface ShouldInstrumentOptions
   extends Pick<
     Config.GlobalConfig,
-    | 'collectCoverage'
-    | 'collectCoverageFrom'
-    | 'collectCoverageOnlyFrom'
-    | 'coverageProvider'
+    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
   > {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;

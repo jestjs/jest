@@ -116,7 +116,7 @@ import TOCInline from '@theme/TOCInline';
 
 When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--bail`
+### `--bail[=<n>]`
 
 Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
