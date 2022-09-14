@@ -110,9 +110,9 @@ export interface Jest {
    * to the top of the code block. Use this method if you want to explicitly
    * avoid this behavior.
    */
-  doMock(
+  doMock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -153,6 +153,10 @@ export interface Jest {
    */
   getTimerCount(): number;
   /**
+   * Returns the current time in ms of the fake timer clock.
+   */
+  now(): number;
+  /**
    * Determines if the given function is a mocked function.
    */
   isMockFunction: ModuleMocker['isMockFunction'];
@@ -166,9 +170,9 @@ export interface Jest {
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
-  mock(
+  mock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -176,7 +180,7 @@ export interface Jest {
    */
   unstable_mockModule<T = unknown>(
     moduleName: string,
-    moduleFactory: () => Promise<T> | T,
+    moduleFactory: () => T | Promise<T>,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -201,7 +205,7 @@ export interface Jest {
      getRandom(); // Always returns 10
      ```
     */
-  requireActual: (moduleName: string) => unknown;
+  requireActual<T = unknown>(moduleName: string): T;
   /**
    * Wraps types of the `source` object and its deep members with type definitions
    * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
@@ -212,7 +216,7 @@ export interface Jest {
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
-  requireMock: (moduleName: string) => unknown;
+  requireMock<T = unknown>(moduleName: string): T;
   /**
    * Resets the state of all mocks. Equivalent to calling `.mockReset()` on
    * every mocked function.

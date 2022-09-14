@@ -2,7 +2,15 @@
 
 ### Features
 
+- `[feat(@jest/environment, jest-runtime)]` Allow `jest.requireActual` and `jest.requireMock` to take a type argument ([#13253](https://github.com/facebook/jest/pull/13253))
+- `[feat(@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))
+- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [13246](https://github.com/facebook/jest/pull/13246))
+
 ### Fixes
+
+- `[jest-haste-map]` Remove `__proto__` usage ([#13256](https://github.com/facebook/jest/pull/13256))
+- `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
+- `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
 
 ### Chore & Maintenance
 

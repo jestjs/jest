@@ -383,3 +383,79 @@ expectType<SpyInstance<(value: {a: string}) => void>>(
 expectError(spyOn(indexSpiedObject, 'propertyA'));
 
 expectError(spyOn(indexSpiedObject, 'notThere'));
+
+// interface with optional properties
+
+class SomeClass {
+  constructor(one: string, two?: boolean) {}
+
+  methodA() {
+    return true;
+  }
+  methodB(a: string, b?: number) {
+    return;
+  }
+}
+
+interface OptionalInterface {
+  constructorA?: (new (one: string) => SomeClass) | undefined;
+  constructorB: new (one: string, two: boolean) => SomeClass;
+
+  propertyA?: number | undefined;
+  propertyB?: number;
+  propertyC: number | undefined;
+  propertyD: string;
+
+  methodA?: ((a: boolean) => void) | undefined;
+  methodB: (b: string) => boolean;
+}
+
+const optionalSpiedObject = {} as OptionalInterface;
+
+expectType<SpyInstance<(one: string) => SomeClass>>(
+  spyOn(optionalSpiedObject, 'constructorA'),
+);
+expectType<SpyInstance<(one: string, two: boolean) => SomeClass>>(
+  spyOn(optionalSpiedObject, 'constructorB'),
+);
+
+expectError(spyOn(optionalSpiedObject, 'constructorA', 'get'));
+expectError(spyOn(optionalSpiedObject, 'constructorA', 'set'));
+
+expectType<SpyInstance<(a: boolean) => void>>(
+  spyOn(optionalSpiedObject, 'methodA'),
+);
+expectType<SpyInstance<(b: string) => boolean>>(
+  spyOn(optionalSpiedObject, 'methodB'),
+);
+
+expectError(spyOn(optionalSpiedObject, 'methodA', 'get'));
+expectError(spyOn(optionalSpiedObject, 'methodA', 'set'));
+
+expectType<SpyInstance<() => number>>(
+  spyOn(optionalSpiedObject, 'propertyA', 'get'),
+);
+expectType<SpyInstance<(arg: number) => void>>(
+  spyOn(optionalSpiedObject, 'propertyA', 'set'),
+);
+expectType<SpyInstance<() => number>>(
+  spyOn(optionalSpiedObject, 'propertyB', 'get'),
+);
+expectType<SpyInstance<(arg: number) => void>>(
+  spyOn(optionalSpiedObject, 'propertyB', 'set'),
+);
+expectType<SpyInstance<() => number | undefined>>(
+  spyOn(optionalSpiedObject, 'propertyC', 'get'),
+);
+expectType<SpyInstance<(arg: number | undefined) => void>>(
+  spyOn(optionalSpiedObject, 'propertyC', 'set'),
+);
+expectType<SpyInstance<() => string>>(
+  spyOn(optionalSpiedObject, 'propertyD', 'get'),
+);
+expectType<SpyInstance<(arg: string) => void>>(
+  spyOn(optionalSpiedObject, 'propertyD', 'set'),
+);
+
+expectError(spyOn(optionalSpiedObject, 'propertyA'));
+expectError(spyOn(optionalSpiedObject, 'propertyB'));

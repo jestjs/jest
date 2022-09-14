@@ -254,8 +254,19 @@ banana(); // will return 'undefined' because the function is auto-mocked.
 
 The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
 
-```js
+```js tab
 jest.mock('../moduleName', () => {
+  return jest.fn(() => 42);
+});
+
+// This runs the function specified as second argument to `jest.mock`.
+const moduleName = require('../moduleName');
+moduleName(); // Will return '42';
+```
+
+```ts tab
+// The optional type argument provides typings for the module factory
+jest.mock<typeof import('../moduleName')>('../moduleName', () => {
   return jest.fn(() => 42);
 });
 
@@ -330,7 +341,7 @@ When using `babel-jest`, calls to `mock` will automatically be hoisted to the to
 
 One example when this is useful is when you want to mock a module differently within the same file:
 
-```js
+```js tab
 beforeEach(() => {
   jest.resetModules();
 });
@@ -345,6 +356,29 @@ test('moduleName 1', () => {
 
 test('moduleName 2', () => {
   jest.doMock('../moduleName', () => {
+    return jest.fn(() => 2);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(2);
+});
+```
+
+```ts tab
+beforeEach(() => {
+  jest.resetModules();
+});
+
+test('moduleName 1', () => {
+  // The optional type argument provides typings for the module factory
+  jest.doMock<typeof import('../moduleName')>('../moduleName', () => {
+    return jest.fn(() => 1);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(1);
+});
+
+test('moduleName 2', () => {
+  jest.doMock<typeof import('../moduleName')>('../moduleName', () => {
     return jest.fn(() => 2);
   });
   const moduleName = require('../moduleName');
@@ -416,9 +450,7 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 
 Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
 
-Example:
-
-```js
+```js tab
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../myModule');
@@ -426,7 +458,25 @@ jest.mock('../myModule', () => {
   return {
     __esModule: true, // Use it when dealing with esModules
     ...originalModule,
-    getRandom: jest.fn().mockReturnValue(10),
+    getRandom: jest.fn(() => 10),
+  };
+});
+
+const getRandom = require('../myModule').getRandom;
+
+getRandom(); // Always returns 10
+```
+
+```ts tab
+jest.mock('../myModule', () => {
+  // Require the original module to not be mocked...
+  const originalModule =
+    jest.requireActual<typeof import('../myModule')>('../myModule');
+
+  return {
+    __esModule: true, // Use it when dealing with esModules
+    ...originalModule,
+    getRandom: jest.fn(() => 10),
   };
 });
 
@@ -798,6 +848,10 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 ### `jest.getTimerCount()`
 
 Returns the number of fake timers still left to run.
+
+### `jest.now()`
+
+Returns the time in ms of the current clock. This is equivalent to `Date.now()` if real timers are in use, or if `Date` is mocked. In other cases (such as legacy timers) it may be useful for implementing custom mocks of `Date.now()`, `performance.now()`, etc.
 
 ### `jest.setSystemTime(now?: number | Date)`
 
