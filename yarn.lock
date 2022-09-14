@@ -7665,12 +7665,12 @@ __metadata:
   linkType: hard
 
 "create-jest-runner@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "create-jest-runner@npm:0.12.0"
+  version: 0.12.1
+  resolution: "create-jest-runner@npm:0.12.1"
   dependencies:
     chalk: ^4.1.0
     jest-worker: ^29.0.0
-    throat: ^6.0.1
+    p-limit: ^3.1.0
   peerDependencies:
     "@jest/test-result": ^28.0.0 || ^29.0.0
     jest-runner: ^28.0.0 || ^29.0.0
@@ -7681,7 +7681,7 @@ __metadata:
       optional: true
   bin:
     create-jest-runner: generator/index.js
-  checksum: 0f10dc4a681a8ab83e414b26a8a27f7940a8f055ff76dbe92d2ae6fec5c56d7cfa143d3aca292b5558db21405c32256682c2d75aea418b2b35ba4315013e32ea
+  checksum: 85d3883239c912ca58928b1f0a5ee07e5f484214d01aac61fa73eb74a4b706811c45baeee688e0259bd03835ab31b869b82a56bc7f9b4eb43784e5187d5e34a9
   languageName: node
   linkType: hard
 
@@ -19765,13 +19765,6 @@ __metadata:
   version: 5.0.0
   resolution: "throat@npm:5.0.0"
   checksum: 031ff7f4431618036c1dedd99c8aa82f5c33077320a8358ed829e84b320783781d1869fe58e8f76e948306803de966f5f7573766a437562c9f5c033297ad2fe2
-  languageName: node
-  linkType: hard
-
-"throat@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "throat@npm:6.0.1"
-  checksum: 782d4171ee4e3cf947483ed2ff1af3e17cc4354c693b9d339284f61f99fbc401d171e0b0d2db3295bb7d447630333e9319c174ebd7ef315c6fb791db9675369c
   languageName: node
   linkType: hard
 
