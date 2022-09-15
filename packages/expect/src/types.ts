@@ -120,8 +120,8 @@ export interface AsymmetricMatchers {
 
 // if T is a function, return its parameters array type, otherwise return an unknown array type
 type ConditionalFunctionParameters<T> = T extends (
-    ...args: Array<unknown>
-  ) => unknown
+  ...args: Array<unknown>
+) => unknown
   ? Parameters<T>
   : Array<unknown>;
 
@@ -258,7 +258,10 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(nth: number, ...expected: ConditionalFunctionParameters<T>): R;
+  toHaveBeenNthCalledWith(
+    nth: number,
+    ...expected: ConditionalFunctionParameters<T>
+  ): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
