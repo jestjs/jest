@@ -1023,7 +1023,7 @@ export class ModuleMocker {
           proto = Object.getPrototypeOf(proto);
         }
 
-        let slotMetadata: MockFunctionMetadata<T> | null = null;
+        let slotMetadata: MockMetadata<T> | null = null;
         if (descriptor?.get || descriptor?.set) {
           //Specific case required for mocking class definitions imported via types.
           //In this case the class definitions are stored in accessor properties.
