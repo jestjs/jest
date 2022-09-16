@@ -43,6 +43,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   jasmineStarted(_runDetails: RunDetails): void {}
 
   specStarted(spec: SpecResult): void {

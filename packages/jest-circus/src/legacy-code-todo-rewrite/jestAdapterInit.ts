@@ -63,7 +63,7 @@ export const initialize = async ({
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
 
-  // @ts-expect-error
+  // @ts-expect-error: missing `concurrent` which is added later
   const globalsObject: Global.TestFrameworkGlobals = {
     ...globals,
     fdescribe: globals.describe.only,
@@ -114,6 +114,7 @@ export const initialize = async ({
   const snapshotState = new SnapshotState(snapshotPath, {
     expand: globalConfig.expand,
     prettierPath: config.prettierPath,
+    rootDir: config.rootDir,
     snapshotFormat: config.snapshotFormat,
     updateSnapshot: globalConfig.updateSnapshot,
   });

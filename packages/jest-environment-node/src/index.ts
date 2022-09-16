@@ -77,7 +77,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
           configurable: descriptor.configurable,
           enumerable: descriptor.enumerable,
           get() {
-            // @ts-expect-error
+            // @ts-expect-error: no index signature
             const val = globalThis[nodeGlobalsKey];
 
             // override lazy getter
@@ -111,6 +111,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     global.Uint8Array = Uint8Array;
 
     installCommonGlobals(global, projectConfig.globals);
+
+    // Node's error-message stack size is limited at 10, but it's pretty useful
+    // to see more than that when a test fails.
+    global.Error.stackTraceLimit = 100;
 
     if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
@@ -157,6 +161,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async setup(): Promise<void> {}
 
   async teardown(): Promise<void> {

@@ -5,15 +5,9 @@ title: Mock Functions
 
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
-:::info
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
-
-```ts
-import {jest} from '@jest/globals';
-```
-
-:::
+<TypeScriptExamplesNote />
 
 ## Methods
 
@@ -25,12 +19,9 @@ import TOCInline from '@theme/TOCInline';
 
 ## Reference
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 ### `mockFn.getMockName()`
 
-Returns the mock name string set by calling `mockFn.mockName(value)`.
+Returns the mock name string set by calling [`.mockName()`](#mockfnmocknamename).
 
 ### `mockFn.mock.calls`
 
@@ -137,7 +128,7 @@ Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also rem
 
 This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
 
-The [`mockReset`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
+The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
 ### `mockFn.mockRestore()`
 
@@ -159,10 +150,7 @@ Accepts a function that should be used as the implementation of the mock. The mo
 
 :::
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest.fn(scalar => 42 + scalar);
 
 mockFn(0); // 42
@@ -174,11 +162,7 @@ mockFn(2); // 38
 mockFn(3); // 39
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```js
+```ts tab
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42
@@ -190,15 +174,9 @@ mockFn(2); // 38
 mockFn(3); // 39
 ```
 
-</TabItem>
-</Tabs>
-
 `.mockImplementation()` can also be used to mock class constructors:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js title="SomeClass.js"
+```js tab={"span":2} title="SomeClass.js"
 module.exports = class SomeClass {
   method(a, b) {}
 };
@@ -222,11 +200,7 @@ some.method('a', 'b');
 console.log('Calls to method: ', mockMethod.mock.calls);
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts title="SomeClass.ts"
+```ts tab={"span":2} title="SomeClass.ts"
 export class SomeClass {
   method(a: string, b: string): void {}
 }
@@ -250,17 +224,11 @@ some.method('a', 'b');
 console.log('Calls to method: ', mockMethod.mock.calls);
 ```
 
-</TabItem>
-</Tabs>
-
 ### `mockFn.mockImplementationOnce(fn)`
 
 Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest
   .fn()
   .mockImplementationOnce(cb => cb(null, true))
@@ -270,11 +238,7 @@ mockFn((err, val) => console.log(val)); // true
 mockFn((err, val) => console.log(val)); // false
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mockFn = jest
   .fn<(cb: (a: null, b: boolean) => void) => void>()
   .mockImplementationOnce(cb => cb(null, true))
@@ -283,9 +247,6 @@ const mockFn = jest
 mockFn((err, val) => console.log(val)); // true
 mockFn((err, val) => console.log(val)); // false
 ```
-
-</TabItem>
-</Tabs>
 
 When the mocked function runs out of implementations defined with `.mockImplementationOnce()`, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
 
@@ -316,10 +277,11 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```
+```bash
 expect(mockedFunction).toHaveBeenCalled()
 
-Expected mock function "mockedFunction" to have been called, but it was not called.
+Expected number of calls: >= 1
+Received number of calls:    0
 ```
 
 ### `mockFn.mockReturnThis()`
@@ -336,10 +298,7 @@ jest.fn(function () {
 
 Accepts a value that will be returned whenever the mock function is called.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mock = jest.fn();
 
 mock.mockReturnValue(42);
@@ -349,11 +308,7 @@ mock.mockReturnValue(43);
 mock(); // 43
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mock = jest.fn<() => number>();
 
 mock.mockReturnValue(42);
@@ -363,17 +318,11 @@ mock.mockReturnValue(43);
 mock(); // 43
 ```
 
-</TabItem>
-</Tabs>
-
 ### `mockFn.mockReturnValueOnce(value)`
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 const mockFn = jest
   .fn()
   .mockReturnValue('default')
@@ -386,11 +335,7 @@ mockFn(); // 'default'
 mockFn(); // 'default'
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 const mockFn = jest
   .fn<() => string>()
   .mockReturnValue('default')
@@ -403,9 +348,6 @@ mockFn(); // 'default'
 mockFn(); // 'default'
 ```
 
-</TabItem>
-</Tabs>
-
 ### `mockFn.mockResolvedValue(value)`
 
 Syntactic sugar function for:
@@ -416,10 +358,7 @@ jest.fn().mockImplementation(() => Promise.resolve(value));
 
 Useful to mock async functions in async tests:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest.fn().mockResolvedValue(43);
 
@@ -427,20 +366,13 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest.fn<() => Promise<number>>().mockResolvedValue(43);
 
   await asyncMock(); // 43
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
@@ -452,10 +384,7 @@ jest.fn().mockImplementationOnce(() => Promise.resolve(value));
 
 Useful to resolve different values over multiple async calls:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -470,11 +399,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -488,9 +413,6 @@ test('async test', async () => {
   await asyncMock(); // 'default'
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockRejectedValue(value)`
 
@@ -502,10 +424,7 @@ jest.fn().mockImplementation(() => Promise.reject(value));
 
 Useful to create async mock functions that will always reject:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -515,11 +434,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<never>>()
@@ -528,9 +443,6 @@ test('async test', async () => {
   await asyncMock(); // throws 'Async error message'
 });
 ```
-
-</TabItem>
-</Tabs>
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
@@ -542,10 +454,7 @@ jest.fn().mockImplementationOnce(() => Promise.reject(value));
 
 Useful together with `.mockResolvedValueOnce()` or to reject with different exceptions over multiple async calls:
 
-<Tabs groupId="examples">
-<TabItem value="js" label="JavaScript">
-
-```js
+```js tab
 test('async test', async () => {
   const asyncMock = jest
     .fn()
@@ -557,11 +466,7 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-
-<TabItem value="ts" label="TypeScript">
-
-```ts
+```ts tab
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -573,9 +478,6 @@ test('async test', async () => {
 });
 ```
 
-</TabItem>
-</Tabs>
-
 ## TypeScript Usage
 
 :::tip
@@ -586,7 +488,7 @@ Please consult the [Getting Started](GettingStarted.md#using-typescript) guide f
 
 ### `jest.fn(implementation?)`
 
-Correct mock typings will be inferred, if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases there the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
+Correct mock typings will be inferred if implementation is passed to [`jest.fn()`](JestObjectAPI.md#jestfnimplementation). There are many use cases where the implementation is omitted. To ensure type safety you may pass a generic type argument (also see the examples above for more reference):
 
 ```ts
 import {expect, jest, test} from '@jest/globals';
@@ -611,5 +513,97 @@ test('calculate calls add', () => {
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
+});
+```
+
+### `jest.Mock<T>`
+
+Constructs the type of a mock function, e.g. the return type of `jest.fn()`. It can be useful if you have to defined a recursive mock function:
+
+```ts
+import {jest} from '@jest/globals';
+
+const sumRecursively: jest.Mock<(value: number) => number> = jest.fn(value => {
+  if (value === 0) {
+    return 0;
+  } else {
+    return value + fn(value - 1);
+  }
+});
+```
+
+### `jest.Mocked<Source>`
+
+The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+import type {fetch} from 'node-fetch';
+
+jest.mock('node-fetch');
+
+let mockedFetch: jest.Mocked<typeof fetch>;
+
+afterEach(() => {
+  mockedFetch.mockClear();
+});
+
+test('makes correct call', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+
+test('returns correct data', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+```
+
+Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
+
+### `jest.mocked(source, options?)`
+
+The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` as the `options` argument to disable the deeply mocked behavior.
+
+Returns the `source` object.
+
+```ts title="song.ts"
+export const song = {
+  one: {
+    more: {
+      time: (t: number) => {
+        return t;
+      },
+    },
+  },
+};
+```
+
+```ts title="song.test.ts"
+import {expect, jest, test} from '@jest/globals';
+import {song} from './song';
+
+jest.mock('./song');
+jest.spyOn(console, 'log');
+
+const mockedSong = jest.mocked(song);
+// or through `jest.Mocked<Source>`
+// const mockedSong = song as jest.Mocked<typeof song>;
+
+test('deep method is typed correctly', () => {
+  mockedSong.one.more.time.mockReturnValue(12);
+
+  expect(mockedSong.one.more.time(10)).toBe(12);
+  expect(mockedSong.one.more.time.mock.calls).toHaveLength(1);
+});
+
+test('direct usage', () => {
+  jest.mocked(console.log).mockImplementation(() => {
+    return;
+  });
+
+  console.log('one more time');
+
+  expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
 });
 ```

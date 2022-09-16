@@ -111,11 +111,7 @@ const defaultResolver: SyncResolver = (path, options) => {
 
   const pathToResolve = getPathInModule(path, resolveOptions);
 
-  const result =
-    // if `getPathInModule` doesn't change the path, attempt to resolve it
-    pathToResolve === path
-      ? resolveSync(pathToResolve, resolveOptions)
-      : pathToResolve;
+  const result = resolveSync(pathToResolve, resolveOptions);
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.

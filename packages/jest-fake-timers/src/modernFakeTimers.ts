@@ -80,7 +80,7 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-expect-error
+      // @ts-expect-error - doesn't exist?
       this._clock.runMicrotasks();
     }
   }
@@ -119,6 +119,13 @@ export default class FakeTimers {
   }
 
   getRealSystemTime(): number {
+    return Date.now();
+  }
+
+  now(): number {
+    if (this._fakingTime) {
+      return this._clock.now;
+    }
     return Date.now();
   }
 

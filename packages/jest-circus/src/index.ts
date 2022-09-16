@@ -140,11 +140,15 @@ const test: Global.It = (() => {
   ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
   const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
-    const failing = (
+    type FailingReturn = typeof concurrent extends true
+      ? Global.ConcurrentTestFn
+      : Global.TestFn;
+    const failing: Global.Failing<FailingReturn> = (
       testName: Circus.TestNameLike,
       fn?: Circus.TestFn,
       timeout?: number,
     ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
+    failing.each = bindEach(failing, false);
     return failing;
   };
 
@@ -155,6 +159,7 @@ const test: Global.It = (() => {
         test.todo,
       );
     }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return _addTest(testName, 'todo', false, () => {}, test.todo);
   };
 

@@ -56,6 +56,7 @@ module.exports = {
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
           remarkPlugins: [
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+            require('docusaurus-remark-plugin-tab-blocks'),
           ],
         },
         blog: {
@@ -155,6 +156,11 @@ module.exports = {
       backgroundColor: '#20232a',
       textColor: '#fff',
       isCloseable: false,
+    },
+    docs: {
+      sidebar: {
+        hideable: true,
+      },
     },
     navbar: {
       title: 'Jest',

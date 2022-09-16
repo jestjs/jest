@@ -34,8 +34,7 @@ export default function WatchmanWatcher(dir, opts) {
   this.init();
 }
 
-// eslint-disable-next-line no-proto
-WatchmanWatcher.prototype.__proto__ = EventEmitter.prototype;
+Object.setPrototypeOf(WatchmanWatcher.prototype, EventEmitter.prototype);
 
 /**
  * Run the watchman `watch` command on the root and subscribe to changes.

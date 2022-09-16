@@ -63,7 +63,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  // @ts-expect-error
+  // @ts-expect-error: jasmine doesn't exist on globalThis
   globalThis.jasmine.Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
@@ -83,7 +83,7 @@ const patchJasmine = () => {
     }
 
     return Spec;
-    // @ts-expect-error
+    // @ts-expect-error: jasmine doesn't exist on globalThis
   })(globalThis.jasmine.Spec);
 };
 
@@ -104,12 +104,13 @@ export default async function setupJestGlobals({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const {prettierPath, snapshotFormat} = config;
+  const {prettierPath, rootDir, snapshotFormat} = config;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     prettierPath,
+    rootDir,
     snapshotFormat,
     updateSnapshot,
   });
