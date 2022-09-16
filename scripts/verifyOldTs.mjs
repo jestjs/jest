@@ -11,7 +11,6 @@ import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';
-import rimraf from 'rimraf';
 import stripJsonComments from 'strip-json-comments';
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);
@@ -70,7 +69,7 @@ function smoketest() {
       ),
     );
   } finally {
-    rimraf.sync(cwd);
+    fs.rmSync(cwd, {force: true, recursive: true});
   }
 }
 

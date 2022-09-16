@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "devDependencies": {
+    "discord.js": "14.3.0",
+    "yargs": "^17.5.1"
+  },
   "jest": {
     "testEnvironment": "node",
     "transform": {}

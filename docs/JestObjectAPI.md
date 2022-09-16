@@ -5,6 +5,10 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
+
+<TypeScriptExamplesNote />
+
 ## Methods
 
 import TOCInline from '@theme/TOCInline';
@@ -96,18 +100,12 @@ _Note: this method was previously called `autoMockOn`. When using `babel-jest`, 
 
 ### `jest.createMockFromModule(moduleName)`
 
-##### renamed in Jest **26.0.0+**
-
-Also under the alias: `.genMockFromModule(moduleName)`
-
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior:
 
-Example:
-
-```js title="utils.js"
-export default {
+```js tab={"span":2} title="utils.js"
+module.exports = {
   authorize: () => {
     return 'token';
   },
@@ -116,12 +114,34 @@ export default {
 ```
 
 ```js title="__tests__/createMockFromModule.test.js"
-const utils = jest.createMockFromModule('../utils').default;
+const utils = jest.createMockFromModule('../utils');
+
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
-  expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
+});
+```
+
+```ts tab={"span":2} title="utils.ts"
+export const utils = {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: (secret: string) => secret === 'wizard',
+};
+```
+
+```ts title="__tests__/createMockFromModule.test.ts"
+const {utils} =
+  jest.createMockFromModule<typeof import('../utils')>('../utils');
+
+utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
+
+test('implementation created by jest.createMockFromModule', () => {
+  expect(jest.isMockFunction(utils.authorize)).toBe(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
 
@@ -180,7 +200,7 @@ module.exports = {
 ```
 
 ```js title="__tests__/example.test.js"
-const example = jest.createMockFromModule('./example');
+const example = jest.createMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
@@ -234,8 +254,19 @@ banana(); // will return 'undefined' because the function is auto-mocked.
 
 The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
 
-```js
+```js tab
 jest.mock('../moduleName', () => {
+  return jest.fn(() => 42);
+});
+
+// This runs the function specified as second argument to `jest.mock`.
+const moduleName = require('../moduleName');
+moduleName(); // Will return '42';
+```
+
+```ts tab
+// The optional type argument provides typings for the module factory
+jest.mock<typeof import('../moduleName')>('../moduleName', () => {
   return jest.fn(() => 42);
 });
 
@@ -310,7 +341,7 @@ When using `babel-jest`, calls to `mock` will automatically be hoisted to the to
 
 One example when this is useful is when you want to mock a module differently within the same file:
 
-```js
+```js tab
 beforeEach(() => {
   jest.resetModules();
 });
@@ -325,6 +356,29 @@ test('moduleName 1', () => {
 
 test('moduleName 2', () => {
   jest.doMock('../moduleName', () => {
+    return jest.fn(() => 2);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(2);
+});
+```
+
+```ts tab
+beforeEach(() => {
+  jest.resetModules();
+});
+
+test('moduleName 1', () => {
+  // The optional type argument provides typings for the module factory
+  jest.doMock<typeof import('../moduleName')>('../moduleName', () => {
+    return jest.fn(() => 1);
+  });
+  const moduleName = require('../moduleName');
+  expect(moduleName()).toEqual(1);
+});
+
+test('moduleName 2', () => {
+  jest.doMock<typeof import('../moduleName')>('../moduleName', () => {
     return jest.fn(() => 2);
   });
   const moduleName = require('../moduleName');
@@ -396,9 +450,7 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 
 Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
 
-Example:
-
-```js
+```js tab
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../myModule');
@@ -406,7 +458,25 @@ jest.mock('../myModule', () => {
   return {
     __esModule: true, // Use it when dealing with esModules
     ...originalModule,
-    getRandom: jest.fn().mockReturnValue(10),
+    getRandom: jest.fn(() => 10),
+  };
+});
+
+const getRandom = require('../myModule').getRandom;
+
+getRandom(); // Always returns 10
+```
+
+```ts tab
+jest.mock('../myModule', () => {
+  // Require the original module to not be mocked...
+  const originalModule =
+    jest.requireActual<typeof import('../myModule')>('../myModule');
+
+  return {
+    __esModule: true, // Use it when dealing with esModules
+    ...originalModule,
+    getRandom: jest.fn(() => 10),
   };
 });
 
@@ -778,6 +848,10 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 ### `jest.getTimerCount()`
 
 Returns the number of fake timers still left to run.
+
+### `jest.now()`
+
+Returns the time in ms of the current clock. This is equivalent to `Date.now()` if real timers are in use, or if `Date` is mocked. In other cases (such as legacy timers) it may be useful for implementing custom mocks of `Date.now()`, `performance.now()`, etc.
 
 ### `jest.setSystemTime(now?: number | Date)`
 

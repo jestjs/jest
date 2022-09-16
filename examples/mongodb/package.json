@@ -4,15 +4,15 @@
   "main": "./index.js",
   "private": true,
   "dependencies": {
-    "jest-environment-node": "workspace:*",
+    "jest-environment-node": "workspace:^",
     "mongodb": "^4.3.1",
     "mongodb-memory-server": "^8.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.1.0",
-    "babel-jest": "workspace:*",
-    "jest": "workspace:*"
+    "babel-jest": "workspace:^",
+    "jest": "workspace:^"
   },
   "scripts": {
     "test": "jest"

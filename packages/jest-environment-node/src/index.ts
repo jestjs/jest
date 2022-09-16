@@ -112,6 +112,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
 
     installCommonGlobals(global, projectConfig.globals);
 
+    // Node's error-message stack size is limited at 10, but it's pretty useful
+    // to see more than that when a test fails.
+    global.Error.stackTraceLimit = 100;
+
     if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (

@@ -62,7 +62,15 @@ expectError(jest.autoMockOff(true));
 expectType<typeof jest>(jest.autoMockOn());
 expectError(jest.autoMockOn(false));
 
+const someModule = {
+  methodA: () => {},
+  propertyB: 'B',
+};
+
 expectType<unknown>(jest.createMockFromModule('moduleName'));
+expectType<Mocked<typeof someModule>>(
+  jest.createMockFromModule<typeof someModule>('moduleName'),
+);
 expectError(jest.createMockFromModule());
 
 expectType<typeof jest>(jest.deepUnmock('moduleName'));
@@ -70,9 +78,13 @@ expectError(jest.deepUnmock());
 
 expectType<typeof jest>(jest.doMock('moduleName'));
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn()));
+expectType<typeof jest>(
+  jest.doMock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
+);
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {}));
 expectType<typeof jest>(jest.doMock('moduleName', jest.fn(), {virtual: true}));
 expectError(jest.doMock());
+expectError(jest.doMock<{some: 'test'}>('moduleName', () => false));
 
 expectType<typeof jest>(jest.dontMock('moduleName'));
 expectError(jest.dontMock());
@@ -88,13 +100,29 @@ expectError(jest.isolateModules());
 
 expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
+expectType<typeof jest>(
+  jest.mock<{some: 'test'}>('moduleName', () => ({some: 'test'})),
+);
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {}));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {virtual: true}));
 expectError(jest.mock());
+expectError(jest.mock<{some: 'test'}>('moduleName', () => false));
 
 expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn()));
 expectType<typeof jest>(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () => ({
+    some: 'test',
+  })),
+);
+expectType<typeof jest>(
   jest.unstable_mockModule('moduleName', () => Promise.resolve(jest.fn())),
+);
+expectType<typeof jest>(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
+    Promise.resolve({
+      some: 'test',
+    }),
+  ),
 );
 expectType<typeof jest>(jest.unstable_mockModule('moduleName', jest.fn(), {}));
 expectType<typeof jest>(
@@ -108,11 +136,26 @@ expectType<typeof jest>(
     virtual: true,
   }),
 );
+expectError(jest.unstable_mockModule('moduleName'));
+expectError(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () => false),
+);
+expectError(
+  jest.unstable_mockModule<{some: 'test'}>('moduleName', () =>
+    Promise.resolve(false),
+  ),
+);
 
 expectType<unknown>(jest.requireActual('./pathToModule'));
+expectType<{some: 'module'}>(
+  jest.requireActual<{some: 'module'}>('./pathToModule'),
+);
 expectError(jest.requireActual());
 
 expectType<unknown>(jest.requireMock('./pathToModule'));
+expectType<{some: 'module'}>(
+  jest.requireMock<{some: 'module'}>('./pathToModule'),
+);
 expectError(jest.requireMock());
 
 expectType<typeof jest>(jest.resetModules());
@@ -218,6 +261,11 @@ if (!jest.isMockFunction(unknownMaybeMock)) {
 expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
+
+// Mock<T>
+
+expectType<Mock<() => boolean>>({} as jest.Mock<() => boolean>);
+expectType<Mock<(a: string) => string>>({} as jest.Mock<(a: string) => string>);
 
 // Mocked*<T>
 
@@ -399,6 +447,9 @@ expectError(jest.clearAllTimers(false));
 
 expectType<number>(jest.getTimerCount());
 expectError(jest.getTimerCount(true));
+
+expectType<number>(jest.now());
+expectError(jest.now('1995-12-17T03:24:00'));
 
 expectType<number>(jest.getRealSystemTime());
 expectError(jest.getRealSystemTime(true));

@@ -90,29 +90,16 @@ function verifyDirectoryExists(path: string, key: string) {
   }
 }
 
-// TS 3.5 forces us to split these into 2
-const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
+const mergeOptionWithPreset = <T extends 'moduleNameMapper' | 'transform'>(
+  options: Config.InitialOptions,
   preset: Config.InitialOptions,
+  optionName: T,
 ) => {
-  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
-    options['moduleNameMapper'] = {
-      ...options['moduleNameMapper'],
-      ...preset['moduleNameMapper'],
-      ...options['moduleNameMapper'],
-    };
-  }
-};
-
-const mergeTransformWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
-  preset: Config.InitialOptions,
-) => {
-  if (options['transform'] && preset['transform']) {
-    options['transform'] = {
-      ...options['transform'],
-      ...preset['transform'],
-      ...options['transform'],
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
     };
   }
 };
@@ -206,8 +193,8 @@ const setupPreset = async (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeModuleNameMapperWithPreset(options, preset);
-  mergeTransformWithPreset(options, preset);
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
   mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
@@ -252,27 +239,6 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-};
-
-const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptionsWithRootDir &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
-    initialCollectCoverageFrom,
-  )
-    ? initialCollectCoverageFrom // passed from argv
-    : Object.keys(initialCollectCoverageFrom); // passed from options
-  return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
-    map[filePath] = true;
-    return map;
-  }, Object.create(null));
 };
 
 const normalizeCollectCoverageFrom = (
@@ -530,7 +496,6 @@ export default async function normalize(
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
     recursiveDenylist: [
-      'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
       'coverageThreshold',
@@ -627,9 +592,6 @@ export default async function normalize(
       Required<Pick<Config.InitialOptions, typeof key>>;
     let value;
     switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-        break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':

@@ -6,16 +6,15 @@
  */
 
 import * as path from 'path';
-import rimraf = require('rimraf');
-import {extractSummary} from '../Utils';
+import {cleanup, extractSummary} from '../Utils';
 import {json as runJestJson} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../snapshot-mock-fs');
 const snapshotDir = path.resolve(DIR, '__tests__/__snapshots__');
 const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
 
-beforeEach(() => rimraf.sync(snapshotDir));
-afterAll(() => rimraf.sync(snapshotDir));
+beforeEach(() => cleanup(snapshotDir));
+afterAll(() => cleanup(snapshotDir));
 
 test('store snapshot even if fs is mocked', () => {
   const {json, exitCode, stderr} = runJestJson(DIR, ['--ci=false']);
