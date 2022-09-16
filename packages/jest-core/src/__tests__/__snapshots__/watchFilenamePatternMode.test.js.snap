@@ -1,83 +1,91 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column13>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(13, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column14>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column15>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*1
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column16>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*10
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column17>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*1
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column16>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column15>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
-
-
-
+"<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › p.*3
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]
+<saveCursorPosition>
+<moveCursorToRow6Column16>
+<restoreCursorPosition>
+"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 9`] = `
@@ -91,20 +99,21 @@ Object {
 `;
 
 exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
-"[MOCK - cursorHide]
-[MOCK - clear]
+"<hideCursor>
+<clearTerminal>
 
-<bold>Pattern Mode Usage</>
- <dim>› Press</> Esc <dim>to exit pattern mode.</>
- <dim>› Press</> Enter <dim>to filter by a filenames regex pattern.</>
-
-
-[MOCK - cursorShow]
+<bold>Pattern Mode Usage</intensity>
+ <dim>› Press</intensity> Esc <dim>to exit pattern mode.</intensity>
+ <dim>› Press</intensity> Enter <dim>to filter by a filenames regex pattern.</intensity>
 
 
-
+<showCursor>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
  pattern › 
-[MOCK - cursorSavePosition]
-[MOCK - cursorTo(11, 5)]
-[MOCK - cursorRestorePosition]"
+<saveCursorPosition>
+<moveCursorToRow6Column12>
+<restoreCursorPosition>
+"
 `;

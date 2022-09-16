@@ -252,28 +252,25 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('-0');
   });
 
-  /* global BigInt */
-  if (typeof BigInt === 'function') {
-    it('prints a positive bigint', () => {
-      const val = BigInt(123);
-      expect(prettyFormat(val)).toEqual('123n');
-    });
+  it('prints a positive bigint', () => {
+    const val = BigInt(123);
+    expect(prettyFormat(val)).toEqual('123n');
+  });
 
-    it('prints a negative bigint', () => {
-      const val = BigInt(-123);
-      expect(prettyFormat(val)).toEqual('-123n');
-    });
+  it('prints a negative bigint', () => {
+    const val = BigInt(-123);
+    expect(prettyFormat(val)).toEqual('-123n');
+  });
 
-    it('prints zero bigint', () => {
-      const val = BigInt(0);
-      expect(prettyFormat(val)).toEqual('0n');
-    });
+  it('prints zero bigint', () => {
+    const val = BigInt(0);
+    expect(prettyFormat(val)).toEqual('0n');
+  });
 
-    it('prints negative zero bigint', () => {
-      const val = BigInt(-0);
-      expect(prettyFormat(val)).toEqual('0n');
-    });
-  }
+  it('prints negative zero bigint', () => {
+    const val = BigInt(-0);
+    expect(prettyFormat(val)).toEqual('0n');
+  });
 
   it('prints a date', () => {
     const val = new Date(10e11);
@@ -332,10 +329,34 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with sorted properties', () => {
-    /* eslint-disable sort-keys */
+    // eslint-disable-next-line sort-keys
     const val = {b: 1, a: 2};
-    /* eslint-enable sort-keys */
     expect(prettyFormat(val)).toEqual('Object {\n  "a": 2,\n  "b": 1,\n}');
+  });
+
+  it('prints an object with keys in their original order with the appropriate comparing function', () => {
+    // eslint-disable-next-line sort-keys
+    const val = {b: 1, a: 2};
+    const compareKeys = () => 0;
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 1,\n  "a": 2,\n}',
+    );
+  });
+
+  it('prints an object with keys in their original order with compareKeys set to null', () => {
+    // eslint-disable-next-line sort-keys
+    const val = {b: 1, a: 2};
+    expect(prettyFormat(val, {compareKeys: null})).toEqual(
+      'Object {\n  "b": 1,\n  "a": 2,\n}',
+    );
+  });
+
+  it('prints an object with keys sorted in reverse order', () => {
+    const val = {a: 1, b: 2};
+    const compareKeys = (a: string, b: string) => (a > b ? -1 : 1);
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 2,\n  "a": 1,\n}',
+    );
   });
 
   it('prints regular expressions from constructors', () => {
@@ -387,7 +408,7 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
   });
 
-  it("doesn't escape string with {excapeString: false}", () => {
+  it("doesn't escape string with {escapeString: false}", () => {
     const val = '"\'\\n';
     expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
   });
@@ -399,7 +420,7 @@ describe('prettyFormat()', () => {
 
   it('prints a multiline string', () => {
     const val = ['line 1', 'line 2', 'line 3'].join('\n');
-    expect(prettyFormat(val)).toEqual('"' + val + '"');
+    expect(prettyFormat(val)).toEqual(`"${val}"`);
   });
 
   it('prints a multiline string as value of object property', () => {
@@ -524,6 +545,84 @@ describe('prettyFormat()', () => {
     });
   });
 
+  it('can omit basic prototypes', () => {
+    const val = {
+      deeply: {nested: {object: {}}},
+      'empty array': {},
+      'empty object': {},
+      'nested array': [[[]]],
+      'typed array': new Uint8Array(),
+    };
+    expect(prettyFormat(val, {maxDepth: 2, printBasicPrototype: false})).toBe(
+      [
+        '{',
+        '  "deeply": {',
+        '    "nested": [Object],',
+        '  },',
+        '  "empty array": {},',
+        '  "empty object": {},',
+        '  "nested array": [',
+        '    [Array],',
+        '  ],',
+        '  "typed array": Uint8Array [],',
+        '}',
+      ].join('\n'),
+    );
+  });
+
+  describe('maxWidth option', () => {
+    it('applies to arrays', () => {
+      const val = Array(1_000_000).fill('x');
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Array [',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  "x",',
+          '  …',
+          ']',
+        ].join('\n'),
+      );
+    });
+
+    it('applies to sets', () => {
+      const val = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        ['Set {', '  1,', '  2,', '  3,', '  4,', '  5,', '  …', '}'].join(
+          '\n',
+        ),
+      );
+    });
+
+    it('applies to maps', () => {
+      const val = new Map();
+      val.set('a', 1);
+      val.set('b', 2);
+      val.set('c', 3);
+      val.set('d', 4);
+      val.set('e', 5);
+      val.set('f', 6);
+      val.set('g', 7);
+      val.set('h', 8);
+      val.set('i', 9);
+      val.set('j', 10);
+      expect(prettyFormat(val, {maxWidth: 5})).toEqual(
+        [
+          'Map {',
+          '  "a" => 1,',
+          '  "b" => 2,',
+          '  "c" => 3,',
+          '  "d" => 4,',
+          '  "e" => 5,',
+          '  …',
+          '}',
+        ].join('\n'),
+      );
+    });
+  });
+
   it('can customize the max depth', () => {
     const val = [
       {
@@ -642,7 +741,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -662,7 +761,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -682,7 +781,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -793,9 +892,7 @@ describe('prettyFormat()', () => {
         callToJSON: false,
       }),
     ).toEqual(
-      'Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ' +
-        name +
-        '],\n  },\n}',
+      `Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ${name}],\n  },\n}`,
     );
     expect((set as any).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
@@ -815,15 +912,13 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"boolean": [false, true]',
-            '"null": null',
-            '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
-            '"string": ["", "non-empty"]',
-            '"undefined": undefined',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"boolean": [false, true]',
+          '"null": null',
+          '"number": [0, -0, 123, -123, Infinity, -Infinity, NaN]',
+          '"string": ["", "non-empty"]',
+          '"undefined": undefined',
+        ].join(', ')}}`,
       );
     });
 
@@ -849,23 +944,21 @@ describe('prettyFormat()', () => {
           min: true,
         }),
       ).toEqual(
-        '{' +
-          [
-            '"arguments empty": []',
-            '"arguments non-empty": ["arg"]',
-            '"array literal empty": []',
-            '"array literal non-empty": ["item"]',
-            '"extended array empty": []',
-            '"map empty": Map {}',
-            '"map non-empty": Map {"name" => "value"}',
-            '"object literal empty": {}',
-            '"object literal non-empty": {"name": "value"}',
-            '"object with constructor": {"name": "value"}',
-            '"object without constructor": {}',
-            '"set empty": Set {}',
-            '"set non-empty": Set {"value"}',
-          ].join(', ') +
-          '}',
+        `{${[
+          '"arguments empty": []',
+          '"arguments non-empty": ["arg"]',
+          '"array literal empty": []',
+          '"array literal non-empty": ["item"]',
+          '"extended array empty": []',
+          '"map empty": Map {}',
+          '"map non-empty": Map {"name" => "value"}',
+          '"object literal empty": {}',
+          '"object literal non-empty": {"name": "value"}',
+          '"object with constructor": {"name": "value"}',
+          '"object without constructor": {}',
+          '"set empty": Set {}',
+          '"set non-empty": Set {"value"}',
+        ].join(', ')}}`,
       );
     });
 

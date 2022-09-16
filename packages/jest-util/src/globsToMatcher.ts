@@ -6,10 +6,9 @@
  */
 
 import picomatch = require('picomatch');
-import type {Config} from '@jest/types';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
-type Matcher = (str: Config.Path) => boolean;
+type Matcher = (str: string) => boolean;
 
 const globsToMatchersMap = new Map<
   string,
@@ -35,7 +34,7 @@ const picomatchOptions = {dot: true};
  * isMatch('pizza.js'); // true
  * isMatch('pizza.test.js'); // false
  */
-export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
+export default function globsToMatcher(globs: Array<string>): Matcher {
   if (globs.length === 0) {
     // Since there were no globs given, we can simply have a fast path here and
     // return with a very simple function.

@@ -49,7 +49,7 @@ const evalCommand: repl.REPLEval = (
           : transformResult.code;
     }
     result = runInThisContext(cmd);
-  } catch (e) {
+  } catch (e: any) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
@@ -78,7 +78,16 @@ if (jestProjectConfig.transform) {
     }
   }
   if (transformerPath) {
-    transformer = interopRequireDefault(require(transformerPath)).default;
+    const transformerOrFactory = interopRequireDefault(
+      require(transformerPath),
+    ).default;
+
+    if (typeof transformerOrFactory.createTransformer === 'function') {
+      transformer = transformerOrFactory.createTransformer(transformerConfig);
+    } else {
+      transformer = transformerOrFactory;
+    }
+
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',

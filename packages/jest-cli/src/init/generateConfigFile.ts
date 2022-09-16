@@ -11,7 +11,7 @@ import {defaults, descriptions} from 'jest-config';
 const stringifyOption = (
   option: keyof Config.InitialOptions,
   map: Partial<Config.InitialOptions>,
-  linePrefix: string = '',
+  linePrefix = '',
 ): string => {
   const optionDescription = `  // ${descriptions[option]}`;
   const stringifiedObject = `${option}: ${JSON.stringify(
@@ -20,15 +20,10 @@ const stringifyOption = (
     2,
   )}`;
 
-  return (
-    optionDescription +
-    '\n' +
-    stringifiedObject
-      .split('\n')
-      .map(line => '  ' + linePrefix + line)
-      .join('\n') +
-    ',\n'
-  );
+  return `${optionDescription}\n${stringifiedObject
+    .split('\n')
+    .map(line => `  ${linePrefix}${line}`)
+    .join('\n')},\n`;
 };
 
 const generateConfigFile = (
@@ -92,14 +87,13 @@ const generateConfigFile = (
 
 `;
 
-  return (
+  return `${
     configHeaderMessage +
     (useTypescript || generateEsm
       ? 'export default {\n'
       : 'module.exports = {\n') +
-    properties.join('\n') +
-    '};\n'
-  );
+    properties.join('\n')
+  }};\n`;
 };
 
 export default generateConfigFile;

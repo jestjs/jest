@@ -7,28 +7,10 @@
  */
 
 import chalk from 'chalk';
-import wrap from 'jest-snapshot-serializer-raw';
 // eslint-disable-next-line import/order
 import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
-
-jest
-  .mock('ansi-escapes', () => ({
-    cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
-    cursorHide: '[MOCK - cursorHide]',
-    cursorRestorePosition: '[MOCK - cursorRestorePosition]',
-    cursorSavePosition: '[MOCK - cursorSavePosition]',
-    cursorShow: '[MOCK - cursorShow]',
-    cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
-  }))
-  .mock('jest-util', () => {
-    const {specialChars, ...util} = jest.requireActual('jest-util');
-    return {
-      ...util,
-      specialChars: {...specialChars, CLEAR: '[MOCK - clear]'},
-    };
-  });
 
 jest.mock(
   '../SearchSource',
@@ -116,7 +98,7 @@ describe('Watch mode flows', () => {
     const assertPattern = hex => {
       pipe.write.mockReset();
       stdin.emit(hex);
-      expect(wrap(pipe.write.mock.calls.join('\n'))).toMatchSnapshot();
+      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     };
 
     // Write a pattern

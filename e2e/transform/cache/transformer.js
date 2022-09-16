@@ -6,11 +6,11 @@
  */
 
 module.exports = {
-  process(src, path) {
+  process(code, path) {
     if (path.includes('common')) {
       console.log(path);
     }
 
-    return src;
+    return {code};
   },
 };

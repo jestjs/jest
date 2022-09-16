@@ -11,7 +11,7 @@ import detectNewline = require('detect-newline');
 type Pragmas = Record<string, string | Array<string>>;
 
 const commentEndRe = /\*\/$/;
-const commentStartRe = /^\/\*\*/;
+const commentStartRe = /^\/\*\*?/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
 const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
 const ltrimNewlineRe = /^(\r?\n)+/;
@@ -93,7 +93,7 @@ export function print({
   const printedObject = keys
     .map(key => printKeyValues(key, pragmas[key]))
     .reduce((arr, next) => arr.concat(next), [])
-    .map(keyValue => start + ' ' + keyValue + line)
+    .map(keyValue => `${start} ${keyValue}${line}`)
     .join('');
 
   if (!comments) {

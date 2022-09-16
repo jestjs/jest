@@ -90,13 +90,13 @@ test('that the failureDetails property is set', () => {
             "actual": "",
             "error": Object {
               "matcherResult": Object {
-                "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
+                "actual": "{
+        "p1": "hello",
+        "p2": "world",
       }",
-                "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
+                "expected": "{
+        "p1": "hello",
+        "p2": "sunshine",
       }",
                 "message": "expect(received).toMatchInlineSnapshot(snapshot)
 
@@ -105,10 +105,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
                 "name": "toMatchInlineSnapshot",
                 "pass": false,
@@ -123,10 +123,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
             "passed": false,
             "stack": "Error: expect(received).toMatchInlineSnapshot(snapshot)
@@ -136,10 +136,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }
           at <stacktrace>",
           },
@@ -215,13 +215,13 @@ test('that the failureDetails property is set', () => {
         Array [
           Object {
             "matcherResult": Object {
-              "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
+              "actual": "{
+        "p1": "hello",
+        "p2": "world",
       }",
-              "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
+              "expected": "{
+        "p1": "hello",
+        "p2": "sunshine",
       }",
               "message": "expect(received).toMatchInlineSnapshot(snapshot)
 
@@ -230,10 +230,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
               "name": "toMatchInlineSnapshot",
               "pass": false,

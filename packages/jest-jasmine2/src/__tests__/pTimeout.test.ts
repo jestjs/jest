@@ -12,8 +12,8 @@ import pTimeout from '../pTimeout';
 
 describe('pTimeout', () => {
   beforeEach(() => {
-    jest.spyOn(global, 'setTimeout');
-    jest.spyOn(global, 'clearTimeout');
+    jest.spyOn(globalThis, 'setTimeout');
+    jest.spyOn(globalThis, 'clearTimeout');
   });
 
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {

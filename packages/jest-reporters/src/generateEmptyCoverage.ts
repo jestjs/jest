@@ -24,19 +24,18 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default async function (
+export default async function generateEmptyCoverage(
   source: string,
-  filename: Config.Path,
+  filename: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  changedFiles?: Set<Config.Path>,
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
+  changedFiles?: Set<string>,
+  sourcesRelatedToTestsInChangedFiles?: Set<string>,
 ): Promise<CoverageWorkerResult | null> {
   const coverageOptions = {
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
     sourcesRelatedToTestsInChangedFiles,
   };
@@ -69,13 +68,17 @@ export default async function (
     const scriptTransformer = await createScriptTransformer(config);
 
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code} = scriptTransformer.transformSource(filename, source, {
-      instrument: true,
-      supportsDynamicImport: true,
-      supportsExportNamespaceFrom: true,
-      supportsStaticESM: true,
-      supportsTopLevelAwait: true,
-    });
+    const {code} = await scriptTransformer.transformSourceAsync(
+      filename,
+      source,
+      {
+        instrument: true,
+        supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
+        supportsStaticESM: true,
+        supportsTopLevelAwait: true,
+      },
+    );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */

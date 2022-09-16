@@ -10,7 +10,7 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {TEST_TIMEOUT_SYMBOL} from './types';
+import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -20,11 +20,7 @@ import {
   makeTest,
 } from './utils';
 
-// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
-const eventHandler: Circus.EventHandler = (
-  event: Circus.Event,
-  state: Circus.State,
-): void => {
+const eventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
@@ -54,7 +50,7 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'finish_describe_definition': {
       const {currentDescribeBlock} = state;
-      invariant(currentDescribeBlock, `currentDescribeBlock must be there`);
+      invariant(currentDescribeBlock, 'currentDescribeBlock must be there');
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
@@ -126,7 +122,15 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'add_test': {
       const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
-      const {asyncError, fn, mode, testName: name, timeout} = event;
+      const {
+        asyncError,
+        fn,
+        mode,
+        testName: name,
+        timeout,
+        concurrent,
+        failing,
+      } = event;
 
       if (currentlyRunningTest) {
         currentlyRunningTest.errors.push(
@@ -147,10 +151,12 @@ const eventHandler: Circus.EventHandler = (
       const test = makeTest(
         fn,
         mode,
+        concurrent,
         name,
         currentDescribeBlock,
         timeout,
         asyncError,
+        failing,
       );
       if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
@@ -209,13 +215,21 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'test_retry': {
+      const logErrorsBeforeRetry: boolean =
+        // eslint-disable-next-line no-restricted-globals
+        global[LOG_ERRORS_BEFORE_RETRY] || false;
+      if (logErrorsBeforeRetry) {
+        event.test.retryReasons.push(...event.test.errors);
+      }
       event.test.errors = [];
       break;
     }
     case 'run_start': {
       state.hasStarted = true;
+      /* eslint-disable no-restricted-globals */
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
+      /* eslint-enable */
       break;
     }
     case 'run_finish': {

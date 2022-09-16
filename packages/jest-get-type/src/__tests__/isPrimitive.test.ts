@@ -7,7 +7,6 @@
  */
 
 import {isPrimitive} from '..';
-/* global BigInt */
 
 describe('.isPrimitive()', () => {
   test.each([
@@ -20,7 +19,7 @@ describe('.isPrimitive()', () => {
     0,
     NaN,
     Infinity,
-    typeof BigInt === 'function' ? BigInt(1) : 1,
+    BigInt(1),
   ])('returns true when given primitive value of: %s', primitive => {
     expect(isPrimitive(primitive)).toBe(true);
   });

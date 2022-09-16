@@ -8,9 +8,7 @@
 import {dirname, extname} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
-import escalade from 'escalade/sync';
-import {readFileSync} from 'graceful-fs';
-import type {Config} from '@jest/types';
+import {findClosestPackageJson, readPackageCached} from './fileWalkers';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -25,8 +23,8 @@ export function clearCachedLookups(): void {
 }
 
 export default function cachedShouldLoadAsEsm(
-  path: Config.Path,
-  extensionsToTreatAsEsm: Array<Config.Path>,
+  path: string,
+  extensionsToTreatAsEsm: Array<string>,
 ): boolean {
   if (!runtimeSupportsVmModules) {
     return false;
@@ -44,8 +42,8 @@ export default function cachedShouldLoadAsEsm(
 
 // this is a bad version of what https://github.com/nodejs/modules/issues/393 would provide
 function shouldLoadAsEsm(
-  path: Config.Path,
-  extensionsToTreatAsEsm: Array<Config.Path>,
+  path: string,
+  extensionsToTreatAsEsm: Array<string>,
 ): boolean {
   const extension = extname(path);
 
@@ -73,14 +71,8 @@ function shouldLoadAsEsm(
   return cachedLookup;
 }
 
-function cachedPkgCheck(cwd: Config.Path): boolean {
-  const pkgPath = escalade(cwd, (_dir, names) => {
-    if (names.includes('package.json')) {
-      // will be resolved into absolute
-      return 'package.json';
-    }
-    return false;
-  });
+function cachedPkgCheck(cwd: string): boolean {
+  const pkgPath = findClosestPackageJson(cwd);
   if (!pkgPath) {
     return false;
   }
@@ -91,7 +83,7 @@ function cachedPkgCheck(cwd: Config.Path): boolean {
   }
 
   try {
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    const pkg = readPackageCached(pkgPath);
     hasModuleField = pkg.type === 'module';
   } catch {
     hasModuleField = false;

@@ -25,6 +25,12 @@ import {
   tryRealpath,
 } from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+import {
+  makeInvalidReturnValueError,
+  makeInvalidSourceMapWarning,
+  makeInvalidSyncTransformerError,
+  makeInvalidTransformerError,
+} from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
 import type {
   Options,
@@ -36,6 +42,7 @@ import type {
   TransformResult,
   TransformedSource,
   Transformer,
+  TransformerFactory,
 } from './types';
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
@@ -66,10 +73,17 @@ async function waitForPromiseWithCleanup(
   }
 }
 
+// type predicate
+function isTransformerFactory<X extends Transformer>(
+  t: Transformer | TransformerFactory<X>,
+): t is TransformerFactory<X> {
+  return typeof (t as TransformerFactory<X>).createTransformer === 'function';
+}
+
 class ScriptTransformer {
   private readonly _cache: ProjectCache;
   private readonly _transformCache = new Map<
-    Config.Path,
+    string,
     {transformer: Transformer; transformerConfig: unknown}
   >();
   private _transformsAreLoaded = false;
@@ -97,29 +111,31 @@ class ScriptTransformer {
 
   private _buildCacheKeyFromFileInfo(
     fileData: string,
-    filename: Config.Path,
+    filename: string,
     transformOptions: TransformOptions,
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey) {
-      return createHash('md5')
+      return createHash('sha256')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
-        .digest('hex');
+        .digest('hex')
+        .substring(0, 32);
     }
 
-    return createHash('md5')
+    return createHash('sha256')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
       .update(filename)
       .update(CACHE_VERSION)
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   }
 
   private _getCacheKey(
     fileData: string,
-    filename: Config.Path,
+    filename: string,
     options: ReducedTransformOptions,
   ): string {
     const configString = this._cache.configString;
@@ -153,7 +169,7 @@ class ScriptTransformer {
 
   private async _getCacheKeyAsync(
     fileData: string,
-    filename: Config.Path,
+    filename: string,
     options: ReducedTransformOptions,
   ): Promise<string> {
     const configString = this._cache.configString;
@@ -191,12 +207,13 @@ class ScriptTransformer {
   }
 
   private _createFolderFromCacheKey(
-    filename: Config.Path,
+    filename: string,
     cacheKey: string,
-  ): Config.Path {
-    const baseCacheDir = HasteMap.getCacheFilePath(
+  ): string {
+    const HasteMapClass = HasteMap.getStatic(this._config);
+    const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
-      'jest-transform-cache-' + this._config.name,
+      `jest-transform-cache-${this._config.id}`,
       VERSION,
     );
     // Create sub folders based on the cacheKey to avoid creating one
@@ -206,7 +223,7 @@ class ScriptTransformer {
       .basename(filename, path.extname(filename))
       .replace(/\W/g, '');
     const cachePath = slash(
-      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
+      path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`),
     );
     createDirectory(cacheDir);
 
@@ -214,26 +231,26 @@ class ScriptTransformer {
   }
 
   private _getFileCachePath(
-    filename: Config.Path,
+    filename: string,
     content: string,
     options: ReducedTransformOptions,
-  ): Config.Path {
+  ): string {
     const cacheKey = this._getCacheKey(content, filename, options);
 
     return this._createFolderFromCacheKey(filename, cacheKey);
   }
 
   private async _getFileCachePathAsync(
-    filename: Config.Path,
+    filename: string,
     content: string,
     options: ReducedTransformOptions,
-  ): Promise<Config.Path> {
+  ): Promise<string> {
     const cacheKey = await this._getCacheKeyAsync(content, filename, options);
 
     return this._createFolderFromCacheKey(filename, cacheKey);
   }
 
-  private _getTransformPath(filename: Config.Path) {
+  private _getTransformPath(filename: string) {
     const transformRegExp = this._cache.transformRegExp;
     if (!transformRegExp) {
       return undefined;
@@ -252,23 +269,20 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer = await requireOrImportModule(
-            transformPath,
-          );
+          let transformer: Transformer | TransformerFactory<Transformer> =
+            await requireOrImportModule(transformPath);
 
           if (!transformer) {
-            throw new TypeError('Jest: a transform must export something.');
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
-          if (typeof transformer.createTransformer === 'function') {
+          if (isTransformerFactory(transformer)) {
             transformer = transformer.createTransformer(transformerConfig);
           }
           if (
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new TypeError(
-              'Jest: a transform must export a `process` or `processAsync` function.',
-            );
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           this._transformCache.set(transformPath, res);
@@ -279,7 +293,7 @@ class ScriptTransformer {
     this._transformsAreLoaded = true;
   }
 
-  private _getTransformer(filename: Config.Path) {
+  private _getTransformer(filename: string) {
     if (!this._transformsAreLoaded) {
       throw new Error(
         'Jest: Transformers have not been loaded yet - make sure to run `loadTransformers` and wait for it to complete before starting to transform files',
@@ -307,7 +321,7 @@ class ScriptTransformer {
   }
 
   private _instrumentFile(
-    filename: Config.Path,
+    filename: string,
     input: TransformedSource,
     canMapToInput: boolean,
     options: ReducedTransformOptions,
@@ -359,7 +373,7 @@ class ScriptTransformer {
     shouldCallTransform: boolean,
     options: ReducedTransformOptions,
     processed: TransformedSource | null,
-    sourceMapPath: Config.Path | null,
+    sourceMapPath: string | null,
   ): TransformResult {
     let transformed: TransformedSource = {
       code: content,
@@ -367,16 +381,12 @@ class ScriptTransformer {
     };
 
     if (transformer && shouldCallTransform) {
-      if (typeof processed === 'string') {
-        transformed.code = processed;
-      } else if (processed != null && typeof processed.code === 'string') {
+      if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
-        throw new TypeError(
-          "Jest: a transform's `process` function must return a string, " +
-            'or an object with `code` key containing this string. ' +
-            "It's `processAsync` function must return a Promise resolving to it.",
-        );
+        const transformPath = this._getTransformPath(filename);
+        invariant(transformPath);
+        throw new Error(makeInvalidReturnValueError(transformPath));
       }
     }
 
@@ -390,11 +400,8 @@ class ScriptTransformer {
         }
       } catch {
         const transformPath = this._getTransformPath(filename);
-        console.warn(
-          `jest-transform: The source map produced for the file ${filename} ` +
-            `by ${transformPath} was invalid. Proceeding without source ` +
-            'mapping for that file.',
-        );
+        invariant(transformPath);
+        console.warn(makeInvalidSourceMapWarning(filename, transformPath));
       }
     }
 
@@ -454,7 +461,7 @@ class ScriptTransformer {
   }
 
   transformSource(
-    filepath: Config.Path,
+    filepath: string,
     content: string,
     options: ReducedTransformOptions,
   ): TransformResult {
@@ -462,7 +469,7 @@ class ScriptTransformer {
     const {transformer, transformerConfig = {}} =
       this._getTransformer(filename) || {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
-    const sourceMapPath: Config.Path = cacheFilePath + '.map';
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -478,7 +485,7 @@ class ScriptTransformer {
       };
     }
 
-    let processed = null;
+    let processed: TransformedSource | null = null;
 
     let shouldCallTransform = false;
 
@@ -509,7 +516,7 @@ class ScriptTransformer {
   }
 
   async transformSourceAsync(
-    filepath: Config.Path,
+    filepath: string,
     content: string,
     options: ReducedTransformOptions,
   ): Promise<TransformResult> {
@@ -521,7 +528,7 @@ class ScriptTransformer {
       content,
       options,
     );
-    const sourceMapPath: Config.Path = cacheFilePath + '.map';
+    const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -573,7 +580,7 @@ class ScriptTransformer {
   }
 
   private async _transformAndBuildScriptAsync(
-    filename: Config.Path,
+    filename: string,
     options: Options,
     transformOptions: ReducedTransformOptions,
     fileSource?: string,
@@ -610,13 +617,13 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
 
   private _transformAndBuildScript(
-    filename: Config.Path,
+    filename: string,
     options: Options,
     transformOptions: ReducedTransformOptions,
     fileSource?: string,
@@ -653,13 +660,13 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
 
   async transformAsync(
-    filename: Config.Path,
+    filename: string,
     options: Options,
     fileSource?: string,
   ): Promise<TransformResult> {
@@ -687,7 +694,7 @@ class ScriptTransformer {
   }
 
   transform(
-    filename: Config.Path,
+    filename: string,
     options: Options,
     fileSource?: string,
   ): TransformResult {
@@ -716,7 +723,7 @@ class ScriptTransformer {
   }
 
   transformJson(
-    filename: Config.Path,
+    filename: string,
     options: Options,
     fileSource: string,
   ): string {
@@ -761,7 +768,10 @@ class ScriptTransformer {
         }
       },
       {
-        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
+        // Exclude `mjs` extension when addHook because pirates don't support hijack es module
+        exts: this._config.moduleFileExtensions
+          .filter(ext => ext !== 'mjs')
+          .map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {
@@ -772,18 +782,18 @@ class ScriptTransformer {
         },
       },
     );
-    const module: ModuleType = await requireOrImportModule(
-      moduleName,
-      applyInteropRequireDefault,
-    );
-
-    if (!callback) {
-      revertHook();
-
-      return module;
-    }
-
     try {
+      const module: ModuleType = await requireOrImportModule(
+        moduleName,
+        applyInteropRequireDefault,
+      );
+
+      if (!callback) {
+        revertHook();
+
+        return module;
+      }
+
       const cbResult = callback(module);
 
       if (isPromise(cbResult)) {
@@ -791,14 +801,14 @@ class ScriptTransformer {
           () => module,
         );
       }
+
+      return module;
     } finally {
       revertHook();
     }
-
-    return module;
   }
 
-  shouldTransform(filename: Config.Path): boolean {
+  shouldTransform(filename: string): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
@@ -819,11 +829,12 @@ export async function createTranspilingRequire(
 
   return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
-    applyInteropRequireDefault: boolean = false,
+    applyInteropRequireDefault = false,
   ) {
     const transpiledModule =
       await transformer.requireAndTranspileModule<TModuleType>(
         resolverPath,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         () => {},
         {
           applyInteropRequireDefault,
@@ -839,7 +850,7 @@ export async function createTranspilingRequire(
   };
 }
 
-const removeFile = (path: Config.Path) => {
+const removeFile = (path: string) => {
   try {
     fs.unlinkSync(path);
   } catch {}
@@ -862,9 +873,12 @@ const stripShebang = (content: string) => {
  * it right away. This is not a great system, because source map cache file
  * could get corrupted, out-of-sync, etc.
  */
-function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = createHash('md5').update(code).digest('hex');
-  writeCacheFile(cachePath, checksum + '\n' + code);
+function writeCodeCacheFile(cachePath: string, code: string) {
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
+  writeCacheFile(cachePath, `${checksum}\n${code}`);
 }
 
 /**
@@ -873,14 +887,17 @@ function writeCodeCacheFile(cachePath: Config.Path, code: string) {
  * could happen if an older version of `jest-runtime` writes non-atomically to
  * the same cache, for example.
  */
-function readCodeCacheFile(cachePath: Config.Path): string | null {
+function readCodeCacheFile(cachePath: string): string | null {
   const content = readCacheFile(cachePath);
   if (content == null) {
     return null;
   }
-  const code = content.substr(33);
-  const checksum = createHash('md5').update(code).digest('hex');
-  if (checksum === content.substr(0, 32)) {
+  const code = content.substring(33);
+  const checksum = createHash('sha256')
+    .update(code)
+    .digest('hex')
+    .substring(0, 32);
+  if (checksum === content.substring(0, 32)) {
     return code;
   }
   return null;
@@ -892,19 +909,15 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  * two processes to write to the same file at the same time. It also reduces
  * the risk of reading a file that's being overwritten at the same time.
  */
-const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
+const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e) {
+  } catch (e: any) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;
     }
 
-    e.message =
-      'jest: failed to cache transform results in: ' +
-      cachePath +
-      '\nFailure message: ' +
-      e.message;
+    e.message = `jest: failed to cache transform results in: ${cachePath}\nFailure message: ${e.message}`;
     removeFile(cachePath);
     throw e;
   }
@@ -918,13 +931,13 @@ const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
  */
 const cacheWriteErrorSafeToIgnore = (
   e: Error & {code: string},
-  cachePath: Config.Path,
+  cachePath: string,
 ) =>
   process.platform === 'win32' &&
   e.code === 'EPERM' &&
   fs.existsSync(cachePath);
 
-const readCacheFile = (cachePath: Config.Path): string | null => {
+const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -932,18 +945,14 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e) {
+  } catch (e: any) {
     // on windows write-file-atomic is not atomic which can
     // result in this error
     if (e.code === 'ENOENT' && process.platform === 'win32') {
       return null;
     }
 
-    e.message =
-      'jest: failed to read cache file: ' +
-      cachePath +
-      '\nFailure message: ' +
-      e.message;
+    e.message = `jest: failed to read cache file: ${cachePath}\nFailure message: ${e.message}`;
     removeFile(cachePath);
     throw e;
   }
@@ -956,9 +965,9 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
+const getScriptCacheKey = (filename: string, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
-  return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
+  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
@@ -1002,7 +1011,7 @@ function assertSyncTransformer(
   invariant(name);
   invariant(
     typeof transformer.process === 'function',
-    `Jest: synchronous transformer ${name} must export a "process" function.`,
+    makeInvalidSyncTransformerError(name),
   );
 }
 

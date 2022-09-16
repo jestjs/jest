@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {mergeProcessCovs} from '@bcoe/v8-coverage';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import chalk = require('chalk');
 import glob = require('glob');
 import * as fs from 'graceful-fs';
@@ -14,57 +15,46 @@ import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
-import type {RawSourceMap} from 'source-map';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,
   RuntimeTransformResult,
+  Test,
+  TestContext,
   TestResult,
   V8CoverageResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import {Worker} from 'jest-worker';
+import {JestWorkerFarm, Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
-import type {
-  Context,
-  CoverageReporterOptions,
-  CoverageWorker,
-  Test,
-} from './types';
+import type {ReporterContext} from './types';
 
-// This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
-  version: number;
-  file?: string;
-}
+type CoverageWorker = typeof import('./CoverageWorker');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
+  private _context: ReporterContext;
   private _coverageMap: istanbulCoverage.CoverageMap;
   private _globalConfig: Config.GlobalConfig;
   private _sourceMapStore: libSourceMaps.MapStore;
-  private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    options?: CoverageReporterOptions,
-  ) {
+  constructor(globalConfig: Config.GlobalConfig, context: ReporterContext) {
     super();
+    this._context = context;
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
     this._v8CoverageResults = [];
-    this._options = options || {};
   }
 
-  onTestResult(_test: Test, testResult: TestResult): void {
+  override onTestResult(_test: Test, testResult: TestResult): void {
     if (testResult.v8Coverage) {
       this._v8CoverageResults.push(testResult.v8Coverage);
       return;
@@ -75,11 +65,11 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  async onRunComplete(
-    contexts: Set<Context>,
+  override async onRunComplete(
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): Promise<void> {
-    await this._addUntestedFiles(contexts);
+    await this._addUntestedFiles(testContexts);
     const {map, reportContext} = await this._getCoverageResult();
 
     try {
@@ -98,11 +88,10 @@ export default class CoverageReporter extends BaseReporter {
             maxCols: process.stdout.columns || Infinity,
             ...additionalOptions,
           })
-          // @ts-expect-error
           .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
-    } catch (e) {
+    } catch (e: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
@@ -115,10 +104,12 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(map);
   }
 
-  private async _addUntestedFiles(contexts: Set<Context>): Promise<void> {
+  private async _addUntestedFiles(
+    testContexts: Set<TestContext>,
+  ): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
-    contexts.forEach(context => {
+    testContexts.forEach(context => {
       const config = context.config;
       if (
         this._globalConfig.collectCoverageFrom &&
@@ -148,16 +139,19 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker: CoverageWorker | Worker;
+    let worker:
+      | JestWorkerFarm<CoverageWorker>
+      | typeof import('./CoverageWorker');
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./CoverageWorker');
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
+        forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,
-      });
+      }) as JestWorkerFarm<CoverageWorker>;
     }
 
     const instrumentation = files.map(async fileObj => {
@@ -176,16 +170,15 @@ export default class CoverageReporter extends BaseReporter {
         try {
           const result = await worker.worker({
             config,
-            globalConfig: this._globalConfig,
-            options: {
-              ...this._options,
+            context: {
               changedFiles:
-                this._options.changedFiles &&
-                Array.from(this._options.changedFiles),
+                this._context.changedFiles &&
+                Array.from(this._context.changedFiles),
               sourcesRelatedToTestsInChangedFiles:
-                this._options.sourcesRelatedToTestsInChangedFiles &&
-                Array.from(this._options.sourcesRelatedToTestsInChangedFiles),
+                this._context.sourcesRelatedToTestsInChangedFiles &&
+                Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
             },
+            globalConfig: this._globalConfig,
             path: filename,
           });
 
@@ -198,7 +191,7 @@ export default class CoverageReporter extends BaseReporter {
               this._coverageMap.addFileCoverage(result.coverage);
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(
             chalk.red(
               [
@@ -279,7 +272,16 @@ export default class CoverageReporter extends BaseReporter {
         const pathOrGlobMatches = thresholdGroups.reduce<
           Array<[string, string]>
         >((agg, thresholdGroup) => {
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+          // Preserve trailing slash, but not required if root dir
+          // See https://github.com/facebook/jest/issues/12703
+          const resolvedThresholdGroup = path.resolve(thresholdGroup);
+          const suffix =
+            (thresholdGroup.endsWith(path.sep) ||
+              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
+            !resolvedThresholdGroup.endsWith(path.sep)
+              ? path.sep
+              : '';
+          const absoluteThresholdGroup = `${resolvedThresholdGroup}${suffix}`;
 
           // The threshold group might be a path:
 
@@ -443,7 +445,7 @@ export default class CoverageReporter extends BaseReporter {
         mergedCoverages.result.map(async res => {
           const fileTransform = fileTransforms.get(res.url);
 
-          let sourcemapContent: FixedRawSourceMap | undefined = undefined;
+          let sourcemapContent: EncodedSourceMap | undefined = undefined;
 
           if (
             fileTransform?.sourceMapPath &&
@@ -472,7 +474,9 @@ export default class CoverageReporter extends BaseReporter {
 
           converter.applyCoverage(res.functions);
 
-          return converter.toIstanbul();
+          const istanbulData = converter.toIstanbul();
+
+          return istanbulData;
         }),
       );
 

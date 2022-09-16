@@ -51,7 +51,7 @@ test.each([
   ).toThrowErrorMatchingSnapshot();
 });
 
-test(`pretty prints valid config for Function`, () => {
+test('pretty prints valid config for Function', () => {
   const config = {fn: 'test'};
   const validConfig = {fn: (_config, _option, _deprecatedOptions) => true};
   expect(() =>

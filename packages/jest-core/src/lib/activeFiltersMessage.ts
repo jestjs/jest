@@ -10,22 +10,22 @@ import type {Config} from '@jest/types';
 
 const activeFilters = (
   globalConfig: Config.GlobalConfig,
-  delimiter: string = '\n',
+  delimiter = '\n',
 ): string => {
   const {testNamePattern, testPathPattern} = globalConfig;
   if (testNamePattern || testPathPattern) {
     const filters = [
       testPathPattern
-        ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
+        ? chalk.dim('filename ') + chalk.yellow(`/${testPathPattern}/`)
         : null,
       testNamePattern
-        ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
+        ? chalk.dim('test name ') + chalk.yellow(`/${testNamePattern}/`)
         : null,
     ]
       .filter(f => f)
       .join(', ');
 
-    const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
+    const messages = [`\n${chalk.bold('Active Filters: ')}${filters}`];
 
     return messages.filter(message => !!message).join(delimiter);
   }

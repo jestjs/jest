@@ -6,8 +6,7 @@
  *
  */
 
-import throat from 'throat';
-import type {Config} from '@jest/types';
+import pLimit = require('p-limit');
 import git from './git';
 import hg from './hg';
 import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
@@ -22,13 +21,13 @@ function notEmpty<T>(value: T | null | undefined): value is T {
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
-const mutex = throat(5);
+const mutex = pLimit(5);
 
 const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
-  roots: Array<Config.Path>,
+  roots: Array<string>,
   options: Options,
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
@@ -56,7 +55,7 @@ export const getChangedFilesForRoots = async (
   return {changedFiles, repos};
 };
 
-export const findRepos = async (roots: Array<Config.Path>): Promise<Repos> => {
+export const findRepos = async (roots: Array<string>): Promise<Repos> => {
   const gitRepos = await Promise.all(
     roots.reduce<Array<RootPromise>>(
       (promises, root) => promises.concat(findGitRoot(root)),

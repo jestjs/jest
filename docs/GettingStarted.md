@@ -3,19 +3,11 @@ id: getting-started
 title: Getting Started
 ---
 
-Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest using your favorite package manager:
 
-```bash
-yarn add --dev jest
-```
-
-Or [`npm`](https://www.npmjs.com/package/jest):
-
-```bash
+```bash npm2yarn
 npm install --save-dev jest
 ```
-
-Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -46,7 +38,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+Finally, run `yarn test` or `npm test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -81,16 +73,15 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](https://babeljs.io/), install required dependencies via `yarn`:
+To use [Babel](https://babeljs.io/), install required dependencies:
 
-```bash
-yarn add --dev babel-jest @babel/core @babel/preset-env
+```bash npm2yarn
+npm install --save-dev babel-jest @babel/core @babel/preset-env
 ```
 
 Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
-```javascript
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = {
   presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
 };
@@ -102,8 +93,7 @@ _The ideal configuration for Babel will depend on your project._ See [Babel's do
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
-```javascript
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = api => {
   const isTest = api.env('test');
   // You can use isTest to determine what presets and plugins to use.
@@ -116,8 +106,7 @@ module.exports = api => {
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
-```javascript
-// jest.config.js
+```javascript title="jest.config.js"
 module.exports = {
   transform: {},
 };
@@ -125,57 +114,77 @@ module.exports = {
 
 </details>
 
-<details><summary markdown="span"><strong>Babel 6 support</strong></summary>
-
-Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
-
-```
-"dependencies": {
-  "babel-core": "^6.26.3",
-  "babel-jest": "^23.6.0",
-  "babel-preset-env": "^1.7.0",
-  "jest": "^24.0.0"
-}
-```
-
-While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
-
-</details>
-
 ### Using webpack
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
 
-### Using parcel
+### Using Vite
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+Jest can be used in projects that use [vite](https://vitejs.dev/) to serves source code over native ESM to provide some frontend tooling, vite is an opinionated tool and does offer some out-of-the box workflows. Jest does not fully supported by vite due to how the [plugin system](https://github.com/vitejs/vite/issues/1955#issuecomment-776009094) from vite works, but there is some working examples for first-class jest integration using the `vite-jest`, since this is not fully supported, you might as well read the [limitation of the `vite-jest`](https://github.com/sodatea/vite-jest/tree/main/packages/vite-jest#limitations-and-differences-with-commonjs-tests). Refer to the [vite guide](https://vitejs.dev/guide/) to get started. Alternatively you can use [vitest](https://github.com/vitest-dev/vitest).
+
+### Using Parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
 ### Using TypeScript
 
-Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
+#### Via `babel`
 
-```bash
-yarn add --dev @babel/preset-typescript
+Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript`:
+
+```bash npm2yarn
+npm install --save-dev @babel/preset-typescript
 ```
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
 
-```diff
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-+    '@babel/preset-typescript',
+    // highlight-next-line
+    '@babel/preset-typescript',
   ],
 };
 ```
 
 However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
 
-You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+#### Via `ts-jest`
 
-> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
+[ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
 
-```bash
-yarn add --dev @types/jest
+```bash npm2yarn
+npm install --save-dev ts-jest
 ```
+
+#### Type definitions
+
+There are two ways to have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.
+
+You can use type definitions which ships with Jest and will update each time you update Jest. Simply import the APIs from `@jest/globals` package:
+
+```ts title="sum.test.ts"
+import {describe, expect, test} from '@jest/globals';
+import {sum} from './sum';
+
+describe('sum module', () => {
+  test('adds 1 + 2 to equal 3', () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+});
+```
+
+:::tip
+
+See the additional usage documentation of [`describe.each`/`test.each`](GlobalAPI.md#typescript-usage) and [`mock functions`](MockFunctionAPI.md#typescript-usage).
+
+:::
+
+Or you may choose to install the [`@types/jest`](https://npmjs.com/package/@types/jest) package. It provides types for Jest globals without a need to import them.
+
+```bash npm2yarn
+npm install --save-dev @types/jest
+```
+
+Note that `@types/jest` is a third party library maintained at [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jest), hence the latest Jest features or versions may not be covered yet. Try to match versions of Jest and `@types/jest` as closely as possible. For example, if you are using Jest `27.4.0` then installing `27.4.x` of `@types/jest` is ideal.

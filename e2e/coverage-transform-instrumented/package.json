@@ -9,8 +9,9 @@
     "transformIgnorePatterns": [
       "jest-circus",
       "jest-each",
-      "jest-environment-node/",
-      "jest-jasmine2"
+      "jest-environment-node",
+      "jest-jasmine2",
+      "jest-runner"
     ],
     "moduleFileExtensions": [
       "js"

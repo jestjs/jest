@@ -8,10 +8,22 @@
 import * as path from 'path';
 import {json as runWithJson} from '../runJest';
 
-test('testNamePattern', () => {
+test('testResultsProcessor', () => {
   const processorPath = path.resolve(
     __dirname,
     '../test-results-processor/processor.js',
+  );
+  const {json} = runWithJson('test-results-processor', [
+    '--json',
+    `--testResultsProcessor=${processorPath}`,
+  ]);
+  expect(json.processed).toBe(true);
+});
+
+test('testResultsProcessor written in ESM', () => {
+  const processorPath = path.resolve(
+    __dirname,
+    '../test-results-processor/processor.mjs',
   );
   const {json} = runWithJson('test-results-processor', [
     '--json',

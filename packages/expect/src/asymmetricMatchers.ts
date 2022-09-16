@@ -6,17 +6,86 @@
  *
  */
 
-import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
+import {
+  equals,
+  isA,
+  iterableEquality,
+  subsetEquality,
+} from '@jest/expect-utils';
+import * as matcherUtils from 'jest-matcher-utils';
+import {pluralize} from 'jest-util';
+import {getState} from './jestMatchersObject';
+import type {
+  AsymmetricMatcher as AsymmetricMatcherInterface,
+  MatcherContext,
+  MatcherState,
+} from './types';
 
-export class AsymmetricMatcher<T> {
-  protected sample: T;
-  $$typeof: symbol;
-  inverse?: boolean;
+const functionToString = Function.prototype.toString;
 
-  constructor(sample: T) {
-    this.$$typeof = Symbol.for('jest.asymmetricMatcher');
-    this.sample = sample;
+function fnNameFor(func: () => unknown) {
+  if (func.name) {
+    return func.name;
   }
+
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
+  return matches ? matches[1] : '<anonymous>';
+}
+
+const utils = Object.freeze({
+  ...matcherUtils,
+  iterableEquality,
+  subsetEquality,
+});
+
+function getPrototype(obj: object) {
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj);
+  }
+
+  if (obj.constructor.prototype == obj) {
+    return null;
+  }
+
+  return obj.constructor.prototype;
+}
+
+export function hasProperty(obj: object | null, property: string): boolean {
+  if (!obj) {
+    return false;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(obj, property)) {
+    return true;
+  }
+
+  return hasProperty(getPrototype(obj), property);
+}
+
+export abstract class AsymmetricMatcher<T>
+  implements AsymmetricMatcherInterface
+{
+  $$typeof = Symbol.for('jest.asymmetricMatcher');
+
+  constructor(protected sample: T, protected inverse = false) {}
+
+  protected getMatcherContext(): MatcherContext {
+    return {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      dontThrow: () => {},
+      ...getState<MatcherState>(),
+      equals,
+      isNot: this.inverse,
+      utils,
+    };
+  }
+
+  abstract asymmetricMatch(other: unknown): boolean;
+  abstract toString(): string;
+  getExpectedType?(): string;
+  toAsymmetricMatcher?(): string;
 }
 
 class Any extends AsymmetricMatcher<any> {
@@ -43,21 +112,20 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'function' || other instanceof Function;
     }
 
-    if (this.sample == Object) {
-      return typeof other == 'object';
-    }
-
     if (this.sample == Boolean) {
-      return typeof other == 'boolean';
+      return typeof other == 'boolean' || other instanceof Boolean;
     }
 
-    /* global BigInt */
     if (this.sample == BigInt) {
-      return typeof other == 'bigint';
+      return typeof other == 'bigint' || other instanceof BigInt;
     }
 
     if (this.sample == Symbol) {
-      return typeof other == 'symbol';
+      return typeof other == 'symbol' || other instanceof Symbol;
+    }
+
+    if (this.sample == Object) {
+      return typeof other == 'object';
     }
 
     return other instanceof this.sample;
@@ -67,7 +135,7 @@ class Any extends AsymmetricMatcher<any> {
     return 'Any';
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     if (this.sample == String) {
       return 'string';
     }
@@ -91,14 +159,14 @@ class Any extends AsymmetricMatcher<any> {
     return fnNameFor(this.sample);
   }
 
-  toAsymmetricMatcher() {
-    return 'Any<' + fnNameFor(this.sample) + '>';
+  override toAsymmetricMatcher() {
+    return `Any<${fnNameFor(this.sample)}>`;
   }
 }
 
 class Anything extends AsymmetricMatcher<void> {
   asymmetricMatch(other: unknown) {
-    return !isUndefined(other) && other !== null;
+    return other != null;
   }
 
   toString() {
@@ -107,23 +175,21 @@ class Anything extends AsymmetricMatcher<void> {
 
   // No getExpectedType method, because it matches either null or undefined.
 
-  toAsymmetricMatcher() {
+  override toAsymmetricMatcher() {
     return 'Anything';
   }
 }
 
 class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
-  constructor(sample: Array<unknown>, inverse: boolean = false) {
-    super(sample);
-    this.inverse = inverse;
+  constructor(sample: Array<unknown>, inverse = false) {
+    super(sample, inverse);
   }
 
   asymmetricMatch(other: Array<unknown>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        `You must provide an array to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an array to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 
@@ -141,23 +207,21 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     return `Array${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'array';
   }
 }
 
 class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
-    super(sample);
-    this.inverse = inverse;
+  constructor(sample: Record<string, unknown>, inverse = false) {
+    super(sample, inverse);
   }
 
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        `You must provide an object to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an object to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 
@@ -180,18 +244,17 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     return `Object${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'object';
   }
 }
 
 class StringContaining extends AsymmetricMatcher<string> {
-  constructor(sample: string, inverse: boolean = false) {
+  constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
       throw new Error('Expected is not a string');
     }
-    super(sample);
-    this.inverse = inverse;
+    super(sample, inverse);
   }
 
   asymmetricMatch(other: string) {
@@ -204,19 +267,17 @@ class StringContaining extends AsymmetricMatcher<string> {
     return `String${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
   }
 }
 
 class StringMatching extends AsymmetricMatcher<RegExp> {
-  constructor(sample: string | RegExp, inverse: boolean = false) {
+  constructor(sample: string | RegExp, inverse = false) {
     if (!isA('String', sample) && !isA('RegExp', sample)) {
       throw new Error('Expected is not a String or a RegExp');
     }
-    super(new RegExp(sample));
-
-    this.inverse = inverse;
+    super(new RegExp(sample), inverse);
   }
 
   asymmetricMatch(other: string) {
@@ -229,8 +290,57 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     return `String${this.inverse ? 'Not' : ''}Matching`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
+  }
+}
+
+class CloseTo extends AsymmetricMatcher<number> {
+  private precision: number;
+  constructor(sample: number, precision = 2, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+
+    if (!isA('Number', precision)) {
+      throw new Error('Precision is not a Number');
+    }
+
+    super(sample);
+    this.inverse = inverse;
+    this.precision = precision;
+  }
+
+  asymmetricMatch(other: number) {
+    if (!isA('Number', other)) {
+      return false;
+    }
+    let result = false;
+    if (other === Infinity && this.sample === Infinity) {
+      result = true; // Infinity - Infinity is NaN
+    } else if (other === -Infinity && this.sample === -Infinity) {
+      result = true; // -Infinity - -Infinity is NaN
+    } else {
+      result =
+        Math.abs(this.sample - other) < Math.pow(10, -this.precision) / 2;
+    }
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}CloseTo`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+
+  override toAsymmetricMatcher(): string {
+    return [
+      this.toString(),
+      this.sample,
+      `(${pluralize('digit', this.precision)})`,
+    ].join(' ');
   }
 }
 
@@ -254,3 +364,7 @@ export const stringMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected);
 export const stringNotMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected, true);
+export const closeTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision);
+export const notCloseTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision, true);

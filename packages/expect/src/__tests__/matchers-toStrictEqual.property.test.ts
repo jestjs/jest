@@ -8,7 +8,6 @@
 
 import assert from 'assert';
 import fc from 'fast-check';
-import {onNodeVersions} from '@jest/test-utils';
 import expect from '..';
 import {
   anythingSettings,
@@ -34,7 +33,7 @@ describe('toStrictEqual', () => {
   };
   it('should be reflexive', () => {
     fc.assert(
-      fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
+      fc.property(fc.clone(fc.anything(anythingSettings), 2), ([a, b]) => {
         // Given: a and b identical values
         expect(a).toStrictEqual(b);
       }),
@@ -58,20 +57,18 @@ describe('toStrictEqual', () => {
     );
   });
 
-  onNodeVersions('>=9', () => {
-    it('should be equivalent to Node deepStrictEqual', () => {
-      fc.assert(
-        fc.property(
-          fc.anything(anythingSettings),
-          fc.anything(anythingSettings),
-          (a, b) => {
-            expect(safeExpectStrictEqual(a, b)).toBe(
-              safeAssertDeepStrictEqual(a, b),
-            );
-          },
-        ),
-        assertSettings,
-      );
-    });
+  it('should be equivalent to Node deepStrictEqual', () => {
+    fc.assert(
+      fc.property(
+        fc.anything(anythingSettings),
+        fc.anything(anythingSettings),
+        (a, b) => {
+          expect(safeExpectStrictEqual(a, b)).toBe(
+            safeAssertDeepStrictEqual(a, b),
+          );
+        },
+      ),
+      assertSettings,
+    );
   });
 });

@@ -190,7 +190,7 @@ const countDifferences = (
       }
     }
   }
-  throw new Error(`countDifferences did not return a number`);
+  throw new Error('countDifferences did not return a number');
 };
 
 // Return array of items in a longest common subsequence of array-like objects.
@@ -785,8 +785,10 @@ describe('common substrings', () => {
     // Prevent unexpected regression. If change is incorrect, then fix code.
     // Internationalization fails for a text node.
     // English translation and French quotation by Antoine de Saint Exupéry:
-    const a = `It seems that perfection is attained not when there is nothing more to add, but when there is nothing more to remove.`;
-    const b = `Il semble que la perfection soit atteinte non quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher.`;
+    const a =
+      'It seems that perfection is attained not when there is nothing more to add, but when there is nothing more to remove.';
+    const b =
+      "Il semble que la perfection soit atteinte non quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à retrancher.";
     const abCommonSubstrings = findCommonSubstrings(a, b);
     const baCommonSubstrings = findCommonSubstrings(b, a);
     expect(abCommonSubstrings).toEqual(baCommonSubstrings);

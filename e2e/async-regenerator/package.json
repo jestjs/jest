@@ -9,7 +9,8 @@
     "testEnvironment": "node",
     "transformIgnorePatterns": [
       "jest-circus",
-      "jest-jasmine2"
+      "jest-jasmine2",
+      "jest-runner"
     ]
   }
 }

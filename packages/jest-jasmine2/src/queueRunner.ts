@@ -9,14 +9,12 @@ import {formatTime} from 'jest-util';
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
-type Global = NodeJS.Global;
-
 export type Options = {
-  clearTimeout: Global['clearTimeout'];
+  clearTimeout: typeof globalThis['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: Global['setTimeout'];
+  setTimeout: typeof globalThis['setTimeout'];
   userContext: unknown;
 };
 
@@ -57,7 +55,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       };
       try {
         fn.call(options.userContext, next);
-      } catch (e) {
+      } catch (e: any) {
         options.onException(e);
         resolve();
       }
@@ -77,10 +75,9 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       options.clearTimeout,
       options.setTimeout,
       () => {
-        initError.message =
-          'Timeout - Async callback was not invoked within the ' +
-          formatTime(timeoutMs) +
-          ' timeout specified by jest.setTimeout.';
+        initError.message = `Timeout - Async callback was not invoked within the ${formatTime(
+          timeoutMs,
+        )} timeout specified by jest.setTimeout.`;
         initError.stack = initError.message + initError.stack;
         options.onException(initError);
       },

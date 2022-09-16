@@ -43,17 +43,9 @@ div.bottom-margin {
 
 .blockContent div.video {
   width: 100%;
-  height: 280px;
+  height: 350px;
   margin-top: 20px;
   padding-right: 80px;
-}
-
-div.video iframe {
-  display: block;
-  margin: 0 auto 10px;
-  min-height: 280px;
-  width: 100%;
-  height: auto;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
@@ -123,6 +115,7 @@ div.jest-card-front,
 }
 
 div.jest-card-front {
+  z-index: 1;
   background-color: #fff;
   border: 1px solid #bbb;
 }
