@@ -893,7 +893,7 @@ export class ModuleMocker {
     }
 
     this._getSlots(metadata.members).forEach(slot => {
-      let slotMock: Mock;
+      let slotMock: Mocked<T>;
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
 
       if (slotMetadata.ref != null) {
@@ -917,7 +917,7 @@ export class ModuleMocker {
           callbacks.push(
             (function (ref) {
               return () => Object.defineProperty(mock, slot, ref);
-            })(slotMock),
+            })(slotMock as PropertyDescriptor),
           );
         } else if (
           (slotMetadata.members?.get || slotMetadata.members?.set) &&
@@ -928,7 +928,7 @@ export class ModuleMocker {
           //the Ajax metadata has a 'get' property, causing it to enter here and except
           //while trying to redefine the 'prototype' property.
           //The accessor property metadata contains 'configurable' and 'enumberable' properties also
-          Object.defineProperty(mock, slot, slotMock);
+          Object.defineProperty(mock, slot, slotMock as PropertyDescriptor);
         } else {
           mock[slot] = slotMock;
         }
