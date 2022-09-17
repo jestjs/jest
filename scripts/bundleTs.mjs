@@ -200,9 +200,11 @@ const excludedPackages = new Set(['@jest/globals']);
         filepath,
       });
 
-      const {sep} = path;
       await fs.promises.writeFile(
-        filepath.replace(`${sep}dist${sep}`, `${sep}build${sep}`),
+        filepath.replace(
+          `${path.sep}dist${path.sep}`,
+          `${path.sep}build${path.sep}`,
+        ),
         formattedContent,
       );
     }),
