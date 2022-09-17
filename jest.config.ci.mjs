@@ -17,11 +17,10 @@ export default {
       'jest-junit',
       {outputDirectory: 'reports/junit', outputName: 'js-test-results.xml'},
     ],
-    'default',
-    // [
-    //   'jest-silent-reporter',
-    //   {showPaths: true, showWarnings: true, useDots: true},
-    // ],
+    [
+      'jest-silent-reporter',
+      {showPaths: true, showWarnings: true, useDots: true},
+    ],
     'summary',
   ],
 };
