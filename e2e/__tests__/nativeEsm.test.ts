@@ -28,11 +28,12 @@ test('runs test with native ESM', () => {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
 
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+
   const {summary} = extractSummary(stderr);
 
   expect(summary).toMatchSnapshot();
-  expect(stdout).toBe('');
-  expect(exitCode).toBe(0);
 });
 
 test('supports top-level await', () => {
@@ -40,11 +41,12 @@ test('supports top-level await', () => {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
 
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+
   const {summary} = extractSummary(stderr);
 
   expect(summary).toMatchSnapshot();
-  expect(stdout).toBe('');
-  expect(exitCode).toBe(0);
 });
 
 // minimum version supported by discord.js
@@ -56,10 +58,11 @@ onNodeVersions('>=16.9.0', () => {
       {nodeOptions: '--experimental-vm-modules --no-warnings'},
     );
 
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+
     const {summary} = extractSummary(stderr);
 
     expect(summary).toMatchSnapshot();
-    expect(stdout).toBe('');
-    expect(exitCode).toBe(0);
   });
 });
