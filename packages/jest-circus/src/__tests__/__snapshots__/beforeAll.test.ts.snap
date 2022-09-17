@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`all tests skipped when beforeAll fails 1`] = `
+"start_describe_definition: test that a 3rd party API remains consistent
+add_hook: beforeAll
+add_test: API function 1
+add_test: API function 2
+add_test: API function 3
+finish_describe_definition: test that a 3rd party API remains consistent
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: test that a 3rd party API remains consistent
+hook_start: beforeAll
+hook_failure: beforeAll
+test_start: API function 1
+test_skip
+test_start: API function 2
+test_skip
+test_start: API function 3
+test_skip
+run_describe_finish: test that a 3rd party API remains consistent
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 1"
+`;
