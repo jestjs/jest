@@ -24,9 +24,15 @@ test('test config is without transform', () => {
 });
 
 test('runs test with native ESM', () => {
-  const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
+  const result = runJest(DIR, ['native-esm.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
+
+  const {exitCode, stderr, stdout} = result;
+
+  if (exitCode === undefined) {
+    console.log(result);
+  }
 
   expect(stdout).toBe('');
   expect(exitCode).toBe(0);
