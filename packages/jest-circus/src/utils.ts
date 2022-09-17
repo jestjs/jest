@@ -430,28 +430,21 @@ const _getError = (
 const getErrorStack = (error: Error): string =>
   typeof error.stack === 'string' ? error.stack : error.message;
 
-export const failDescribeAndSkipAllTests = (
+export const skipAllTestsUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
   asyncError: Circus.Exception,
-): boolean => {
-  let errorHadBeenSet = false;
+): void => {
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock':
-        errorHadBeenSet = failDescribeAndSkipAllTests(child, error, asyncError);
+        skipAllTestsUnderDescribe(child, error, asyncError);
         break;
       case 'test':
-        if (errorHadBeenSet) {
-          child.mode = 'skip';
-        } else {
-          child.errors.push([error, asyncError]);
-          errorHadBeenSet = true;
-        }
+        child.mode = 'skip';
         break;
     }
   }
-  return errorHadBeenSet;
 };
 
 export function invariant(
