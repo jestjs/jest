@@ -12,8 +12,8 @@ import {
 } from './globalErrorHandlers';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
-  addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
+  failDescribeAndSkipAllTests,
   getTestDuration,
   invariant,
   makeDescribe,
@@ -171,7 +171,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
+        failDescribeAndSkipAllTests(describeBlock, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
