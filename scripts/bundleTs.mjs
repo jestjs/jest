@@ -201,7 +201,6 @@ const excludedPackages = new Set(['@jest/globals']);
       });
 
       const {sep} = path;
-      const replaceDirReg = new RegExp(`(?<=\\${sep})(dist)(?=\\${sep})`);
       await fs.promises.writeFile(
         filepath.replace(`${sep}dist${sep}`, `${sep}build${sep}`),
         formattedContent,
