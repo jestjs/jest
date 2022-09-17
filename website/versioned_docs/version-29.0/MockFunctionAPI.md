@@ -286,7 +286,7 @@ Received number of calls:    0
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn(function () {
@@ -350,7 +350,7 @@ mockFn(); // 'default'
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -376,7 +376,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -416,7 +416,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -446,7 +446,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
