@@ -30,7 +30,7 @@ test('runs test with native ESM', () => {
 
   const {exitCode, stderr, stdout} = result;
 
-  if (exitCode === undefined) {
+  if (exitCode !== 0) {
     console.log(result);
   }
 
