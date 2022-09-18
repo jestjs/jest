@@ -94,9 +94,9 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void> &
-    Inverse<Matchers<void>> &
-    PromiseMatchers;
+  <T = unknown>(actual: T): Matchers<void, T> &
+    Inverse<Matchers<void, T>> &
+    PromiseMatchers<T>;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
@@ -118,20 +118,22 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type PromiseMatchers = {
+type PromiseMatchers<T = unknown> = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
 };
 
-export interface Matchers<R extends void | Promise<void>> {
+type EnsureFunctionLike<T> = T extends (args: any) => any ? T : never;
+
+export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -139,7 +141,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(expected: unknown): R;
+  lastReturnedWith<U extends EnsureFunctionLike<T>>(expected: ReturnType<U>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
@@ -147,7 +149,10 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(nth: number, expected: unknown): R;
+  nthReturnedWith<U extends EnsureFunctionLike<T>>(
+    nth: number,
+    expected: ReturnType<U>,
+  ): R;
   /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
@@ -262,7 +267,9 @@ export interface Matchers<R extends void | Promise<void>> {
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith(expected: unknown): R;
+  toHaveLastReturnedWith<U extends EnsureFunctionLike<T>>(
+    expected: ReturnType<U>,
+  ): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -273,7 +280,10 @@ export interface Matchers<R extends void | Promise<void>> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(nth: number, expected: unknown): R;
+  toHaveNthReturnedWith<U extends EnsureFunctionLike<T>>(
+    nth: number,
+    expected: ReturnType<U>,
+  ): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -303,7 +313,9 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith(expected: unknown): R;
+  toHaveReturnedWith<U extends EnsureFunctionLike<T>>(
+    expected: ReturnType<U>,
+  ): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -325,7 +337,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(expected: unknown): R;
+  toReturnWith<U extends EnsureFunctionLike<T>>(expected: ReturnType<U>): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */
