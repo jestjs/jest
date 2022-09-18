@@ -24,16 +24,35 @@ test('test config is without transform', () => {
 });
 
 test('runs test with native ESM', () => {
-  const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
+  const {
+    exitCode,
+    failed,
+    killed,
+    isCanceled,
+    signal,
+    signalDescription,
+    timedOut,
+    message,
+  } = runJest(DIR, ['native-esm.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
-    timeout: 20000,
   });
 
-  const {summary} = extractSummary(stderr);
+  expect({
+    exitCode,
+    failed,
+    isCanceled,
+    killed,
+    message,
+    signal,
+    signalDescription,
+    timedOut,
+  }).toMatchSnapshot();
 
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toBe('');
-  expect(exitCode).toBe(0);
+  // const {summary} = extractSummary(stderr);
+
+  // expect(summary).toMatchSnapshot();
+  // expect(stdout).toBe('');
+  // expect(exitCode).toBe(0);
 });
 
 test('supports top-level await', () => {
