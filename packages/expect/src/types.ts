@@ -131,7 +131,9 @@ type PromiseMatchers<T = unknown> = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
 };
 
-type EnsureFunctionLike<T> = T extends (args: any) => any ? T : never;
+type EnsureFunctionLike<T> = T extends (...args: Array<unknown>) => unknown
+  ? T
+  : never;
 
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
