@@ -222,7 +222,7 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
 // type inference for "CalledWith" matchers parameters
 const jestFnWithParams = jest.fn((a: string, b: number) => {});
 expectType<void>(expect(jestFnWithParams).toHaveBeenCalledWith('value', 123));
-expectError<void>(expect(jestFnWithParams).toHaveBeenCalledWith(123, 'value'));
+expectError(expect(jestFnWithParams).toHaveBeenCalledWith(123, 'value'));
 
 expectType<void>(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
