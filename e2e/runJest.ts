@@ -35,10 +35,15 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestResult {
-  return normalizeStdoutAndStderrOnResult(
-    spawnJest(dir, args, options),
-    options,
-  );
+  let result: RunJestResult;
+
+  try {
+    result = spawnJest(dir, args, options);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+
+  return normalizeStdoutAndStderrOnResult(result, options);
 }
 
 function spawnJest(
