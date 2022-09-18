@@ -680,6 +680,8 @@ The projects feature can also be used to run multiple configurations or multiple
 
 _Note: When using multi-project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
 
+_Note: With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the *child's root directory* even if they are defined in the root-level configuration._
+
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`
@@ -1342,12 +1344,12 @@ Example:
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootdir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
 
 ```json
 {
   "transformIgnorePatterns": [
-    "<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+    "<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
   ]
 }
 ```

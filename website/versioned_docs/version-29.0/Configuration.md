@@ -1208,6 +1208,12 @@ When using multi-project runner, it's recommended to add a `displayName` for eac
 
 :::
 
+:::note
+
+With the `projects` option enabled, Jest will copy the root-level configuration options to each individual child configuration during the test run, resolving its values in the child's context. This means that string tokens like `<rootDir>` will point to the _child's root directory_ even if they are defined in the root-level configuration.
+
+:::
+
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`
@@ -2185,13 +2191,13 @@ export default config;
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootdir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
   transformIgnorePatterns: [
-    '<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
   ],
 };
 
@@ -2203,7 +2209,7 @@ import type {Config} from 'jest';
 
 const config: Config = {
   transformIgnorePatterns: [
-    '<rootdir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
   ],
 };
 
@@ -2305,7 +2311,11 @@ After the worker has executed a test the memory usage of it is checked. If it ex
     - `G` / `GB` - Gigabytes
     - `GiB` - Gibibytes
 
-**NOTE:** [% based memory does not work on Linux CircleCI workers](https://github.com/facebook/jest/issues/11956#issuecomment-1212925677) due to incorrect system memory being reported.
+:::caution
+
+Percentage based memory limit [does not work on Linux CircleCI workers](https://github.com/facebook/jest/issues/11956#issuecomment-1212925677) due to incorrect system memory being reported.
+
+:::
 
 ```js tab
 /** @type {import('jest').Config} */

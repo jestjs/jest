@@ -39,6 +39,38 @@ exports[`basic support: snapshot updated 1`] = `
 "
 `;
 
+exports[`diff with prototype is correct 1`] = `
+"FAIL __tests__/with-prototype-diff.test.js
+  ✕ diff with prototype is correct
+
+  ● diff with prototype is correct
+
+    expect(received).toMatchInlineSnapshot(snapshot)
+
+    Snapshot name: \`diff with prototype is correct 1\`
+
+    - Snapshot  - 1
+    + Received  + 1
+
+    - Object {
+    + {
+        "hello": "world",
+      }
+
+      1 | test('diff with prototype is correct', () => {
+    > 2 |   expect({ hello: 'world' }).toMatchInlineSnapshot(\`
+        |                              ^
+      3 |     Object {
+      4 |       "hello": "world",
+      5 |     }
+
+      at Object.toMatchInlineSnapshot (__tests__/with-prototype-diff.test.js:2:30)
+
+ › 1 snapshot failed.
+Snapshot Summary
+ › 1 snapshot failed from 1 test suite. Inspect your code changes or re-run jest with \`-u\` to update them."
+`;
+
 exports[`do not indent empty lines: initial write 1`] = `
 "test('inline snapshots', () =>
   expect(\`hello

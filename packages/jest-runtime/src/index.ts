@@ -48,9 +48,9 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {IModuleMap} from 'jest-haste-map';
+import HasteMap, {IHasteMap, IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
+import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
 import {EXTENSION as SnapshotExtension} from 'jest-snapshot';
@@ -168,7 +168,7 @@ export default class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
   private readonly _mockFactories: Map<string, () => unknown>;
-  private readonly _mockMetaDataCache: Map<string, MockFunctionMetadata>;
+  private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
   private _moduleMockRegistry: Map<string, VMModule>;
@@ -330,7 +330,7 @@ export default class Runtime {
   static createHasteMap(
     config: Config.ProjectConfig,
     options?: HasteMapOptions,
-  ): Promise<HasteMap> {
+  ): Promise<IHasteMap> {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
       ...(options && options.watch ? config.watchPathIgnorePatterns : []),
@@ -1109,6 +1109,7 @@ export default class Runtime {
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
+    this._fileTransformsMutex.clear();
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
@@ -1278,7 +1279,6 @@ export default class Runtime {
     this._sourceMapRegistry.clear();
 
     this._fileTransforms.clear();
-    this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
     this._v8CoverageSources?.clear();
@@ -1710,7 +1710,7 @@ export default class Runtime {
     return Module;
   }
 
-  private _generateMock(from: string, moduleName: string) {
+  private _generateMock<T>(from: string, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveCjsModule(from, moduleName);
@@ -1747,7 +1747,7 @@ export default class Runtime {
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
     }
-    return this._moduleMocker.generateFromMetadata(
+    return this._moduleMocker.generateFromMetadata<T>(
       // added above if missing
       this._mockMetaDataCache.get(modulePath)!,
     );
@@ -2128,8 +2128,9 @@ export default class Runtime {
       isolateModules,
       mock,
       mocked,
-      requireActual: this.requireActual.bind(this, from),
-      requireMock: this.requireMock.bind(this, from),
+      now: () => _getFakeTimers().now(),
+      requireActual: moduleName => this.requireActual(from, moduleName),
+      requireMock: moduleName => this.requireMock(from, moduleName),
       resetAllMocks,
       resetModules,
       restoreAllMocks,

@@ -5,15 +5,9 @@ title: Mock Functions
 
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
-:::info
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
-The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
-
-```ts
-import {jest} from '@jest/globals';
-```
-
-:::
+<TypeScriptExamplesNote />
 
 ## Methods
 
@@ -27,7 +21,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `mockFn.getMockName()`
 
-Returns the mock name string set by calling `mockFn.mockName(value)`.
+Returns the mock name string set by calling [`.mockName()`](#mockfnmocknamename).
 
 ### `mockFn.mock.calls`
 
@@ -134,7 +128,7 @@ Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also rem
 
 This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
 
-The [`mockReset`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
+The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
 ### `mockFn.mockRestore()`
 
@@ -283,15 +277,16 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```
+```bash
 expect(mockedFunction).toHaveBeenCalled()
 
-Expected mock function "mockedFunction" to have been called, but it was not called.
+Expected number of calls: >= 1
+Received number of calls:    0
 ```
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn(function () {
@@ -355,7 +350,7 @@ mockFn(); // 'default'
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -381,7 +376,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -421,7 +416,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -451,7 +446,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
@@ -518,6 +513,22 @@ test('calculate calls add', () => {
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
+});
+```
+
+### `jest.Mock<T>`
+
+Constructs the type of a mock function, e.g. the return type of `jest.fn()`. It can be useful if you have to defined a recursive mock function:
+
+```ts
+import {jest} from '@jest/globals';
+
+const sumRecursively: jest.Mock<(value: number) => number> = jest.fn(value => {
+  if (value === 0) {
+    return 0;
+  } else {
+    return value + fn(value - 1);
+  }
 });
 ```
 

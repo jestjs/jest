@@ -50,15 +50,9 @@ Exports of `Mocked*` utility types from `jest-mock` package have changed. `Maybe
 
 ## TypeScript
 
-:::info
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
-The TypeScript examples from this page will only work as documented if you import `jest` from `'@jest/globals'`:
-
-```ts
-import {jest} from '@jest/globals';
-```
-
-:::
+<TypeScriptExamplesNote />
 
 ### `jest.mocked()`
 

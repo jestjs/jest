@@ -62,6 +62,19 @@ class IndexClass {
   }
 }
 
+interface OptionalInterface {
+  constructorA?: (new (one: string) => SomeClass) | undefined;
+  constructorB: new (one: string, two: boolean) => SomeClass;
+
+  propertyA?: number | undefined;
+  propertyB?: number;
+  propertyC: number | undefined;
+  propertyD: string;
+
+  methodA?: ((a: boolean) => void) | undefined;
+  methodB: (b: string) => boolean;
+}
+
 const someObject = {
   SomeClass,
 
@@ -118,19 +131,23 @@ expectNotAssignable<FunctionLike>(someObject);
 
 // ConstructorKeys
 
-declare const constructorKeys: ConstructorLikeKeys<SomeObject>;
+declare const interfaceConstructorKeys: ConstructorLikeKeys<OptionalInterface>;
+declare const objectConstructorKeys: ConstructorLikeKeys<SomeObject>;
 
-expectType<'SomeClass'>(constructorKeys);
+expectType<'constructorA' | 'constructorB'>(interfaceConstructorKeys);
+expectType<'SomeClass'>(objectConstructorKeys);
 
 // MethodKeys
 
 declare const classMethods: MethodLikeKeys<SomeClass>;
 declare const indexClassMethods: MethodLikeKeys<IndexClass>;
+declare const interfaceMethods: MethodLikeKeys<OptionalInterface>;
 declare const objectMethods: MethodLikeKeys<SomeObject>;
 declare const indexObjectMethods: MethodLikeKeys<IndexObject>;
 
 expectType<'methodA' | 'methodB'>(classMethods);
 expectType<'methodA' | 'methodB'>(indexClassMethods);
+expectType<'methodA' | 'methodB'>(interfaceMethods);
 expectType<'methodA' | 'methodB' | 'methodC'>(objectMethods);
 expectType<'methodA' | 'methodB' | 'methodC'>(indexObjectMethods);
 
@@ -138,10 +155,14 @@ expectType<'methodA' | 'methodB' | 'methodC'>(indexObjectMethods);
 
 declare const classProperties: PropertyLikeKeys<SomeClass>;
 declare const indexClassProperties: PropertyLikeKeys<IndexClass>;
+declare const interfaceProperties: PropertyLikeKeys<OptionalInterface>;
 declare const objectProperties: PropertyLikeKeys<SomeObject>;
 declare const indexObjectProperties: PropertyLikeKeys<IndexObject>;
 
 expectType<'propertyA' | 'propertyB' | 'propertyC'>(classProperties);
 expectType<string | number>(indexClassProperties);
+expectType<'propertyA' | 'propertyB' | 'propertyC' | 'propertyD'>(
+  interfaceProperties,
+);
 expectType<'propertyA' | 'propertyB' | 'someClassInstance'>(objectProperties);
 expectType<string | number>(indexObjectProperties);

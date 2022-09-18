@@ -90,6 +90,50 @@ pluginTester({
       formatResult,
       snapshot: true,
     },
+    'imported jest.mock within jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.mock within jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'imported jest.requireActual in jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.requireActual in jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
   },
   /* eslint-enable */
 });
