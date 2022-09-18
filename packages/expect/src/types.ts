@@ -143,7 +143,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith<U extends EnsureFunctionLike<T>>(expected: ReturnType<U>): R;
+  lastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
@@ -151,10 +151,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith<U extends EnsureFunctionLike<T>>(
-    nth: number,
-    expected: ReturnType<U>,
-  ): R;
+  nthReturnedWith(nth: number, expected: ReturnType<EnsureFunctionLike<T>>): R;
   /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
@@ -269,9 +266,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith<U extends EnsureFunctionLike<T>>(
-    expected: ReturnType<U>,
-  ): R;
+  toHaveLastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -282,9 +277,9 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith<U extends EnsureFunctionLike<T>>(
+  toHaveNthReturnedWith(
     nth: number,
-    expected: ReturnType<U>,
+    expected: ReturnType<EnsureFunctionLike<T>>,
   ): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
@@ -315,9 +310,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith<U extends EnsureFunctionLike<T>>(
-    expected: ReturnType<U>,
-  ): R;
+  toHaveReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -339,7 +332,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith<U extends EnsureFunctionLike<T>>(expected: ReturnType<U>): R;
+  toReturnWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */
