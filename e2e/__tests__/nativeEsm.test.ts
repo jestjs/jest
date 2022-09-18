@@ -26,7 +26,6 @@ test('test config is without transform', () => {
 test('runs test with native ESM', () => {
   const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
-    timeout: 10000,
   });
 
   const {summary} = extractSummary(stderr);

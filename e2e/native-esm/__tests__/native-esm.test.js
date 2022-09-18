@@ -22,6 +22,8 @@ import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 
+jestObject.setTimeout(20000);
+
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
