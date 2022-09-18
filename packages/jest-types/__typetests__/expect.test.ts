@@ -7,8 +7,10 @@
 
 import {expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import {expect, jest} from '@jest/globals';
+// import {expect, jest} from '@jest/globals';
+import {jest} from '@jest/globals';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
+import {expect} from '../../expect/build/index';
 
 // asymmetric matchers
 
@@ -217,6 +219,13 @@ expectType<void>(expect(jest.fn()).toBeCalledWith('value', 123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
+expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
+
+// type inference for "CalledWith" matchers parameters
+const jestFnWithParams = jest.fn((a: string, b: number) => {});
+expectType<void>(expect(jestFnWithParams).toHaveBeenCalledWith('value', 123));
+expectError<void>(expect(jestFnWithParams).toHaveBeenCalledWith(123, 'value'));
+expectError<void>(expect(jestFnWithParams).toHaveBeenCalledWith('value', 123));
 
 expectType<void>(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
