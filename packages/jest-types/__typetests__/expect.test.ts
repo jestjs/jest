@@ -241,7 +241,7 @@ expectType<void>(
 );
 expectError(
   expect(
-    jest.fn<(a: number, b: string, c?: boolean) => void>(),
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
   ).toHaveBeenCalledWith(123, 'value'),
 );
 expectError(
