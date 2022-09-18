@@ -9,11 +9,14 @@ Ran all test suites matching /native-esm-deep-cjs-reexport.test.js/i."
 `;
 
 exports[`runs test with native ESM 1`] = `
-"Test Suites: 1 passed, 1 total
-Tests:       34 passed, 34 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites matching /native-esm.test.js/i."
+Object {
+  "exitCode": 0,
+  "failed": false,
+  "isCanceled": false,
+  "killed": false,
+  "message": undefined,
+  "timedOut": false,
+}
 `;
 
 exports[`supports top-level await 1`] = `
