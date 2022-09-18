@@ -118,13 +118,6 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-// if T is a function, return its parameters array type, otherwise return an unknown array type
-type ConditionalFunctionParameters<T> = T extends (
-  ...args: Array<unknown>
-) => unknown
-  ? Parameters<T>
-  : Array<unknown>;
-
 type PromiseMatchers<T = unknown> = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
@@ -138,11 +131,15 @@ type PromiseMatchers<T = unknown> = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
 };
 
+type EnsureFunctionLike<T> = T extends (...args: Array<unknown>) => unknown
+  ? T
+  : never;
+
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: ConditionalFunctionParameters<T>): R;
+  lastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
@@ -150,7 +147,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: ConditionalFunctionParameters<T>): R;
+  nthCalledWith(nth: number, ...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
@@ -171,7 +168,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: ConditionalFunctionParameters<T>): R;
+  toBeCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -254,19 +251,19 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: ConditionalFunctionParameters<T>): R;
+  toHaveBeenCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
   toHaveBeenNthCalledWith(
     nth: number,
-    ...expected: ConditionalFunctionParameters<T>
+    ...expected: Parameters<EnsureFunctionLike<T>>
   ): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: ConditionalFunctionParameters<T>): R;
+  toHaveBeenLastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
