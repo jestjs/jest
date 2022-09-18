@@ -224,7 +224,7 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
  */
 expectError(expect(jest.fn<(a: string) => void>()).toHaveBeenCalledWith(123));
 expectError(
-  expect(jest.fn<(a: string) => void>()).toHaveBeenNthCalledWith(123),
+  expect(jest.fn<(a: string) => void>()).toHaveBeenNthCalledWith(1, 123),
 );
 expectError(
   expect(jest.fn<(a: string) => void>()).toHaveBeenLastCalledWith(123),
