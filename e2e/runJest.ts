@@ -41,7 +41,7 @@ export default function runJest(
     throw new Error(
       `
       Spawned process was killed.
-        ${result}
+        ${JSON.stringify(result, null, 2)}
     `,
     );
   }

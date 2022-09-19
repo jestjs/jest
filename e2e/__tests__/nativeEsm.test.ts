@@ -11,7 +11,7 @@ import {extractSummary, runYarnInstall} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 
 // for unknown reason the "runs test with native ESM" test occasionally is killed with SIGSEGV / Segmentation fault signal
-jest.retryTimes(3);
+// jest.retryTimes(3);
 
 const DIR = resolve(__dirname, '../native-esm');
 
