@@ -35,10 +35,19 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestResult {
-  return normalizeStdoutAndStderrOnResult(
-    spawnJest(dir, args, options),
-    options,
-  );
+  const result = spawnJest(dir, args, options);
+
+  if (result.killed) {
+    throw new Error(
+      `
+      Spawned process failed was killed.
+      DETAILS:
+        ${result}
+    `,
+    );
+  }
+
+  return normalizeStdoutAndStderrOnResult(result, options);
 }
 
 function spawnJest(
