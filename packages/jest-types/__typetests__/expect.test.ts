@@ -217,7 +217,6 @@ expectType<void>(expect(jest.fn()).toBeCalledWith('value', 123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
-expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
 
 /**
  * type inference for "CalledWith" matchers parameters
