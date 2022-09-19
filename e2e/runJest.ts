@@ -39,10 +39,10 @@ export default function runJest(
   const result = spawnJest(dir, args, options);
 
   if (result.killed) {
-    const message = dedent(`
+    const message = dedent`
     Spawned process was killed.
       ${JSON.stringify(result, null, 2)}
-  `);
+  `;
 
     throw new Error(message);
   }
@@ -78,11 +78,11 @@ function spawnJest(
 
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
-    const message = dedent(`
+    const message = dedent`
     Make sure you have a local package.json file at
       "${localPackageJson}".
     Otherwise Jest will try to traverse the directory tree and find the
-   `);
+   `;
 
     throw new Error(message);
   }
@@ -153,12 +153,12 @@ export const json = function (
       json: JSON.parse(result.stdout || ''),
     };
   } catch (e: any) {
-    const message = dedent(`
+    const message = dedent`
     Can't parse JSON.
     ERROR: ${e.name} ${e.message}
     STDOUT: ${result.stdout}
     STDERR: ${result.stderr}
-  `);
+  `;
 
     throw new Error(message);
   }

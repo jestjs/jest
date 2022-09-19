@@ -29,13 +29,13 @@ export const run = (
   result.status = result.exitCode;
 
   if (result.status !== 0) {
-    const message = dedent(`
+    const message = dedent`
       ORIGINAL CMD: ${cmd}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
       STATUS: ${result.status}
       ERROR: ${result.error}
-    `);
+    `;
 
     throw new Error(message);
   }
@@ -206,11 +206,11 @@ export const extractSummary = (stdout: string) => {
       /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
   if (!match) {
-    const message = dedent(`
+    const message = dedent`
     Could not find test summary in the output.
     OUTPUT:
       ${stdout}
-  `);
+  `;
 
     throw new Error(message);
   }
