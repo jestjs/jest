@@ -80,7 +80,7 @@ function spawnJest(
     throw new Error(dedent`
       Make sure you have a local package.json file at
         "${localPackageJson}".
-      Otherwise Jest will try to traverse the directory tree and find the
+      Otherwise Jest will try to traverse the directory tree and find the global package.json, which will send Jest into infinite loop.
     `);
   }
   const env: NodeJS.ProcessEnv = {
