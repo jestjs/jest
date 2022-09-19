@@ -51,8 +51,6 @@ const config: Config = {
 export default config;
 ```
 
-:::
-
 After `disableAutomock()` is called, all `require()`s will return the real versions of each module (rather than a mocked version).
 
 ```js title="utils.js"
@@ -85,12 +83,6 @@ Returns the `jest` object for chaining.
 
 Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
 
-:::tip
-
-When using `babel-jest`, calls to `disableAutomock()` will automatically be hoisted to the top of the code block. Use `autoMockOff()` if you want to explicitly avoid this behavior.
-
-:::
-
 ### `jest.enableAutomock()`
 
 Enables automatic mocking in the module loader.
@@ -98,8 +90,6 @@ Enables automatic mocking in the module loader.
 :::info
 
 See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
-
-For more details on automatic mocking see documentation of [`automock`](Configuration.md#automock-boolean) configuration option.
 
 :::
 
@@ -126,9 +116,6 @@ test('original implementation', () => {
 });
 ```
 
-
-:::
-
 :::note
 
 Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
@@ -136,13 +123,6 @@ Note: this method was previously called `autoMockOn`. When using `babel-jest`, c
 :::
 
 Returns the `jest` object for chaining.
-
-:::tip
-
-
-When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
-
-:::
 
 ### `jest.createMockFromModule(moduleName)`
 
@@ -353,11 +333,6 @@ jest.mock(
 );
 ```
 
-
-:::danger
-
-Importing a module in a setup file (as specified by `setupFilesAfterEnv`) will prevent mocking for the module in question, as well as all the modules that it imports.
-
 :::caution
 
 Importing a module in a setup file (as specified by [`setupFilesAfterEnv`](Configuration.md#setupfilesafterenv-array)) will prevent mocking for the module in question, as well as all the modules that it imports.
@@ -368,10 +343,6 @@ Importing a module in a setup file (as specified by [`setupFilesAfterEnv`](Confi
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
-
-
-:::
-
 
 :::tip
 
@@ -507,9 +478,6 @@ Returns the `jest` object for chaining.
 
 
 :::note
-
-:::info
-
 
 It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
 
@@ -762,6 +730,8 @@ The `mocked` test helper provides typings on your mocked modules and even their 
 :::note
 
 While it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value.
+
+:::
 
 Example:
 
