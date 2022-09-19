@@ -40,8 +40,7 @@ export default function runJest(
   if (result.killed) {
     throw new Error(
       `
-      Spawned process failed was killed.
-      DETAILS:
+      Spawned process was killed.
         ${result}
     `,
     );
