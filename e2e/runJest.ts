@@ -41,6 +41,7 @@ export default function runJest(
   if (result.killed) {
     const message = dedent`
     Spawned process was killed.
+    DETAILS:
       ${JSON.stringify(result, null, 2)}
   `;
 
