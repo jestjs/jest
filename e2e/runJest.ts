@@ -8,6 +8,7 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
+import dedent = require('dedent');
 import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
@@ -38,12 +39,12 @@ export default function runJest(
   const result = spawnJest(dir, args, options);
 
   if (result.killed) {
-    throw new Error(
-      `
-      Spawned process was killed.
-        ${JSON.stringify(result, null, 2)}
-    `,
-    );
+    const message = dedent(`
+    Spawned process was killed.
+      ${JSON.stringify(result, null, 2)}
+  `);
+
+    throw new Error(message);
   }
 
   return normalizeStdoutAndStderrOnResult(result, options);
@@ -77,14 +78,13 @@ function spawnJest(
 
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
-    throw new Error(
-      `
-      Make sure you have a local package.json file at
-        "${localPackageJson}".
-      Otherwise Jest will try to traverse the directory tree and find the
-      global package.json, which will send Jest into infinite loop.
-    `,
-    );
+    const message = dedent(`
+    Make sure you have a local package.json file at
+      "${localPackageJson}".
+    Otherwise Jest will try to traverse the directory tree and find the
+   `);
+
+    throw new Error(message);
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
@@ -153,14 +153,14 @@ export const json = function (
       json: JSON.parse(result.stdout || ''),
     };
   } catch (e: any) {
-    throw new Error(
-      `
-      Can't parse JSON.
-      ERROR: ${e.name} ${e.message}
-      STDOUT: ${result.stdout}
-      STDERR: ${result.stderr}
-    `,
-    );
+    const message = dedent(`
+    Can't parse JSON.
+    ERROR: ${e.name} ${e.message}
+    STDOUT: ${result.stdout}
+    STDERR: ${result.stderr}
+  `);
+
+    throw new Error(message);
   }
 };
 
