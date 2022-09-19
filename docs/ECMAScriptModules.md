@@ -5,9 +5,6 @@ title: ECMAScript Modules
 
 :::caution
 
-
-:::note
-
 Note that due to its experimental nature there are many bugs and missing features in Jest's implementation, both known and unknown. You should check out the [tracking issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker for the latest status.
 
 :::
