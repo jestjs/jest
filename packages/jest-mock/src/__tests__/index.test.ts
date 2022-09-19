@@ -1073,6 +1073,59 @@ describe('moduleMocker', () => {
     });
   });
 
+  describe('withImplementation', () => {
+    it('sets an implementation which is available within the callback', async () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      Module.withImplementation(
+        () => ({someFn: mock2}),
+        () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+    });
+
+    it('returns a promise if the provided callback is asynchronous', async () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      const promise = Module.withImplementation(
+        () => ({someFn: mock2}),
+        async () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      // Is there a better way to detect a promise?
+      expect(typeof promise.then).toBe('function');
+
+      await promise;
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+    });
+  });
+
   test('mockReturnValue does not override mockImplementationOnce', () => {
     const mockFn = jest
       .fn()

@@ -124,6 +124,12 @@ type RejectType<T extends FunctionLike> = ReturnType<T> extends PromiseLike<any>
   ? unknown
   : never;
 
+type WithImplementationSyncCallbackReturn = void | undefined;
+type WithImplementationAsyncCallbackReturn = Promise<unknown>;
+type WithImplementationCallbackReturn =
+  | WithImplementationSyncCallbackReturn
+  | WithImplementationAsyncCallbackReturn;
+
 export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   _isMockFunction: true;
   _protoImpl: Function;
@@ -135,6 +141,12 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRestore(): void;
   mockImplementation(fn: T): this;
   mockImplementationOnce(fn: T): this;
+  withImplementation<R extends WithImplementationCallbackReturn>(
+    fn: T,
+    callback: () => R,
+  ): R extends WithImplementationAsyncCallbackReturn
+    ? Promise<void>
+    : undefined;
   mockName(name: string): this;
   mockReturnThis(): this;
   mockReturnValue(value: ReturnType<T>): this;
@@ -766,6 +778,34 @@ export class ModuleMocker {
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.specificMockImpls.push(fn);
         return f;
+      };
+
+      f.withImplementation = <R extends WithImplementationCallbackReturn>(
+        fn: UnknownFunction,
+        callback: () => R,
+        // @ts-expect-error: Type guards are not advanced enough for this use case
+      ): R extends WithImplementationAsyncCallbackReturn
+        ? Promise<void>
+        : undefined => {
+        // Remember previous mock implementation, then set new one
+        const mockConfig = this._ensureMockConfig(f);
+        const previousImplementation = mockConfig.mockImpl;
+        mockConfig.mockImpl = fn;
+
+        const returnedValue = callback();
+
+        if (
+          typeof returnedValue === 'object' &&
+          returnedValue !== null &&
+          typeof returnedValue.then === 'function'
+        ) {
+          // @ts-expect-error: Type guards are not advanced enough for this use case
+          return returnedValue.then(() => {
+            mockConfig.mockImpl = previousImplementation;
+          });
+        } else {
+          mockConfig.mockImpl = previousImplementation;
+        }
       };
 
       f.mockImplementation = (fn: UnknownFunction) => {
