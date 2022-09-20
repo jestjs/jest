@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AsymmetricMatcher as AbstractAsymmetricMatcher} from 'expect';
 import prettyFormat, {plugins} from '../';
 import type {OptionsReceived} from '../types';
 
@@ -349,10 +348,10 @@ test('min option', () => {
   );
 });
 
-class DummyMatcher extends AbstractAsymmetricMatcher<number> {
-  constructor(sample: number) {
-    super(sample);
-  }
+class DummyMatcher {
+  $$typeof = Symbol.for('jest.asymmetricMatcher');
+
+  constructor(private sample: number) {}
 
   asymmetricMatch(other: number) {
     return this.sample === other;
@@ -362,7 +361,7 @@ class DummyMatcher extends AbstractAsymmetricMatcher<number> {
     return 'DummyMatcher';
   }
 
-  override getExpectedType() {
+  getExpectedType() {
     return 'number';
   }
 }
