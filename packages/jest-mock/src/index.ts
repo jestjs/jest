@@ -1011,11 +1011,10 @@ export class ModuleMocker {
 
         let slotMetadata: MockMetadata<T> | null = null;
         if (descriptor?.get || descriptor?.set) {
-          //Specific case required for mocking class definitions imported via types.
+          //Specific case required for mocking class definitions imported via modules.
           //In this case the class definitions are stored in accessor properties.
           //All getters were previously ignored except where the containing object had __esModule == true
           //Now getters are mocked the class definitions must still be read.
-          //Example is packages/jest-core/src/__tests__/TestScheduler.test.js -> test('works with default value')
           // @ts-expect-error ignore type mismatch
           if (component.__esModule) {
             // @ts-expect-error no index signature
