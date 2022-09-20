@@ -116,7 +116,7 @@ test('original implementation', () => {
 });
 ```
 
-:::note
+:::tip
 
 Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
 
