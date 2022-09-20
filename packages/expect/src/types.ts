@@ -137,7 +137,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: Array<unknown>): R;
+  lastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
@@ -145,7 +145,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
+  nthCalledWith(nth: number, ...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
@@ -166,7 +166,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: Array<unknown>): R;
+  toBeCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -249,16 +249,19 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: Array<unknown>): R;
+  toHaveBeenCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(nth: number, ...expected: Array<unknown>): R;
+  toHaveBeenNthCalledWith(
+    nth: number,
+    ...expected: Parameters<EnsureFunctionLike<T>>
+  ): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: Array<unknown>): R;
+  toHaveBeenLastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
