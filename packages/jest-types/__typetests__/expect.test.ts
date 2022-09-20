@@ -218,6 +218,37 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
 
+/**
+ * type inference for "CalledWith" matchers parameters
+ */
+expectError(expect(jest.fn<(a: string) => void>()).toHaveBeenCalledWith(123));
+expectError(
+  expect(jest.fn<(a: string) => void>()).toHaveBeenNthCalledWith(1, 123),
+);
+expectError(
+  expect(jest.fn<(a: string) => void>()).toHaveBeenLastCalledWith(123),
+);
+expectType<void>(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123),
+);
+expectType<void>(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123, true),
+);
+expectError(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith(123, 'value'),
+);
+expectError(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123, 'not a boolean'),
+);
+
 expectType<void>(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
 expectType<void>(expect(jest.fn()).lastCalledWith('value', 123));
