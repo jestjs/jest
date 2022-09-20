@@ -482,7 +482,7 @@ test('async test', async () => {
 
 Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
 
-```js tab
+```js
 test('test', () => {
   const mock = jest.fn(() => 'outside callback');
 
