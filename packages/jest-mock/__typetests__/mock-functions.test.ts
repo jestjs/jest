@@ -250,7 +250,12 @@ expectType<Mock<() => Promise<string>>>(
 );
 expectError(fn(() => Promise.resolve('')).mockRejectedValueOnce());
 
-// jest.spyOn()
+expectType<void>(mockFn.withImplementation(mockFnImpl, () => {}));
+expectType<Promise<void>>(
+  mockFn.withImplementation(mockFnImpl, async () => {}),
+);
+
+expectError(mockFn.withImplementation(mockFnImpl, () => {}).then());
 
 const spiedArray = ['a', 'b'];
 
