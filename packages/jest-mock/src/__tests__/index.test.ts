@@ -8,6 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+import * as util from 'util';
 import vm, {Context} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
@@ -1116,8 +1117,7 @@ describe('moduleMocker', () => {
         },
       );
 
-      // Is there a better way to detect a promise?
-      expect(typeof promise.then).toBe('function');
+      expect(util.types.isPromise(promise)).toBe(true);
 
       await promise;
 
