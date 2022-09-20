@@ -192,11 +192,6 @@ describe('moduleMocker', () => {
       expect(mock.nonEnumGetter).toBeUndefined();
     });
 
-    //This test was never valid.  ModuleMocker mocked the read value of the getter
-    //i.e. the returned class on an ES module getter.
-    //So this test only verified that SOMETHING (10) was assigned to the enumGetter property.
-    //Exclusion case has been added to the ModuleMocker to ensure that ES modules
-    //are still mocked, whilst accessor properties are too.
     it('mocks getters of ES modules', () => {
       const foo = Object.defineProperties(
         {},

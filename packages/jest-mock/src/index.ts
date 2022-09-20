@@ -512,25 +512,9 @@ export class ModuleMocker {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          //In test packages/jest-runtime/src/__tests__/runtime_require_mock.test.js -> it('multiple node core modules returns correct module')
-          //when the component.name == 'propertyIsEnumerable' (object.name at start of _getSlots())
-          //when retrieving metadata, the match for object !== ObjectProto fails.
-          //This causes an error where an ancestor prototype getter method,
-          //and introduction of mocking getters, results in a getter object
-          //being assigned to the prototype property __proto__,
-          //which then breaks when later building the mock.  Ignore getters for __proto__.
-          //Please note that the metadata structure for the objects in this test seems heavily polluted
-          //with unnecessary objects, as if the exclusion conditions for object types in _getSlots()
-          //is failing in multiple cases.
-
-          //it seems the OR condition "object.__esModule" was added to allow
-          //getters returning imported class definitions to be included whilst
-          //other accessor properties with getters were ignored.
-          //Can the "object.__esModule" condition now be removed?
           if (
-            (propDesc !== undefined &&
-              !(propDesc.get && prop == '__proto__')) ||
-            object.__esModule
+            propDesc !== undefined &&
+            !(propDesc.get && prop == '__proto__')
           ) {
             slots.add(prop);
           }
@@ -924,10 +908,12 @@ export class ModuleMocker {
           slotMetadata.members?.configurable &&
           slotMetadata.members?.enumerable
         ) {
-          //In the test examples/jquery/__tests__/fetch_current_user.test.js-> it('calls into $.ajax with the correct params')
-          //the Ajax metadata has a 'get' property, causing it to enter here and except
-          //while trying to redefine the 'prototype' property.
-          //The accessor property metadata contains 'configurable' and 'enumberable' properties also
+          //In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
+          //mocked has a function property called 'get'.  In this circumstance
+          //the 'prototype' property cannot be redefined and doing so causes an
+          //exception. Checks have been added for the 'configurable' and
+          //'enumberable' properties present on true accessor property
+          //descriptors to prevent the attempt to replace the API.
           Object.defineProperty(mock, slot, slotMock as PropertyDescriptor);
         } else {
           mock[slot] = slotMock;
