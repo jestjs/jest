@@ -182,7 +182,7 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 :::note
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+Using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 :::
 ### `--debug`
@@ -316,7 +316,7 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 :::note
 
- Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+ If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
  :::
 
@@ -396,7 +396,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-Note that `column` is 0-indexed while `line` is not.
+`column` is 0-indexed while `line` is not.
 
 ```json
 {
@@ -470,7 +470,7 @@ Use `--watchAll=false` to explicitly disable the watch mode.
 
 :::note
 
-Note that in most CI environments, this is automatically handled for you.
+In most CI environments, this is automatically handled for you.
 
 :::
 
