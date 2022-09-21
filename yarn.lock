@@ -16862,7 +16862,6 @@ __metadata:
     "@types/react-is": ^17.0.0
     "@types/react-test-renderer": 17.0.2
     ansi-styles: ^5.0.0
-    expect: "workspace:^"
     immutable: ^4.0.0
     jest-util: "workspace:^"
     react: 17.0.2
