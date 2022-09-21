@@ -131,6 +131,7 @@ Watch Usage
 ```
 
 :::note
+
 If the key for your plugin already exists as a default key, your plugin will override that key.
 
 :::

@@ -117,7 +117,7 @@ If the `expect` statement fails, it throws an error and `done()` is not called. 
 
 :::note
 
-Note: `done()` should not be mixed with Promises as this tends to lead to memory leaks in your tests.
+`done()` should not be mixed with Promises as this tends to lead to memory leaks in your tests.
 
 :::
 

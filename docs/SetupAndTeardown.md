@@ -99,7 +99,7 @@ describe('matching cities to foods', () => {
 
 :::note
 
-Note that the top-level `beforeEach` is executed before the `beforeEach` inside the `describe` block. It may help to illustrate the order of execution of all hooks.
+The top-level `beforeEach` is executed before the `beforeEach` inside the `describe` block. It may help to illustrate the order of execution of all hooks.
 
 :::
 
@@ -173,11 +173,11 @@ describe('describe outer', () => {
 // test 3
 ```
 
-Just like the `describe` and `test` blocks Jest calls the `before*` and `after*` hooks in the order of declaration. 
+Just like the `describe` and `test` blocks Jest calls the `before*` and `after*` hooks in the order of declaration.
 
 :::note
 
-Note that the `after*` hooks of the enclosing scope are called first. For example, here is how you can set up and tear down resources which depend on each other:
+The `after*` hooks of the enclosing scope are called first. For example, here is how you can set up and tear down resources which depend on each other:
 
 :::
 

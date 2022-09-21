@@ -275,10 +275,9 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageProvider` \[string]
 
-Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
-:::note
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`. :::note
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+Using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 :::
 
@@ -766,9 +765,10 @@ const config: Config = {
 
 export default config;
 ```
+
 :::note
 
-Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
+If you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
 
 :::
 
@@ -1132,7 +1132,7 @@ export default config;
 
 :::info
 
-Note that if you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+If you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
 
 :::
 
@@ -1759,6 +1759,7 @@ Pretty foo: Object {
   "y": 2,
 }
 ```
+
 :::note
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
@@ -1766,6 +1767,7 @@ To make a dependency explicit instead of implicit, you can call [`expect.addSnap
 More about serializers API can be found [here](https://github.com/facebook/jest/tree/main/packages/pretty-format/README.md#serialize).
 
 :::
+
 ### `testEnvironment` \[string]
 
 Default: `"node"`
@@ -1873,11 +1875,11 @@ For example, in `jest-environment-jsdom`, you can override options given to [`js
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
 
-These options can also be passed in a docblock, similar to `testEnvironment`. 
+These options can also be passed in a docblock, similar to `testEnvironment`.
 
 :::note
 
-Note that it must be parseable by `JSON.parse`. Example:
+It must be parseable by `JSON.parse`. Example:
 
 ```js
 /**
@@ -2248,13 +2250,14 @@ It is possible to override this setting in individual tests by explicitly callin
 
 Default: `false`
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. 
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
 :::note
 
-Note that if there is only one test file being run it will default to `true`.
+If there is only one test file being run it will default to `true`.
 
 :::
+
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `[]`

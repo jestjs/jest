@@ -5,7 +5,7 @@ title: ECMAScript Modules
 
 :::caution
 
-Note that due to its experimental nature there are many bugs and missing features in Jest's implementation, both known and unknown. You should check out the [tracking issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker for the latest status.
+Due to its experimental nature there are many bugs and missing features in Jest's implementation, both known and unknown. You should check out the [tracking issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker for the latest status.
 
 Also note that the APIs Jest uses to implement ESM support is still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `14.13.1`).
 Jest ships with **experimental** support for ECMAScript Modules (ESM).
@@ -48,7 +48,7 @@ import.meta.jest.useFakeTimers();
 :::note
 
 
-Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
+We currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
 
 :::
 

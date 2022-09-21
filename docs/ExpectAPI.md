@@ -764,7 +764,7 @@ test('resolves to lemon', () => {
 ```
 :::note
 
-Note that, since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
+Since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
 
 Alternatively, you can use `async/await` in combination with `.resolves`:
 
@@ -793,7 +793,7 @@ test('rejects to octopus', () => {
 
 :::note
 
-Note that, since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
+Since you are still testing promises, the test is still asynchronous. Hence, you will need to [tell Jest to wait](TestingAsyncCode.md#promises) by returning the unwrapped assertion.
 
 Alternatively, you can use `async/await` in combination with `.rejects`.
 

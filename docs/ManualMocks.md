@@ -104,11 +104,11 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. 
+Now we write our test.
 
 :::note
 
-Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
+We need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
 
 :::
 

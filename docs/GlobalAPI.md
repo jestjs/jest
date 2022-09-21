@@ -23,10 +23,10 @@ import TOCInline from '@theme/TOCInline';
 
 Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
-
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 :::note
+
 The default timeout is 5 seconds.
 
 :::
@@ -71,7 +71,7 @@ If you want to run some cleanup after every test instead of after all tests, use
 
 Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.
 
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 :::note
 
@@ -80,7 +80,6 @@ The default timeout is 5 seconds.
 :::
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
-
 
 This is often useful if you want to clean up some temporary state that is created by each test.
 
@@ -120,8 +119,7 @@ If you want to run some cleanup just once, after all of the tests run, use `afte
 
 Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.
 
-
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 :::note
 
@@ -130,7 +128,6 @@ The default timeout is 5 seconds.
 :::
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
-
 
 This is often useful if you want to set up some global state that will be used by many tests.
 
@@ -166,15 +163,13 @@ If you want to run something before every test instead of before any test runs, 
 
 Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.
 
-
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 The default timeout is 5 seconds.
 
 :::
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
-
 
 This is often useful if you want to reset some global state that will be used by many tests.
 
@@ -516,7 +511,6 @@ test('did not rain', () => {
 
 The first argument is the test name; the second argument is a function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
 
-
 :::note
 
 If a **promise is returned** from `test`, Jest will wait for the promise to resolve before letting the test complete. Jest will also wait if you **provide an argument to the test function**, usually called `done`. This could be handy when you want to test callbacks. See how to test async code [here](TestingAsyncCode.md#callbacks).
@@ -524,7 +518,6 @@ If a **promise is returned** from `test`, Jest will wait for the promise to reso
 For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
 
 If a **promise is returned** from `test`, Jest will wait for the promise to resolve before letting the test complete. For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
-
 
 ```js
 test('has lemon in it', () => {
@@ -550,22 +543,17 @@ Also under the alias: `it.concurrent(name, fn, timeout)`
 
 :::caution
 
-
 :::note
 
 `test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues
 
-
-
-The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 :::note
 
 The default timeout is 5 seconds.
 
-
 `test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues.
-
 
 :::
 
@@ -582,10 +570,10 @@ test.concurrent('subtraction 2 numbers', async () => {
   expect(5 - 3).toBe(2);
 });
 ```
+
 :::
 
 :::note
-
 
 Use `maxConcurrency` in configuration to prevents Jest from executing more than the specified amount of tests at the same time
 
@@ -595,8 +583,8 @@ Use [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration op
 
 :::
 
-
 :::
+
 ### `test.concurrent.each(table)(name, fn, timeout)`
 
 Also under the alias: `it.concurrent.each(table)(name, fn, timeout)`
@@ -899,8 +887,7 @@ Also under the aliases: `it.only(name, fn, timeout)`, and `fit(name, fn, timeout
 
 When you are debugging a large test file, you will often only want to run a subset of tests. You can use `.only` to specify which tests are the only ones you want to run in that test file.
 
-
-Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. 
+Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting.
 
 :::note
 
@@ -909,7 +896,6 @@ The default timeout is 5 seconds.
 :::
 
 Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait before aborting. The default timeout is 5 seconds.
-
 
 For example, let's say you had these tests:
 
@@ -1036,7 +1022,6 @@ test('will be ran', () => {
 Also under the alias: `it.todo(name)`
 
 Use `test.todo` when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.
-
 
 :::note
 

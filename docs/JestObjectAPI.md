@@ -25,7 +25,6 @@ Disables automatic mocking in the module loader.
 
 :::info
 
-
 See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
 
 :::
@@ -81,7 +80,7 @@ Returns the `jest` object for chaining.
 
 :::note
 
-Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
+This method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
 
 ### `jest.enableAutomock()`
 
@@ -118,7 +117,7 @@ test('original implementation', () => {
 
 :::tip
 
-Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+This method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
 
 :::
 
@@ -339,7 +338,6 @@ Importing a module in a setup file (as specified by [`setupFilesAfterEnv`](Confi
 
 :::
 
-
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
@@ -357,7 +355,6 @@ See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource) chapter of Mock Fun
 ### `jest.mocked(source, options?)`
 
 See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of Mock Functions page for documentation.
-
 
 ### `jest.unmock(moduleName)`
 
@@ -475,7 +472,6 @@ On occasion, there are times where the automatically generated mock the module s
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
 Returns the `jest` object for chaining.
-
 
 :::info
 
@@ -613,7 +609,6 @@ By default, `jest.spyOn` also calls the **spied** method. This is different beha
 Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
 
 :::
-
 
 Example:
 
@@ -901,7 +896,6 @@ This function is not available when using legacy fake timers implementation.
 
 ### `jest.setTimeout(timeout)`
 
-
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
 
 To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
@@ -917,7 +911,6 @@ The default timeout interval is 5 seconds if this method is not called.
 If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`.
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
-
 
 Example:
 
