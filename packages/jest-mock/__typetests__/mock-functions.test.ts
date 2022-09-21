@@ -255,7 +255,9 @@ expectType<Promise<void>>(
   mockFn.withImplementation(mockFnImpl, async () => {}),
 );
 
-expectError(mockFn.withImplementation(mockFnImpl, () => {}).then());
+expectError(mockFn.withImplementation(mockFnImpl);
+
+// jest.spyOn()
 
 const spiedArray = ['a', 'b'];
 
