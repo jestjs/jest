@@ -468,7 +468,7 @@ Watch files for changes and rerun all tests when something changes. If you want 
 
 Use `--watchAll=false` to explicitly disable the watch mode. 
 
-:::note
+:::tip
 
 In most CI environments, this is automatically handled for you.
 
