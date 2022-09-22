@@ -25,6 +25,10 @@ Disables automatic mocking in the module loader.
 
 :::info
 
+See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+
+:::
+
 Automatic mocking should be enabled via [`automock`](Configuration.md#automock-boolean) configuration option for this method to have any effect. Also see documentation of the configuration option for more details.
 
 ```js tab
@@ -45,8 +49,6 @@ const config: Config = {
 
 export default config;
 ```
-
-:::
 
 After `disableAutomock()` is called, all `require()`s will return the real versions of each module (rather than a mocked version).
 
@@ -72,15 +74,13 @@ test('original implementation', () => {
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. `Array.prototype` methods) to highly common utility methods (e.g. `underscore`, `lodash`, array utilities, etc) and entire libraries like `React.js`.
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. `Array.prototype` methods) to highly common utility methods (e.g. `underscore`, `lo-dash`, array utilities, etc) and entire libraries like `React.js`.
 
 Returns the `jest` object for chaining.
 
-:::tip
+:::note
 
-When using `babel-jest`, calls to `disableAutomock()` will automatically be hoisted to the top of the code block. Use `autoMockOff()` if you want to explicitly avoid this behavior.
-
-:::
+This method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
 
 ### `jest.enableAutomock()`
 
@@ -88,7 +88,7 @@ Enables automatic mocking in the module loader.
 
 :::info
 
-For more details on automatic mocking see documentation of [`automock`](Configuration.md#automock-boolean) configuration option.
+See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
 
 :::
 
@@ -115,13 +115,13 @@ test('original implementation', () => {
 });
 ```
 
-Returns the `jest` object for chaining.
-
 :::tip
 
-When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+This method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
 
 :::
+
+Returns the `jest` object for chaining.
 
 ### `jest.createMockFromModule(moduleName)`
 
@@ -641,6 +641,8 @@ test('plays video', () => {
 });
 ```
 
+:::
+
 ### `jest.spyOn(object, methodName, accessType?)`
 
 Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of `accessType` that can be either `'get'` or `'set'`, which proves to be useful when you want to spy on a getter or a setter, respectively.
@@ -698,22 +700,6 @@ test('plays audio', () => {
   expect(audio.volume).toBe(100);
 });
 ```
-
-### `jest.clearAllMocks()`
-
-Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
-
-Returns the `jest` object for chaining.
-
-### `jest.resetAllMocks()`
-
-Resets the state of all mocks. Equivalent to calling [`.mockReset()`](MockFunctionAPI.md#mockfnmockreset) on every mocked function.
-
-Returns the `jest` object for chaining.
-
-### `jest.restoreAllMocks()`
-
-Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
 ## Fake Timers
 
@@ -910,6 +896,20 @@ This function is not available when using legacy fake timers implementation.
 
 ### `jest.setTimeout(timeout)`
 
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
+
+:::note
+
+The default timeout interval is 5 seconds if this method is not called.
+
+:::
+
+:::note
+
+If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`.
+
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
 
 Example:
@@ -949,3 +949,5 @@ test('will fail', () => {
 ```
 
 Returns the `jest` object for chaining.
+
+:::
