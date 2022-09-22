@@ -396,7 +396,7 @@ Adds a `location` field to test results. Useful if you want to report the locati
 
 :::note
 
-`column` is 0-indexed while `line` is not.
+In the resulting object `column` is 0-indexed while `line` is not.
 
 ```json
 {
