@@ -49,7 +49,7 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   ]
     .reduce(
       (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('sha256'),
+      createHash('sha1'),
     )
     .digest('hex')
     .substring(0, 32);
@@ -62,7 +62,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
     const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
 
-    return createHash('sha256')
+    return createHash('sha1')
       .update(globalCacheKey)
       .update('\0', 'utf8')
       .update(sourceText)
