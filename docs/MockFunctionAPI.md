@@ -497,7 +497,7 @@ test('test', () => {
 });
 ```
 
-`mockFn.withImplementation` can be used regardless of whether or not the callback is asynchronous (returns a promise like object). If the callback is asynchronous a promise will be returned. Awaiting the promise will await the callback and reset the implementation.
+`mockFn.withImplementation` can be used regardless of whether or not the callback is asynchronous (returns a `thenable`). If the callback is asynchronous a promise will be returned. Awaiting the promise will await the callback and reset the implementation.
 
 ```js
 test('async test', async () => {
