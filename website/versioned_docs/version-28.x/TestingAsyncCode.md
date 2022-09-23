@@ -117,7 +117,7 @@ If the `expect` statement fails, it throws an error and `done()` is not called. 
 
 :::caution
 
-Jest will throw an error, if the same test function is passed a `done()` callback and returns a promise. This is a precaution of memory leaks in your tests.
+Jest will throw an error, if the same test function is passed a `done()` callback and returns a promise. This is done as a precaution to avoid memory leaks in your tests.
 
 :::
 
