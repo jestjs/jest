@@ -209,9 +209,13 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 }
 ```
 
-:::note
+:::tip
 
-Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+Jest caches files to speed up test execution. If you updated `.babelrc` and Jest is not working as expected, try clearing the cache by running `jest --clearCache`.
+
+:::
+
+:::tip
 
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
 
