@@ -44,7 +44,7 @@ Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then exp
 
 When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, when `automock` is set to `true`, the manual mock implementation will be used instead of the automatically created mock, even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
-:::note
+:::info
 
 In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
 
