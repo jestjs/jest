@@ -1096,6 +1096,8 @@ describe('moduleMocker', () => {
 
       testFn();
       expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(3);
     });
 
     it('returns a promise if the provided callback is asynchronous', async () => {
@@ -1123,6 +1125,8 @@ describe('moduleMocker', () => {
 
       testFn();
       expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(4);
     });
   });
 
