@@ -1075,7 +1075,7 @@ describe('moduleMocker', () => {
   });
 
   describe('withImplementation', () => {
-    it('sets an implementation which is available within the callback', async () => {
+    it('sets an implementation which is available within the callback', () => {
       const mock1 = jest.fn();
       const mock2 = jest.fn();
 
