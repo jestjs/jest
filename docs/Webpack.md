@@ -187,7 +187,7 @@ And finally, we have to handle the webpack `alias`. For that, we can make use of
 
 That's it! webpack is a complex and flexible tool, so you may have to make some adjustments to handle your specific application's needs. Luckily for most projects, Jest should be more than flexible enough to handle your webpack config.
 
-:::note
+:::tip
 
 For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
 
