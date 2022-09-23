@@ -23,3 +23,7 @@ test('a resolved Promise', () => {
 test('a rejected Promise', () => {
   expect(isPromise(Promise.reject().catch(() => {}))).toBe(true);
 });
+
+test('a thenable', () => {
+  expect(isPromise({then: () => 'hello'})).toBe(true);
+});
