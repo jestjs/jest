@@ -103,4 +103,4 @@ In case both `.mockImplementationOnce()` / `.mockImplementation()` and `.mockRet
 
 Temporarily overrides the default mock implementation within the callback, then restores it's previous implementation.
 
-If the callback is async or returns a promise like object, `withImplementation` will return a promise. Awaiting the promise will await the callback and reset the implementation.
+If the callback is async or returns a `thenable`, `withImplementation` will return a promise. Awaiting the promise will await the callback and reset the implementation.
