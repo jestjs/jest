@@ -98,3 +98,9 @@ In case both `.mockImplementationOnce()` / `.mockImplementation()` and `.mockRet
 
 - if the last call is `.mockReturnValueOnce()` or `.mockReturnValue()`, use the specific return value or default return value. If specific return values are used up or no default return value is set, fall back to try `.mockImplementation()`;
 - if the last call is `.mockImplementationOnce()` or `.mockImplementation()`, run the specific implementation and return the result or run default implementation and return the result.
+
+##### `.withImplementation(function, callback)`
+
+Temporarily overrides the default mock implementation within the callback, then restores it's previous implementation.
+
+If the callback is async or returns a `thenable`, `withImplementation` will return a promise. Awaiting the promise will await the callback and reset the implementation.
