@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line jest/no-focused-tests
+/* eslint-disable jest/no-focused-tests */
+
 it.only.each([
   [true, true],
   [true, true],
@@ -20,7 +21,6 @@ it.each([
   expect(left).toBe(right);
 });
 
-// eslint-disable-next-line jest/no-focused-tests
 it.only.each`
   left    | right
   ${true} | ${true}

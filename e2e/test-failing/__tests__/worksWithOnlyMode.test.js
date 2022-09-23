@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 describe('block with only, should pass', () => {
   it.only.failing('failing fails = passes, should pass', () => {
     expect(10).toBe(101);
