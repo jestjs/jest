@@ -776,6 +776,7 @@ test('resolves to lemon', async () => {
 ```
 
 :::
+
 ### `.rejects`
 
 Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.
