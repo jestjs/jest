@@ -790,8 +790,8 @@ export class ModuleMocker {
         const returnedValue = callback();
 
         if (
+          returnedValue != null &&
           typeof returnedValue === 'object' &&
-          returnedValue !== null &&
           typeof returnedValue.then === 'function'
         ) {
           return returnedValue.then(() => {
