@@ -5,8 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const isPromise = (candidate: unknown): candidate is PromiseLike<unknown> =>
-  candidate != null &&
-  (typeof candidate === 'object' || typeof candidate === 'function') &&
-  typeof (candidate as any).then === 'function';
-export default isPromise;
+export default function isPromise<T = unknown>(
+  candidate: unknown,
+): candidate is PromiseLike<T> {
+  return (
+    candidate != null &&
+    (typeof candidate === 'object' || typeof candidate === 'function') &&
+    typeof (candidate as any).then === 'function'
+  );
+}
