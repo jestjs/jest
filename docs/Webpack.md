@@ -143,7 +143,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 }
 ```
 
-:::note
+:::info
 
 `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
 
