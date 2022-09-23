@@ -104,13 +104,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test.
-
-:::note
-
-We need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
-
-:::
+Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s build-in module:
 
 ```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
