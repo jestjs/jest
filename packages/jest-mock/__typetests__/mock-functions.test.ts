@@ -255,7 +255,7 @@ expectType<Promise<void>>(
   mockFn.withImplementation(mockFnImpl, async () => {}),
 );
 
-expectError(mockFn.withImplementation(mockFnImpl);
+expectError(mockFn.withImplementation(mockFnImpl));
 
 // jest.spyOn()
 
