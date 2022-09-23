@@ -27,3 +27,8 @@ test('a rejected Promise', () => {
 test('a thenable', () => {
   expect(isPromise({then: () => 'hello'})).toBe(true);
 });
+
+test('an async function', () => {
+  async function asyncFn() {}
+  expect(isPromise(asyncFn())).toBe(true);
+});
