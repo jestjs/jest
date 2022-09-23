@@ -7,6 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+import {isPromise} from 'jest-util';
+
 export type MockMetadataType =
   | 'object'
   | 'array'
@@ -789,11 +791,7 @@ export class ModuleMocker {
 
         const returnedValue = callback();
 
-        if (
-          returnedValue != null &&
-          typeof returnedValue === 'object' &&
-          typeof returnedValue.then === 'function'
-        ) {
+        if (isPromise(returnedValue)) {
           return returnedValue.then(() => {
             mockConfig.mockImpl = previousImplementation;
           });

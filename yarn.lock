@@ -12578,6 +12578,7 @@ __metadata:
     "@jest/types": "workspace:^"
     "@tsd/typescript": ~4.8.2
     "@types/node": "*"
+    jest-util: "workspace:^"
     tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
