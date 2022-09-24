@@ -1760,7 +1760,7 @@ Pretty foo: Object {
 }
 ```
 
-:::note
+:::tip
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
