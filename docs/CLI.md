@@ -313,7 +313,7 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
- :::
+:::
 
 ### `--reporters`
 
@@ -401,6 +401,7 @@ In the resulting object `column` is 0-indexed while `line` is not.
 ```
 
 :::
+
 ### `--testMatch glob1 ... globN`
 
 The glob patterns Jest uses to detect test files. Please refer to the [`testMatch` configuration](Configuration.md#testmatch-arraystring) for details.
@@ -461,7 +462,7 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. 
+Use `--watchAll=false` to explicitly disable the watch mode.
 
 :::tip
 
@@ -471,4 +472,4 @@ In most CI environments, this is automatically handled for you.
 
 ### `--watchman`
 
-Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`. 
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
