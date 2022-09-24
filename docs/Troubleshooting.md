@@ -7,7 +7,7 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 ## Tests are Failing and You Don't Know Why
 
-Try using the debugging support built into Node. 
+Try using the debugging support built into Node.
 
 :::note
 
@@ -23,7 +23,7 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
-This will run Jest in a Node process that an external debugger can connect to. 
+This will run Jest in a Node process that an external debugger can connect to.
 
 :::note
 
@@ -191,12 +191,11 @@ jest --runInBand
 yarn test --runInBand
 ```
 
-Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. 
+Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half.
 
 :::note
 
-The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
-:::
+The Travis CI _free_ plan available for open source projects only includes 2 CPU cores. :::
 
 ```bash
 # Using Jest CLI
@@ -235,17 +234,17 @@ setTimeout(() => {
 }, 0);
 ```
 
-<<<<<<< Updated upstream
-When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
+<<<<<<< Updated upstream When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
 
 :::note
 
 This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
-:::
-=======
+# :::
+
 When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop. This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
->>>>>>> Stashed changes
+
+> > > > > > > Stashed changes
 
 ## Still unresolved?
 
