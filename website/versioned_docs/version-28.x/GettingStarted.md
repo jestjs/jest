@@ -104,13 +104,17 @@ module.exports = api => {
 };
 ```
 
-> Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
+:::note
+
+`babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
 ```javascript title="jest.config.js"
 module.exports = {
   transform: {},
 };
 ```
+
+:::
 
 </details>
 
