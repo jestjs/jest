@@ -155,7 +155,11 @@ test('compiling android goes as expected', () => {
 });
 ```
 
-> Note: the function that throws an exception needs to be invoked within a wrapping function otherwise the `toThrow` assertion will fail.
+:::tip
+
+The function that throws an exception needs to be invoked within a wrapping function otherwise the `toThrow` assertion will fail.
+
+:::
 
 ## And More
 
