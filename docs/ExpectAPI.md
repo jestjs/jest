@@ -183,9 +183,9 @@ test('asymmetric ranges', () => {
 });
 ```
 
-:::tip
+:::note
 
-The type declaration of the matcher can live in a `.d.ts` file or in an imported `.ts` module (see JS and TS examples above respectively). If you keep the declaration in a `.d.ts` file, make sure that it is included in the program and that it is a valid module, i.e. it has at least an empty `export {}`.
+In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this (`toBeWithinRange.ts`):
 
 ```ts title="toBeWithinRange.ts"
 expect.extend({
@@ -204,7 +204,7 @@ declare global {
 
 If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
 
-````ts
+```ts
 interface CustomMatchers<R = unknown> {
   toBeWithinRange(floor: number, ceiling: number): R;
 }
@@ -216,7 +216,11 @@ declare global {
   }
 }
 export {};
-=======
+```
+
+:::tip
+
+The type declaration of the matcher can live in a `.d.ts` file or in an imported `.ts` module (see JS and TS examples above respectively). If you keep the declaration in a `.d.ts` file, make sure that it is included in the program and that it is a valid module, i.e. it has at least an empty `export {}`.
 
 :::
 
@@ -232,8 +236,7 @@ import {toBeWithinRange} from './toBeWithinRange';
 expect.extend({
   toBeWithinRange,
 });
-
-````
+```
 
 :::
 
