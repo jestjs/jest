@@ -1132,7 +1132,7 @@ export default config;
 
 :::info
 
-If you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+If you also have specified [`rootDir`](#rootdir-string), the resolution of this file will be relative to that root directory.
 
 :::
 
