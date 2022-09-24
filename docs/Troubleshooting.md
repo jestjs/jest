@@ -7,13 +7,7 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 ## Tests are Failing and You Don't Know Why
 
-Try using the debugging support built into Node.
-
-:::note
-
-This will only work in Node.js 8+.
-
-:::
+Try using the debugging support built into Node. Note: This will only work in Node.js 8+.
 
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
@@ -23,23 +17,13 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
-This will run Jest in a Node process that an external debugger can connect to.
-
-:::note
-
-Note that the process will pause until the debugger has connected to it.
-
-:::
+This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.
 
 To debug in Google Chrome (or any Chromium-based browser), open your browser and go to `chrome://inspect` and click on "Open Dedicated DevTools for Node", which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like `localhost:9229`) after running the above command, and you will be able to debug Jest using Chrome's DevTools.
 
 The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-:::note
-
-Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
-
-:::
+> Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
 
 ## Debugging in VS Code
 
@@ -191,11 +175,7 @@ jest --runInBand
 yarn test --runInBand
 ```
 
-Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half.
-
-:::note
-
-The Travis CI _free_ plan available for open source projects only includes 2 CPU cores. :::
+Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
 
 ```bash
 # Using Jest CLI
@@ -234,17 +214,7 @@ setTimeout(() => {
 }, 0);
 ```
 
-<<<<<<< Updated upstream When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
-
-:::note
-
-This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
-
-# :::
-
 When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop. This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
-
-> > > > > > > Stashed changes
 
 ## Still unresolved?
 
