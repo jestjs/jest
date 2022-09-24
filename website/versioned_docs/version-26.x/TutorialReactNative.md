@@ -28,7 +28,7 @@ Run `yarn test` to run tests with Jest.
 
 If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead.\_
 
-::: Run `yarn test` to run tests with Jest.
+:::
 
 ## Snapshot Test
 
