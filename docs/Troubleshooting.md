@@ -235,6 +235,7 @@ setTimeout(() => {
 }, 0);
 ```
 
+<<<<<<< Updated upstream
 When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
 
 :::note
@@ -242,6 +243,9 @@ When Jest runs your test to collect the `test`s it will not find any because we 
 This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
 :::
+=======
+When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop. This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
+>>>>>>> Stashed changes
 
 ## Still unresolved?
 

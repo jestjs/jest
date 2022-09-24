@@ -23,7 +23,11 @@ To debug in Google Chrome (or any Chromium-based browser), open your browser and
 
 The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-> Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+:::note
+
+The `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+
+:::
 
 ## Debugging in VS Code
 
@@ -200,9 +204,7 @@ setTimeout(() => {
 }, 0);
 ```
 
-When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
-
-_Note:_ This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
+When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop. This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
 ## Still unresolved?
 
