@@ -187,6 +187,37 @@ test('asymmetric ranges', () => {
 
 The type declaration of the matcher can live in a `.d.ts` file or in an imported `.ts` module (see JS and TS examples above respectively). If you keep the declaration in a `.d.ts` file, make sure that it is included in the program and that it is a valid module, i.e. it has at least an empty `export {}`.
 
+```ts title="toBeWithinRange.ts"
+expect.extend({
+  toBeWithinRange(received: number, floor: number, ceiling: number) {
+    // ...
+  },
+});
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
+If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
+
+````ts
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(floor: number, ceiling: number): R;
+}
+declare global {
+  namespace jest {
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
+  }
+}
+export {};
+=======
+
 :::
 
 :::tip
@@ -201,7 +232,8 @@ import {toBeWithinRange} from './toBeWithinRange';
 expect.extend({
   toBeWithinRange,
 });
-```
+
+````
 
 :::
 
