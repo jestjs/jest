@@ -28,8 +28,6 @@ Starting from react-native version 0.38, a Jest setup is included by default whe
 
 If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead.
 
-Run `yarn test` to run tests with Jest.
-
 :::
 
 ## Snapshot Test
