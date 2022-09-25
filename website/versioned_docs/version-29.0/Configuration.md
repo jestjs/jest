@@ -121,7 +121,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `automock` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
 This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation, keeping the API surface.
 
@@ -276,8 +276,6 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 ### `coverageProvider` \[string]
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
-
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 

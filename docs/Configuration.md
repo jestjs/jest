@@ -275,11 +275,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageProvider` \[string]
 
-Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`. :::note
-
-Using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
-
-:::
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
@@ -2248,7 +2244,7 @@ It is possible to override this setting in individual tests by explicitly callin
 
 ### `verbose` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
