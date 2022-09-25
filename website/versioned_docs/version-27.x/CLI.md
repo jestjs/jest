@@ -270,6 +270,8 @@ Allows the test suite to pass when no files are found.
 
 Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. :::note
 
+:::note
+
 If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
 :::
