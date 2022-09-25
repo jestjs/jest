@@ -282,7 +282,7 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 :::note
 
-i If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
 :::
 
