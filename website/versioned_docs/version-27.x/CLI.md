@@ -168,7 +168,6 @@ Using `v8` is considered experimental. This uses V8's builtin code coverage rath
 
 :::
 
-
 ### `--debug`
 
 Print debugging info about your Jest config.
