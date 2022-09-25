@@ -7,6 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+import {isPromise} from 'jest-util';
+
 export type MockMetadataType =
   | 'object'
   | 'array'
@@ -135,6 +137,8 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRestore(): void;
   mockImplementation(fn: T): this;
   mockImplementationOnce(fn: T): this;
+  withImplementation(fn: T, callback: () => Promise<unknown>): Promise<void>;
+  withImplementation(fn: T, callback: () => void): void;
   mockName(name: string): this;
   mockReturnThis(): this;
   mockReturnValue(value: ReturnType<T>): this;
@@ -767,6 +771,34 @@ export class ModuleMocker {
         mockConfig.specificMockImpls.push(fn);
         return f;
       };
+
+      f.withImplementation = withImplementation.bind(this);
+
+      function withImplementation(fn: T, callback: () => void): void;
+      function withImplementation(
+        fn: T,
+        callback: () => Promise<unknown>,
+      ): Promise<void>;
+      function withImplementation(
+        this: ModuleMocker,
+        fn: T,
+        callback: (() => void) | (() => Promise<unknown>),
+      ): void | Promise<void> {
+        // Remember previous mock implementation, then set new one
+        const mockConfig = this._ensureMockConfig(f);
+        const previousImplementation = mockConfig.mockImpl;
+        mockConfig.mockImpl = fn;
+
+        const returnedValue = callback();
+
+        if (isPromise(returnedValue)) {
+          return returnedValue.then(() => {
+            mockConfig.mockImpl = previousImplementation;
+          });
+        } else {
+          mockConfig.mockImpl = previousImplementation;
+        }
+      }
 
       f.mockImplementation = (fn: UnknownFunction) => {
         // next function call will use mock implementation return value

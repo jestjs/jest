@@ -478,6 +478,43 @@ test('async test', async () => {
 });
 ```
 
+### `mockFn.withImplementation(fn, callback)`
+
+Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
+
+```js
+test('test', () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  mock.withImplementation(
+    () => 'inside callback',
+    () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
+});
+```
+
+`mockFn.withImplementation` can be used regardless of whether or not the callback is asynchronous (returns a `thenable`). If the callback is asynchronous a promise will be returned. Awaiting the promise will await the callback and reset the implementation.
+
+```js
+test('async test', async () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  // We await this call since the callback is async
+  await mock.withImplementation(
+    () => 'inside callback',
+    async () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
+});
+```
+
 ## TypeScript Usage
 
 :::tip

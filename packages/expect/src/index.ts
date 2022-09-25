@@ -10,6 +10,7 @@
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
+import {isPromise} from 'jest-util';
 import {
   any,
   anything,
@@ -68,12 +69,6 @@ export type {
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,

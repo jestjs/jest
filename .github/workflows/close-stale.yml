@@ -8,7 +8,7 @@ jobs:
     name: 'Close month old issues and PRs'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v5
+      - uses: actions/stale@v6
         with:
           start-date: '2022-01-01T00:00:00Z'
           stale-issue-message: 'This issue is stale because it has been open 30 days with no activity. Remove stale label or comment or this will be closed in 30 days.'
@@ -27,7 +27,7 @@ jobs:
     name: 'Close year old issues and PRs'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v5
+      - uses: actions/stale@v6
         with:
           stale-issue-message: 'This issue is stale because it has been open for 1 year with no activity. Remove stale label or comment or this will be closed in 30 days.'
           stale-pr-message: 'This PR is stale because it has been open 1 year with no activity. Remove stale label or comment or this will be closed in 30 days.'
