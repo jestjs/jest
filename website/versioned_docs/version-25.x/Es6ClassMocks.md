@@ -246,7 +246,7 @@ jest.mock('./sound-player', () => {
 
 :::note
 
-Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
+The mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {
