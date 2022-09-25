@@ -7,9 +7,7 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 ## Tests are Failing and You Don't Know Why
 
-Try using the debugging support built into Node. Note: This will only work in Node.js 8+.
-
-Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
+Try using the [debugging support](https://nodejs.org/api/debugger.html) built into Node. Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
 ```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
