@@ -244,9 +244,9 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-**_Note: Arrow functions won't work_**
+:::note
 
-Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
+The mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -258,6 +258,8 @@ jest.mock('./sound-player', () => {
 ```
 
 This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, unless the code is transpiled to ES5, e.g. by `@babel/preset-env`. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
+
+:::
 
 ## Mocking a specific method of a class
 
