@@ -1506,10 +1506,8 @@ export default class Runtime {
     filename: string,
     options?: InternalModuleOptions,
   ): string {
-    const source = this.readFile(filename);
-
     if (options?.isInternalModule) {
-      return source;
+      return this.readFile(filename);
     }
 
     let transformedFile: TransformResult | undefined =
@@ -1522,7 +1520,6 @@ export default class Runtime {
     transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
-      source,
     );
 
     this._fileTransforms.set(filename, {
