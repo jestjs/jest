@@ -629,3 +629,42 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
       '  `));\n',
   );
 });
+
+test('saveInlineSnapshots() prioritize parser from project/editor configuration', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(
+    filename,
+    'const foo = {\n' +
+      '  "1": "Some value",\n' +
+      '};\n' +
+      'test("something", () => {\n' +
+      '  expect("a").toMatchInlineSnapshot();\n' +
+      '});\n',
+  );
+
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    parser: 'flow',
+  });
+
+  const prettierSpy = jest.spyOn(prettier.getFileInfo, 'sync');
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 15, file: filename, line: 5} as Frame,
+        snapshot: 'a',
+      },
+    ],
+    'prettier',
+  );
+
+  expect(prettierSpy).not.toBeCalled();
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
+    'const foo = {\n' +
+      '  "1": "Some value",\n' +
+      '};\n' +
+      'test("something", () => {\n' +
+      '  expect("a").toMatchInlineSnapshot(`a`);\n' +
+      '});\n',
+  );
+});
