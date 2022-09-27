@@ -23,7 +23,7 @@ Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/us
 
 :::caution
 
-If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
+If we want to mock Node's build-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because build-in modules are not mocked by default.
 
 :::
 
