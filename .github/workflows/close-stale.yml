@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: '*/10 * * * *'
 
+permissions:
+  issues: write # to close stale issues (actions/stale)
+  pull-requests: write # to close stale PRs (actions/stale)
+
 jobs:
   stale:
     name: 'Close month old issues and PRs'
