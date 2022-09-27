@@ -151,7 +151,6 @@ function assertionErrorMessage(
 
   if (operatorName === 'throws') {
     if (error.generatedMessage) {
-      // Thrown error do not match expected one
       return (
         buildHintString(assertThrowingMatcherHint(operatorName)) +
         chalk.reset(error.message) +
