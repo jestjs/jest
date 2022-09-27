@@ -8,6 +8,7 @@
 - `[@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))
 - `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [13246](https://github.com/facebook/jest/pull/13246))
 - `[@jest/mock]` Add `withImplementation` method for temporarily overriding a mock.
+- `[expect]` Export `toThrow*` matchers ([#13328](https://github.com/facebook/jest/pull/13328))
 
 ### Fixes
 
