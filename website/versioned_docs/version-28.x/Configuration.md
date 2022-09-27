@@ -382,7 +382,9 @@ As a secondary option, an object with the properties `name` and `color` can be p
 
 ### `errorOnDeprecated` \[boolean]
 
-Default: `false` Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
+Default: `false`
+
+Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
 ### `extensionsToTreatAsEsm` \[array&lt;string&gt;]
 
