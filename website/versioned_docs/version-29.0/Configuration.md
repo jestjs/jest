@@ -2230,7 +2230,7 @@ It is possible to override this setting in individual tests by explicitly callin
 
 ### `verbose` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
