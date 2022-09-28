@@ -286,7 +286,7 @@ Received number of calls:    0
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn(function () {
@@ -350,7 +350,7 @@ mockFn(); // 'default'
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -376,7 +376,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -416,7 +416,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -446,7 +446,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
@@ -475,6 +475,43 @@ test('async test', async () => {
 
   await asyncMock(); // 'first call'
   await asyncMock(); // throws 'Async error message'
+});
+```
+
+### `mockFn.withImplementation(fn, callback)`
+
+Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
+
+```js
+test('test', () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  mock.withImplementation(
+    () => 'inside callback',
+    () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
+});
+```
+
+`mockFn.withImplementation` can be used regardless of whether or not the callback is asynchronous (returns a `thenable`). If the callback is asynchronous a promise will be returned. Awaiting the promise will await the callback and reset the implementation.
+
+```js
+test('async test', async () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  // We await this call since the callback is async
+  await mock.withImplementation(
+    () => 'inside callback',
+    async () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
 });
 ```
 

@@ -15,6 +15,8 @@ import {
 } from '../Utils';
 import runJest from '../runJest';
 
+jest.retryTimes(3);
+
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
 beforeEach(() => cleanup(DIR));

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 'use strict';
 
 it.concurrent.only.each([
