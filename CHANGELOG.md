@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.1.0
+
+### Features
+
 - `[expect, @jest/expect]` support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
 - `[expect, @jest/expect]` Infer type of `*ReturnedWith` matchers argument ([#13278](https://github.com/facebook/jest/pull/13278))
 - `[@jest/environment, jest-runtime]` Allow `jest.requireActual` and `jest.requireMock` to take a type argument ([#13253](https://github.com/facebook/jest/pull/13253))
@@ -19,10 +29,6 @@
 - `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
 - `[jest-snapshot]` Prioritize parser used in the project ([#13323](https://github.com/facebook/jest/pull/13323))
 - `[jest-transform]` Attempt to work around issues with atomic writes on Windows ([#11423](https://github.com/facebook/jest/pull/11423))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 29.0.3
 
