@@ -8,6 +8,7 @@
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
+- `[jest-runner]` Do not instrument v8 coverage data if coverage should not be collected [#13282](https://github.com/facebook/jest/pull/13282)
 
 ### Chore & Maintenance
 
