@@ -8,6 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
+import * as util from 'util';
 import vm, {Context} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
@@ -1070,6 +1071,62 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Bar');
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
+    });
+  });
+
+  describe('withImplementation', () => {
+    it('sets an implementation which is available within the callback', () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      Module.withImplementation(
+        () => ({someFn: mock2}),
+        () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(3);
+    });
+
+    it('returns a promise if the provided callback is asynchronous', async () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      const promise = Module.withImplementation(
+        () => ({someFn: mock2}),
+        async () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      expect(util.types.isPromise(promise)).toBe(true);
+
+      await promise;
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(4);
     });
   });
 

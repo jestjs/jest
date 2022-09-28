@@ -46,7 +46,7 @@ FAIL __tests__/worksWithConcurrentMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:198:11)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:195:11)
       at Suite.failing (__tests__/worksWithConcurrentMode.test.js:13:17)
       at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
 
@@ -80,7 +80,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:198:11)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:195:11)
       at Suite.failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
       at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
@@ -89,61 +89,61 @@ FAIL __tests__/worksWithOnlyMode.test.js
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-       7 |
-       8 | describe('block with only, should pass', () => {
-    >  9 |   it.only.failing('failing fails = passes, should pass', () => {
+       9 |
+      10 | describe('block with only, should pass', () => {
+    > 11 |   it.only.failing('failing fails = passes, should pass', () => {
          |           ^
-      10 |     expect(10).toBe(101);
-      11 |   });
-      12 |
+      12 |     expect(10).toBe(101);
+      13 |   });
+      14 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:9:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:8:1)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:11:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should fail › encountered a declaration exception
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-      29 |
-      30 | describe('block with only, should fail', () => {
-    > 31 |   it.only.failing('failing passes = fails, should fail', () => {
+      31 |
+      32 | describe('block with only, should fail', () => {
+    > 33 |   it.only.failing('failing passes = fails, should fail', () => {
          |           ^
-      32 |     expect(10).toBe(10);
-      33 |   });
-      34 |
+      34 |     expect(10).toBe(10);
+      35 |   });
+      36 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:31:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:30:1)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:33:11)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:32:1)
 
   ● block with only in other it, should skip › encountered a declaration exception
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-      43 |
-      44 | describe('block with only in other it, should skip', () => {
-    > 45 |   it.failing('failing passes = fails, should fail but skipped', () => {
+      45 |
+      46 | describe('block with only in other it, should skip', () => {
+    > 47 |   it.failing('failing passes = fails, should fail but skipped', () => {
          |      ^
-      46 |     expect(10).toBe(10);
-      47 |   });
-      48 |
+      48 |     expect(10).toBe(10);
+      49 |   });
+      50 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:45:6)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:44:1)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:47:6)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:46:1)
 
   ● block with only with different syntax, should fail › encountered a declaration exception
 
     Jest: \`failing\` tests are only supported in \`jest-circus\`.
 
-      57 |
-      58 | describe('block with only with different syntax, should fail', () => {
-    > 59 |   fit.failing('failing passes = fails, should fail 1', () => {
+      59 |
+      60 | describe('block with only with different syntax, should fail', () => {
+    > 61 |   fit.failing('failing passes = fails, should fail 1', () => {
          |       ^
-      60 |     expect(10).toBe(10);
-      61 |   });
-      62 |
+      62 |     expect(10).toBe(10);
+      63 |   });
+      64 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:59:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:58:1)
+      at Suite.failing (__tests__/worksWithOnlyMode.test.js:61:7)
+      at Object.describe (__tests__/worksWithOnlyMode.test.js:60:1)
 
 FAIL __tests__/worksWithSkipMode.test.js
   ● block with only, should pass › encountered a declaration exception

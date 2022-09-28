@@ -62,13 +62,6 @@ import {getPackages} from './buildUtils.mjs';
           }
         }
 
-        // dev dep
-        if (pkg.name === 'pretty-format') {
-          if (dep === 'expect') {
-            return false;
-          }
-        }
-
         return true;
       })
       .map(dep =>

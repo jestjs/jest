@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@jest/types": "workspace:^",
-    "@types/node": "*"
+    "@types/node": "*",
+    "jest-util": "workspace:^"
   },
   "devDependencies": {
     "@tsd/typescript": "~4.8.2",

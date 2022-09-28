@@ -67,7 +67,10 @@ export function getPackages() {
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
         ...(pkg.name === 'expect'
-          ? {'./build/matchers': './build/matchers.js'}
+          ? {
+              './build/matchers': './build/matchers.js',
+              './build/toThrowMatchers': './build/toThrowMatchers.js',
+            }
           : {}),
       },
       `Package "${pkg.name}" does not export correct files`,
