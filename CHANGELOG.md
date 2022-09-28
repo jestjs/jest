@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 29.1.1
+
+### Fixes
+
+- `[jest-mock]` Revert ([#13145](https://github.com/facebook/jest/pull/13145))
+
 ## 29.1.0
 
 ### Features
