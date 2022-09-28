@@ -11,6 +11,7 @@
 - `[jest-haste-map]` Remove `__proto__` usage ([#13256](https://github.com/facebook/jest/pull/13256))
 - `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
 - `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
+- `[jest-transform]` Attempt to work around issues with atomic writes on Windows ([#11423](https://github.com/facebook/jest/pull/11423))
 
 ### Chore & Maintenance
 
