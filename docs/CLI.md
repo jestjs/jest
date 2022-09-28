@@ -206,9 +206,10 @@ Path to a module exporting a filtering function. This asynchronous function rece
 
 ```js title="my-filter.js"
 module.exports = testPaths => {
-  const allowedPaths = testPaths.filter(filteringFunction)
-    .map(test => ({ test })); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
-  
+  const allowedPaths = testPaths
+    .filter(filteringFunction)
+    .map(test => ({test})); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
+
   return {
     filtered: allowedPaths,
   };
