@@ -702,7 +702,7 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
       '});\n',
   );
 
-  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+  jest.mocked(prettier.resolveConfig.sync).mockReturnValue({
     parser: 'flow',
   });
 
@@ -715,6 +715,7 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
         snapshot: 'a',
       },
     ],
+    dir,
     'prettier',
   );
 
