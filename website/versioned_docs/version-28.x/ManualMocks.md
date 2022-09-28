@@ -9,7 +9,11 @@ Manual mocks are used to stub out functionality with mock data. For example, ins
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we require that module in our tests (meaning we want to use the manual mock instead of the real implementation), explicitly calling `jest.mock('./moduleName')` is **required**.
+:::note
+
+When we require that module in our tests (meaning we want to use the manual mock instead of the real implementation), explicitly calling `jest.mock('./moduleName')` is **required**.
+
+:::
 
 ## Mocking Node modules
 
@@ -17,7 +21,11 @@ If the module you are mocking is a Node module (e.g.: `lodash`), the mock should
 
 Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/using-npm/scope)) can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
 
-> Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
+:::caution
+
+If we want to mock Node's build-in modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because build-in modules are not mocked by default.
+
+:::
 
 ## Examples
 
@@ -36,7 +44,11 @@ Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/us
 
 When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, when `automock` is set to `true`, the manual mock implementation will be used instead of the automatically created mock, even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
-> Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
+:::info
+
+In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
+
+:::
 
 Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
@@ -92,7 +104,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
+Now we write our test. In this case `jest.mock('fs')` must be called explicitly, because `fs` is Node’s build-in module:
 
 ```javascript title="__tests__/FileSummarizer-test.js"
 'use strict';
