@@ -135,6 +135,7 @@ Watch Usage
 If the key for your plugin already exists as a default key, your plugin will override that key.
 
 :::
+
 ### `run(globalConfig, updateConfigAndRun)`
 
 To handle key press events from the key returned by `getUsageInfo`, you can implement the `run` method. This method returns a `Promise<boolean>` that can be resolved when the plugin wants to return control to Jest. The `boolean` specifies if Jest should rerun the tests after it gets the control back.
@@ -238,6 +239,6 @@ Third-party plugins are also forbidden to overwrite a key reserved already by an
 
 :::caution
 
-Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap. 
+Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
 
 :::
