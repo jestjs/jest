@@ -889,11 +889,11 @@ export class ModuleMocker {
       } else {
         slotMock = this._generateMock(slotMetadata, callbacks, refs);
 
-        //For superclass accessor properties the subclass metadata contains the definitions
-        //for the getter and setter methods, and the superclass refs to them.
-        //The mock implementations are not available until the callbacks have been executed.
-        //Missing getter and setter refs will be resolved as their callbacks have been
-        //stacked before the setting of the accessor definition is stacked.
+        // For superclass accessor properties the subclass metadata contains the definitions
+        // for the getter and setter methods, and the superclass refs to them.
+        // The mock implementations are not available until the callbacks have been executed.
+        // Missing getter and setter refs will be resolved as their callbacks have been
+        // stacked before the setting of the accessor definition is stacked.
         if (
           slotMetadata.members?.get?.ref !== undefined ||
           slotMetadata.members?.set?.ref !== undefined
@@ -908,12 +908,12 @@ export class ModuleMocker {
           slotMetadata.members?.configurable &&
           slotMetadata.members?.enumerable
         ) {
-          //In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
-          //mocked has a function property called 'get'.  In this circumstance
-          //the 'prototype' property cannot be redefined and doing so causes an
-          //exception. Checks have been added for the 'configurable' and
-          //'enumberable' properties present on true accessor property
-          //descriptors to prevent the attempt to replace the API.
+          // In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
+          // mocked has a function property called 'get'.  In this circumstance
+          // the 'prototype' property cannot be redefined and doing so causes an
+          // exception. Checks have been added for the 'configurable' and
+          // 'enumberable' properties present on true accessor property
+          // descriptors to prevent the attempt to replace the API.
           Object.defineProperty(mock, slot, slotMock as PropertyDescriptor);
         } else {
           mock[slot] = slotMock;
@@ -1011,10 +1011,10 @@ export class ModuleMocker {
 
         let slotMetadata: MockMetadata<T> | null = null;
         if (descriptor?.get || descriptor?.set) {
-          //Specific case required for mocking class definitions imported via modules.
-          //In this case the class definitions are stored in accessor properties.
-          //All getters were previously ignored except where the containing object had __esModule == true
-          //Now getters are mocked the class definitions must still be read.
+          // Specific case required for mocking class definitions imported via modules.
+          // In this case the class definitions are stored in accessor properties.
+          // All getters were previously ignored except where the containing object had __esModule == true
+          // Now getters are mocked the class definitions must still be read.
           // @ts-expect-error ignore type mismatch
           if (component.__esModule) {
             // @ts-expect-error no index signature
