@@ -26,7 +26,8 @@ export function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
-    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+    .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   const require = createRequire(import.meta.url);
   const rootPackage = require('../package.json');
 
@@ -66,10 +67,10 @@ export function getPackages() {
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
         ...(pkg.name === 'expect'
-          ? {'./build/matchers': './build/matchers.js'}
-          : {}),
-        ...(pkg.name === 'pretty-format'
-          ? {'./ConvertAnsi': './build/plugins/ConvertAnsi.js'}
+          ? {
+              './build/matchers': './build/matchers.js',
+              './build/toThrowMatchers': './build/toThrowMatchers.js',
+            }
           : {}),
       },
       `Package "${pkg.name}" does not export correct files`,

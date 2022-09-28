@@ -15,6 +15,8 @@ import {
 } from '../Utils';
 import runJest from '../runJest';
 
+jest.retryTimes(3);
+
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
 beforeEach(() => cleanup(DIR));
@@ -74,4 +76,4 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(pidNumber).not.toBeNaN();
 
   expect(await findProcess('pid', pidNumber)).toHaveLength(0);
-});
+}, 15000);

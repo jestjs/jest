@@ -422,6 +422,8 @@ exports[`works with node assert 1`] = `
   ✕ assert.ifError
   ✕ assert.doesNotThrow
   ✕ assert.throws
+  ✕ assert.throws with different error messages
+  ✕ assert.throws with different error types
   ✕ async
   ✕ assert.fail
   ✕ assert.fail with a message
@@ -795,9 +797,50 @@ exports[`works with node assert 1`] = `
          |          ^
       77 | });
       78 |
-      79 | test('async', async () => {
+      79 | test('assert.throws with different error messages', () => {
 
       at Object.throws (__tests__/assertionError.test.js:76:10)
+
+  ● assert.throws with different error messages
+
+    assert.throws(function)
+
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      Comparison {
+    +   message: 'message 1'
+    -   message: 'message 2'
+      }
+
+      78 |
+      79 | test('assert.throws with different error messages', () => {
+    > 80 |   assert.throws(
+         |          ^
+      81 |     () => {
+      82 |       throw new Error('message 1');
+      83 |     },
+
+      at Object.throws (__tests__/assertionError.test.js:80:10)
+
+  ● assert.throws with different error types
+
+    assert.throws(function)
+
+    The "TypeError" validation function is expected to return "true". Received TypeError: SyntaxError: message 1
+
+      89 |
+      90 | test('assert.throws with different error types', () => {
+    > 91 |   assert.throws(() => {
+         |          ^
+      92 |     throw new SyntaxError('message 1');
+      93 |   }, TypeError);
+      94 | });
+
+      at Object.throws (__tests__/assertionError.test.js:91:10)
+      Caught error:
+      SyntaxError: message 1
+      at Object.throws (__tests__/assertionError.test.js:91:10)
 
   ● async
 
@@ -820,29 +863,29 @@ exports[`works with node assert 1`] = `
       hello
     + goodbye
 
-      78 |
-      79 | test('async', async () => {
-    > 80 |   assert.equal('hello\\ngoodbye', 'hello', 'hmmm');
-         |          ^
-      81 | });
-      82 |
-      83 | test('assert.fail', () => {
+       95 |
+       96 | test('async', async () => {
+    >  97 |   assert.equal('hello\\ngoodbye', 'hello', 'hmmm');
+          |          ^
+       98 | });
+       99 |
+      100 | test('assert.fail', () => {
 
-      at Object.equal (__tests__/assertionError.test.js:80:10)
+      at Object.equal (__tests__/assertionError.test.js:97:10)
 
   ● assert.fail
 
     assert.fail(received, expected)
 
-      82 |
-      83 | test('assert.fail', () => {
-    > 84 |   assert.fail();
-         |          ^
-      85 | });
-      86 |
-      87 | test('assert.fail with a message', () => {
+       99 |
+      100 | test('assert.fail', () => {
+    > 101 |   assert.fail();
+          |          ^
+      102 | });
+      103 |
+      104 | test('assert.fail with a message', () => {
 
-      at Object.fail (__tests__/assertionError.test.js:84:10)
+      at Object.fail (__tests__/assertionError.test.js:101:10)
 
   ● assert.fail with a message
 
@@ -851,14 +894,14 @@ exports[`works with node assert 1`] = `
     Message:
       error!
 
-      86 |
-      87 | test('assert.fail with a message', () => {
-    > 88 |   assert.fail('error!');
-         |          ^
-      89 | });
-      90 |
+      103 |
+      104 | test('assert.fail with a message', () => {
+    > 105 |   assert.fail('error!');
+          |          ^
+      106 | });
+      107 |
 
-      at Object.fail (__tests__/assertionError.test.js:88:10)"
+      at Object.fail (__tests__/assertionError.test.js:105:10)"
 `;
 
 exports[`works with snapshot failures 1`] = `

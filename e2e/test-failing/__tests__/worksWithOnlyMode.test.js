@@ -5,9 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 describe('block with only, should pass', () => {
   it.only.failing('failing fails = passes, should pass', () => {
     expect(10).toBe(101);
+  });
+
+  it.only.failing.each([
+    {a: 1, b: 1, expected: 2},
+    {a: 1, b: 2, expected: 3},
+    {a: 2, b: 1, expected: 3},
+  ])('.add($a, $b)', ({a, b, expected}) => {
+    expect(a + b).toBe(expected);
   });
 
   it('failing test but skipped', () => {

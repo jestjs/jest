@@ -167,9 +167,15 @@ const excludedPackages = new Set(['@jest/globals']);
       let definitionFile = await fs.promises.readFile(filepath, 'utf8');
 
       rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
-      rimraf.sync(path.resolve(packageDir, 'dist/'));
+      fs.rmSync(path.resolve(packageDir, 'dist/'), {
+        force: true,
+        recursive: true,
+      });
       // this is invalid now, so remove it to not confuse `tsc`
-      rimraf.sync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'));
+      fs.rmSync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'), {
+        force: true,
+        recursive: true,
+      });
 
       definitionFile = definitionFile.replace(/\r\n/g, '\n');
 
@@ -195,7 +201,10 @@ const excludedPackages = new Set(['@jest/globals']);
       });
 
       await fs.promises.writeFile(
-        filepath.replace('/dist/', '/build/'),
+        filepath.replace(
+          `${path.sep}dist${path.sep}`,
+          `${path.sep}build${path.sep}`,
+        ),
         formattedContent,
       );
     }),

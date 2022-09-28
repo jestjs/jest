@@ -241,6 +241,19 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
+    test('Expected properties must be an object (array) with snapshot', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      };
+      const properties: Array<unknown> = [];
+      const snapshot = '';
+
+      expect(() => {
+        toMatchInlineSnapshot.call(context, received, properties, snapshot);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
     test('Inline snapshot must be a string', () => {
       const context = {
         isNot: false,
@@ -306,6 +319,18 @@ describe('matcher error', () => {
         promise: '',
       };
       const properties = null;
+
+      expect(() => {
+        toMatchSnapshot.call(context, received, properties);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('Expected properties must be an object (array)', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      };
+      const properties: Array<unknown> = [];
 
       expect(() => {
         toMatchSnapshot.call(context, received, properties);

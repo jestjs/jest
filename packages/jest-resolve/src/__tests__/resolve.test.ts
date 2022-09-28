@@ -9,7 +9,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {ModuleMap} from 'jest-haste-map';
+import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver from '../defaultResolver';
@@ -31,11 +31,13 @@ jest.mock('resolve', () => {
   return m;
 });
 
+const mockUserResolver = jest.mocked(userResolver);
+const mockUserResolverAsync = jest.mocked(userResolverAsync);
 const mockResolveSync = jest.mocked(resolveSync);
 
 beforeEach(() => {
-  userResolver.mockClear();
-  userResolverAsync.async.mockClear();
+  mockUserResolver.mockClear();
+  mockUserResolverAsync.async.mockClear();
   mockResolveSync.mockClear();
 
   Resolver.clearDefaultResolverCache();
@@ -104,7 +106,7 @@ describe('findNodeModule', () => {
           .map(p => path.resolve(resolvedCwd, p))
       : null;
 
-    userResolver.mockImplementation(() => 'module');
+    mockUserResolver.mockImplementation(() => 'module');
 
     const newPath = Resolver.findNodeModule('test', {
       basedir: '/',
@@ -116,8 +118,8 @@ describe('findNodeModule', () => {
     });
 
     expect(newPath).toBe('module');
-    expect(userResolver.mock.calls[0][0]).toBe('test');
-    expect(userResolver.mock.calls[0][1]).toStrictEqual({
+    expect(mockUserResolver.mock.calls[0][0]).toBe('test');
+    expect(mockUserResolver.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       conditions: ['conditions, woooo'],
       defaultResolver,
@@ -132,7 +134,7 @@ describe('findNodeModule', () => {
     const packageFilter = jest.fn();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
-    userResolver.mockImplementation((request, opts) =>
+    mockUserResolver.mockImplementation((request, opts) =>
       opts.defaultResolver(request, {...opts, packageFilter}),
     );
 
@@ -215,6 +217,20 @@ describe('findNodeModule', () => {
 
       expect(result).toEqual(
         path.resolve(conditionsRoot, './node_modules/exports/nestedDefault.js'),
+      );
+    });
+
+    test('supports nested paths with wildcard and no extension', () => {
+      const result = Resolver.findNodeModule('exports/directory/file', {
+        basedir: conditionsRoot,
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          conditionsRoot,
+          './node_modules/exports/some-other-directory/file.js',
+        ),
       );
     });
 
@@ -309,7 +325,7 @@ describe('findNodeModuleAsync', () => {
           .map(p => path.resolve(resolvedCwd, p))
       : null;
 
-    userResolverAsync.async.mockImplementation(() => Promise.resolve('module'));
+    mockUserResolverAsync.async.mockResolvedValue('module');
 
     const newPath = await Resolver.findNodeModuleAsync('test', {
       basedir: '/',
@@ -321,8 +337,8 @@ describe('findNodeModuleAsync', () => {
     });
 
     expect(newPath).toBe('module');
-    expect(userResolverAsync.async.mock.calls[0][0]).toBe('test');
-    expect(userResolverAsync.async.mock.calls[0][1]).toStrictEqual({
+    expect(mockUserResolverAsync.async.mock.calls[0][0]).toBe('test');
+    expect(mockUserResolverAsync.async.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       conditions: ['conditions, woooo'],
       defaultResolver,
@@ -337,7 +353,7 @@ describe('findNodeModuleAsync', () => {
     const packageFilter = jest.fn();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
-    userResolverAsync.async.mockImplementation((request, opts) =>
+    mockUserResolverAsync.async.mockImplementation((request, opts) =>
       Promise.resolve(opts.defaultResolver(request, {...opts, packageFilter})),
     );
 
@@ -356,7 +372,7 @@ describe('findNodeModuleAsync', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -445,7 +461,7 @@ describe('resolveModule', () => {
   });
 
   it('custom resolver can resolve node modules', () => {
-    userResolver.mockImplementation(() => 'module');
+    mockUserResolver.mockImplementation(() => 'module');
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
@@ -455,13 +471,13 @@ describe('resolveModule', () => {
     const src = require.resolve('../');
     resolver.resolveModule(src, 'fs');
 
-    expect(userResolver).toHaveBeenCalled();
-    expect(userResolver.mock.calls[0][0]).toBe('fs');
+    expect(mockUserResolver).toHaveBeenCalled();
+    expect(mockUserResolver.mock.calls[0][0]).toBe('fs');
   });
 });
 
 describe('resolveModuleAsync', () => {
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -559,7 +575,7 @@ describe('resolveModuleAsync', () => {
 
 describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
-    userResolver.mockImplementation(() => 'module');
+    mockUserResolver.mockImplementation(() => 'module');
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
@@ -575,9 +591,9 @@ describe('getMockModule', () => {
     const src = require.resolve('../');
     resolver.getMockModule(src, 'dependentModule');
 
-    expect(userResolver).toHaveBeenCalled();
-    expect(userResolver.mock.calls[0][0]).toBe('dependentModule');
-    expect(userResolver.mock.calls[0][1]).toHaveProperty(
+    expect(mockUserResolver).toHaveBeenCalled();
+    expect(mockUserResolver.mock.calls[0][0]).toBe('dependentModule');
+    expect(mockUserResolver.mock.calls[0][1]).toHaveProperty(
       'basedir',
       path.dirname(src),
     );
@@ -586,7 +602,7 @@ describe('getMockModule', () => {
 
 describe('getMockModuleAsync', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', async () => {
-    userResolverAsync.async.mockImplementation(() => Promise.resolve('module'));
+    mockUserResolverAsync.async.mockResolvedValue('module');
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
@@ -603,9 +619,11 @@ describe('getMockModuleAsync', () => {
 
     await resolver.resolveModuleAsync(src, 'dependentModule');
 
-    expect(userResolverAsync.async).toHaveBeenCalled();
-    expect(userResolverAsync.async.mock.calls[0][0]).toBe('dependentModule');
-    expect(userResolverAsync.async.mock.calls[0][1]).toHaveProperty(
+    expect(mockUserResolverAsync.async).toHaveBeenCalled();
+    expect(mockUserResolverAsync.async.mock.calls[0][0]).toBe(
+      'dependentModule',
+    );
+    expect(mockUserResolverAsync.async.mock.calls[0][1]).toHaveProperty(
       'basedir',
       path.dirname(src),
     );
@@ -622,7 +640,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: ModuleMap;
+  let moduleMap: IModuleMap;
 
   beforeEach(() => {
     jest.resetModules();

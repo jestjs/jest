@@ -12,16 +12,13 @@
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {Config, Global} from '@jest/types';
+import {isPromise} from 'jest-util';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
 import type {Jasmine} from './types';
-
-function isPromise(obj: any): obj is PromiseLike<unknown> {
-  return obj && typeof obj.then === 'function';
-}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const doneFnNoop = () => {};
@@ -79,6 +76,7 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
+      // @ts-expect-error: TS thinks `wrappedFn` is a generator function
       const returnValue = wrappedFn.call({}, doneFnNoop);
 
       if (isPromise(returnValue)) {
@@ -192,7 +190,7 @@ function makeConcurrent(
     timeout?: number,
   ) => Spec,
   env: Jasmine['currentEnv_'],
-  mutex: ReturnType<typeof throat>,
+  mutex: ReturnType<typeof pLimit>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
     specName: Global.TestNameLike,
@@ -226,14 +224,23 @@ function makeConcurrent(
 
     return spec;
   };
-  // each is bound after the function is made concurrent, so for now it is made noop
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  concurrentFn.each = () => () => {};
-  concurrentFn.failing = () => () => {
+
+  const failing = () => {
     throw new Error(
       'Jest: `failing` tests are only supported in `jest-circus`.',
     );
   };
+
+  failing.each = () => {
+    throw new Error(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+    );
+  };
+  // each is bound after the function is made concurrent, so for now it is made noop
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  concurrentFn.each = () => () => {};
+  concurrentFn.failing = failing;
+
   return concurrentFn;
 }
 
@@ -242,7 +249,7 @@ export default function jasmineAsyncInstall(
   global: Global.Global,
 ): void {
   const jasmine = global.jasmine;
-  const mutex = throat(globalConfig.maxConcurrency);
+  const mutex = pLimit(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);

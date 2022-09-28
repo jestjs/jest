@@ -1,47 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.formatExecError() 1`] = `
-"  <bold>● </>Test suite failed to run
+"  <bold>● </intensity>Test suite failed to run
 
     Whoops!
 "
 `;
 
 exports[`codeframe 1`] = `
-"  <bold>● </>Test suite failed to run
+"  <bold>● </intensity>Test suite failed to run
 
     Whoops!
 
-    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>"Whoops!"</>)<yellow>;</></>
-    </> <gray>   |</>       <red><bold>^</></></>
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color></>
+    </> <gray>   |</color>       <red><bold>^</intensity></color></>
 
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
 "
 `;
 
 exports[`formatStackTrace does not print code frame when noCodeFrame = true 1`] = `
 "
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
         "
 `;
 
 exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] = `
 "
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
         "
 `;
 
 exports[`formatStackTrace prints code frame and stacktrace 1`] = `
 "
-    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>"Whoops!"</>)<yellow>;</></>
-    </> <gray>   |</>       <red><bold>^</></></>
+    </><red><bold>></intensity></color><gray> 1 |</color> <cyan>throw</color> <cyan>new</color> <yellow>Error</color>(<green>"Whoops!"</color>)<yellow>;</color></>
+    </> <gray>   |</color>       <red><bold>^</intensity></color></>
 
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
         "
 `;
 
 exports[`formatStackTrace should strip node internals 1`] = `
-"<bold><red>  <bold>● </><bold>Unix test</></>
+"<bold><red>  <bold>● </intensity><bold>Unix test</color></intensity>
 
       
         Expected value to be of type:
@@ -50,55 +50,55 @@ exports[`formatStackTrace should strip node internals 1`] = `
           ""
         type:
           "string"
-<dim></>
-<dim>      <dim>at Object.it (</><dim>__tests__/test.js<dim>:8:14)</><dim></>
+<dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>__tests__/test.js<dim>:8:14)</intensity><dim></intensity>
 "
 `;
 
 exports[`no codeframe 1`] = `
-"  <bold>● </>Test suite failed to run
+"  <bold>● </intensity>Test suite failed to run
 
     Whoops!
 
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+      <dim>at Object.<anonymous> (</intensity>file.js<dim>:1:7)</intensity>
 "
 `;
 
 exports[`no stack 1`] = `
-"  <bold>● </>Test suite failed to run
+"  <bold>● </intensity>Test suite failed to run
 
     Whoops!
 "
 `;
 
 exports[`retains message in babel code frame error 1`] = `
-"<bold><red>  <bold>● </><bold>Babel test</></>
+"<bold><red>  <bold>● </intensity><bold>Babel test</color></intensity>
 
       
         packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
-<dim></>
-<dim>          </> <gray> 18 | </>        <cyan>false</><yellow>,</></>
-<dim>           <gray> 19 | </>        <green>'forwardRef requires a render function but received a \`memo\` '</></>
-<dim>          <red><bold>></><dim></><gray> 20 | </>          <green>'component. Instead of forwardRef(memo(...)), use '</> <yellow>+</></>
-<dim>           <gray>    | </>          <red><bold>^</><dim></></>
-<dim>           <gray> 21 | </>          <green>'memo(forwardRef(...)).'</><yellow>,</></>
-<dim>           <gray> 22 | </>      )<yellow>;</></>
-<dim>           <gray> 23 | </>    } <cyan>else</> <cyan>if</> (<cyan>typeof</> render <yellow>!==</> <green>'function'</>) {</></>
+<dim></intensity>
+<dim>          </> <gray> 18 | </color>        <cyan>false</color><yellow>,</color></intensity>
+<dim>           <gray> 19 | </color>        <green>'forwardRef requires a render function but received a \`memo\` '</color></intensity>
+<dim>          <red><bold>></intensity><dim></color><gray> 20 | </color>          <green>'component. Instead of forwardRef(memo(...)), use '</color> <yellow>+</color></intensity>
+<dim>           <gray>    | </color>          <red><bold>^</intensity><dim></color></intensity>
+<dim>           <gray> 21 | </color>          <green>'memo(forwardRef(...)).'</color><yellow>,</color></intensity>
+<dim>           <gray> 22 | </color>      )<yellow>;</color></intensity>
+<dim>           <gray> 23 | </color>    } <cyan>else</color> <cyan>if</color> (<cyan>typeof</color> render <yellow>!==</color> <green>'function'</color>) {</></intensity>
 "
 `;
 
 exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
-"<bold><red>  <bold>● </><bold>Unix test</></>
+"<bold><red>  <bold>● </intensity><bold>Unix test</color></intensity>
 
       at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
-<dim></>
-<dim>      <dim>at Object.addResult (</><dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)</><dim></>
-<dim>      <dim>at Object.it (</><dim>build/__tests__/messages-test.js<dim>:45:41)</><dim></>
+<dim></intensity>
+<dim>      <dim>at Object.addResult (</intensity><dim>../jest-jasmine2/build/jasmine-2.4.1.js<dim>:1550:14)</intensity><dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>build/__tests__/messages-test.js<dim>:45:41)</intensity><dim></intensity>
 "
 `;
 
 exports[`should not exclude vendor from stack trace 1`] = `
-"<bold><red>  <bold>● </><bold>Vendor test</></>
+"<bold><red>  <bold>● </intensity><bold>Vendor test</color></intensity>
 
       
         Expected value to be of type:
@@ -107,8 +107,8 @@ exports[`should not exclude vendor from stack trace 1`] = `
           ""
         type:
           "string"
-<dim></>
-<dim>      <dim>at Object.it (</><dim>__tests__/vendor/cool_test.js<dim>:6:666)</><dim></>
-<dim>      <dim>at Object.asyncFn (</><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</><dim></>
+<dim></intensity>
+<dim>      <dim>at Object.it (</intensity><dim>__tests__/vendor/cool_test.js<dim>:6:666)</intensity><dim></intensity>
+<dim>      <dim>at Object.asyncFn (</intensity><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</intensity><dim></intensity>
 "
 `;
