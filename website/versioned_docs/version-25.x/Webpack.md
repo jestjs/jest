@@ -83,8 +83,6 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 }
 ```
 
-> Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
-
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
 
 ```js title="fileTransformer.js"
@@ -140,7 +138,11 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 }
 ```
 
-> Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
+:::info
+
+`<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
+
+:::
 
 Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
@@ -180,7 +182,11 @@ And finally, we have to handle the webpack `alias`. For that, we can make use of
 
 That's it! webpack is a complex and flexible tool, so you may have to make some adjustments to handle your specific application's needs. Luckily for most projects, Jest should be more than flexible enough to handle your webpack config.
 
-> Note: For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
+:::tip
+
+For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
+
+:::
 
 ## Using with webpack 2
 
@@ -199,7 +205,13 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 }
 ```
 
-> Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+:::tip
+
+Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+
+:::
+
+:::tip
 
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
 
@@ -217,5 +229,7 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
   }
 }
 ```
+
+:::
 
 For an example of how to use Jest with webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example).
