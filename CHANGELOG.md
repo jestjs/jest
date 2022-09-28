@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- `[jest-circus, jest-jasmine2]` Fix error messages for Node's `assert.throes` ([#13322](https://github.com/facebook/jest/pull/13322))
 - `[jest-haste-map]` Remove `__proto__` usage ([#13256](https://github.com/facebook/jest/pull/13256))
 - `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
 - `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
