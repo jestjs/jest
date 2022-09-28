@@ -121,7 +121,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `automock` \[boolean]
 
-Default: `false` or `true` if there is only one test file to run
+Default: `false`
 
 This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation, keeping the API surface.
 
