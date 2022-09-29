@@ -333,7 +333,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -390,6 +390,7 @@ module.exports = {
       },
     ],
     'init-declarations': 'off',
+    'jsdoc/check-alignment': 'error',
     'lines-around-comment': 'off',
     'max-depth': 'off',
     'max-nested-callbacks': 'off',
