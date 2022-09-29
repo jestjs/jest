@@ -111,6 +111,14 @@ function assertionErrorMessage(
   }
 
   if (operatorName === 'throws') {
+    if (error.generatedMessage) {
+      return (
+        buildHintString(assertThrowingMatcherHint(operatorName)) +
+        chalk.reset(error.message) +
+        chalk.reset(hasCustomMessage ? `\n\nMessage:\n  ${message}` : '') +
+        trimmedStack
+      );
+    }
     return (
       buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset('Expected the function to throw an error.\n') +
