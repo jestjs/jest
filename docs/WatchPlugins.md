@@ -229,16 +229,16 @@ Any key not used by built-in functionality can be claimed, as you would expect. 
 
 Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
 
-:::caution
+```bash
 
 Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
 
-:::
+```
 
 Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (`watchPlugins` array setting). When this happens, you’ll also get an error message that tries to help you fix that:
 
-:::caution
+```bash
 
 Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
 
-:::
+```
