@@ -454,7 +454,8 @@ export const options: {[key: string]: Options} = {
     type: 'array',
   },
   randomize: {
-    description: 'Randomize the order of the tests within a file',
+    description:
+      'Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout. In order to choose the seed refer to the `--seed` CLI option.',
     type: 'boolean',
   },
   reporters: {
@@ -520,7 +521,7 @@ export const options: {[key: string]: Options} = {
   },
   seed: {
     description:
-      'Must be used with the randomize flag. Specify the seed to randomize with.',
+      'Must be used with the `--randomize` flag. Specify the seed to randomize with.',
     type: 'number',
   },
   selectProjects: {

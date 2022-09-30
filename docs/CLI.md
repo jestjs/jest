@@ -34,11 +34,17 @@ Run tests in a file in a random order (this will print the seed used for random 
 jest --randomize
 ```
 
-Run tests in a file in an order determined by a seed:
+Run tests in a file in an order with a given seed:
 
 ```bash
 jest --randomize --seed 1234
 ```
+
+:::note
+
+The `randomize` option is only supported using the default `jest-circus` test runner.
+
+:::
 
 Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 
@@ -326,7 +332,13 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 ### `--randomize`
 
 Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
-In order to determine the seed refer to the `--seed` CLI option.
+In order to choose the seed refer to the `--seed` CLI option.
+
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
+
+:::
 
 ### `--reporters`
 
@@ -363,6 +375,12 @@ The default regex matching works fine on small runs, but becomes slow if provide
 ### `--seed`
 
 Run the tests in the order specified by the seed value. Must be used with the `--randomize` flag.
+
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
+
+:::
 
 ### `--selectProjects <project1> ... <projectN>`
 
