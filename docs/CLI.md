@@ -28,24 +28,6 @@ Run tests related to changed files based on hg/git (uncommitted files):
 jest -o
 ```
 
-Run tests in a file in a random order (this will print the seed used for random number generation):
-
-```bash
-jest --randomize
-```
-
-Run tests in a file in an order with a given seed:
-
-```bash
-jest --randomize --seed 1234
-```
-
-:::note
-
-The `randomize` option is only supported using the default `jest-circus` test runner.
-
-:::
-
 Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 
 ```bash
@@ -339,7 +321,11 @@ If configuration files are found in the specified paths, _all_ projects specifie
 ### `--randomize`
 
 Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
-In order to determine the seed refer to the [`--seed`](#seed) CLI option.
+In order to determine the seed refer to the [`--seed`](#--seed) CLI option.
+
+```bash
+jest --randomize
+```
 
 :::note
 
@@ -381,7 +367,11 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--seed`
 
-Run the tests in the order specified by the seed value. Must be used with the [`--randomize`](#randomize) flag.
+Run the tests in the order specified by the seed value. Must be used with the [`--randomize`](#--randomize) flag.
+
+```bash
+jest --randomize --seed 1234
+```
 
 :::note
 
