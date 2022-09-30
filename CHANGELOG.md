@@ -2,6 +2,8 @@
 
 ### Features
 
+[jest-core] Enable testResultsProcessor to be async (#13343)
+
 ### Fixes
 
 ### Chore & Maintenance
