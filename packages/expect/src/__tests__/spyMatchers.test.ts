@@ -12,11 +12,17 @@ import jestExpect from '../';
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 jestExpect.extend({
-  optionalFn(fn) {
+  optionalFn(fn?: unknown) {
     const pass = fn === undefined || typeof fn === 'function';
     return {message: () => 'expect either a function or undefined', pass};
   },
 });
+
+declare module '../types' {
+  interface AsymmetricMatchers {
+    optionalFn(fn?: unknown): void;
+  }
+}
 
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
 const createSpy = (fn: jest.Mock) => {
@@ -351,7 +357,7 @@ const createSpy = (fn: jest.Mock) => {
       ).toThrowErrorMatchingSnapshot();
     });
 
-    test('works with trailing undefined arguments when explicitely requested as optional by matcher', () => {
+    test('works with trailing undefined arguments when explicitly requested as optional by matcher', () => {
       // issue 12463
       const fn = jest.fn();
       fn('foo', undefined);
@@ -652,7 +658,7 @@ const createSpy = (fn: jest.Mock) => {
 
     test('incomplete recursive calls are handled properly', () => {
       // sums up all integers from 0 -> value, using recursion
-      const fn: jest.Mock = jest.fn(value => {
+      const fn: jest.Mock<number, [value: number]> = jest.fn(value => {
         if (value === 0) {
           // Before returning from the base case of recursion, none of the
           // calls have returned yet.
@@ -821,7 +827,7 @@ const createSpy = (fn: jest.Mock) => {
 
     test('incomplete recursive calls are handled properly', () => {
       // sums up all integers from 0 -> value, using recursion
-      const fn: jest.Mock = jest.fn(value => {
+      const fn: jest.Mock<number, [value: number]> = jest.fn(value => {
         if (value === 0) {
           return 0;
         } else {
@@ -1041,7 +1047,7 @@ const createSpy = (fn: jest.Mock) => {
     if (basicReturnedWith.indexOf(returnedWith) >= 0) {
       describe('returnedWith', () => {
         test('works with more calls than the limit', () => {
-          const fn = jest.fn();
+          const fn = jest.fn<string, []>();
           fn.mockReturnValueOnce('foo1');
           fn.mockReturnValueOnce('foo2');
           fn.mockReturnValueOnce('foo3');
@@ -1065,12 +1071,12 @@ const createSpy = (fn: jest.Mock) => {
 
         test('incomplete recursive calls are handled properly', () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn: jest.Mock = jest.fn(value => {
+          const fn: jest.Mock<number, [value: number]> = jest.fn(value => {
             if (value === 0) {
               // Before returning from the base case of recursion, none of the
               // calls have returned yet.
               // This test ensures that the incomplete calls are not incorrectly
-              // interpretted as have returned undefined
+              // interpreted as have returned undefined
               jestExpect(fn).not[returnedWith](undefined);
               expect(() =>
                 jestExpect(fn)[returnedWith](undefined),
@@ -1091,7 +1097,7 @@ const createSpy = (fn: jest.Mock) => {
     if (nthReturnedWith.indexOf(returnedWith) >= 0) {
       describe('nthReturnedWith', () => {
         test('works with three calls', () => {
-          const fn = jest.fn();
+          const fn = jest.fn<string, []>();
           fn.mockReturnValueOnce('foo1');
           fn.mockReturnValueOnce('foo2');
           fn.mockReturnValueOnce('foo3');
@@ -1111,7 +1117,7 @@ const createSpy = (fn: jest.Mock) => {
         });
 
         test('should replace 1st, 2nd, 3rd with first, second, third', async () => {
-          const fn = jest.fn();
+          const fn = jest.fn<string, []>();
           fn.mockReturnValueOnce('foo1');
           fn.mockReturnValueOnce('foo2');
           fn.mockReturnValueOnce('foo3');
@@ -1153,7 +1159,7 @@ const createSpy = (fn: jest.Mock) => {
         });
 
         test('positive throw matcher error for n that is not integer', async () => {
-          const fn: jest.Mock = jest.fn(() => 'foo');
+          const fn = jest.fn<string, [string]>(() => 'foo');
           fn('foo');
 
           expect(() => {
@@ -1162,7 +1168,7 @@ const createSpy = (fn: jest.Mock) => {
         });
 
         test('negative throw matcher error for n that is not number', async () => {
-          const fn: jest.Mock = jest.fn(() => 'foo');
+          const fn = jest.fn<string, [string]>(() => 'foo');
           fn('foo');
 
           expect(() => {
@@ -1172,7 +1178,7 @@ const createSpy = (fn: jest.Mock) => {
 
         test('incomplete recursive calls are handled properly', () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn: jest.Mock = jest.fn(value => {
+          const fn: jest.Mock<number, [value: number]> = jest.fn(value => {
             if (value === 0) {
               return 0;
             } else {
@@ -1212,7 +1218,7 @@ const createSpy = (fn: jest.Mock) => {
     if (lastReturnedWith.indexOf(returnedWith) >= 0) {
       describe('lastReturnedWith', () => {
         test('works with three calls', () => {
-          const fn = jest.fn();
+          const fn = jest.fn<string, []>();
           fn.mockReturnValueOnce('foo1');
           fn.mockReturnValueOnce('foo2');
           fn.mockReturnValueOnce('foo3');
@@ -1229,7 +1235,7 @@ const createSpy = (fn: jest.Mock) => {
 
         test('incomplete recursive calls are handled properly', () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn: jest.Mock = jest.fn(value => {
+          const fn: jest.Mock<number, [number]> = jest.fn(value => {
             if (value === 0) {
               // Before returning from the base case of recursion, none of the
               // calls have returned yet.

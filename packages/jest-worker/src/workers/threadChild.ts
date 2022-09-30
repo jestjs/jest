@@ -6,6 +6,7 @@
  */
 
 import {isMainThread, parentPort} from 'worker_threads';
+import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -159,11 +160,6 @@ function execMethod(method: string, args: Array<unknown>): void {
 
   execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
 }
-
-const isPromise = (obj: any): obj is PromiseLike<unknown> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
 
 function execFunction(
   fn: UnknownFunction,

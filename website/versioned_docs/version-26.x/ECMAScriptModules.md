@@ -3,11 +3,15 @@ id: ecmascript-modules
 title: ECMAScript Modules
 ---
 
-Jest ships with _experimental_ support for ECMAScript Modules (ESM).
+:::caution
 
-> Note that due to its experimental nature there are many bugs and missing features in Jest's implementation, both known and unknown. You should check out the [tracking issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker for the latest status.
+Jest ships with **experimental** support for ECMAScript Modules (ESM).
 
-> Also note that the APIs Jest uses to implement ESM support is still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `18.8.0`).
+The implementation may have bugs and lack features. For the latest status check out the [issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker.
+
+Also note that the APIs Jest uses to implement ESM support are still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `18.8.0`).
+
+:::
 
 With the warnings out of the way, this is how you activate ESM support in your tests.
 

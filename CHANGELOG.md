@@ -2,16 +2,61 @@
 
 ### Features
 
-- `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
-- `[jest-circus, jest-cli, jest-config, @jest/core, @jest/types, @jest-util]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
-
 ### Fixes
-
-- `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.1.1
+
+### Fixes
+
+- `[jest-mock]` Revert ([#13145](https://github.com/facebook/jest/pull/13145))
+
+## 29.1.0
+
+### Features
+
+- `[expect, @jest/expect]` support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
+- `[expect, @jest/expect]` Infer type of `*ReturnedWith` matchers argument ([#13278](https://github.com/facebook/jest/pull/13278))
+- `[@jest/environment, jest-runtime]` Allow `jest.requireActual` and `jest.requireMock` to take a type argument ([#13253](https://github.com/facebook/jest/pull/13253))
+- `[@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))
+- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [#13246](https://github.com/facebook/jest/pull/13246))
+- `[@jest/mock]` Add `withImplementation` method for temporarily overriding a mock ([#13281](https://github.com/facebook/jest/pull/13281))
+- `[expect]` Export `toThrow*` matchers ([#13328](https://github.com/facebook/jest/pull/13328))
+
+### Fixes
+
+- `[jest-circus, jest-jasmine2]` Fix error messages for Node's `assert.throes` ([#13322](https://github.com/facebook/jest/pull/13322))
+- `[jest-haste-map]` Remove `__proto__` usage ([#13256](https://github.com/facebook/jest/pull/13256))
+- `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
+- `[jest-mock]` Fix mocking of getters and setters on classes ([#13145](https://github.com/facebook/jest/pull/13145))
+- `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
+- `[jest-snapshot]` Prioritize parser used in the project ([#13323](https://github.com/facebook/jest/pull/13323))
+- `[jest-transform]` Attempt to work around issues with atomic writes on Windows ([#11423](https://github.com/facebook/jest/pull/11423))
+
+## 29.0.3
+
+### Features
+
+- `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+- `[jest-circus, jest-cli, jest-config, @jest/core, @jest/types, @jest-util]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
+- `[expect]` Expose `ExpectationResult` type ([#13240](https://github.com/facebook/jest/pull/13240))
+- `[jest-snapshot]` Expose `Context` type ([#13240](https://github.com/facebook/jest/pull/13240))
+- `[@jest/globals]` Add `jest.Mock` type helper ([#13235](https://github.com/facebook/jest/pull/13235))
+
+### Fixes
+
+- `[jest-core]` Capture `execError` during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-resolve]` Make sure to resolve module paths after looking at `exports` ([#13242](https://github.com/facebook/jest/pull/13242))
+- `[jest-resolve]` Improve error on module not found deep in the `require` stack ([#8704](https://github.com/facebook/jest/pull/8704))
+- `[jest-snapshot]` Fix typings of snapshot matchers ([#13240](https://github.com/facebook/jest/pull/13240))
+
+### Chore & Maintenance
+
+- `[*]` Fix inconsistent workspace prefixes ([#13217](https://github.com/facebook/jest/pull/13217))
+- `[jest-haste-map]` Expose a minimal public API to TypeScript ([#13023](https://github.com/facebook/jest/pull/13023))
 
 ## 29.0.2
 

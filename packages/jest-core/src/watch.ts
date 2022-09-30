@@ -12,10 +12,7 @@ import exit = require('exit');
 import slash = require('slash');
 import type {TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {
-  ChangeEvent as HasteChangeEvent,
-  default as HasteMap,
-} from 'jest-haste-map';
+import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
   isInteractive,
@@ -241,31 +238,28 @@ export default async function watch(
   emitFileChange();
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
-    hasteMapInstance.on(
-      'change',
-      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
-        const validPaths = eventsQueue.filter(({filePath}) =>
-          isValidPath(globalConfig, filePath),
-        );
+    hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+      const validPaths = eventsQueue.filter(({filePath}) =>
+        isValidPath(globalConfig, filePath),
+      );
 
-        if (validPaths.length) {
-          const context = (contexts[index] = createContext(
-            contexts[index].config,
-            {hasteFS, moduleMap},
-          ));
+      if (validPaths.length) {
+        const context = (contexts[index] = createContext(
+          contexts[index].config,
+          {hasteFS, moduleMap},
+        ));
 
-          activePlugin = null;
+        activePlugin = null;
 
-          searchSources = searchSources.slice();
-          searchSources[index] = {
-            context,
-            searchSource: new SearchSource(context),
-          };
-          emitFileChange();
-          startRun(globalConfig);
-        }
-      },
-    );
+        searchSources = searchSources.slice();
+        searchSources[index] = {
+          context,
+          searchSource: new SearchSource(context),
+        };
+        emitFileChange();
+        startRun(globalConfig);
+      }
+    });
   });
 
   if (!hasExitListener) {

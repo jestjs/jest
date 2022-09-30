@@ -48,7 +48,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {IModuleMap} from 'jest-haste-map';
+import HasteMap, {IHasteMap, IModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -330,7 +330,7 @@ export default class Runtime {
   static createHasteMap(
     config: Config.ProjectConfig,
     options?: HasteMapOptions,
-  ): Promise<HasteMap> {
+  ): Promise<IHasteMap> {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
       ...(options && options.watch ? config.watchPathIgnorePatterns : []),
@@ -2128,8 +2128,9 @@ export default class Runtime {
       isolateModules,
       mock,
       mocked,
-      requireActual: this.requireActual.bind(this, from),
-      requireMock: this.requireMock.bind(this, from),
+      now: () => _getFakeTimers().now(),
+      requireActual: moduleName => this.requireActual(from, moduleName),
+      requireMock: moduleName => this.requireMock(from, moduleName),
       resetAllMocks,
       resetModules,
       restoreAllMocks,
