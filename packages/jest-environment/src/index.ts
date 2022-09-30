@@ -184,27 +184,27 @@ export interface Jest {
     options?: {virtual?: boolean},
   ): Jest;
   /**
-    * Returns the actual module instead of a mock, bypassing all checks on
-    * whether the module should receive a mock implementation or not.
-    *
-    * @example
-    ```js
-     jest.mock('../myModule', () => {
-     // Require the original module to not be mocked...
-     const originalModule = jest.requireActual('../myModule');
-
-       return {
-         __esModule: true, // Use it when dealing with esModules
-         ...originalModule,
-         getRandom: jest.fn().mockReturnValue(10),
-       };
-     });
-
-     const getRandom = require('../myModule').getRandom;
-
-     getRandom(); // Always returns 10
-     ```
-    */
+   * Returns the actual module instead of a mock, bypassing all checks on
+   * whether the module should receive a mock implementation or not.
+   *
+   * @example
+   * ```js
+   * jest.mock('../myModule', () => {
+   *   // Require the original module to not be mocked...
+   *   const originalModule = jest.requireActual('../myModule');
+   *
+   *   return {
+   *     __esModule: true, // Use it when dealing with esModules
+   *     ...originalModule,
+   *     getRandom: jest.fn().mockReturnValue(10),
+   *   };
+   * });
+   *
+   * const getRandom = require('../myModule').getRandom;
+   *
+   * getRandom(); // Always returns 10
+   * ```
+   */
   requireActual<T = unknown>(moduleName: string): T;
   /**
    * Wraps types of the `source` object and its deep members with type definitions

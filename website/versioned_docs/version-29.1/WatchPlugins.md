@@ -221,6 +221,7 @@ Any key not used by built-in functionality can be claimed, as you would expect. 
 
 Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
 
+
 ```bash
 
 Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
