@@ -369,7 +369,7 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--seed`
 
-Run the tests in the order specified by the seed value. Must be used with the `--randomize` flag.
+Run the tests in the order specified by the seed value. Must be used with the [`--randomize`](#randomize) flag.
 
 ### `--selectProjects <project1> ... <projectN>`
 
