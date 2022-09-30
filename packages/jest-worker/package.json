@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@types/node": "*",
+    "jest-util": "workspace:^",
     "merge-stream": "^2.0.0",
     "supports-color": "^8.0.0"
   },
