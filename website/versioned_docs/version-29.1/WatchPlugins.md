@@ -151,7 +151,11 @@ class MyWatchPlugin {
 }
 ```
 
-**Note**: If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+:::note
+
+If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+
+:::
 
 #### Authorized configuration keys
 
