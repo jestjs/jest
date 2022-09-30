@@ -12869,21 +12869,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-util@^29.1.0, jest-util@workspace:^, jest-util@workspace:packages/jest-util":
-  version: 0.0.0-use.local
-  resolution: "jest-util@workspace:packages/jest-util"
-  dependencies:
-    "@jest/types": "workspace:^"
-    "@types/graceful-fs": ^4.1.3
-    "@types/node": "*"
-    "@types/picomatch": ^2.2.2
-    chalk: ^4.0.0
-    ci-info: ^3.2.0
-    graceful-fs: ^4.2.9
-    picomatch: ^2.2.3
-  languageName: unknown
-  linkType: soft
-
 "jest-util@npm:^26.0.0":
   version: 26.6.2
   resolution: "jest-util@npm:26.6.2"
@@ -12925,6 +12910,21 @@ __metadata:
   checksum: fd6459742c941f070223f25e38a2ac0719aad92561591e9fb2a50d602a5d19d754750b79b4074327a42b00055662b95da3b006542ceb8b54309da44d4a62e721
   languageName: node
   linkType: hard
+
+"jest-util@workspace:^, jest-util@workspace:packages/jest-util":
+  version: 0.0.0-use.local
+  resolution: "jest-util@workspace:packages/jest-util"
+  dependencies:
+    "@jest/types": "workspace:^"
+    "@types/graceful-fs": ^4.1.3
+    "@types/node": "*"
+    "@types/picomatch": ^2.2.2
+    chalk: ^4.0.0
+    ci-info: ^3.2.0
+    graceful-fs: ^4.2.9
+    picomatch: ^2.2.3
+  languageName: unknown
+  linkType: soft
 
 "jest-validate@npm:^26.5.2":
   version: 26.6.2
@@ -13038,7 +13038,7 @@ __metadata:
     "@types/supports-color": ^8.1.0
     get-stream: ^6.0.0
     jest-leak-detector: "workspace:^"
-    jest-util: ^29.1.0
+    jest-util: "workspace:^"
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
     tsd-lite: ^0.6.0
