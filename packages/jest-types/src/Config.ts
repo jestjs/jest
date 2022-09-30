@@ -35,7 +35,7 @@ export type GlobalFakeTimersConfig = {
    *
    * @defaultValue
    * The default is `false`.
-   * */
+   */
   enableGlobally?: boolean;
 };
 
@@ -55,7 +55,7 @@ export type FakeTimersConfig = {
    *
    * @defaultValue
    * The default is `[]`, meaning all APIs are faked.
-   * */
+   */
   doNotFake?: Array<FakeableAPI>;
   /**
    * Sets current system time to be used by fake timers.
