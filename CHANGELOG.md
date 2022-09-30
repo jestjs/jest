@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[expect, @jest/expect]` Do not infer argument types of `*CalledWith` and `*ReturnedWith` matchers ([#13339](https://github.com/facebook/jest/pull/13339))
+- `[expect, @jest/expect]` Revert buggy inference of argument types for `*CalledWith` and `*ReturnedWith` matchers introduced in 29.1.0 ([#13339](https://github.com/facebook/jest/pull/13339))
 
 ### Chore & Maintenance
 
