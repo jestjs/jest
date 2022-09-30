@@ -4,18 +4,22 @@
 
 ### Fixes
 
-- `[expect, @jest/expect]` Revert buggy inference of argument types for `*CalledWith` and `*ReturnedWith` matchers introduced in 29.1.0 ([#13339](https://github.com/facebook/jest/pull/13339))
-- `[jest-worker]` Add missing dependency on `jest-util` ([#13341](https://github.com/facebook/jest/pull/13341))
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.1.2
+
+### Fixes
+
+- `[expect, @jest/expect]` Revert buggy inference of argument types for `*CalledWith` and `*ReturnedWith` matchers introduced in 29.1.0 ([#13339](https://github.com/facebook/jest/pull/13339))
+- `[jest-worker]` Add missing dependency on `jest-util` ([#13341](https://github.com/facebook/jest/pull/13341))
 
 ## 29.1.1
 
 ### Fixes
 
-- `[jest-mock]` Revert ([#13145](https://github.com/facebook/jest/pull/13145))
+- `[jest-mock]` Revert [#13145](https://github.com/facebook/jest/pull/13145) which broke mocking of transpiled ES modules
 
 ## 29.1.0
 
