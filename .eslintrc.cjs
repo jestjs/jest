@@ -27,7 +27,6 @@ function getPackages() {
 module.exports = {
   env: {
     es2020: true,
-    'jest/globals': true,
   },
   extends: [
     'eslint:recommended',
@@ -148,6 +147,29 @@ module.exports = {
       },
     },
 
+    // 'eslint-plugin-jest' rules for test and test related files
+    {
+      files: [
+        '**/__mocks__/**',
+        '**/__tests__/**',
+        '**/*.md/**',
+        '**/*.test.*',
+        'e2e/babel-plugin-jest-hoist/mockFile.js',
+        'e2e/failures/macros.js',
+        'e2e/test-in-root/*.js',
+        'e2e/test-match/test-suites/*',
+        'packages/test-utils/src/ConditionalTest.ts',
+      ],
+      env: {'jest/globals': true},
+      excludedFiles: ['**/__typetests__/**'],
+      plugins: ['jest'],
+      rules: {
+        'jest/no-focused-tests': 'error',
+        'jest/no-identical-title': 'error',
+        'jest/valid-expect': 'error',
+      },
+    },
+
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['**/*.md/**'],
@@ -161,6 +183,7 @@ module.exports = {
         'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': 'off',
+        'jest/no-focused-tests': 'off',
         'no-console': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
@@ -168,6 +191,7 @@ module.exports = {
         'sort-keys': 'off',
       },
     },
+
     // snapshots in examples plus inline snapshots need to keep backtick
     {
       files: ['**/*.md/**', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
@@ -274,20 +298,6 @@ module.exports = {
       },
     },
     {
-      files: [
-        '**/__typetests__/**',
-        '**/*.md/**',
-        'e2e/circus-concurrent/__tests__/concurrent-only-each.test.js',
-        'e2e/jasmine-async/__tests__/concurrent-only-each.test.js',
-        'e2e/test-failing/__tests__/worksWithOnlyMode.test.js',
-      ],
-      rules: {
-        'jest/no-focused-tests': 'off',
-        'jest/no-identical-title': 'off',
-        'jest/valid-expect': 'off',
-      },
-    },
-    {
       env: {node: true},
       files: ['*.js', '*.jsx', '*.mjs', '*.cjs'],
     },
@@ -323,7 +333,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jest'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -380,9 +390,7 @@ module.exports = {
       },
     ],
     'init-declarations': 'off',
-    'jest/no-focused-tests': 'error',
-    'jest/no-identical-title': 'error',
-    'jest/valid-expect': 'error',
+    'jsdoc/check-alignment': 'error',
     'lines-around-comment': 'off',
     'max-depth': 'off',
     'max-nested-callbacks': 'off',
@@ -467,10 +475,7 @@ module.exports = {
     'no-regex-spaces': 'warn',
     'no-restricted-globals': [
       'error',
-      {
-        message: 'Use `globalThis` instead.',
-        name: 'global',
-      },
+      {message: 'Use `globalThis` instead.', name: 'global'},
     ],
     'no-restricted-imports': [
       'error',

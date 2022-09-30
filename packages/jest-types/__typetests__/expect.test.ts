@@ -218,6 +218,37 @@ expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
 
+/**
+ * type inference for "CalledWith" matchers parameters
+ */
+expectError(expect(jest.fn<(a: string) => void>()).toHaveBeenCalledWith(123));
+expectError(
+  expect(jest.fn<(a: string) => void>()).toHaveBeenNthCalledWith(1, 123),
+);
+expectError(
+  expect(jest.fn<(a: string) => void>()).toHaveBeenLastCalledWith(123),
+);
+expectType<void>(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123),
+);
+expectType<void>(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123, true),
+);
+expectError(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith(123, 'value'),
+);
+expectError(
+  expect(
+    jest.fn<(a: string, b: number, c?: boolean) => void>(),
+  ).toHaveBeenCalledWith('value', 123, 'not a boolean'),
+);
+
 expectType<void>(expect(jest.fn()).lastCalledWith());
 expectType<void>(expect(jest.fn()).lastCalledWith('value'));
 expectType<void>(expect(jest.fn()).lastCalledWith('value', 123));
@@ -247,21 +278,44 @@ expectError(expect(jest.fn()).toHaveReturnedTimes(true));
 expectError(expect(jest.fn()).toHaveReturnedTimes());
 
 expectType<void>(expect(jest.fn()).toReturnWith('value'));
+expectType<void>(expect(jest.fn<() => string>()).toReturnWith('value'));
+expectError(expect(jest.fn<() => number>()).toReturnWith('value'));
+expectError(expect(123).toReturnWith('value'));
 expectError(expect(jest.fn()).toReturnWith());
+
 expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
+expectType<void>(expect(jest.fn<() => number>()).toHaveReturnedWith(123));
+expectError(expect(jest.fn<() => string>()).toHaveReturnedWith(123));
+expectError(expect(123).toHaveReturnedWith(123));
 expectError(expect(jest.fn()).toHaveReturnedWith());
 
 expectType<void>(expect(jest.fn()).lastReturnedWith('value'));
+expectType<void>(expect(jest.fn<() => string>()).lastReturnedWith('value'));
+expectError(expect(jest.fn<() => number>()).lastReturnedWith('value'));
+expectError(expect(123).lastReturnedWith('value'));
 expectError(expect(jest.fn()).lastReturnedWith());
+
 expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
+expectType<void>(expect(jest.fn<() => number>()).toHaveLastReturnedWith(123));
+expectError(expect(jest.fn<() => string>()).toHaveLastReturnedWith(123));
+expectError(expect(123).toHaveLastReturnedWith(123));
 expectError(expect(jest.fn()).toHaveLastReturnedWith());
 
 expectType<void>(expect(jest.fn()).nthReturnedWith(1, 'value'));
+expectType<void>(expect(jest.fn<() => string>()).nthReturnedWith(2, 'value'));
+expectError(expect(jest.fn<() => number>()).nthReturnedWith(3, 'value'));
+expectError(expect(123).nthReturnedWith(4, 'value'));
+expectError(expect(123).nthReturnedWith(5));
 expectError(expect(jest.fn()).nthReturnedWith());
-expectError(expect(jest.fn()).nthReturnedWith(2));
+
 expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1, 'value'));
+expectType<void>(
+  expect(jest.fn<() => string>()).toHaveNthReturnedWith(2, 'value'),
+);
+expectError(expect(jest.fn<() => number>()).toHaveNthReturnedWith(3, 'value'));
+expectError(expect(123).toHaveNthReturnedWith(4, 'value'));
+expectError(expect(123).toHaveNthReturnedWith(5));
 expectError(expect(jest.fn()).toHaveNthReturnedWith());
-expectError(expect(jest.fn()).toHaveNthReturnedWith(2));
 
 // snapshot matchers
 

@@ -69,6 +69,7 @@ export default class FakeTimers<TimerRef = unknown> {
   private _config: StackTraceConfig;
   private _disposed?: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
+  private _fakingTime = false;
   private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
   private _maxLoops: number;
@@ -132,6 +133,13 @@ export default class FakeTimers<TimerRef = unknown> {
     this._ticks = [];
     this._immediates = [];
     this._timers = new Map();
+  }
+
+  now(): number {
+    if (this._fakingTime) {
+      return this._now;
+    }
+    return Date.now();
   }
 
   runAllTicks(): void {
@@ -200,13 +208,15 @@ export default class FakeTimers<TimerRef = unknown> {
     // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
-      const nextTimerHandle = this._getNextTimerHandle();
+      const nextTimerHandleAndExpiry = this._getNextTimerHandleAndExpiry();
 
       // If there are no more timer handles, stop!
-      if (nextTimerHandle === null) {
+      if (nextTimerHandleAndExpiry === null) {
         break;
       }
 
+      const [nextTimerHandle, expiry] = nextTimerHandleAndExpiry;
+      this._now = expiry;
       this._runTimerHandle(nextTimerHandle);
 
       // Some of the immediate calls could be enqueued
@@ -239,7 +249,10 @@ export default class FakeTimers<TimerRef = unknown> {
 
     timerEntries
       .sort(([, left], [, right]) => left.expiry - right.expiry)
-      .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
+      .forEach(([timerHandle, timer]) => {
+        this._now = timer.expiry;
+        this._runTimerHandle(timerHandle);
+      });
   }
 
   advanceTimersToNextTimer(steps = 1): void {
@@ -265,21 +278,16 @@ export default class FakeTimers<TimerRef = unknown> {
     // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
-      const timerHandle = this._getNextTimerHandle();
+      const timerHandleAndExpiry = this._getNextTimerHandleAndExpiry();
 
       // If there are no more timer handles, stop!
-      if (timerHandle === null) {
+      if (timerHandleAndExpiry === null) {
         break;
       }
-      const timerValue = this._timers.get(timerHandle);
-      if (timerValue === undefined) {
-        break;
-      }
-      const nextTimerExpiry = timerValue.expiry;
+      const [timerHandle, nextTimerExpiry] = timerHandleAndExpiry;
+
       if (this._now + msToRun < nextTimerExpiry) {
-        // There are no timers between now and the target we're running to, so
-        // adjust our time cursor and quit
-        this._now += msToRun;
+        // There are no timers between now and the target we're running to
         break;
       } else {
         msToRun -= nextTimerExpiry - this._now;
@@ -287,6 +295,9 @@ export default class FakeTimers<TimerRef = unknown> {
         this._runTimerHandle(timerHandle);
       }
     }
+
+    // Advance the clock by whatever time we still have left to run
+    this._now += msToRun;
 
     if (i === this._maxLoops) {
       throw new Error(
@@ -358,6 +369,8 @@ export default class FakeTimers<TimerRef = unknown> {
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
     global.process.nextTick = this._timerAPIs.nextTick;
+
+    this._fakingTime = false;
   }
 
   useFakeTimers(): void {
@@ -390,6 +403,8 @@ export default class FakeTimers<TimerRef = unknown> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
+
+    this._fakingTime = true;
   }
 
   getTimerCount(): number {
@@ -399,8 +414,7 @@ export default class FakeTimers<TimerRef = unknown> {
   }
 
   private _checkFakeTimers() {
-    // @ts-expect-error: condition always returns 'true'
-    if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
+    if (!this._fakingTime) {
       this._global.console.warn(
         'A function to advance timers was called but the timers APIs are not mocked ' +
           'with fake timers. Call `jest.useFakeTimers({legacyFakeTimers: true})` ' +
@@ -557,7 +571,7 @@ export default class FakeTimers<TimerRef = unknown> {
     return this._timerConfig.idToRef(uuid);
   }
 
-  private _getNextTimerHandle() {
+  private _getNextTimerHandleAndExpiry(): [string, number] | null {
     let nextTimerHandle = null;
     let soonestTime = MS_IN_A_YEAR;
 
@@ -568,13 +582,19 @@ export default class FakeTimers<TimerRef = unknown> {
       }
     });
 
-    return nextTimerHandle;
+    if (nextTimerHandle === null) {
+      return null;
+    }
+
+    return [nextTimerHandle, soonestTime];
   }
 
   private _runTimerHandle(timerHandle: TimerID) {
     const timer = this._timers.get(timerHandle);
 
     if (!timer) {
+      // Timer has been cleared - we'll hit this when a timer is cleared within
+      // another timer in runOnlyPendingTimers
       return;
     }
 

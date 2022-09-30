@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build"
+    "outDir": "build",
+    // we don't want `@types/jest` to be referenced
+    "types": ["node"]
   },
   "include": ["./src/**/*"],
   "references": [{"path": "../jest-types"}, {"path": "../pretty-format"}]

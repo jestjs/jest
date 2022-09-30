@@ -122,6 +122,13 @@ export default class FakeTimers {
     return Date.now();
   }
 
+  now(): number {
+    if (this._fakingTime) {
+      return this._clock.now;
+    }
+    return Date.now();
+  }
+
   getTimerCount(): number {
     if (this._checkFakeTimers()) {
       return this._clock.countTimers();

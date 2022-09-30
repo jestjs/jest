@@ -157,6 +157,11 @@ module.exports = {
       textColor: '#fff',
       isCloseable: false,
     },
+    docs: {
+      sidebar: {
+        hideable: true,
+      },
+    },
     navbar: {
       title: 'Jest',
       items: [

@@ -17,10 +17,6 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, Depende
   % Ignore peer dependencies
   DependencyType \= 'peerDependencies',
   DependencyType2 \= 'peerDependencies',
-  % Ignore workspace:*: we use both `workspace:*` and real version such as `^28.0.0-alpha.8` to reference package in monorepo
-  % TODO: in the future we should make it consistent and remove this ignore
-  DependencyRange \= 'workspace:*',
-  DependencyRange2 \= 'workspace:*',
   % A list of exception to same version rule
   \+ member(DependencyIdent, [
     % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17

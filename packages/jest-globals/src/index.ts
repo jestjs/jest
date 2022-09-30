@@ -11,10 +11,12 @@ import type {Global} from '@jest/types';
 import type {
   ClassLike,
   FunctionLike,
+  Mock as JestMock,
   Mocked as JestMocked,
   MockedClass as JestMockedClass,
   MockedFunction as JestMockedFunction,
   MockedObject as JestMockedObject,
+  UnknownFunction,
 } from 'jest-mock';
 
 export declare const expect: JestExpect;
@@ -36,6 +38,10 @@ declare const jest: Jest;
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace jest {
+  /**
+   * Constructs the type of a mock function, e.g. the return type of `jest.fn()`.
+   */
+  export type Mock<T extends FunctionLike = UnknownFunction> = JestMock<T>;
   /**
    * Wraps a class, function or object type with Jest mock type definitions.
    */

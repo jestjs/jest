@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {
-  JestPackageJson,
+  PackageJson,
   cleanup,
   createEmptyPackage,
   runYarnInstall,
@@ -25,7 +25,7 @@ const babelConfig = {
   ],
 };
 
-const pkg: JestPackageJson = {
+const pkg: PackageJson = {
   dependencies: {
     react: '^17.0.0',
   },

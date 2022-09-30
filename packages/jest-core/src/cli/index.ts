@@ -13,7 +13,7 @@ import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
-import type HasteMap from 'jest-haste-map';
+import type {IHasteMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {TestWatcher} from 'jest-watcher';
@@ -236,7 +236,7 @@ const runWatch = async (
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
-  hasteMapInstances: Array<HasteMap>,
+  hasteMapInstances: Array<IHasteMap>,
   filter?: Filter,
 ) => {
   if (hasDeprecationWarnings) {
