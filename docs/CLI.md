@@ -326,9 +326,10 @@ Shuffle the order of the tests within a file. The seed used to generate the new 
 
 Additionally you can use the [`--seed`](#--seed) flag to pass the seed value:
 
-    ```bash
-    jest --randomize --seed 1234
-    ```
+```bash
+jest --randomize --seed 1234
+```
+
 :::
 
 :::note
