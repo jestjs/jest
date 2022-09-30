@@ -130,7 +130,11 @@ Watch Usage
  › Press Enter to trigger a test run.
 ```
 
-**Note**: If the key for your plugin already exists as a default key, your plugin will override that key.
+:::note
+
+If the key for your plugin already exists as a default key, your plugin will override that key.
+
+:::
 
 ### `run(globalConfig, updateConfigAndRun)`
 
