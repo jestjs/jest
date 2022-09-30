@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "strict": true
+  },
+  "include": ["./**/*"]
+}
