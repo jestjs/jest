@@ -1140,8 +1140,10 @@ export default async function normalize(
   }
 
   if (argv.randomize) {
-    // at time of writing we use mulberry32 pseudorandom number generator so 32 bits
-    newOptions.seed = argv.seed ?? Math.floor(Math.random() * Math.pow(2, 32));
+    // at time of writing we use Prando which starts repeating after 2^29 - 1
+    // 0 is not a valid input seed
+    newOptions.seed =
+      argv.seed ?? Math.floor((1 - Math.random()) * (Math.pow(2, 29) - 1));
   }
 
   return {
