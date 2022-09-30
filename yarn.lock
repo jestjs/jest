@@ -2750,7 +2750,6 @@ __metadata:
     "@babel/register": ^7.0.0
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:^"
-    "@jest/test-globals": "workspace:^"
     "@jest/test-utils": "workspace:^"
     "@lerna-lite/cli": ^1.11.3
     "@microsoft/api-extractor": ^7.29.0
@@ -2905,7 +2904,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/test-globals@workspace:^, @jest/test-globals@workspace:packages/test-globals":
+"@jest/test-globals@workspace:packages/test-globals":
   version: 0.0.0-use.local
   resolution: "@jest/test-globals@workspace:packages/test-globals"
   dependencies:
