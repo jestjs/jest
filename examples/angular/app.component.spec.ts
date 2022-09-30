@@ -1,6 +1,5 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {describe, expect, it, jest} from '@jest/globals';
-
 import {AppComponent} from './app.component';
 import {DataService} from './shared/data.service';
 

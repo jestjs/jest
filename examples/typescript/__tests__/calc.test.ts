@@ -1,11 +1,10 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 import {jest} from '@jest/globals';
-
-import Memory from '../memory';
+import Memory from '../Memory';
+import makeCalc from '../calc';
 import sub from '../sub';
 import sum from '../sum';
-import makeCalc from '../calc';
 
 jest.mock('../memory');
 jest.mock('../sub');

@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import * as TestUtils from 'react-dom/test-utils';
-
 const CheckboxWithLabel = require('../CheckboxWithLabel').default;
 
 it('CheckboxWithLabel changes the text after click', () => {

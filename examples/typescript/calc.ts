@@ -1,6 +1,6 @@
+import Memory from './Memory';
 import sub from './sub';
 import sum from './sum';
-import Memory from './memory';
 
 type Op = 'MemoryAdd' | 'MemoryClear' | 'MemorySub' | 'Sub' | 'Sum';
 
