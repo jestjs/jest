@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`describe1 test4 1`] = `4`;
+
+exports[`describe1 test5 1`] = `5`;
+
+exports[`describe1 test6 1`] = `6`;
+
+exports[`describe2 test4 1`] = `4`;
+
+exports[`describe2 test5 1`] = `5`;
+
+exports[`describe2 test6 1`] = `6`;
+
+exports[`describe3 describe4 test13 1`] = `13`;
+
+exports[`describe3 describe4 test14 1`] = `14`;
+
+exports[`describe3 describe4 test15 1`] = `15`;
+
+exports[`describe3 test10 1`] = `10`;
+
+exports[`describe3 test11 1`] = `11`;
+
+exports[`describe3 test12 1`] = `12`;
+
+exports[`test1 1`] = `1`;
+
+exports[`test2 1`] = `2`;
+
+exports[`test3 1`] = `3`;
