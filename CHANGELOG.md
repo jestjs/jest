@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
+- `[jest-circus, jest-cli, jest-config, @jest/core, @jest/types, @jest-util]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
 
 ### Fixes
 
