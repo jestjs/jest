@@ -2,7 +2,7 @@
 
 ### Features
 
-[jest-core] Enable testResultsProcessor to be async (#13343)
+[jest-core] Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
 
 ### Fixes
 
