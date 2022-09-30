@@ -321,11 +321,14 @@ If configuration files are found in the specified paths, _all_ projects specifie
 ### `--randomize`
 
 Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
-In order to determine the seed refer to the [`--seed`](#--seed) CLI option.
 
-```bash
-jest --randomize
-```
+:::tip
+Additionally you can use the [`--seed`](#--seed) flag to pass the seed value:
+
+    ```bash
+    jest --randomize --seed 1234
+    ```
+:::
 
 :::note
 
