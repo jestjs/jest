@@ -323,6 +323,7 @@ If configuration files are found in the specified paths, _all_ projects specifie
 Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
 
 :::tip
+
 Additionally you can use the [`--seed`](#--seed) flag to pass the seed value:
 
     ```bash
