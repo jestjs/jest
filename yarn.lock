@@ -13048,6 +13048,7 @@ __metadata:
     "@types/supports-color": ^8.1.0
     get-stream: ^6.0.0
     jest-leak-detector: "workspace:^"
+    jest-util: "workspace:^"
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
     tsd-lite: ^0.6.0
