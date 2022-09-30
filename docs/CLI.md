@@ -333,7 +333,7 @@ If configuration files are found in the specified paths, _all_ projects specifie
 ### `--randomize`
 
 Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
-In order to determine the seed refer to the `--seed` CLI option.
+In order to determine the seed refer to the [`--seed`](#seed) CLI option.
 
 ### `--reporters`
 
