@@ -5,8 +5,8 @@ import {AppComponent} from './app.component';
 import {DataService} from './shared/data.service';
 
 const title = 'Test';
-const getTitleFn = jest.fn<DataService['getTitle']>().mockReturnValue(title);
-const dataServiceSpy = jest.fn().mockImplementation(
+const getTitleFn = jest.fn(() => title);
+const dataServiceSpy = jest.fn(
   (): Partial<DataService> => ({
     getTitle: getTitleFn,
   }),
