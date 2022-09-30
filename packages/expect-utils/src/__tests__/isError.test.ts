@@ -7,6 +7,8 @@
  * @jest-environment jsdom
  */
 
+/// <reference lib="dom" />
+
 /* eslint-env browser */
 
 import {isError} from '../utils';

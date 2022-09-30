@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "rootDir": "../",
+    "types": ["@jest/test-globals", "node"]
+  },
+  "include": ["../**/*"]
+}

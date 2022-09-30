@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/// <reference lib="dom" />
+
 import * as util from 'util';
 import {runInNewContext} from 'vm';
 import {ModuleMocker} from 'jest-mock';
