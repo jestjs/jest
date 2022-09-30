@@ -6,7 +6,7 @@ import makeCalc from '../calc';
 import sub from '../sub';
 import sum from '../sum';
 
-jest.mock('../memory');
+jest.mock('../Memory');
 jest.mock('../sub');
 jest.mock('../sum');
 
