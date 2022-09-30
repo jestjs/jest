@@ -5,5 +5,10 @@
     "outDir": "build"
   },
   "include": ["./src/**/*"],
-  "references": [{"path": "../jest-globals"}, {"path": "../jest-mock"}]
+  "references": [
+    {"path": "../jest-environment"},
+    {"path": "../jest-expect"},
+    {"path": "../jest-mock"},
+    {"path": "../jest-types"}
+  ]
 }

@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Jest} from '@jest/environment';
+import type {JestExpect} from '@jest/expect';
+import type {Global} from '@jest/types';
 import type {
   ClassLike,
   FunctionLike,
@@ -17,26 +20,26 @@ import type {
 } from 'jest-mock';
 
 declare global {
-  const beforeAll: typeof import('@jest/globals')['beforeAll'];
-  const beforeEach: typeof import('@jest/globals')['beforeEach'];
+  const beforeAll: Global.TestFrameworkGlobals['beforeAll'];
+  const beforeEach: Global.TestFrameworkGlobals['beforeEach'];
 
-  const afterEach: typeof import('@jest/globals')['afterEach'];
-  const afterAll: typeof import('@jest/globals')['afterAll'];
+  const afterEach: Global.TestFrameworkGlobals['afterEach'];
+  const afterAll: Global.TestFrameworkGlobals['afterAll'];
 
-  const describe: typeof import('@jest/globals')['describe'];
-  const fdescribe: typeof import('@jest/globals')['fdescribe'];
-  const xdescribe: typeof import('@jest/globals')['xdescribe'];
+  const describe: Global.TestFrameworkGlobals['describe'];
+  const fdescribe: Global.TestFrameworkGlobals['fdescribe'];
+  const xdescribe: Global.TestFrameworkGlobals['xdescribe'];
 
-  const it: typeof import('@jest/globals')['it'];
-  const fit: typeof import('@jest/globals')['fit'];
-  const xit: typeof import('@jest/globals')['xit'];
+  const it: Global.TestFrameworkGlobals['it'];
+  const fit: Global.TestFrameworkGlobals['fit'];
+  const xit: Global.TestFrameworkGlobals['xit'];
 
-  const test: typeof import('@jest/globals')['test'];
-  const xtest: typeof import('@jest/globals')['xtest'];
+  const test: Global.TestFrameworkGlobals['test'];
+  const xtest: Global.TestFrameworkGlobals['xtest'];
 
-  const expect: typeof import('@jest/globals')['expect'];
+  const expect: JestExpect;
 
-  const jest: typeof import('@jest/globals')['jest'];
+  const jest: Jest;
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {

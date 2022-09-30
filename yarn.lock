@@ -2909,7 +2909,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/test-globals@workspace:packages/test-globals"
   dependencies:
-    "@jest/globals": "workspace:^"
+    "@jest/environment": "workspace:^"
+    "@jest/expect": "workspace:^"
+    "@jest/types": "workspace:^"
     jest-mock: "workspace:^"
   languageName: unknown
   linkType: soft

@@ -12,7 +12,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/globals": "workspace:^",
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/types": "workspace:^",
     "jest-mock": "workspace:^"
   },
   "engines": {
