@@ -1,5 +1,7 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
+import {expect, it} from '@jest/globals';
+
 it('adds 1 + 2 to equal 3 in Typescript', () => {
   const sum = require('../sum.ts').default;
   expect(sum(1, 2)).toBe(3);

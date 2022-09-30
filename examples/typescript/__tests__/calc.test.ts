@@ -1,6 +1,6 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
-import {jest} from '@jest/globals';
+import {describe, expect, it, jest} from '@jest/globals';
 
 import Memory from '../memory';
 import sub from '../sub';
