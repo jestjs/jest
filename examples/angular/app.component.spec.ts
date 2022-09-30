@@ -1,11 +1,12 @@
-import {ComponentFixture, TestBed, async} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {describe, expect, it, jest} from '@jest/globals';
 
 import {AppComponent} from './app.component';
 import {DataService} from './shared/data.service';
 
 const title = 'Test';
-const getTitleFn = jest.fn().mockReturnValue(title);
-const dataServiceSpy = jest.fn().mockImplementation(
+const getTitleFn = jest.fn(() => title);
+const dataServiceSpy = jest.fn(
   (): Partial<DataService> => ({
     getTitle: getTitleFn,
   }),
@@ -15,7 +16,7 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let app: AppComponent;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       providers: [{provide: DataService, useClass: dataServiceSpy}],
