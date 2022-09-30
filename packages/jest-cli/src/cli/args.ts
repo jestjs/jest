@@ -454,7 +454,7 @@ export const options: {[key: string]: Options} = {
     type: 'array',
   },
   randomize: {
-    description: 'Randomise the order of the tests in each describe block',
+    description: 'Randomize the order of the tests within a file',
     type: 'boolean',
   },
   reporters: {

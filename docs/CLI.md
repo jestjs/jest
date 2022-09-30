@@ -28,6 +28,18 @@ Run tests related to changed files based on hg/git (uncommitted files):
 jest -o
 ```
 
+Run tests in a file in a random order (this will print the seed used for random number generation):
+
+```bash
+jest --randomize
+```
+
+Run tests in a file in an order determined by a seed:
+
+```bash
+jest --randomize --seed 1234
+```
+
 Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
 
 ```bash
@@ -311,6 +323,11 @@ Allows the test suite to pass when no files are found.
 
 Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
 
+### `--randomize`
+
+Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout.
+In order to determine the seed refer to the `--seed` CLI option.
+
 ### `--reporters`
 
 Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
@@ -342,6 +359,10 @@ Run only the tests that were specified with their exact paths.
 The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files.
 
 :::
+
+### `--seed`
+
+Run the tests in the order specified by the seed value. Must be used with the `--randomize` flag.
 
 ### `--selectProjects <project1> ... <projectN>`
 
