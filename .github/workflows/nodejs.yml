@@ -45,9 +45,7 @@ jobs:
       - name: build
         run: yarn build
       - name: typecheck examples
-        run: yarn typecheck:examples
-      - name: typecheck tests
-        run: yarn typecheck:tests
+        run: yarn typecheck
       - name: ts integration
         run: yarn test-ts --selectProjects ts-integration
       - name: type tests
