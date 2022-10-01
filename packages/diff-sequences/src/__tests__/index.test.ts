@@ -734,7 +734,7 @@ const assertCommonSubstring = (
 
 // Return array of substrings in a longest common subsequence of strings.
 const findCommonSubstrings = (a: string, b: string): Array<string> => {
-  const array = [];
+  const array: Array<string> = [];
   diff(
     a.length,
     b.length,
