@@ -2,8 +2,8 @@
 
 'use strict';
 
-import Link from '../Link';
 import renderer from 'react-test-renderer';
+import Link from '../Link';
 
 it('renders correctly', () => {
   const tree = renderer

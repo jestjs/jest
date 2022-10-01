@@ -1,7 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
 import {createRef} from 'react';
-
 import * as TestUtils from 'react-dom/test-utils';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 

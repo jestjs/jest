@@ -2,8 +2,8 @@
 
 'use strict';
 
-import Clock from '../Clock';
 import renderer from 'react-test-renderer';
+import Clock from '../Clock';
 
 jest.useFakeTimers();
 Date.now = jest.fn(() => 1482363367071);

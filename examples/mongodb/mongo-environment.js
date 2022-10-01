@@ -1,9 +1,6 @@
-// mongo-environment.js
-const NodeEnvironment = require('jest-environment-node').default;
-
-const path = require('path');
-
-const fs = require('fs');
+import fs from 'fs';
+import path from 'path';
+import NodeEnvironment from 'jest-environment-node';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
