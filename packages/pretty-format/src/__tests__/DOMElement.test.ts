@@ -6,6 +6,9 @@
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
 
 import prettyFormat, {plugins} from '../';

@@ -1,0 +1,23 @@
+{
+  "name": "@jest/test-globals",
+  "version": "29.1.0",
+  "private": true,
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/types": "workspace:^",
+    "jest-mock": "workspace:^"
+  },
+  "engines": {
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+  }
+}

@@ -20,7 +20,6 @@
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
     "@types/dedent": "^0.7.0",
-    "@types/jest": "^27.4.0",
     "@types/node": "~14.14.45",
     "@types/which": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
