@@ -156,7 +156,7 @@ const assertCommonItems = (
 const countDifferences = (
   aLength: number,
   bLength: number,
-  isCommon,
+  isCommon: (aIndex: number, bIndex: number) => boolean,
 ): number => {
   const dMax = aLength + bLength;
   const aIndexes = [-1]; // initialize for aLast + 1 in loop when d = 0
@@ -274,7 +274,7 @@ describe('no common items', () => {
   // default export does not call findSubsequences nor divide
 
   describe('negative zero is equivalent to zero for length', () => {
-    const countItemsNegativeZero = (aLength, bLength) => {
+    const countItemsNegativeZero = (aLength: number, bLength: number) => {
       let n = 0;
       diff(
         aLength,
@@ -301,21 +301,21 @@ describe('no common items', () => {
   });
 
   test('a empty and b empty', () => {
-    const a = [];
-    const b = [];
-    const expected = [];
+    const a: Array<unknown> = [];
+    const b: Array<unknown> = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
   test('a empty and b non-empty', () => {
-    const a = [];
+    const a: Array<unknown> = [];
     const b = [false];
-    const expected = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
   test('a non-empty and b empty', () => {
     const a = [false, true];
-    const b = [];
-    const expected = [];
+    const b: Array<unknown> = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
 
@@ -327,7 +327,7 @@ describe('no common items', () => {
       // last segment cannot have a prev segment
       const a = [false];
       const b = [true];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 1 odd', () => {
@@ -336,7 +336,7 @@ describe('no common items', () => {
       // last segment has a prev segment because unroll a half iteration
       const a = [0, 1];
       const b = ['0'];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 2 even', () => {
@@ -345,7 +345,7 @@ describe('no common items', () => {
       // last segment has a prev segment
       const a = [0, 1, 2, 3];
       const b = ['0', '1'];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 7 odd', () => {
@@ -354,7 +354,7 @@ describe('no common items', () => {
       // last segment has a prev segment
       const a = ['0', '1', '2'];
       const b = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
   });
@@ -734,7 +734,7 @@ const assertCommonSubstring = (
 
 // Return array of substrings in a longest common subsequence of strings.
 const findCommonSubstrings = (a: string, b: string): Array<string> => {
-  const array = [];
+  const array: Array<string> = [];
   diff(
     a.length,
     b.length,

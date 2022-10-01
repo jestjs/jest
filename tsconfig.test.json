@@ -4,6 +4,7 @@
     "composite": false,
     "emitDeclarationOnly": false,
     "noEmit": true,
+    "skipLibCheck": true,
     "types": ["@jest/test-globals"]
   }
 }
