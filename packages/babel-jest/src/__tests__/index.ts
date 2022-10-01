@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {TransformOptions as BabelTransformOptions} from '@babel/core';
-import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
+import type {
+  BabelFileResult,
+  TransformOptions as BabelTransformOptions,
+} from '@babel/core';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
@@ -60,9 +62,9 @@ test('Returns source string with inline maps when no transformOptions is passed'
   expect(result.map).toBeDefined();
   expect(result.code).toMatch('//# sourceMappingURL');
   expect(result.code).toMatch('customMultiply');
-  expect((result.map as EncodedSourceMap).sources).toEqual(['dummy_path.js']);
+  expect((result as BabelFileResult).map!.sources).toEqual(['dummy_path.js']);
   expect(
-    JSON.stringify((result.map as EncodedSourceMap).sourcesContent),
+    JSON.stringify((result as BabelFileResult).map!.sourcesContent),
   ).toMatch('customMultiply');
 });
 
