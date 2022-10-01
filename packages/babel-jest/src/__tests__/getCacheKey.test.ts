@@ -6,7 +6,7 @@
  */
 
 import type {TransformOptions as BabelTransformOptions} from '@babel/core';
-import type {TransformOptions as JestTransformOptions} from '@jest/transform';
+import type {TransformOptions} from '@jest/transform';
 import babelJest from '../index';
 
 const {getCacheKey} = babelJest.createTransformer();
@@ -39,9 +39,9 @@ describe('getCacheKey', () => {
     config: {rootDir: 'mock-root-dir'},
     configString: 'mock-config-string',
     instrument: true,
-  } as JestTransformOptions;
+  } as TransformOptions<BabelTransformOptions>;
 
-  const oldCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+  const oldCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
   test('returns cache key hash', () => {
     expect(oldCacheKey.length).toEqual(32);
@@ -54,7 +54,7 @@ describe('getCacheKey', () => {
 
     const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -77,7 +77,7 @@ describe('getCacheKey', () => {
 
     const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -87,7 +87,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourceText` value is changing', () => {
-    const newCacheKey = getCacheKey(
+    const newCacheKey = getCacheKey!(
       'new source text',
       sourcePath,
       transformOptions,
@@ -97,7 +97,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `sourcePath` value is changing', () => {
-    const newCacheKey = getCacheKey(
+    const newCacheKey = getCacheKey!(
       sourceText,
       'new-source-path.js',
       transformOptions,
@@ -107,7 +107,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `configString` value is changing', () => {
-    const newCacheKey = getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, {
       ...transformOptions,
       configString: 'new-config-string',
     });
@@ -129,7 +129,7 @@ describe('getCacheKey', () => {
 
     const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -152,7 +152,7 @@ describe('getCacheKey', () => {
 
     const {createTransformer}: typeof import('../index') = require('../index');
 
-    const newCacheKey = createTransformer().getCacheKey(
+    const newCacheKey = createTransformer().getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -162,7 +162,7 @@ describe('getCacheKey', () => {
   });
 
   test('if `instrument` value is changing', () => {
-    const newCacheKey = getCacheKey(sourceText, sourcePath, {
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, {
       ...transformOptions,
       instrument: false,
     });
@@ -173,7 +173,7 @@ describe('getCacheKey', () => {
   test('if `process.env.NODE_ENV` value is changing', () => {
     process.env.NODE_ENV = 'NEW_NODE_ENV';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
@@ -181,16 +181,17 @@ describe('getCacheKey', () => {
   test('if `process.env.BABEL_ENV` value is changing', () => {
     process.env.BABEL_ENV = 'NEW_BABEL_ENV';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
   test('if node version is changing', () => {
+    // @ts-expect-error: Testing purpose
     delete process.version;
     process.version = 'new-node-version';
 
-    const newCacheKey = getCacheKey(sourceText, sourcePath, transformOptions);
+    const newCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });

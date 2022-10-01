@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {describe, expect, it, jest} from '@jest/globals';
 import {AppComponent} from './app.component';
 import {DataService} from './shared/data.service';
@@ -15,14 +15,14 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let app: AppComponent;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       providers: [{provide: DataService, useClass: dataServiceSpy}],
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     app = fixture.debugElement.componentInstance;
-  }));
+  });
 
   it('should create the app', () => {
     expect(app).toBeTruthy();
