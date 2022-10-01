@@ -216,8 +216,7 @@ module.exports = {
     {
       files: ['examples/**/*'],
       rules: {
-        'import/no-unresolved': ['error', {ignore: ['^react-native$']}],
-        'import/order': 'off',
+        'no-restricted-imports': 'off',
       },
     },
     {

@@ -1,9 +1,6 @@
-// setup.js
-const path = require('path');
-
-const fs = require('fs');
-
-const {MongoMemoryServer} = require('mongodb-memory-server');
+import fs from 'fs';
+import path from 'path';
+import {MongoMemoryServer} from 'mongodb-memory-server';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 

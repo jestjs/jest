@@ -2,10 +2,9 @@
 
 import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 Enzyme.configure({adapter: new Adapter()});
-
-import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document

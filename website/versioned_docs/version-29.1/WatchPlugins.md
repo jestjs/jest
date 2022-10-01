@@ -130,7 +130,11 @@ Watch Usage
  › Press Enter to trigger a test run.
 ```
 
-**Note**: If the key for your plugin already exists as a default key, your plugin will override that key.
+:::note
+
+If the key for your plugin already exists as a default key, your plugin will override that key.
+
+:::
 
 ### `run(globalConfig, updateConfigAndRun)`
 
@@ -147,7 +151,11 @@ class MyWatchPlugin {
 }
 ```
 
-**Note**: If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+:::note
+
+If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+
+:::
 
 #### Authorized configuration keys
 
@@ -221,8 +229,16 @@ Any key not used by built-in functionality can be claimed, as you would expect. 
 
 Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
 
-> Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+```bash
+
+Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+
+```
 
 Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (`watchPlugins` array setting). When this happens, you’ll also get an error message that tries to help you fix that:
 
-> Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+```bash
+
+Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+
+```

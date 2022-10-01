@@ -3,8 +3,7 @@
 import * as React from 'react';
 import * as TestUtils from 'react-dom/test-utils';
 import {expect, it} from '@jest/globals';
-
-const CheckboxWithLabel = require('../CheckboxWithLabel').default;
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   const checkboxLabelRef: React.RefObject<HTMLLabelElement> = React.createRef();
