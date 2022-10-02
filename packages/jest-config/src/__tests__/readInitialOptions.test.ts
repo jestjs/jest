@@ -7,7 +7,7 @@
 import type {Config} from '@jest/types';
 import {readInitialOptions} from '../index';
 
-describe(readInitialOptions.name, () => {
+describe(readInitialOptions, () => {
   test('should be able to use serialized jest config', async () => {
     const inputConfig = {jestConfig: 'serialized'};
     const {config, configPath} = await readInitialOptions(
