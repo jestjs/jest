@@ -99,12 +99,8 @@ describe(readInitialOptions.name, () => {
     jest.spyOn(process, 'cwd').mockReturnValue(cwd);
     const error: Error = await readInitialOptions().catch(error => error);
     expect(error.message).toContain('Multiple configurations found');
-    expect(error.message).toContain(
-      resolveFixture('multiple-config-files', 'jest.config.js'),
-    );
-    expect(error.message).toContain(
-      resolveFixture('multiple-config-files', 'jest.config.json'),
-    );
+    expect(error.message).toContain('multiple-config-files/jest.config.js');
+    expect(error.message).toContain('multiple-config-files/jest.config.json');
   });
 
   test('should be able to ignore multiple config files error', async () => {
