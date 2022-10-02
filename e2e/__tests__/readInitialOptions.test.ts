@@ -11,7 +11,7 @@ function resolveFixture(...pathSegments: Array<string>) {
   return path.resolve(__dirname, '..', 'read-initial-options', ...pathSegments);
 }
 
-describe(readInitialOptions.name, () => {
+describe(readInitialOptions, () => {
   test('should read from the cwd by default', async () => {
     const configFile = resolveFixture('js-config', 'jest.config.js');
     const rootDir = resolveFixture('js-config');
