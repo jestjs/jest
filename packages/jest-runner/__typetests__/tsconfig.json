@@ -1,12 +1,4 @@
 {
-  "extends": "../../../tsconfig.json",
-  "compilerOptions": {
-    "composite": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-
-    "types": []
-  },
+  "extends": "../../../tsconfig.typetest.json",
   "include": ["./**/*"]
 }
