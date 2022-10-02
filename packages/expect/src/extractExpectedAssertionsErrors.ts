@@ -35,7 +35,11 @@ const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors']
       expectedAssertionsNumberError,
       isExpectingAssertions,
       isExpectingAssertionsError,
+      matcherHintOptions,
     } = getState();
+
+    const expectedColor = matcherHintOptions?.expectedColor ?? EXPECTED_COLOR;
+    const receivedColor = matcherHintOptions?.receivedColor ?? RECEIVED_COLOR;
 
     resetAssertionsLocalState();
 
@@ -43,15 +47,16 @@ const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors']
       typeof expectedAssertionsNumber === 'number' &&
       assertionCalls !== expectedAssertionsNumber
     ) {
-      const numOfAssertionsExpected = EXPECTED_COLOR(
+      const numOfAssertionsExpected = expectedColor(
         pluralize('assertion', expectedAssertionsNumber),
       );
 
       expectedAssertionsNumberError!.message =
         `${matcherHint('.assertions', '', expectedAssertionsNumber.toString(), {
+          ...matcherHintOptions,
           isDirectExpectCall: true,
         })}\n\n` +
-        `Expected ${numOfAssertionsExpected} to be called but received ${RECEIVED_COLOR(
+        `Expected ${numOfAssertionsExpected} to be called but received ${receivedColor(
           pluralize('assertion call', assertionCalls || 0),
         )}.`;
 
@@ -62,14 +67,17 @@ const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors']
       });
     }
     if (isExpectingAssertions && assertionCalls === 0) {
-      const expected = EXPECTED_COLOR('at least one assertion');
-      const received = RECEIVED_COLOR('received none');
+      const expected = expectedColor('at least one assertion');
+      const received = receivedColor('received none');
 
       isExpectingAssertionsError!.message = `${matcherHint(
         '.hasAssertions',
         '',
         '',
-        {isDirectExpectCall: true},
+        {
+          ...matcherHintOptions,
+          isDirectExpectCall: true,
+        },
       )}\n\nExpected ${expected} to be called but ${received}.`;
 
       result.push({
