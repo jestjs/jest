@@ -13,6 +13,7 @@ import {
   DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
+  DiffOptionsColor,
   DiffOptions as ImportDiffOptions,
   diff as diffDefault,
   diffStringsRaw,
@@ -55,6 +56,8 @@ export type MatcherHintOptions = {
   receivedColor?: MatcherHintColor;
   secondArgument?: string;
   secondArgumentColor?: MatcherHintColor;
+  inverseColor?: MatcherHintColor;
+  commonColor?: MatcherHintColor;
 };
 
 export type DiffOptions = ImportDiffOptions;
@@ -131,10 +134,15 @@ export const highlightTrailingWhitespace = (text: string): string =>
 const replaceTrailingSpaces = (text: string): string =>
   text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
 
-export const printReceived = (object: unknown): string =>
-  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
-export const printExpected = (value: unknown): string =>
-  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
+export const printReceived = (
+  object: unknown,
+  color: DiffOptionsColor = RECEIVED_COLOR,
+): string => color(replaceTrailingSpaces(stringify(object)));
+
+export const printExpected = (
+  value: unknown,
+  color: DiffOptionsColor = EXPECTED_COLOR,
+): string => color(replaceTrailingSpaces(stringify(value)));
 
 export function printWithType<T>(
   name: string,
@@ -178,13 +186,15 @@ export const ensureActualIsNumber = (
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
+  const receivedColor = options?.receivedColor ?? RECEIVED_COLOR;
+
   if (typeof actual !== 'number' && typeof actual !== 'bigint') {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${RECEIVED_COLOR('received')} value must be a number or bigint`,
+        `${receivedColor('received')} value must be a number or bigint`,
         printWithType('Received', actual, printReceived),
       ),
     );
@@ -199,13 +209,15 @@ export const ensureExpectedIsNumber = (
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
+  const hintExpectedColor = options?.receivedColor ?? EXPECTED_COLOR;
+
   if (typeof expected !== 'number' && typeof expected !== 'bigint') {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${EXPECTED_COLOR('expected')} value must be a number or bigint`,
+        `${hintExpectedColor('expected')} value must be a number or bigint`,
         printWithType('Expected', expected, printExpected),
       ),
     );
@@ -230,6 +242,8 @@ export const ensureExpectedIsNonNegativeInteger = (
   matcherName: string,
   options?: MatcherHintOptions,
 ): void => {
+  const hintExpectedColor = options?.receivedColor ?? EXPECTED_COLOR;
+
   if (
     typeof expected !== 'number' ||
     !Number.isSafeInteger(expected) ||
@@ -240,7 +254,7 @@ export const ensureExpectedIsNonNegativeInteger = (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${EXPECTED_COLOR('expected')} value must be a non-negative integer`,
+        `${hintExpectedColor('expected')} value must be a non-negative integer`,
         printWithType('Expected', expected, printExpected),
       ),
     );
@@ -256,6 +270,7 @@ const getCommonAndChangedSubstrings = (
   diffs: Array<Diff>,
   op: number,
   hasCommonDiff: boolean,
+  invertedColor: DiffOptionsColor = INVERTED_COLOR,
 ): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
@@ -265,7 +280,7 @@ const getCommonAndChangedSubstrings = (
         : diff[0] !== op
         ? ''
         : hasCommonDiff
-        ? INVERTED_COLOR(diff[1])
+        ? invertedColor(diff[1])
         : diff[1]),
     '',
   );
@@ -321,6 +336,7 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  diffOptions?: DiffOptions,
 ): string => {
   if (
     typeof expected === 'string' &&
@@ -333,6 +349,7 @@ export const printDiffOrStringify = (
   ) {
     if (expected.includes('\n') || received.includes('\n')) {
       return diffStringsUnified(expected, received, {
+        ...diffOptions,
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
         changeLineTrailingSpaceColor: chalk.bgYellow,
@@ -350,12 +367,24 @@ export const printDiffOrStringify = (
     const expectedLine =
       printLabel(expectedLabel) +
       printExpected(
-        getCommonAndChangedSubstrings(diffs, DIFF_DELETE, hasCommonDiff),
+        getCommonAndChangedSubstrings(
+          diffs,
+          DIFF_DELETE,
+          hasCommonDiff,
+          diffOptions?.changeColor,
+        ),
+        diffOptions?.aColor,
       );
     const receivedLine =
       printLabel(receivedLabel) +
       printReceived(
-        getCommonAndChangedSubstrings(diffs, DIFF_INSERT, hasCommonDiff),
+        getCommonAndChangedSubstrings(
+          diffs,
+          DIFF_INSERT,
+          hasCommonDiff,
+          diffOptions?.changeColor,
+        ),
+        diffOptions?.bColor,
       );
 
     return `${expectedLine}\n${receivedLine}`;
@@ -365,6 +394,7 @@ export const printDiffOrStringify = (
     const {replacedExpected, replacedReceived} =
       replaceMatchedToAsymmetricMatcher(expected, received, [], []);
     const difference = diffDefault(replacedExpected, replacedReceived, {
+      ...diffOptions,
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
@@ -381,12 +411,13 @@ export const printDiffOrStringify = (
   }
 
   const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-  const expectedLine = printLabel(expectedLabel) + printExpected(expected);
+  const expectedLine =
+    printLabel(expectedLabel) + printExpected(expected, diffOptions?.aColor);
   const receivedLine =
     printLabel(receivedLabel) +
     (stringify(expected) === stringify(received)
       ? 'serializes to the same string'
-      : printReceived(received));
+      : printReceived(received, diffOptions?.bColor));
 
   return `${expectedLine}\n${receivedLine}`;
 };
@@ -526,29 +557,30 @@ export const matcherHint = (
 ): string => {
   const {
     comment = '',
-    expectedColor = EXPECTED_COLOR,
+    expectedColor = options.expectedColor ?? EXPECTED_COLOR,
     isDirectExpectCall = false, // seems redundant with received === ''
     isNot = false,
     promise = '',
-    receivedColor = RECEIVED_COLOR,
+    receivedColor = options.receivedColor ?? RECEIVED_COLOR,
     secondArgument = '',
-    secondArgumentColor = EXPECTED_COLOR,
+    secondArgumentColor = options.secondArgumentColor ?? EXPECTED_COLOR,
+    commonColor = options.commonColor ?? DIM_COLOR,
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
 
   if (!isDirectExpectCall && received !== '') {
-    hint += DIM_COLOR(`${dimString}(`) + receivedColor(received);
+    hint += commonColor(`${dimString}(`) + receivedColor(received);
     dimString = ')';
   }
 
   if (promise !== '') {
-    hint += DIM_COLOR(`${dimString}.`) + promise;
+    hint += commonColor(`${dimString}.`) + promise;
     dimString = '';
   }
 
   if (isNot) {
-    hint += `${DIM_COLOR(`${dimString}.`)}not`;
+    hint += `${commonColor(`${dimString}.`)}not`;
     dimString = '';
   }
 
@@ -558,16 +590,16 @@ export const matcherHint = (
     dimString += matcherName;
   } else {
     // New format: omit period from matcherName arg
-    hint += DIM_COLOR(`${dimString}.`) + matcherName;
+    hint += commonColor(`${dimString}.`) + matcherName;
     dimString = '';
   }
 
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += DIM_COLOR(`${dimString}(`) + expectedColor(expected);
+    hint += commonColor(`${dimString}(`) + expectedColor(expected);
     if (secondArgument) {
-      hint += DIM_COLOR(', ') + secondArgumentColor(secondArgument);
+      hint += commonColor(', ') + secondArgumentColor(secondArgument);
     }
     dimString = ')';
   }
@@ -577,7 +609,7 @@ export const matcherHint = (
   }
 
   if (dimString !== '') {
-    hint += DIM_COLOR(dimString);
+    hint += commonColor(dimString);
   }
 
   return hint;
