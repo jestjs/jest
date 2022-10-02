@@ -24,7 +24,7 @@ describe(readInitialOptions.name, () => {
       parentConfigDirname: process.cwd(),
     });
     expect(config).toEqual({...inputConfig, rootDir: process.cwd()});
-    expect(configPath).toEqual(null);
+    expect(configPath).toBeNull();
   });
   // Note: actual file reading is tested in e2e test
 });
