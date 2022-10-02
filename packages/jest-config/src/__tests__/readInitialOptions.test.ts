@@ -14,7 +14,7 @@ describe(readInitialOptions.name, () => {
       JSON.stringify(inputConfig),
     );
     expect(config).toEqual({...inputConfig, rootDir: process.cwd()});
-    expect(configPath).toEqual(null);
+    expect(configPath).toBeNull();
   });
 
   test('should allow deserialized options', async () => {
