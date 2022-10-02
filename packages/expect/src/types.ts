@@ -7,7 +7,9 @@
  */
 
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {DiffOptions} from 'jest-diff';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
+import type {MatcherHintOptions} from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
@@ -70,6 +72,8 @@ export interface MatcherState {
   promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;
+  matcherHintOptions?: MatcherHintOptions;
+  diffOptions?: DiffOptions;
 }
 
 export type MatcherContext = MatcherUtils & Readonly<MatcherState>;
