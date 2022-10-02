@@ -153,9 +153,15 @@ export const expect: Expect = (actual: any, ...rest: Array<any>) => {
   return expectation;
 };
 
-const getMessage = (message?: () => string) =>
-  (message && message()) ||
-  matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
+const getMessage = (message?: () => string) => {
+  const {matcherHintOptions} = getState();
+  const receivedColor =
+    matcherHintOptions?.receivedColor ?? matcherUtils.RECEIVED_COLOR;
+  return (
+    (message && message()) ||
+    receivedColor('No message was specified for this matcher.')
+  );
+};
 
 const makeResolveMatcher =
   (
@@ -166,16 +172,20 @@ const makeResolveMatcher =
     outerErr: JestAssertionError,
   ): PromiseMatcherFn =>
   (...args) => {
+    const {matcherHintOptions} = getState();
     const options = {
+      ...matcherHintOptions,
       isNot,
       promise: 'resolves',
     };
+
+    const receivedColor = options.receivedColor ?? matcherUtils.RECEIVED_COLOR;
 
     if (!isPromise(actual)) {
       throw new JestAssertionError(
         matcherUtils.matcherErrorMessage(
           matcherUtils.matcherHint(matcherName, undefined, '', options),
-          `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
+          `${receivedColor('received')} value must be a promise`,
           matcherUtils.printWithType(
             'Received',
             actual,
@@ -217,10 +227,14 @@ const makeRejectMatcher =
     outerErr: JestAssertionError,
   ): PromiseMatcherFn =>
   (...args) => {
+    const {matcherHintOptions} = getState();
     const options = {
+      ...matcherHintOptions,
       isNot,
       promise: 'rejects',
     };
+
+    const receivedColor = options.receivedColor ?? matcherUtils.RECEIVED_COLOR;
 
     const actualWrapper: Promise<any> =
       typeof actual === 'function' ? actual() : actual;
@@ -229,7 +243,7 @@ const makeRejectMatcher =
       throw new JestAssertionError(
         matcherUtils.matcherErrorMessage(
           matcherUtils.matcherHint(matcherName, undefined, '', options),
-          `${matcherUtils.RECEIVED_COLOR(
+          `${receivedColor(
             'received',
           )} value must be a promise or a function returning a promise`,
           matcherUtils.printWithType(
