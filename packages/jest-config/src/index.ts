@@ -48,7 +48,7 @@ export async function readConfig(
     {
       packageRootOrConfig,
       parentConfigDirname,
-      readFromCwdInstead: skipArgvConfigOption,
+      readFromCwd: skipArgvConfigOption,
       skipMultipleConfigError,
     },
   );

@@ -65,7 +65,7 @@ describe(readInitialOptions.name, () => {
     const {config, configPath} = await readInitialOptions(
       resolveFixture('js-config', 'jest.config.js'),
       {
-        readFromCwdInstead: true,
+        readFromCwd: true,
       },
     );
     expect(config).toEqual({
