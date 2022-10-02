@@ -508,7 +508,7 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
-      const mockConsole = {warn: jest.fn<(...args: Array<string>) => void>()};
+      const mockConsole = {warn: jest.fn<typeof console.warn>()};
       const timers = new FakeTimers({
         config: {
           rootDir: __dirname,
