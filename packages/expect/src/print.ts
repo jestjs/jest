@@ -15,6 +15,7 @@ import {
   printReceived,
   stringify,
 } from 'jest-matcher-utils';
+import {getState} from './jestMatchersObject';
 
 // Format substring but do not enclose in double quote marks.
 // The replacement is compatible with pretty-format package.
@@ -24,12 +25,18 @@ export const printReceivedStringContainExpectedSubstring = (
   received: string,
   start: number,
   length: number, // not end
-): string =>
-  RECEIVED_COLOR(
-    `"${printSubstring(received.slice(0, start))}${INVERTED_COLOR(
+): string => {
+  const {diffOptions} = getState();
+
+  const receivedColor = diffOptions?.bColor ?? RECEIVED_COLOR;
+  const invertedColor = diffOptions?.changeColor ?? INVERTED_COLOR;
+
+  return receivedColor(
+    `"${printSubstring(received.slice(0, start))}${invertedColor(
       printSubstring(received.slice(start, start + length)),
     )}${printSubstring(received.slice(start + length))}"`,
   );
+};
 
 export const printReceivedStringContainExpectedResult = (
   received: string,
@@ -49,15 +56,21 @@ export const printReceivedStringContainExpectedResult = (
 export const printReceivedArrayContainExpectedItem = (
   received: Array<unknown>,
   index: number,
-): string =>
-  RECEIVED_COLOR(
+): string => {
+  const {diffOptions} = getState();
+
+  const receivedColor = diffOptions?.bColor ?? RECEIVED_COLOR;
+  const invertedColor = diffOptions?.changeColor ?? INVERTED_COLOR;
+
+  return receivedColor(
     `[${received
       .map((item, i) => {
         const stringified = stringify(item);
-        return i === index ? INVERTED_COLOR(stringified) : stringified;
+        return i === index ? invertedColor(stringified) : stringified;
       })
       .join(', ')}]`,
   );
+};
 
 export const printCloseTo = (
   receivedDiff: number,
@@ -76,12 +89,17 @@ export const printCloseTo = (
       expectedDiff.toFixed(precision + 1)
     : stringify(expectedDiff);
 
+  const {diffOptions} = getState();
+
+  const expectedColor = diffOptions?.aColor ?? EXPECTED_COLOR;
+  const receivedColor = diffOptions?.bColor ?? RECEIVED_COLOR;
+
   return (
     `Expected precision:  ${isNot ? '    ' : ''}  ${stringify(precision)}\n` +
-    `Expected difference: ${isNot ? 'not ' : ''}< ${EXPECTED_COLOR(
+    `Expected difference: ${isNot ? 'not ' : ''}< ${expectedColor(
       expectedDiffString,
     )}\n` +
-    `Received difference: ${isNot ? '    ' : ''}  ${RECEIVED_COLOR(
+    `Received difference: ${isNot ? '    ' : ''}  ${receivedColor(
       receivedDiffString,
     )}`
   );
@@ -107,30 +125,39 @@ export const printReceivedConstructorNameNot = (
   label: string,
   received: Function,
   expected: Function,
-): string =>
-  typeof expected.name === 'string' &&
-  expected.name.length !== 0 &&
-  typeof received.name === 'string' &&
-  received.name.length !== 0
+): string => {
+  const {diffOptions} = getState();
+  const expectedColor = diffOptions?.aColor ?? EXPECTED_COLOR;
+
+  return typeof expected.name === 'string' &&
+    expected.name.length !== 0 &&
+    typeof received.name === 'string' &&
+    received.name.length !== 0
     ? `${printConstructorName(label, received, true, false)} ${
         Object.getPrototypeOf(received) === expected
           ? 'extends'
           : 'extends … extends'
-      } ${EXPECTED_COLOR(expected.name)}\n`
+      } ${expectedColor(expected.name)}\n`
     : `${printConstructorName(label, received, false, false)}\n`;
+};
 
 const printConstructorName = (
   label: string,
   constructor: Function,
   isNot: boolean,
   isExpected: boolean,
-): string =>
-  typeof constructor.name !== 'string'
+): string => {
+  const {diffOptions} = getState();
+  const expectedColor = diffOptions?.aColor ?? EXPECTED_COLOR;
+  const receivedColor = diffOptions?.bColor ?? RECEIVED_COLOR;
+
+  return typeof constructor.name !== 'string'
     ? `${label} name is not a string`
     : constructor.name.length === 0
     ? `${label} name is an empty string`
     : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
         isExpected
-          ? EXPECTED_COLOR(constructor.name)
-          : RECEIVED_COLOR(constructor.name)
+          ? expectedColor(constructor.name)
+          : receivedColor(constructor.name)
       }`;
+};
