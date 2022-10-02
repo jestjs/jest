@@ -2695,9 +2695,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
+    "@tsd/typescript": ~4.8.2
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
+    tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
 

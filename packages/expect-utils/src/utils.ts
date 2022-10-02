@@ -184,7 +184,7 @@ export const iterableEquality = (
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else if (isA('Set', a) || isImmutableUnorderedSet(a)) {
+    } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
@@ -206,7 +206,10 @@ export const iterableEquality = (
       aStack.pop();
       bStack.pop();
       return allFound;
-    } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
+    } else if (
+      isA<Map<unknown, unknown>>('Map', a) ||
+      isImmutableUnorderedKeyed(a)
+    ) {
       let allFound = true;
       for (const aEntry of a) {
         if (
