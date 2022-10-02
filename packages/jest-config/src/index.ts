@@ -258,7 +258,7 @@ export async function readInitialOptions(
      * When true, jest will read try to read config from the current working directory.
      * (default is false)
      */
-    readFromCwdInstead?: boolean;
+    readFromCwd?: boolean;
     /**
      * Indicates whether or not to ignore the error of jest finding multiple config files.
      * (default is false)
