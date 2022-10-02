@@ -229,7 +229,29 @@ This usually means that your ${chalk.bold(
   }
 };
 
-/**
+export interface ReadJestConfigOptions {
+  /**
+   * The package root or deserialized config (default is cwd)
+   */
+  packageRootOrConfig?: string | Config.InitialOptions;
+  /**
+   * When the `packageRootOrConfig` contains config, this parameter should
+   * contain the dirname of the parent config
+   */
+  parentConfigDirname?: null | string;
+  /**
+   * Indicates whether or not to read the specified config file from disk.
+   * When true, jest will read try to read config from the current working directory.
+   * (default is false)
+   */
+  readFromCwd?: boolean;
+  /**
+   * Indicates whether or not to ignore the error of jest finding multiple config files.
+   * (default is false)
+   */
+  skipMultipleConfigError?: boolean;
+}
+
 /**
  * Reads the jest config, without validating them or filling it out with defaults.
  * @param config The path to the file or serialized config.
@@ -241,30 +263,9 @@ export async function readInitialOptions(
   {
     packageRootOrConfig = process.cwd(),
     parentConfigDirname = null,
-    readFromCwdInstead = false,
+    readFromCwd = false,
     skipMultipleConfigError = false,
-  }: {
-    /**
-     * The package root or deserialized config (default is cwd)
-     */
-    packageRootOrConfig?: string | Config.InitialOptions;
-    /**
-     * When the `packageRootOrConfig` contains config, this parameter should
-     * contain the dirname of the parent config
-     */
-    parentConfigDirname?: null | string;
-    /**
-     * Indicates whether or not to read the specified config file from disk.
-     * When true, jest will read try to read config from the current working directory.
-     * (default is false)
-     */
-    readFromCwd?: boolean;
-    /**
-     * Indicates whether or not to ignore the error of jest finding multiple config files.
-     * (default is false)
-     */
-    skipMultipleConfigError?: boolean;
-  } = {},
+  }: ReadJestConfigOptions = {},
 ): Promise<{config: Config.InitialOptions; configPath: string | null}> {
   if (typeof packageRootOrConfig !== 'string') {
     if (parentConfigDirname) {
@@ -295,7 +296,7 @@ export async function readInitialOptions(
     return {config: initialOptions, configPath: null};
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
-  } else if (!readFromCwdInstead && typeof config == 'string') {
+  } else if (!readFromCwd && typeof config == 'string') {
     const configPath = resolveConfigPath(
       config,
       process.cwd(),
