@@ -8,15 +8,14 @@
 
 import {isPrimitive} from 'jest-get-type';
 import {
-  equals,
-  isA,
   isImmutableList,
   isImmutableOrderedKeyed,
   isImmutableOrderedSet,
   isImmutableRecord,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
-} from './jasmineUtils';
+} from './immutableUtils';
+import {equals, isA} from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean;
