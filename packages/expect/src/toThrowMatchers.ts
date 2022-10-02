@@ -79,9 +79,13 @@ export const createMatcher = (
 ): MatcherFunction<[any]> =>
   function (received, expected): ExpectationResult {
     const options = {
+      ...this.matcherHintOptions,
       isNot: this.isNot,
       promise: this.promise,
     };
+
+    const receivedColor = options.receivedColor ?? RECEIVED_COLOR;
+    const expectedColor = options.receivedColor ?? EXPECTED_COLOR;
 
     let thrown = null;
 
@@ -94,7 +98,7 @@ export const createMatcher = (
           throw new Error(
             matcherErrorMessage(
               matcherHint(matcherName, undefined, placeholder, options),
-              `${RECEIVED_COLOR('received')} value must be a function`,
+              `${receivedColor('received')} value must be a function`,
               printWithType('Received', received, printReceived),
             ),
           );
@@ -127,7 +131,7 @@ export const createMatcher = (
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${EXPECTED_COLOR(
+          `${expectedColor(
             'expected',
           )} value must be a string or regular expression or class or error`,
           printWithType('Expected', expected, printExpected),
