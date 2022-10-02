@@ -43,56 +43,18 @@ export async function readConfig(
   projectIndex = Infinity,
   skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
-  let rawOptions: Config.InitialOptions;
-  let configPath = null;
-
-  if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigDirname) {
-      rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = rawOptions.rootDir
-        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
-        : parentConfigDirname;
-    } else {
-      throw new Error(
-        'Jest: Cannot use configuration as an object without a file path.',
-      );
-    }
-  } else if (isJSONString(argv.config)) {
-    // A JSON string was passed to `--config` argument and we can parse it
-    // and use as is.
-    let config;
-    try {
-      config = JSON.parse(argv.config);
-    } catch {
-      throw new Error(
-        'There was an error while parsing the `--config` argument as a JSON string.',
-      );
-    }
-
-    // NOTE: we might need to resolve this dir to an absolute path in the future
-    config.rootDir = config.rootDir || packageRootOrConfig;
-    rawOptions = config;
-    // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
-  } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(
-      argv.config,
-      process.cwd(),
-      skipMultipleConfigError,
-    );
-    rawOptions = await readConfigFileAndSetRootDir(configPath);
-  } else {
-    // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(
+  const {config: initialOptions, configPath} = await readInitialOptions(
+    argv?.config,
+    {
       packageRootOrConfig,
-      process.cwd(),
+      parentConfigDirname,
+      readFromCwdInstead: skipArgvConfigOption,
       skipMultipleConfigError,
-    );
-    rawOptions = await readConfigFileAndSetRootDir(configPath);
-  }
+    },
+  );
 
   const {options, hasDeprecationWarnings} = await normalize(
-    rawOptions,
+    initialOptions,
     argv,
     configPath,
     projectIndex,
@@ -266,6 +228,90 @@ This usually means that your ${chalk.bold(
     }
   }
 };
+
+/**
+/**
+ * Reads the jest config, without validating them or filling it out with defaults.
+ * @param config The path to the file or serialized config.
+ * @param param1 Additional options
+ * @returns The raw initial config (not validated)
+ */
+export async function readInitialOptions(
+  config?: string,
+  {
+    packageRootOrConfig = process.cwd(),
+    parentConfigDirname = null,
+    readFromCwdInstead = false,
+    skipMultipleConfigError = false,
+  }: {
+    /**
+     * The package root or deserialized config (default is cwd)
+     */
+    packageRootOrConfig?: string | Config.InitialOptions;
+    /**
+     * When the `packageRootOrConfig` contains config, this parameter should
+     * contain the dirname of the parent config
+     */
+    parentConfigDirname?: null | string;
+    /**
+     * Indicates whether or not to read the specified config file from disk.
+     * When true, jest will read try to read config from the current working directory.
+     * (default is false)
+     */
+    readFromCwdInstead?: boolean;
+    /**
+     * Indicates whether or not to ignore the error of jest finding multiple config files.
+     * (default is false)
+     */
+    skipMultipleConfigError?: boolean;
+  } = {},
+): Promise<{config: Config.InitialOptions; configPath: string | null}> {
+  if (typeof packageRootOrConfig !== 'string') {
+    if (parentConfigDirname) {
+      const rawOptions = packageRootOrConfig;
+      rawOptions.rootDir = rawOptions.rootDir
+        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
+        : parentConfigDirname;
+      return {config: rawOptions, configPath: null};
+    } else {
+      throw new Error(
+        'Jest: Cannot use configuration as an object without a file path.',
+      );
+    }
+  } else if (isJSONString(config)) {
+    // A JSON string was passed to `--config` argument and we can parse it
+    // and use as is.
+    let initialOptions;
+    try {
+      initialOptions = JSON.parse(config);
+    } catch {
+      throw new Error(
+        'There was an error while parsing the `--config` argument as a JSON string.',
+      );
+    }
+
+    // NOTE: we might need to resolve this dir to an absolute path in the future
+    initialOptions.rootDir = initialOptions.rootDir || packageRootOrConfig;
+    return {config: initialOptions, configPath: null};
+    // A string passed to `--config`, which is either a direct path to the config
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
+  } else if (!readFromCwdInstead && typeof config == 'string') {
+    const configPath = resolveConfigPath(
+      config,
+      process.cwd(),
+      skipMultipleConfigError,
+    );
+    return {config: await readConfigFileAndSetRootDir(configPath), configPath};
+  } else {
+    // Otherwise just try to find config in the current rootDir.
+    const configPath = resolveConfigPath(
+      packageRootOrConfig,
+      process.cwd(),
+      skipMultipleConfigError,
+    );
+    return {config: await readConfigFileAndSetRootDir(configPath), configPath};
+  }
+}
 
 // Possible scenarios:
 //  1. jest --config config.json
