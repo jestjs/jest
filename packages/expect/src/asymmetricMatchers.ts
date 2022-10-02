@@ -185,7 +185,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: Array<unknown>) {
+  asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         `You must provide an array to ${this.toString()}, not '${typeof this
@@ -257,8 +257,8 @@ class StringContaining extends AsymmetricMatcher<string> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && other.includes(this.sample);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && other.includes(this.sample);
 
     return this.inverse ? !result : result;
   }
@@ -280,8 +280,8 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     super(new RegExp(sample), inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && this.sample.test(other);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
   }
@@ -297,6 +297,7 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
 
 class CloseTo extends AsymmetricMatcher<number> {
   private precision: number;
+
   constructor(sample: number, precision = 2, inverse = false) {
     if (!isA('Number', sample)) {
       throw new Error('Expected is not a Number');
@@ -311,8 +312,8 @@ class CloseTo extends AsymmetricMatcher<number> {
     this.precision = precision;
   }
 
-  asymmetricMatch(other: number) {
-    if (!isA('Number', other)) {
+  asymmetricMatch(other: unknown) {
+    if (!isA<number>('Number', other)) {
       return false;
     }
     let result = false;

@@ -224,7 +224,7 @@ function hasKey(obj: any, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
-export function isA(typeName: string, value: unknown) {
+export function isA<T>(typeName: string, value: unknown): value is T {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
@@ -262,10 +262,7 @@ export function isImmutableUnorderedSet(maybeSet: any) {
 }
 
 export function isImmutableList(maybeList: any) {
-  return !!(
-    maybeList &&
-    maybeList[IS_LIST_SENTINEL]
-  );
+  return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
 }
 
 export function isImmutableOrderedKeyed(maybeKeyed: any) {
@@ -276,7 +273,6 @@ export function isImmutableOrderedKeyed(maybeKeyed: any) {
   );
 }
 
-
 export function isImmutableOrderedSet(maybeSet: any) {
   return !!(
     maybeSet &&
@@ -286,8 +282,5 @@ export function isImmutableOrderedSet(maybeSet: any) {
 }
 
 export function isImmutableRecord(maybeSet: any) {
-  return !!(
-    maybeSet &&
-    maybeSet[IS_RECORD_SYMBOL]
-  );
+  return !!(maybeSet && maybeSet[IS_RECORD_SYMBOL]);
 }
