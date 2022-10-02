@@ -9,7 +9,7 @@
 'use strict';
 
 import {builtinModules, createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {pathToFileURL} from 'url';
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';

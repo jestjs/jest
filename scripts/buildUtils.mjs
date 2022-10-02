@@ -7,7 +7,7 @@
 
 import assert from 'assert';
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import fs from 'graceful-fs';

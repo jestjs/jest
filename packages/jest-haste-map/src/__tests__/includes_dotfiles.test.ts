@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import HasteMap from '../index';
 
 const rootDir = path.join(__dirname, './test_dotfiles_root');

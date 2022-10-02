@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import NodeEnvironment from 'jest-environment-node';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');

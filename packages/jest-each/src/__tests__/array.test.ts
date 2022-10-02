@@ -12,7 +12,7 @@ import each from '../';
 const noop = () => {};
 const expectFunction = expect.any(Function);
 
-const get = (object, lensPath) =>
+const get = <T>(object: T, lensPath: Array<string>): T =>
   lensPath.reduce((acc, key) => acc[key], object);
 
 const getGlobalTestMocks = () => {

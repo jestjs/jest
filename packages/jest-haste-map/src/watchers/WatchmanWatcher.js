@@ -7,7 +7,7 @@
 
 import assert from 'assert';
 import {EventEmitter} from 'events';
-import path from 'path';
+import * as path from 'path';
 import watchman from 'fb-watchman';
 import * as fs from 'graceful-fs';
 import RecrawlWarning from './RecrawlWarning';

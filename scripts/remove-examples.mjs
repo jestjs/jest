@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import fs from 'graceful-fs';
 import config from '../jest.config.mjs';

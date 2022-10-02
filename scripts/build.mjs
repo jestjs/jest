@@ -17,7 +17,7 @@
  */
 
 import assert from 'assert';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';

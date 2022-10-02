@@ -287,7 +287,7 @@ describe('FakeTimers', () => {
     });
 
     it('cancels a callback even from native nextTick', () => {
-      const nativeNextTick = jest.fn();
+      const nativeNextTick = jest.fn<typeof process.nextTick>();
 
       const global = {
         process: {
@@ -316,7 +316,7 @@ describe('FakeTimers', () => {
     });
 
     it('cancels a callback even from native setImmediate', () => {
-      const nativeSetImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
 
       const global = {
         process,
@@ -343,7 +343,7 @@ describe('FakeTimers', () => {
     });
 
     it('doesnt run a tick callback if native nextTick already did', () => {
-      const nativeNextTick = jest.fn();
+      const nativeNextTick = jest.fn<typeof process.nextTick>();
 
       const global = {
         process: {
@@ -372,7 +372,7 @@ describe('FakeTimers', () => {
     });
 
     it('doesnt run immediate if native setImmediate already did', () => {
-      const nativeSetImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
 
       const global = {
         process,
@@ -400,7 +400,7 @@ describe('FakeTimers', () => {
     });
 
     it('native doesnt run immediate if fake already did', () => {
-      const nativeSetImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
 
       const global = {
         process,
@@ -508,7 +508,7 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
-      const mockConsole = {warn: jest.fn()};
+      const mockConsole = {warn: jest.fn<(...args: Array<string>) => void>()};
       const timers = new FakeTimers({
         config: {
           rootDir: __dirname,
@@ -1027,7 +1027,7 @@ describe('FakeTimers', () => {
 
   describe('runOnlyPendingTimers', () => {
     it('runs all timers in order', () => {
-      const nativeSetImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
 
       const global = {
         cancelAnimationFrame: () => {},
@@ -1329,8 +1329,8 @@ describe('FakeTimers', () => {
     });
 
     it('resets native setImmediate when present', () => {
-      const nativeSetImmediate = jest.fn();
-      const nativeClearImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
+      const nativeClearImmediate = jest.fn<typeof clearImmediate>();
 
       const global = {
         clearImmediate: nativeClearImmediate,
@@ -1448,8 +1448,8 @@ describe('FakeTimers', () => {
     });
 
     it('resets mock setImmediate when present', () => {
-      const nativeSetImmediate = jest.fn();
-      const nativeClearImmediate = jest.fn();
+      const nativeSetImmediate = jest.fn<typeof setImmediate>();
+      const nativeClearImmediate = jest.fn<typeof clearImmediate>();
 
       const global = {
         clearImmediate: nativeClearImmediate,

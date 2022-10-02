@@ -6,7 +6,7 @@
  */
 
 import os from 'os';
-import path from 'path';
+import * as path from 'path';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';

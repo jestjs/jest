@@ -7,7 +7,7 @@
  */
 
 import {createHash} from 'crypto';
-import path from 'path';
+import * as path from 'path';
 import semver = require('semver');
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
@@ -20,7 +20,7 @@ const DEFAULT_CSS_PATTERN = '\\.(css)$';
 jest
   .mock('path', () => jest.requireActual('path').posix)
   .mock('graceful-fs', () => {
-    const realFs = jest.requireActual('fs');
+    const realFs = jest.requireActual<typeof import('fs')>('fs');
 
     return {
       ...realFs,

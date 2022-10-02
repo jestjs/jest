@@ -7,7 +7,7 @@
 
 import assert from 'assert';
 import os from 'os';
-import path from 'path';
+import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
 import globby from 'globby';

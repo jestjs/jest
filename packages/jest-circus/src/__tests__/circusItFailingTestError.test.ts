@@ -26,6 +26,7 @@ describe('test/it.failing error throwing', () => {
   });
   it('it throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusIt.failing('test2');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -33,6 +34,7 @@ describe('test/it.failing error throwing', () => {
   });
   it("it throws an error when first argument isn't valid", () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusIt.failing(() => {});
     }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
@@ -40,6 +42,7 @@ describe('test/it.failing error throwing', () => {
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusIt.failing('test4', 'test4b');
     }).toThrowError(
       'Invalid second argument, test4b. It must be a callback function.',
@@ -47,6 +50,7 @@ describe('test/it.failing error throwing', () => {
   });
   it('test throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusTest.failing('test5');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -54,6 +58,7 @@ describe('test/it.failing error throwing', () => {
   });
   it("test throws an error when first argument isn't a string", () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusTest.failing(() => {});
     }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
@@ -61,6 +66,7 @@ describe('test/it.failing error throwing', () => {
   });
   it('test throws an error when callback function is not a function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusTest.failing('test7', 'test8b');
     }).toThrowError(
       'Invalid second argument, test8b. It must be a callback function.',

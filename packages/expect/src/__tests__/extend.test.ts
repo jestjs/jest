@@ -56,7 +56,7 @@ it('is available globally when matcher is unary', () => {
   jestExpect(15).toBeDivisibleBy(3);
   jestExpect(15).not.toBeDivisibleBy(6);
 
-  jestExpect(() =>
+  expect(() =>
     jestExpect(15).toBeDivisibleBy(2),
   ).toThrowErrorMatchingSnapshot();
 });
@@ -65,7 +65,7 @@ it('is available globally when matcher is variadic', () => {
   jestExpect(15).toBeWithinRange(10, 20);
   jestExpect(15).not.toBeWithinRange(6);
 
-  jestExpect(() =>
+  expect(() =>
     jestExpect(15).toBeWithinRange(1, 3),
   ).toThrowErrorMatchingSnapshot();
 });

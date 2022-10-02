@@ -9,6 +9,7 @@
 describe('test/it error throwing', () => {
   it('it throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       it('test1');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -16,7 +17,7 @@ describe('test/it error throwing', () => {
   });
   it("it throws an error when first argument isn't valid", () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       it(() => {});
     }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
@@ -24,7 +25,7 @@ describe('test/it error throwing', () => {
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       it('test3', 'test3b');
     }).toThrowError(
       'Invalid second argument, test3b. It must be a callback function.',
@@ -32,6 +33,7 @@ describe('test/it error throwing', () => {
   });
   test('test throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       test('test4');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -39,7 +41,7 @@ describe('test/it error throwing', () => {
   });
   test("test throws an error when first argument isn't valid", () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       test(() => {});
     }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
@@ -47,7 +49,7 @@ describe('test/it error throwing', () => {
   });
   test('test throws an error when callback function is not a function', () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       test('test6', 'test6b');
     }).toThrowError(
       'Invalid second argument, test6b. It must be a callback function.',
