@@ -6,7 +6,7 @@
  *
  */
 
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import * as path from 'path';
 
 function mockHashContents(contents) {

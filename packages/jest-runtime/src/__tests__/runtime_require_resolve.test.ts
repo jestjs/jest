@@ -6,7 +6,7 @@
  *
  */
 
-import os from 'os';
+import * as os from 'os';
 import * as path from 'path';
 import {promises as fs} from 'graceful-fs';
 import type {Config} from '@jest/types';

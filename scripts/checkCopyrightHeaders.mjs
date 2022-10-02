@@ -6,7 +6,7 @@
  */
 
 import {execSync} from 'child_process';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import {isBinaryFileSync} from 'isbinaryfile';
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});

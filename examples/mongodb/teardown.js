@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');

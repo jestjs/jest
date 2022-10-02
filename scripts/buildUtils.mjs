@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import * as assert from 'assert';
 import {createRequire} from 'module';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
 import stringLength from 'string-length';
 

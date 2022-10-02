@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
-import os from 'os';
+import * as assert from 'assert';
+import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
 import globby from 'globby';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
 import {getPackages} from './buildUtils.mjs';

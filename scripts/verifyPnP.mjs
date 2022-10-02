@@ -10,7 +10,7 @@ import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import yaml from 'js-yaml';
 import tempy from 'tempy';
 

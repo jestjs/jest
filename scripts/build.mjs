@@ -16,13 +16,13 @@
  *  node ./scripts/build.mjs /users/123/jest/packages/jest-111/src/111.js
  */
 
-import assert from 'assert';
+import * as assert from 'assert';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';
 import glob from 'glob';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
 import transformOptions from '../babel.config.js';

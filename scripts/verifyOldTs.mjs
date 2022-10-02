@@ -10,7 +10,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import stripJsonComments from 'strip-json-comments';
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);

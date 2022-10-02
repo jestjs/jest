@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import * as os from 'os';
 import * as path from 'path';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';

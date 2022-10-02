@@ -14,7 +14,7 @@ import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import chokidar from 'chokidar';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import {PACKAGES_DIR, getPackages} from './buildUtils.mjs';
 
 const BUILD_CMD = `node ${path.resolve(

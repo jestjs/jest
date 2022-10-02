@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import * as os from 'os';
 import * as path from 'path';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import greeting from '../';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown-esm');
