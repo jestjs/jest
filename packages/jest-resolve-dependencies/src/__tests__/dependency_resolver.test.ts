@@ -16,7 +16,6 @@ import {DependencyResolver} from '../index';
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
-let Runtime: typeof import('jest-runtime').default;
 let config: Config.ProjectConfig;
 const cases: Record<string, (path: string) => boolean> = {
   fancyCondition: path => path.length > 10,
@@ -26,7 +25,8 @@ const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(async () => {
-  Runtime = require('jest-runtime').default;
+  const Runtime = (require('jest-runtime') as typeof import('jest-runtime'))
+    .default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
