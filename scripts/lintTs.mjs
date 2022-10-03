@@ -34,6 +34,8 @@ const packagesWithTs = getPackagesWithTsConfig()
   .concat(path.resolve(monorepoRoot, 'e2e'))
   .filter(packageDir => packagesToTest.some(pkg => packageDir.endsWith(pkg)));
 
+const allLintResults = [];
+
 try {
   await Promise.all(
     packagesWithTs.map(packageDir =>
@@ -73,14 +75,7 @@ try {
 
         const filteredResults = ESLint.getErrorResults(results);
 
-        if (filteredResults.length > 0) {
-          const formatter = await eslint.loadFormatter('stylish');
-          const resultText = formatter.format(results);
-
-          console.error(resultText);
-
-          throw new Error('Got lint errors');
-        }
+        allLintResults.push(...filteredResults);
       }),
     ),
   );
@@ -92,6 +87,20 @@ try {
   throw e;
 }
 
-console.log(
-  chalk.inverse.green(' Successfully linted using TypeScript info files '),
-);
+if (allLintResults.length > 0) {
+  const eslint = new ESLint({cwd: monorepoRoot});
+  const formatter = await eslint.loadFormatter('stylish');
+  const resultText = formatter.format(allLintResults);
+
+  console.error(resultText);
+
+  console.error(
+    chalk.inverse.red(' Unable to lint using TypeScript info files '),
+  );
+
+  process.exitCode = 1;
+} else {
+  console.log(
+    chalk.inverse.green(' Successfully linted using TypeScript info files '),
+  );
+}
