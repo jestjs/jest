@@ -46,6 +46,7 @@ try {
           cwd: monorepoRoot,
           extensions: ['.ts'],
           fix,
+          fixTypes: ['problem', 'suggestion', 'layout'],
           overrideConfig: {
             extends: [
               'plugin:@typescript-eslint/recommended-requiring-type-checking',
