@@ -10,6 +10,7 @@ import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import jestExpect from '../';
+import matchers from '../matchers';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -228,4 +229,19 @@ it('throws descriptive errors for invalid matchers', () => {
   ).toThrow(
     'expect.extend: `default` is not a valid matcher. Must be a function, is "string"',
   );
+});
+
+it('exposes matchers in context', () => {
+  jestExpect.extend({
+    _shouldNotError(_actual: unknown, _expected: unknown) {
+      const pass = this.equals(this.matchers, matchers);
+      const message = pass
+        ? () => 'expected this.matchers to be defined in an extend call'
+        : () => 'expected this.matchers not to be defined in an extend call';
+
+      return {message, pass};
+    },
+  });
+
+  jestExpect()._shouldNotError();
 });

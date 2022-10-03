@@ -15,10 +15,14 @@ import {
 import * as matcherUtils from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
 import {getState} from './jestMatchersObject';
+import matchers from './matchers';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
+  CustomMatcherContext,
   MatcherContext,
   MatcherState,
+  RawMatcherFn,
+  SyncExpectationResult,
 } from './types';
 
 const functionToString = Function.prototype.toString;
@@ -39,6 +43,8 @@ const utils = Object.freeze({
   iterableEquality,
   subsetEquality,
 });
+
+const internalMatchers = Object.freeze(matchers);
 
 function getPrototype(obj: object) {
   if (Object.getPrototypeOf) {
@@ -345,6 +351,42 @@ class CloseTo extends AsymmetricMatcher<number> {
   }
 }
 
+class CustomMatcher extends AsymmetricMatcher<[unknown, ...Array<unknown>]> {
+  constructor(
+    protected name: string,
+    private matcher: RawMatcherFn<CustomMatcherContext>,
+    inverse = false,
+    ...sample: [unknown, ...Array<unknown>]
+  ) {
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    const {pass} = this.matcher.call(
+      {
+        ...this.getMatcherContext(),
+        matchers: internalMatchers,
+      },
+      other,
+      ...this.sample,
+    ) as SyncExpectationResult;
+
+    return this.inverse ? !pass : pass;
+  }
+
+  toString() {
+    return `${this.inverse ? 'not.' : ''}${this.name}`;
+  }
+
+  override getExpectedType() {
+    return 'any';
+  }
+
+  override toAsymmetricMatcher() {
+    return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
+  }
+}
+
 export const any = (expectedObject: unknown): Any => new Any(expectedObject);
 export const anything = (): Anything => new Anything();
 export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
@@ -369,3 +411,9 @@ export const closeTo = (expected: number, precision?: number): CloseTo =>
   new CloseTo(expected, precision);
 export const notCloseTo = (expected: number, precision?: number): CloseTo =>
   new CloseTo(expected, precision, true);
+export const customMatcher = (
+  name: string,
+  matcher: RawMatcherFn<CustomMatcherContext>,
+  inverse: boolean,
+  sample: [unknown, ...Array<unknown>],
+): CustomMatcher => new CustomMatcher(name, matcher, inverse, ...sample);

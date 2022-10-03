@@ -38,8 +38,8 @@ export type RawMatcherFn<Context extends MatcherContext = MatcherContext> = {
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
-export type MatchersObject = {
-  [name: string]: RawMatcherFn;
+export type MatchersObject<Context extends MatcherContext = MatcherContext> = {
+  [name: string]: RawMatcherFn<Context>;
 };
 
 export type ThrowingMatcherFn = (actual: any) => void;
@@ -71,6 +71,10 @@ export interface MatcherState {
 
 export type MatcherContext = MatcherUtils & Readonly<MatcherState>;
 
+export type CustomMatcherContext = MatcherContext & {
+  matchers: Readonly<MatchersObject>;
+};
+
 export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
   toString(): string;
@@ -86,7 +90,7 @@ export type ExpectedAssertionsErrors = Array<{
 
 export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
-  extend(matchers: MatchersObject): void;
+  extend(matchers: MatchersObject<CustomMatcherContext>): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;
   hasAssertions(): void;

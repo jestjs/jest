@@ -7,13 +7,8 @@
  */
 
 import {getType} from 'jest-get-type';
-import {AsymmetricMatcher} from './asymmetricMatchers';
-import type {
-  Expect,
-  MatcherState,
-  MatchersObject,
-  SyncExpectationResult,
-} from './types';
+import {customMatcher} from './asymmetricMatchers';
+import type {Expect, MatcherState, MatchersObject} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -72,49 +67,18 @@ export const setMatchers = (
 
     if (!isInternal) {
       // expect is defined
-
-      class CustomMatcher extends AsymmetricMatcher<
-        [unknown, ...Array<unknown>]
-      > {
-        constructor(inverse = false, ...sample: [unknown, ...Array<unknown>]) {
-          super(sample, inverse);
-        }
-
-        asymmetricMatch(other: unknown) {
-          const {pass} = matcher.call(
-            this.getMatcherContext(),
-            other,
-            ...this.sample,
-          ) as SyncExpectationResult;
-
-          return this.inverse ? !pass : pass;
-        }
-
-        toString() {
-          return `${this.inverse ? 'not.' : ''}${key}`;
-        }
-
-        override getExpectedType() {
-          return 'any';
-        }
-
-        override toAsymmetricMatcher() {
-          return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
-        }
-      }
-
       Object.defineProperty(expect, key, {
         configurable: true,
         enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
-          new CustomMatcher(false, ...sample),
+          customMatcher(key, matcher, false, sample),
         writable: true,
       });
       Object.defineProperty(expect.not, key, {
         configurable: true,
         enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
-          new CustomMatcher(true, ...sample),
+          customMatcher(key, matcher, true, sample),
         writable: true,
       });
     }
