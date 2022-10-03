@@ -15,15 +15,15 @@ const addSourceMapConsumer = (
   callsite: callsites.CallSite,
   tracer: TraceMap,
 ) => {
-  const getLineNumber = callsite.getLineNumber;
-  const getColumnNumber = callsite.getColumnNumber;
+  const getLineNumber = callsite.getLineNumber.bind(callsite);
+  const getColumnNumber = callsite.getColumnNumber.bind(callsite);
   let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
     if (!position) {
       position = originalPositionFor(tracer, {
-        column: getColumnNumber.call(callsite) || -1,
-        line: getLineNumber.call(callsite) || -1,
+        column: getColumnNumber() || -1,
+        line: getLineNumber() || -1,
       });
     }
 

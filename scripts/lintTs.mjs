@@ -25,6 +25,7 @@ const packagesToTest = [
   'babel-jest',
   'babel-plugin-jest-hoist',
   'diff-sequences',
+  'jest-source-map',
 ];
 
 const packagesWithTs = getPackagesWithTsConfig()
