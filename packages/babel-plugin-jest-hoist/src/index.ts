@@ -106,7 +106,12 @@ const IDVisitor = {
   ) {
     ids.add(path);
   },
-  blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
+  blacklist: [
+    'TypeAnnotation',
+    'TSTypeAnnotation',
+    'TSTypeQuery',
+    'TSTypeReference',
+  ],
 };
 
 const FUNCTIONS: Record<
