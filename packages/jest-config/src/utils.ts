@@ -48,7 +48,7 @@ export const resolve = (
     );
   }
   /// can cast as string since nulls will be thrown
-  return module as string;
+  return module!;
 };
 
 export const escapeGlobCharacters = (path: string): string =>

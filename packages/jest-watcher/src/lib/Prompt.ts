@@ -33,7 +33,7 @@ export default class Prompt {
     /* eslint-enable */
   }
 
-  private _onResize = (): void => {
+  private readonly _onResize = (): void => {
     this._onChange();
   };
 

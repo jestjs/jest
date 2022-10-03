@@ -348,7 +348,7 @@ async function runTestInternal(
     }
 
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {

@@ -108,8 +108,8 @@ const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
 ) => {
-  if (options['globals'] && preset['globals']) {
-    options['globals'] = merge(preset['globals'], options['globals']);
+  if (options.globals && preset.globals) {
+    options.globals = merge(preset.globals, options.globals);
   }
 };
 

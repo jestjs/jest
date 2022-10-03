@@ -73,7 +73,7 @@ type Cache = {
 export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
-  private _currentTests: CurrentTestList;
+  private readonly _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
     testCaseResult: TestCaseResult;

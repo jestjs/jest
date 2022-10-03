@@ -38,7 +38,7 @@ export type ShardOptions = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<TestContext, Cache> = new Map();
+  private readonly _cache: Map<TestContext, Cache> = new Map();
 
   _getCachePath(testContext: TestContext): string {
     const {config} = testContext;

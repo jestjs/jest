@@ -19,7 +19,7 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer = [];
+  private readonly _buffer: ConsoleBuffer = [];
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;

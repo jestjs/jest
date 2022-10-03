@@ -463,7 +463,7 @@ function isReadonlyProp(object: unknown, prop: string): boolean {
 }
 
 export class ModuleMocker {
-  private _environmentGlobal: typeof globalThis;
+  private readonly _environmentGlobal: typeof globalThis;
   private _mockState: WeakMap<Mock, MockFunctionState>;
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   private _spyState: Set<() => void>;

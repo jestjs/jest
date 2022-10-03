@@ -141,7 +141,7 @@ function execMethod(method: string, args: Array<unknown>): void {
   let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }

@@ -242,7 +242,7 @@ const runWatch = async (
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(
+      return await watch(
         globalConfig,
         contexts,
         outputStream,

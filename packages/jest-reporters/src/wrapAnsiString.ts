@@ -23,7 +23,7 @@ export default function wrapAnsiString(
 
   while ((match = ANSI_REGEXP.exec(string))) {
     const ansi = match[0];
-    const index = match['index'];
+    const index = match.index;
     if (index != lastIndex) {
       tokens.push(['string', string.slice(lastIndex, index)]);
     }

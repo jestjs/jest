@@ -20,9 +20,9 @@ export type ResolvedModule = {
  * to retrieve a list of all transitive inverse dependencies.
  */
 export class DependencyResolver {
-  private _hasteFS: IHasteFS;
-  private _resolver: Resolver;
-  private _snapshotResolver: SnapshotResolver;
+  private readonly _hasteFS: IHasteFS;
+  private readonly _resolver: Resolver;
+  private readonly _snapshotResolver: SnapshotResolver;
 
   constructor(
     resolver: Resolver,
