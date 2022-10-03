@@ -128,7 +128,7 @@ export const addResult = (
   aggregatedResults.snapshot.matched += testResult.snapshot.matched;
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
   if (
-    testResult.snapshot.uncheckedKeys &&
+    testResult.snapshot.uncheckedKeys != null &&
     testResult.snapshot.uncheckedKeys.length > 0
   ) {
     aggregatedResults.snapshot.uncheckedKeysByFile.push({

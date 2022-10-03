@@ -61,7 +61,7 @@ export class DependencyResolver {
         }
       }
 
-      if (!resolvedDependency) {
+      if (resolvedDependency == null) {
         return acc;
       }
 
@@ -78,7 +78,7 @@ export class DependencyResolver {
         // leave resolvedMockDependency as undefined if nothing can be found
       }
 
-      if (resolvedMockDependency) {
+      if (resolvedMockDependency != null) {
         const dependencyMockDir = path.resolve(
           path.dirname(resolvedDependency),
           '__mocks__',

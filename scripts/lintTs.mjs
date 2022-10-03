@@ -26,7 +26,16 @@ const packagesToTest = [
   'babel-jest',
   'babel-plugin-jest-hoist',
   'diff-sequences',
+  'jest-docblock',
+  'jest-environment',
+  'jest-globals',
+  'jest-resolve-dependencies',
+  'jest-schemas',
   'jest-source-map',
+  'jest-test-result',
+  'jest-types',
+  'test-globals',
+  'test-utils',
 ];
 
 const packagesWithTs = getPackagesWithTsConfig()

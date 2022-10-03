@@ -39,7 +39,7 @@ export function parseWithComments(docblock: string): {
   comments: string;
   pragmas: Pragmas;
 } {
-  const line = detectNewline(docblock) || EOL;
+  const line = detectNewline(docblock) ?? EOL;
 
   docblock = docblock
     .replace(commentStartRe, '')
@@ -54,7 +54,7 @@ export function parseWithComments(docblock: string): {
   }
   docblock = docblock.replace(ltrimNewlineRe, '').trimRight();
 
-  const result = Object.create(null);
+  const result = Object.create(null) as Pragmas;
   const comments = docblock
     .replace(propertyRe, '')
     .replace(ltrimNewlineRe, '')
@@ -83,7 +83,7 @@ export function print({
   comments?: string;
   pragmas?: Pragmas;
 }): string {
-  const line = detectNewline(comments) || EOL;
+  const line = detectNewline(comments) ?? EOL;
   const head = '/**';
   const start = ' *';
   const tail = ' */';
