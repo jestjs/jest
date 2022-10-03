@@ -301,7 +301,7 @@ describe('ScriptTransformer', () => {
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
     const transformedBananaWithCoverageAgain = scriptTransformer.transform(
@@ -346,7 +346,7 @@ describe('ScriptTransformer', () => {
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
     const transformedBananaWithCoverageAgain =
@@ -561,7 +561,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toHaveBeenCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -581,7 +581,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toHaveBeenCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -604,9 +604,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(
-      require('test_async_preprocessor').getCacheKeyAsync,
-    ).toHaveBeenCalled();
+    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -637,8 +635,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toHaveBeenCalled();
-    expect(require('css-preprocessor').getCacheKey).toHaveBeenCalled();
+    expect(require('test_preprocessor').getCacheKey).toBeCalled();
+    expect(require('css-preprocessor').getCacheKey).toBeCalled();
     expect(res1.code).toMatchSnapshot();
     expect(res2.code).toMatchSnapshot();
 
@@ -669,10 +667,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(
-      require('test_async_preprocessor').getCacheKeyAsync,
-    ).toHaveBeenCalled();
-    expect(require('css-preprocessor').getCacheKey).toHaveBeenCalled();
+    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
+    expect(require('css-preprocessor').getCacheKey).toBeCalled();
     expect(res1.code).toMatchSnapshot();
     expect(res2.code).toMatchSnapshot();
 
@@ -707,15 +703,11 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      mapStr,
-      {
-        encoding: 'utf8',
-        fsync: false,
-      },
-    );
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
+      encoding: 'utf8',
+      fsync: false,
+    });
   });
 
   it('in async mode, writes source map if preprocessor supplies it', async () => {
@@ -741,15 +733,11 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      mapStr,
-      {
-        encoding: 'utf8',
-        fsync: false,
-      },
-    );
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
+      encoding: 'utf8',
+      fsync: false,
+    });
   });
 
   it('in async mode, writes source map if async preprocessor supplies it', async () => {
@@ -777,15 +765,11 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      mapStr,
-      {
-        encoding: 'utf8',
-        fsync: false,
-      },
-    );
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
+      encoding: 'utf8',
+      fsync: false,
+    });
   });
 
   it('writes source map if preprocessor inlines it', async () => {
@@ -815,8 +799,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -850,8 +834,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -885,8 +869,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -926,7 +910,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -966,7 +950,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -1006,7 +990,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -1036,8 +1020,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
       {
@@ -1143,8 +1127,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1188,8 +1172,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1235,8 +1219,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1271,8 +1255,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1307,8 +1291,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1345,8 +1329,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1428,7 +1412,7 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1442,9 +1426,9 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1455,9 +1439,9 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toBeCalled();
   });
 
   it('in async mode, reads values from the cache', async () => {
@@ -1472,7 +1456,7 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1489,9 +1473,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1505,9 +1489,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toBeCalled();
   });
 
   it('reads values from the cache when using async preprocessor', async () => {
@@ -1522,7 +1506,7 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1539,9 +1523,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1555,9 +1539,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toBeCalled();
   });
 
   it('reads values from the cache when the file contains colons', async () => {
@@ -1572,7 +1556,7 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1586,12 +1570,9 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana:colon.js', {});
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith(
-      '/fruits/banana:colon.js',
-      'utf8',
-    );
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
   it('in async mode, reads values from the cache when the file contains colons', async () => {
@@ -1606,7 +1587,7 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1620,12 +1601,9 @@ describe('ScriptTransformer', () => {
     await scriptTransformer.transformAsync('/fruits/banana:colon.js', {});
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith(
-      '/fruits/banana:colon.js',
-      'utf8',
-    );
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
   it('with async preprocessor, reads values from the cache when the file contains colons', async () => {
@@ -1640,7 +1618,7 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(writeFileAtomic.sync).toBeCalled();
     expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
@@ -1654,12 +1632,9 @@ describe('ScriptTransformer', () => {
     await scriptTransformer.transformAsync('/fruits/banana:colon.js', {});
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith(
-      '/fruits/banana:colon.js',
-      'utf8',
-    );
-    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
   it('should reuse the value from in-memory cache which is set by custom transformer', async () => {
@@ -1684,7 +1659,7 @@ describe('ScriptTransformer', () => {
     expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
     expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
 
   it('in async mode, should reuse the value from in-memory cache which is set by custom preprocessor', async () => {
@@ -1709,7 +1684,7 @@ describe('ScriptTransformer', () => {
     expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
     expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
 
   it('should reuse the value from in-memory cache which is set by custom async preprocessor', async () => {
@@ -1738,7 +1713,7 @@ describe('ScriptTransformer', () => {
       testPreprocessor.processAsync.mock.calls[0][2].cacheFS,
     ).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
 
   it('does not reuse the in-memory cache between different projects', async () => {
@@ -1760,7 +1735,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('async mode does not reuse the in-memory cache between different projects', async () => {
@@ -1785,7 +1760,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
@@ -1825,7 +1800,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(4);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('preload transformer when using `createScriptTransformer`', async () => {

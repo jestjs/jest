@@ -20,6 +20,6 @@ describe('listFilesInDirectorySync', () => {
     const fileSummary =
       FileSummarizer.summarizeFilesInDirectorySync('/path/to');
 
-    expect(fileSummary).toHaveLength(2);
+    expect(fileSummary.length).toBe(2);
   });
 });

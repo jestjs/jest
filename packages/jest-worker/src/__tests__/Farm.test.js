@@ -111,7 +111,7 @@ describe('Farm', () => {
     workerReply(0);
     await p0;
 
-    expect(computeWorkerKey).toHaveBeenCalledTimes(1);
+    expect(computeWorkerKey).toBeCalledTimes(1);
     expect(computeWorkerKey).toHaveBeenNthCalledWith(1, 'foo', 42);
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -146,7 +146,7 @@ describe('Farm', () => {
     workerReply(2);
     await p2;
 
-    expect(computeWorkerKey).toHaveBeenCalledTimes(3);
+    expect(computeWorkerKey).toBeCalledTimes(3);
     expect(computeWorkerKey).toHaveBeenNthCalledWith(1, 'foo', 42);
     expect(computeWorkerKey).toHaveBeenNthCalledWith(2, 'foo1', 43);
     expect(computeWorkerKey).toHaveBeenNthCalledWith(3, 'foo2', 44);

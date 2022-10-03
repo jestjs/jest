@@ -1118,7 +1118,7 @@ describe('FakeTimers', () => {
       }, 0);
 
       timers.runOnlyPendingTimers();
-      expect(fn).not.toHaveBeenCalled();
+      expect(fn).not.toBeCalled();
     });
   });
 

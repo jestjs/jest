@@ -64,7 +64,7 @@ export default class SpyRegistry {
   clearSpies: () => void;
   respy: unknown;
 
-  private readonly _spyOnProperty: (
+  private _spyOnProperty: (
     obj: Record<string, Spy>,
     propertyName: string,
     accessType: keyof PropertyDescriptor,

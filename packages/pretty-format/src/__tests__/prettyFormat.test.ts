@@ -894,8 +894,8 @@ describe('prettyFormat()', () => {
     ).toBe(
       `Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ${name}],\n  },\n}`,
     );
-    expect((set as any).toJSON).not.toHaveBeenCalled();
-    expect(value.toJSON).not.toHaveBeenCalled();
+    expect((set as any).toJSON).not.toBeCalled();
+    expect(value.toJSON).not.toBeCalled();
   });
 
   describe('min', () => {

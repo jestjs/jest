@@ -19,7 +19,7 @@ let createRuntime: (
 ) => Promise<Runtime & {__mockRootPath: string}>;
 
 const getTmpDir = async () =>
-  fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
+  await fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
 
 describe('Runtime require.resolve', () => {
   beforeEach(() => {

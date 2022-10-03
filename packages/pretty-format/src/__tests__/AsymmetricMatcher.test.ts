@@ -351,7 +351,7 @@ test('min option', () => {
 class DummyMatcher {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(private readonly sample: number) {}
+  constructor(private sample: number) {}
 
   asymmetricMatch(other: number) {
     return this.sample === other;

@@ -797,7 +797,7 @@ class ScriptTransformer {
       const cbResult = callback(module);
 
       if (isPromise(cbResult)) {
-        return await waitForPromiseWithCleanup(cbResult, revertHook).then(
+        return waitForPromiseWithCleanup(cbResult, revertHook).then(
           () => module,
         );
       }

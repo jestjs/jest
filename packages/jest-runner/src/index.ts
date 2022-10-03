@@ -47,9 +47,9 @@ export default class TestRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    return options.serial
+    return await (options.serial
       ? this.#createInBandTestRun(tests, watcher)
-      : this.#createParallelTestRun(tests, watcher);
+      : this.#createParallelTestRun(tests, watcher));
   }
 
   async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {

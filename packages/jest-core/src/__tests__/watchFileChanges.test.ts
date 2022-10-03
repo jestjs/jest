@@ -167,7 +167,7 @@ describe('Watch mode flows with changed files', () => {
 });
 
 class MockStdin {
-  private readonly _callbacks: Array<unknown>;
+  private _callbacks: Array<unknown>;
 
   constructor() {
     this._callbacks = [];

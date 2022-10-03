@@ -159,7 +159,7 @@ describe('node crawler', () => {
       roots: ['/project/fruits', '/project/vegetables'],
     });
 
-    expect(childProcess.spawn).toHaveBeenLastCalledWith('find', [
+    expect(childProcess.spawn).lastCalledWith('find', [
       '/project/fruits',
       '/project/vegetables',
       '-type',
@@ -266,7 +266,7 @@ describe('node crawler', () => {
       roots: ['/project/fruits'],
     });
 
-    expect(childProcess.spawn).toHaveBeenLastCalledWith(
+    expect(childProcess.spawn).lastCalledWith(
       'find',
       ['.', '-type', 'f', '(', '-iname', '*.ts', '-o', '-iname', '*.js', ')'],
       {cwd: expect.any(String)},

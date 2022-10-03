@@ -198,16 +198,6 @@ async function runTestInternal(
     path,
   );
 
-  let isTornDown = false;
-
-  const tearDownEnv = async () => {
-    if (!isTornDown) {
-      runtime.teardown();
-      await environment.teardown();
-      isTornDown = true;
-    }
-  };
-
   const start = Date.now();
 
   for (const path of projectConfig.setupFiles) {
@@ -357,14 +347,13 @@ async function runTestInternal(
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
-    await tearDownEnv();
-
     // Delay the resolution to allow log messages to be output.
-    return await new Promise(resolve => {
+    return new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    await tearDownEnv();
+    runtime.teardown();
+    await environment.teardown();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

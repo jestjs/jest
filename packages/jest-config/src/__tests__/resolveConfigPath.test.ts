@@ -32,7 +32,7 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       expect(resolveConfigPath(absoluteConfigPath, DIR)).toBe(
         absoluteConfigPath,
       );
-      expect(() => resolveConfigPath('/does_not_exist', DIR)).toThrow(
+      expect(() => resolveConfigPath('/does_not_exist', DIR)).toThrowError(
         NO_ROOT_DIR_ERROR_PATTERN,
       );
 
@@ -40,7 +40,7 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       expect(resolveConfigPath(relativeConfigPath, DIR)).toBe(
         absoluteConfigPath,
       );
-      expect(() => resolveConfigPath('does_not_exist', DIR)).toThrow(
+      expect(() => resolveConfigPath('does_not_exist', DIR)).toThrowError(
         NO_ROOT_DIR_ERROR_PATTERN,
       );
     });
@@ -60,12 +60,12 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       expect(() =>
         // absolute
         resolveConfigPath(path.dirname(absoluteJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
+      ).toThrowError(ERROR_PATTERN);
 
       expect(() =>
         // relative
         resolveConfigPath(path.dirname(relativeJestConfigPath), DIR),
-      ).toThrow(ERROR_PATTERN);
+      ).toThrowError(ERROR_PATTERN);
 
       writeFiles(DIR, {[relativePackageJsonPath]: ''});
 
@@ -98,19 +98,19 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
       // absolute
       expect(() =>
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
 
       // relative
       expect(() =>
         resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
 
       expect(() => {
         resolveConfigPath(
           path.join(path.dirname(relativePackageJsonPath), 'j/x/b/m/'),
           DIR,
         );
-      }).toThrow(NO_ROOT_DIR_ERROR_PATTERN);
+      }).toThrowError(NO_ROOT_DIR_ERROR_PATTERN);
     });
   },
 );
@@ -146,7 +146,7 @@ describe.each(pickPairsWithSameOrder(JEST_CONFIG_EXT_ORDER))(
 
       expect(() =>
         resolveConfigPath(path.dirname(relativeJestConfigPaths[0]), DIR),
-      ).toThrow(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
     });
   },
 );

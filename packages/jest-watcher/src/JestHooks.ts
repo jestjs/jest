@@ -19,14 +19,14 @@ type AvailableHooks =
   | 'shouldRunTestSuite';
 
 class JestHooks {
-  private readonly _listeners: {
+  private _listeners: {
     onFileChange: Array<FileChange>;
     onTestRunComplete: Array<TestRunComplete>;
     shouldRunTestSuite: Array<ShouldRunTestSuite>;
   };
 
-  private readonly _subscriber: JestHookSubscriber;
-  private readonly _emitter: JestHookEmitter;
+  private _subscriber: JestHookSubscriber;
+  private _emitter: JestHookEmitter;
 
   constructor() {
     this._listeners = {

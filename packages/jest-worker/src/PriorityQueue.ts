@@ -28,9 +28,9 @@ type QueueItem = {
  */
 export default class PriorityQueue implements TaskQueue {
   private _queue: Array<MinHeap<QueueItem>> = [];
-  private readonly _sharedQueue = new MinHeap<QueueItem>();
+  private _sharedQueue = new MinHeap<QueueItem>();
 
-  constructor(private readonly _computePriority: ComputeTaskPriorityCallback) {}
+  constructor(private _computePriority: ComputeTaskPriorityCallback) {}
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
     if (workerId == null) {
@@ -86,7 +86,7 @@ type HeapItem = {
 };
 
 class MinHeap<TItem extends HeapItem> {
-  private readonly _heap: Array<TItem | null> = [];
+  private _heap: Array<TItem | null> = [];
 
   peek(): TItem | null {
     return this._heap[0] ?? null;

@@ -13,7 +13,7 @@ type State = {
 
 export default class TestWatcher extends Emittery<{change: State}> {
   state: State;
-  private readonly _isWatchMode: boolean;
+  private _isWatchMode: boolean;
 
   constructor({isWatchMode}: {isWatchMode: boolean}) {
     super();

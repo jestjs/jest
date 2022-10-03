@@ -14,9 +14,13 @@ import globby from 'globby';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
-import {getPackagesWithTsConfig} from './buildUtils.mjs';
+import {getPackages} from './buildUtils.mjs';
 
-const packagesWithTs = getPackagesWithTsConfig();
+const packages = getPackages();
+
+const packagesWithTs = packages.filter(p =>
+  fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
+);
 
 const {stdout: allWorkspacesString} = await execa('yarn', [
   'workspaces',

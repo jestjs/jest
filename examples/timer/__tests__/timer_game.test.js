@@ -12,8 +12,8 @@ describe('timerGame', () => {
     const timerGame = require('../timerGame');
     timerGame();
 
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 1000);
+    expect(setTimeout).toBeCalledTimes(1);
+    expect(setTimeout).toBeCalledWith(expect.any(Function), 1000);
   });
 
   it('calls the callback after 1 second via runAllTimers', () => {
@@ -23,14 +23,14 @@ describe('timerGame', () => {
     timerGame(callback);
 
     // At this point in time, the callback should not have been called yet
-    expect(callback).not.toHaveBeenCalled();
+    expect(callback).not.toBeCalled();
 
     // Fast-forward until all timers have been executed
     jest.runAllTimers();
 
     // Now our callback should have been called!
-    expect(callback).toHaveBeenCalled();
-    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toBeCalled();
+    expect(callback).toBeCalledTimes(1);
   });
 
   it('calls the callback after 1 second via advanceTimersByTime', () => {
@@ -40,13 +40,13 @@ describe('timerGame', () => {
     timerGame(callback);
 
     // At this point in time, the callback should not have been called yet
-    expect(callback).not.toHaveBeenCalled();
+    expect(callback).not.toBeCalled();
 
     // Fast-forward until all timers have been executed
     jest.advanceTimersByTime(1000);
 
     // Now our callback should have been called!
-    expect(callback).toHaveBeenCalled();
-    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toBeCalled();
+    expect(callback).toBeCalledTimes(1);
   });
 });

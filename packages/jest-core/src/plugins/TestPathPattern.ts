@@ -16,7 +16,7 @@ import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
-  private readonly _prompt: Prompt;
+  private _prompt: Prompt;
   isInternal: true;
 
   constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {

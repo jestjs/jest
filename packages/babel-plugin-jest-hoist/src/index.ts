@@ -114,10 +114,10 @@ const IDVisitor = {
   ],
 };
 
-const FUNCTIONS = Object.create(null) as Record<
+const FUNCTIONS: Record<
   string,
   <T extends Node>(args: Array<NodePath<T>>) => boolean
->;
+> = Object.create(null);
 
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
@@ -142,7 +142,7 @@ FUNCTIONS.mock = args => {
       let scope = id.scope;
 
       while (scope !== parentScope) {
-        if (scope.bindings[name] != null) {
+        if (scope.bindings[name]) {
           found = true;
           break;
         }

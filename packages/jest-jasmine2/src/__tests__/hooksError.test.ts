@@ -28,7 +28,9 @@ describe.each([
     el => {
       expect(() => {
         globalThis[fn](el);
-      }).toThrow('Invalid first argument. It must be a callback function.');
+      }).toThrowError(
+        'Invalid first argument. It must be a callback function.',
+      );
     },
   );
 });

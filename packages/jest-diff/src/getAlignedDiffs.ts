@@ -30,10 +30,10 @@ const concatenateRelevantDiffs = (
 
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
-  private readonly op: number;
+  private op: number;
   private line: Array<Diff>; // incomplete line
   private lines: Array<Diff>; // complete lines
-  private readonly changeColor: DiffOptionsColor;
+  private changeColor: DiffOptionsColor;
 
   constructor(op: number, changeColor: DiffOptionsColor) {
     this.op = op;
@@ -114,9 +114,9 @@ class ChangeBuffer {
 
 // Encapsulate common and change lines.
 class CommonBuffer {
-  private readonly deleteBuffer: ChangeBuffer;
-  private readonly insertBuffer: ChangeBuffer;
-  private readonly lines: Array<Diff>;
+  private deleteBuffer: ChangeBuffer;
+  private insertBuffer: ChangeBuffer;
+  private lines: Array<Diff>;
 
   constructor(deleteBuffer: ChangeBuffer, insertBuffer: ChangeBuffer) {
     this.deleteBuffer = deleteBuffer;

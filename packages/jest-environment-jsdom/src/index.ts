@@ -26,10 +26,6 @@ type Win = Window &
     };
   };
 
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
 export default class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
@@ -69,24 +65,24 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     const global = (this.global = this.dom.window.document
       .defaultView as unknown as Win);
 
-    if (global == null) {
+    if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // @ts-expect-error - for "universal" code (code should use `globalThis`)
-    global.global = global;
+    // for "universal" code (code should use `globalThis`)
+    global.global = global as any;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global, projectConfig.globals);
+    installCommonGlobals(global as any, projectConfig.globals);
 
     // TODO: remove this ASAP, but it currently causes tests to run really slow
     global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
-      if (userErrorListenerCount === 0 && event.error != null) {
+      if (userErrorListenerCount === 0 && event.error) {
         process.emit('uncaughtException', event.error);
       }
     };
@@ -94,8 +90,8 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
 
     // However, don't report them as uncaught if the user listens to 'error' event.
     // In that case, we assume the might have custom error handling logic.
-    const originalAddListener = global.addEventListener.bind(global);
-    const originalRemoveListener = global.removeEventListener.bind(global);
+    const originalAddListener = global.addEventListener;
+    const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
     global.addEventListener = function (
       ...args: Parameters<typeof originalAddListener>
@@ -118,7 +114,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
+        customExportConditions.every(item => typeof item === 'string')
       ) {
         this.customExportConditions = customExportConditions;
       } else {
@@ -128,7 +124,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
       }
     }
 
-    this.moduleMocker = new ModuleMocker(global);
+    this.moduleMocker = new ModuleMocker(global as any);
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,
@@ -156,7 +152,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
     if (this.fakeTimersModern) {
       this.fakeTimersModern.dispose();
     }
-    if (this.global != null) {
+    if (this.global) {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }

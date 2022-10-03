@@ -57,14 +57,14 @@ describe('WorkerPool', () => {
     const onEnd = () => {};
     workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
 
-    expect(ChildProcessWorker).toHaveBeenCalledWith({
+    expect(ChildProcessWorker).toBeCalledWith({
       forkOptions: {},
       maxRetries: 1,
       workerId: 0,
       workerPath: '/path',
     });
-    expect(NodeThreadWorker).not.toHaveBeenCalled();
-    expect(workerPool._workers[0].send).toHaveBeenCalledWith(
+    expect(NodeThreadWorker).not.toBeCalled();
+    expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,
       onEnd,
@@ -87,14 +87,14 @@ describe('WorkerPool', () => {
     const onEnd = () => {};
     workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
 
-    expect(NodeThreadWorker).toHaveBeenCalledWith({
+    expect(NodeThreadWorker).toBeCalledWith({
       forkOptions: {},
       maxRetries: 1,
       workerId: 0,
       workerPath: '/path',
     });
-    expect(ChildProcessWorker).not.toHaveBeenCalled();
-    expect(workerPool._workers[0].send).toHaveBeenCalledWith(
+    expect(ChildProcessWorker).not.toBeCalled();
+    expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,
       onEnd,
@@ -116,14 +116,14 @@ describe('WorkerPool', () => {
     const onEnd = () => {};
     workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
 
-    expect(ChildProcessWorker).toHaveBeenCalledWith({
+    expect(ChildProcessWorker).toBeCalledWith({
       forkOptions: {},
       maxRetries: 1,
       workerId: 0,
       workerPath: '/path',
     });
-    expect(NodeThreadWorker).not.toHaveBeenCalled();
-    expect(workerPool._workers[0].send).toHaveBeenCalledWith(
+    expect(NodeThreadWorker).not.toBeCalled();
+    expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,
       onEnd,

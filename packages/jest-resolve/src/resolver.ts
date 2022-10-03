@@ -89,7 +89,7 @@ export default class Resolver {
     error: unknown,
   ): ModuleNotFoundError | null {
     if (error instanceof ModuleNotFoundError) {
-      return error;
+      return error as ModuleNotFoundError;
     }
 
     const casted = error as ModuleNotFoundError;
@@ -295,7 +295,7 @@ export default class Resolver {
         return name;
       }
 
-      return Resolver.findNodeModuleAsync(name, {
+      return await Resolver.findNodeModuleAsync(name, {
         basedir: dirname,
         conditions: options?.conditions,
         extensions,
@@ -636,7 +636,12 @@ export default class Resolver {
     );
     return isModuleResolved
       ? this.getModule(moduleName)
-      : this._getVirtualMockPathAsync(virtualMocks, from, moduleName, options);
+      : await this._getVirtualMockPathAsync(
+          virtualMocks,
+          from,
+          moduleName,
+          options,
+        );
   }
 
   private _getMockPath(from: string, moduleName: string): string | null {
@@ -650,7 +655,7 @@ export default class Resolver {
     moduleName: string,
   ): Promise<string | null> {
     return !this.isCoreModule(moduleName)
-      ? this.getMockModuleAsync(from, moduleName)
+      ? await this.getMockModuleAsync(from, moduleName)
       : null;
   }
 
@@ -678,7 +683,7 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-      ? this.resolveModuleAsync(from, moduleName, options)
+      ? await this.resolveModuleAsync(from, moduleName, options)
       : from;
   }
 

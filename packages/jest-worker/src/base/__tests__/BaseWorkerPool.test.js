@@ -141,8 +141,8 @@ describe('BaseWorkerPool', () => {
       numWorkers: 2,
     });
 
-    expect(out).toHaveLength(2);
-    expect(err).toHaveLength(2);
+    expect(out.length).toBe(2);
+    expect(err.length).toBe(2);
 
     const stdout = jest.fn();
     const stderr = jest.fn();

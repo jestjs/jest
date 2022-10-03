@@ -73,7 +73,7 @@ type Cache = {
 export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
-  private readonly _currentTests: CurrentTestList;
+  private _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
     testCaseResult: TestCaseResult;
@@ -160,7 +160,7 @@ export default class Status {
       return {clear: '', content: ''};
     }
 
-    const width = process.stdout.columns;
+    const width: number = process.stdout.columns!;
     let content = '\n';
     this._currentTests.get().forEach(record => {
       if (record) {

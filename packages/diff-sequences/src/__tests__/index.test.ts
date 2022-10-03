@@ -15,8 +15,7 @@ describe('invalid arg', () => {
   describe('length', () => {
     test('is not a number', () => {
       expect(() => {
-        // @ts-expect-error: Testing runtime errors here
-        diff('0', 0, isCommon, foundSubsequence);
+        diff('0' as any, 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Infinity is not a safe integer', () => {
@@ -50,14 +49,12 @@ describe('invalid arg', () => {
   describe('callback', () => {
     test('null is not a function', () => {
       expect(() => {
-        // @ts-expect-error: Testing runtime errors here
-        diff(0, 0, null, foundSubsequence);
+        diff(0, 0, null as any, foundSubsequence);
       }).toThrow(/isCommon/);
     });
     test('undefined is not a function', () => {
       expect(() => {
-        // @ts-expect-error: Testing runtime errors here
-        diff(0, 0, isCommon, undefined);
+        diff(0, 0, isCommon, undefined as any);
       }).toThrow(/foundSubsequence/);
     });
   });

@@ -22,13 +22,13 @@ describe('test/it.failing error throwing', () => {
   it("it doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusIt.failing('test1', () => {});
-    }).not.toThrow();
+    }).not.toThrowError();
   });
   it('it throws error with missing callback function', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusIt.failing('test2');
-    }).toThrow(
+    }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -36,7 +36,7 @@ describe('test/it.failing error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusIt.failing(() => {});
-    }).toThrow(
+    }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -44,7 +44,7 @@ describe('test/it.failing error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusIt.failing('test4', 'test4b');
-    }).toThrow(
+    }).toThrowError(
       'Invalid second argument, test4b. It must be a callback function.',
     );
   });
@@ -52,7 +52,7 @@ describe('test/it.failing error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusTest.failing('test5');
-    }).toThrow(
+    }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -60,7 +60,7 @@ describe('test/it.failing error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusTest.failing(() => {});
-    }).toThrow(
+    }).toThrowError(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -68,7 +68,7 @@ describe('test/it.failing error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusTest.failing('test7', 'test8b');
-    }).toThrow(
+    }).toThrowError(
       'Invalid second argument, test8b. It must be a callback function.',
     );
   });

@@ -53,10 +53,6 @@ const nodeGlobals = new Map(
     }),
 );
 
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
 export default class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
@@ -69,11 +65,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
   constructor(config: JestEnvironmentConfig, _context: EnvironmentContext) {
     const {projectConfig} = config;
     this.context = createContext();
-    const global = runInContext(
+    const global = (this.global = runInContext(
       'this',
       Object.assign(this.context, projectConfig.testEnvironmentOptions),
-    ) as Global.Global;
-    this.global = global;
+    ));
 
     const contextGlobals = new Set(Object.getOwnPropertyNames(global));
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
@@ -83,7 +78,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
           enumerable: descriptor.enumerable,
           get() {
             // @ts-expect-error: no index signature
-            const val = globalThis[nodeGlobalsKey] as unknown;
+            const val = globalThis[nodeGlobalsKey];
 
             // override lazy getter
             Object.defineProperty(global, nodeGlobalsKey, {
@@ -94,7 +89,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
             });
             return val;
           },
-          set(val: unknown) {
+          set(val) {
             // override lazy getter
             Object.defineProperty(global, nodeGlobalsKey, {
               configurable: descriptor.configurable,
@@ -107,7 +102,6 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       }
     }
 
-    // @ts-expect-error - Buffer and gc is "missing"
     global.global = global;
     global.Buffer = Buffer;
     global.ArrayBuffer = ArrayBuffer;
@@ -126,7 +120,7 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       const {customExportConditions} = projectConfig.testEnvironmentOptions;
       if (
         Array.isArray(customExportConditions) &&
-        customExportConditions.every(isString)
+        customExportConditions.every(item => typeof item === 'string')
       ) {
         this.customExportConditions = customExportConditions;
       } else {
@@ -148,7 +142,8 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
       },
     });
 
-    const timerRefToId = (timer: Timer): number | undefined => timer?.id;
+    const timerRefToId = (timer: Timer): number | undefined =>
+      (timer && timer.id) || undefined;
 
     this.fakeTimers = new LegacyFakeTimers({
       config: projectConfig,

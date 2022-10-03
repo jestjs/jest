@@ -693,7 +693,7 @@ describe('HasteMap', () => {
 
     expect(data.map.get('IRequireAVideo')).toBeDefined();
     expect(data.files.get(path.join('video', 'video.mp4'))).toBeDefined();
-    expect(fs.readFileSync).not.toHaveBeenCalledWith(
+    expect(fs.readFileSync).not.toBeCalledWith(
       path.join('video', 'video.mp4'),
       'utf8',
     );
@@ -722,7 +722,7 @@ describe('HasteMap', () => {
     expect(data.map.get('fbjs')).toBeUndefined();
 
     // cache file + 5 modules - the node_module
-    expect(fs.readFileSync).toHaveBeenCalledTimes(6);
+    expect(fs.readFileSync.mock.calls.length).toBe(6);
   });
 
   it('warns on duplicate mock files', async () => {
@@ -886,7 +886,7 @@ describe('HasteMap', () => {
 
     // The first run should access the file system once for the (empty)
     // cache file and five times for the files in the system.
-    expect(fs.readFileSync).toHaveBeenCalledTimes(6);
+    expect(fs.readFileSync.mock.calls.length).toBe(6);
 
     fs.readFileSync.mockClear();
 
@@ -902,11 +902,11 @@ describe('HasteMap', () => {
     const {__hasteMapForTest: data} = await (
       await HasteMap.create(defaultConfig)
     ).build();
-    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.readFileSync.mock.calls.length).toBe(1);
     if (require('v8').deserialize) {
-      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath);
+      expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
     } else {
-      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath, 'utf8');
+      expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
     }
     expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
     expect(useBuitinsInContext(data.files)).toEqual(initialData.files);
@@ -936,14 +936,14 @@ describe('HasteMap', () => {
       await HasteMap.create(defaultConfig)
     ).build();
 
-    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    expect(fs.readFileSync.mock.calls.length).toBe(2);
 
     if (require('v8').serialize) {
-      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath);
+      expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
     } else {
-      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath, 'utf8');
+      expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
     }
-    expect(fs.readFileSync).toHaveBeenCalledWith(
+    expect(fs.readFileSync).toBeCalledWith(
       path.join('/', 'project', 'fruits', 'Banana.js'),
       'utf8',
     );
@@ -1279,9 +1279,9 @@ describe('HasteMap', () => {
       })
     ).build();
 
-    expect(jestWorker).toHaveBeenCalledTimes(1);
+    expect(jestWorker.mock.calls.length).toBe(1);
 
-    expect(mockWorker).toHaveBeenCalledTimes(5);
+    expect(mockWorker.mock.calls.length).toBe(5);
 
     expect(mockWorker.mock.calls).toEqual([
       [
@@ -1336,7 +1336,7 @@ describe('HasteMap', () => {
       ],
     ]);
 
-    expect(mockEnd).toHaveBeenCalled();
+    expect(mockEnd).toBeCalled();
   });
 
   it('tries to crawl using node as a fallback', async () => {
@@ -1360,8 +1360,8 @@ describe('HasteMap', () => {
     const {__hasteMapForTest: data} = await (
       await HasteMap.create(defaultConfig)
     ).build();
-    expect(watchman).toHaveBeenCalled();
-    expect(node).toHaveBeenCalled();
+    expect(watchman).toBeCalled();
+    expect(node).toBeCalled();
 
     expect(data.files).toEqual(
       createMap({
@@ -1401,8 +1401,8 @@ describe('HasteMap', () => {
       await HasteMap.create(defaultConfig)
     ).build();
 
-    expect(watchman).toHaveBeenCalled();
-    expect(node).toHaveBeenCalled();
+    expect(watchman).toBeCalled();
+    expect(node).toBeCalled();
 
     expect(data.files).toEqual(
       createMap({

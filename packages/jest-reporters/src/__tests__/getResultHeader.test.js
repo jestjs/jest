@@ -45,7 +45,7 @@ beforeEach(() => {
 test('should call `terminal-link` correctly', () => {
   getResultHeader(testResult, globalConfig);
 
-  expect(terminalLink).toHaveBeenCalledWith(
+  expect(terminalLink).toBeCalledWith(
     expect.stringContaining('foo'),
     'file:///foo',
     expect.objectContaining({fallback: expect.any(Function)}),

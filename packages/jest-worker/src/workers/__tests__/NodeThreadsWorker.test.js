@@ -121,7 +121,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   worker._worker.emit('exit');
 
   expect(workerThreads).toHaveBeenCalledTimes(5);
-  expect(onProcessStart).toHaveBeenCalledWith(worker);
+  expect(onProcessStart).toBeCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');

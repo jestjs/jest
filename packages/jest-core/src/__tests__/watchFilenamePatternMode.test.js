@@ -93,7 +93,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('p');
-    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
+    expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -111,7 +111,7 @@ describe('Watch mode flows', () => {
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toHaveBeenCalled();
+    expect(runJestMock).toBeCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();

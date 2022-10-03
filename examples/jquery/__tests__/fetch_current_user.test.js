@@ -14,7 +14,7 @@ it('calls into $.ajax with the correct params', () => {
 
   // Now make sure that $.ajax was properly called during the previous
   // 2 lines
-  expect($.ajax).toHaveBeenCalledWith({
+  expect($.ajax).toBeCalledWith({
     success: expect.any(Function),
     type: 'GET',
     url: 'http://example.com/currentUser',

@@ -359,7 +359,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
       'prettier',
     );
 
-  expect(save).toThrow(/Couldn't locate all inline snapshots./);
+  expect(save).toThrowError(/Couldn't locate all inline snapshots./);
 });
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
@@ -377,7 +377,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
       'prettier',
     );
 
-  expect(save).toThrow(
+  expect(save).toThrowError(
     /Multiple inline snapshots for the same call are not supported./,
   );
 });
@@ -719,7 +719,7 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
     'prettier',
   );
 
-  expect(prettierSpy).not.toHaveBeenCalled();
+  expect(prettierSpy).not.toBeCalled();
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'const foo = {\n' +
       '  "1": "Some value",\n' +

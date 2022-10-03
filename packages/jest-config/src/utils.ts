@@ -48,7 +48,7 @@ export const resolve = (
     );
   }
   /// can cast as string since nulls will be thrown
-  return module!;
+  return module as string;
 };
 
 export const escapeGlobCharacters = (path: string): string =>
@@ -106,7 +106,10 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
         return config;
       }
 
-      return _replaceRootDirInObject(rootDir, config) as T;
+      return _replaceRootDirInObject(
+        rootDir,
+        config as ReplaceRootDirConfigObj,
+      ) as T;
     case 'string':
       return replaceRootDirInPath(rootDir, config) as T;
   }

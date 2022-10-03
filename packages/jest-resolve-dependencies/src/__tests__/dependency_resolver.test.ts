@@ -16,6 +16,7 @@ import {DependencyResolver} from '../index';
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
+let Runtime: typeof import('jest-runtime').default;
 let config: Config.ProjectConfig;
 const cases: Record<string, (path: string) => boolean> = {
   fancyCondition: path => path.length > 10,
@@ -25,8 +26,7 @@ const filter = (path: string) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(async () => {
-  const Runtime = (require('jest-runtime') as typeof import('jest-runtime'))
-    .default;
+  Runtime = require('jest-runtime').default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
@@ -49,7 +49,7 @@ beforeEach(async () => {
 
 test('resolves no dependencies for non-existent path', () => {
   const resolved = dependencyResolver.resolve('/non/existent/path');
-  expect(resolved).toHaveLength(0);
+  expect(resolved.length).toBe(0);
 });
 
 test('resolves dependencies for existing path', () => {
@@ -86,13 +86,13 @@ test('resolves dependencies for scoped packages', () => {
 test('resolves no inverse dependencies for empty paths set', () => {
   const paths = new Set<string>();
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved).toHaveLength(0);
+  expect(resolved.length).toBe(0);
 });
 
 test('resolves no inverse dependencies for set of non-existent paths', () => {
   const paths = new Set(['/non/existent/path', '/another/one']);
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved).toHaveLength(0);
+  expect(resolved.length).toBe(0);
 });
 
 test('resolves inverse dependencies for existing path', () => {

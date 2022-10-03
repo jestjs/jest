@@ -458,9 +458,9 @@ matchers.forEach(toThrow => {
           err = new Err('async apple');
         }
         if (resolve) {
-          return Promise.resolve(err || 'apple');
+          return await Promise.resolve(err || 'apple');
         } else {
-          return Promise.reject(err || 'apple');
+          return await Promise.reject(err || 'apple');
         }
       };
 
