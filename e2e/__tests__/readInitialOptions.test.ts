@@ -31,9 +31,7 @@ async function proxyReadInitialOptions(
       configFile ?? '',
       JSON.stringify(options),
     ],
-    {
-      cwd: options?.cwd,
-    },
+    {cwd: options?.cwd},
   );
   return JSON.parse(stdout);
 }
