@@ -233,7 +233,7 @@ it('throws descriptive errors for invalid matchers', () => {
 
 it('exposes matchers in context', () => {
   jestExpect.extend({
-    _shouldNotError(_actual: unknown, _expected: unknown) {
+    shouldNotError(_actual: unknown, _expected: unknown) {
       const pass = this.equals(this.matchers, matchers);
       const message = pass
         ? () => 'expected this.matchers to be defined in an extend call'
@@ -243,5 +243,5 @@ it('exposes matchers in context', () => {
     },
   });
 
-  jestExpect()._shouldNotError();
+  jestExpect('test').shouldNotError();
 });
