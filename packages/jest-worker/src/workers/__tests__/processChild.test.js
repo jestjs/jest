@@ -376,7 +376,7 @@ it('throws if child is not forked', () => {
       'fooWorks',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('Child can only be used on a forked process');
 
   expect(() => {
     process.emit('message', [
@@ -385,5 +385,5 @@ it('throws if child is not forked', () => {
       'fooThrows',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('Child can only be used on a forked process');
 });

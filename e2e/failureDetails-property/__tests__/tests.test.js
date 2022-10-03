@@ -33,5 +33,6 @@ it('throws!', () => {
 });
 
 test('promise rejection', async () => {
+  // eslint-disable-next-line jest/require-to-throw-message
   await expect(Promise.resolve(1)).rejects.toThrow();
 });

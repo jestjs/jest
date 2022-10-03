@@ -180,7 +180,7 @@ describe('worker', () => {
 
     await expect(
       getSha1({computeSha1: true, filePath: '/i/dont/exist.js', rootDir}),
-    ).rejects.toThrow();
+    ).rejects.toThrow("Cannot read path '/i/dont/exist.js'.");
   });
 
   it('avoids computing dependencies if not requested and Haste does not need it', async () => {

@@ -27,5 +27,5 @@ it('can assert on errors across nested event loops', () => {
     if (caught) {
       throw caught;
     }
-  }).toThrow();
+  }).toThrow('This should be caught.');
 });

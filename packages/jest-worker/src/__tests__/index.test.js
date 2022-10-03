@@ -100,13 +100,15 @@ it('exposes the right API using passed worker', () => {
 it('breaks if any of the forbidden methods is tried to be exposed', () => {
   expect(
     () => new Farm('/tmp/baz.js', {exposedMethods: ['getStdout']}),
-  ).toThrow();
+  ).toThrow('Cannot define a method called getStdout');
 
   expect(
     () => new Farm('/tmp/baz.js', {exposedMethods: ['getStderr']}),
-  ).toThrow();
+  ).toThrow('Cannot define a method called getStderr');
 
-  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow();
+  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow(
+    'Cannot define a method called end',
+  );
 });
 
 it('works with minimal options', () => {

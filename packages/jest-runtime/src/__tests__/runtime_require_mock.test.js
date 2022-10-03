@@ -132,7 +132,7 @@ describe('Runtime', () => {
       const runtime = await createRuntime(__filename);
       expect(() => {
         runtime.requireMock(runtime.__mockRootPath, 'DoesntExist');
-      }).toThrow();
+      }).toThrow("Cannot find module 'DoesntExist' from 'root.js'");
     });
 
     it('uses manual mocks when using a custom resolver', async () => {

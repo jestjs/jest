@@ -35,7 +35,7 @@ describe('Custom matcher', () => {
       // This expectation should fail,
       // Which is why it's wrapped in a .toThrow() block.
       expect(() => 'foo').toCustomMatch('bar');
-    }).toThrow();
+    }).toThrow('Expected "bar" but got "foo"');
   });
 
   it('preserves error stack', () => {
