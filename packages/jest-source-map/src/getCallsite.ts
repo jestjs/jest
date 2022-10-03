@@ -33,13 +33,16 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
-        return getPosition().column ?? getColumnNumber();
+        const value = getPosition().column;
+        return value == null || value === 0 ? getColumnNumber() : value;
       },
       writable: false,
     },
     getLineNumber: {
       value() {
-        return getPosition().line ?? getLineNumber();
+        const value = getPosition().line;
+
+        return value == null || value === 0 ? getLineNumber() : value;
       },
       writable: false,
     },
