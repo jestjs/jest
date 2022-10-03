@@ -121,3 +121,9 @@ export function adjustToTerminalWidth(str) {
   }
   return strs.slice(0, -1).concat(lastString).join('\n');
 }
+
+export function getPackagesWithTsConfig() {
+  return getPackages().filter(p =>
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
+  );
+}

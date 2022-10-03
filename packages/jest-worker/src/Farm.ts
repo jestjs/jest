@@ -31,8 +31,8 @@ export default class Farm {
   private readonly _taskQueue: TaskQueue;
 
   constructor(
-    private _numOfWorkers: number,
-    private _callback: WorkerCallback,
+    private readonly _numOfWorkers: number,
+    private readonly _callback: WorkerCallback,
     options: WorkerFarmOptions = {},
   ) {
     this._computeWorkerKey = options.computeWorkerKey;

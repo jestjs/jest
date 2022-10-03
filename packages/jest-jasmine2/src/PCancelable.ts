@@ -15,7 +15,7 @@ class CancelError extends Error {
 export default class PCancelable<T> implements PromiseLike<T> {
   private _pending = true;
   private _canceled = false;
-  private _promise: Promise<T>;
+  private readonly _promise: Promise<T>;
   private _cancel?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _reject: (reason?: unknown) => void = () => {};

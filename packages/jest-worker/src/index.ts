@@ -81,9 +81,9 @@ function getExposedMethods(
  */
 export class Worker {
   private _ending: boolean;
-  private _farm: Farm;
-  private _options: WorkerFarmOptions;
-  private _workerPool: WorkerPoolInterface;
+  private readonly _farm: Farm;
+  private readonly _options: WorkerFarmOptions;
+  private readonly _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: WorkerFarmOptions) {
     this._options = {...options};
