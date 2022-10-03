@@ -141,7 +141,7 @@ describe('outer', () => {
     console.log('describe inner 1');
     test('test 1', () => {
       console.log('test for describe inner 1');
-      expect(true).toEqual(true);
+      expect(true).toBe(true);
     });
   });
 
@@ -149,14 +149,14 @@ describe('outer', () => {
 
   test('test 1', () => {
     console.log('test for describe outer');
-    expect(true).toEqual(true);
+    expect(true).toBe(true);
   });
 
   describe('describe inner 2', () => {
     console.log('describe inner 2');
     test('test for describe inner 2', () => {
       console.log('test for describe inner 2');
-      expect(false).toEqual(false);
+      expect(false).toBe(false);
     });
   });
 

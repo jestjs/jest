@@ -20,7 +20,7 @@ test('that the failureDetails property is set', () => {
   ]);
 
   // safety check: if the reporter errors it'll show up here
-  expect(stderr).toStrictEqual('');
+  expect(stderr).toBe('');
 
   const output = JSON.parse(removeStackTraces(stdout));
 

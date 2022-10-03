@@ -8,5 +8,5 @@
 import {fn} from 'fake-dep';
 
 test('returns correct message', () => {
-  expect(fn()).toEqual('hello from ESM');
+  expect(fn()).toBe('hello from ESM');
 });

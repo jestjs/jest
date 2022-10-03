@@ -14,6 +14,6 @@ const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
 test('run programmatically with multiple projects', () => {
   const {stderr, exitCode} = run('node run-jest.js', dir);
   const {summary} = extractSummary(stripAnsi(stderr));
-  expect(exitCode).toEqual(0);
+  expect(exitCode).toBe(0);
   expect(summary).toMatchSnapshot('summary');
 });

@@ -11,5 +11,5 @@
 import {fn} from 'fake-dual-dep';
 
 test('returns correct message', () => {
-  expect(fn()).toEqual('hello from special');
+  expect(fn()).toBe('hello from special');
 });

@@ -186,7 +186,7 @@ describe('Farm', () => {
     workerReply(0, null, 34);
     const result = await promise;
 
-    expect(result).toEqual(34);
+    expect(result).toBe(34);
   });
 
   it('throws if the call failed', async () => {
@@ -203,7 +203,7 @@ describe('Farm', () => {
       error = err;
     }
 
-    expect(error).not.toBe(null);
+    expect(error).not.toBeNull();
     expect(error).toBeInstanceOf(TypeError);
   });
 

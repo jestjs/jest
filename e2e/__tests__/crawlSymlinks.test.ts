@@ -48,16 +48,16 @@ test('Node crawler picks up symlinked files when option is set as flag', () => {
     '--no-watchman',
   ]);
 
-  expect(stdout).toEqual('');
+  expect(stdout).toBe('');
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-  expect(exitCode).toEqual(0);
+  expect(exitCode).toBe(0);
 });
 
 test('Node crawler does not pick up symlinked files by default', () => {
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stdout).toContain('No tests found, exiting with code 1');
-  expect(stderr).toEqual('');
-  expect(exitCode).toEqual(1);
+  expect(stderr).toBe('');
+  expect(exitCode).toBe(1);
 });
 
 test('Should throw if watchman used with haste.enableSymlinks', () => {
@@ -71,7 +71,7 @@ test('Should throw if watchman used with haste.enableSymlinks', () => {
 
   const {exitCode, stderr, stdout} = run1;
 
-  expect(stdout).toEqual('');
+  expect(stdout).toBe('');
   expect(stderr).toMatchInlineSnapshot(`
     "Validation Error:
 
@@ -79,5 +79,5 @@ test('Should throw if watchman used with haste.enableSymlinks', () => {
 
     Either set haste.enableSymlinks to false or do not use watchman"
   `);
-  expect(exitCode).toEqual(1);
+  expect(exitCode).toBe(1);
 });

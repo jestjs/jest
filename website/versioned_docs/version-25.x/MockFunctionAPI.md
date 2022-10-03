@@ -437,7 +437,7 @@ it('We can check if the consumer called a method on the class instance', () => {
   // However, it will not allow access to `.mock` in TypeScript as it
   // is returning `SoundPlayer`. Instead, you can check the calls to a
   // method like this fully typed:
-  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[0][0]).toEqual(
+  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[0][0]).toBe(
     coolSoundFileName,
   );
   // Equivalent to above check:

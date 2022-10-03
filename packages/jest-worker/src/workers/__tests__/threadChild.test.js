@@ -160,7 +160,7 @@ it('lazily requires the file', () => {
   ]);
 
   expect(mockCount).toBe(1);
-  expect(initializeParm).toBe(undefined);
+  expect(initializeParm).toBeUndefined();
 });
 
 it('calls initialize with the correct arguments', () => {
@@ -260,7 +260,7 @@ it('returns results immediately when function is synchronous', () => {
     PARENT_MESSAGE_CLIENT_ERROR,
   );
   expect(thread.postMessage.mock.calls[4][0][1]).toBe('Error');
-  expect(thread.postMessage.mock.calls[4][0][2]).toEqual(
+  expect(thread.postMessage.mock.calls[4][0][2]).toBe(
     '"null" or "undefined" thrown',
   );
 

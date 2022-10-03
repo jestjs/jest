@@ -269,7 +269,7 @@ describe('subsetEquality()', () => {
   });
 
   test('object without keys is undefined', () => {
-    expect(subsetEquality('foo', 'bar')).toBe(undefined);
+    expect(subsetEquality('foo', 'bar')).toBeUndefined();
   });
 
   test('objects to not match', () => {

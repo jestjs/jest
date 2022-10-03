@@ -153,7 +153,7 @@ it('automocking is disabled by default', async () => {
     runtime.__mockRootPath,
     'RegularModule',
   );
-  expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+  expect(exports.setModuleStateValue._isMockFunction).toBeUndefined();
 });
 
 it('unmocks modules in config.unmockedModulePathPatterns for tests with automock enabled when automock is false', async () => {

@@ -143,12 +143,12 @@ describe('watchman watch', () => {
     expect(client.on).toBeCalledWith('error', expect.any(Function));
 
     // Call 0 and 1 are for ['watch-project']
-    expect(calls[0][0][0]).toEqual('watch-project');
-    expect(calls[1][0][0]).toEqual('watch-project');
+    expect(calls[0][0][0]).toBe('watch-project');
+    expect(calls[1][0][0]).toBe('watch-project');
 
     // Call 2 is the query
     const query = calls[2][0];
-    expect(query[0]).toEqual('query');
+    expect(query[0]).toBe('query');
 
     expect(query[2].expression).toEqual([
       'allof',
@@ -172,7 +172,7 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     expect(hasteMap.files).toEqual(mockFiles);
 
@@ -326,7 +326,7 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     // strawberry and melon removed from the file list.
     expect(hasteMap.files).toEqual(
@@ -420,7 +420,7 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     expect(hasteMap.files).toEqual(
       createMap({
@@ -485,13 +485,13 @@ describe('watchman watch', () => {
     expect(client.on).toBeCalledWith('error', expect.any(Function));
 
     // First 3 calls are for ['watch-project']
-    expect(calls[0][0][0]).toEqual('watch-project');
-    expect(calls[1][0][0]).toEqual('watch-project');
-    expect(calls[2][0][0]).toEqual('watch-project');
+    expect(calls[0][0][0]).toBe('watch-project');
+    expect(calls[1][0][0]).toBe('watch-project');
+    expect(calls[2][0][0]).toBe('watch-project');
 
     // Call 4 is the query
     const query = calls[3][0];
-    expect(query[0]).toEqual('query');
+    expect(query[0]).toBe('query');
 
     expect(query[2].expression).toEqual([
       'allof',

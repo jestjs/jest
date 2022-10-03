@@ -12,11 +12,11 @@ const localClass = new TestClass();
 
 test('first test', () => {
   jest.spyOn(localClass, 'test').mockImplementation(() => 'ABCD');
-  expect(localClass.test()).toEqual('ABCD');
+  expect(localClass.test()).toBe('ABCD');
   expect(localClass.test).toHaveBeenCalledTimes(1);
 });
 
 test('second test', () => {
-  expect(localClass.test()).toEqual('12345');
-  expect(localClass.test.mock).toBe(undefined);
+  expect(localClass.test()).toBe('12345');
+  expect(localClass.test.mock).toBeUndefined();
 });

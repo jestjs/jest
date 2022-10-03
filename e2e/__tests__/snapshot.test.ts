@@ -111,7 +111,7 @@ describe('Snapshot', () => {
     const content = require(snapshotFile);
     expect(
       content['snapshot is not influenced by previous counter 1'],
-    ).not.toBeUndefined();
+    ).toBeDefined();
 
     expect(stderr).toMatch('5 snapshots written from 2 test suites');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
@@ -239,7 +239,7 @@ describe('Snapshot', () => {
       const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
 
       const content = require(snapshotOfCopy);
-      expect(content).not.toBe(undefined);
+      expect(content).toBeDefined();
       const secondRun = runWithJson('snapshot', []);
 
       expect(firstRun.json.numTotalTests).toBe(9);
@@ -257,7 +257,7 @@ describe('Snapshot', () => {
       fs.unlinkSync(copyOfTestPath);
 
       const content = require(snapshotOfCopy);
-      expect(content).not.toBe(undefined);
+      expect(content).toBeDefined();
       const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
 
       expect(firstRun.json.numTotalTests).toBe(9);
@@ -317,8 +317,8 @@ describe('Snapshot', () => {
       const keyToCheck =
         'snapshot works with plain objects and the ' +
         'title has `escape` characters 2';
-      expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
-      expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);
+      expect(beforeRemovingSnapshot[keyToCheck]).toBeDefined();
+      expect(afterRemovingSnapshot[keyToCheck]).toBeUndefined();
 
       expect(extractSummary(firstRun.stderr).summary).toMatchSnapshot();
       expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');

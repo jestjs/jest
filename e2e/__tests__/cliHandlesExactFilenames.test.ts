@@ -47,5 +47,5 @@ test('CLI skips exact file names if no matchers matched', () => {
 
   expect(result.exitCode).toBe(1);
   expect(result.stdout).toMatch(/No tests found([\S\s]*)2 files checked./);
-  expect(result.stderr).toEqual('');
+  expect(result.stderr).toBe('');
 });
