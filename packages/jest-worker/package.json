@@ -17,12 +17,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@types/node": "*",
     "jest-util": "workspace:^",
     "merge-stream": "^2.0.0",
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@types/node": "*",
     "@tsd/typescript": "~4.8.2",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
