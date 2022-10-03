@@ -21,8 +21,8 @@ interface ProxyReadJestConfigOptions extends ReadJestConfigOptions {
  * It also represents a more real-world example of how to run.
  */
 async function proxyReadInitialOptions(
-  configFile?: string | undefined,
-  options?: ProxyReadJestConfigOptions,
+  configFile: string | undefined,
+  options: ProxyReadJestConfigOptions,
 ): ReturnType<typeof readInitialOptions> {
   const {stdout} = await execa(
     'node',
