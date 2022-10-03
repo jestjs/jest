@@ -89,7 +89,7 @@ export default class Resolver {
     error: unknown,
   ): ModuleNotFoundError | null {
     if (error instanceof ModuleNotFoundError) {
-      return error as ModuleNotFoundError;
+      return error;
     }
 
     const casted = error as ModuleNotFoundError;

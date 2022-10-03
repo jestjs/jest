@@ -106,10 +106,7 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
         return config;
       }
 
-      return _replaceRootDirInObject(
-        rootDir,
-        config as ReplaceRootDirConfigObj,
-      ) as T;
+      return _replaceRootDirInObject(rootDir, config) as T;
     case 'string':
       return replaceRootDirInPath(rootDir, config) as T;
   }

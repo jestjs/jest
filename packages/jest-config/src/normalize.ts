@@ -1061,14 +1061,14 @@ export default async function normalize(
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
 
-  if (newOptions.testRegex!.length && options.testMatch) {
+  if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex!.length && !options.testMatch) {
+  if (newOptions.testRegex.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1101,7 +1101,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom!,
+            newOptions.collectCoverageFrom,
           ).length === 0
         ) {
           return patterns;
