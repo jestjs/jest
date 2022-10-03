@@ -114,10 +114,10 @@ const IDVisitor = {
   ],
 };
 
-const FUNCTIONS: Record<
+const FUNCTIONS = Object.create(null) as Record<
   string,
   <T extends Node>(args: Array<NodePath<T>>) => boolean
-> = Object.create(null);
+>;
 
 FUNCTIONS.mock = args => {
   if (args.length === 1) {

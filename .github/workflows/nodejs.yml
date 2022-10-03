@@ -54,6 +54,8 @@ jobs:
         run: yarn typecheck:examples
       - name: typecheck tests
         run: yarn typecheck:tests
+      - name: run ESLint with type info
+        run: yarn lint-ts-files
 
   lint:
     name: Lint
