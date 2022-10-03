@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import path = require('path');
+import execa = require('execa');
 import {readInitialOptions} from 'jest-config';
 
 function resolveFixture(...pathSegments: Array<string>) {
@@ -37,8 +38,23 @@ describe(readInitialOptions, () => {
   test('should read a jest.config.ts file', async () => {
     const configFile = resolveFixture('ts-config', 'jest.config.ts');
     const rootDir = resolveFixture('ts-config');
-    const {config, configPath} = await readInitialOptions(configFile);
+    // Read by proxy, because we're running in a VM and are not allowed to import 'ts-node' directly
+    const {stdout} = await execa('node', ['../readOptions.js'], {
+      cwd: rootDir,
+    });
+    const {config, configPath} = JSON.parse(stdout);
     expect(config).toEqual({jestConfig: 'jest.config.ts', rootDir});
+    expect(configPath).toEqual(configFile);
+  });
+  test('should read a jest.config.mjs file', async () => {
+    const configFile = resolveFixture('mjs-config', 'jest.config.mjs');
+    const rootDir = resolveFixture('mjs-config');
+    // Read by proxy, because we're running in a VM and are not allowed to `import` directly
+    const {stdout} = await execa('node', ['../readOptions.js'], {
+      cwd: rootDir,
+    });
+    const {config, configPath} = JSON.parse(stdout);
+    expect(config).toEqual({jestConfig: 'jest.config.mjs', rootDir});
     expect(configPath).toEqual(configFile);
   });
   test('should read a jest.config.json file', async () => {
