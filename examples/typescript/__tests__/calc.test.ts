@@ -23,7 +23,7 @@ describe('calc - mocks', () => {
     const calc = makeCalc(memory);
     const result = calc('Sub', [2, 2]);
 
-    expect(result).toEqual(0);
+    expect(result).toBe(0);
     expect(mockSub).toBeCalledWith(2, 2);
   });
 
@@ -33,7 +33,7 @@ describe('calc - mocks', () => {
     const calc = makeCalc(memory);
     const result = calc('Sum', [1, 1]);
 
-    expect(result).toEqual(2);
+    expect(result).toBe(2);
     expect(mockSum).toBeCalledWith(1, 1);
   });
 
@@ -45,8 +45,8 @@ describe('calc - mocks', () => {
     const sumResult = calc('Sum', [1, 1]);
     const memoryResult = calc('MemoryAdd', []);
 
-    expect(sumResult).toEqual(2);
-    expect(memoryResult).toEqual(2);
+    expect(sumResult).toBe(2);
+    expect(memoryResult).toBe(2);
     expect(MockMemory.prototype.add).toBeCalledWith(2);
   });
 
@@ -58,8 +58,8 @@ describe('calc - mocks', () => {
     const sumResult = calc('Sum', [1, 1]);
     const memoryResult = calc('MemorySub', []);
 
-    expect(sumResult).toEqual(2);
-    expect(memoryResult).toEqual(2);
+    expect(sumResult).toBe(2);
+    expect(memoryResult).toBe(2);
     expect(MockMemory.prototype.subtract).toBeCalledWith(2);
   });
 
@@ -73,10 +73,10 @@ describe('calc - mocks', () => {
     const sumResult2 = calc('Sum', [2, 2]);
     const clearResult = calc('MemoryClear', []);
 
-    expect(sumResult).toEqual(2);
-    expect(memoryResult).toEqual(2);
-    expect(sumResult2).toEqual(4);
-    expect(clearResult).toEqual(4);
+    expect(sumResult).toBe(2);
+    expect(memoryResult).toBe(2);
+    expect(sumResult2).toBe(4);
+    expect(clearResult).toBe(4);
     expect(MockMemory.prototype.reset).toBeCalledTimes(1);
   });
 

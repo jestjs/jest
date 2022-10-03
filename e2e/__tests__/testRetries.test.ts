@@ -29,14 +29,14 @@ describe('Test Retries', () => {
   it('retries failed tests', () => {
     const result = runJest('test-retries', ['e2e.test.js']);
 
-    expect(result.exitCode).toEqual(0);
+    expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);
     expect(result.stderr).not.toContain(logErrorsBeforeRetryErrorMessage);
   });
 
   it('logs error(s) before retry', () => {
     const result = runJest('test-retries', ['logErrorsBeforeRetries.test.js']);
-    expect(result.exitCode).toEqual(0);
+    expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);
     expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();

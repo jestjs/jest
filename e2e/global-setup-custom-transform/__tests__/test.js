@@ -21,5 +21,5 @@ test('should exist setup file', () => {
 });
 
 test('should transform imported file', () => {
-  expect(greeting).toEqual('hello, world!');
+  expect(greeting).toBe('hello, world!');
 });

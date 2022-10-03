@@ -451,7 +451,7 @@ describe('jest-each', () => {
         testFunction('expected string', function (hello, done) {
           expect(hello).toBe('hello');
           expect(arguments.length).toBe(1);
-          expect(done).toBe(undefined);
+          expect(done).toBeUndefined();
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

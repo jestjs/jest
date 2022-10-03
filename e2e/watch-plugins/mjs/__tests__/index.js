@@ -7,5 +7,5 @@
 'use strict';
 
 test('load watch plugin mjs', () => {
-  expect(42).toEqual(42);
+  expect(42).toBe(42);
 });

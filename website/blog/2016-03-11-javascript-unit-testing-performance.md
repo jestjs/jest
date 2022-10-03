@@ -45,7 +45,7 @@ If you have written tests using Jasmine before, they probably look like this:
 const sum = require('sum');
 describe('sum', () => {
   it('works', () => {
-    expect(sum(5, 4)).toEqual(9);
+    expect(sum(5, 4)).toBe(9);
   });
 });
 ```
@@ -61,11 +61,11 @@ describe('sum', () => {
     sum = require('sum');
   });
   it('works', () => {
-    expect(sum(5, 4)).toEqual(9);
+    expect(sum(5, 4)).toBe(9);
   });
   it('works too', () => {
     // This copy of sum is not the same as in the previous call to `it`.
-    expect(sum(2, 3)).toEqual(5);
+    expect(sum(2, 3)).toBe(5);
   });
 });
 ```
@@ -75,7 +75,7 @@ We built a babel transform called [inline-requires](https://github.com/facebook/
 ```js
 describe('sum', () => {
   it('works', () => {
-    expect(require('sum')(5, 4)).toEqual(9);
+    expect(require('sum')(5, 4)).toBe(9);
   });
 });
 ```

@@ -173,7 +173,7 @@ describe('node crawler', () => {
       ')',
     ]);
 
-    expect(hasteMap.files).not.toBe(null);
+    expect(hasteMap.files).not.toBeNull();
 
     expect(hasteMap.files).toEqual(
       createMap({

@@ -149,7 +149,7 @@ describe('init', () => {
         const writtenPackageJson = fs.writeFileSync.mock.calls[0][1];
 
         expect(writtenPackageJson).toMatchSnapshot();
-        expect(JSON.parse(writtenPackageJson).scripts.test).toEqual('jest');
+        expect(JSON.parse(writtenPackageJson).scripts.test).toBe('jest');
       });
     });
   });

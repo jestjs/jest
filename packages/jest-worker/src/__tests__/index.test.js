@@ -165,7 +165,7 @@ it('calls doWork', async () => {
 
   const promise = farm.foo('car', 'plane');
 
-  expect(await promise).toEqual(42);
+  expect(await promise).toBe(42);
 });
 
 it('calls getStderr and getStdout from worker', async () => {
@@ -174,6 +174,6 @@ it('calls getStderr and getStdout from worker', async () => {
     numWorkers: 1,
   });
 
-  expect(farm.getStderr()('err')).toEqual('err');
-  expect(farm.getStdout()('out')).toEqual('out');
+  expect(farm.getStderr()('err')).toBe('err');
+  expect(farm.getStdout()('out')).toBe('out');
 });

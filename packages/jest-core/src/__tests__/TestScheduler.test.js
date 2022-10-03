@@ -279,7 +279,7 @@ describe('scheduleTests should always dispatch runStart and runComplete events',
       setState: jest.fn(),
     });
 
-    expect(result.numTotalTestSuites).toEqual(1);
+    expect(result.numTotalTestSuites).toBe(1);
 
     expect(mockReporter.onRunStart).toBeCalledTimes(1);
     expect(mockReporter.onRunComplete).toBeCalledTimes(1);

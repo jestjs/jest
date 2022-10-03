@@ -73,5 +73,5 @@ test('negated flags override previous flags', () => {
     '--silent',
   ]);
 
-  expect(globalConfig.silent).toEqual(true);
+  expect(globalConfig.silent).toBe(true);
 });

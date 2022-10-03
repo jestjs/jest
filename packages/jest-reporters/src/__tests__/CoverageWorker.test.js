@@ -45,7 +45,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     undefined,
   );
 
-  expect(result).toEqual(42);
+  expect(result).toBe(42);
 });
 
 test('throws errors on invalid JavaScript', async () => {

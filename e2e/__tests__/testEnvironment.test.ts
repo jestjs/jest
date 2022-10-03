@@ -18,7 +18,7 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 it('respects testEnvironment docblock', () => {
-  expect(testFixturePackage.jest.testEnvironment).toEqual('node');
+  expect(testFixturePackage.jest.testEnvironment).toBe('node');
 
   const {json: result} = runWithJson('test-environment');
 

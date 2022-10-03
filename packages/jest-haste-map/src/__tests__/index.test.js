@@ -719,7 +719,7 @@ describe('HasteMap', () => {
       data.files.get(path.join('fruits', 'node_modules', 'fbjs', 'fbjs.js')),
     ).toEqual(['', 32, 42, 0, [], null]);
 
-    expect(data.map.get('fbjs')).not.toBeDefined();
+    expect(data.map.get('fbjs')).toBeUndefined();
 
     // cache file + 5 modules - the node_module
     expect(fs.readFileSync.mock.calls.length).toBe(6);
@@ -780,7 +780,7 @@ describe('HasteMap', () => {
 
     // Duplicate modules are removed so that it doesn't cause
     // non-determinism later on.
-    expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).not.toBeDefined();
+    expect(data.map.get('Strawberry')[H.GENERIC_PLATFORM]).toBeUndefined();
 
     expect(console.warn.mock.calls[0][0].replace(/\\/g, '/')).toMatchSnapshot();
   });
@@ -1234,7 +1234,7 @@ describe('HasteMap', () => {
 
     const config = {...defaultConfig, ignorePattern: /Kiwi|Pear/};
     const {moduleMap} = await (await HasteMap.create(config)).build();
-    expect(moduleMap.getModule('Pear')).toBe(null);
+    expect(moduleMap.getModule('Pear')).toBeNull();
   });
 
   it('ignores files that do not exist', async () => {
@@ -1261,9 +1261,9 @@ describe('HasteMap', () => {
     expect(data.files.size).toBe(5);
 
     // Ensure this file is not part of the file list.
-    expect(data.files.get(path.join('fruits', 'invalid', 'file.js'))).toBe(
-      undefined,
-    );
+    expect(
+      data.files.get(path.join('fruits', 'invalid', 'file.js')),
+    ).toBeUndefined();
   });
 
   it('distributes work across workers', async () => {

@@ -166,6 +166,7 @@ module.exports = {
       rules: {
         'jest/no-focused-tests': 'error',
         'jest/no-identical-title': 'error',
+        'jest/prefer-to-be': 'error',
         'jest/valid-expect': 'error',
       },
     },
@@ -189,6 +190,12 @@ module.exports = {
         'no-unused-vars': 'off',
         'prettier/prettier': 'off',
         'sort-keys': 'off',
+      },
+    },
+    {
+      files: ['**/UsingMatchers.md/**'],
+      rules: {
+        'jest/prefer-to-be': 'off',
       },
     },
 

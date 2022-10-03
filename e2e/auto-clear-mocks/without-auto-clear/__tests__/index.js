@@ -15,7 +15,7 @@ const localFn = jest.fn(() => 'abcd');
 describe('without an explicit reset', () => {
   test('first test', () => {
     importedFn();
-    expect(localFn()).toEqual('abcd');
+    expect(localFn()).toBe('abcd');
 
     expect(importedFn.mock.calls.length).toBe(1);
     expect(localFn.mock.calls.length).toBe(1);
@@ -23,7 +23,7 @@ describe('without an explicit reset', () => {
 
   test('second test', () => {
     importedFn();
-    expect(localFn()).toEqual('abcd');
+    expect(localFn()).toBe('abcd');
 
     expect(importedFn.mock.calls.length).toBe(2);
     expect(localFn.mock.calls.length).toBe(2);
@@ -37,7 +37,7 @@ describe('with an explicit reset', () => {
 
   test('first test', () => {
     importedFn();
-    expect(localFn()).toEqual('abcd');
+    expect(localFn()).toBe('abcd');
 
     expect(importedFn.mock.calls.length).toBe(1);
     expect(localFn.mock.calls.length).toBe(1);
@@ -45,7 +45,7 @@ describe('with an explicit reset', () => {
 
   test('second test', () => {
     importedFn();
-    expect(localFn()).toEqual('abcd');
+    expect(localFn()).toBe('abcd');
 
     expect(importedFn.mock.calls.length).toBe(1);
     expect(localFn.mock.calls.length).toBe(1);

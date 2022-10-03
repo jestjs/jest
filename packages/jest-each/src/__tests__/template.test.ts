@@ -548,7 +548,7 @@ describe('jest-each', () => {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);
-          expect(done).toBe(undefined);
+          expect(done).toBeUndefined();
           expect(arguments.length).toBe(1);
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');

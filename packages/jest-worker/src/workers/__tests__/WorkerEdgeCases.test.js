@@ -376,7 +376,7 @@ describe.each([
       // Give it some time to restart some workers
       await new Promise(resolve => setTimeout(resolve, 4000));
 
-      expect(startedWorkers).toEqual(6);
+      expect(startedWorkers).toBe(6);
 
       expect(worker.isWorkerRunning()).toBeTruthy();
       expect(worker.state).toEqual(WorkerStates.OK);

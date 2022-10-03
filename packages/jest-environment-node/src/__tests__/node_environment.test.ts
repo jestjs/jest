@@ -26,7 +26,7 @@ describe('NodeEnvironment', () => {
       projectConfig: makeProjectConfig(),
     });
 
-    expect(env1.global.process.on).not.toBe(null);
+    expect(env1.global.process.on).not.toBeNull();
   });
 
   it('exposes global.global', () => {
@@ -50,7 +50,7 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      expect(timer.id).not.toBeUndefined();
+      expect(timer.id).toBeDefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
     });

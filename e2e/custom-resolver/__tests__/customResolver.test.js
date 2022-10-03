@@ -22,5 +22,5 @@ test('should work with automock', () => {
 test('should allow manual mocks to make require calls through the resolver', () => {
   jest.mock('../manualMock');
 
-  expect(require('../manualMock')).toEqual('bar');
+  expect(require('../manualMock')).toBe('bar');
 });

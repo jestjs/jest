@@ -751,9 +751,7 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual(
-      'node_modules/jest-environment-jsdom',
-    );
+    expect(options.testEnvironment).toBe('node_modules/jest-environment-jsdom');
   });
 
   it('resolves to node environment by default', async () => {
@@ -790,7 +788,7 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
+    expect(options.testEnvironment).toBe('/root/testEnvironment.js');
   });
 });
 
@@ -1489,7 +1487,7 @@ describe('watchPlugins', () => {
   it('defaults to undefined', async () => {
     const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
-    expect(options.watchPlugins).toEqual(undefined);
+    expect(options.watchPlugins).toBeUndefined();
   });
 
   it('resolves to watch plugins and prefers jest-watch-`name`', async () => {
@@ -2082,5 +2080,5 @@ it('parses workerIdleMemoryLimit', async () => {
     {} as Config.Argv,
   );
 
-  expect(options.workerIdleMemoryLimit).toEqual(47185920);
+  expect(options.workerIdleMemoryLimit).toBe(47185920);
 });

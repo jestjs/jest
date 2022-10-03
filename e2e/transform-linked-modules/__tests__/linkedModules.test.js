@@ -7,10 +7,10 @@
 
 test('normal file', () => {
   const normal = require('../ignored/normal');
-  expect(normal).toEqual('ignored/normal');
+  expect(normal).toBe('ignored/normal');
 });
 
 test('symlink', () => {
   const symlink = require('../ignored/symlink');
-  expect(symlink).toEqual('transformed');
+  expect(symlink).toBe('transformed');
 });

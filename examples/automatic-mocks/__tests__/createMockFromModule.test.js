@@ -12,5 +12,5 @@ test('implementation created by jest.createMockFromModule', () => {
   utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
   expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });

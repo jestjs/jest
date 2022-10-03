@@ -66,13 +66,13 @@ test('exits the process after test are done but before timers complete', async (
 
   // Ignored files do not get the SHA-1 computed.
 
-  expect(hasteFS.getSha1(path.join(DIR, 'fileWithExtension.ignored'))).toBe(
-    null,
-  );
+  expect(
+    hasteFS.getSha1(path.join(DIR, 'fileWithExtension.ignored')),
+  ).toBeNull();
 
   expect(
     hasteFS.getSha1(
       path.join(DIR, 'node_modules/bar/fileWithExtension.ignored'),
     ),
-  ).toBe(null);
+  ).toBeNull();
 });
