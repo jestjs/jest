@@ -45,16 +45,16 @@ test('injects the serializable module map into each worker in watch mode', async
     {serial: false},
   );
 
-  expect(mockWorkerFarm.worker).toBeCalledTimes(2);
+  expect(mockWorkerFarm.worker).toHaveBeenCalledTimes(2);
 
-  expect(mockWorkerFarm.worker).nthCalledWith(1, {
+  expect(mockWorkerFarm.worker).toHaveBeenNthCalledWith(1, {
     config,
     context: runContext,
     globalConfig,
     path: './file.test.js',
   });
 
-  expect(mockWorkerFarm.worker).nthCalledWith(2, {
+  expect(mockWorkerFarm.worker).toHaveBeenNthCalledWith(2, {
     config,
     context: runContext,
     globalConfig,

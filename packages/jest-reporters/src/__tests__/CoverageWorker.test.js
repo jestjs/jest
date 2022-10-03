@@ -36,7 +36,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
 
   const result = await worker(workerOptions);
 
-  expect(generateEmptyCoverage).toBeCalledWith(
+  expect(generateEmptyCoverage).toHaveBeenCalledWith(
     validJS,
     'banana.js',
     globalConfig,

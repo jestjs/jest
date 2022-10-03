@@ -30,7 +30,7 @@ it('throw matcher can take func', () => {
     false,
   );
 
-  expect(mockedMatch).toBeCalledTimes(1);
+  expect(mockedMatch).toHaveBeenCalledTimes(1);
   expect(mockedMatch).toHaveBeenCalledWith(
     expect.objectContaining({received: 'coconut', testName: ''}),
   );
@@ -45,7 +45,7 @@ describe('throw matcher from promise', () => {
       true,
     );
 
-    expect(mockedMatch).toBeCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
     expect(mockedMatch).toHaveBeenCalledWith(
       expect.objectContaining({received: 'coco', testName: ''}),
     );
@@ -61,7 +61,7 @@ describe('throw matcher from promise', () => {
       true,
     );
 
-    expect(mockedMatch).toBeCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
     expect(mockedMatch).toHaveBeenCalledWith(
       expect.objectContaining({received: 'nut', testName: ''}),
     );

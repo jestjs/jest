@@ -33,5 +33,5 @@ it('throws!', () => {
 });
 
 test('promise rejection', async () => {
-  await expect(Promise.resolve(1)).rejects.toThrowError();
+  await expect(Promise.resolve(1)).rejects.toThrow();
 });

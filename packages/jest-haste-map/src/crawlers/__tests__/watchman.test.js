@@ -139,8 +139,8 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     const calls = client.command.mock.calls;
 
-    expect(client.on).toBeCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalled();
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // Call 0 and 1 are for ['watch-project']
     expect(calls[0][0][0]).toBe('watch-project');
@@ -178,7 +178,7 @@ describe('watchman watch', () => {
 
     expect(removedFiles).toEqual(new Map());
 
-    expect(client.end).toBeCalled();
+    expect(client.end).toHaveBeenCalled();
   });
 
   test('updates file map and removedFiles when the clock is given', async () => {
@@ -481,8 +481,8 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     const calls = client.command.mock.calls;
 
-    expect(client.on).toBeCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalled();
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // First 3 calls are for ['watch-project']
     expect(calls[0][0][0]).toBe('watch-project');
@@ -515,7 +515,7 @@ describe('watchman watch', () => {
 
     expect(removedFiles).toEqual(new Map());
 
-    expect(client.end).toBeCalled();
+    expect(client.end).toHaveBeenCalled();
   });
 
   test('SHA-1 requested and available', async () => {

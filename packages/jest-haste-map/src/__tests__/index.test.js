@@ -693,7 +693,7 @@ describe('HasteMap', () => {
 
     expect(data.map.get('IRequireAVideo')).toBeDefined();
     expect(data.files.get(path.join('video', 'video.mp4'))).toBeDefined();
-    expect(fs.readFileSync).not.toBeCalledWith(
+    expect(fs.readFileSync).not.toHaveBeenCalledWith(
       path.join('video', 'video.mp4'),
       'utf8',
     );
@@ -904,9 +904,9 @@ describe('HasteMap', () => {
     ).build();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     if (require('v8').deserialize) {
-      expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath);
     } else {
-      expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath, 'utf8');
     }
     expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
     expect(useBuitinsInContext(data.files)).toEqual(initialData.files);
@@ -939,11 +939,11 @@ describe('HasteMap', () => {
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
 
     if (require('v8').serialize) {
-      expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath);
     } else {
-      expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+      expect(fs.readFileSync).toHaveBeenCalledWith(cacheFilePath, 'utf8');
     }
-    expect(fs.readFileSync).toBeCalledWith(
+    expect(fs.readFileSync).toHaveBeenCalledWith(
       path.join('/', 'project', 'fruits', 'Banana.js'),
       'utf8',
     );
@@ -1336,7 +1336,7 @@ describe('HasteMap', () => {
       ],
     ]);
 
-    expect(mockEnd).toBeCalled();
+    expect(mockEnd).toHaveBeenCalled();
   });
 
   it('tries to crawl using node as a fallback', async () => {
@@ -1360,8 +1360,8 @@ describe('HasteMap', () => {
     const {__hasteMapForTest: data} = await (
       await HasteMap.create(defaultConfig)
     ).build();
-    expect(watchman).toBeCalled();
-    expect(node).toBeCalled();
+    expect(watchman).toHaveBeenCalled();
+    expect(node).toHaveBeenCalled();
 
     expect(data.files).toEqual(
       createMap({
@@ -1401,8 +1401,8 @@ describe('HasteMap', () => {
       await HasteMap.create(defaultConfig)
     ).build();
 
-    expect(watchman).toBeCalled();
-    expect(node).toBeCalled();
+    expect(watchman).toHaveBeenCalled();
+    expect(node).toHaveBeenCalled();
 
     expect(data.files).toEqual(
       createMap({
