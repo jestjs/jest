@@ -1261,13 +1261,17 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow();
+      }).toThrow('Cannot read prop');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; number given instead',
+      );
     });
 
     it('supports restoring all spies', () => {
@@ -1427,13 +1431,17 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow();
+      }).toThrow('Cannot read prop');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; number given instead',
+      );
     });
 
     it('supports restoring all spies', () => {

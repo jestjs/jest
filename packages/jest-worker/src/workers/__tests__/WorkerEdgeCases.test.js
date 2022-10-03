@@ -317,7 +317,7 @@ describe.each([
     test('worker stays dead', async () => {
       await expect(
         async () => await worker.waitForWorkerReady(),
-      ).rejects.toThrow();
+      ).rejects.toThrow('Worker state means it will never be ready: shut-down');
       expect(worker.isWorkerRunning()).toBeFalsy();
     });
 
@@ -385,7 +385,9 @@ describe.each([
     test('processes exits', async () => {
       worker.forceExit();
 
-      await expect(() => worker.waitForWorkerReady()).rejects.toThrow();
+      await expect(() => worker.waitForWorkerReady()).rejects.toThrow(
+        'Worker state means it will never be ready: shutting-down',
+      );
     });
   });
 });

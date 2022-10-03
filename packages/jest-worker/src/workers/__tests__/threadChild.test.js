@@ -402,7 +402,7 @@ it('throws if child is not forked', () => {
       'fooWorks',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('_worker_threads.parentPort.postMessage is not a function');
 
   expect(() => {
     thread.emit('message', [
@@ -411,5 +411,5 @@ it('throws if child is not forked', () => {
       'fooThrows',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('_worker_threads.parentPort.postMessage is not a function');
 });
