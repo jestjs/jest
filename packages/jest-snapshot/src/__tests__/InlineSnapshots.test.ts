@@ -23,7 +23,7 @@ jest.mock('prettier', () => {
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({inferredParser: 'babel', ignored: false})},
+    getFileInfo: {sync: () => ({ignored: false, inferredParser: 'babel'})},
     resolveConfig: {sync: jest.fn()},
     version: realPrettier.version,
   };

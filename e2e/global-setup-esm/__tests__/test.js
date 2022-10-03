@@ -7,7 +7,7 @@
 
 import * as os from 'os';
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import greeting from '../';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup-esm');

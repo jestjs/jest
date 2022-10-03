@@ -9,7 +9,7 @@
 'use strict';
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import H from '../constants';
 import {getSha1, worker} from '../worker';
 
