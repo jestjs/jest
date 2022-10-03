@@ -1261,7 +1261,7 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow("Cannot read properties of null (reading 'method')");
+      }).toThrow('Cannot read prop');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow(
@@ -1431,7 +1431,7 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow("Cannot read properties of null (reading 'method')");
+      }).toThrow('Cannot read prop');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow(
