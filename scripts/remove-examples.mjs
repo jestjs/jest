@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {fileURLToPath} from 'url';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import config from '../jest.config.mjs';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));

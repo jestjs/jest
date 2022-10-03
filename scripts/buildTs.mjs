@@ -11,7 +11,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
 import globby from 'globby';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
 import {getPackages} from './buildUtils.mjs';

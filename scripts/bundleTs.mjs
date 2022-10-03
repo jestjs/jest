@@ -14,7 +14,7 @@ import {
   ExtractorConfig,
 } from '@microsoft/api-extractor';
 import chalk from 'chalk';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import {sync as pkgDir} from 'pkg-dir';
 import prettier from 'prettier';
 import rimraf from 'rimraf';

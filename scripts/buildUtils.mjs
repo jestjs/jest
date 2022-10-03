@@ -10,7 +10,7 @@ import {createRequire} from 'module';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import {sync as readPkg} from 'read-pkg';
 import stringLength from 'string-length';
 
