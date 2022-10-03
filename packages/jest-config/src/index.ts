@@ -279,7 +279,8 @@ export async function readInitialOptions(
         'Jest: Cannot use configuration as an object without a file path.',
       );
     }
-  } else if (isJSONString(config)) {
+  }
+  if (isJSONString(config)) {
     // A JSON string was passed to `--config` argument and we can parse it
     // and use as is.
     let initialOptions;
@@ -296,22 +297,22 @@ export async function readInitialOptions(
     return {config: initialOptions, configPath: null};
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
-  } else if (!readFromCwd && typeof config == 'string') {
+  }
+  if (!readFromCwd && typeof config == 'string') {
     const configPath = resolveConfigPath(
       config,
       process.cwd(),
       skipMultipleConfigError,
     );
     return {config: await readConfigFileAndSetRootDir(configPath), configPath};
-  } else {
-    // Otherwise just try to find config in the current rootDir.
-    const configPath = resolveConfigPath(
-      packageRootOrConfig,
-      process.cwd(),
-      skipMultipleConfigError,
-    );
-    return {config: await readConfigFileAndSetRootDir(configPath), configPath};
   }
+  // Otherwise just try to find config in the current rootDir.
+  const configPath = resolveConfigPath(
+    packageRootOrConfig,
+    process.cwd(),
+    skipMultipleConfigError,
+  );
+  return {config: await readConfigFileAndSetRootDir(configPath), configPath};
 }
 
 // Possible scenarios:
