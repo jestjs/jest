@@ -22,8 +22,8 @@ const addSourceMapConsumer = (
   function getPosition() {
     if (!position) {
       position = originalPositionFor(tracer, {
-        column: getColumnNumber() || -1,
-        line: getLineNumber() || -1,
+        column: getColumnNumber() ?? -1,
+        line: getLineNumber() ?? -1,
       });
     }
 
@@ -33,13 +33,13 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
-        return getPosition().column || getColumnNumber.call(callsite);
+        return getPosition().column ?? getColumnNumber();
       },
       writable: false,
     },
     getLineNumber: {
       value() {
-        return getPosition().line || getLineNumber.call(callsite);
+        return getPosition().line ?? getLineNumber();
       },
       writable: false,
     },
@@ -52,9 +52,9 @@ export default function getCallsite(
 ): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() ?? '');
 
-  if (sourceMapFileName) {
+  if (sourceMapFileName != null && sourceMapFileName !== '') {
     try {
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
       addSourceMapConsumer(stack, new TraceMap(sourceMap));

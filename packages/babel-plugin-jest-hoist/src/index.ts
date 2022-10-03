@@ -142,7 +142,7 @@ FUNCTIONS.mock = args => {
       let scope = id.scope;
 
       while (scope !== parentScope) {
-        if (scope.bindings[name]) {
+        if (scope.bindings[name] != null) {
           found = true;
           break;
         }
