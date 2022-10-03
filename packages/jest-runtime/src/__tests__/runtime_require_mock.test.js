@@ -93,7 +93,7 @@ describe('Runtime', () => {
         error = e;
       } finally {
         expect(error.message).toMatch(
-          /NativeModule.node: file too short|not a valid Win\d+ application/,
+          /NativeModule.node: file too short|NativeModule.node, 0x0001|not a valid Win\d+ application/,
         );
       }
     });
