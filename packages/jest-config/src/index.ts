@@ -281,24 +281,22 @@ export async function readInitialOptions(
     }
   }
   if (isJSONString(config)) {
-    // A JSON string was passed to `--config` argument and we can parse it
-    // and use as is.
-    let initialOptions;
     try {
-      initialOptions = JSON.parse(config);
+      // A JSON string was passed to `--config` argument and we can parse it
+      // and use as is.
+      const initialOptions = JSON.parse(config);
+      // NOTE: we might need to resolve this dir to an absolute path in the future
+      initialOptions.rootDir = initialOptions.rootDir || packageRootOrConfig;
+      return {config: initialOptions, configPath: null};
     } catch {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
       );
     }
-
-    // NOTE: we might need to resolve this dir to an absolute path in the future
-    initialOptions.rootDir = initialOptions.rootDir || packageRootOrConfig;
-    return {config: initialOptions, configPath: null};
-    // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   }
   if (!readFromCwd && typeof config == 'string') {
+    // A string passed to `--config`, which is either a direct path to the config
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
     const configPath = resolveConfigPath(
       config,
       process.cwd(),
