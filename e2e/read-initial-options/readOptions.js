@@ -6,6 +6,17 @@
  */
 const {readInitialOptions} = require('jest-config');
 async function readConfig() {
-  console.log(JSON.stringify(await readInitialOptions(process.argv[2])));
+  let config = process.argv[2];
+  let options = undefined;
+  if (config === '') {
+    config = undefined;
+  }
+  if (process.argv[3]) {
+    options = JSON.parse(process.argv[3]);
+  }
+  console.log(JSON.stringify(await readInitialOptions(config, options)));
 }
-readConfig();
+readConfig().catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});
