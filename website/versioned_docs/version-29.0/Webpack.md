@@ -235,4 +235,4 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
 
 :::
 
-For an example of how to use Jest with webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example).
+For an example of how to use Jest with webpack with React, you can view one [here](https://github.com/jenniferabowd/jest_webpack_example).
