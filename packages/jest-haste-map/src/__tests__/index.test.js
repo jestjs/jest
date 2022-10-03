@@ -722,7 +722,7 @@ describe('HasteMap', () => {
     expect(data.map.get('fbjs')).toBeUndefined();
 
     // cache file + 5 modules - the node_module
-    expect(fs.readFileSync.mock.calls.length).toBe(6);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(6);
   });
 
   it('warns on duplicate mock files', async () => {
@@ -886,7 +886,7 @@ describe('HasteMap', () => {
 
     // The first run should access the file system once for the (empty)
     // cache file and five times for the files in the system.
-    expect(fs.readFileSync.mock.calls.length).toBe(6);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(6);
 
     fs.readFileSync.mockClear();
 
@@ -902,7 +902,7 @@ describe('HasteMap', () => {
     const {__hasteMapForTest: data} = await (
       await HasteMap.create(defaultConfig)
     ).build();
-    expect(fs.readFileSync.mock.calls.length).toBe(1);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     if (require('v8').deserialize) {
       expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
     } else {
@@ -936,7 +936,7 @@ describe('HasteMap', () => {
       await HasteMap.create(defaultConfig)
     ).build();
 
-    expect(fs.readFileSync.mock.calls.length).toBe(2);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
 
     if (require('v8').serialize) {
       expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
@@ -1279,9 +1279,9 @@ describe('HasteMap', () => {
       })
     ).build();
 
-    expect(jestWorker.mock.calls.length).toBe(1);
+    expect(jestWorker).toHaveBeenCalledTimes(1);
 
-    expect(mockWorker.mock.calls.length).toBe(5);
+    expect(mockWorker).toHaveBeenCalledTimes(5);
 
     expect(mockWorker.mock.calls).toEqual([
       [

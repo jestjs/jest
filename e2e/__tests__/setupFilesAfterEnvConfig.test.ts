@@ -40,7 +40,7 @@ describe('setupFilesAfterEnv', () => {
 
     expect(result.json.numTotalTests).toBe(2);
     expect(result.json.numPassedTests).toBe(2);
-    expect(result.json.testResults.length).toBe(2);
+    expect(result.json.testResults).toHaveLength(2);
     expect(result.exitCode).toBe(0);
   });
 
@@ -61,7 +61,7 @@ describe('setupFilesAfterEnv', () => {
 
     expect(result.json.numTotalTests).toBe(1);
     expect(result.json.numPassedTests).toBe(1);
-    expect(result.json.testResults.length).toBe(1);
+    expect(result.json.testResults).toHaveLength(1);
     expect(result.exitCode).toBe(0);
   });
 });

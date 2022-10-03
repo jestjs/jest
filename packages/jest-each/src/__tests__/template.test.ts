@@ -549,7 +549,8 @@ describe('jest-each', () => {
           expect(b).toBe(1);
           expect(expected).toBe(1);
           expect(done).toBeUndefined();
-          expect(arguments.length).toBe(1);
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

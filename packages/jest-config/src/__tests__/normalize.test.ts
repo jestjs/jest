@@ -878,7 +878,7 @@ describe('testMatch', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testMatch.length).toBe(0);
+    expect(options.testMatch).toHaveLength(0);
   });
 
   it('testRegex default not applied if testMatch is set', async () => {
