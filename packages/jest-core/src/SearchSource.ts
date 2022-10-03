@@ -55,9 +55,9 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 };
 
 export default class SearchSource {
-  private _context: TestContext;
+  private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
-  private _testPathCases: TestPathCases = [];
+  private readonly _testPathCases: TestPathCases = [];
 
   constructor(context: TestContext) {
     const {config} = context;

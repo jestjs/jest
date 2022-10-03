@@ -15,9 +15,9 @@ import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WriteStream;
-  private _stderr: NodeJS.WriteStream;
-  private _formatBuffer: Formatter;
+  private readonly _stdout: NodeJS.WriteStream;
+  private readonly _stderr: NodeJS.WriteStream;
+  private readonly _formatBuffer: Formatter;
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
