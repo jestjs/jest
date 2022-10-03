@@ -245,7 +245,7 @@ test('that the failureDetails property is set', () => {
         ],
         Array [
           Object {
-            "message": "expect(received).rejects.toThrowError()
+            "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
