@@ -44,7 +44,7 @@ export async function readConfig(
   skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
   const {config: initialOptions, configPath} = await readInitialOptions(
-    argv?.config,
+    argv.config,
     {
       packageRootOrConfig,
       parentConfigDirname,
