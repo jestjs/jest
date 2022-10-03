@@ -58,13 +58,13 @@ try {
             },
             plugins: ['@typescript-eslint'],
             root: true,
-            // TODO: activate the commented rules at some point
             rules: {
               '@typescript-eslint/consistent-type-exports': 'error',
               '@typescript-eslint/dot-notation': 'error',
               '@typescript-eslint/non-nullable-type-assertion-style': 'error',
               '@typescript-eslint/prefer-nullish-coalescing': 'error',
               '@typescript-eslint/prefer-readonly': 'error',
+              // TODO: activate this at some point
               // '@typescript-eslint/prefer-readonly-parameter-types': 'error',
               '@typescript-eslint/prefer-reduce-type-parameter': 'error',
               '@typescript-eslint/return-await': 'error',
