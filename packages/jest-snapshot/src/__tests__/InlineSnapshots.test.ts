@@ -13,8 +13,8 @@ import type {Frame} from 'jest-message-util';
 import {saveInlineSnapshots} from '../InlineSnapshots';
 
 jest.mock('prettier', () => {
-  const realPrettier: typeof import('prettier') =
-    jest.requireActual('prettier');
+  const realPrettier =
+    jest.requireActual<typeof import('prettier')>('prettier');
   const mockPrettier: typeof import('prettier') = {
     format: (text, opts) =>
       realPrettier.format(text, {
@@ -23,7 +23,7 @@ jest.mock('prettier', () => {
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({inferredParser: 'babel'})},
+    getFileInfo: {sync: () => ({inferredParser: 'babel', ignored: false})},
     resolveConfig: {sync: jest.fn()},
     version: realPrettier.version,
   };

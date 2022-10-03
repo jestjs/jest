@@ -11,7 +11,9 @@ import getCallsite from '../getCallsite';
 
 jest.mock('graceful-fs');
 jest.mock('@jridgewell/trace-mapping', () => {
-  const actual = jest.requireActual('@jridgewell/trace-mapping');
+  const actual = jest.requireActual<typeof import('@jridgewell/trace-mapping')>(
+    '@jridgewell/trace-mapping',
+  );
 
   return {
     ...actual,

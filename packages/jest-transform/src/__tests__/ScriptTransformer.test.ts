@@ -58,7 +58,7 @@ jest
     ...jest.requireActual<typeof import('jest-util')>('jest-util'),
     createDirectory: jest.fn(),
   }))
-  .mock('path', () => jest.requireActual('path').posix);
+  .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
 jest.mock(
   'test_preprocessor',
