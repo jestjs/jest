@@ -4,7 +4,7 @@
 
 - `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
 - `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
-- `[expect]` Expose internal matchers inside custom matcher context ([13362](https://github.com/facebook/jest/pull/13362))
+- `[expect]` Expose internal matchers inside custom matcher context ([13375](https://github.com/facebook/jest/pull/13375))
 
 ### Fixes
 
