@@ -10,5 +10,5 @@ jest.mock('@@storage/track/Track');
 
 test('relative import', () => {
   const track = new Track();
-  expect(track.someRandomFunction).not.toBeCalled();
+  expect(track.someRandomFunction).not.toHaveBeenCalled();
 });

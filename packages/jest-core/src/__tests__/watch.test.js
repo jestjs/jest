@@ -416,7 +416,7 @@ describe('Watch mode flows', () => {
             hasteMapInstances,
             stdin,
           ),
-        ).rejects.toThrowError(
+        ).rejects.toThrow(
           new RegExp(
             `Watch plugin OffendingWatchPlugin attempted to register key <${key}>,\\s+that is reserved internally for .+\\.\\s+Please change the configuration key for this plugin\\.`,
             'm',
@@ -505,7 +505,7 @@ describe('Watch mode flows', () => {
           hasteMapInstances,
           stdin,
         ),
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         /Watch plugins OffendingFooThirdPartyWatchPlugin and OffendingBarThirdPartyWatchPlugin both attempted to register key <!>\.\s+Please change the key configuration for one of the conflicting plugins to avoid overlap\./m,
       );
     });
@@ -817,7 +817,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit('o');
 
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: true,
       watch: true,
@@ -831,7 +831,7 @@ describe('Watch mode flows', () => {
 
     stdin.emit('a');
 
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({
       onlyChanged: false,
       watch: false,

@@ -162,11 +162,12 @@ module.exports = {
       ],
       env: {'jest/globals': true},
       excludedFiles: ['**/__typetests__/**'],
+      extends: ['plugin:jest/style'],
       plugins: ['jest'],
       rules: {
+        'jest/no-alias-methods': 'error',
         'jest/no-focused-tests': 'error',
         'jest/no-identical-title': 'error',
-        'jest/prefer-to-be': 'error',
         'jest/valid-expect': 'error',
       },
     },

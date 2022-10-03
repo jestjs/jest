@@ -159,7 +159,7 @@ export default class Suite {
   }
 
   getResult() {
-    this.result.status! = this.status();
+    this.result.status = this.status();
     return this.result;
   }
 

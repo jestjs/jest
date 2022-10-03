@@ -29,9 +29,7 @@ describe.each([
       expect(() => {
         // @ts-expect-error: Testing runtime errors here
         circus[fn](el);
-      }).toThrowError(
-        'Invalid first argument. It must be a callback function.',
-      );
+      }).toThrow('Invalid first argument. It must be a callback function.');
     },
   );
 });

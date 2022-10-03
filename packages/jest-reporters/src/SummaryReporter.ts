@@ -53,7 +53,7 @@ const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
 
   static readonly filename = __filename;
 

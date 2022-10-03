@@ -15,15 +15,15 @@ const addSourceMapConsumer = (
   callsite: callsites.CallSite,
   tracer: TraceMap,
 ) => {
-  const getLineNumber = callsite.getLineNumber;
-  const getColumnNumber = callsite.getColumnNumber;
+  const getLineNumber = callsite.getLineNumber.bind(callsite);
+  const getColumnNumber = callsite.getColumnNumber.bind(callsite);
   let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
     if (!position) {
       position = originalPositionFor(tracer, {
-        column: getColumnNumber.call(callsite) || -1,
-        line: getLineNumber.call(callsite) || -1,
+        column: getColumnNumber() ?? -1,
+        line: getLineNumber() ?? -1,
       });
     }
 
@@ -33,13 +33,16 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
-        return getPosition().column || getColumnNumber.call(callsite);
+        const value = getPosition().column;
+        return value == null || value === 0 ? getColumnNumber() : value;
       },
       writable: false,
     },
     getLineNumber: {
       value() {
-        return getPosition().line || getLineNumber.call(callsite);
+        const value = getPosition().line;
+
+        return value == null || value === 0 ? getLineNumber() : value;
       },
       writable: false,
     },
@@ -52,9 +55,9 @@ export default function getCallsite(
 ): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() ?? '');
 
-  if (sourceMapFileName) {
+  if (sourceMapFileName != null && sourceMapFileName !== '') {
     try {
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
       addSourceMapConsumer(stack, new TraceMap(sourceMap));
