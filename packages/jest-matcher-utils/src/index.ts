@@ -50,14 +50,14 @@ type MatcherHintColor = (arg: string) => string; // subset of Chalk type
 export type MatcherHintOptions = {
   comment?: string;
   expectedColor?: MatcherHintColor;
+  inverseColor?: MatcherHintColor;
   isDirectExpectCall?: boolean;
   isNot?: boolean;
+  noDim?: boolean;
   promise?: string;
   receivedColor?: MatcherHintColor;
   secondArgument?: string;
   secondArgumentColor?: MatcherHintColor;
-  inverseColor?: MatcherHintColor;
-  commonColor?: MatcherHintColor;
 };
 
 export type DiffOptions = ImportDiffOptions;
@@ -564,23 +564,23 @@ export const matcherHint = (
     receivedColor = options.receivedColor ?? RECEIVED_COLOR,
     secondArgument = '',
     secondArgumentColor = options.secondArgumentColor ?? EXPECTED_COLOR,
-    commonColor = options.commonColor ?? DIM_COLOR,
+    noDim = options.noDim ?? false,
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
 
   if (!isDirectExpectCall && received !== '') {
-    hint += commonColor(`${dimString}(`) + receivedColor(received);
+    hint += noDim ? `${dimString}(` : DIM_COLOR(`${dimString}(`) + receivedColor(received) ;
     dimString = ')';
   }
 
   if (promise !== '') {
-    hint += commonColor(`${dimString}.`) + promise;
+    hint += noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`) + promise;
     dimString = '';
   }
 
   if (isNot) {
-    hint += `${commonColor(`${dimString}.`)}not`;
+    hint += `${noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`)}not`;
     dimString = '';
   }
 
@@ -590,16 +590,16 @@ export const matcherHint = (
     dimString += matcherName;
   } else {
     // New format: omit period from matcherName arg
-    hint += commonColor(`${dimString}.`) + matcherName;
+    hint += noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`) + matcherName;
     dimString = '';
   }
 
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += commonColor(`${dimString}(`) + expectedColor(expected);
+    hint += noDim ? `${dimString}(` : DIM_COLOR(`${dimString}(`) + expectedColor(expected);
     if (secondArgument) {
-      hint += commonColor(', ') + secondArgumentColor(secondArgument);
+      hint += noDim ? ', ' : DIM_COLOR(', ') + secondArgumentColor(secondArgument);
     }
     dimString = ')';
   }
@@ -609,7 +609,7 @@ export const matcherHint = (
   }
 
   if (dimString !== '') {
-    hint += commonColor(dimString);
+    hint += noDim ? dimString : DIM_COLOR(dimString);
   }
 
   return hint;
