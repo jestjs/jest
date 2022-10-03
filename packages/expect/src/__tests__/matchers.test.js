@@ -61,7 +61,7 @@ describe('.rejects', () => {
   });
 
   it('should reject async function to toThrow', async () => {
-    await expect(async () => {
+    await jestExpect(async () => {
       throw new Error('Test');
     }).rejects.toThrow('Test');
   });

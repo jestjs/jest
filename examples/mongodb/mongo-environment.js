@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import NodeEnvironment from 'jest-environment-node';
+import * as fs from 'fs';
+import * as path from 'path';
+import {TestEnvironment} from 'jest-environment-node';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
-class MongoEnvironment extends NodeEnvironment {
-  constructor(config) {
-    super(config);
+class MongoEnvironment extends TestEnvironment {
+  constructor(config, context) {
+    super(config, context);
   }
 
   async setup() {

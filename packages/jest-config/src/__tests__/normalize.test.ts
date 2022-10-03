@@ -7,20 +7,20 @@
  */
 
 import {createHash} from 'crypto';
-import path from 'path';
+import * as path from 'path';
 import semver = require('semver');
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
-import normalize from '../normalize';
+import normalize, {AllOptions} from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
-  .mock('path', () => jest.requireActual('path').posix)
+  .mock('path', () => jest.requireActual<typeof import('path')>('path').posix)
   .mock('graceful-fs', () => {
-    const realFs = jest.requireActual('fs');
+    const realFs = jest.requireActual<typeof import('fs')>('fs');
 
     return {
       ...realFs,
@@ -35,7 +35,9 @@ let expectedPathAbs: string;
 let expectedPathAbsAnother: string;
 
 let virtualModuleRegexes: Array<RegExp>;
-beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
+beforeEach(() => {
+  virtualModuleRegexes = [/jest-circus/, /babel-jest/];
+});
 const findNodeModule = jest.fn(name => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
@@ -211,7 +213,7 @@ describe('findRelatedTests', () => {
   });
 });
 
-function testPathArray(key: string) {
+function testPathArray(key: keyof AllOptions) {
   it('normalizes all paths relative to rootDir', async () => {
     const {options} = await normalize(
       {
@@ -1612,7 +1614,10 @@ describe('testPathPattern', () => {
 
       describe('win32', () => {
         beforeEach(() => {
-          jest.mock('path', () => jest.requireActual('path').win32);
+          jest.mock(
+            'path',
+            () => jest.requireActual<typeof import('path')>('path').win32,
+          );
           require('jest-resolve').default.findNodeModule = findNodeModule;
         });
 

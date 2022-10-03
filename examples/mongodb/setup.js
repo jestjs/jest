@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {MongoMemoryServer} from 'mongodb-memory-server';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');

@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import * as util from 'util';
-import vm, {Context} from 'vm';
+import {Context, createContext, runInContext, runInNewContext} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
@@ -18,8 +18,8 @@ describe('moduleMocker', () => {
   let mockGlobals: typeof globalThis;
 
   beforeEach(() => {
-    mockContext = vm.createContext();
-    mockGlobals = vm.runInNewContext('this', mockContext);
+    mockContext = createContext();
+    mockGlobals = runInNewContext('this', mockContext);
     moduleMocker = new ModuleMocker(mockGlobals);
   });
 
@@ -28,11 +28,12 @@ describe('moduleMocker', () => {
       function x() {}
       const metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
-      expect(metadata.name).toBe('x');
+      expect(metadata!.name).toBe('x');
     });
 
     it('does not return broken name property', () => {
       class By {
+        // @ts-expect-error
         static name() {
           return 'this is not a name';
         }
@@ -285,7 +286,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from Object.prototype (in mock context)', () => {
-      const Bar = vm.runInContext(
+      const Bar = runInContext(
         `
           const Foo = { foo() {} };
           const Bar = Object.assign(Object.create(Foo), { bar() {} });
@@ -321,7 +322,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from Function.prototype (in mock context)', () => {
-      const Bar = vm.runInContext(
+      const Bar = runInContext(
         `
           class Foo {}
           class Bar extends Foo {}
@@ -352,7 +353,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from RegExp.prototype (in mock context)', () => {
-      const bar = vm.runInContext(
+      const bar = runInContext(
         `
           const bar = /bar/;
           bar;

@@ -19,7 +19,7 @@ import {
 const rootDir = tempy.directory();
 
 jest.mock('graceful-fs', () => ({
-  ...jest.requireActual('fs'),
+  ...jest.requireActual<typeof import('fs')>('fs'),
   readFileSync: jest.fn(),
 }));
 
@@ -93,10 +93,14 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
     [
       {
         ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [],
         failureMessages: [unixStackTrace],
         fullName: 'full name',
+        invocations: undefined,
         location: null,
         numPassingAsserts: 0,
+        retryReasons: undefined,
         status: 'failed',
         title: 'Unix test',
       },
@@ -137,10 +141,14 @@ it('formatStackTrace should strip node internals', () => {
     [
       {
         ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [],
         failureMessages: [assertionStack],
         fullName: 'full name',
+        invocations: undefined,
         location: null,
         numPassingAsserts: 0,
+        retryReasons: undefined,
         status: 'failed',
         title: 'Unix test',
       },
@@ -162,10 +170,14 @@ it('should not exclude vendor from stack trace', () => {
     [
       {
         ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [],
         failureMessages: [vendorStack],
         fullName: 'full name',
+        invocations: undefined,
         location: null,
         numPassingAsserts: 0,
+        retryReasons: undefined,
         status: 'failed',
         title: 'Vendor test',
       },
@@ -187,10 +199,14 @@ it('retains message in babel code frame error', () => {
     [
       {
         ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [],
         failureMessages: [babelStack],
         fullName: 'full name',
+        invocations: undefined,
         location: null,
         numPassingAsserts: 0,
+        retryReasons: undefined,
         status: 'failed',
         title: 'Babel test',
       },
@@ -208,7 +224,9 @@ it('retains message in babel code frame error', () => {
 });
 
 it('codeframe', () => {
-  readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+  jest
+    .mocked(readFileSync)
+    .mockImplementationOnce(() => 'throw new Error("Whoops!");');
 
   const message = formatExecError(
     {
@@ -237,7 +255,9 @@ it('codeframe', () => {
 });
 
 it('no codeframe', () => {
-  readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+  jest
+    .mocked(readFileSync)
+    .mockImplementationOnce(() => 'throw new Error("Whoops!");');
 
   const message = formatExecError(
     {
@@ -266,7 +286,9 @@ it('no codeframe', () => {
 });
 
 it('no stack', () => {
-  readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+  jest
+    .mocked(readFileSync)
+    .mockImplementationOnce(() => 'throw new Error("Whoops!");');
 
   const message = formatExecError(
     {
@@ -297,7 +319,9 @@ it('no stack', () => {
 
 describe('formatStackTrace', () => {
   it('prints code frame and stacktrace', () => {
-    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    jest
+      .mocked(readFileSync)
+      .mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
       `
       at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
@@ -322,7 +346,9 @@ describe('formatStackTrace', () => {
   });
 
   it('does not print code frame when noCodeFrame = true', () => {
-    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    jest
+      .mocked(readFileSync)
+      .mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
       `
       at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
@@ -347,7 +373,9 @@ describe('formatStackTrace', () => {
   });
 
   it('does not print codeframe when noStackTrace = true', () => {
-    readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
+    jest
+      .mocked(readFileSync)
+      .mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
       `
       at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
@@ -383,5 +411,5 @@ it('getTopFrame should return a path for mjs files', () => {
   }
   const frame = getTopFrame(stack);
 
-  expect(frame.file).toBe(expectedFile);
+  expect(frame!.file).toBe(expectedFile);
 });

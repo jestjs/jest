@@ -119,7 +119,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
 
-      const runOrder = [];
+      const runOrder: Array<string> = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
 
@@ -218,7 +218,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
 
-      const runOrder = [];
+      const runOrder: Array<string> = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
@@ -248,17 +248,20 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
-      const consoleWarn = console.warn;
-      console.warn = jest.fn();
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {
+          // nothing
+        });
       const timers = new FakeTimers({
         config: makeProjectConfig({rootDir: __dirname}),
         global: globalThis,
       });
       timers.runAllTimers();
       expect(
-        console.warn.mock.calls[0][0].split('\nStack Trace')[0],
+        consoleWarnSpy.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
-      console.warn = consoleWarn;
+      consoleWarnSpy.mockRestore();
       timers.useRealTimers();
     });
 
@@ -397,7 +400,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
 
-      const runOrder = [];
+      const runOrder: Array<string> = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
@@ -663,7 +666,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
 
-      const runOrder = [];
+      const runOrder: Array<string> = [];
 
       global.setTimeout(function cb() {
         runOrder.push('mock1');

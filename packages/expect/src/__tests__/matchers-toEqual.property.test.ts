@@ -25,7 +25,7 @@ describe('toEqual', () => {
   });
 
   it('should be symmetric', () => {
-    const safeExpectEqual = (a, b) => {
+    const safeExpectEqual = (a: unknown, b: unknown) => {
       try {
         expect(a).toEqual(b);
         return true;

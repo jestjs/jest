@@ -19,7 +19,7 @@ describe('Suite', () => {
 
   it("doesn't throw on addExpectationResult when there are no children", () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       suite.addExpectationResult();
     }).not.toThrow();
   });

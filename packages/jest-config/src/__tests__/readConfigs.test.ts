@@ -7,7 +7,7 @@
 import {readConfigs} from '../index';
 
 jest.mock('graceful-fs', () => ({
-  ...jest.requireActual('fs'),
+  ...jest.requireActual<typeof import('fs')>('fs'),
   existsSync: jest.fn(() => true),
   lstatSync: jest.fn(() => ({
     isDirectory: () => false,

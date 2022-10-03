@@ -231,9 +231,7 @@ matchers.forEach(toThrow => {
       // Received message in report if object has message property.
       class ErrorMessage {
         // not extending Error!
-        constructor(message) {
-          this.message = message;
-        }
+        constructor(public message: string) {}
       }
       const expected = new ErrorMessage('apple');
 

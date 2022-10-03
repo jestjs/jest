@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {relative, resolve} from '../fast_path';
 
 describe('fastPath.relative', () => {

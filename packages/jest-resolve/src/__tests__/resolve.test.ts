@@ -12,7 +12,7 @@ import {sync as resolveSync} from 'resolve';
 import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import defaultResolver from '../defaultResolver';
+import defaultResolver, {PackageFilter} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
@@ -20,11 +20,14 @@ import type {ResolverConfig} from '../types';
 jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
 // Do not fully mock `resolve` because it is used by Jest. Doing it will crash
-// in very strange ways. Instead just spy on it and its `sync` method.
+// in very strange ways. Instead, just spy on it and its `sync` method.
 jest.mock('resolve', () => {
-  const originalModule = jest.requireActual('resolve');
+  const originalModule =
+    jest.requireActual<typeof import('resolve')>('resolve');
 
-  const m = jest.fn((...args) => originalModule(...args));
+  const m = jest.fn<typeof import('resolve')>((...args) =>
+    originalModule(...args),
+  );
   Object.assign(m, originalModule);
   m.sync = jest.spyOn(originalModule, 'sync');
 
@@ -131,7 +134,7 @@ describe('findNodeModule', () => {
   });
 
   it('wraps passed packageFilter to the resolve module when using the default resolver', () => {
-    const packageFilter = jest.fn();
+    const packageFilter = jest.fn<PackageFilter>();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
     mockUserResolver.mockImplementation((request, opts) =>
@@ -350,7 +353,7 @@ describe('findNodeModuleAsync', () => {
   });
 
   it('passes packageFilter to the resolve module when using the default resolver', async () => {
-    const packageFilter = jest.fn();
+    const packageFilter = jest.fn<PackageFilter>();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
     mockUserResolverAsync.async.mockImplementation((request, opts) =>
@@ -652,7 +655,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
     jest.doMock('graceful-fs', () => ({
-      ...jest.requireActual('graceful-fs'),
+      ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
       realPathSync: {
         native: (dirInput: string) => dirInput,
       },
