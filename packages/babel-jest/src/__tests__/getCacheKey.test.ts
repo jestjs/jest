@@ -44,7 +44,7 @@ describe('getCacheKey', () => {
   const oldCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
 
   test('returns cache key hash', () => {
-    expect(oldCacheKey.length).toBe(32);
+    expect(oldCacheKey).toHaveLength(32);
   });
 
   test('if `THIS_FILE` value is changing', () => {

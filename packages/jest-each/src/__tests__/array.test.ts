@@ -450,7 +450,7 @@ describe('jest-each', () => {
         const testFunction = get(eachObject, keyPath);
         testFunction('expected string', function (hello, done) {
           expect(hello).toBe('hello');
-          expect(arguments.length).toBe(1);
+          expect(arguments).toHaveLength(1); // eslint-disable-line prefer-rest-params
           expect(done).toBeUndefined();
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');

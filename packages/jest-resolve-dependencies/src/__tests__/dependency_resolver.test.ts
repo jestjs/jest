@@ -49,7 +49,7 @@ beforeEach(async () => {
 
 test('resolves no dependencies for non-existent path', () => {
   const resolved = dependencyResolver.resolve('/non/existent/path');
-  expect(resolved.length).toBe(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves dependencies for existing path', () => {
@@ -86,13 +86,13 @@ test('resolves dependencies for scoped packages', () => {
 test('resolves no inverse dependencies for empty paths set', () => {
   const paths = new Set<string>();
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toBe(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves no inverse dependencies for set of non-existent paths', () => {
   const paths = new Set(['/non/existent/path', '/another/one']);
   const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toBe(0);
+  expect(resolved).toHaveLength(0);
 });
 
 test('resolves inverse dependencies for existing path', () => {
