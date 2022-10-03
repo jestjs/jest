@@ -1329,7 +1329,7 @@ Example:
 
 ```js
 // my-custom-environment
-const NodeEnvironment = require('jest-environment-node').default;
+const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {

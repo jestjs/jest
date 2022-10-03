@@ -7,7 +7,7 @@
 
 'use strict';
 
-const JSDOMEnvironment = require('jest-environment-jsdom').default;
+const JSDOMEnvironment = require('jest-environment-jsdom').TestEnvironment;
 
 class TestEnvironment extends JSDOMEnvironment {
   constructor(config, context) {
