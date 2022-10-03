@@ -21,6 +21,7 @@ const fix = process.argv.slice(2).some(arg => arg === '--fix');
 
 const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 
+// TODO: remove this list at some point and run against all packages
 const packagesToTest = [
   'babel-jest',
   'babel-plugin-jest-hoist',
