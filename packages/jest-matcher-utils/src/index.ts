@@ -18,6 +18,7 @@ import {
   diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
+  noColor,
 } from 'jest-diff';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
@@ -568,19 +569,20 @@ export const matcherHint = (
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
+  const dimStyle = noDim ? noColor : DIM_COLOR;
 
   if (!isDirectExpectCall && received !== '') {
-    hint += noDim ? `${dimString}(` : DIM_COLOR(`${dimString}(`) + receivedColor(received) ;
+    hint += dimStyle(`${dimString}(`) + receivedColor(received);
     dimString = ')';
   }
 
   if (promise !== '') {
-    hint += noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`) + promise;
+    hint += dimStyle(`${dimString}.`) + promise;
     dimString = '';
   }
 
   if (isNot) {
-    hint += `${noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`)}not`;
+    hint += `${dimStyle(`${dimString}.`)}not`;
     dimString = '';
   }
 
@@ -590,16 +592,16 @@ export const matcherHint = (
     dimString += matcherName;
   } else {
     // New format: omit period from matcherName arg
-    hint += noDim ? `${dimString}.` : DIM_COLOR(`${dimString}.`) + matcherName;
+    hint += dimStyle(`${dimString}.`) + matcherName;
     dimString = '';
   }
 
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += noDim ? `${dimString}(` : DIM_COLOR(`${dimString}(`) + expectedColor(expected);
+    hint += dimStyle(`${dimString}(`) + expectedColor(expected);
     if (secondArgument) {
-      hint += noDim ? ', ' : DIM_COLOR(', ') + secondArgumentColor(secondArgument);
+      hint += dimStyle(', ') + secondArgumentColor(secondArgument);
     }
     dimString = ')';
   }
@@ -609,7 +611,7 @@ export const matcherHint = (
   }
 
   if (dimString !== '') {
-    hint += noDim ? dimString : DIM_COLOR(dimString);
+    hint += dimStyle(dimString);
   }
 
   return hint;
