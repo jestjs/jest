@@ -83,7 +83,7 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(mockedStderrWrite).toBeCalledTimes(1);
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
     expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 
@@ -100,7 +100,7 @@ describe('logs error annotation', () => {
       } as TestResult,
     );
 
-    expect(mockedStderrWrite).toBeCalledTimes(1);
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
     expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 
@@ -114,7 +114,7 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(mockedStderrWrite).toBeCalledTimes(1);
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
     expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 });
@@ -131,7 +131,7 @@ describe('logs warning annotation before logging errors', () => {
       ],
     } as TestResult);
 
-    expect(mockedStderrWrite).toBeCalledTimes(2);
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(2);
     expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
   });
 });
