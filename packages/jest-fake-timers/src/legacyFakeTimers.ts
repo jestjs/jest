@@ -67,7 +67,7 @@ const MS_IN_A_YEAR = 31536000000;
 export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
   private readonly _config: StackTraceConfig;
-  private _disposed?: boolean;
+  private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
   private _global: typeof globalThis;
@@ -113,6 +113,8 @@ export default class FakeTimers<TimerRef = unknown> {
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
+
+    this._disposed = false;
 
     this.reset();
   }
@@ -510,11 +512,13 @@ export default class FakeTimers<TimerRef = unknown> {
     });
 
     this._timerAPIs.setImmediate(() => {
-      if (this._immediates.find(x => x.uuid === uuid)) {
-        try {
-          callback.apply(null, args);
-        } finally {
-          this._fakeClearImmediate(uuid);
+      if (!this._disposed) {
+        if (this._immediates.find(x => x.uuid === uuid)) {
+          try {
+            callback.apply(null, args);
+          } finally {
+            this._fakeClearImmediate(uuid);
+          }
         }
       }
     });
