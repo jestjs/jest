@@ -21,11 +21,16 @@ const fix = process.argv.slice(2).some(arg => arg === '--fix');
 
 const monorepoRoot = path.resolve(url.fileURLToPath(import.meta.url), '../..');
 
+const packagesToTest = [
+  'babel-jest',
+  'babel-plugin-jest-hoist',
+  'diff-sequences',
+];
+
 const packagesWithTs = getPackagesWithTsConfig()
   .map(({packageDir}) => packageDir)
   .concat(path.resolve(monorepoRoot, 'e2e'))
-  // TODO: run all all projects
-  .slice(0, 3);
+  .filter(packageDir => packagesToTest.some(pkg => packageDir.endsWith(pkg)));
 
 try {
   await Promise.all(
