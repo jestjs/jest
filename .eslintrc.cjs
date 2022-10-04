@@ -191,18 +191,27 @@ module.exports = {
         'sort-keys': 'off',
       },
     },
+    // demonstration of matchers usage
     {
       files: ['**/UsingMatchers.md/**'],
       rules: {
         'jest/prefer-to-be': 'off',
       },
     },
+    // demonstration of 'jest/valid-expect' rule usage
     {
       files: [
         '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
       ],
       rules: {
         'jest/valid-expect': 'off',
+      },
+    },
+    // `toHaveLength` matcher was added in Jest 17
+    {
+      files: ['**/2016-04-12-jest-11.md/**'],
+      rules: {
+        'jest/prefer-to-have-length': 'off',
       },
     },
 
