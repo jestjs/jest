@@ -6,7 +6,6 @@
  */
 
 import {expectError, expectType} from 'tsd-lite';
-import {number} from 'yargs';
 import {describe, test} from '@jest/globals';
 
 const list = [1, 2, 3];
