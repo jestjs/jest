@@ -198,7 +198,7 @@ module.exports = {
         'jest/prefer-to-be': 'off',
       },
     },
-    // demonstration of 'jest/valid-expect' rule usage
+    // demonstration of 'jest/valid-expect' rule
     {
       files: [
         '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
@@ -207,7 +207,7 @@ module.exports = {
         'jest/valid-expect': 'off',
       },
     },
-    // `toHaveLength` matcher was added in Jest 17
+    // Jest 11 did not had `toHaveLength` matcher
     {
       files: ['**/2016-04-12-jest-11.md/**'],
       rules: {
