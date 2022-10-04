@@ -11,6 +11,8 @@
 
 /* eslint-env browser*/
 
+import {expect} from '@jest/globals';
+
 describe('toEqual', () => {
   describe('duck type', () => {
     // https://github.com/facebook/jest/issues/7786
