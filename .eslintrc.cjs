@@ -181,7 +181,6 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'off',
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
-        'arrow-body-style': 'off',
         'consistent-return': 'off',
         'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
@@ -191,14 +190,30 @@ module.exports = {
         'no-console': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
-        'prettier/prettier': 'off',
         'sort-keys': 'off',
       },
     },
+    // demonstration of matchers usage
     {
       files: ['**/UsingMatchers.md/**'],
       rules: {
         'jest/prefer-to-be': 'off',
+      },
+    },
+    // demonstration of 'jest/valid-expect' rule
+    {
+      files: [
+        '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
+      ],
+      rules: {
+        'jest/valid-expect': 'off',
+      },
+    },
+    // Jest 11 did not had `toHaveLength` matcher
+    {
+      files: ['**/2016-04-12-jest-11.md/**'],
+      rules: {
+        'jest/prefer-to-have-length': 'off',
       },
     },
 

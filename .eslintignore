@@ -5,7 +5,6 @@ bin/
 packages/*/build/**
 packages/*/dist/**
 website/.docusaurus
-website/blog
 website/build
 website/node_modules
 website/i18n/*.js
