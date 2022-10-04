@@ -242,6 +242,29 @@ Received
 Number of returns: <r>3</>
 `;
 
+exports[`lastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`lastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
+`;
+
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 <d>expect(</><r>received</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
 
@@ -2060,6 +2083,29 @@ Received
 Number of returns: <r>3</>
 `;
 
+exports[`toHaveLastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`toHaveLastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
+`;
+
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
 
@@ -2720,6 +2766,29 @@ Expected: <g>"foo"</>
 Number of returns: <r>0</>
 `;
 
+exports[`toHaveReturnedWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>0</>
+Received
+       1: function call has not returned yet
+       2: function call has not returned yet
+       3: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`toHaveReturnedWith lastReturnedWith works with three calls 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: not <g>"foo3"</>
+Received
+       3:     <d>"foo3"</>
+
+Number of returns: <r>3</>
+`;
+
 exports[`toHaveReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>toHaveReturnedWith<d>(</><g>expected</><d>)</>
 
@@ -3143,6 +3212,29 @@ exports[`toReturnWith includes the custom mock name in the error message 1`] = `
 Expected: <g>"foo"</>
 
 Number of returns: <r>0</>
+`;
+
+exports[`toReturnWith lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toReturnWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>0</>
+Received
+       1: function call has not returned yet
+       2: function call has not returned yet
+       3: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`toReturnWith lastReturnedWith works with three calls 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toReturnWith<d>(</><g>expected</><d>)</>
+
+Expected: not <g>"foo3"</>
+Received
+       3:     <d>"foo3"</>
+
+Number of returns: <r>3</>
 `;
 
 exports[`toReturnWith returnedWith incomplete recursive calls are handled properly 1`] = `
