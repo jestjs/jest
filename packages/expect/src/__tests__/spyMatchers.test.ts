@@ -191,7 +191,7 @@ describe.each([
   'toBeCalledWith',
   'toHaveBeenCalledWith',
 ] as const)('%s', calledWith => {
-  function isNth(
+  function isToHaveNth(
     calledWith: string,
   ): calledWith is 'nthCalledWith' | 'toHaveBeenNthCalledWith' {
     return (
@@ -202,7 +202,7 @@ describe.each([
   test('works only on spies or jest.fn', () => {
     const fn = function fn() {};
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       expect(() =>
         jestExpect(fn)[calledWith](3),
       ).toThrowErrorMatchingSnapshot();
@@ -214,7 +214,7 @@ describe.each([
   test('works when not called', () => {
     const fn = jest.fn();
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
@@ -235,7 +235,7 @@ describe.each([
     const fn = jest.fn();
     fn();
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](1);
       jestExpect(fn)[calledWith](1);
     } else {
@@ -248,7 +248,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', 'bar1');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
@@ -269,7 +269,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', 'bar', 'plop');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
@@ -290,7 +290,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', 'bar');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](
         1,
         jestExpect.any(String),
@@ -332,7 +332,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', undefined);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](
         1,
         'foo',
@@ -358,7 +358,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn).not[calledWith](1, 'foo', jestExpect.optionalFn());
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', jestExpect.optionalFn()),
@@ -375,7 +375,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', 'bar');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](1, 'foo', 'bar');
       jestExpect(fn)[calledWith](1, 'foo', 'bar');
 
@@ -396,7 +396,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', 'bar');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](
         1,
         jestExpect.any(String),
@@ -438,7 +438,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', undefined);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo'),
       ).toThrowErrorMatchingSnapshot();
@@ -453,7 +453,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', undefined);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', undefined);
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', undefined),
@@ -471,7 +471,7 @@ describe.each([
     const fn = jest.fn();
     fn('foo', undefined);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', jestExpect.optionalFn());
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', jestExpect.optionalFn()),
@@ -502,7 +502,7 @@ describe.each([
 
     fn(m1);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, m2);
       jestExpect(fn).not[calledWith](1, m3);
 
@@ -534,7 +534,7 @@ describe.each([
 
     fn(s1);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, s2);
       jestExpect(fn).not[calledWith](1, s3);
 
@@ -563,7 +563,7 @@ describe.each([
     const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
     fn(directlyCreated, indirectlyCreated);
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, indirectlyCreated, directlyCreated);
 
       expect(() =>
@@ -578,7 +578,7 @@ describe.each([
     }
   });
 
-  if (!isNth(calledWith)) {
+  if (!isToHaveNth(calledWith)) {
     test('works with many arguments', () => {
       const fn = jest.fn();
       fn('foo1', 'bar');
@@ -606,7 +606,7 @@ describe.each([
     });
   }
 
-  if (isNth(calledWith)) {
+  if (isToHaveNth(calledWith)) {
     test('works with three calls', () => {
       const fn = jest.fn();
       fn('foo1', 'bar');
@@ -654,7 +654,7 @@ describe.each([
     const fn = jest.fn().mockName('named-mock');
     fn('foo', 'bar');
 
-    if (isNth(calledWith)) {
+    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', 'bar');
 
       expect(() =>
@@ -990,7 +990,7 @@ describe.each([
   'toReturnWith',
   'toHaveReturnedWith',
 ] as const)('%s', returnedWith => {
-  function isNth(
+  function isToHaveNth(
     returnedWith: string,
   ): returnedWith is 'nthReturnedWith' | 'toHaveNthReturnedWith' {
     return (
@@ -999,7 +999,7 @@ describe.each([
     );
   }
 
-  function isLast(
+  function isToHaveLast(
     returnedWith: string,
   ): returnedWith is 'lastReturnedWith' | 'toHaveLastReturnedWith' {
     return (
@@ -1017,7 +1017,7 @@ describe.each([
   test('works when not called', () => {
     const fn = jest.fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn).not[returnedWith](1, 'foo');
 
       expect(() =>
@@ -1036,7 +1036,7 @@ describe.each([
     const fn = jest.fn();
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       // @ts-expect-error: TODO should types be fixed?
       jestExpect(fn)[returnedWith](1);
     } else {
@@ -1049,7 +1049,7 @@ describe.each([
     const fn = jest.fn(() => 'foo');
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn).not[returnedWith](1, 'bar');
 
       expect(() =>
@@ -1068,7 +1068,7 @@ describe.each([
     const fn = jest.fn(() => 'foo');
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, 'foo');
 
       expect(() =>
@@ -1087,7 +1087,7 @@ describe.each([
     const fn = jest.fn(() => undefined);
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, undefined);
 
       expect(() =>
@@ -1119,7 +1119,7 @@ describe.each([
     const fn = jest.fn(() => m1);
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, m2);
       jestExpect(fn).not[returnedWith](1, m3);
 
@@ -1150,7 +1150,7 @@ describe.each([
     const fn = jest.fn(() => s1);
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, s2);
       jestExpect(fn).not[returnedWith](1, s3);
 
@@ -1178,7 +1178,7 @@ describe.each([
     const fn = jest.fn(() => directlyCreated);
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, directlyCreated);
 
       expect(() =>
@@ -1198,7 +1198,7 @@ describe.each([
     const fn = jest.fn(() => indirectlyCreated);
     fn();
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn)[returnedWith](1, indirectlyCreated);
 
       expect(() =>
@@ -1224,7 +1224,7 @@ describe.each([
       // ignore error
     }
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       // It doesn't matter what return value is tested if the call threw
       jestExpect(fn).not[returnedWith](1, 'foo');
       jestExpect(fn).not[returnedWith](1, null);
@@ -1257,7 +1257,7 @@ describe.each([
       // ignore error
     }
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       // It doesn't matter what return value is tested if the call threw
       jestExpect(fn).not[returnedWith](1, 'foo');
       jestExpect(fn).not[returnedWith](1, null);
@@ -1278,7 +1278,7 @@ describe.each([
     }
   });
 
-  if (!isNth(returnedWith)) {
+  if (!isToHaveNth(returnedWith)) {
     describe('returnedWith', () => {
       test('works with more calls than the limit', () => {
         const fn = jest.fn<() => string>();
@@ -1327,7 +1327,7 @@ describe.each([
     });
   }
 
-  if (isNth(returnedWith)) {
+  if (isToHaveNth(returnedWith)) {
     describe('nthReturnedWith', () => {
       test('works with three calls', () => {
         const fn = jest.fn<() => string>();
@@ -1448,7 +1448,7 @@ describe.each([
     });
   }
 
-  if (isLast(returnedWith)) {
+  if (isToHaveLast(returnedWith)) {
     describe('lastReturnedWith', () => {
       test('works with three calls', () => {
         const fn = jest.fn<() => string>();
@@ -1490,7 +1490,7 @@ describe.each([
   test('includes the custom mock name in the error message', () => {
     const fn = jest.fn().mockName('named-mock');
 
-    if (isNth(returnedWith)) {
+    if (isToHaveNth(returnedWith)) {
       jestExpect(fn).not[returnedWith](1, 'foo');
 
       expect(() =>
