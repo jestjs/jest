@@ -19,14 +19,14 @@ describe('CustomConsole', () => {
     _stderr = '';
 
     const stdout = new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk: Buffer, _encoding, callback) {
         _stdout += chunk.toString();
         callback();
       },
     });
 
     const stderr = new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk: Buffer, _encoding, callback) {
         _stderr += chunk.toString();
         callback();
       },

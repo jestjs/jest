@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
+import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
@@ -43,9 +43,12 @@ export default class BufferedConsole extends Console {
     level?: number | null,
   ): ConsoleBuffer {
     const stackLevel = level != null ? level : 2;
-    const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
+    const rawStack = new ErrorWithStack(
+      undefined,
+      BufferedConsole.write.bind(BufferedConsole),
+    ).stack;
 
-    invariant(rawStack, 'always have a stack trace');
+    invariant(rawStack != null, 'always have a stack trace');
 
     const origin = rawStack
       .split('\n')
@@ -74,7 +77,10 @@ export default class BufferedConsole extends Console {
   override assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
-    } catch (error: any) {
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
       this._log('assert', error.toString());
     }
   }
@@ -111,7 +117,7 @@ export default class BufferedConsole extends Console {
   override group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('group', chalk.bold(format(title, ...rest)));
     }
   }
@@ -119,7 +125,7 @@ export default class BufferedConsole extends Console {
   override groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || rest.length > 0) {
+    if (title != null || rest.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...rest)));
     }
   }
@@ -139,7 +145,7 @@ export default class BufferedConsole extends Console {
   }
 
   override time(label = 'default'): void {
-    if (this._timers[label]) {
+    if (this._timers[label] != null) {
       return;
     }
 
@@ -149,7 +155,7 @@ export default class BufferedConsole extends Console {
   override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
@@ -160,7 +166,7 @@ export default class BufferedConsole extends Console {
   override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
@@ -176,7 +182,7 @@ export default class BufferedConsole extends Console {
   }
 }
 
-function invariant(condition: unknown, message?: string): asserts condition {
+function invariant(condition: boolean, message?: string): asserts condition {
   if (!condition) {
     throw new Error(message);
   }

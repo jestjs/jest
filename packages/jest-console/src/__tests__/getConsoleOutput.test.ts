@@ -17,7 +17,9 @@ jest.mock('jest-message-util', () => ({
 
 describe('getConsoleOutput', () => {
   const globalConfig = makeGlobalConfig({noStackTrace: true});
-  formatStackTrace.mockImplementation(() => 'throw new Error("Whoops!");');
+  jest
+    .mocked(formatStackTrace)
+    .mockImplementation(() => 'throw new Error("Whoops!");');
 
   it.each`
     logType
