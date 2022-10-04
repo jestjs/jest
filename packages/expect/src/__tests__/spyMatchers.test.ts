@@ -1037,10 +1037,8 @@ describe.each([
     fn();
 
     if (isToHaveNth(returnedWith)) {
-      // @ts-expect-error: TODO should types be fixed?
       jestExpect(fn)[returnedWith](1);
     } else {
-      // @ts-expect-error: TODO should types be fixed?
       jestExpect(fn)[returnedWith]();
     }
   });
