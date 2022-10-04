@@ -46,7 +46,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(20);
+    expect(stripAnsi(result)).toHaveLength(20);
   });
 
   it('trims dirname (longer line width)', () => {
@@ -62,7 +62,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(25);
+    expect(stripAnsi(result)).toHaveLength(25);
   });
 
   it('trims dirname and basename', () => {
@@ -78,7 +78,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(10);
+    expect(stripAnsi(result)).toHaveLength(10);
   });
 
   it('does not trim anything', () => {
@@ -95,7 +95,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(totalLength);
+    expect(stripAnsi(result)).toHaveLength(totalLength);
   });
 
   test('split at the path.sep index', () => {
@@ -111,7 +111,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(columns - pad);
+    expect(stripAnsi(result)).toHaveLength(columns - pad);
   });
 });
 

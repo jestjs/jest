@@ -7,7 +7,7 @@
 import {readConfigs} from '../index';
 
 jest.mock('graceful-fs', () => ({
-  ...jest.requireActual('fs'),
+  ...jest.requireActual<typeof import('fs')>('fs'),
   existsSync: jest.fn(() => true),
   lstatSync: jest.fn(() => ({
     isDirectory: () => false,
@@ -18,5 +18,5 @@ test('readConfigs() throws when called without project paths', async () => {
   await expect(
     // @ts-expect-error
     readConfigs(null /* argv */, [] /* projectPaths */),
-  ).rejects.toThrowError('jest: No configuration found for any project.');
+  ).rejects.toThrow('jest: No configuration found for any project.');
 });

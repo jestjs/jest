@@ -49,7 +49,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
 
     timers.useFakeTimers();
 
-    expect(mockInstall).toBeCalledWith({
+    expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: 100_000,
       now: 123456,
@@ -86,7 +86,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
 
     timers.useFakeTimers();
 
-    expect(mockInstall).toBeCalledWith({
+    expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: 100,
       now: 0,
@@ -119,7 +119,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
       timerLimit: 2000,
     });
 
-    expect(mockInstall).toBeCalledWith({
+    expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: 40,
       loopLimit: 2000,
       now: new Date('1995-12-17'),
@@ -158,7 +158,7 @@ describe('`@sinonjs/fake-timers` integration', () => {
       now: 123456,
     });
 
-    expect(mockInstall).toBeCalledWith({
+    expect(mockInstall).toHaveBeenCalledWith({
       advanceTimeDelta: undefined,
       loopLimit: 1000,
       now: 123456,

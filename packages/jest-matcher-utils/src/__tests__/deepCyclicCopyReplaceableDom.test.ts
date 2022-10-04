@@ -6,7 +6,11 @@
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
+
 import deepCyclicCopyReplaceable from '../deepCyclicCopyReplaceable';
 
 test('should copy dom element', () => {

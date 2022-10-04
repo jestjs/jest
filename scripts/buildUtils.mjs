@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import * as assert from 'assert';
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import fs from 'graceful-fs';
@@ -120,4 +120,10 @@ export function adjustToTerminalWidth(str) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
   return strs.slice(0, -1).concat(lastString).join('\n');
+}
+
+export function getPackagesWithTsConfig() {
+  return getPackages().filter(p =>
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
+  );
 }

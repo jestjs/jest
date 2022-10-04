@@ -229,17 +229,17 @@ const example = jest.createMockFromModule('../example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
-  expect(example.function.name).toEqual('square');
-  expect(example.function.length).toEqual(0);
+  expect(example.function.name).toBe('square');
+  expect(example.function).toHaveLength(0);
 
   // async functions get the same treatment as standard synchronous functions.
-  expect(example.asyncFunction.name).toEqual('asyncSquare');
-  expect(example.asyncFunction.length).toEqual(0);
+  expect(example.asyncFunction.name).toBe('asyncSquare');
+  expect(example.asyncFunction).toHaveLength(0);
 
   // creates a new class with the same interface, member functions and properties are mocked.
-  expect(example.class.constructor.name).toEqual('Bar');
-  expect(example.class.foo.name).toEqual('foo');
-  expect(example.class.array.length).toEqual(0);
+  expect(example.class.constructor.name).toBe('Bar');
+  expect(example.class.foo.name).toBe('foo');
+  expect(example.class.array).toHaveLength(0);
 
   // creates a deeply cloned version of the original object.
   expect(example.object).toEqual({
@@ -251,12 +251,12 @@ test('should run example code', () => {
   });
 
   // creates a new empty array, ignoring the original array.
-  expect(example.array.length).toEqual(0);
+  expect(example.array).toHaveLength(0);
 
   // creates a new property with the same primitive value as the original property.
-  expect(example.number).toEqual(123);
-  expect(example.string).toEqual('baz');
-  expect(example.boolean).toEqual(true);
+  expect(example.number).toBe(123);
+  expect(example.string).toBe('baz');
+  expect(example.boolean).toBe(true);
   expect(example.symbol).toEqual(Symbol.for('a.b.c'));
 });
 ```
@@ -380,7 +380,7 @@ test('moduleName 1', () => {
     return jest.fn(() => 1);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(1);
+  expect(moduleName()).toBe(1);
 });
 
 test('moduleName 2', () => {
@@ -388,7 +388,7 @@ test('moduleName 2', () => {
     return jest.fn(() => 2);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(2);
+  expect(moduleName()).toBe(2);
 });
 ```
 
@@ -403,7 +403,7 @@ test('moduleName 1', () => {
     return jest.fn(() => 1);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(1);
+  expect(moduleName()).toBe(1);
 });
 
 test('moduleName 2', () => {
@@ -411,7 +411,7 @@ test('moduleName 2', () => {
     return jest.fn(() => 2);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(2);
+  expect(moduleName()).toBe(2);
 });
 ```
 
@@ -435,8 +435,8 @@ test('moduleName 1', () => {
     };
   });
   return import('../moduleName').then(moduleName => {
-    expect(moduleName.default).toEqual('default1');
-    expect(moduleName.foo).toEqual('foo1');
+    expect(moduleName.default).toBe('default1');
+    expect(moduleName.foo).toBe('foo1');
   });
 });
 
@@ -449,8 +449,8 @@ test('moduleName 2', () => {
     };
   });
   return import('../moduleName').then(moduleName => {
-    expect(moduleName.default).toEqual('default2');
-    expect(moduleName.foo).toEqual('foo2');
+    expect(moduleName.default).toBe('default2');
+    expect(moduleName.foo).toBe('foo2');
   });
 });
 ```

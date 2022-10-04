@@ -277,8 +277,6 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
-
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
 Default: `["clover", "json", "lcov", "text"]`
@@ -764,7 +762,11 @@ const config: Config = {
 export default config;
 ```
 
-Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
+:::note
+
+If you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
+
+:::
 
 ### `globalSetup` \[string]
 
@@ -1126,7 +1128,7 @@ export default config;
 
 :::info
 
-Note that if you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
+If you also have specified [`rootDir`](#rootdir-string) that the resolution of this file will be relative to that root directory.
 
 :::
 
@@ -1754,9 +1756,13 @@ Pretty foo: Object {
 }
 ```
 
+:::tip
+
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
 More about serializers API can be found [here](https://github.com/facebook/jest/tree/main/packages/pretty-format/README.md#serialize).
+
+:::
 
 ### `testEnvironment` \[string]
 
@@ -1801,7 +1807,7 @@ Example:
 
 ```js
 // my-custom-environment
-const NodeEnvironment = require('jest-environment-node').default;
+const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -1865,7 +1871,7 @@ For example, in `jest-environment-jsdom`, you can override options given to [`js
 
 Both `jest-environment-jsdom` and `jest-environment-node` allow specifying `customExportConditions`, which allow you to control which versions of a library are loaded from `exports` in `package.json`. `jest-environment-jsdom` defaults to `['browser']`. `jest-environment-node` defaults to `['node', 'node-addons']`.
 
-These options can also be passed in a docblock, similar to `testEnvironment`. Note that it must be parseable by `JSON.parse`. Example:
+These options can also be passed in a docblock, similar to `testEnvironment`. The string with options must be parseable by `JSON.parse`. Example:
 
 ```js
 /**
@@ -2226,15 +2232,15 @@ Default: `[]`
 
 An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them. If a module's path matches any of the patterns in this list, it will not be automatically mocked by the module loader.
 
-This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lodash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
+This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like `underscore`, `lodash`, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
 
 ### `verbose` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 

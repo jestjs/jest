@@ -17,10 +17,10 @@ import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _config: Config.ProjectConfig;
+  private readonly _config: Config.ProjectConfig;
   private _fakingTime: boolean;
-  private _global: typeof globalThis;
-  private _fakeTimers: FakeTimerWithContext;
+  private readonly _global: typeof globalThis;
+  private readonly _fakeTimers: FakeTimerWithContext;
 
   constructor({
     global,

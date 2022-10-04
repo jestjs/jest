@@ -19,8 +19,8 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
-  private _notifier = loadNotifier();
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _notifier = loadNotifier();
+  private readonly _globalConfig: Config.GlobalConfig;
   private _context: ReporterContext;
 
   static readonly filename = __filename;

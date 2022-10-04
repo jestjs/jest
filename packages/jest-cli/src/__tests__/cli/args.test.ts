@@ -105,7 +105,6 @@ describe('check', () => {
 describe('buildArgv', () => {
   it('should return only camelcased args ', async () => {
     const mockProcessArgv = jest
-      // @ts-expect-error
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
 

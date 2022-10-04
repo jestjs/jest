@@ -193,7 +193,7 @@ test('can mock module', async () => {
   const importedMock = await import('../mockedModule.mjs');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toEqual('bar');
+  expect(importedMock.foo).toBe('bar');
 });
 
 test('can mock transitive module', async () => {
@@ -202,7 +202,7 @@ test('can mock transitive module', async () => {
   const importedMock = await import('../reexport.js');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toEqual('bar');
+  expect(importedMock.foo).toBe('bar');
 });
 
 test('supports imports using "node:" prefix', () => {

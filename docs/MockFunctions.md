@@ -79,7 +79,7 @@ expect(someMockFunction.mock.instances.length).toBe(2);
 
 // The object returned by the first instantiation of this function
 // had a `name` property whose value was set to 'test'
-expect(someMockFunction.mock.instances[0].name).toEqual('test');
+expect(someMockFunction.mock.instances[0].name).toBe('test');
 
 // The first argument of the last call to the function was 'test'
 expect(someMockFunction.mock.lastCall[0]).toBe('test');

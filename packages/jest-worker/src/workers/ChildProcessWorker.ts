@@ -58,7 +58,7 @@ export default class ChildProcessWorker
   implements WorkerInterface
 {
   private _child!: ChildProcess;
-  private _options: WorkerOptions;
+  private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
   private _retries!: number;
@@ -74,10 +74,10 @@ export default class ChildProcessWorker
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
   private _childIdleMemoryUsage: number | null;
-  private _childIdleMemoryUsageLimit: number | null;
+  private readonly _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
 
-  private _childWorkerPath: string;
+  private readonly _childWorkerPath: string;
 
   constructor(options: WorkerOptions) {
     super(options);

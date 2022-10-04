@@ -351,8 +351,8 @@ const mockAdd = add as jest.MockedFunction<typeof add>;
 test('calculate calls add', () => {
   calculate('Add', 1, 2);
 
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
+  expect(mockAdd).toHaveBeenCalledTimes(1);
+  expect(mockAdd).toHaveBeenCalledWith(1, 2);
 });
 ```
 
@@ -387,8 +387,8 @@ test('calculate calls add', () => {
   // anything requiring `add`.
   calculate(mockAdd, 1, 2);
 
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
+  expect(mockAdd).toHaveBeenCalledTimes(1);
+  expect(mockAdd).toHaveBeenCalledWith(1, 2);
 });
 ```
 
@@ -437,7 +437,7 @@ it('We can check if the consumer called a method on the class instance', () => {
   // However, it will not allow access to `.mock` in TypeScript as it
   // is returning `SoundPlayer`. Instead, you can check the calls to a
   // method like this fully typed:
-  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[0][0]).toEqual(
+  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[0][0]).toBe(
     coolSoundFileName,
   );
   // Equivalent to above check:

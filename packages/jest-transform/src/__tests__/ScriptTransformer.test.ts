@@ -8,13 +8,23 @@
 
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
+import type {
+  AsyncTransformer,
+  FixedRawSourceMap,
+  Options,
+  ReducedTransformOptions,
+  ShouldInstrumentOptions,
+  SyncTransformer,
+  TransformedSource,
+  Transformer,
+  TransformerFactory,
+} from '../types';
 
 jest
   .mock('graceful-fs', () => ({
     ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
     /* eslint-disable sort-keys */
-    readFileSync: jest.fn((path, options) => {
+    readFileSync: jest.fn((path: string, options: string) => {
       mockInvariant(typeof path === 'string');
 
       expect(options).toBe('utf8');
@@ -24,14 +34,17 @@ jest
 
       throw new Error(`Cannot read path '${path}'.`);
     }),
-    writeFileSync: jest.fn((path, data, options) => {
-      mockInvariant(typeof path === 'string');
-      expect(options).toBe('utf8');
-      mockFs[path] = data;
-    }),
+    writeFileSync: jest.fn<typeof import('fs').writeFileSync>(
+      (path, data, options) => {
+        mockInvariant(typeof path === 'string');
+        mockInvariant(typeof data === 'string');
+        expect(options).toBe('utf8');
+        mockFs[path] = data;
+      },
+    ),
 
-    unlinkSync: jest.fn(),
-    statSync: jest.fn(path => ({
+    unlinkSync: jest.fn<typeof import('fs').unlinkSync>(),
+    statSync: jest.fn<typeof import('fs').statSync>(path => ({
       isFile() {
         mockInvariant(typeof path === 'string');
         return !!mockFs[path];
@@ -39,7 +52,7 @@ jest
       mtime: {getTime: () => 42, toString: () => '42'},
     })),
 
-    existsSync: jest.fn(path => {
+    existsSync: jest.fn<typeof import('fs').existsSync>(path => {
       mockInvariant(typeof path === 'string');
 
       return !!mockFs[path];
@@ -58,7 +71,7 @@ jest
     ...jest.requireActual<typeof import('jest-util')>('jest-util'),
     createDirectory: jest.fn(),
   }))
-  .mock('path', () => jest.requireActual('path').posix);
+  .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
 jest.mock(
   'test_preprocessor',
@@ -68,7 +81,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
       process: (content, filename, config) => ({
-        code: require('dedent')`
+        code: (require('dedent') as typeof import('dedent'))`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -88,17 +101,18 @@ jest.mock(
   () => {
     const escapeStrings = (str: string) => str.replace(/'/, "'");
 
-    const transformer: Transformer = {
-      getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
-      processAsync: async (content, filename, config) => ({
-        code: require('dedent')`
+    const transformer: AsyncTransformer = {
+      getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
+      processAsync: (content, filename, config) =>
+        Promise.resolve({
+          code: (require('dedent') as typeof import('dedent'))`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
         `,
-      }),
+        }),
     };
 
     return transformer;
@@ -118,19 +132,25 @@ jest.mock(
 
 jest.mock(
   'cache_fs_preprocessor',
-  () => ({
-    getCacheKey: jest.fn(() => 'ab'),
-    process: jest.fn().mockReturnValue({code: 'processedCode'}),
-  }),
+  () => {
+    const syncTransformer: SyncTransformer = {
+      getCacheKey: jest.fn(() => 'ab'),
+      process: jest.fn(() => ({code: 'processedCode'})),
+    };
+    return syncTransformer;
+  },
   {virtual: true},
 );
 
 jest.mock(
   'cache_fs_async_preprocessor',
-  () => ({
-    getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
-    processAsync: jest.fn().mockResolvedValue({code: 'processedCode'}),
-  }),
+  () => {
+    const asyncTransformer: AsyncTransformer = {
+      getCacheKeyAsync: jest.fn(() => Promise.resolve('ab')),
+      processAsync: jest.fn(() => Promise.resolve({code: 'processedCode'})),
+    };
+    return asyncTransformer;
+  },
   {virtual: true},
 );
 
@@ -158,7 +178,7 @@ jest.mock(
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
       process: (content, filename) => ({
-        code: require('dedent')`
+        code: (require('dedent') as typeof import('dedent'))`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -189,7 +209,7 @@ jest.mock(
 // Bad preprocessor
 jest.mock(
   'skipped-required-props-preprocessor-only-async',
-  () => ({processAsync: async () => ({code: ''})}),
+  () => ({processAsync: () => Promise.resolve({code: ''})}),
   {virtual: true},
 );
 
@@ -216,11 +236,16 @@ jest.mock(
 
 jest.mock(
   'factory-for-async-preprocessor',
-  () => ({
-    createTransformer() {
-      return {processAsync: jest.fn().mockResolvedValue({code: 'code'})};
-    },
-  }),
+  () => {
+    const transformer: AsyncTransformer = {
+      processAsync: jest.fn(() => Promise.resolve({code: 'code'})),
+    };
+    return {
+      createTransformer() {
+        return transformer;
+      },
+    };
+  },
   {virtual: true},
 );
 
@@ -244,7 +269,8 @@ let object: <T>(input: T) => T;
 let writeFileAtomic: typeof import('write-file-atomic');
 
 jest.mock('write-file-atomic', () => ({
-  sync: jest.fn().mockImplementation((filePath, data) => {
+  sync: jest.fn<typeof import('write-file-atomic').sync>((filePath, data) => {
+    mockInvariant(typeof data === 'string');
     mockFs[filePath] = data;
   }),
 }));
@@ -253,7 +279,8 @@ describe('ScriptTransformer', () => {
   const reset = () => {
     jest.resetModules();
 
-    object = data => Object.assign(Object.create(null), data);
+    object = data =>
+      Object.assign(Object.create(null) as Record<string, unknown>, data);
 
     mockFs = object({
       '/fruits/avocado.js': ['module.exports = "avocado";'].join('\n'),
@@ -271,9 +298,10 @@ describe('ScriptTransformer', () => {
       ),
     });
 
-    fs = require('graceful-fs');
+    fs = require('graceful-fs') as typeof import('fs');
 
-    writeFileAtomic = require('write-file-atomic');
+    writeFileAtomic =
+      require('write-file-atomic') as typeof import('write-file-atomic');
 
     config = makeProjectConfig({
       cache: true,
@@ -283,12 +311,15 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     });
 
-    createScriptTransformer =
-      require('../ScriptTransformer').createScriptTransformer;
+    createScriptTransformer = (
+      require('../ScriptTransformer') as typeof import('../ScriptTransformer')
+    ).createScriptTransformer;
   };
 
   beforeEach(reset);
-  afterEach(() => jest.unmock('../shouldInstrument'));
+  afterEach(() => {
+    jest.unmock('../shouldInstrument');
+  });
 
   it('transforms a file properly', async () => {
     const scriptTransformer = await createScriptTransformer(config);
@@ -301,7 +332,7 @@ describe('ScriptTransformer', () => {
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
     const transformedBananaWithCoverageAgain = scriptTransformer.transform(
@@ -346,7 +377,7 @@ describe('ScriptTransformer', () => {
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
     const transformedBananaWithCoverageAgain =
@@ -397,7 +428,11 @@ describe('ScriptTransformer', () => {
 
     incorrectReturnValues.forEach(([returnValue, filePath]) => {
       mockInvariant(typeof filePath === 'string');
-      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      jest
+        .mocked(
+          (require('passthrough-preprocessor') as SyncTransformer).process,
+        )
+        .mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrowErrorMatchingSnapshot();
@@ -407,7 +442,11 @@ describe('ScriptTransformer', () => {
 
     correctReturnValues.forEach(([returnValue, filePath]) => {
       mockInvariant(typeof filePath === 'string');
-      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      jest
+        .mocked(
+          (require('passthrough-preprocessor') as SyncTransformer).process,
+        )
+        .mockReturnValue(returnValue);
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
@@ -415,18 +454,21 @@ describe('ScriptTransformer', () => {
   });
 
   it("throws an error if `processAsync` doesn't return a promise of object containing `code` key with processed string", async () => {
-    const incorrectReturnValues: Array<[any, string]> = [
+    const incorrectReturnValues: Array<[unknown, string]> = [
       [undefined, '/fruits/banana.js'],
       ['code', '/fruits/avocado.js'],
       [{a: 'a'}, '/fruits/kiwi.js'],
       [[], '/fruits/grapefruit.js'],
     ];
 
-    const correctReturnValues: Array<[any, string]> = [
+    const correctReturnValues: Array<[TransformedSource, string]> = [
       [{code: 'code'}, '/fruits/mango.js'],
     ];
 
-    const buildPromise = async ([returnValue, filePath]): Promise<any> => {
+    const buildPromise = async ([returnValue, filePath]: [
+      TransformedSource,
+      string,
+    ]): Promise<any> => {
       const processorName = `passthrough-preprocessor${filePath.replace(
         /\.|\//g,
         '-',
@@ -439,8 +481,8 @@ describe('ScriptTransformer', () => {
         }),
         {virtual: true},
       );
-      const transformer = require(processorName);
-      transformer.processAsync.mockResolvedValue(returnValue);
+      const transformer = require(processorName) as AsyncTransformer;
+      jest.mocked(transformer.processAsync).mockResolvedValue(returnValue);
 
       config = {
         ...config,
@@ -484,7 +526,11 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
+      scriptTransformer.transformSource(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -497,9 +543,11 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(
-      await scriptTransformer.transformSourceAsync('sample.js', '', {
-        instrument: false,
-      }),
+      await scriptTransformer.transformSourceAsync(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
     ).toBeDefined();
   });
 
@@ -526,7 +574,11 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
+      scriptTransformer.transformSource(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
     ).not.toThrow();
   });
 
@@ -541,14 +593,18 @@ describe('ScriptTransformer', () => {
     const scriptTransformer = await createScriptTransformer(config);
     await Promise.all([
       expect(
-        scriptTransformer.transformSourceAsync('async-sample.js', '', {
-          instrument: false,
-        }),
+        scriptTransformer.transformSourceAsync(
+          'async-sample.js',
+          '',
+          getTransformOptions(false),
+        ),
       ).resolves.toBeDefined(),
       expect(
-        scriptTransformer.transformSourceAsync('sync-sample.js', '', {
-          instrument: false,
-        }),
+        scriptTransformer.transformSourceAsync(
+          'sync-sample.js',
+          '',
+          getTransformOptions(false),
+        ),
       ).resolves.toBeDefined(),
     ]);
   });
@@ -561,7 +617,9 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
+    expect(
+      (require('test_preprocessor') as SyncTransformer).getCacheKey,
+    ).toHaveBeenCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -581,7 +639,9 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
+    expect(
+      (require('test_preprocessor') as SyncTransformer).getCacheKey,
+    ).toHaveBeenCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -604,7 +664,9 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
+    expect(
+      (require('test_async_preprocessor') as AsyncTransformer).getCacheKeyAsync,
+    ).toHaveBeenCalled();
 
     expect(res1.code).toMatchSnapshot();
 
@@ -635,8 +697,12 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
-    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(
+      (require('test_preprocessor') as SyncTransformer).getCacheKey,
+    ).toHaveBeenCalled();
+    expect(
+      (require('css-preprocessor') as SyncTransformer).getCacheKey,
+    ).toHaveBeenCalled();
     expect(res1.code).toMatchSnapshot();
     expect(res2.code).toMatchSnapshot();
 
@@ -667,8 +733,12 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
-    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(
+      (require('test_async_preprocessor') as AsyncTransformer).getCacheKeyAsync,
+    ).toHaveBeenCalled();
+    expect(
+      (require('css-preprocessor') as SyncTransformer).getCacheKey,
+    ).toHaveBeenCalled();
     expect(res1.code).toMatchSnapshot();
     expect(res2.code).toMatchSnapshot();
 
@@ -692,10 +762,14 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -703,11 +777,15 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
-      encoding: 'utf8',
-      fsync: false,
-    });
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+      result.sourceMapPath,
+      mapStr,
+      {
+        encoding: 'utf8',
+        fsync: false,
+      },
+    );
   });
 
   it('in async mode, writes source map if preprocessor supplies it', async () => {
@@ -722,10 +800,14 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -733,11 +815,15 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
-      encoding: 'utf8',
-      fsync: false,
-    });
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+      result.sourceMapPath,
+      mapStr,
+      {
+        encoding: 'utf8',
+        fsync: false,
+      },
+    );
   });
 
   it('in async mode, writes source map if async preprocessor supplies it', async () => {
@@ -752,12 +838,15 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({
         code: 'content',
         map,
-      },
-    );
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -765,11 +854,15 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
-      encoding: 'utf8',
-      fsync: false,
-    });
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
+      result.sourceMapPath,
+      mapStr,
+      {
+        encoding: 'utf8',
+        fsync: false,
+      },
+    );
   });
 
   it('writes source map if preprocessor inlines it', async () => {
@@ -790,17 +883,21 @@ describe('ScriptTransformer', () => {
         sourceMap,
       ).toString('base64')}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: content,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: content,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -825,17 +922,21 @@ describe('ScriptTransformer', () => {
         sourceMap,
       ).toString('base64')}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: content,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: content,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -860,17 +961,20 @@ describe('ScriptTransformer', () => {
         sourceMap,
       ).toString('base64')}`;
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {code: content},
-    );
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({code: content});
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8', fsync: false},
@@ -901,19 +1005,23 @@ describe('ScriptTransformer', () => {
         .toString('base64')
         .slice(0, 16)}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: content,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: content,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(jest.mocked(console.warn).mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -941,19 +1049,23 @@ describe('ScriptTransformer', () => {
         .toString('base64')
         .slice(0, 16)}`;
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: content,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: content,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(jest.mocked(console.warn).mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -981,19 +1093,22 @@ describe('ScriptTransformer', () => {
         .toString('base64')
         .slice(0, 16)}`;
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {code: content},
-    );
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({code: content});
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(jest.mocked(console.warn).mock.calls[0][0]).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -1010,18 +1125,22 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
       {
@@ -1038,10 +1157,14 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map: null,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -1058,10 +1181,14 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map: null,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1078,12 +1205,15 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({
         code: 'content',
         map: null,
-      },
-    );
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1107,7 +1237,7 @@ describe('ScriptTransformer', () => {
 
     // A map from the original source to the instrumented output
     /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
+    const instrumentedCodeMap: FixedRawSourceMap = {
       version: 3,
       names: ['content'],
       sources: ['banana.js'],
@@ -1117,18 +1247,22 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1162,18 +1296,22 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1207,20 +1345,23 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({
         code: 'content',
         map,
-      },
-    );
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1245,18 +1386,22 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map: null,
+      });
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1281,18 +1426,22 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    jest
+      .mocked(
+        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
+      )
+      .mockReturnValue({
+        code: 'content',
+        map: null,
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1317,20 +1466,23 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
-      {
+    jest
+      .mocked(
+        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
+          .processAsync,
+      )
+      .mockResolvedValue({
         code: 'content',
         map: null,
-      },
-    );
+      });
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
     expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toBeCalledTimes(2);
-    expect(writeFileAtomic.sync).toBeCalledWith(
+    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
+    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
       expect.anything(),
@@ -1352,7 +1504,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    const {getCacheKey} = require('test_preprocessor');
+    const {getCacheKey} = require('test_preprocessor') as SyncTransformer;
     expect(getCacheKey).toMatchSnapshot();
   });
 
@@ -1368,7 +1520,7 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    const {getCacheKey} = require('test_preprocessor');
+    const {getCacheKey} = require('test_preprocessor') as SyncTransformer;
     expect(getCacheKey).toMatchSnapshot();
   });
 
@@ -1386,7 +1538,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    const {getCacheKeyAsync} = require('test_async_preprocessor');
+    const {getCacheKeyAsync} =
+      require('test_async_preprocessor') as AsyncTransformer;
     expect(getCacheKeyAsync).toMatchSnapshot();
   });
 
@@ -1397,9 +1550,11 @@ describe('ScriptTransformer', () => {
     });
     const scriptTransformer = await createScriptTransformer(config);
 
-    scriptTransformer.transform('/fruits/banana.js', {});
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
     expect(
-      require('configureable-preprocessor').createTransformer,
+      (
+        require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
+      ).createTransformer,
     ).toHaveBeenCalledWith(transformerConfig);
   });
 
@@ -1412,8 +1567,8 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1426,9 +1581,9 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1439,9 +1594,9 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
   });
 
   it('in async mode, reads values from the cache', async () => {
@@ -1456,8 +1611,8 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1473,9 +1628,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1489,9 +1644,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
   });
 
   it('reads values from the cache when using async preprocessor', async () => {
@@ -1506,8 +1661,8 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1523,9 +1678,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
 
     // Don't read from the cache when `config.cache` is false.
     jest.resetModules();
@@ -1539,9 +1694,9 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
   });
 
   it('reads values from the cache when the file contains colons', async () => {
@@ -1556,8 +1711,8 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1567,12 +1722,18 @@ describe('ScriptTransformer', () => {
     // Restore the cached fs
     mockFs = mockFsCopy;
     scriptTransformer = await createScriptTransformer(transformConfig);
-    scriptTransformer.transform('/fruits/banana:colon.js', {});
+    scriptTransformer.transform(
+      '/fruits/banana:colon.js',
+      getCoverageOptions(),
+    );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      '/fruits/banana:colon.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
   });
 
   it('in async mode, reads values from the cache when the file contains colons', async () => {
@@ -1587,8 +1748,8 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1598,12 +1759,18 @@ describe('ScriptTransformer', () => {
     // Restore the cached fs
     mockFs = mockFsCopy;
     scriptTransformer = await createScriptTransformer(transformConfig);
-    await scriptTransformer.transformAsync('/fruits/banana:colon.js', {});
+    await scriptTransformer.transformAsync(
+      '/fruits/banana:colon.js',
+      getCoverageOptions(),
+    );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      '/fruits/banana:colon.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
   });
 
   it('with async preprocessor, reads values from the cache when the file contains colons', async () => {
@@ -1618,8 +1785,8 @@ describe('ScriptTransformer', () => {
     );
 
     const cachePath = getCachePath(mockFs, config);
-    expect(writeFileAtomic.sync).toBeCalled();
-    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+    expect(writeFileAtomic.sync).toHaveBeenCalled();
+    expect(jest.mocked(writeFileAtomic.sync).mock.calls[0][0]).toBe(cachePath);
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
@@ -1629,17 +1796,24 @@ describe('ScriptTransformer', () => {
     // Restore the cached fs
     mockFs = mockFsCopy;
     scriptTransformer = await createScriptTransformer(transformConfig);
-    await scriptTransformer.transformAsync('/fruits/banana:colon.js', {});
+    await scriptTransformer.transformAsync(
+      '/fruits/banana:colon.js',
+      getCoverageOptions(),
+    );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
-    expect(writeFileAtomic.sync).not.toBeCalled();
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      '/fruits/banana:colon.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toHaveBeenCalled();
   });
 
   it('should reuse the value from in-memory cache which is set by custom transformer', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_preprocessor');
+    const testPreprocessor =
+      require('cache_fs_preprocessor') as SyncTransformer;
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
@@ -1656,15 +1830,22 @@ describe('ScriptTransformer', () => {
 
     scriptTransformer.transform(fileName2, getCoverageOptions());
 
-    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
-    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
+    mockInvariant(testPreprocessor.getCacheKey != null);
+
+    expect(
+      jest.mocked(testPreprocessor.getCacheKey).mock.calls[0][2].cacheFS,
+    ).toBeDefined();
+    expect(
+      jest.mocked(testPreprocessor.process).mock.calls[0][2].cacheFS,
+    ).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
   });
 
   it('in async mode, should reuse the value from in-memory cache which is set by custom preprocessor', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_preprocessor');
+    const testPreprocessor =
+      require('cache_fs_preprocessor') as SyncTransformer;
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
@@ -1681,15 +1862,22 @@ describe('ScriptTransformer', () => {
 
     await scriptTransformer.transformAsync(fileName2, getCoverageOptions());
 
-    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
-    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
+    mockInvariant(testPreprocessor.getCacheKey != null);
+
+    expect(
+      jest.mocked(testPreprocessor.getCacheKey).mock.calls[0][2].cacheFS,
+    ).toBeDefined();
+    expect(
+      jest.mocked(testPreprocessor.process).mock.calls[0][2].cacheFS,
+    ).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
   });
 
   it('should reuse the value from in-memory cache which is set by custom async preprocessor', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_async_preprocessor');
+    const testPreprocessor =
+      require('cache_fs_async_preprocessor') as AsyncTransformer;
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
@@ -1706,14 +1894,16 @@ describe('ScriptTransformer', () => {
 
     await scriptTransformer.transformAsync(fileName2, getCoverageOptions());
 
+    mockInvariant(testPreprocessor.getCacheKeyAsync != null);
+
     expect(
-      testPreprocessor.getCacheKeyAsync.mock.calls[0][2].cacheFS,
+      jest.mocked(testPreprocessor.getCacheKeyAsync).mock.calls[0][2].cacheFS,
     ).toBeDefined();
     expect(
-      testPreprocessor.processAsync.mock.calls[0][2].cacheFS,
+      jest.mocked(testPreprocessor.processAsync).mock.calls[0][2].cacheFS,
     ).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith(fileName1, 'utf8');
   });
 
   it('does not reuse the in-memory cache between different projects', async () => {
@@ -1735,7 +1925,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('async mode does not reuse the in-memory cache between different projects', async () => {
@@ -1760,7 +1950,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
@@ -1800,7 +1990,7 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(4);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
   it('preload transformer when using `createScriptTransformer`', async () => {
@@ -1809,11 +1999,22 @@ describe('ScriptTransformer', () => {
       transform: [['\\.js$', 'test_preprocessor', {}]],
     });
 
+    // @ts-expect-error - private property
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
       ['test_preprocessor', expect.any(Object)],
     ]);
   });
 });
+
+function getTransformOptions(instrument: boolean): ReducedTransformOptions {
+  return {
+    instrument,
+    supportsDynamicImport: false,
+    supportsExportNamespaceFrom: false,
+    supportsStaticESM: false,
+    supportsTopLevelAwait: false,
+  };
+}
 
 function getCoverageOptions(
   overrides: Partial<ShouldInstrumentOptions> = {},
@@ -1831,8 +2032,8 @@ function getCoverageOptions(
   };
 }
 
-function mockInvariant(subject: unknown): asserts subject {
-  if (!subject) {
+function mockInvariant(subject: boolean): asserts subject {
+  if (subject == null) {
     throw new Error('Went boom');
   }
 }

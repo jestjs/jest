@@ -16,8 +16,7 @@ import {
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
-type M = Matchers<void, unknown>;
-type N = Matchers<void>;
+type M = Matchers<void>;
 
 expectError(() => {
   type E = Matchers;

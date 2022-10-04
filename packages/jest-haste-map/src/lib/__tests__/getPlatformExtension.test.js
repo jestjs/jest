@@ -14,7 +14,7 @@ describe('getPlatformExtension', () => {
     expect(getPlatformExtension('/b/c/a.ios.js')).toBe('ios');
     expect(getPlatformExtension('/b/c.android/a.ios.js')).toBe('ios');
     expect(getPlatformExtension('/b/c/a@1.5x.ios.png')).toBe('ios');
-    expect(getPlatformExtension('/b/c/a@1.5x.lol.png')).toBe(null);
-    expect(getPlatformExtension('/b/c/a.lol.png')).toBe(null);
+    expect(getPlatformExtension('/b/c/a@1.5x.lol.png')).toBeNull();
+    expect(getPlatformExtension('/b/c/a.lol.png')).toBeNull();
   });
 });

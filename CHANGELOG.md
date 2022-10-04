@@ -2,23 +2,36 @@
 
 ### Features
 
+- `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
+- `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
+- `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
+
 ### Fixes
+
+- `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
 
 ### Chore & Maintenance
 
 ### Performance
 
+## 29.1.2
+
+### Fixes
+
+- `[expect, @jest/expect]` Revert buggy inference of argument types for `*CalledWith` and `*ReturnedWith` matchers introduced in 29.1.0 ([#13339](https://github.com/facebook/jest/pull/13339))
+- `[jest-worker]` Add missing dependency on `jest-util` ([#13341](https://github.com/facebook/jest/pull/13341))
+
 ## 29.1.1
 
 ### Fixes
 
-- `[jest-mock]` Revert ([#13145](https://github.com/facebook/jest/pull/13145))
+- `[jest-mock]` Revert [#13145](https://github.com/facebook/jest/pull/13145) which broke mocking of transpiled ES modules
 
 ## 29.1.0
 
 ### Features
 
-- `[expect, @jest/expect]` support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
+- `[expect, @jest/expect]` Support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
 - `[expect, @jest/expect]` Infer type of `*ReturnedWith` matchers argument ([#13278](https://github.com/facebook/jest/pull/13278))
 - `[@jest/environment, jest-runtime]` Allow `jest.requireActual` and `jest.requireMock` to take a type argument ([#13253](https://github.com/facebook/jest/pull/13253))
 - `[@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))

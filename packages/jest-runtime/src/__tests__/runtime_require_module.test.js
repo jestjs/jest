@@ -9,7 +9,7 @@
 'use strict';
 
 import {builtinModules, createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {pathToFileURL} from 'url';
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';
@@ -83,7 +83,7 @@ describe('Runtime requireModule', () => {
       runtime.__mockRootPath,
       'inner_parent_module',
     );
-    expect(exports.outputString).toEqual('This should happen');
+    expect(exports.outputString).toBe('This should happen');
   });
 
   it('resolve module.parent.filename correctly', async () => {
@@ -93,7 +93,7 @@ describe('Runtime requireModule', () => {
       'inner_parent_module',
     );
 
-    expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
+    expect(slash(exports.parentFileName.replace(__dirname, ''))).toBe(
       '/test_root/inner_parent_module.js',
     );
   });
@@ -106,9 +106,9 @@ describe('Runtime requireModule', () => {
     );
 
     // `exports.loaded` is set while the module is loaded, so should be `false`
-    expect(exports.loaded).toEqual(false);
+    expect(exports.loaded).toBe(false);
     // After the module is loaded we can query `module.loaded` again, at which point it should be `true`
-    expect(exports.isLoaded()).toEqual(true);
+    expect(exports.isLoaded()).toBe(true);
   });
 
   it('provides `module.filename` to modules', async () => {
@@ -366,10 +366,10 @@ describe('Runtime requireModule', () => {
     const runtime = await createRuntime(__filename);
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
   });
 
   it('overrides module.createRequire', async () => {

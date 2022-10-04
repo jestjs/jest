@@ -46,7 +46,7 @@ export class FSEventsWatcher extends EventEmitter {
   readonly hasIgnore: boolean;
   readonly doIgnore: (path: string) => boolean;
   readonly fsEventsWatchStopper: () => Promise<void>;
-  private _tracked: Set<string>;
+  private readonly _tracked: Set<string>;
 
   static isSupported(): boolean {
     return fsevents !== null;

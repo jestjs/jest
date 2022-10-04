@@ -16,8 +16,8 @@
  *  node ./scripts/build.mjs /users/123/jest/packages/jest-111/src/111.js
  */
 
-import assert from 'assert';
-import path from 'path';
+import * as assert from 'assert';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';

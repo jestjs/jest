@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-
 import {SubService} from './sub.service';
 
 @Injectable()

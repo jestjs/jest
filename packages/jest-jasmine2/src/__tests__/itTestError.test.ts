@@ -9,47 +9,49 @@
 describe('test/it error throwing', () => {
   it('it throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       it('test1');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
   it("it throws an error when first argument isn't valid", () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       it(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       it('test3', 'test3b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test3b. It must be a callback function.',
     );
   });
   test('test throws error with missing callback function', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       test('test4');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
   test("test throws an error when first argument isn't valid", () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       test(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
   test('test throws an error when callback function is not a function', () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime errors here
       test('test6', 'test6b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test6b. It must be a callback function.',
     );
   });

@@ -7,20 +7,20 @@
  */
 
 import {createHash} from 'crypto';
-import path from 'path';
+import * as path from 'path';
 import semver = require('semver');
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
-import normalize from '../normalize';
+import normalize, {AllOptions} from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
-  .mock('path', () => jest.requireActual('path').posix)
+  .mock('path', () => jest.requireActual<typeof import('path')>('path').posix)
   .mock('graceful-fs', () => {
-    const realFs = jest.requireActual('fs');
+    const realFs = jest.requireActual<typeof import('fs')>('fs');
 
     return {
       ...realFs,
@@ -35,7 +35,9 @@ let expectedPathAbs: string;
 let expectedPathAbsAnother: string;
 
 let virtualModuleRegexes: Array<RegExp>;
-beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
+beforeEach(() => {
+  virtualModuleRegexes = [/jest-circus/, /babel-jest/];
+});
 const findNodeModule = jest.fn(name => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
@@ -211,7 +213,7 @@ describe('findRelatedTests', () => {
   });
 });
 
-function testPathArray(key: string) {
+function testPathArray(key: keyof AllOptions) {
   it('normalizes all paths relative to rootDir', async () => {
     const {options} = await normalize(
       {
@@ -749,9 +751,7 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual(
-      'node_modules/jest-environment-jsdom',
-    );
+    expect(options.testEnvironment).toBe('node_modules/jest-environment-jsdom');
   });
 
   it('resolves to node environment by default', async () => {
@@ -788,7 +788,7 @@ describe('testEnvironment', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
+    expect(options.testEnvironment).toBe('/root/testEnvironment.js');
   });
 });
 
@@ -878,7 +878,7 @@ describe('testMatch', () => {
       {} as Config.Argv,
     );
 
-    expect(options.testMatch.length).toBe(0);
+    expect(options.testMatch).toHaveLength(0);
   });
 
   it('testRegex default not applied if testMatch is set', async () => {
@@ -1059,9 +1059,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
-      /Cannot find module 'library-that-is-not-installed'/,
-    );
+    ).rejects.toThrow(/Cannot find module 'library-that-is-not-installed'/);
   });
 
   test('throws when preset is invalid', async () => {
@@ -1077,7 +1075,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
     );
   });
@@ -1103,7 +1101,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(errorMessage);
+    ).rejects.toThrow(errorMessage);
   });
 
   test('works with "react-native"', async () => {
@@ -1487,7 +1485,7 @@ describe('watchPlugins', () => {
   it('defaults to undefined', async () => {
     const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
-    expect(options.watchPlugins).toEqual(undefined);
+    expect(options.watchPlugins).toBeUndefined();
   });
 
   it('resolves to watch plugins and prefers jest-watch-`name`', async () => {
@@ -1612,7 +1610,10 @@ describe('testPathPattern', () => {
 
       describe('win32', () => {
         beforeEach(() => {
-          jest.mock('path', () => jest.requireActual('path').win32);
+          jest.mock(
+            'path',
+            () => jest.requireActual<typeof import('path')>('path').win32,
+          );
           require('jest-resolve').default.findNodeModule = findNodeModule;
         });
 
@@ -1699,7 +1700,7 @@ describe('moduleFileExtensions', () => {
           },
           {} as Config.Argv,
         ),
-      ).rejects.toThrowError("moduleFileExtensions must include 'js'");
+      ).rejects.toThrow("moduleFileExtensions must include 'js'");
     },
   );
 
@@ -2077,5 +2078,5 @@ it('parses workerIdleMemoryLimit', async () => {
     {} as Config.Argv,
   );
 
-  expect(options.workerIdleMemoryLimit).toEqual(47185920);
+  expect(options.workerIdleMemoryLimit).toBe(47185920);
 });

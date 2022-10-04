@@ -13,7 +13,7 @@ import {NO_DIFF_MESSAGE} from '../constants';
 import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
-import {DiffOptions} from '../types';
+import type {DiffOptions} from '../types';
 
 const optionsCounts: DiffOptions = {
   includeChangeCounts: true,
@@ -1077,7 +1077,8 @@ describe('options', () => {
     });
 
     test('diff middle dot', () => {
-      const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
+      const replaceSpacesWithMiddleDot = (string: string) =>
+        '·'.repeat(string.length);
       const options = {
         changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
         commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,

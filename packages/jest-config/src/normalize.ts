@@ -52,7 +52,7 @@ const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
-type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -108,8 +108,8 @@ const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
 ) => {
-  if (options['globals'] && preset['globals']) {
-    options['globals'] = merge(preset['globals'], options['globals']);
+  if (options.globals && preset.globals) {
+    options.globals = merge(preset.globals, options.globals);
   }
 };
 
@@ -1061,14 +1061,14 @@ export default async function normalize(
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
 
-  if (newOptions.testRegex!.length && options.testMatch) {
+  if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex!.length && !options.testMatch) {
+  if (newOptions.testRegex.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1101,7 +1101,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom!,
+            newOptions.collectCoverageFrom,
           ).length === 0
         ) {
           return patterns;

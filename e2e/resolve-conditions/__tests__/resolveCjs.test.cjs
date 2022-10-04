@@ -8,5 +8,5 @@
 const {fn} = require('fake-dep');
 
 test('returns correct message', () => {
-  expect(fn()).toEqual('hello from CJS');
+  expect(fn()).toBe('hello from CJS');
 });

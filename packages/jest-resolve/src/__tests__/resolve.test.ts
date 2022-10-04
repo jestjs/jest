@@ -12,7 +12,7 @@ import {sync as resolveSync} from 'resolve';
 import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import defaultResolver from '../defaultResolver';
+import defaultResolver, {PackageFilter} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
@@ -20,11 +20,14 @@ import type {ResolverConfig} from '../types';
 jest.mock('../__mocks__/userResolver').mock('../__mocks__/userResolverAsync');
 
 // Do not fully mock `resolve` because it is used by Jest. Doing it will crash
-// in very strange ways. Instead just spy on it and its `sync` method.
+// in very strange ways. Instead, just spy on it and its `sync` method.
 jest.mock('resolve', () => {
-  const originalModule = jest.requireActual('resolve');
+  const originalModule =
+    jest.requireActual<typeof import('resolve')>('resolve');
 
-  const m = jest.fn((...args) => originalModule(...args));
+  const m = jest.fn<typeof import('resolve')>((...args) =>
+    originalModule(...args),
+  );
   Object.assign(m, originalModule);
   m.sync = jest.spyOn(originalModule, 'sync');
 
@@ -50,21 +53,21 @@ describe('isCoreModule', () => {
       hasCoreModules: false,
     } as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
-    expect(isCore).toEqual(true);
+    expect(isCore).toBe(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('not-a-core-module');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleNameMapper` alias a module same name with core module', () => {
@@ -78,21 +81,21 @@ describe('isCoreModule', () => {
       ],
     } as ResolverConfig);
     const isCore = resolver.isCoreModule('constants');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns true if using `node:` URLs and `moduleName` is a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:assert');
-    expect(isCore).toEqual(true);
+    expect(isCore).toBe(true);
   });
 
   it('returns false if using `node:` URLs and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:not-a-core-module');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 });
 
@@ -131,7 +134,7 @@ describe('findNodeModule', () => {
   });
 
   it('wraps passed packageFilter to the resolve module when using the default resolver', () => {
-    const packageFilter = jest.fn();
+    const packageFilter = jest.fn<PackageFilter>();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
     mockUserResolver.mockImplementation((request, opts) =>
@@ -298,7 +301,7 @@ describe('findNodeModule', () => {
         conditions: [],
       });
 
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
     });
 
     test('fails if own pkg.json with no exports', () => {
@@ -310,7 +313,7 @@ describe('findNodeModule', () => {
         conditions: [],
       });
 
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
     });
   });
 });
@@ -350,7 +353,7 @@ describe('findNodeModuleAsync', () => {
   });
 
   it('passes packageFilter to the resolve module when using the default resolver', async () => {
-    const packageFilter = jest.fn();
+    const packageFilter = jest.fn<PackageFilter>();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
     mockUserResolverAsync.async.mockImplementation((request, opts) =>
@@ -652,7 +655,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
     jest.doMock('graceful-fs', () => ({
-      ...jest.requireActual('graceful-fs'),
+      ...jest.requireActual<typeof import('graceful-fs')>('graceful-fs'),
       realPathSync: {
         native: (dirInput: string) => dirInput,
       },

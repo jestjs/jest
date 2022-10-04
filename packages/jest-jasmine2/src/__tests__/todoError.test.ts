@@ -11,17 +11,17 @@ describe('test/it.todo error throwing', () => {
     expect(() => {
       // @ts-expect-error
       it.todo();
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
   it('it throws error when given more than one argument', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       it.todo('test1', () => {});
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
   it('it throws error when given none string description', () => {
     expect(() => {
-      // @ts-expect-error
       it.todo(() => {});
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
 });

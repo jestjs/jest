@@ -7,7 +7,7 @@
 
 /* eslint-disable no-eval */
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import prompts from 'prompts';
 import {constants} from 'jest-config';
 import init from '../';
@@ -149,7 +149,7 @@ describe('init', () => {
         const writtenPackageJson = fs.writeFileSync.mock.calls[0][1];
 
         expect(writtenPackageJson).toMatchSnapshot();
-        expect(JSON.parse(writtenPackageJson).scripts.test).toEqual('jest');
+        expect(JSON.parse(writtenPackageJson).scripts.test).toBe('jest');
       });
     });
   });

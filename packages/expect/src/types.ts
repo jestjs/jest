@@ -94,9 +94,9 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void, T> &
-    Inverse<Matchers<void, T>> &
-    PromiseMatchers<T>;
+  <T = unknown>(actual: T): Matchers<void> &
+    Inverse<Matchers<void>> &
+    PromiseMatchers;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
@@ -118,38 +118,36 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type PromiseMatchers<T = unknown> = {
+type PromiseMatchers = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
-type EnsureFunctionLike<T> = T extends (...args: any) => any ? T : never;
-
-export interface Matchers<R extends void | Promise<void>, T = unknown> {
+export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  lastCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  lastReturnedWith(expected: unknown): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: Parameters<EnsureFunctionLike<T>>): R;
+  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(nth: number, expected: ReturnType<EnsureFunctionLike<T>>): R;
+  nthReturnedWith(nth: number, expected: unknown): R;
   /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
@@ -166,7 +164,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toBeCalledWith(...expected: Array<unknown>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -249,25 +247,22 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toHaveBeenCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(
-    nth: number,
-    ...expected: Parameters<EnsureFunctionLike<T>>
-  ): R;
+  toHaveBeenNthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: Parameters<EnsureFunctionLike<T>>): R;
+  toHaveBeenLastCalledWith(...expected: Array<unknown>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toHaveLastReturnedWith(expected: unknown): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -278,10 +273,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(
-    nth: number,
-    expected: ReturnType<EnsureFunctionLike<T>>,
-  ): R;
+  toHaveNthReturnedWith(nth: number, expected: unknown): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -311,7 +303,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toHaveReturnedWith(expected: unknown): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -333,7 +325,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(expected: ReturnType<EnsureFunctionLike<T>>): R;
+  toReturnWith(expected: unknown): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */
