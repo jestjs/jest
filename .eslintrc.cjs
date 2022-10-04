@@ -173,6 +173,25 @@ module.exports = {
       },
     },
 
+    {
+      files: ['e2e/__tests__/*'],
+      rules: {
+        'jest/no-restricted-jest-methods': [
+          'error',
+          {
+            fn: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            mock: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            doMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            setMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            spyOn:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+          },
+        ],
+      },
+    },
+
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['**/*.md/**'],
