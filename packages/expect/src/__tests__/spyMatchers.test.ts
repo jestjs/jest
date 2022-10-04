@@ -999,6 +999,14 @@ describe.each([
     );
   }
 
+  function isLast(
+    returnedWith: string,
+  ): returnedWith is 'lastReturnedWith' | 'toHaveLastReturnedWith' {
+    return (
+      returnedWith === 'lastReturnedWith' ||
+      returnedWith === 'toHaveLastReturnedWith'
+    );
+  }
   test('works only on spies or jest.fn', () => {
     const fn = function fn() {};
 
@@ -1440,7 +1448,7 @@ describe.each([
     });
   }
 
-  if (!isNth(returnedWith)) {
+  if (isLast(returnedWith)) {
     describe('lastReturnedWith', () => {
       test('works with three calls', () => {
         const fn = jest.fn<() => string>();
