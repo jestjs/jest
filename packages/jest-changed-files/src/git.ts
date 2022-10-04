@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {types} from 'util';
 import execa = require('execa');
 import type {SCMAdapter} from './types';
 
@@ -19,7 +20,7 @@ const findChangedFilesUsingCommand = async (
   try {
     result = await execa('git', args, {cwd});
   } catch (e) {
-    if (e instanceof Error) {
+    if (types.isNativeError(e)) {
       const err = e as execa.ExecaError;
       // TODO: Should we keep the original `message`?
       err.message = err.stderr;
@@ -51,7 +52,7 @@ const adapter: SCMAdapter = {
         cwd,
       );
     }
-    if (changedSince != null) {
+    if (changedSince != null && changedSince.length > 0) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
           ['diff', '--name-only', `${changedSince}...HEAD`, '--'].concat(
