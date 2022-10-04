@@ -1023,7 +1023,12 @@ describe.each([
     ).toThrowErrorMatchingSnapshot();
   });
 
-  const basicReturnedWith = ['toHaveReturnedWith', 'toReturnWith'];
+  const basicReturnedWith = [
+    'toHaveLastReturnedWith',
+    'lastReturnedWith',
+    'toHaveReturnedWith',
+    'toReturnWith',
+  ];
   if (basicReturnedWith.indexOf(returnedWith) >= 0) {
     describe('returnedWith', () => {
       test('works with more calls than the limit', () => {
