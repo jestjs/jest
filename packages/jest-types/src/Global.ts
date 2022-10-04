@@ -56,42 +56,42 @@ export type EachTestFn<EachCallback extends TestCallback> = (
 ) => ReturnType<EachCallback>;
 
 interface Each<EachFn extends TestFn | BlockFn> {
+  // when the table is an array of object literals
   <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (arg: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
+  // when the table is an array of tuples
   <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (...args: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
-  <T extends readonly [unknown, ...Array<unknown>]>(table: T): (
-    name: string | NameLike,
-    fn: (...args: T) => ReturnType<EachFn>,
-    timeout?: number,
-  ) => void;
-
+  // when the table is an array of arrays
   <T extends ReadonlyArray<unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (...args: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
-  <T extends ReadonlyArray<unknown>>(table: T): (
+  // when the table is a tuple or array
+  <T>(table: ReadonlyArray<T>): (
     name: string | NameLike,
-    fn: (...args: T) => ReturnType<EachFn>,
+    fn: (arg: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
+  // when the table is a template literal
   <T = unknown>(strings: TemplateStringsArray, ...expressions: Array<T>): (
     name: string | NameLike,
     fn: (arg: Record<string, T>) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
+  // when the table is a template literal with a type argument
   <T extends Record<string, unknown>>(
     strings: TemplateStringsArray,
     ...expressions: Array<unknown>

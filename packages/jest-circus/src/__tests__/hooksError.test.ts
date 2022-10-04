@@ -5,31 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
 import circus from '../';
 
-describe.each([
-  'beforeEach',
-  'beforeAll',
-  'afterEach',
-  'afterAll',
-] as Array<Circus.HookType>)('%s hooks error throwing', fn => {
-  test.each([
-    ['String'],
-    [1],
-    [[]],
-    [{}],
-    [Symbol('hello')],
-    [true],
-    [null],
-    [undefined],
-  ])(
-    `${fn} throws an error when %p is provided as a first argument to it`,
-    el => {
-      expect(() => {
-        // @ts-expect-error: Testing runtime errors here
-        circus[fn](el);
-      }).toThrow('Invalid first argument. It must be a callback function.');
-    },
-  );
-});
+describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'] as const)(
+  '%s hooks error throwing',
+  fn => {
+    test.each([
+      ['String'],
+      [1],
+      [[]],
+      [{}],
+      [Symbol('hello')],
+      [true],
+      [null],
+      [undefined],
+    ])(
+      `${fn} throws an error when %p is provided as a first argument to it`,
+      el => {
+        expect(() => {
+          // @ts-expect-error: Testing runtime errors here
+          circus[fn](el);
+        }).toThrow('Invalid first argument. It must be a callback function.');
+      },
+    );
+  },
+);
