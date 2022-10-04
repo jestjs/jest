@@ -698,7 +698,7 @@ describe.each(['toReturn', 'toHaveReturned'] as const)('%s', returned => {
   });
 
   test('passes when at least one call does not throw', () => {
-    const fn = jest.fn(causeError => {
+    const fn = jest.fn((causeError: boolean) => {
       if (causeError) {
         throw new Error('Error!');
       }
@@ -893,7 +893,7 @@ describe.each(['toReturnTimes', 'toHaveReturnedTimes'] as const)(
     });
 
     test('calls that throw are not counted', () => {
-      const fn = jest.fn(causeError => {
+      const fn = jest.fn((causeError: boolean) => {
         if (causeError) {
           throw new Error('Error!');
         }
@@ -919,7 +919,7 @@ describe.each(['toReturnTimes', 'toHaveReturnedTimes'] as const)(
     });
 
     test('calls that throw undefined are not counted', () => {
-      const fn = jest.fn(causeError => {
+      const fn = jest.fn((causeError: boolean) => {
         if (causeError) {
           // eslint-disable-next-line no-throw-literal
           throw undefined;
