@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus, jest-cli, jest-config, @jest/core, @jest/types, @jest-util]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
 - `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
 - `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
 - `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
@@ -54,7 +55,6 @@
 ### Features
 
 - `[@jest/environment, jest-runtime]` Allow passing a generic type argument to `jest.createMockFromModule<T>()` method ([#13202](https://github.com/facebook/jest/pull/13202))
-- `[jest-circus, jest-cli, jest-config, @jest/core, @jest/types, @jest-util]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
 - `[expect]` Expose `ExpectationResult` type ([#13240](https://github.com/facebook/jest/pull/13240))
 - `[jest-snapshot]` Expose `Context` type ([#13240](https://github.com/facebook/jest/pull/13240))
 - `[@jest/globals]` Add `jest.Mock` type helper ([#13235](https://github.com/facebook/jest/pull/13235))
