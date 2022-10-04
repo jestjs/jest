@@ -9,11 +9,11 @@
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import jestExpect from '../';
+import importedExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
-jestExpect.extend({
+importedExpect.extend({
   toBeDivisibleBy(actual: number, expected: number) {
     const pass = actual % expected === 0;
     const message: () => string = pass
@@ -52,11 +52,6 @@ jestExpect.extend({
 });
 
 declare module '../types' {
-  interface AsymmetricMatchers {
-    toBeDivisibleBy(expected: number): void;
-    toBeSymbol(expected: symbol): void;
-    toBeWithinRange(floor: number, ceiling: number): void;
-  }
   interface Matchers<R> {
     toBeDivisibleBy(expected: number): R;
     toBeSymbol(expected: symbol): R;
@@ -68,6 +63,17 @@ declare module '../types' {
     toAllowOverridingExistingMatcher(): R;
   }
 }
+
+const jestExpect = importedExpect as typeof importedExpect & {
+  not: {
+    toBeDivisibleBy(expected: number): void;
+    toBeWithinRange(floor: number, ceiling: number): void;
+  };
+
+  toBeDivisibleBy(expected: number): void;
+  toBeSymbol(expected: symbol): void;
+  toBeWithinRange(floor: number, ceiling: number): void;
+};
 
 it('is available globally when matcher is unary', () => {
   jestExpect(15).toBeDivisibleBy(5);
