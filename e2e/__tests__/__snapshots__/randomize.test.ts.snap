@@ -25,276 +25,60 @@ exports[`works with each 1`] = `
 
 exports[`works with hooks 1`] = `
 "Seed is 123
-  console.log
-    This is before all
-
-      at Object.log (__tests__/hooks.test.js:2:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test4
-
-      at Object.log (__tests__/hooks.test.js:31:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test6
-
-      at Object.log (__tests__/hooks.test.js:39:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test5
-
-      at Object.log (__tests__/hooks.test.js:35:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test1
-
-      at Object.log (__tests__/hooks.test.js:18:11)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test11
-
-      at Object.log (__tests__/hooks.test.js:71:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test12
-
-      at Object.log (__tests__/hooks.test.js:75:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test14
-
-      at Object.log (__tests__/hooks.test.js:84:15)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test13
-
-      at Object.log (__tests__/hooks.test.js:80:15)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test15
-
-      at Object.log (__tests__/hooks.test.js:88:15)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    This is before each describe3
-
-      at Object.log (__tests__/hooks.test.js:63:13)
-
-  console.log
-    test10
-
-      at Object.log (__tests__/hooks.test.js:67:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test7
-
-      at Object.log (__tests__/hooks.test.js:49:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test8
-
-      at Object.log (__tests__/hooks.test.js:53:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test9
-
-      at Object.log (__tests__/hooks.test.js:57:13)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is after all describe2
-
-      at Object.log (__tests__/hooks.test.js:45:13)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test2
-
-      at Object.log (__tests__/hooks.test.js:22:11)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is before each
-
-      at Object.log (__tests__/hooks.test.js:6:11)
-
-  console.log
-    test3
-
-      at Object.log (__tests__/hooks.test.js:26:11)
-
-  console.log
-    This is after each
-
-      at Object.log (__tests__/hooks.test.js:10:11)
-
-  console.log
-    This is after all
-
-      at Object.log (__tests__/hooks.test.js:14:11)
-"
+This is before all
+This is before each
+test4
+This is after each
+This is before each
+test6
+This is after each
+This is before each
+test5
+This is after each
+This is before each
+test1
+This is after each
+This is before each
+This is before each describe3
+test11
+This is after each
+This is before each
+This is before each describe3
+test12
+This is after each
+This is before each
+This is before each describe3
+test14
+This is after each
+This is before each
+This is before each describe3
+test13
+This is after each
+This is before each
+This is before each describe3
+test15
+This is after each
+This is before each
+This is before each describe3
+test10
+This is after each
+This is before each
+test7
+This is after each
+This is before each
+test8
+This is after each
+This is before each
+test9
+This is after each
+This is after all describe2
+This is before each
+test2
+This is after each
+This is before each
+test3
+This is after each
+This is after all"
 `;
 
 exports[`works with passing tests 1`] = `
