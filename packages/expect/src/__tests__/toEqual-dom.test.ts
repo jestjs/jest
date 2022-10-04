@@ -11,8 +11,6 @@
 
 /* eslint-env browser*/
 
-export {};
-
 describe('toEqual', () => {
   describe('duck type', () => {
     // https://github.com/facebook/jest/issues/7786
