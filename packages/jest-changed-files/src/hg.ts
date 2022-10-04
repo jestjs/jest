@@ -17,9 +17,9 @@ const adapter: SCMAdapter = {
     const includePaths = options.includePaths ?? [];
 
     const args = ['status', '-amnu'];
-    if (options.withAncestor) {
+    if (options.withAncestor != null) {
       args.push('--rev', 'first(min(!public() & ::.)^+.^)');
-    } else if (options.changedSince) {
+    } else if (options.changedSince != null) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options.lastCommit === true) {
       args.push('--change', '.');
@@ -30,9 +30,12 @@ const adapter: SCMAdapter = {
 
     try {
       result = await execa('hg', args, {cwd, env});
-    } catch (e: any) {
-      // TODO: Should we keep the original `message`?
-      e.message = e.stderr;
+    } catch (e) {
+      if (e instanceof Error) {
+        const err = e as execa.ExecaError;
+        // TODO: Should we keep the original `message`?
+        err.message = err.stderr;
+      }
 
       throw e;
     }
