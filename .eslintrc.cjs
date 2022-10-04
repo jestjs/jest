@@ -180,7 +180,6 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'off',
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
-        'arrow-body-style': 'off',
         'consistent-return': 'off',
         'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
@@ -189,7 +188,6 @@ module.exports = {
         'no-console': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
-        'prettier/prettier': 'off',
         'sort-keys': 'off',
       },
     },
@@ -197,6 +195,14 @@ module.exports = {
       files: ['**/UsingMatchers.md/**'],
       rules: {
         'jest/prefer-to-be': 'off',
+      },
+    },
+    {
+      files: [
+        '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
+      ],
+      rules: {
+        'jest/valid-expect': 'off',
       },
     },
 
