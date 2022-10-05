@@ -3,6 +3,5 @@
   "compilerOptions": {
     "rootDir": "../"
   },
-  "include": ["../**/*"],
-  "references": [{"path": "../../../jest-expect"}]
+  "include": ["../**/*"]
 }
