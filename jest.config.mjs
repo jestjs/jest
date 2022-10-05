@@ -51,6 +51,7 @@ export default {
     '/e2e/multi-project-babel',
     '\\.snap$',
     '/packages/.*/build',
+    '/packages/.*/src/__tests__/expect.d.ts',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
     '/packages/jest-core/src/__tests__/test_root',
     '/packages/jest-core/src/__tests__/__fixtures__/',
