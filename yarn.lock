@@ -9505,7 +9505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.4.0":
+"espree@npm:^9.0.0, espree@npm:^9.4.0":
   version: 9.4.0
   resolution: "espree@npm:9.4.0"
   dependencies:
@@ -13520,6 +13520,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsdoc-type-pratt-parser@npm:~3.1.0":
+  version: 3.1.0
+  resolution: "jsdoc-type-pratt-parser@npm:3.1.0"
+  checksum: 2f437b57621f1e481918165f6cf0e48256628a9e510d8b3f88a2ab667bf2128bf8b94c628b57c43e78f555ca61983e9c282814703840dc091d2623992214a061
+  languageName: node
+  linkType: hard
+
 "jsdoc@npm:^3.6.3":
   version: 3.6.11
   resolution: "jsdoc@npm:3.6.11"
@@ -13542,13 +13549,6 @@ __metadata:
   bin:
     jsdoc: jsdoc.js
   checksum: 7920b5cba6200c8f56c9ac2ac5e89d06b6581dd1ce22e66976409fad8b68c16bfd8cd30fe9af58baeacc9f6bd9ba06d901ca4f5e234944f42a3c37e55e4ddcf0
-  languageName: node
-  linkType: hard
-
-"jsdoc-type-pratt-parser@npm:~3.1.0":
-  version: 3.1.0
-  resolution: "jsdoc-type-pratt-parser@npm:3.1.0"
-  checksum: 2f437b57621f1e481918165f6cf0e48256628a9e510d8b3f88a2ab667bf2128bf8b94c628b57c43e78f555ca61983e9c282814703840dc091d2623992214a061
   languageName: node
   linkType: hard
 
