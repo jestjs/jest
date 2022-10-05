@@ -26,6 +26,7 @@ const packagesToTest = [
   'babel-jest',
   'babel-plugin-jest-hoist',
   'diff-sequences',
+  'jest-changed-files',
   'jest-docblock',
   'jest-environment',
   'jest-globals',
