@@ -16,7 +16,7 @@ import {isError} from '../utils';
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/test/AngularSpec.js#L1883
 describe('isError', () => {
   function testErrorFromDifferentContext(
-    createError: (win: Window) => Error | null,
+    createError: (win: Window | typeof globalThis) => Error | null,
   ) {
     const iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
@@ -46,17 +46,19 @@ describe('isError', () => {
   });
 
   it('should detect errors from another context', () => {
-    // @ts-expect-error: Property 'Error' does not exist on type 'Window'
-    testErrorFromDifferentContext(win => new win.Error());
+    testErrorFromDifferentContext(
+      win => new (win as typeof globalThis).Error(),
+    );
   });
 
   it('should detect DOMException errors from another context', () => {
     testErrorFromDifferentContext(win => {
       try {
         win.document.querySelectorAll('');
-      } catch (e: any) {
-        return e;
+      } catch (e) {
+        return e as Error;
       }
+
       return null;
     });
   });
