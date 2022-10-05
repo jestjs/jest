@@ -7,7 +7,7 @@
 
 import type {Global} from '@jest/types';
 
-// Aliases of `it` and `test` to avoid conflict with global testing APIs.
+// Aliases of `it` and `test` to avoid collision with global testing APIs.
 let circusIt: Global.It;
 let circusTest: Global.It;
 
