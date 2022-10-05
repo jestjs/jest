@@ -1261,12 +1261,10 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow('Cannot read prop');
+      }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow(
-        'Cannot spy the method property because it is not a function; undefined given instead',
-      );
+      }).toThrow('method property does not exist');
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(
@@ -1431,12 +1429,10 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow('Cannot read prop');
+      }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow(
-        'Cannot spy the method property because it is not a function; undefined given instead',
-      );
+      }).toThrow('method property does not exist');
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(
