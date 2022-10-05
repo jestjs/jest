@@ -10,6 +10,7 @@
     "@babel/preset-typescript": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@crowdin/cli": "^3.5.2",
+    "@google-cloud/datastore": "^7.0.0",
     "@jest/globals": "workspace:^",
     "@jest/test-utils": "workspace:^",
     "@lerna-lite/cli": "^1.11.3",
