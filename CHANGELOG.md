@@ -2,12 +2,43 @@
 
 ### Features
 
-- `[expect, @jest/expect]` support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
+- `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
+- `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
+- `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
+
+### Fixes
+
+- `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
+- `[@jest/types]` Infer type of `each` table correctly when the table is a tuple or array ([#13381](https://github.com/facebook/jest/pull/13381))
+- `[@jest/types]` Rework typings to allow the `*ReturnedWith` matchers to be called with no argument ([#13385](https://github.com/facebook/jest/pull/13385))
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.1.2
+
+### Fixes
+
+- `[expect, @jest/expect]` Revert buggy inference of argument types for `*CalledWith` and `*ReturnedWith` matchers introduced in 29.1.0 ([#13339](https://github.com/facebook/jest/pull/13339))
+- `[jest-worker]` Add missing dependency on `jest-util` ([#13341](https://github.com/facebook/jest/pull/13341))
+
+## 29.1.1
+
+### Fixes
+
+- `[jest-mock]` Revert [#13145](https://github.com/facebook/jest/pull/13145) which broke mocking of transpiled ES modules
+
+## 29.1.0
+
+### Features
+
+- `[expect, @jest/expect]` Support type inference for function parameters in `CalledWith` assertions ([#13268](https://github.com/facebook/jest/pull/13268))
 - `[expect, @jest/expect]` Infer type of `*ReturnedWith` matchers argument ([#13278](https://github.com/facebook/jest/pull/13278))
 - `[@jest/environment, jest-runtime]` Allow `jest.requireActual` and `jest.requireMock` to take a type argument ([#13253](https://github.com/facebook/jest/pull/13253))
 - `[@jest/environment]` Allow `jest.mock` and `jest.doMock` to take a type argument ([#13254](https://github.com/facebook/jest/pull/13254))
-- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [13246](https://github.com/facebook/jest/pull/13246))
-- `[@jest/mock]` Add `withImplementation` method for temporarily overriding a mock.
+- `[@jest/fake-timers]` Add `jest.now()` to return the current fake clock time ([#13244](https://github.com/facebook/jest/pull/13244), [#13246](https://github.com/facebook/jest/pull/13246))
+- `[@jest/mock]` Add `withImplementation` method for temporarily overriding a mock ([#13281](https://github.com/facebook/jest/pull/13281))
 - `[expect]` Export `toThrow*` matchers ([#13328](https://github.com/facebook/jest/pull/13328))
 
 ### Fixes
@@ -17,10 +48,8 @@
 - `[jest-mock]` Improve `spyOn` typings to handle optional properties ([#13247](https://github.com/facebook/jest/pull/13247))
 - `[jest-mock]` Fix mocking of getters and setters on classes ([#13145](https://github.com/facebook/jest/pull/13145))
 - `[jest-snapshot]` Throw useful error when an array is passed as property matchers ([#13263](https://github.com/facebook/jest/pull/13263))
-
-### Chore & Maintenance
-
-### Performance
+- `[jest-snapshot]` Prioritize parser used in the project ([#13323](https://github.com/facebook/jest/pull/13323))
+- `[jest-transform]` Attempt to work around issues with atomic writes on Windows ([#11423](https://github.com/facebook/jest/pull/11423))
 
 ## 29.0.3
 

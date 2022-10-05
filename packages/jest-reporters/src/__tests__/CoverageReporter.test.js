@@ -22,7 +22,7 @@ let libSourceMaps;
 let CoverageReporter;
 let istanbulReports;
 
-import path from 'path';
+import * as path from 'path';
 import mock from 'mock-fs';
 
 beforeEach(() => {

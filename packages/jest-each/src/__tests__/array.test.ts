@@ -12,7 +12,7 @@ import each from '../';
 const noop = () => {};
 const expectFunction = expect.any(Function);
 
-const get = (object, lensPath) =>
+const get = <T>(object: T, lensPath: Array<string>): T =>
   lensPath.reduce((acc, key) => acc[key], object);
 
 const getGlobalTestMocks = () => {
@@ -450,8 +450,9 @@ describe('jest-each', () => {
         const testFunction = get(eachObject, keyPath);
         testFunction('expected string', function (hello, done) {
           expect(hello).toBe('hello');
-          expect(arguments.length).toBe(1);
-          expect(done).toBe(undefined);
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
+          expect(done).toBeUndefined();
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

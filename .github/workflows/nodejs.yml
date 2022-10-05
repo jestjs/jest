@@ -50,6 +50,12 @@ jobs:
         run: yarn test-ts --selectProjects type-tests
       - name: verify TypeScript@4.3 compatibility
         run: yarn verify-old-ts
+      - name: typecheck examples
+        run: yarn typecheck:examples
+      - name: typecheck tests
+        run: yarn typecheck:tests
+      - name: run ESLint with type info
+        run: yarn lint-ts-files
 
   lint:
     name: Lint

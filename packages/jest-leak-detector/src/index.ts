@@ -16,7 +16,7 @@ const tick = promisify(setImmediate);
 
 export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
-  private _finalizationRegistry?: FinalizationRegistry<undefined>;
+  private readonly _finalizationRegistry?: FinalizationRegistry<undefined>;
 
   constructor(value: unknown) {
     if (isPrimitive(value)) {

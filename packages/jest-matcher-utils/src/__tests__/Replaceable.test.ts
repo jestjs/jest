@@ -39,7 +39,8 @@ describe('Replaceable', () => {
 
     test('init with other type should throw error', () => {
       expect(() => {
-        const replaceable = new Replaceable(new Date());
+        // eslint-disable-next-line no-new
+        new Replaceable(new Date());
       }).toThrow('Type date is not support in Replaceable!');
     });
   });

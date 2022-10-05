@@ -59,13 +59,13 @@ it('checks that process.env works as expected on Linux platforms', () => {
   expect(fake.PROP_UNDEFINED).toBe('undefined');
 
   // Mac and Linux are case sensitive.
-  expect(fake.PROP_string).toBe(undefined);
+  expect(fake.PROP_string).toBeUndefined();
 
   // Added properties to the fake object are not added to the real one.
   fake.PROP_ADDED = 'new!';
 
   expect(fake.PROP_ADDED).toBe('new!');
-  expect(process.env.PROP_ADDED).toBe(undefined);
+  expect(process.env.PROP_ADDED).toBeUndefined();
 
   // You can delete properties, but they are case sensitive!
   fake.prop = 'foo';
@@ -77,7 +77,7 @@ it('checks that process.env works as expected on Linux platforms', () => {
   delete fake.PROP;
 
   expect(fake.prop).toBe('foo');
-  expect(fake.PROP).toBe(undefined);
+  expect(fake.PROP).toBeUndefined();
 });
 
 it('checks that process.env works as expected in Windows platforms', () => {

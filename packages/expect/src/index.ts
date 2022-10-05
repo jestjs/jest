@@ -39,7 +39,6 @@ import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
 import type {
-  AsyncExpectationResult,
   Expect,
   ExpectationResult,
   MatcherContext,
@@ -363,19 +362,16 @@ const makeThrowingMatcher = (
             })();
 
       if (isPromise(potentialResult)) {
-        const asyncResult = potentialResult as AsyncExpectationResult;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
         }
 
-        return asyncResult
+        return potentialResult
           .then(aResult => processResult(aResult, asyncError))
           .catch(handleError);
       } else {
-        const syncResult = potentialResult as SyncExpectationResult;
-
-        return processResult(syncResult);
+        return processResult(potentialResult);
       }
     } catch (error: any) {
       return handleError(error);

@@ -32,7 +32,7 @@ export default class ExperimentalWorker
   implements WorkerInterface
 {
   private _worker!: Worker;
-  private _options: WorkerOptions;
+  private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
   private _retries!: number;
@@ -45,10 +45,10 @@ export default class ExperimentalWorker
   private _memoryUsagePromise: Promise<number> | undefined;
   private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
 
-  private _childWorkerPath: string;
+  private readonly _childWorkerPath: string;
 
   private _childIdleMemoryUsage: number | null;
-  private _childIdleMemoryUsageLimit: number | null;
+  private readonly _childIdleMemoryUsageLimit: number | null;
   private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {

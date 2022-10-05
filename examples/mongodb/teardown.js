@@ -1,7 +1,5 @@
-// teardown.js
-const path = require('path');
-
-const fs = require('fs');
+import * as fs from 'fs';
+import * as path from 'path';
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 

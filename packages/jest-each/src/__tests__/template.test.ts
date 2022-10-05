@@ -6,36 +6,41 @@
  *
  */
 
+import type {Global} from '@jest/types';
 import each from '../';
 
 const noop = () => {};
 const expectFunction = expect.any(Function);
 
-const get = (object, lensPath) =>
+const get = <T>(
+  object: T,
+  lensPath: Array<string>,
+): ((...args: Array<unknown>) => unknown) =>
   lensPath.reduce((acc, key) => acc[key], object);
 
-const getGlobalTestMocks = () => {
-  const globals: any = {
-    describe: jest.fn(),
-    fdescribe: jest.fn(),
-    fit: jest.fn(),
-    it: jest.fn(),
-    test: jest.fn(),
-    xdescribe: jest.fn(),
-    xit: jest.fn(),
-    xtest: jest.fn(),
+const getGlobalTestMocks =
+  (): jest.MockedObject<Global.TestFrameworkGlobals> => {
+    const globals: any = {
+      describe: jest.fn(),
+      fdescribe: jest.fn(),
+      fit: jest.fn(),
+      it: jest.fn(),
+      test: jest.fn(),
+      xdescribe: jest.fn(),
+      xit: jest.fn(),
+      xtest: jest.fn(),
+    };
+    globals.test.only = jest.fn();
+    globals.test.skip = jest.fn();
+    globals.test.concurrent = jest.fn();
+    globals.test.concurrent.only = jest.fn();
+    globals.test.concurrent.skip = jest.fn();
+    globals.it.only = jest.fn();
+    globals.it.skip = jest.fn();
+    globals.describe.only = jest.fn();
+    globals.describe.skip = jest.fn();
+    return globals;
   };
-  globals.test.only = jest.fn();
-  globals.test.skip = jest.fn();
-  globals.test.concurrent = jest.fn();
-  globals.test.concurrent.only = jest.fn();
-  globals.test.concurrent.skip = jest.fn();
-  globals.it.only = jest.fn();
-  globals.it.skip = jest.fn();
-  globals.describe.only = jest.fn();
-  globals.describe.skip = jest.fn();
-  return globals;
-};
 
 describe('jest-each', () => {
   [
@@ -65,7 +70,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -82,7 +87,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           b: 1,
           expected: 2,
@@ -103,7 +108,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -120,7 +125,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           a: 1,
           expected: 2,
@@ -141,7 +146,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -158,7 +163,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           '(๑ఠ‿ఠ๑)＜expected': 2,
           a: 1,
@@ -241,7 +246,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -259,7 +264,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -278,7 +283,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -293,7 +298,7 @@ describe('jest-each', () => {
         const globalMock = get(globalTestMocks, keyPath);
 
         expect(() =>
-          globalMock.mock.calls[0][1](),
+          jest.mocked(globalMock).mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
       });
@@ -443,11 +448,11 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        globalMock.mock.calls[0][1]();
+        jest.mocked(globalMock).mock.calls[0][1]();
         expect(testCallBack).toHaveBeenCalledTimes(1);
         expect(testCallBack).toHaveBeenCalledWith({a: 0, b: 1, expected: 1});
 
-        globalMock.mock.calls[1][1]();
+        jest.mocked(globalMock).mock.calls[1][1]();
         expect(testCallBack).toHaveBeenCalledTimes(2);
         expect(testCallBack).toHaveBeenCalledWith({a: 1, b: 1, expected: 2});
       });
@@ -537,8 +542,9 @@ describe('jest-each', () => {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);
-          expect(done).toBe(undefined);
-          expect(arguments.length).toBe(1);
+          expect(done).toBeUndefined();
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

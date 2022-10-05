@@ -6,6 +6,9 @@
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
 
 import prettyFormat, {plugins} from '../';
@@ -18,7 +21,7 @@ setPrettyPrint([DOMElement]);
 describe('pretty-format', () => {
   // Test is not related to plugin but is related to jsdom testing environment.
   it('prints global window as constructor name alone', () => {
-    expect(prettyFormat(window)).toEqual('[Window]');
+    expect(prettyFormat(window)).toBe('[Window]');
   });
 });
 

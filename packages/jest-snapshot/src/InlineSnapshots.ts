@@ -297,14 +297,15 @@ const runPrettier = (
     ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
     : null;
 
-  // Detect the parser for the test file.
+  // Prioritize parser found in the project config.
+  // If not found detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
   // @ts-expect-error - `inferredParser` is `string`
   const inferredParser: PrettierParserName | null | undefined =
-    prettier.getFileInfo
+    (config && typeof config.parser === 'string' && config.parser) ||
+    (prettier.getFileInfo
       ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-      : (config && typeof config.parser === 'string' && config.parser) ||
-        simpleDetectParser(sourceFilePath);
+      : simpleDetectParser(sourceFilePath));
 
   if (!inferredParser) {
     throw new Error(

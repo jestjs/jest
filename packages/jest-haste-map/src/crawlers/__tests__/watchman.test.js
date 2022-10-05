@@ -139,16 +139,16 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     const calls = client.command.mock.calls;
 
-    expect(client.on).toBeCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalled();
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // Call 0 and 1 are for ['watch-project']
-    expect(calls[0][0][0]).toEqual('watch-project');
-    expect(calls[1][0][0]).toEqual('watch-project');
+    expect(calls[0][0][0]).toBe('watch-project');
+    expect(calls[1][0][0]).toBe('watch-project');
 
     // Call 2 is the query
     const query = calls[2][0];
-    expect(query[0]).toEqual('query');
+    expect(query[0]).toBe('query');
 
     expect(query[2].expression).toEqual([
       'allof',
@@ -172,13 +172,13 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     expect(hasteMap.files).toEqual(mockFiles);
 
     expect(removedFiles).toEqual(new Map());
 
-    expect(client.end).toBeCalled();
+    expect(client.end).toHaveBeenCalled();
   });
 
   test('updates file map and removedFiles when the clock is given', async () => {
@@ -326,7 +326,7 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     // strawberry and melon removed from the file list.
     expect(hasteMap.files).toEqual(
@@ -420,7 +420,7 @@ describe('watchman watch', () => {
       }),
     );
 
-    expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toBeUndefined();
 
     expect(hasteMap.files).toEqual(
       createMap({
@@ -481,17 +481,17 @@ describe('watchman watch', () => {
     const client = watchman.Client.mock.instances[0];
     const calls = client.command.mock.calls;
 
-    expect(client.on).toBeCalled();
-    expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toHaveBeenCalled();
+    expect(client.on).toHaveBeenCalledWith('error', expect.any(Function));
 
     // First 3 calls are for ['watch-project']
-    expect(calls[0][0][0]).toEqual('watch-project');
-    expect(calls[1][0][0]).toEqual('watch-project');
-    expect(calls[2][0][0]).toEqual('watch-project');
+    expect(calls[0][0][0]).toBe('watch-project');
+    expect(calls[1][0][0]).toBe('watch-project');
+    expect(calls[2][0][0]).toBe('watch-project');
 
     // Call 4 is the query
     const query = calls[3][0];
-    expect(query[0]).toEqual('query');
+    expect(query[0]).toBe('query');
 
     expect(query[2].expression).toEqual([
       'allof',
@@ -515,7 +515,7 @@ describe('watchman watch', () => {
 
     expect(removedFiles).toEqual(new Map());
 
-    expect(client.end).toBeCalled();
+    expect(client.end).toHaveBeenCalled();
   });
 
   test('SHA-1 requested and available', async () => {

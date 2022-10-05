@@ -97,7 +97,7 @@ it('passes workerId to the child process and assign it to 1-indexed env.JEST_WOR
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls[0][2].env.JEST_WORKER_ID).toEqual('3');
+  expect(childProcess.fork.mock.calls[0][2].env.JEST_WORKER_ID).toBe('3');
 });
 
 it('initializes the child process with the given workerPath', () => {
@@ -137,11 +137,11 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   forkInterface.emit('exit', 1);
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
-  expect(onProcessStart).toBeCalledWith(worker);
+  expect(onProcessStart).toHaveBeenCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');
-  expect(onProcessEnd.mock.calls[0][1]).toBe(null);
+  expect(onProcessEnd.mock.calls[0][1]).toBeNull();
 });
 
 it('provides stdout and stderr from the child processes', async () => {
@@ -161,8 +161,8 @@ it('provides stdout and stderr from the child processes', async () => {
   forkInterface.stderr.end('Workers!', 'utf8');
   forkInterface.emit('exit', 0);
 
-  await expect(getStream(stdout)).resolves.toEqual('Hello World!');
-  await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');
+  await expect(getStream(stdout)).resolves.toBe('Hello World!');
+  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
 });
 
 it('sends the task to the child process', () => {

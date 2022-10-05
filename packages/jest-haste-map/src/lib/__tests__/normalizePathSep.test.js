@@ -12,13 +12,13 @@ describe('normalizePathSep', () => {
     jest.resetModules();
     jest.mock('path', () => jest.requireActual('path').posix);
     const normalizePathSep = require('../normalizePathSep').default;
-    expect(normalizePathSep('foo/bar/baz.js')).toEqual('foo/bar/baz.js');
+    expect(normalizePathSep('foo/bar/baz.js')).toBe('foo/bar/baz.js');
   });
 
   it('replace slashes on windows', () => {
     jest.resetModules();
     jest.mock('path', () => jest.requireActual('path').win32);
     const normalizePathSep = require('../normalizePathSep').default;
-    expect(normalizePathSep('foo/bar/baz.js')).toEqual('foo\\bar\\baz.js');
+    expect(normalizePathSep('foo/bar/baz.js')).toBe('foo\\bar\\baz.js');
   });
 });

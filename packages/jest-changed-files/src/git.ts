@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {types} from 'util';
 import execa = require('execa');
 import type {SCMAdapter} from './types';
 
@@ -18,9 +19,12 @@ const findChangedFilesUsingCommand = async (
 
   try {
     result = await execa('git', args, {cwd});
-  } catch (e: any) {
-    // TODO: Should we keep the original `message`?
-    e.message = e.stderr;
+  } catch (e) {
+    if (types.isNativeError(e)) {
+      const err = e as execa.ExecaError;
+      // TODO: Should we keep the original `message`?
+      err.message = err.stderr;
+    }
 
     throw e;
   }
@@ -33,13 +37,14 @@ const findChangedFilesUsingCommand = async (
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const changedSince = options.withAncestor ? 'HEAD^' : options.changedSince;
+    const changedSince =
+      options.withAncestor === true ? 'HEAD^' : options.changedSince;
 
     const includePaths = (options.includePaths ?? []).map(absoluteRoot =>
       path.normalize(path.relative(cwd, absoluteRoot)),
     );
 
-    if (options.lastCommit) {
+    if (options.lastCommit === true) {
       return findChangedFilesUsingCommand(
         ['show', '--name-only', '--pretty=format:', 'HEAD', '--'].concat(
           includePaths,
@@ -47,7 +52,7 @@ const adapter: SCMAdapter = {
         cwd,
       );
     }
-    if (changedSince) {
+    if (changedSince != null && changedSince.length > 0) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
           ['diff', '--name-only', `${changedSince}...HEAD`, '--'].concat(

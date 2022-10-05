@@ -6,7 +6,7 @@
  */
 
 import {tmpdir} from 'os';
-import path from 'path';
+import * as path from 'path';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createScriptTransformer} from '@jest/transform';
 import NodeEnvironment from 'jest-environment-node';

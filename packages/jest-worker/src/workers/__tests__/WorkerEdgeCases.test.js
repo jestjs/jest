@@ -54,7 +54,7 @@ afterAll(async () => {
 test.each(filesToBuild)('%s.js should exist', async file => {
   const path = join(writeDestination, `${file}.js`);
 
-  await expect(async () => await access(path)).not.toThrowError();
+  await expect(async () => await access(path)).not.toThrow();
 });
 
 async function closeWorkerAfter(worker, testBody) {
@@ -317,7 +317,7 @@ describe.each([
     test('worker stays dead', async () => {
       await expect(
         async () => await worker.waitForWorkerReady(),
-      ).rejects.toThrowError();
+      ).rejects.toThrow('Worker state means it will never be ready: shut-down');
       expect(worker.isWorkerRunning()).toBeFalsy();
     });
 
@@ -376,7 +376,7 @@ describe.each([
       // Give it some time to restart some workers
       await new Promise(resolve => setTimeout(resolve, 4000));
 
-      expect(startedWorkers).toEqual(6);
+      expect(startedWorkers).toBe(6);
 
       expect(worker.isWorkerRunning()).toBeTruthy();
       expect(worker.state).toEqual(WorkerStates.OK);
@@ -385,7 +385,9 @@ describe.each([
     test('processes exits', async () => {
       worker.forceExit();
 
-      await expect(() => worker.waitForWorkerReady()).rejects.toThrowError();
+      await expect(() => worker.waitForWorkerReady()).rejects.toThrow(
+        'Worker state means it will never be ready: shutting-down',
+      );
     });
   });
 });

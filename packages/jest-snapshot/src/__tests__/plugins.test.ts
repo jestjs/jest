@@ -22,7 +22,7 @@ const testPath = (names: Array<string>) => {
     .forEach(serializer => addSerializer(serializer));
 
   const next = getSerializers();
-  expect(next.length).toBe(added.length + prev.length);
+  expect(next).toHaveLength(added.length + prev.length);
   expect(next).toEqual(added.concat(prev));
 };
 

@@ -217,7 +217,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
-  private _console: Console;
+  private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
@@ -797,7 +797,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     try {
-      return crawl(crawlerOptions).catch(retry);
+      return await crawl(crawlerOptions);
     } catch (error: any) {
       return retry(error);
     }

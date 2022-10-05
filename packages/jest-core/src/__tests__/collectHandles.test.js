@@ -6,7 +6,7 @@
  *
  */
 
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';

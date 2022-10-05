@@ -231,9 +231,7 @@ matchers.forEach(toThrow => {
       // Received message in report if object has message property.
       class ErrorMessage {
         // not extending Error!
-        constructor(message) {
-          this.message = message;
-        }
+        constructor(public message: string) {}
       }
       const expected = new ErrorMessage('apple');
 
@@ -460,9 +458,9 @@ matchers.forEach(toThrow => {
           err = new Err('async apple');
         }
         if (resolve) {
-          return await Promise.resolve(err || 'apple');
+          return Promise.resolve(err || 'apple');
         } else {
-          return await Promise.reject(err || 'apple');
+          return Promise.reject(err || 'apple');
         }
       };
 

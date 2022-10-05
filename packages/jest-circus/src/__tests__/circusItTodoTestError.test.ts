@@ -24,17 +24,17 @@ describe('test/it.todo error throwing', () => {
     expect(() => {
       // @ts-expect-error: Testing runtime errors here
       circusIt.todo();
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
   it('todo throws error when given more than one argument', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime errors here
       circusIt.todo('test1', () => {});
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
   it('todo throws error when given none string description', () => {
     expect(() => {
-      // @ts-expect-error: Testing runtime errors here
       circusIt.todo(() => {});
-    }).toThrowError('Todo must be called with only a description.');
+    }).toThrow('Todo must be called with only a description.');
   });
 });

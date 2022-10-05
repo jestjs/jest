@@ -6,16 +6,16 @@
  *
  */
 
-import assert from 'assert';
+import * as assert from 'assert';
 import fc from 'fast-check';
-import expect from '..';
+import expect from '../';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
 
 describe('toStrictEqual', () => {
-  const safeExpectStrictEqual = (a, b) => {
+  const safeExpectStrictEqual = (a: unknown, b: unknown) => {
     try {
       expect(a).toStrictEqual(b);
       return true;
@@ -23,7 +23,7 @@ describe('toStrictEqual', () => {
       return false;
     }
   };
-  const safeAssertDeepStrictEqual = (a, b) => {
+  const safeAssertDeepStrictEqual = (a: unknown, b: unknown) => {
     try {
       assert.deepStrictEqual(a, b);
       return true;

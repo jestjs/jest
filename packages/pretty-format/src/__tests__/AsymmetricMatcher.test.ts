@@ -37,7 +37,7 @@ beforeEach(() => {
 ].forEach(type => {
   test(`supports any(${fnNameFor(type)})`, () => {
     const result = prettyFormat(expect.any(type), options);
-    expect(result).toEqual(`Any<${fnNameFor(type)}>`);
+    expect(result).toBe(`Any<${fnNameFor(type)}>`);
   });
 
   test(`supports nested any(${fnNameFor(type)})`, () => {
@@ -49,7 +49,7 @@ beforeEach(() => {
       },
       options,
     );
-    expect(result).toEqual(
+    expect(result).toBe(
       `Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(
         type,
       )}>,\n  },\n}`,
@@ -59,12 +59,12 @@ beforeEach(() => {
 
 test('anything()', () => {
   const result = prettyFormat(expect.anything(), options);
-  expect(result).toEqual('Anything');
+  expect(result).toBe('Anything');
 });
 
 test('arrayContaining()', () => {
   const result = prettyFormat(expect.arrayContaining([1, 2]), options);
-  expect(result).toEqual(`ArrayContaining [
+  expect(result).toBe(`ArrayContaining [
   1,
   2,
 ]`);
@@ -72,7 +72,7 @@ test('arrayContaining()', () => {
 
 test('arrayNotContaining()', () => {
   const result = prettyFormat(expect.not.arrayContaining([1, 2]), options);
-  expect(result).toEqual(`ArrayNotContaining [
+  expect(result).toBe(`ArrayNotContaining [
   1,
   2,
 ]`);
@@ -80,7 +80,7 @@ test('arrayNotContaining()', () => {
 
 test('objectContaining()', () => {
   const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
-  expect(result).toEqual(`ObjectContaining {
+  expect(result).toBe(`ObjectContaining {
   "a": "test",
 }`);
 });
@@ -90,75 +90,75 @@ test('objectNotContaining()', () => {
     expect.not.objectContaining({a: 'test'}),
     options,
   );
-  expect(result).toEqual(`ObjectNotContaining {
+  expect(result).toBe(`ObjectNotContaining {
   "a": "test",
 }`);
 });
 
 test('stringContaining(string)', () => {
   const result = prettyFormat(expect.stringContaining('jest'), options);
-  expect(result).toEqual('StringContaining "jest"');
+  expect(result).toBe('StringContaining "jest"');
 });
 
 test('not.stringContaining(string)', () => {
   const result = prettyFormat(expect.not.stringContaining('jest'), options);
-  expect(result).toEqual('StringNotContaining "jest"');
+  expect(result).toBe('StringNotContaining "jest"');
 });
 
 test('stringMatching(string)', () => {
   const result = prettyFormat(expect.stringMatching('jest'), options);
-  expect(result).toEqual('StringMatching /jest/');
+  expect(result).toBe('StringMatching /jest/');
 });
 
 test('stringMatching(regexp)', () => {
   const result = prettyFormat(expect.stringMatching(/(jest|niema).*/), options);
-  expect(result).toEqual('StringMatching /(jest|niema).*/');
+  expect(result).toBe('StringMatching /(jest|niema).*/');
 });
 
 test('stringMatching(regexp) {escapeRegex: false}', () => {
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
-  expect(result).toEqual('StringMatching /regexp\\d/gi');
+  expect(result).toBe('StringMatching /regexp\\d/gi');
 });
 
 test('stringMatching(regexp) {escapeRegex: true}', () => {
   options.escapeRegex = true;
   const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
-  expect(result).toEqual('StringMatching /regexp\\\\d/gi');
+  expect(result).toBe('StringMatching /regexp\\\\d/gi');
 });
 
 test('stringNotMatching(string)', () => {
   const result = prettyFormat(expect.not.stringMatching('jest'), options);
-  expect(result).toEqual('StringNotMatching /jest/');
+  expect(result).toBe('StringNotMatching /jest/');
 });
 
 test('closeTo(number, precision)', () => {
   const result = prettyFormat(expect.closeTo(1.2345, 4), options);
-  expect(result).toEqual('NumberCloseTo 1.2345 (4 digits)');
+  expect(result).toBe('NumberCloseTo 1.2345 (4 digits)');
 });
 
 test('notCloseTo(number, precision)', () => {
   const result = prettyFormat(expect.not.closeTo(1.2345, 1), options);
-  expect(result).toEqual('NumberNotCloseTo 1.2345 (1 digit)');
+  expect(result).toBe('NumberNotCloseTo 1.2345 (1 digit)');
 });
 
 test('closeTo(number)', () => {
   const result = prettyFormat(expect.closeTo(1.2345), options);
-  expect(result).toEqual('NumberCloseTo 1.2345 (2 digits)');
+  expect(result).toBe('NumberCloseTo 1.2345 (2 digits)');
 });
 
 test('closeTo(Infinity)', () => {
   const result = prettyFormat(expect.closeTo(-Infinity), options);
-  expect(result).toEqual('NumberCloseTo -Infinity (2 digits)');
+  expect(result).toBe('NumberCloseTo -Infinity (2 digits)');
 });
 
 test('closeTo(scientific number)', () => {
   const result = prettyFormat(expect.closeTo(1.56e-3, 4), options);
-  expect(result).toEqual('NumberCloseTo 0.00156 (4 digits)');
+  expect(result).toBe('NumberCloseTo 0.00156 (4 digits)');
 });
 
 test('closeTo(very small scientific number)', () => {
   const result = prettyFormat(expect.closeTo(1.56e-10, 4), options);
-  expect(result).toEqual('NumberCloseTo 1.56e-10 (4 digits)');
+  expect(result).toBe('NumberCloseTo 1.56e-10 (4 digits)');
 });
 
 test('correctly handles inability to pretty-print matcher', () => {
@@ -183,7 +183,7 @@ test('supports multiple nested asymmetric matchers', () => {
     },
     options,
   );
-  expect(result).toEqual(`Object {
+  expect(result).toBe(`Object {
   "test": Object {
     "nested": ObjectContaining {
       "a": ArrayContaining [
@@ -278,7 +278,7 @@ describe('maxDepth option', () => {
       ],
     };
     const result = prettyFormat(val, options);
-    expect(result).toEqual(`Object {
+    expect(result).toBe(`Object {
   "nested": Array [
     [ArrayContaining],
     [ObjectContaining],
@@ -313,7 +313,7 @@ describe('maxDepth option', () => {
       }),
     ];
     const result = prettyFormat(val, options);
-    expect(result).toEqual(`Array [
+    expect(result).toBe(`Array [
   ArrayContaining [
     "printed",
     [Object],
@@ -343,7 +343,7 @@ test('min option', () => {
     },
     options,
   );
-  expect(result).toEqual(
+  expect(result).toBe(
     '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',
   );
 });
@@ -351,7 +351,7 @@ test('min option', () => {
 class DummyMatcher {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(private sample: number) {}
+  constructor(private readonly sample: number) {}
 
   asymmetricMatch(other: number) {
     return this.sample === other;

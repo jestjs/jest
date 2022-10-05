@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-jest-hoist TS typeof usage in jest.mock: TS typeof usage in jest.mock 1`] = `
+
+jest.mock('some-module', () => {
+  const actual = jest.requireActual('some-module');
+
+  return jest.fn<typeof actual.method>();
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  const actual = jest.requireActual('some-module');
+  return jest.fn();
+});
+
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+
+  _getJestObj = () => jest;
+
+  return jest;
+}
+
+
+`;
+
 exports[`babel-plugin-jest-hoist automatic react runtime: automatic react runtime 1`] = `
 
 jest.mock('./App', () => () => <div>Hello world</div>);

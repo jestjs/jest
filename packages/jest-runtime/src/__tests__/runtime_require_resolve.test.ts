@@ -6,8 +6,8 @@
  *
  */
 
-import os from 'os';
-import path from 'path';
+import * as os from 'os';
+import * as path from 'path';
 import {promises as fs} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type Runtime from '..';
@@ -19,7 +19,7 @@ let createRuntime: (
 ) => Promise<Runtime & {__mockRootPath: string}>;
 
 const getTmpDir = async () =>
-  await fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
+  fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
 
 describe('Runtime require.resolve', () => {
   beforeEach(() => {

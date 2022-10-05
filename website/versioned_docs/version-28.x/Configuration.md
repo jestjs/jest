@@ -234,7 +234,11 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+:::note
+
+Using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+
+:::
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
@@ -1325,7 +1329,7 @@ Example:
 
 ```js
 // my-custom-environment
-const NodeEnvironment = require('jest-environment-node').default;
+const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -1685,9 +1689,9 @@ It is possible to override this setting in individual tests by explicitly callin
 
 ### `verbose` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 
