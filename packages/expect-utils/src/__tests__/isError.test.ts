@@ -46,6 +46,7 @@ describe('isError', () => {
   });
 
   it('should detect errors from another context', () => {
+    // @ts-expect-error: Property 'Error' does not exist on type 'Window'
     testErrorFromDifferentContext(win => new win.Error());
   });
 

@@ -7,13 +7,11 @@
 
 import type {Global} from '@jest/types';
 
+// Alias of `it` to avoid conflict with global testing APIs.
 let circusIt: Global.It;
 
-// using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
-// the two with this alias.
-
 const aliasCircusIt = () => {
-  const {it} = require('../');
+  const {it} = require('../') as typeof import('../');
   circusIt = it;
 };
 
