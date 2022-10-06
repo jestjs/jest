@@ -287,38 +287,39 @@ expectType<void>(expect(jest.fn()).toHaveReturnedTimes(3));
 expectError(expect(jest.fn()).toHaveReturnedTimes(true));
 expectError(expect(jest.fn()).toHaveReturnedTimes());
 
+expectType<void>(expect(jest.fn()).toReturnWith());
 expectType<void>(expect(jest.fn()).toReturnWith('value'));
 expectType<void>(
   expect(jest.fn<() => string>()).toReturnWith(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(jest.fn()).toReturnWith());
 
+expectType<void>(expect(jest.fn()).toHaveReturnedWith());
 expectType<void>(expect(jest.fn()).toHaveReturnedWith(123));
 expectType<void>(
   expect(jest.fn<() => string>()).toHaveReturnedWith(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(jest.fn()).toHaveReturnedWith());
 
+expectType<void>(expect(jest.fn()).lastReturnedWith());
 expectType<void>(expect(jest.fn()).lastReturnedWith('value'));
 expectType<void>(
   expect(jest.fn<() => string>()).lastReturnedWith(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(jest.fn()).lastReturnedWith());
 
+expectType<void>(expect(jest.fn()).toHaveLastReturnedWith());
 expectType<void>(expect(jest.fn()).toHaveLastReturnedWith(123));
 expectType<void>(
   expect(jest.fn<() => string>()).toHaveLastReturnedWith(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(jest.fn()).toHaveLastReturnedWith());
 
+expectType<void>(expect(jest.fn()).nthReturnedWith(1));
 expectType<void>(expect(jest.fn()).nthReturnedWith(1, 'value'));
 expectType<void>(
   expect(jest.fn<() => string>()).nthReturnedWith(
@@ -326,9 +327,9 @@ expectType<void>(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(123).nthReturnedWith(3));
 expectError(expect(jest.fn()).nthReturnedWith());
 
+expectType<void>(expect(jest.fn()).nthReturnedWith(1));
 expectType<void>(expect(jest.fn()).nthReturnedWith(1, 'value'));
 expectType<void>(
   expect(jest.fn<() => string>()).nthReturnedWith(
@@ -336,7 +337,6 @@ expectType<void>(
     expect.stringContaining('value'),
   ),
 );
-expectError(expect(123).toHaveNthReturnedWith(3));
 expectError(expect(jest.fn()).toHaveNthReturnedWith());
 
 // snapshot matchers
