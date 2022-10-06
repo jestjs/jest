@@ -7,8 +7,8 @@
 
 /* eslint-disable no-eval */
 import * as path from 'path';
-import fs from 'graceful-fs';
-import prompts from 'prompts';
+import {writeFileSync} from 'graceful-fs';
+import * as prompts from 'prompts';
 import {constants} from 'jest-config';
 import init from '../';
 
@@ -19,13 +19,16 @@ jest.mock(
   '../../../../jest-config/build/getCacheDirectory',
   () => () => '/tmp/jest',
 );
-jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
+jest.mock('path', () => ({
+  ...jest.requireActual<typeof import('path')>('path'),
+  sep: '/',
+}));
 jest.mock('graceful-fs', () => ({
-  ...jest.requireActual('fs'),
+  ...jest.requireActual<typeof import('fs')>('fs'),
   writeFileSync: jest.fn(),
 }));
 
-const resolveFromFixture = relativePath =>
+const resolveFromFixture = (relativePath: string) =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
 const consoleLog = console.log;
@@ -43,55 +46,67 @@ describe('init', () => {
   describe('project with package.json and no jest config', () => {
     describe('all questions answered with answer: "No"', () => {
       it('should return the default configuration (an empty config)', async () => {
-        prompts.mockReturnValueOnce({});
+        jest.mocked(prompts).mockResolvedValueOnce({});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
         expect(writtenJestConfig).toMatchSnapshot();
 
-        const evaluatedConfig = eval(writtenJestConfig);
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
 
         expect(evaluatedConfig).toEqual({});
       });
 
       it('should generate empty config with mjs extension', async () => {
-        prompts.mockReturnValueOnce({});
+        jest.mocked(prompts).mockResolvedValueOnce({});
 
         await init(resolveFromFixture('type-module'));
 
-        const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const writtenJestConfigFilename =
+          jest.mocked(writeFileSync).mock.calls[0][0];
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
-        expect(path.basename(writtenJestConfigFilename)).toBe(
+        expect(path.basename(writtenJestConfigFilename as string)).toBe(
           'jest.config.mjs',
         );
 
         expect(typeof writtenJestConfig).toBe('string');
-        expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
+        expect((writtenJestConfig as string).split('\n')[5]).toBe(
+          'export default {',
+        );
       });
     });
 
     describe('some questions answered with answer: "Yes"', () => {
       it('should create configuration for {clearMocks: true}', async () => {
-        prompts.mockReturnValueOnce({clearMocks: true});
+        jest.mocked(prompts).mockResolvedValueOnce({clearMocks: true});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
 
         expect(evaluatedConfig).toEqual({clearMocks: true});
       });
 
       it('should create configuration for {coverage: true}', async () => {
-        prompts.mockReturnValueOnce({coverage: true});
+        jest.mocked(prompts).mockResolvedValueOnce({coverage: true});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
 
         expect(evaluatedConfig).toEqual({
           collectCoverage: true,
@@ -100,56 +115,71 @@ describe('init', () => {
       });
 
       it('should create configuration for {coverageProvider: "babel"}', async () => {
-        prompts.mockReturnValueOnce({coverageProvider: 'babel'});
+        jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'babel'});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
         // should modify when the default coverageProvider will be changed to "v8"
         expect(evaluatedConfig).toEqual({});
       });
 
       it('should create configuration for {coverageProvider: "v8"}', async () => {
-        prompts.mockReturnValueOnce({coverageProvider: 'v8'});
+        jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'v8'});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
         // should modify when the default coverageProvider will be changed to "v8"
         expect(evaluatedConfig).toEqual({coverageProvider: 'v8'});
       });
 
       it('should create configuration for {environment: "jsdom"}', async () => {
-        prompts.mockReturnValueOnce({environment: 'jsdom'});
+        jest.mocked(prompts).mockResolvedValueOnce({environment: 'jsdom'});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
         expect(evaluatedConfig).toEqual({testEnvironment: 'jsdom'});
       });
 
       it('should create configuration for {environment: "node"}', async () => {
-        prompts.mockReturnValueOnce({environment: 'node'});
+        jest.mocked(prompts).mockResolvedValueOnce({environment: 'node'});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig);
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
+          string,
+          unknown
+        >;
         expect(evaluatedConfig).toEqual({});
       });
 
       it('should create package.json with configured test command when {scripts: true}', async () => {
-        prompts.mockReturnValueOnce({scripts: true});
+        jest.mocked(prompts).mockResolvedValueOnce({scripts: true});
 
         await init(resolveFromFixture('only-package-json'));
 
-        const writtenPackageJson = fs.writeFileSync.mock.calls[0][1];
+        const writtenPackageJson = jest.mocked(writeFileSync).mock.calls[0][1];
+        const parsedPackageJson = JSON.parse(writtenPackageJson as string) as {
+          scripts: {test: string};
+        };
 
         expect(writtenPackageJson).toMatchSnapshot();
-        expect(JSON.parse(writtenPackageJson).scripts.test).toBe('jest');
+        expect(parsedPackageJson.scripts.test).toBe('jest');
       });
     });
   });
@@ -161,7 +191,7 @@ describe('init', () => {
       try {
         await init(resolveFromFixture('no-package-json'));
       } catch (error) {
-        expect(error.message).toMatch(
+        expect((error as Error).message).toMatch(
           'Could not find a "package.json" file in',
         );
       }
@@ -173,21 +203,25 @@ describe('init', () => {
     extension => {
       describe('ask the user whether to override config or not', () => {
         it('user answered with "Yes"', async () => {
-          prompts.mockReturnValueOnce({continue: true}).mockReturnValueOnce({});
+          jest
+            .mocked(prompts)
+            .mockResolvedValueOnce({continue: true})
+            .mockResolvedValueOnce({});
 
           await init(resolveFromFixture(`has-jest-config-file-${extension}`));
 
-          expect(prompts.mock.calls[0][0]).toMatchSnapshot();
+          expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
-          const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
-          const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+          const jestConfigFileName =
+            jest.mocked(writeFileSync).mock.calls[0][0];
+          const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
           expect(jestConfigFileName).toBe(`jest.config.${extension}`);
           expect(writtenJestConfig).toBeDefined();
         });
 
         it('user answered with "No"', async () => {
-          prompts.mockReturnValueOnce({continue: false});
+          jest.mocked(prompts).mockResolvedValueOnce({continue: false});
 
           await init(resolveFromFixture(`has-jest-config-file-${extension}`));
           // return after first prompt
@@ -200,40 +234,49 @@ describe('init', () => {
   describe('project using jest.config.ts', () => {
     describe('ask the user whether he wants to use Typescript or not', () => {
       it('user answered with "Yes"', async () => {
-        prompts.mockReturnValueOnce({useTypescript: true});
+        jest.mocked(prompts).mockResolvedValueOnce({useTypescript: true});
 
         await init(resolveFromFixture('test-generated-jest-config-ts'));
 
-        expect(prompts.mock.calls[0][0]).toMatchSnapshot();
+        expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
-        const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const jestConfigFileName = jest.mocked(writeFileSync).mock.calls[0][0];
+        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
-        expect(path.basename(jestConfigFileName)).toBe('jest.config.ts');
-        expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
+        expect(path.basename(jestConfigFileName as string)).toBe(
+          'jest.config.ts',
+        );
+        expect((writtenJestConfig as string).split('\n')[5]).toBe(
+          'export default {',
+        );
       });
 
       it('user answered with "No"', async () => {
-        prompts.mockReturnValueOnce({useTypescript: false});
+        jest.mocked(prompts).mockResolvedValueOnce({useTypescript: false});
 
         await init(resolveFromFixture('test-generated-jest-config-ts'));
 
-        const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
+        const jestConfigFileName = jest.mocked(writeFileSync).mock.calls[0][0];
 
-        expect(path.basename(jestConfigFileName)).not.toBe('jest.config.ts');
+        expect(path.basename(jestConfigFileName as string)).not.toBe(
+          'jest.config.ts',
+        );
       });
     });
   });
 
   describe('has jest config in package.json', () => {
     it('should ask the user whether to override config or not', async () => {
-      prompts.mockReturnValueOnce({continue: true}).mockReturnValueOnce({});
+      jest
+        .mocked(prompts)
+        .mockResolvedValueOnce({continue: true})
+        .mockResolvedValueOnce({});
 
       await init(resolveFromFixture('has-jest-config-in-package-json'));
 
-      expect(prompts.mock.calls[0][0]).toMatchSnapshot();
+      expect(jest.mocked(prompts).mock.calls[0][0]).toMatchSnapshot();
 
-      const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+      const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
       expect(writtenJestConfig).toBeDefined();
     });
@@ -241,13 +284,14 @@ describe('init', () => {
 
   describe('already has "jest" in packageJson.scripts.test', () => {
     it('should not ask "test script question"', async () => {
-      prompts.mockReturnValueOnce({});
+      jest.mocked(prompts).mockResolvedValueOnce({});
 
       await init(resolveFromFixture('test-script-configured'));
 
-      const questionsNames = prompts.mock.calls[0][0].map(
-        question => question.name,
-      );
+      const questions = jest.mocked(prompts).mock.calls[0][0] as Array<
+        prompts.PromptObject<string>
+      >;
+      const questionsNames = questions.map(question => question.name);
 
       expect(questionsNames).not.toContain('scripts');
     });
