@@ -13,7 +13,6 @@ const dir = path.resolve(__dirname, '../jest-object');
 test('passes with seed', () => {
   const result = runJest(dir, ['get-seed.test.js', '--seed', '1234']);
   expect(result.exitCode).toBe(0);
-  expect(result.exitCode).toBe(expect.any(Number))
 });
 
 test('failes with wrong seed', () => {

@@ -1,3 +1,3 @@
 test('ensure seed exists', () => {
-  expect(jest.getSeed()).toBe(expect.any(Number));
+  expect(jest.getSeed()).toEqual(expect.any(Number));
 });

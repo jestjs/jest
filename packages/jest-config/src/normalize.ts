@@ -917,7 +917,6 @@ export default async function normalize(
       case 'rootDir':
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
-      case 'seed':
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
@@ -1020,6 +1019,16 @@ export default async function normalize(
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+  }
+
+  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  newOptions.seed =
+    argv.seed ?? Math.floor(0xffffffff * Math.random() - 0x80000000);
+  if (newOptions.seed < -0x80000000 || newOptions.seed > 0x7fffffff) {
+    throw new ValidationError(
+      'Validation Error',
+      'seed value is limited from -0x80000000 to 0x7fffffff',
+    );
   }
 
   if (!newOptions.onlyChanged) {
@@ -1135,9 +1144,6 @@ export default async function normalize(
   if (!newOptions.logHeapUsage) {
     newOptions.logHeapUsage = false;
   }
-
-  console.log('newOptions.seed', newOptions.seed);
-  console.log('argv.seed', argv.seed);
 
   if (argv.shard) {
     newOptions.shard = parseShardPair(argv.shard);
