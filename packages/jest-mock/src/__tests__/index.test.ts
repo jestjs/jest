@@ -1325,7 +1325,7 @@ describe('moduleMocker', () => {
         },
       };
 
-      const spy = moduleMocker.spyOn(obj, 'method');
+      const spy = moduleMocker.spyOn(obj, 'method', 'get');
 
       const thisArg = {this: true};
       const firstArg = {first: true};
