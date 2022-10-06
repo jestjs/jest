@@ -110,14 +110,12 @@ it('keeps custom ids based on the rootDir', async () => {
 });
 
 it('minimal config is stable across runs', async () => {
-  const firstNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
-  const secondNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
+  const firstNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55555,
+  } as Config.Argv);
+  const secondNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55555,
+  } as Config.Argv);
 
   expect(firstNormalization).toEqual(secondNormalization);
   expect(JSON.stringify(firstNormalization)).toBe(
@@ -2079,4 +2077,18 @@ it('parses workerIdleMemoryLimit', async () => {
   );
 
   expect(options.workerIdleMemoryLimit).toBe(47185920);
+});
+
+describe('seed', () => {
+  it('generates seed when not specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.seed).toEqual(expect.any(Number));
+  });
+
+  it('uses seed specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      seed: 4321,
+    } as Config.Argv);
+    expect(options.seed).toBe(4321);
+  });
 });

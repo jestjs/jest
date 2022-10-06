@@ -125,6 +125,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
+    "seed": <<RANDOM_SEED>>,
     "skipFilter": false,
     "snapshotFormat": {
       "escapeString": false,
