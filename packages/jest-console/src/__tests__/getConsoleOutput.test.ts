@@ -33,7 +33,7 @@ describe('getConsoleOutput', () => {
     'log',
     'time',
     'warn',
-  ] as const)('takes noStackTrace and pass it on for $logType', logType => {
+  ] as const)('takes noStackTrace and pass it on for %s', logType => {
     getConsoleOutput(
       BufferedConsole.write([], logType, 'message', 4),
       {
