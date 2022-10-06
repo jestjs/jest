@@ -917,6 +917,7 @@ export default async function normalize(
       case 'rootDir':
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
+      case 'seed':
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
