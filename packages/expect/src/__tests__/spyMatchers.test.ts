@@ -7,20 +7,22 @@
 
 import * as Immutable from 'immutable';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import importedExpect from '../';
+import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
-importedExpect.extend({
+jestExpect.extend({
   optionalFn(fn?: unknown) {
     const pass = fn === undefined || typeof fn === 'function';
     return {message: () => 'expect either a function or undefined', pass};
   },
 });
 
-const jestExpect = importedExpect as typeof importedExpect & {
-  optionalFn(fn?: unknown): void;
-};
+declare module '../types' {
+  interface AsymmetricMatchers {
+    optionalFn(fn?: unknown): void;
+  }
+}
 
 // Given a Jest mock function, return a minimal mock of a spy.
 const createSpy = (fn: jest.Mock) => {
