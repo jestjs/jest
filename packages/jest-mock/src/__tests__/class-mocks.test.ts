@@ -18,7 +18,7 @@ describe('Testing the mocking of a class', () => {
       return 'mockTestMethod';
     });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testMethod()).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod()).toBe('mockTestMethod');
   });
 
   it('can call a superclass instance method', () => {
@@ -34,7 +34,67 @@ describe('Testing the mocking of a class', () => {
       return 'mockTestMethod';
     });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testMethod()).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod()).toBe('mockTestMethod');
+  });
+
+  it('can call an instance method named "get"', () => {
+    class TestClass {
+      get(): string {
+        return 'get';
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'get').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    const testClassInstance = new TestClass();
+    expect(testClassInstance.get()).toBe('mockTestMethod');
+  });
+
+  it('can call a superclass instance method named "get"', () => {
+    class SuperTestClass {
+      get(): string {
+        return 'get';
+      }
+    }
+
+    class TestClass extends SuperTestClass {}
+
+    jest.spyOn(TestClass.prototype, 'get').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    const testClassInstance = new TestClass();
+    expect(testClassInstance.get()).toBe('mockTestMethod');
+  });
+
+  it('can call an instance method named "set"', () => {
+    class TestClass {
+      set(): string {
+        return 'set';
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'set').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    const testClassInstance = new TestClass();
+    expect(testClassInstance.set()).toBe('mockTestMethod');
+  });
+
+  it('can call a superclass instance method named "set"', () => {
+    class SuperTestClass {
+      set(): string {
+        return 'set';
+      }
+    }
+
+    class TestClass extends SuperTestClass {}
+
+    jest.spyOn(TestClass.prototype, 'set').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    const testClassInstance = new TestClass();
+    expect(testClassInstance.set()).toBe('mockTestMethod');
   });
 
   it('can read a value from an instance getter', () => {
@@ -50,7 +110,7 @@ describe('Testing the mocking of a class', () => {
         return 'mockTestMethod';
       });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testMethod).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod).toBe('mockTestMethod');
   });
 
   it('can read a value from an superclass instance getter', () => {
@@ -68,7 +128,7 @@ describe('Testing the mocking of a class', () => {
         return 'mockTestMethod';
       });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testMethod).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod).toBe('mockTestMethod');
   });
 
   it('can write a value to an instance setter', () => {
@@ -109,6 +169,90 @@ describe('Testing the mocking of a class', () => {
     expect(mocktestMethod).toHaveBeenCalledTimes(1);
   });
 
+  it('can call a static method', () => {
+    class TestClass {
+      static testMethod(): string {
+        return 'testMethod';
+      }
+    }
+
+    jest.spyOn(TestClass, 'testMethod').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.testMethod()).toBe('mockTestMethod');
+  });
+
+  it('can call a superclass static method', () => {
+    class SuperTestClass {
+      static testMethod(): string {
+        return 'testMethod';
+      }
+    }
+
+    class TestClass extends SuperTestClass {}
+
+    jest.spyOn(TestClass, 'testMethod').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.testMethod()).toBe('mockTestMethod');
+  });
+
+  it('can call a static method named "get"', () => {
+    class TestClass {
+      static get(): string {
+        return 'get';
+      }
+    }
+
+    jest.spyOn(TestClass, 'get').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.get()).toBe('mockTestMethod');
+  });
+
+  it('can call a superclass static method named "get"', () => {
+    class SuperTestClass {
+      static get(): string {
+        return 'get';
+      }
+    }
+
+    class TestClass extends SuperTestClass {}
+
+    jest.spyOn(TestClass, 'get').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.get()).toBe('mockTestMethod');
+  });
+
+  it('can call a static method named "set"', () => {
+    class TestClass {
+      static set(): string {
+        return 'set';
+      }
+    }
+
+    jest.spyOn(TestClass, 'set').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.set()).toBe('mockTestMethod');
+  });
+
+  it('can call a superclass static method named "set"', () => {
+    class SuperTestClass {
+      static set(): string {
+        return 'set';
+      }
+    }
+
+    class TestClass extends SuperTestClass {}
+
+    jest.spyOn(TestClass, 'set').mockImplementation(() => {
+      return 'mockTestMethod';
+    });
+    expect(TestClass.set()).toBe('mockTestMethod');
+  });
+
   it('can read a value from a static getter', () => {
     class TestClass {
       static get testMethod(): string {
@@ -119,7 +263,7 @@ describe('Testing the mocking of a class', () => {
     jest.spyOn(TestClass, 'testMethod', 'get').mockImplementation(() => {
       return 'mockTestMethod';
     });
-    expect(TestClass.testMethod).toEqual('mockTestMethod');
+    expect(TestClass.testMethod).toBe('mockTestMethod');
   });
 
   it('can read a value from a superclass static getter', () => {
@@ -134,7 +278,7 @@ describe('Testing the mocking of a class', () => {
     jest.spyOn(TestClass, 'testMethod', 'get').mockImplementation(() => {
       return 'mockTestMethod';
     });
-    expect(TestClass.testMethod).toEqual('mockTestMethod');
+    expect(TestClass.testMethod).toBe('mockTestMethod');
   });
 
   it('can write a value to a static setter', () => {

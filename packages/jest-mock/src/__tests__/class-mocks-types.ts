@@ -21,6 +21,14 @@ export default class SuperTestClass {
     return 'staticTestMethod';
   }
 
+  static get(): string {
+    return 'get';
+  }
+
+  static set(): string {
+    return 'set';
+  }
+
   testProperty = 'testProperty';
 
   get testAccessor(): string {
@@ -32,6 +40,14 @@ export default class SuperTestClass {
 
   testMethod(): string {
     return 'testMethod';
+  }
+
+  get(): string {
+    return 'get';
+  }
+
+  set(): string {
+    return 'set';
   }
 }
 

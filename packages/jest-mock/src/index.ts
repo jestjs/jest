@@ -926,9 +926,18 @@ export class ModuleMocker {
         // The mock implementations are not available until the callbacks have been executed.
         // Missing getter and setter refs will be resolved as their callbacks have been
         // stacked before the setting of the accessor definition is stacked.
+
+        // In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
+        // mocked has a function property called 'get'.  In this circumstance
+        // the 'prototype' property cannot be redefined and doing so causes an
+        // exception. Checks have been added for the 'configurable' and
+        // 'enumberable' properties present on true accessor property
+        // descriptors to prevent the attempt to replace the API.
         if (
-          slotMetadata.members?.get?.ref !== undefined ||
-          slotMetadata.members?.set?.ref !== undefined
+          (slotMetadata.members?.get?.ref !== undefined ||
+            slotMetadata.members?.set?.ref !== undefined) &&
+          slotMetadata.members?.configurable &&
+          slotMetadata.members?.enumerable
         ) {
           callbacks.push(
             (function (ref) {
@@ -940,12 +949,6 @@ export class ModuleMocker {
           slotMetadata.members?.configurable &&
           slotMetadata.members?.enumerable
         ) {
-          // In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
-          // mocked has a function property called 'get'.  In this circumstance
-          // the 'prototype' property cannot be redefined and doing so causes an
-          // exception. Checks have been added for the 'configurable' and
-          // 'enumberable' properties present on true accessor property
-          // descriptors to prevent the attempt to replace the API.
           Object.defineProperty(mock, slot, slotMock as PropertyDescriptor);
         } else {
           mock[slot] = slotMock;
