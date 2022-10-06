@@ -350,6 +350,15 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 :::
 
+### `--seed=<num>`
+
+TODO jhwang make a clearer description
+Provide a seed number that the tests have access to via `jest.getSeed()`.
+
+```bash
+jest --seed=1324
+```
+
 ### `--selectProjects <project1> ... <projectN>`
 
 Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
