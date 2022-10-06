@@ -1135,6 +1135,9 @@ export default async function normalize(
     newOptions.logHeapUsage = false;
   }
 
+  console.log('newOptions.seed', newOptions.seed);
+  console.log('argv.seed', argv.seed);
+
   if (argv.shard) {
     newOptions.shard = parseShardPair(argv.shard);
   }

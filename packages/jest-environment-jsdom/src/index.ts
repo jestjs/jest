@@ -38,9 +38,11 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
   private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
   customExportConditions = ['browser'];
+  seed: number;
 
   constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
-    const {projectConfig} = config;
+    const {projectConfig, globalConfig} = config;
+    this.seed = globalConfig.seed;
 
     const virtualConsole = new VirtualConsole();
     virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});

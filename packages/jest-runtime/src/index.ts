@@ -2123,6 +2123,7 @@ export default class Runtime {
           );
         }
       },
+      getSeed: () => this._environment.seed,
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,

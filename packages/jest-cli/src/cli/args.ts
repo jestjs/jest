@@ -510,6 +510,11 @@ export const options: {[key: string]: Options} = {
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
   },
+  seed: {
+    description:
+      'TODO jhwang Specify the seed that will be exposed to tests via jest.getSeed().',
+    type: 'number',
+  },
   selectProjects: {
     description:
       'Run the tests of the specified projects. ' +

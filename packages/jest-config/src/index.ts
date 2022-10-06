@@ -115,6 +115,7 @@ const groupOptions = (
     reporters: options.reporters,
     rootDir: options.rootDir,
     runTestsByPath: options.runTestsByPath,
+    seed: options.seed,
     shard: options.shard,
     silent: options.silent,
     skipFilter: options.skipFilter,

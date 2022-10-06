@@ -394,6 +394,7 @@ export type GlobalConfig = {
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
+  seed: number;
   shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
@@ -537,6 +538,7 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    seed: number;
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;

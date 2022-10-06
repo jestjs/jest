@@ -44,6 +44,7 @@ export declare class JestEnvironment<Timer = unknown> {
   fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: ModuleMocker | null;
   getVmContext(): Context | null;
+  seed: number;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
@@ -148,6 +149,11 @@ export interface Jest {
    * Not available when using legacy fake timers implementation.
    */
   getRealSystemTime(): number;
+  /**
+   * Fetches the seed generated for this particular running of Jest.
+   * It can also be manually set with --seed CLI argument.
+   */
+  getSeed(): number;
   /**
    * Returns the number of fake timers still left to run.
    */
