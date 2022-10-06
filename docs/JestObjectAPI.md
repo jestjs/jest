@@ -909,7 +909,13 @@ This function is not available when using legacy fake timers implementation.
 ## Misc
 
 ### `jest.getSeed()`
-TODO jhwang
+Every time Jest runs a seed value is randomly generated which you could use in a pseudorandom number generator or anywhere else.
+
+:::tip
+
+You can manually define this value with the CLI argument `--seed=<num>`.
+
+:::
 
 ### `jest.setTimeout(timeout)`
 

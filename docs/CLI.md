@@ -352,8 +352,10 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--seed=<num>`
 
-TODO jhwang make a clearer description
-Provide a seed number that the tests have access to via `jest.getSeed()`.
+Provides a seed number that the tests have access to via `jest.getSeed()`.
+If this option isn't specified Jest will randomly generate a seed.
+
+The seed value must be between `-0x80000000` to `0x7fffffff` inclusive.
 
 ```bash
 jest --seed=1324
