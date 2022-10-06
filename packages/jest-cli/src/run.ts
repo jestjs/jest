@@ -15,8 +15,8 @@ import type {Config} from '@jest/types';
 import {deprecationEntries} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import init from '../init';
 import * as args from './args';
+import init from './init';
 
 export async function run(
   maybeArgv?: Array<string>,

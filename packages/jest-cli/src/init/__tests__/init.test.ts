@@ -29,7 +29,7 @@ jest.mock('graceful-fs', () => ({
 }));
 
 const resolveFromFixture = (relativePath: string) =>
-  path.resolve(__dirname, 'fixtures', relativePath);
+  path.resolve(__dirname, '__fixtures__', relativePath);
 
 const consoleLog = console.log;
 
