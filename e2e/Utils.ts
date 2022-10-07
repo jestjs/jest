@@ -157,6 +157,9 @@ export const copyDir = (src: string, dest: string) => {
   }
 };
 
+export const replaceSeed = (str: string) =>
+  str.replace(/Seed:        (-?\d+)/g, 'Seed:       <<REPLACED>>');
+
 export const replaceTime = (str: string) =>
   str
     .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
@@ -201,7 +204,7 @@ export const extractSummary = (stdout: string) => {
   const match = stdout
     .replace(/(?:\\[rn])+/g, '\n')
     .match(
-      /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
+      /Seed:.*\nTest Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
   if (!match) {
     throw new Error(dedent`
@@ -211,7 +214,7 @@ export const extractSummary = (stdout: string) => {
     `);
   }
 
-  const summary = replaceTime(match[0]);
+  const summary = replaceSeed(replaceTime(match[0]));
 
   const rest = stdout
     .replace(match[0], '')
@@ -245,7 +248,7 @@ const sortTests = (stdout: string) =>
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
   return {
-    rest: sortTests(replaceTime(rest)),
+    rest: sortTests(replaceSeed(replaceTime(rest))),
     summary,
   };
 };
@@ -254,7 +257,7 @@ export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
   const regex =
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+    /Seed:.*\nTest Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];
