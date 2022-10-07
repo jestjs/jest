@@ -15,7 +15,7 @@ import {saveInlineSnapshots} from '../InlineSnapshots';
 jest.mock('prettier', () => {
   const realPrettier =
     jest.requireActual<typeof import('prettier')>('prettier');
-  const mockPrettier: typeof import('prettier') = {
+  const mockPrettier = {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
@@ -23,10 +23,10 @@ jest.mock('prettier', () => {
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({ignored: false, inferredParser: 'babel'})},
-    resolveConfig: {sync: jest.fn()},
+    getFileInfo: {sync: () => ({ignored: false, inferredParser: 'babel'})} as unknown as typeof prettier.getFileInfo,
+    resolveConfig: {sync: jest.fn()} as unknown as typeof prettier.resolveConfig,
     version: realPrettier.version,
-  };
+  } as typeof prettier;
   return mockPrettier;
 });
 
