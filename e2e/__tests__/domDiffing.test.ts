@@ -6,11 +6,11 @@
  *
  */
 
-import {replaceTime} from '../Utils';
+import {replaceSeed, replaceTime} from '../Utils';
 import runJest from '../runJest';
 
 test('should work without error', () => {
   const output = runJest('dom-diffing');
   expect(output.failed).toBe(true);
-  expect(replaceTime(output.stderr)).toMatchSnapshot();
+  expect(replaceSeed(replaceTime(output.stderr))).toMatchSnapshot();
 });
