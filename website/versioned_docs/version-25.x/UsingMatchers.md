@@ -119,6 +119,7 @@ test('but there is a "stop" in Christoph', () => {
 
 ## Arrays and iterables
 
+To compare arrays , use `toEqual` instead of  `toBe`  
 You can check if an array or iterable contains a particular item using `toContain`:
 
 ```js
@@ -135,6 +136,7 @@ test('the shopping list has beer on it', () => {
   expect(new Set(shoppingList)).toContain('beer');
 });
 ```
+
 
 ## Exceptions
 
