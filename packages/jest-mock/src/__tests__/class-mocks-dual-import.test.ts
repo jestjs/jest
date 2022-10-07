@@ -19,7 +19,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
         return 'mockTestMethod';
       });
     const testClassInstance = new SuperTestClass();
-    expect(testClassInstance.testMethod()).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
@@ -32,7 +32,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
         return 'mockTestMethod';
       });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testMethod()).toEqual('mockTestMethod');
+    expect(testClassInstance.testMethod()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 
@@ -43,7 +43,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
         return 'mockTestAccessor';
       });
     const testClassInstance = new SuperTestClass();
-    expect(testClassInstance.testAccessor).toEqual('mockTestAccessor');
+    expect(testClassInstance.testAccessor).toBe('mockTestAccessor');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
@@ -56,7 +56,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
         return 'mockTestAccessor';
       });
     const testClassInstance = new TestClass();
-    expect(testClassInstance.testAccessor).toEqual('mockTestAccessor');
+    expect(testClassInstance.testAccessor).toBe('mockTestAccessor');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 
@@ -90,7 +90,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
       .mockImplementation(() => {
         return 'mockStaticTestAccessor';
       });
-    expect(SuperTestClass.staticTestAccessor).toEqual('mockStaticTestAccessor');
+    expect(SuperTestClass.staticTestAccessor).toBe('mockStaticTestAccessor');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
@@ -102,7 +102,7 @@ describe('Testing the mocking of a class hierarchy defined in multiple imports',
       .mockImplementation(() => {
         return 'mockStaticTestAccessor';
       });
-    expect(TestClass.staticTestAccessor).toEqual('mockStaticTestAccessor');
+    expect(TestClass.staticTestAccessor).toBe('mockStaticTestAccessor');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 
