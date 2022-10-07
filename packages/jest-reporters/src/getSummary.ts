@@ -114,6 +114,11 @@ export default function getSummary(
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
+  const seed = `${
+    chalk.bold('Seed:        ') + (options?.seed?.toString() ?? 'XXXX')
+  }`;
+
+
   const suites = `${
     chalk.bold('Test Suites: ') +
     (suitesFailed ? `${chalk.bold.red(`${suitesFailed} failed`)}, ` : '') +
@@ -183,5 +188,5 @@ export default function getSummary(
   }${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
-  return [suites, tests, snapshots, time].join('\n');
+  return [seed, suites, tests, snapshots, time].join('\n');
 }

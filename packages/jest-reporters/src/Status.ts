@@ -85,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor() {
+  constructor(private _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
@@ -185,6 +185,7 @@ export default class Status {
         estimatedTime: this._estimatedTime,
         roundTime: true,
         width,
+        seed: this._globalConfig.seed,
       })}`;
     }
 
