@@ -12,7 +12,7 @@ test('prints useful error for environment methods after test is done', () => {
   const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
 
   expect(interestingLines).toMatchSnapshot();
-  expect(stderr.split('\n')[9]).toBe(
+  expect(stderr.split('\n')[10]).toBe(
     'ReferenceError: You are trying to access a property or method of the Jest environment after it has been torn down. From __tests__/afterTeardown.test.js.',
   );
 });
