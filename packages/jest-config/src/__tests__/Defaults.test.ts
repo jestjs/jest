@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {defaults} from '../index';
+import {defaults} from '../';
 
 test('get configuration defaults', () => {
   expect(defaults).toBeDefined();
