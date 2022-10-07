@@ -6,8 +6,8 @@
  *
  */
 
-import SuperTestClass, {TestClass} from './class-mocks-types';
-jest.mock('./class-mocks-types');
+import SuperTestClass, {TestClass} from './__fixtures__/class-mocks-types';
+jest.mock('./__fixtures__/class-mocks-types');
 
 describe('Testing the mocking of a class hierarchy defined in a single import', () => {
   it('can call an instance method - Auto-mocked class', () => {

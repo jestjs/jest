@@ -6,10 +6,10 @@
  *
  */
 
-import {SuperTestClass} from './SuperTestClass';
-import TestClass from './TestClass';
-jest.mock('./SuperTestClass');
-jest.mock('./TestClass');
+import {SuperTestClass} from './__fixtures__/SuperTestClass';
+import TestClass from './__fixtures__/TestClass';
+jest.mock('./__fixtures__/SuperTestClass');
+jest.mock('./__fixtures__/TestClass');
 
 describe('Testing the mocking of a class hierarchy defined in multiple imports', () => {
   it('can call an instance method - Auto-mocked class', () => {
