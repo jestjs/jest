@@ -158,7 +158,7 @@ export const copyDir = (src: string, dest: string) => {
 };
 
 export const replaceSeed = (str: string) =>
-  str.replace(/Seed:        (-?\d+)/g, 'Seed:       <<REPLACED>>');
+  str.replace(/Seed: {8}(-?\d+)/g, 'Seed:       <<REPLACED>>');
 
 export const replaceTime = (str: string) =>
   str

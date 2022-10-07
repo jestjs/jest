@@ -6,5 +6,5 @@
  */
 
 test('getSeed', () => {
-  expect(jest.getSeed()).toEqual(1234);
+  expect(jest.getSeed()).toBe(1234);
 });

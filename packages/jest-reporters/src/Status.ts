@@ -184,8 +184,8 @@ export default class Status {
         currentTestCases: this._currentTestCases,
         estimatedTime: this._estimatedTime,
         roundTime: true,
-        width,
         seed: this._globalConfig.seed,
+        width,
       })}`;
     }
 

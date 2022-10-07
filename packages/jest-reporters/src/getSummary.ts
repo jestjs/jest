@@ -118,7 +118,6 @@ export default function getSummary(
     chalk.bold('Seed:        ') + (options?.seed?.toString() ?? 'XXXX')
   }`;
 
-
   const suites = `${
     chalk.bold('Test Suites: ') +
     (suitesFailed ? `${chalk.bold.red(`${suitesFailed} failed`)}, ` : '') +
