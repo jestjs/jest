@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as assert from 'assert';
+import {strict as assert} from 'assert';
 import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
