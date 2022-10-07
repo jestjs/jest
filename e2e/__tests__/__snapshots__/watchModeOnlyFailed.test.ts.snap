@@ -35,7 +35,8 @@ exports[`can press "f" to run only failed tests: test results 2`] = `
 `;
 
 exports[`can press "f" to run only failed tests: test summary 1`] = `
-"Test Suites: 1 failed, 1 passed, 2 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 passed, 2 total
 Tests:       1 failed, 1 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -43,7 +44,8 @@ Ran all test suites."
 `;
 
 exports[`can press "f" to run only failed tests: test summary 2`] = `
-"Test Suites: 1 failed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

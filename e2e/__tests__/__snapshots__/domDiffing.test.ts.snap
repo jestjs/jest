@@ -43,6 +43,7 @@ exports[`should work without error 1`] = `
 
       at Object.toBe (__tests__/dom.test.js:18:41)
 
+Seed:       <<REPLACED>>
 Test Suites: 1 failed, 1 total
 Tests:       2 failed, 2 total
 Snapshots:   0 total

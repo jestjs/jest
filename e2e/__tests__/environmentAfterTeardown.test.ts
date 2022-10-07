@@ -9,7 +9,7 @@ import runJest from '../runJest';
 
 test('prints useful error for environment methods after test is done', () => {
   const {stderr} = runJest('environment-after-teardown');
-  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
+  const interestingLines = stderr.split('\n').slice(10, 19).join('\n');
 
   expect(interestingLines).toMatchSnapshot();
   expect(stderr.split('\n')[10]).toBe(

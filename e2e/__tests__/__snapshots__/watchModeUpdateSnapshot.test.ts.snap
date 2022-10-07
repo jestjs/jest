@@ -33,7 +33,8 @@ Snapshot Summary
 `;
 
 exports[`can press "u" to update snapshots: test summary 1`] = `
-"Test Suites: 1 failed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   1 failed, 1 total
 Time:        <<REPLACED>>
@@ -41,7 +42,8 @@ Ran all test suites."
 `;
 
 exports[`can press "u" to update snapshots: test summary 2`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   1 updated, 1 total
 Time:        <<REPLACED>>

@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`testMatch should able to match file with cjs and mjs extension 1`] = `
-"Test Suites: 2 passed, 2 total
+"Seed:       <<REPLACED>>
+Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

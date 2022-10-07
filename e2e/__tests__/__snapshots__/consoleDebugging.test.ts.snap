@@ -14,7 +14,8 @@ exports[`console debugging with --verbose 2`] = `
 `;
 
 exports[`console debugging with --verbose 3`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   1 passed, 1 total
 Time:        <<REPLACED>>

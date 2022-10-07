@@ -6,7 +6,8 @@ exports[`does not exceed the command line testTimeout 1`] = `
 `;
 
 exports[`does not exceed the command line testTimeout 2`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -19,7 +20,8 @@ exports[`does not exceed the timeout 1`] = `
 `;
 
 exports[`does not exceed the timeout 2`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -27,7 +29,8 @@ Ran all test suites."
 `;
 
 exports[`exceeds the command line testTimeout 1`] = `
-"Test Suites: 1 failed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -35,7 +38,8 @@ Ran all test suites."
 `;
 
 exports[`exceeds the timeout 1`] = `
-"Test Suites: 1 failed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

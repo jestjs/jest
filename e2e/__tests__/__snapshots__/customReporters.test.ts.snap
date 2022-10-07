@@ -78,7 +78,8 @@ exports[`Custom Reporters Integration default reporters enabled 1`] = `
 `;
 
 exports[`Custom Reporters Integration default reporters enabled 2`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
