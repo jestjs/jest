@@ -34,6 +34,16 @@ test('if --showSeed is not present the report will not show the seed', () => {
   expect(summary).toMatchSnapshot();
 });
 
+test('if showSeed is present in the config the report will show the seed', () => {
+  const dir = path.resolve(__dirname, '../jest-object');
+
+  const {stderr} = runJest(dir, ['--seed', '1234', '--ci', '--config', 'different-config.json']);
+
+  const summary = extractSummary(stderr).summary;
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('--seed --showSeed will show the seed in the report', () => {
   const dir = path.resolve(__dirname, '../jest-object');
 

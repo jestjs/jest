@@ -25,3 +25,12 @@ Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."
 `;
+
+exports[`if showSeed is present in the config the report will show the seed 1`] = `
+"Seed:        1234
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
