@@ -10,8 +10,7 @@ exports[`basic test constructs 1`] = `
 `;
 
 exports[`basic test constructs 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -31,8 +30,7 @@ exports[`cannot have describe with no implementation 1`] = `
 `;
 
 exports[`cannot have describe with no implementation 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -54,8 +52,7 @@ exports[`cannot test with no implementation 1`] = `
 `;
 
 exports[`cannot test with no implementation 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -77,8 +74,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
 `;
 
 exports[`cannot test with no implementation with expand arg 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 failed, 1 total
+"Test Suites: 1 failed, 1 total
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -92,8 +88,7 @@ exports[`function as describe() descriptor 1`] = `
 `;
 
 exports[`function as describe() descriptor 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -106,8 +101,7 @@ exports[`function as it() descriptor 1`] = `
 `;
 
 exports[`function as it() descriptor 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -123,8 +117,7 @@ exports[`interleaved describe and test children order 1`] = `
 `;
 
 exports[`interleaved describe and test children order 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -147,8 +140,7 @@ exports[`only 1`] = `
 `;
 
 exports[`only 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -171,8 +163,7 @@ exports[`only with expand arg 1`] = `
 `;
 
 exports[`only with expand arg 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -196,8 +187,7 @@ exports[`skips 1`] = `
 `;
 
 exports[`skips 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -221,8 +211,7 @@ exports[`skips with expand arg 1`] = `
 `;
 
 exports[`skips with expand arg 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

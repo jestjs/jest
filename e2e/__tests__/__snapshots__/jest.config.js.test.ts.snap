@@ -15,8 +15,7 @@ exports[`traverses directory tree up until it finds jest.config 2`] = `
 `;
 
 exports[`traverses directory tree up until it finds jest.config 3`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -29,8 +28,7 @@ exports[`works with jest.config.js 1`] = `
 `;
 
 exports[`works with jest.config.js 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

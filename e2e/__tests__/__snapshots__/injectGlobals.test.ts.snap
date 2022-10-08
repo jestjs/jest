@@ -6,8 +6,7 @@ exports[`globals are undefined if passed \`false\` from CLI 1`] = `
 `;
 
 exports[`globals are undefined if passed \`false\` from CLI 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -20,8 +19,7 @@ exports[`globals are undefined if passed \`false\` from config 1`] = `
 `;
 
 exports[`globals are undefined if passed \`false\` from config 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

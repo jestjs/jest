@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 1`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -24,8 +23,7 @@ All files |     100 |      100 |     100 |     100 |
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 1`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -48,8 +46,7 @@ All files |     100 |      100 |     100 |     100 |
 `;
 
 exports[`--findRelatedTests flag generates coverage report for filename 4`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

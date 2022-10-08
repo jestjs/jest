@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`can pass projects or global config 1`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 3 failed, 3 total
+"Test Suites: 3 failed, 3 total
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -10,8 +9,7 @@ Ran all test suites."
 `;
 
 exports[`can pass projects or global config 2`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -25,8 +23,7 @@ PASS project2/__tests__/file1.test.js"
 `;
 
 exports[`can pass projects or global config 4`] = `
-"Seed:       <<REPLACED>>
-Test Suites: 3 passed, 3 total
+"Test Suites: 3 passed, 3 total
 Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
