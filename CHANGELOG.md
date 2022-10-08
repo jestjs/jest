@@ -18,6 +18,8 @@
 
 ### Performance
 
+- `[jest-runner]` Do not instrument v8 coverage data if coverage should not be collected [#13282](https://github.com/facebook/jest/pull/13282)
+
 ## 29.1.2
 
 ### Fixes

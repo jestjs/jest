@@ -280,6 +280,7 @@ async function runTestInternal(
 
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
+    globalConfig.collectCoverage &&
     globalConfig.coverageProvider === 'v8' &&
     typeof environment.getVmContext === 'function';
 
