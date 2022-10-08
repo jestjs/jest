@@ -914,7 +914,7 @@ Every time Jest runs a seed value is randomly generated which you could use in a
 
 :::tip
 
-You can manually set this value via the [`--seed=<num>`](CLI.md#--seednum) CLI argument.
+Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test report summary. To manually set the value of the seed use [`--seed=<num>`](CLI.md#--seednum) CLI argument.
 
 :::
 
