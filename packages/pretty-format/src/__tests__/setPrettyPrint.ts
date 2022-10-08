@@ -24,7 +24,7 @@ const setPrettyPrint = (plugins: Plugins) => {
       const prettyFormatted = prettyFormat(received, {plugins, ...options});
       const pass = prettyFormatted === expected;
 
-      const message = pass
+      const message: () => string = pass
         ? () =>
             `${this.utils.matcherHint('.not.toBe')}\n\n` +
             'Expected value to not be:\n' +
@@ -41,7 +41,7 @@ const setPrettyPrint = (plugins: Plugins) => {
               `  ${this.utils.printExpected(expected)}\n` +
               'Received:\n' +
               `  ${this.utils.printReceived(prettyFormatted)}${
-                diffString ? `\n\nDifference:\n\n${diffString}` : ''
+                diffString != null ? `\n\nDifference:\n\n${diffString}` : ''
               }`
             );
           };
