@@ -4,7 +4,7 @@ exports[`getSummary does not print seed value when showSeed is false 1`] = `
 "<bold>Test Suites: </intensity>0 total
 <bold>Tests:       </intensity>0 total
 <bold>Snapshots:   </intensity>0 total
-<bold>Time:</intensity>        1665268154.244 s"
+<bold>Time:</intensity>        0.01 s"
 `;
 
 exports[`getSummary does print seed value when showSeed is true 1`] = `
@@ -12,5 +12,5 @@ exports[`getSummary does print seed value when showSeed is true 1`] = `
 <bold>Test Suites: </intensity>0 total
 <bold>Tests:       </intensity>0 total
 <bold>Snapshots:   </intensity>0 total
-<bold>Time:</intensity>        1665268154.248 s"
+<bold>Time:</intensity>        0.01 s"
 `;

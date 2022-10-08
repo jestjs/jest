@@ -7,6 +7,16 @@
 import {makeEmptyAggregatedTestResult} from '@jest/test-result';
 import getSummary from '../getSummary';
 
+const now = Date.now;
+
+beforeEach(() => {
+  Date.now = () => 10;
+});
+
+afterEach(() => {
+  Date.now = now;
+});
+
 describe('getSummary', () => {
   test('does not print seed value when showSeed is false', () => {
     const summary = getSummary(makeEmptyAggregatedTestResult(), {
