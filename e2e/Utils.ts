@@ -204,7 +204,7 @@ export const extractSummary = (stdout: string) => {
   const match = stdout
     .replace(/(?:\\[rn])+/g, '\n')
     .match(
-      /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
+      /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
     );
   if (!match) {
     throw new Error(dedent`
@@ -214,7 +214,7 @@ export const extractSummary = (stdout: string) => {
     `);
   }
 
-  const summary = replaceSeed(replaceTime(match[0]));
+  const summary = replaceTime(match[0]);
 
   const rest = stdout
     .replace(match[0], '')
@@ -257,7 +257,7 @@ export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
   const regex =
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+    /(Seed:.*\n)?Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];

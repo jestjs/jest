@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`--seed --showSeed will show the seed in the report 1`] = `
+"Seed:       <<REPLACED>>
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`--seed will force the report to show the seed in the report 1`] = `
+"Seed:       <<REPLACED>>
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`--showSeed changes report to output seed 1`] = `
+"Seed:       <<REPLACED>>
+Test Suites: 2 failed, 5 passed, 7 total
+Tests:       15 failed, 11 skipped, 53 passed, 79 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
