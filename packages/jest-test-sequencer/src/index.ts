@@ -16,7 +16,7 @@ const FAIL = 0;
 const SUCCESS = 1;
 
 type Cache = {
-  [key: string]: [0 | 1, number];
+  [key: string]: [0 | 1, number] | undefined;
 };
 
 export type ShardOptions = {
@@ -57,7 +57,7 @@ export default class TestSequencer {
         try {
           this._cache.set(
             context,
-            JSON.parse(fs.readFileSync(cachePath, 'utf8')),
+            JSON.parse(fs.readFileSync(cachePath, 'utf8')) as Cache,
           );
         } catch {}
       }
@@ -156,11 +156,15 @@ export default class TestSequencer {
      */
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
-      stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][0] === FAIL;
-    const time = (cache: Cache, test: Test) =>
-      cache[test.path] && cache[test.path][1];
+      stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
+    const hasFailed = (cache: Cache, test: Test) => {
+      const cachedTest = cache[test.path];
+      return cachedTest && cachedTest[0] === FAIL;
+    };
+    const time = (cache: Cache, test: Test) => {
+      const cachedTest = cache[test.path];
+      return cachedTest && cachedTest[1];
+    };
 
     tests.forEach(test => (test.duration = time(this._getCache(test), test)));
     return tests.sort((testA, testB) => {
@@ -170,7 +174,7 @@ export default class TestSequencer {
       const failedB = hasFailed(cacheB, testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
-        return failedA ? -1 : 1;
+        return failedA === true ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
         // If only one of two tests has timing information, run it last
         return hasTimeA ? 1 : -1;
@@ -191,11 +195,12 @@ export default class TestSequencer {
   }
 
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
-    const map = Object.create(null);
+    const map = Object.create(null) as Record<string, Test | undefined>;
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {
-      if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
-        const cache = this._getCache(map[testResult.testFilePath]);
+      const test = map[testResult.testFilePath];
+      if (test && !testResult.skipped) {
+        const cache = this._getCache(test);
         const perf = testResult.perfStats;
         cache[testResult.testFilePath] = [
           testResult.numFailingTests ? FAIL : SUCCESS,
