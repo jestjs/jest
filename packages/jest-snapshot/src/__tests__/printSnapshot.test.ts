@@ -827,7 +827,6 @@ describe('printSnapshotAndReceived', () => {
       serialize(received),
       received,
       expand,
-      {},
     );
 
   // Simulate custom raw string serialization.
@@ -835,8 +834,7 @@ describe('printSnapshotAndReceived', () => {
     expected: string,
     received: string,
     expand: boolean,
-  ): string =>
-    printSnapshotAndReceived(expected, received, received, expand, {});
+  ): string => printSnapshotAndReceived(expected, received, received, expand);
 
   describe('backtick', () => {
     test('single line expected and received', () => {
@@ -1000,13 +998,7 @@ describe('printSnapshotAndReceived', () => {
 
       test('both are less', () => {
         const less2 = 'multi\nline';
-        const difference = printSnapshotAndReceived(
-          less2,
-          less,
-          less,
-          true,
-          {},
-        );
+        const difference = printSnapshotAndReceived(less2, less, less, true);
 
         expect(difference).toMatch('- multi');
         expect(difference).toMatch('- line');
@@ -1015,7 +1007,7 @@ describe('printSnapshotAndReceived', () => {
       });
 
       test('expected is more', () => {
-        const difference = printSnapshotAndReceived(more, less, less, true, {});
+        const difference = printSnapshotAndReceived(more, less, less, true);
 
         expect(difference).toMatch('- multi line');
         expect(difference).toMatch('+ single line');
@@ -1023,7 +1015,7 @@ describe('printSnapshotAndReceived', () => {
       });
 
       test('received is more', () => {
-        const difference = printSnapshotAndReceived(less, more, more, true, {});
+        const difference = printSnapshotAndReceived(less, more, more, true);
 
         expect(difference).toMatch('- single line');
         expect(difference).toMatch('+ multi line');
@@ -1046,7 +1038,6 @@ describe('printSnapshotAndReceived', () => {
           lessQuoted,
           less,
           true,
-          {},
         );
 
         expect(stringified).toMatch('Received:');
@@ -1060,7 +1051,6 @@ describe('printSnapshotAndReceived', () => {
           lessQuoted,
           less,
           true,
-          {},
         );
 
         expect(stringified).toMatch('Received:');
@@ -1075,7 +1065,6 @@ describe('printSnapshotAndReceived', () => {
           moreQuoted,
           more,
           true,
-          {},
         );
 
         expect(stringified).toMatch('Snapshot:');
