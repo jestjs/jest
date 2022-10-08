@@ -157,14 +157,9 @@ export default class TestSequencer {
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
-    const hasFailed = (cache: Cache, test: Test) => {
-      const cachedTest = cache[test.path];
-      return cachedTest && cachedTest[0] === FAIL;
-    };
-    const time = (cache: Cache, test: Test) => {
-      const cachedTest = cache[test.path];
-      return cachedTest && cachedTest[1];
-    };
+    const hasFailed = (cache: Cache, test: Test) =>
+      cache[test.path]?.[0] === FAIL;
+    const time = (cache: Cache, test: Test) => cache[test.path]?.[1];
 
     tests.forEach(test => (test.duration = time(this._getCache(test), test)));
     return tests.sort((testA, testB) => {
@@ -199,7 +194,7 @@ export default class TestSequencer {
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {
       const test = map[testResult.testFilePath];
-      if (test && !testResult.skipped) {
+      if (test != null && !testResult.skipped) {
         const cache = this._getCache(test);
         const perf = testResult.perfStats;
         cache[testResult.testFilePath] = [
