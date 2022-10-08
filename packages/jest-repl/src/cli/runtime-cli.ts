@@ -106,7 +106,7 @@ export async function run(
         sourcesRelatedToTestsInChangedFiles: undefined,
       },
       filePath,
-      globalConfig.seed,
+      globalConfig,
     );
 
     for (const path of projectConfig.setupFiles) {

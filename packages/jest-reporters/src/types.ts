@@ -60,6 +60,6 @@ export type SummaryOptions = {
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;
-  seed?: number;
   showSeed?: boolean;
+  seed?: number;
 };

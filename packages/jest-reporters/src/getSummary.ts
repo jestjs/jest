@@ -114,9 +114,17 @@ export default function getSummary(
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
-  const seed = `${
-    chalk.bold('Seed:        ') + (options?.seed?.toString() ?? 'XXXX')
-  }`;
+  const optionalLines = [] as string[];
+
+  if (options?.showSeed) {
+    if (options?.seed === undefined) {
+      throw new Error
+    }
+    const seed = `${
+      chalk.bold('Seed:        ') + options.seed.toString()
+    }`;
+    optionalLines.push(seed);
+  }
 
   const suites = `${
     chalk.bold('Test Suites: ') +
@@ -187,8 +195,9 @@ export default function getSummary(
   }${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
+
   return [
-    ...(options?.showSeed ? [seed] : []),
+    ...optionalLines,
     suites,
     tests,
     snapshots,

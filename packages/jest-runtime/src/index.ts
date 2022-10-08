@@ -155,6 +155,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
+  private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
@@ -181,7 +182,6 @@ export default class Runtime {
   private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
-  private _seed: number;
   private _shouldAutoMock: boolean;
   private readonly _shouldMockModuleCache: Map<string, boolean>;
   private readonly _shouldUnmockTransitiveDependenciesCache: Map<
@@ -214,13 +214,15 @@ export default class Runtime {
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
-    seed: number,
+    // TODO: make mandatory in Jest 30
+    globalConfig?: Config.GlobalConfig,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
     this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
+    this._globalConfig = globalConfig;
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
     this._internalModuleRegistry = new Map();
@@ -244,7 +246,6 @@ export default class Runtime {
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = transformer;
-    this._seed = seed;
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -2127,12 +2128,13 @@ export default class Runtime {
         }
       },
       getSeed: () => {
-        if (this._seed === undefined) {
+        // TODO: remove this check in Jest 30
+        if (this._globalConfig?.seed === undefined) {
           throw new Error(
             'The seed value is not available. Likely you are using older versions of the jest dependencies.',
           );
         }
-        return this._seed;
+        return this._globalConfig?.seed;
       },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
