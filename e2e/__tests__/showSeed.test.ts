@@ -24,12 +24,12 @@ test('--showSeed changes report to output seed', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('--seed will force the report to show the seed in the report', () => {
+test('if --showSeed is not present the report will not show the seed', () => {
   const dir = path.resolve(__dirname, '../jest-object');
 
   const {stderr} = runJest(dir, ['--seed', '1234', '--ci']);
 
-  const summary = replaceSeed(extractSummary(stderr).summary);
+  const summary = extractSummary(stderr).summary;
 
   expect(summary).toMatchSnapshot();
 });

@@ -15,7 +15,7 @@ test('passes with seed', () => {
   expect(result.exitCode).toBe(0);
 });
 
-test('failes with wrong seed', () => {
+test('fails with wrong seed', () => {
   const result = runJest(dir, ['get-seed.test.js', '--seed', '1111']);
   expect(result.exitCode).toBe(1);
 });
