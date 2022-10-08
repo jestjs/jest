@@ -121,11 +121,11 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   worker._worker.emit('exit');
 
   expect(workerThreads).toHaveBeenCalledTimes(5);
-  expect(onProcessStart).toBeCalledWith(worker);
+  expect(onProcessStart).toHaveBeenCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');
-  expect(onProcessEnd.mock.calls[0][1]).toBe(null);
+  expect(onProcessEnd.mock.calls[0][1]).toBeNull();
 });
 
 it('provides stdout and stderr from the threads', async () => {
@@ -145,8 +145,8 @@ it('provides stdout and stderr from the threads', async () => {
   worker._worker.stderr.end('Workers!', 'utf8');
   worker._worker.emit('exit', 0);
 
-  await expect(getStream(stdout)).resolves.toEqual('Hello World!');
-  await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');
+  await expect(getStream(stdout)).resolves.toBe('Hello World!');
+  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
 });
 
 it('sends the task to the thread', () => {

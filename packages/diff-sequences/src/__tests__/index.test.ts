@@ -15,7 +15,8 @@ describe('invalid arg', () => {
   describe('length', () => {
     test('is not a number', () => {
       expect(() => {
-        diff('0' as any, 0, isCommon, foundSubsequence);
+        // @ts-expect-error: Testing runtime errors here
+        diff('0', 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Infinity is not a safe integer', () => {
@@ -49,12 +50,14 @@ describe('invalid arg', () => {
   describe('callback', () => {
     test('null is not a function', () => {
       expect(() => {
-        diff(0, 0, null as any, foundSubsequence);
+        // @ts-expect-error: Testing runtime errors here
+        diff(0, 0, null, foundSubsequence);
       }).toThrow(/isCommon/);
     });
     test('undefined is not a function', () => {
       expect(() => {
-        diff(0, 0, isCommon, undefined as any);
+        // @ts-expect-error: Testing runtime errors here
+        diff(0, 0, isCommon, undefined);
       }).toThrow(/foundSubsequence/);
     });
   });
@@ -97,10 +100,10 @@ describe('input callback encapsulates comparison', () => {
     const b = [-0];
 
     test('are not common according to Object.is method', () => {
-      expect(countCommonObjectIs(a, b)).toEqual(0);
+      expect(countCommonObjectIs(a, b)).toBe(0);
     });
     test('are common according to === operator', () => {
-      expect(countCommonStrictEquality(a, b)).toEqual(1);
+      expect(countCommonStrictEquality(a, b)).toBe(1);
     });
   });
 
@@ -109,10 +112,10 @@ describe('input callback encapsulates comparison', () => {
     const a = [NaN];
 
     test('is common according to Object.is method', () => {
-      expect(countCommonObjectIs(a, a)).toEqual(1);
+      expect(countCommonObjectIs(a, a)).toBe(1);
     });
     test('is not common according to === operator', () => {
-      expect(countCommonStrictEquality(a, a)).toEqual(0);
+      expect(countCommonStrictEquality(a, a)).toBe(0);
     });
   });
 });
@@ -290,13 +293,13 @@ describe('no common items', () => {
     };
 
     test('of a', () => {
-      expect(countItemsNegativeZero(-0, 1)).toEqual(0);
+      expect(countItemsNegativeZero(-0, 1)).toBe(0);
     });
     test('of b', () => {
-      expect(countItemsNegativeZero(1, -0)).toEqual(0);
+      expect(countItemsNegativeZero(1, -0)).toBe(0);
     });
     test('of a and b', () => {
-      expect(countItemsNegativeZero(-0, -0)).toEqual(0);
+      expect(countItemsNegativeZero(-0, -0)).toBe(0);
     });
   });
 

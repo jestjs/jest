@@ -82,26 +82,26 @@ describe('babel-plugin-jest-hoist', () => {
   it('does not throw during transform', () => {
     const object = {};
     object.__defineGetter__('foo', () => 'bar');
-    expect(object.foo).toEqual('bar');
+    expect(object.foo).toBe('bar');
   });
 
   it('hoists react unmock call before imports', () => {
-    expect(typeof React).toEqual('object');
-    expect(React.isValidElement.mock).toBe(undefined);
+    expect(typeof React).toBe('object');
+    expect(React.isValidElement.mock).toBeUndefined();
   });
 
   it('hoists unmocked modules before imports', () => {
-    expect(Unmocked._isMockFunction).toBe(undefined);
-    expect(new Unmocked().isUnmocked).toEqual(true);
+    expect(Unmocked._isMockFunction).toBeUndefined();
+    expect(new Unmocked().isUnmocked).toBe(true);
 
-    expect(c._isMockFunction).toBe(undefined);
-    expect(c()).toEqual('unmocked');
+    expect(c._isMockFunction).toBeUndefined();
+    expect(c()).toBe('unmocked');
 
-    expect(d._isMockFunction).toBe(undefined);
-    expect(d()).toEqual('unmocked');
+    expect(d._isMockFunction).toBeUndefined();
+    expect(d()).toBe('unmocked');
 
-    expect(e._isMock).toBe(undefined);
-    expect(e()).toEqual('unmocked');
+    expect(e._isMock).toBeUndefined();
+    expect(e()).toBe('unmocked');
   });
 
   it('hoists mock call with 2 arguments', () => {
@@ -119,29 +119,29 @@ describe('babel-plugin-jest-hoist', () => {
     globalThis.CALLS = 0;
 
     require('../__test_modules__/f');
-    expect(globalThis.CALLS).toEqual(1);
+    expect(globalThis.CALLS).toBe(1);
 
     require('../__test_modules__/f');
-    expect(globalThis.CALLS).toEqual(1);
+    expect(globalThis.CALLS).toBe(1);
 
     delete globalThis.CALLS;
   });
 
   it('does not hoist dontMock calls before imports', () => {
     expect(Mocked._isMockFunction).toBe(true);
-    expect(new Mocked().isMocked).toEqual(undefined);
+    expect(new Mocked().isMocked).toBeUndefined();
 
     expect(a._isMockFunction).toBe(true);
-    expect(a()).toEqual(undefined);
+    expect(a()).toBeUndefined();
 
     expect(b._isMockFunction).toBe(true);
-    expect(b()).toEqual(undefined);
+    expect(b()).toBeUndefined();
   });
 
   it('requires modules that also call jest.mock', () => {
     require('../mockFile');
     const mock = require('../banana');
-    expect(mock).toEqual('apple');
+    expect(mock).toBe('apple');
   });
 
   it('works with virtual modules', () => {

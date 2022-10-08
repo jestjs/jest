@@ -33,6 +33,7 @@ import {
 } from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
 import type {
+  FixedRawSourceMap,
   Options,
   ReducedTransformOptions,
   RequireAndTranspileModuleOptions,
@@ -45,7 +46,7 @@ import type {
   TransformerFactory,
 } from './types';
 // Use `require` to avoid TS rootDir
-const {version: VERSION} = require('../package.json');
+const {version: VERSION} = require('../package.json') as {version: string};
 
 type ProjectCache = {
   configString: string;
@@ -115,7 +116,7 @@ class ScriptTransformer {
     transformOptions: TransformOptions,
     transformerCacheKey: string | undefined,
   ): string {
-    if (transformerCacheKey) {
+    if (transformerCacheKey != null) {
       return createHash('sha256')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
@@ -140,7 +141,7 @@ class ScriptTransformer {
   ): string {
     const configString = this._cache.configString;
     const {transformer, transformerConfig = {}} =
-      this._getTransformer(filename) || {};
+      this._getTransformer(filename) ?? {};
     let transformerCacheKey = undefined;
 
     const transformOptions: TransformOptions = {
@@ -174,7 +175,7 @@ class ScriptTransformer {
   ): Promise<string> {
     const configString = this._cache.configString;
     const {transformer, transformerConfig = {}} =
-      this._getTransformer(filename) || {};
+      this._getTransformer(filename) ?? {};
     let transformerCacheKey = undefined;
 
     const transformOptions: TransformOptions = {
@@ -187,7 +188,7 @@ class ScriptTransformer {
 
     if (transformer) {
       const getCacheKey =
-        transformer.getCacheKeyAsync || transformer.getCacheKey;
+        transformer.getCacheKeyAsync ?? transformer.getCacheKey;
 
       if (typeof getCacheKey === 'function') {
         transformerCacheKey = await getCacheKey(
@@ -272,7 +273,7 @@ class ScriptTransformer {
           let transformer: Transformer | TransformerFactory<Transformer> =
             await requireOrImportModule(transformPath);
 
-          if (!transformer) {
+          if (transformer == null) {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
@@ -306,12 +307,12 @@ class ScriptTransformer {
 
     const transformPath = this._getTransformPath(filename);
 
-    if (!transformPath) {
+    if (transformPath == null) {
       return null;
     }
 
     const cached = this._transformCache.get(transformPath);
-    if (cached) {
+    if (cached != null) {
       return cached;
     }
 
@@ -358,7 +359,7 @@ class ScriptTransformer {
       sourceMaps: canMapToInput ? 'both' : false,
     });
 
-    if (result && result.code) {
+    if (result?.code != null) {
       return result as TransformResult;
     }
 
@@ -390,13 +391,13 @@ class ScriptTransformer {
       }
     }
 
-    if (!transformed.map) {
+    if (transformed.map == null || transformed.map === '') {
       try {
         //Could be a potential freeze here.
         //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
         const inlineSourceMap = sourcemapFromSource(transformed.code);
         if (inlineSourceMap) {
-          transformed.map = inlineSourceMap.toObject();
+          transformed.map = inlineSourceMap.toObject() as FixedRawSourceMap;
         }
       } catch {
         const transformPath = this._getTransformPath(filename);
@@ -413,7 +414,7 @@ class ScriptTransformer {
     // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
     let map = transformed.map;
     let code;
-    if (!transformWillInstrument && options.instrument) {
+    if (transformWillInstrument !== true && options.instrument) {
       /**
        * We can map the original source code to the instrumented code ONLY if
        * - the process of transforming the code produced a source map e.g. ts-jest
@@ -440,7 +441,7 @@ class ScriptTransformer {
       code = transformed.code;
     }
 
-    if (map) {
+    if (map != null) {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
 
@@ -467,13 +468,13 @@ class ScriptTransformer {
   ): TransformResult {
     const filename = tryRealpath(filepath);
     const {transformer, transformerConfig = {}} =
-      this._getTransformer(filename) || {};
+      this._getTransformer(filename) ?? {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
     const sourceMapPath = `${cacheFilePath}.map`;
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    if (code) {
+    if (code != null) {
       // This is broken: we return the code, and a path for the source map
       // directly from the cache. But, nothing ensures the source map actually
       // matches that source code. They could have gotten out-of-sync in case
@@ -522,7 +523,7 @@ class ScriptTransformer {
   ): Promise<TransformResult> {
     const filename = tryRealpath(filepath);
     const {transformer, transformerConfig = {}} =
-      this._getTransformer(filename) || {};
+      this._getTransformer(filename) ?? {};
     const cacheFilePath = await this._getFileCachePathAsync(
       filename,
       content,
@@ -532,7 +533,7 @@ class ScriptTransformer {
     // Ignore cache if `config.cache` is set (--no-cache)
     const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    if (code) {
+    if (code != null) {
       // This is broken: we return the code, and a path for the source map
       // directly from the cache. But, nothing ensures the source map actually
       // matches that source code. They could have gotten out-of-sync in case
@@ -550,7 +551,7 @@ class ScriptTransformer {
 
     if (transformer && this.shouldTransform(filename)) {
       shouldCallTransform = true;
-      const process = transformer.processAsync || transformer.process;
+      const process = transformer.processAsync ?? transformer.process;
 
       // This is probably dead code since `_getTransformerAsync` already asserts this
       invariant(
@@ -587,7 +588,7 @@ class ScriptTransformer {
   ): Promise<TransformResult> {
     const {isInternalModule} = options;
     let fileContent = fileSource ?? this._cacheFS.get(filename);
-    if (!fileContent) {
+    if (fileContent == null) {
       fileContent = fs.readFileSync(filename, 'utf8');
       this._cacheFS.set(filename, fileContent);
     }
@@ -597,7 +598,7 @@ class ScriptTransformer {
     let sourceMapPath: string | null = null;
 
     const willTransform =
-      !isInternalModule &&
+      isInternalModule !== true &&
       (transformOptions.instrument || this.shouldTransform(filename));
 
     try {
@@ -617,7 +618,10 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e: any) {
+    } catch (e) {
+      if (!(e instanceof Error)) {
+        throw e;
+      }
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -630,7 +634,7 @@ class ScriptTransformer {
   ): TransformResult {
     const {isInternalModule} = options;
     let fileContent = fileSource ?? this._cacheFS.get(filename);
-    if (!fileContent) {
+    if (fileContent == null) {
       fileContent = fs.readFileSync(filename, 'utf8');
       this._cacheFS.set(filename, fileContent);
     }
@@ -640,7 +644,7 @@ class ScriptTransformer {
     let sourceMapPath: string | null = null;
 
     const willTransform =
-      !isInternalModule &&
+      isInternalModule !== true &&
       (transformOptions.instrument || this.shouldTransform(filename));
 
     try {
@@ -660,7 +664,10 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e: any) {
+    } catch (e) {
+      if (!(e instanceof Error)) {
+        throw e;
+      }
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -728,7 +735,8 @@ class ScriptTransformer {
     fileSource: string,
   ): string {
     const {isInternalModule} = options;
-    const willTransform = !isInternalModule && this.shouldTransform(filename);
+    const willTransform =
+      isInternalModule !== true && this.shouldTransform(filename);
 
     if (willTransform) {
       const {code: transformedJsonSource} = this.transformSource(
@@ -797,7 +805,7 @@ class ScriptTransformer {
       const cbResult = callback(module);
 
       if (isPromise(cbResult)) {
-        return waitForPromiseWithCleanup(cbResult, revertHook).then(
+        return await waitForPromiseWithCleanup(cbResult, revertHook).then(
           () => module,
         );
       }
@@ -912,7 +920,10 @@ function readCodeCacheFile(cachePath: string): string | null {
 const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e: any) {
+  } catch (e) {
+    if (!(e instanceof Error)) {
+      throw e;
+    }
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;
     }
@@ -930,7 +941,7 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
  * legitimately won a cache write race and ignore the error.
  */
 const cacheWriteErrorSafeToIgnore = (
-  e: Error & {code: string},
+  e: NodeJS.ErrnoException,
   cachePath: string,
 ) =>
   process.platform === 'win32' &&
@@ -945,10 +956,16 @@ const readCacheFile = (cachePath: string): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e: any) {
+  } catch (e) {
+    if (!(e instanceof Error)) {
+      throw e;
+    }
     // on windows write-file-atomic is not atomic which can
     // result in this error
-    if (e.code === 'ENOENT' && process.platform === 'win32') {
+    if (
+      (e as NodeJS.ErrnoException).code === 'ENOENT' &&
+      process.platform === 'win32'
+    ) {
       return null;
     }
 
@@ -972,7 +989,7 @@ const getScriptCacheKey = (filename: string, instrument: boolean) => {
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (
-    !config.transformIgnorePatterns ||
+    config.transformIgnorePatterns == null ||
     config.transformIgnorePatterns.length === 0
   ) {
     return undefined;
@@ -999,7 +1016,7 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 };
 
 function invariant(condition: unknown, message?: string): asserts condition {
-  if (!condition) {
+  if (condition == null || condition === false || condition === '') {
     throw new Error(message);
   }
 }

@@ -86,20 +86,20 @@ describe('SearchSource', () => {
       });
 
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      expect(searchSource.isTestFilePath(path)).toEqual(true);
+      expect(searchSource.isTestFilePath(path)).toBe(true);
     });
 
     it('supports unix separators', () => {
       if (process.platform !== 'win32') {
         const path = '/path/to/__tests__/test.js';
-        expect(searchSource.isTestFilePath(path)).toEqual(true);
+        expect(searchSource.isTestFilePath(path)).toBe(true);
       }
     });
 
     it('supports win32 separators', () => {
       if (process.platform === 'win32') {
         const path = '\\path\\to\\__tests__\\test.js';
-        expect(searchSource.isTestFilePath(path)).toEqual(true);
+        expect(searchSource.isTestFilePath(path)).toBe(true);
       }
     });
   });

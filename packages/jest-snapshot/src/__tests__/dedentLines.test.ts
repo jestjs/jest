@@ -130,7 +130,7 @@ describe('dedentLines null', () => {
     ['object value multi-line', {key: 'multi\nline\nvalue'}],
     ['object key and value multi-line', {'multi\nline': '\nleading nl'}],
   ])('%s', (name, val) => {
-    expect(dedentLines(formatLines2(val))).toEqual(null);
+    expect(dedentLines(formatLines2(val))).toBeNull();
   });
 
   test('markup prop multi-line', () => {
@@ -145,7 +145,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup prop component with multi-line text', () => {
@@ -178,7 +178,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup text multi-line', () => {
@@ -205,7 +205,7 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup text multiple lines', () => {
@@ -232,18 +232,18 @@ describe('dedentLines null', () => {
     };
     const indented = formatLines2(val);
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup unclosed self-closing start tag', () => {
     const indented = ['<img', '  alt="Jest logo"', '  src="jest.svg"'];
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 
   test('markup unclosed because no end tag', () => {
     const indented = ['<p>', '  Delightful JavaScript testing'];
 
-    expect(dedentLines(indented)).toEqual(null);
+    expect(dedentLines(indented)).toBeNull();
   });
 });

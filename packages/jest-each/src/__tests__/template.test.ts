@@ -87,9 +87,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() =>
-          jest.mocked(globalMock).mock.calls[0][1](),
-        ).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           b: 1,
           expected: 2,
@@ -127,9 +125,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() =>
-          jest.mocked(globalMock).mock.calls[0][1](),
-        ).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           a: 1,
           expected: 2,
@@ -167,9 +163,7 @@ describe('jest-each', () => {
 
         const globalMock = get(globalTestMocks, keyPath);
 
-        expect(() =>
-          jest.mocked(globalMock).mock.calls[0][1](),
-        ).not.toThrowError();
+        expect(() => jest.mocked(globalMock).mock.calls[0][1]()).not.toThrow();
         expect(testCallBack).toHaveBeenCalledWith({
           '(๑ఠ‿ఠ๑)＜expected': 2,
           a: 1,
@@ -548,8 +542,9 @@ describe('jest-each', () => {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);
-          expect(done).toBe(undefined);
-          expect(arguments.length).toBe(1);
+          expect(done).toBeUndefined();
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

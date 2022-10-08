@@ -9,7 +9,7 @@ import {expectError, expectType} from 'tsd-lite';
 import {describe, test} from '@jest/globals';
 
 const list = [1, 2, 3];
-const tupleList: [number, number, string] = [1, 2, 'three'];
+const tupleList = ['one', 'two', 'three'] as const;
 const table = [
   [1, 2, 'three'],
   [3, 4, 'seven'],
@@ -28,57 +28,41 @@ const objectTable = [
 // test.each
 
 expectType<void>(
-  test.each(list)('some test', (a, b, expected) => {
+  test.each(list)('some test', a => {
     expectType<number>(a);
-    expectType<number>(b);
-    expectType<number>(expected);
   }),
 );
 expectType<void>(
-  test.each(list)(
-    'some test',
-    (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<number>(expected);
-    },
-    1000,
-  ),
+  test.each(list)('some test', a => {
+    expectType<number>(a);
+  }),
 );
 
 expectType<void>(
-  test.each(tupleList)('some test', (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  test.each(tupleList)('some test', b => {
+    expectType<'one' | 'two' | 'three'>(b);
   }),
 );
 expectType<void>(
   test.each(tupleList)(
     'some test',
-    (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    b => {
+      expectType<'one' | 'two' | 'three'>(b);
     },
     1000,
   ),
 );
 
 expectType<void>(
-  test.each([3, 4, 'seven'])('some test', (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  test.each([3, 4, 'seven'])('some test', c => {
+    expectType<string | number>(c);
   }),
 );
 expectType<void>(
   test.each([3, 4, 'seven'])(
     'some test',
-    (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    c => {
+      expectType<string | number>(c);
     },
     1000,
   ),
@@ -261,57 +245,45 @@ expectType<typeof test.each>(test.skip.each);
 // test.concurrent.each
 
 expectType<void>(
-  test.concurrent.each(list)('some test', async (a, b, expected) => {
+  test.concurrent.each(list)('some test', async a => {
     expectType<number>(a);
-    expectType<number>(b);
-    expectType<number>(expected);
   }),
 );
 expectType<void>(
   test.concurrent.each(list)(
     'some test',
-    async (a, b, expected) => {
+    async a => {
       expectType<number>(a);
-      expectType<number>(b);
-      expectType<number>(expected);
     },
     1000,
   ),
 );
 
 expectType<void>(
-  test.concurrent.each(tupleList)('some test', async (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  test.concurrent.each(tupleList)('some test', async b => {
+    expectType<'one' | 'two' | 'three'>(b);
   }),
 );
 expectType<void>(
   test.concurrent.each(tupleList)(
     'some test',
-    async (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    async b => {
+      expectType<'one' | 'two' | 'three'>(b);
     },
     1000,
   ),
 );
 
 expectType<void>(
-  test.concurrent.each([3, 4, 'seven'])('some test', async (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  test.concurrent.each([3, 4, 'seven'])('some test', async c => {
+    expectType<string | number>(c);
   }),
 );
 expectType<void>(
   test.concurrent.each([3, 4, 'seven'])(
     'some test',
-    async (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    async c => {
+      expectType<string | number>(c);
     },
     1000,
   ),
@@ -448,57 +420,45 @@ expectType<typeof test.concurrent.each>(test.concurrent.skip.each);
 // describe.each
 
 expectType<void>(
-  describe.each(list)('describe each', (a, b, expected) => {
+  describe.each(list)('describe each', a => {
     expectType<number>(a);
-    expectType<number>(b);
-    expectType<number>(expected);
   }),
 );
 expectType<void>(
   describe.each(list)(
     'describe each',
-    (a, b, expected) => {
+    a => {
       expectType<number>(a);
-      expectType<number>(b);
-      expectType<number>(expected);
     },
     1000,
   ),
 );
 
 expectType<void>(
-  describe.each(tupleList)('describe each', (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  describe.each(tupleList)('describe each', b => {
+    expectType<'one' | 'two' | 'three'>(b);
   }),
 );
 expectType<void>(
   describe.each(tupleList)(
     'describe each',
-    (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    b => {
+      expectType<'one' | 'two' | 'three'>(b);
     },
     1000,
   ),
 );
 
 expectType<void>(
-  describe.each([3, 4, 'seven'])('describe each', (a, b, expected) => {
-    expectType<number>(a);
-    expectType<number>(b);
-    expectType<string>(expected);
+  describe.each([3, 4, 'seven'])('describe each', c => {
+    expectType<string | number>(c);
   }),
 );
 expectType<void>(
   describe.each([3, 4, 'seven'])(
     'describe each',
-    (a, b, expected) => {
-      expectType<number>(a);
-      expectType<number>(b);
-      expectType<string>(expected);
+    c => {
+      expectType<string | number>(c);
     },
     1000,
   ),

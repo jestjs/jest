@@ -24,7 +24,7 @@ export interface Options
 }
 
 // `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
-interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
+export interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 

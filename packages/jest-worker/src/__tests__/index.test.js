@@ -100,13 +100,15 @@ it('exposes the right API using passed worker', () => {
 it('breaks if any of the forbidden methods is tried to be exposed', () => {
   expect(
     () => new Farm('/tmp/baz.js', {exposedMethods: ['getStdout']}),
-  ).toThrow();
+  ).toThrow('Cannot define a method called getStdout');
 
   expect(
     () => new Farm('/tmp/baz.js', {exposedMethods: ['getStderr']}),
-  ).toThrow();
+  ).toThrow('Cannot define a method called getStderr');
 
-  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow();
+  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow(
+    'Cannot define a method called end',
+  );
 });
 
 it('works with minimal options', () => {
@@ -165,7 +167,7 @@ it('calls doWork', async () => {
 
   const promise = farm.foo('car', 'plane');
 
-  expect(await promise).toEqual(42);
+  expect(await promise).toBe(42);
 });
 
 it('calls getStderr and getStdout from worker', async () => {
@@ -174,6 +176,6 @@ it('calls getStderr and getStdout from worker', async () => {
     numWorkers: 1,
   });
 
-  expect(farm.getStderr()('err')).toEqual('err');
-  expect(farm.getStdout()('out')).toEqual('out');
+  expect(farm.getStderr()('err')).toBe('err');
+  expect(farm.getStdout()('out')).toBe('out');
 });

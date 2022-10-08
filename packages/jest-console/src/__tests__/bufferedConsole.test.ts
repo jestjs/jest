@@ -20,7 +20,7 @@ describe('CustomConsole', () => {
   };
 
   beforeEach(() => {
-    _console = new BufferedConsole(() => null);
+    _console = new BufferedConsole();
   });
 
   describe('assert', () => {
@@ -57,7 +57,7 @@ describe('CustomConsole', () => {
       _console.count();
       _console.count();
 
-      expect(stdout()).toEqual('default: 1\ndefault: 2\ndefault: 3');
+      expect(stdout()).toBe('default: 1\ndefault: 2\ndefault: 3');
     });
 
     test('count using the a labeled counter', () => {
@@ -65,7 +65,7 @@ describe('CustomConsole', () => {
       _console.count('custom');
       _console.count('custom');
 
-      expect(stdout()).toEqual('custom: 1\ncustom: 2\ncustom: 3');
+      expect(stdout()).toBe('custom: 1\ncustom: 2\ncustom: 3');
     });
 
     test('countReset restarts default counter', () => {
@@ -73,7 +73,7 @@ describe('CustomConsole', () => {
       _console.count();
       _console.countReset();
       _console.count();
-      expect(stdout()).toEqual('default: 1\ndefault: 2\ndefault: 1');
+      expect(stdout()).toBe('default: 1\ndefault: 2\ndefault: 1');
     });
 
     test('countReset restarts custom counter', () => {
@@ -82,7 +82,7 @@ describe('CustomConsole', () => {
       _console.countReset('custom');
       _console.count('custom');
 
-      expect(stdout()).toEqual('custom: 1\ncustom: 2\ncustom: 1');
+      expect(stdout()).toBe('custom: 1\ncustom: 2\ncustom: 1');
     });
   });
 
@@ -93,7 +93,7 @@ describe('CustomConsole', () => {
       _console.group();
       _console.log('there');
 
-      expect(stdout()).toEqual('  hey\n    there');
+      expect(stdout()).toBe('  hey\n    there');
     });
 
     test('group with label', () => {
@@ -102,7 +102,7 @@ describe('CustomConsole', () => {
       _console.group('second');
       _console.log('there');
 
-      expect(stdout()).toEqual(`  ${chalk.bold('first')}
+      expect(stdout()).toBe(`  ${chalk.bold('first')}
   hey
     ${chalk.bold('second')}
     there`);
@@ -114,7 +114,7 @@ describe('CustomConsole', () => {
       _console.groupEnd();
       _console.log('there');
 
-      expect(stdout()).toEqual('  hey\nthere');
+      expect(stdout()).toBe('  hey\nthere');
     });
 
     test('groupEnd can not remove the indentation below the starting point', () => {
@@ -125,7 +125,7 @@ describe('CustomConsole', () => {
       _console.groupEnd();
       _console.log('there');
 
-      expect(stdout()).toEqual('  hey\nthere');
+      expect(stdout()).toBe('  hey\nthere');
     });
   });
 

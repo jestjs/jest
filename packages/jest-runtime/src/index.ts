@@ -171,7 +171,7 @@ export default class Runtime {
   private readonly _mockMetaDataCache: Map<string, MockMetadata<any>>;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMockRegistry: Map<string, VMModule>;
+  private readonly _moduleMockRegistry: Map<string, VMModule>;
   private readonly _moduleMockFactories: Map<string, () => unknown>;
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;

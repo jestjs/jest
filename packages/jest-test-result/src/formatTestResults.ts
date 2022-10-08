@@ -7,10 +7,8 @@
 
 import type {
   AggregatedResult,
-  AssertionResult,
   CodeCoverageFormatter,
   CodeCoverageReporter,
-  FormattedAssertionResult,
   FormattedTestResult,
   FormattedTestResults,
   TestResult,
@@ -21,55 +19,35 @@ const formatTestResult = (
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
 ): FormattedTestResult => {
-  const assertionResults = testResult.testResults.map(formatTestAssertion);
   if (testResult.testExecError) {
     const now = Date.now();
     return {
-      assertionResults,
+      assertionResults: testResult.testResults,
       coverage: {},
       endTime: now,
-      message: testResult.failureMessage
-        ? testResult.failureMessage
-        : testResult.testExecError.message,
+      message: testResult.failureMessage ?? testResult.testExecError.message,
       name: testResult.testFilePath,
       startTime: now,
       status: 'failed',
       summary: '',
     };
-  } else {
-    const allTestsPassed = testResult.numFailingTests === 0;
-    return {
-      assertionResults,
-      coverage: codeCoverageFormatter
+  }
+
+  const allTestsPassed = testResult.numFailingTests === 0;
+  return {
+    assertionResults: testResult.testResults,
+    coverage:
+      codeCoverageFormatter != null
         ? codeCoverageFormatter(testResult.coverage, reporter)
         : testResult.coverage,
-      endTime: testResult.perfStats.end,
-      message: testResult.failureMessage || '',
-      name: testResult.testFilePath,
-      startTime: testResult.perfStats.start,
-      status: allTestsPassed ? 'passed' : 'failed',
-      summary: '',
-    };
-  }
-};
-
-function formatTestAssertion(
-  assertion: AssertionResult,
-): FormattedAssertionResult {
-  const result: FormattedAssertionResult = {
-    ancestorTitles: assertion.ancestorTitles,
-    duration: assertion.duration,
-    failureMessages: null,
-    fullName: assertion.fullName,
-    location: assertion.location,
-    status: assertion.status,
-    title: assertion.title,
+    endTime: testResult.perfStats.end,
+    message: testResult.failureMessage ?? '',
+    name: testResult.testFilePath,
+    startTime: testResult.perfStats.start,
+    status: allTestsPassed ? 'passed' : 'failed',
+    summary: '',
   };
-  if (assertion.failureMessages) {
-    result.failureMessages = assertion.failureMessages;
-  }
-  return result;
-}
+};
 
 export default function formatTestResults(
   results: AggregatedResult,

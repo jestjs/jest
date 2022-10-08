@@ -112,9 +112,9 @@ describe('BaseWorkerPool', () => {
     });
 
     expect(Worker).toHaveBeenCalledTimes(3);
-    expect(Worker.mock.calls[0][0].workerId).toEqual(0);
-    expect(Worker.mock.calls[1][0].workerId).toEqual(1);
-    expect(Worker.mock.calls[2][0].workerId).toEqual(2);
+    expect(Worker.mock.calls[0][0].workerId).toBe(0);
+    expect(Worker.mock.calls[1][0].workerId).toBe(1);
+    expect(Worker.mock.calls[2][0].workerId).toBe(2);
   });
 
   it('aggregates all stdouts and stderrs from all workers', () => {
@@ -141,8 +141,8 @@ describe('BaseWorkerPool', () => {
       numWorkers: 2,
     });
 
-    expect(out.length).toBe(2);
-    expect(err.length).toBe(2);
+    expect(out).toHaveLength(2);
+    expect(err).toHaveLength(2);
 
     const stdout = jest.fn();
     const stderr = jest.fn();

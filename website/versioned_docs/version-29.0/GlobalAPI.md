@@ -212,11 +212,11 @@ const binaryStringToNumber = binString => {
 describe('binaryStringToNumber', () => {
   describe('given an invalid binary string', () => {
     test('composed of non-numbers throws CustomError', () => {
-      expect(() => binaryStringToNumber('abc')).toThrowError(CustomError);
+      expect(() => binaryStringToNumber('abc')).toThrow(CustomError);
     });
 
     test('with extra whitespace throws CustomError', () => {
-      expect(() => binaryStringToNumber('  100')).toThrowError(CustomError);
+      expect(() => binaryStringToNumber('  100')).toThrow(CustomError);
     });
   });
 

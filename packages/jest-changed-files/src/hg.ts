@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import {types} from 'util';
 import execa = require('execa');
 import type {SCMAdapter} from './types';
 
@@ -17,9 +18,12 @@ const adapter: SCMAdapter = {
     const includePaths = options.includePaths ?? [];
 
     const args = ['status', '-amnu'];
-    if (options.withAncestor) {
+    if (options.withAncestor === true) {
       args.push('--rev', 'first(min(!public() & ::.)^+.^)');
-    } else if (options.changedSince) {
+    } else if (
+      options.changedSince != null &&
+      options.changedSince.length > 0
+    ) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options.lastCommit === true) {
       args.push('--change', '.');
@@ -30,9 +34,12 @@ const adapter: SCMAdapter = {
 
     try {
       result = await execa('hg', args, {cwd, env});
-    } catch (e: any) {
-      // TODO: Should we keep the original `message`?
-      e.message = e.stderr;
+    } catch (e) {
+      if (types.isNativeError(e)) {
+        const err = e as execa.ExecaError;
+        // TODO: Should we keep the original `message`?
+        err.message = err.stderr;
+      }
 
       throw e;
     }

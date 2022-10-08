@@ -32,7 +32,7 @@ import {
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
   expect(keyToTestName('abc cde   12')).toBe('abc cde  ');
-  expect(() => keyToTestName('abc cde')).toThrowError(
+  expect(() => keyToTestName('abc cde')).toThrow(
     'Snapshot keys must end with a number.',
   );
 });
@@ -49,7 +49,7 @@ test('saveSnapshotFile() works with \r\n', () => {
   };
 
   saveSnapshotFile(data, filename);
-  expect(fs.writeFileSync).toBeCalledWith(
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -63,7 +63,7 @@ test('saveSnapshotFile() works with \r', () => {
   };
 
   saveSnapshotFile(data, filename);
-  expect(fs.writeFileSync).toBeCalledWith(
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -77,7 +77,7 @@ test('getSnapshotData() throws when no snapshot version', () => {
     .mockImplementation(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
   const update = 'none';
 
-  expect(() => getSnapshotData(filename, update)).toThrowError(
+  expect(() => getSnapshotData(filename, update)).toThrow(
     chalk.red(
       `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
         'Jest 19 introduced versioned snapshots to ensure all developers on ' +
@@ -98,7 +98,7 @@ test('getSnapshotData() throws for older snapshot version', () => {
     );
   const update = 'none';
 
-  expect(() => getSnapshotData(filename, update)).toThrowError(
+  expect(() => getSnapshotData(filename, update)).toThrow(
     `${chalk.red(
       `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
         'file associated with this test is outdated. The snapshot file ' +
@@ -121,7 +121,7 @@ test('getSnapshotData() throws for newer snapshot version', () => {
     );
   const update = 'none';
 
-  expect(() => getSnapshotData(filename, update)).toThrowError(
+  expect(() => getSnapshotData(filename, update)).toThrow(
     `${chalk.red(
       `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
         'snapshot file indicates that this project is meant to be used ' +

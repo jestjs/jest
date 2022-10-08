@@ -211,9 +211,7 @@ function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
   }
   return keys.concat(
     (Object.getOwnPropertySymbols(obj) as Array<any>).filter(
-      symbol =>
-        (Object.getOwnPropertyDescriptor(obj, symbol) as PropertyDescriptor)
-          .enumerable,
+      symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
     ),
   );
 }

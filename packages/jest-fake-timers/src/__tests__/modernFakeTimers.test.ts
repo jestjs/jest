@@ -20,7 +20,7 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
-      expect(global.setTimeout).not.toBe(undefined);
+      expect(global.setTimeout).toBeDefined();
     });
 
     it('installs clearTimeout mock', () => {
@@ -32,7 +32,7 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
-      expect(global.clearTimeout).not.toBe(undefined);
+      expect(global.clearTimeout).toBeDefined();
     });
 
     it('installs setInterval mock', () => {
@@ -44,7 +44,7 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
-      expect(global.setInterval).not.toBe(undefined);
+      expect(global.setInterval).toBeDefined();
     });
 
     it('installs clearInterval mock', () => {
@@ -56,7 +56,7 @@ describe('FakeTimers', () => {
       } as unknown as typeof globalThis;
       const timers = new FakeTimers({config: makeProjectConfig(), global});
       timers.useFakeTimers();
-      expect(global.clearInterval).not.toBe(undefined);
+      expect(global.clearInterval).toBeDefined();
     });
 
     it('mocks process.nextTick if it exists on global', () => {
@@ -738,7 +738,7 @@ describe('FakeTimers', () => {
       }, 0);
 
       timers.runOnlyPendingTimers();
-      expect(fn).not.toBeCalled();
+      expect(fn).not.toHaveBeenCalled();
     });
   });
 
@@ -932,15 +932,15 @@ describe('FakeTimers', () => {
       fakedGlobal.setTimeout(() => {}, 0);
       fakedGlobal.setTimeout(() => {}, 10);
 
-      expect(timers.getTimerCount()).toEqual(3);
+      expect(timers.getTimerCount()).toBe(3);
 
       timers.advanceTimersByTime(5);
 
-      expect(timers.getTimerCount()).toEqual(1);
+      expect(timers.getTimerCount()).toBe(1);
 
       timers.advanceTimersByTime(5);
 
-      expect(timers.getTimerCount()).toEqual(0);
+      expect(timers.getTimerCount()).toBe(0);
     });
 
     it('includes immediates and ticks', () => {
@@ -948,15 +948,15 @@ describe('FakeTimers', () => {
       fakedGlobal.setImmediate(() => {});
       process.nextTick(() => {});
 
-      expect(timers.getTimerCount()).toEqual(3);
+      expect(timers.getTimerCount()).toBe(3);
     });
 
     it('not includes cancelled immediates', () => {
       fakedGlobal.setImmediate(() => {});
-      expect(timers.getTimerCount()).toEqual(1);
+      expect(timers.getTimerCount()).toBe(1);
       timers.clearAllTimers();
 
-      expect(timers.getTimerCount()).toEqual(0);
+      expect(timers.getTimerCount()).toBe(0);
     });
   });
 
@@ -983,19 +983,19 @@ describe('FakeTimers', () => {
       fakedGlobal.setTimeout(() => {}, 2);
       fakedGlobal.setTimeout(() => {}, 100);
 
-      expect(timers.now()).toEqual(0);
+      expect(timers.now()).toBe(0);
 
       // This should run the 2ms timer, and then advance _now by 3ms
       timers.advanceTimersByTime(5);
-      expect(timers.now()).toEqual(5);
+      expect(timers.now()).toBe(5);
 
       // Advance _now even though there are no timers to run
       timers.advanceTimersByTime(5);
-      expect(timers.now()).toEqual(10);
+      expect(timers.now()).toBe(10);
 
       // Run up to the 100ms timer
       timers.runAllTimers();
-      expect(timers.now()).toEqual(100);
+      expect(timers.now()).toBe(100);
 
       // Verify that runOnlyPendingTimers advances now only up to the first
       // recursive timer
@@ -1003,11 +1003,11 @@ describe('FakeTimers', () => {
         fakedGlobal.setTimeout(infinitelyRecursingCallback, 20);
       }, 10);
       timers.runOnlyPendingTimers();
-      expect(timers.now()).toEqual(110);
+      expect(timers.now()).toBe(110);
 
       // For modern timers, reset() explicitly preserves the clock time
       timers.reset();
-      expect(timers.now()).toEqual(110);
+      expect(timers.now()).toBe(110);
     });
 
     it('returns the real time if useFakeTimers is not called', () => {

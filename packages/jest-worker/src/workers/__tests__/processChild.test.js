@@ -140,7 +140,7 @@ it('lazily requires the file', () => {
   ]);
 
   expect(mockCount).toBe(1);
-  expect(initializeParm).toBe(undefined);
+  expect(initializeParm).toBeUndefined();
 });
 
 it('should return memory usage', () => {
@@ -248,9 +248,7 @@ it('returns results immediately when function is synchronous', () => {
 
   expect(process.send.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
   expect(process.send.mock.calls[4][0][1]).toBe('Error');
-  expect(process.send.mock.calls[4][0][2]).toEqual(
-    '"null" or "undefined" thrown',
-  );
+  expect(process.send.mock.calls[4][0][2]).toBe('"null" or "undefined" thrown');
 
   expect(process.send).toHaveBeenCalledTimes(5);
 });
@@ -378,7 +376,7 @@ it('throws if child is not forked', () => {
       'fooWorks',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('Child can only be used on a forked process');
 
   expect(() => {
     process.emit('message', [
@@ -387,5 +385,5 @@ it('throws if child is not forked', () => {
       'fooThrows',
       [],
     ]);
-  }).toThrow();
+  }).toThrow('Child can only be used on a forked process');
 });

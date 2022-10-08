@@ -53,21 +53,21 @@ describe('isCoreModule', () => {
       hasCoreModules: false,
     } as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
-    expect(isCore).toEqual(true);
+    expect(isCore).toBe(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('not-a-core-module');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleNameMapper` alias a module same name with core module', () => {
@@ -81,21 +81,21 @@ describe('isCoreModule', () => {
       ],
     } as ResolverConfig);
     const isCore = resolver.isCoreModule('constants');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 
   it('returns true if using `node:` URLs and `moduleName` is a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:assert');
-    expect(isCore).toEqual(true);
+    expect(isCore).toBe(true);
   });
 
   it('returns false if using `node:` URLs and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('node:not-a-core-module');
-    expect(isCore).toEqual(false);
+    expect(isCore).toBe(false);
   });
 });
 
@@ -301,7 +301,7 @@ describe('findNodeModule', () => {
         conditions: [],
       });
 
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
     });
 
     test('fails if own pkg.json with no exports', () => {
@@ -313,7 +313,7 @@ describe('findNodeModule', () => {
         conditions: [],
       });
 
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
     });
   });
 });

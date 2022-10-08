@@ -7,5 +7,5 @@
 'use strict';
 
 test('load file mapped by js preset', () => {
-  expect(require('./test.foo')).toEqual(42);
+  expect(require('./test.foo')).toBe(42);
 });

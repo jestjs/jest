@@ -32,7 +32,7 @@ it('does not show the GC if hidden', async () => {
   // @ts-expect-error: purposefully removed
   globalThis.gc = undefined;
   await detector.isLeaking();
-  expect(globalThis.gc).not.toBeDefined();
+  expect(globalThis.gc).toBeUndefined();
 });
 
 it('does not hide the GC if visible', async () => {

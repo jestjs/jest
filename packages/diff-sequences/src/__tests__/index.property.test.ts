@@ -27,7 +27,7 @@ const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
 const extractCount = (data: Array<string>): Map<string, number> => {
   const countPerChar = new Map<string, number>();
   for (const item of data) {
-    const currentCount = countPerChar.get(item) || 0;
+    const currentCount = countPerChar.get(item) ?? 0;
     countPerChar.set(item, currentCount + 1);
   }
   return countPerChar;
@@ -93,7 +93,7 @@ it('should have at most the same number of each character as its inputs', () => 
       const commonCount = extractCount(commonItems);
       const aCount = extractCount(a);
       for (const [item, count] of commonCount) {
-        const countOfItemInA = aCount.get(item) || 0;
+        const countOfItemInA = aCount.get(item) ?? 0;
         expect(countOfItemInA).toBeGreaterThanOrEqual(count);
       }
     }),

@@ -170,7 +170,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
     expect(fileAfter).toMatchSnapshot('initial write');
-    expect(fs.existsSync(snapshotPath)).toEqual(true);
+    expect(fs.existsSync(snapshotPath)).toBe(true);
   }
 
   {
@@ -180,7 +180,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
     expect(exitCode).toBe(1);
     expect(fileAfter).toMatchSnapshot('inline snapshot written');
-    expect(fs.existsSync(snapshotPath)).toEqual(true);
+    expect(fs.existsSync(snapshotPath)).toBe(true);
   }
 
   {
@@ -194,7 +194,7 @@ test('removes obsolete external snapshots', () => {
     expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
     expect(exitCode).toBe(0);
     expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
-    expect(fs.existsSync(snapshotPath)).toEqual(false);
+    expect(fs.existsSync(snapshotPath)).toBe(false);
   }
 });
 
