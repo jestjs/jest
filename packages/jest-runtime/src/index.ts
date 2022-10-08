@@ -181,6 +181,7 @@ export default class Runtime {
   private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
   private readonly _testPath: string;
   private readonly _resolver: Resolver;
+  private _seed: number;
   private _shouldAutoMock: boolean;
   private readonly _shouldMockModuleCache: Map<string, boolean>;
   private readonly _shouldUnmockTransitiveDependenciesCache: Map<
@@ -213,6 +214,7 @@ export default class Runtime {
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
+    seed: number,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
@@ -242,6 +244,7 @@ export default class Runtime {
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = transformer;
+    this._seed = seed;
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -2123,7 +2126,14 @@ export default class Runtime {
           );
         }
       },
-      getSeed: () => this._environment.seed,
+      getSeed: () => {
+        if (this._seed === undefined) {
+          throw new Error(
+            'The seed value is not available. Likely you are using older versions of the jest dependencies.',
+          );
+        }
+        return this._seed;
+      },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,

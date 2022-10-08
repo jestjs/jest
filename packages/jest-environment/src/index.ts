@@ -44,7 +44,6 @@ export declare class JestEnvironment<Timer = unknown> {
   fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: ModuleMocker | null;
   getVmContext(): Context | null;
-  seed: number;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
