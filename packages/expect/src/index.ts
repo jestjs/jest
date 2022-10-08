@@ -53,6 +53,7 @@ import type {
 
 export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
+  AsyncExpectationResult,
   AsymmetricMatchers,
   BaseExpect,
   Expect,
@@ -63,6 +64,7 @@ export type {
   MatcherState,
   MatcherUtils,
   Matchers,
+  SyncExpectationResult,
 } from './types';
 
 export class JestAssertionError extends Error {
