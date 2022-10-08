@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import renderer from 'react-test-renderer';
-import prettyFormat, {plugins} from '..';
+import * as React from 'react';
+import * as renderer from 'react-test-renderer';
+import prettyFormat, {plugins} from '../';
 import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
@@ -26,7 +26,7 @@ const formatTestObject = (object: unknown, options?: OptionsReceived) =>
   });
 
 function assertPrintedJSX(
-  val: unknown,
+  val: React.ReactElement,
   expected: string,
   options?: OptionsReceived,
 ) {
@@ -265,7 +265,7 @@ test('supports a single element with custom React elements with props (using ano
 });
 
 test('supports a single element with custom React elements with a child', () => {
-  function Cat(props: unknown) {
+  function Cat(props: Record<string, unknown>) {
     return React.createElement('div', props);
   }
   assertPrintedJSX(
