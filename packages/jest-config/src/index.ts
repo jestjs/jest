@@ -117,6 +117,7 @@ const groupOptions = (
     runTestsByPath: options.runTestsByPath,
     seed: options.seed,
     shard: options.shard,
+    showSeed: options.showSeed,
     silent: options.silent,
     skipFilter: options.skipFilter,
     snapshotFormat: options.snapshotFormat,

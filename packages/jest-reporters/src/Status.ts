@@ -185,6 +185,7 @@ export default class Status {
         estimatedTime: this._estimatedTime,
         roundTime: true,
         seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
         width,
       })}`;
     }

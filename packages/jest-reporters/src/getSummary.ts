@@ -187,5 +187,11 @@ export default function getSummary(
   }${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
-  return [seed, suites, tests, snapshots, time].join('\n');
+  return [
+    ...(options?.showSeed ? [seed] : []),
+    suites,
+    tests,
+    snapshots,
+    time,
+  ].join('\n');
 }

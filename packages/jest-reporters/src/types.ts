@@ -61,4 +61,5 @@ export type SummaryOptions = {
   roundTime?: boolean;
   width?: number;
   seed?: number;
+  showSeed?: boolean;
 };

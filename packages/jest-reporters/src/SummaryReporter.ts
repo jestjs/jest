@@ -110,6 +110,7 @@ export default class SummaryReporter extends BaseReporter {
         let message = getSummary(aggregatedResults, {
           estimatedTime: this._estimatedTime,
           seed: this._globalConfig.seed,
+          showSeed: this._globalConfig.showSeed,
         });
 
         if (!this._globalConfig.silent) {

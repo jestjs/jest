@@ -442,6 +442,11 @@ export const options: {[key: string]: Options} = {
     description: 'The path to the "prettier" module used for inline snapshots.',
     type: 'string',
   },
+  showSeed: {
+    description:
+      'Prints the seed value in the test report summary. See `--seed` for how to set this value',
+    type: 'boolean',
+  },
   projects: {
     description:
       'A list of projects that use Jest to run all tests of all ' +

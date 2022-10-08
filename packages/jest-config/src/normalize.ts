@@ -1021,6 +1021,8 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  newOptions.showSeed = argv.showSeed || !!argv.seed;
+
   // xoroshiro128plus is used in v8 and is used here (at time of writing)
   newOptions.seed =
     argv.seed ?? Math.floor(0xffffffff * Math.random() - 0x80000000);

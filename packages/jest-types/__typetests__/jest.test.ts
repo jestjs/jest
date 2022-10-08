@@ -535,5 +535,5 @@ expectError(jest.retryTimes());
 expectType<typeof jest>(jest.setTimeout(6000));
 expectError(jest.setTimeout());
 
-expectType<number>(jest.getSeed()); 
+expectType<number>(jest.getSeed());
 expectError(jest.getSeed(123));

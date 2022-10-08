@@ -395,6 +395,7 @@ export type GlobalConfig = {
   runTestsByPath: boolean;
   rootDir: string;
   seed: number;
+  showSeed?: boolean;
   shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
@@ -539,6 +540,7 @@ export type Argv = Arguments<
     roots: Array<string>;
     runInBand: boolean;
     seed: number;
+    showSeed: boolean;
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
