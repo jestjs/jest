@@ -157,16 +157,13 @@ export default class TestSequencer {
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) ?? 0);
-    const hasFailed = (cache: Cache, test: Test) =>
-      cache[test.path]?.[0] === FAIL;
-    const time = (cache: Cache, test: Test) => cache[test.path]?.[1];
 
-    tests.forEach(test => (test.duration = time(this._getCache(test), test)));
+    tests.forEach(test => {
+      test.duration = this.time(test);
+    });
     return tests.sort((testA, testB) => {
-      const cacheA = this._getCache(testA);
-      const cacheB = this._getCache(testB);
-      const failedA = hasFailed(cacheA, testA);
-      const failedB = hasFailed(cacheB, testB);
+      const failedA = this.hasFailed(testA);
+      const failedB = this.hasFailed(testB);
       const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
         return failedA === true ? -1 : 1;
@@ -207,5 +204,15 @@ export default class TestSequencer {
     this._cache.forEach((cache, context) =>
       fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)),
     );
+  }
+
+  private hasFailed(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[0] === FAIL;
+  }
+
+  private time(test: Test) {
+    const cache = this._getCache(test);
+    return cache[test.path]?.[1];
   }
 }
