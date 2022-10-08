@@ -29,6 +29,14 @@
   "devDependencies": {
     "@jest/test-utils": "workspace:^"
   },
+  "peerDependencies": {
+    "canvas": "^2.5.0"
+  },
+  "peerDependenciesMeta": {
+    "canvas": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
