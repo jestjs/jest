@@ -352,7 +352,7 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--seed=<num>`
 
-Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). If this option is not specified Jest will randomly generate the value. The seed value must be between `-0x80000000` and `0x7fffffff` inclusive.
+Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive.
 
 ```bash
 jest --seed=1324
@@ -397,16 +397,6 @@ Print your Jest config and then exits.
 ### `--showSeed`
 
 Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednum) for the details.
-
-An example output, the first line shows the seed used.
-```
-Seed:        1831310091
-Test Suites: 2 failed, 5 passed, 7 total
-Tests:       15 failed, 11 skipped, 53 passed, 79 total
-Snapshots:   0 total
-Time:        1.138 s
-Ran all test suites.
-```
 
 ### `--silent`
 
