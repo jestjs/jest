@@ -512,7 +512,7 @@ export const options: {[key: string]: Options} = {
   },
   seed: {
     description:
-      'Provides a seed number that the tests have access to via jest.getSeed(). If this option is not specified Jest will randomly generate a seed. The seed value must be between -0x80000000 to 0x7fffffff inclusive.',
+      'Sets a seed value that can be retrieved in a tests file via `jest.getSeed()`. If this option is not specified Jest will randomly generate the value. The seed value must be between `-0x80000000` and `0x7fffffff` inclusive.',
     type: 'number',
   },
   selectProjects: {

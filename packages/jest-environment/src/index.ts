@@ -150,8 +150,8 @@ export interface Jest {
    */
   getRealSystemTime(): number;
   /**
-   * Fetches the seed generated for this particular running of Jest.
-   * It can also be manually set with --seed CLI argument.
+   * Retrieves the seed value. It will be randomly generated for each test run
+   * or can be manually set via the `--seed` CLI argument.
    */
   getSeed(): number;
   /**

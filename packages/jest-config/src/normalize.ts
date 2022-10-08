@@ -1027,7 +1027,7 @@ export default async function normalize(
   if (newOptions.seed < -0x80000000 || newOptions.seed > 0x7fffffff) {
     throw new ValidationError(
       'Validation Error',
-      'seed value is limited from -0x80000000 to 0x7fffffff',
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive',
     );
   }
 
