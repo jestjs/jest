@@ -289,7 +289,6 @@ export type InitialOptions = Partial<{
   runTestsByPath: boolean;
   runtime: string;
   sandboxInjectedGlobals: Array<string>;
-  seed: number;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
   silent: boolean;
