@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { makeEmptyAggregatedTestResult } from '@jest/test-result';
+import {makeEmptyAggregatedTestResult} from '@jest/test-result';
 import getSummary from '../getSummary';
 
 describe('getSummary', () => {
@@ -20,8 +20,8 @@ describe('getSummary', () => {
   test('does print seed value when showSeed is true', () => {
     const summary = getSummary(makeEmptyAggregatedTestResult(), {
       estimatedTime: 0,
-      showSeed: true,
       seed: 55555,
+      showSeed: true,
     });
 
     expect(summary).toMatchSnapshot();
@@ -39,4 +39,4 @@ describe('getSummary', () => {
       expect(error).toBeInstanceOf(Error);
     }
   });
-})
+});

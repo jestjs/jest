@@ -114,15 +114,13 @@ export default function getSummary(
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
-  const optionalLines = [] as string[];
+  const optionalLines = [] as Array<string>;
 
   if (options?.showSeed) {
     if (options?.seed === undefined) {
-      throw new Error
+      throw new Error();
     }
-    const seed = `${
-      chalk.bold('Seed:        ') + options.seed.toString()
-    }`;
+    const seed = `${chalk.bold('Seed:        ') + options.seed.toString()}`;
     optionalLines.push(seed);
   }
 
@@ -196,11 +194,5 @@ export default function getSummary(
 
   const time = renderTime(runTime, estimatedTime, width);
 
-  return [
-    ...optionalLines,
-    suites,
-    tests,
-    snapshots,
-    time,
-  ].join('\n');
+  return [...optionalLines, suites, tests, snapshots, time].join('\n');
 }

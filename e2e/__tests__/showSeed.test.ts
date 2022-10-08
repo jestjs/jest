@@ -37,7 +37,13 @@ test('if --showSeed is not present the report will not show the seed', () => {
 test('if showSeed is present in the config the report will show the seed', () => {
   const dir = path.resolve(__dirname, '../jest-object');
 
-  const {stderr} = runJest(dir, ['--seed', '1234', '--ci', '--config', 'different-config.json']);
+  const {stderr} = runJest(dir, [
+    '--seed',
+    '1234',
+    '--ci',
+    '--config',
+    'different-config.json',
+  ]);
 
   const summary = extractSummary(stderr).summary;
 
