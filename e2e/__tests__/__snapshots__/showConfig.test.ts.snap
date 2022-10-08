@@ -126,7 +126,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
     "seed": <<RANDOM_SEED>>,
-    "showSeed": false,
     "skipFilter": false,
     "snapshotFormat": {
       "escapeString": false,
