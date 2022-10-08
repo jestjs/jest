@@ -14,6 +14,7 @@
 - `[jest-reporters]` Revert: Transform file paths into hyperlinks ([#13399](https://github.com/facebook/jest/pull/13399))
 - `[@jest/types]` Infer type of `each` table correctly when the table is a tuple or array ([#13381](https://github.com/facebook/jest/pull/13381))
 - `[@jest/types]` Rework typings to allow the `*ReturnedWith` matchers to be called with no argument ([#13385](https://github.com/facebook/jest/pull/13385))
+- `[jest-core]` Fix `detectOpenHandles` false positives for some special objects such as `TLSWRAP`. ([#13414](https://github.com/facebook/jest/pull/13414))
 
 ### Chore & Maintenance
 

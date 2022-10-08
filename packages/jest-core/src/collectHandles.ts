@@ -8,6 +8,8 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import * as v8 from 'v8';
+import * as vm from 'vm';
 import {promisify} from 'util';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
@@ -44,6 +46,27 @@ const alwaysActive = () => true;
 const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
+
+let gcFunc: typeof global.gc | undefined;
+function runGC() {
+  if (!gcFunc) {
+    if (typeof global.gc === 'function') {
+      gcFunc = global.gc;
+    } else {
+      v8.setFlagsFromString('--expose-gc');
+      gcFunc = vm.runInNewContext('gc');
+      v8.setFlagsFromString('--no-expose-gc');
+      if (!gcFunc) {
+        console.warn(
+          'Cannot find `global.gc` function. Please run node with `--expose-gc`',
+        );
+        gcFunc = () => {};
+      }
+    }
+  }
+
+  gcFunc();
+}
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
@@ -124,6 +147,14 @@ export default function collectHandles(): HandleCollectionResult {
     // `close` callback runs. If someone finishes a test from the `close`
     // callback, we will not yet have seen the resource be destroyed here.
     await asyncSleep(100);
+
+    if (activeHandles.size !== 0) {
+      // For some special objects such as `TLSWRAP`.
+      // Ref: https://github.com/facebook/jest/issues/11665
+      runGC();
+
+      await asyncSleep(0);
+    }
 
     hook.disable();
 
