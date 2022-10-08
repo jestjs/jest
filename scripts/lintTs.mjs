@@ -35,6 +35,7 @@ const packagesToTest = [
   'jest-schemas',
   'jest-source-map',
   'jest-test-result',
+  'jest-test-sequencer',
   'jest-transform',
   'jest-types',
   'test-globals',
