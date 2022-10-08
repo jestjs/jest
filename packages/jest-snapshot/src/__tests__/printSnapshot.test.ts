@@ -8,6 +8,7 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
+import type {SyncExpectationResult} from 'expect';
 import format from 'pretty-format';
 import {
   Context,
@@ -35,11 +36,6 @@ import {
   printSnapshotAndReceived,
 } from '../printSnapshot';
 import {serialize} from '../utils';
-
-type SyncExpectationResult = {
-  pass: boolean;
-  message(): string;
-};
 
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;
