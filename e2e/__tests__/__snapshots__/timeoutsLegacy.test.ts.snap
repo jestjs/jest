@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL 1`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -14,7 +15,8 @@ exports[`does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL 1`] 
 `;
 
 exports[`does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL 2`] = `
-"Test Suites: 1 passed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -22,7 +24,8 @@ Ran all test suites."
 `;
 
 exports[`exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL 1`] = `
-"Test Suites: 1 failed, 1 total
+"Seed:       <<REPLACED>>
+Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
