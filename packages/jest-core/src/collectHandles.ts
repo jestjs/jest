@@ -8,9 +8,9 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import {promisify} from 'util';
 import * as v8 from 'v8';
 import * as vm from 'vm';
-import {promisify} from 'util';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -47,21 +47,18 @@ const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
 
-let gcFunc: typeof global.gc | undefined;
+let gcFunc: Function | undefined = (globalThis as any).gc;
 function runGC() {
   if (!gcFunc) {
-    if (typeof global.gc === 'function') {
-      gcFunc = global.gc;
-    } else {
-      v8.setFlagsFromString('--expose-gc');
-      gcFunc = vm.runInNewContext('gc');
-      v8.setFlagsFromString('--no-expose-gc');
-      if (!gcFunc) {
-        console.warn(
-          'Cannot find `global.gc` function. Please run node with `--expose-gc`',
-        );
-        gcFunc = () => {};
-      }
+    v8.setFlagsFromString('--expose-gc');
+    gcFunc = vm.runInNewContext('gc');
+    v8.setFlagsFromString('--no-expose-gc');
+    if (!gcFunc) {
+      console.warn(
+        'Cannot find `global.gc` function. Please run node with `--expose-gc`',
+      );
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      gcFunc = () => {};
     }
   }
 
