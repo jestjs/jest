@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
+import {extractSummary, replaceSeed} from '../Utils';
 import runJest from '../runJest';
-import { extractSummary, replaceSeed } from '../Utils';
 
 test('--showSeed changes report to output seed', () => {
   const dir = path.resolve(__dirname, '../each');
 
-  let {stderr} = runJest(dir, [
+  const {stderr} = runJest(dir, [
     '--showSeed',
     '--no-cache',
     // Make the snapshot flag stable on CI.
@@ -27,11 +27,7 @@ test('--showSeed changes report to output seed', () => {
 test('--seed will force the report to show the seed in the report', () => {
   const dir = path.resolve(__dirname, '../jest-object');
 
-  let {stderr} = runJest(dir, [
-    '--seed',
-    '1234',
-    '--ci',
-  ]);
+  const {stderr} = runJest(dir, ['--seed', '1234', '--ci']);
 
   const summary = replaceSeed(extractSummary(stderr).summary);
 
@@ -41,12 +37,7 @@ test('--seed will force the report to show the seed in the report', () => {
 test('--seed --showSeed will show the seed in the report', () => {
   const dir = path.resolve(__dirname, '../jest-object');
 
-  let {stderr} = runJest(dir, [
-    '--showSeed',
-    '--seed',
-    '1234',
-    '--ci',
-  ]);
+  const {stderr} = runJest(dir, ['--showSeed', '--seed', '1234', '--ci']);
 
   const summary = replaceSeed(extractSummary(stderr).summary);
 
