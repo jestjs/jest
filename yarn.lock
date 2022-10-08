@@ -12421,6 +12421,11 @@ __metadata:
     jest-mock: "workspace:^"
     jest-util: "workspace:^"
     jsdom: ^20.0.0
+  peerDependencies:
+    canvas: ^2.5.0
+  peerDependenciesMeta:
+    canvas:
+      optional: true
   languageName: unknown
   linkType: soft
 
