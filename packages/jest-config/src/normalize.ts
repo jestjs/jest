@@ -918,6 +918,7 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
+      case 'showSeed':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
@@ -1021,7 +1022,7 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
-  newOptions.showSeed = argv.showSeed;
+  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
 
   // xoroshiro128plus is used in v8 and is used here (at time of writing)
   newOptions.seed =

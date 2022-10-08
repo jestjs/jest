@@ -291,6 +291,7 @@ export type InitialOptions = Partial<{
   sandboxInjectedGlobals: Array<string>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  showSeed: boolean;
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
