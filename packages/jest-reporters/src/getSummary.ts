@@ -116,12 +116,12 @@ export default function getSummary(
 
   const optionalLines: Array<string> = [];
 
-  if (options?.showSeed) {
-    if (options?.seed === undefined) {
+  if (options?.showSeed === true) {
+    const {seed} = options;
+    if (seed === undefined) {
       throw new Error('Attempted to display seed but seed value is undefined');
     }
-    const seed = `${chalk.bold('Seed:        ') + options.seed.toString()}`;
-    optionalLines.push(seed);
+    optionalLines.push(`${chalk.bold('Seed:        ') + seed}`);
   }
 
   const suites = `${
