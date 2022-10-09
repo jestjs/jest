@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {writeFileSync} from 'graceful-fs';
 import LeakDetector from 'jest-leak-detector';
-import {Worker} from '../../build/index';
+import {Worker} from '../';
 
 describe('WorkerThreads leaks', () => {
   let workerFile!: string;
@@ -53,7 +53,6 @@ describe('Worker leaks', () => {
     worker = new Worker(workerFile, {
       enableWorkerThreads: false,
       exposedMethods: ['fn'],
-      // @ts-expect-error: option does not exist on the node 12 types
       forkOptions: {serialization: 'json'},
     });
   });
