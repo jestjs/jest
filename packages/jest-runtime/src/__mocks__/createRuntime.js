@@ -55,6 +55,8 @@ module.exports = async function createRuntime(filename, projectConfig) {
   const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
   const transform = setupTransform(projectConfig, rootDir, cwd);
 
+  const globalConfig = makeGlobalConfig();
+
   projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
     cwd,
@@ -77,7 +79,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
   }
 
   const environment = new NodeEnvironment({
-    globalConfig: makeGlobalConfig(),
+    globalConfig,
     projectConfig,
   });
   environment.global.console = console;
@@ -109,6 +111,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
       sourcesRelatedToTestsInChangedFiles: undefined,
     },
     filename,
+    globalConfig,
   );
 
   for (const path of projectConfig.setupFiles) {

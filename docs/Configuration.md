@@ -1614,6 +1614,12 @@ const config: Config = {
 export default config;
 ```
 
+### `showSeed` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test report summary.
+
 ### `slowTestThreshold` \[number]
 
 Default: `5`

@@ -137,6 +137,7 @@ const initialOptions: Config.InitialOptions = {
   sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
+  showSeed: false,
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,

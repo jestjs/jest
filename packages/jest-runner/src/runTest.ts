@@ -196,6 +196,7 @@ async function runTestInternal(
         context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
+    globalConfig,
   );
 
   let isTornDown = false;
