@@ -398,7 +398,7 @@ Print your Jest config and then exits.
 
 Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednum) for the details.
 
-Can also be set in configuration. See [`showSeed`](Configuration#showseed-boolean).
+Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boolean).
 
 ### `--silent`
 
