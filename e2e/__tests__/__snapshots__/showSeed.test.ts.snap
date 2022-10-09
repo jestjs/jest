@@ -11,8 +11,8 @@ Ran all test suites."
 
 exports[`--showSeed changes report to output seed 1`] = `
 "Seed:       <<REPLACED>>
-Test Suites: 2 failed, 5 passed, 7 total
-Tests:       15 failed, 11 skipped, 53 passed, 79 total
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 1 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."

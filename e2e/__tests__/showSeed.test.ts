@@ -9,9 +9,9 @@ import * as path from 'path';
 import {extractSummary, replaceSeed} from '../Utils';
 import runJest from '../runJest';
 
-test('--showSeed changes report to output seed', () => {
-  const dir = path.resolve(__dirname, '../each');
+const dir = path.resolve(__dirname, '../jest-object');
 
+test('--showSeed changes report to output seed', () => {
   const {stderr} = runJest(dir, [
     '--showSeed',
     '--no-cache',
@@ -25,18 +25,14 @@ test('--showSeed changes report to output seed', () => {
 });
 
 test('if --showSeed is not present the report will not show the seed', () => {
-  const dir = path.resolve(__dirname, '../jest-object');
-
   const {stderr} = runJest(dir, ['--seed', '1234', '--ci']);
 
-  const summary = extractSummary(stderr).summary;
+  const {summary} = extractSummary(stderr);
 
   expect(summary).toMatchSnapshot();
 });
 
 test('if showSeed is present in the config the report will show the seed', () => {
-  const dir = path.resolve(__dirname, '../jest-object');
-
   const {stderr} = runJest(dir, [
     '--seed',
     '1234',
@@ -45,14 +41,12 @@ test('if showSeed is present in the config the report will show the seed', () =>
     'different-config.json',
   ]);
 
-  const summary = extractSummary(stderr).summary;
+  const {summary} = extractSummary(stderr);
 
   expect(summary).toMatchSnapshot();
 });
 
 test('--seed --showSeed will show the seed in the report', () => {
-  const dir = path.resolve(__dirname, '../jest-object');
-
   const {stderr} = runJest(dir, ['--showSeed', '--seed', '1234', '--ci']);
 
   const summary = replaceSeed(extractSummary(stderr).summary);
