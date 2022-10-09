@@ -2134,7 +2134,7 @@ export default class Runtime {
             'The seed value is not available. Likely you are using older versions of the jest dependencies.',
           );
         }
-        return this._globalConfig?.seed;
+        return this._globalConfig.seed;
       },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
