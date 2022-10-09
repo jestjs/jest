@@ -24,8 +24,6 @@ declare global {
   }
 }
 
-// Process
-
 class MockExtendedError extends ReferenceError {
   baz = 123;
   qux = 456;
