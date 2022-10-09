@@ -14,6 +14,9 @@ import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 
+const val = -(2 ** 31);
+const oval = 2 ** 31 - 1;
+
 export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
   private readonly _finalizationRegistry?: FinalizationRegistry<undefined>;

@@ -352,7 +352,7 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 ### `--seed=<num>`
 
-Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive (`-2147483648` and `2147483647` in decimal).
+Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive (`-2147483648` (`-(2 ** 31)`) and `2147483647` (`2 ** 31 - 1`) in decimal).
 
 ```bash
 jest --seed=1324
