@@ -114,11 +114,11 @@ export default function getSummary(
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
-  const optionalLines = [] as Array<string>;
+  const optionalLines: Array<string> = [];
 
   if (options?.showSeed) {
     if (options?.seed === undefined) {
-      throw new Error();
+      throw new Error('Attempted to display seed but seed value is undefined');
     }
     const seed = `${chalk.bold('Seed:        ') + options.seed.toString()}`;
     optionalLines.push(seed);
