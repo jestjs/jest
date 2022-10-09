@@ -7,14 +7,7 @@
 import {makeEmptyAggregatedTestResult} from '@jest/test-result';
 import getSummary from '../getSummary';
 
-beforeEach(() => {
-  jest.useFakeTimers();
-  jest.setSystemTime(10);
-});
-
-afterEach(() => {
-  jest.useRealTimers();
-});
+jest.useFakeTimers().setSystemTime(10);
 
 describe('getSummary', () => {
   test('does not print seed value when showSeed is false', () => {
