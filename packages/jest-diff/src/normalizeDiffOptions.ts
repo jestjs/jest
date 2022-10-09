@@ -10,7 +10,7 @@ import type {CompareKeys} from 'pretty-format';
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
 export const noColor = (string: string): string => string;
-export const DIM_STYLE = chalk.dim;
+export const DIM_COLOR = chalk.dim;
 
 const DIFF_CONTEXT_DEFAULT = 5;
 

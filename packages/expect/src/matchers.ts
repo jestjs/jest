@@ -22,7 +22,7 @@ import {
 import {noColor} from 'jest-diff';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
-  DIM_STYLE,
+  DIM_COLOR,
   EXPECTED_COLOR,
   MatcherHintOptions,
   RECEIVED_COLOR,
@@ -125,7 +125,7 @@ const matchers: MatchersObject = {
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             (deepEqualityName !== null
-              ? `${(this.diffOptions?.noDim ? noColor : DIM_STYLE)(
+              ? `${(this.diffOptions?.noDim ? noColor : DIM_COLOR)(
                   hintMessage,
                 )}\n\n`
               : '') +

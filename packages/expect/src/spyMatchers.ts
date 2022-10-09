@@ -8,7 +8,7 @@
 import {equals, iterableEquality} from '@jest/expect-utils';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
-  DIM_STYLE,
+  DIM_COLOR,
   EXPECTED_COLOR,
   MatcherHintOptions,
   RECEIVED_COLOR,
@@ -57,7 +57,7 @@ const printReceivedArgs = (
         )
         .join(', ');
 
-const printCommon = (val: unknown) => DIM_STYLE(stringify(val));
+const printCommon = (val: unknown) => DIM_COLOR(stringify(val));
 
 const isEqualValue = (expected: unknown, received: unknown): boolean =>
   equals(expected, received, [...getCustomEqualityTesters(), iterableEquality]);
