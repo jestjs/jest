@@ -19,7 +19,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Process {
-      emit(event: 'message', message: any): this; // overrides DT type, which requires the third argument
+      emit(event: 'message', message: unknown): this; // overrides DT type, which requires the third argument
     }
   }
 }
