@@ -6,6 +6,7 @@
  */
 
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {DIM_STYLE, noColor} from './normalizeDiffOptions';
 import type {DiffOptionsColor, DiffOptionsNormalized} from './types';
 
 const formatTrailingSpaces = (
@@ -73,7 +74,7 @@ const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
   {
-    commonColor,
+    noDim,
     commonIndicator,
     commonLineTrailingSpaceColor,
     emptyFirstOrLastLinePlaceholder,
@@ -82,7 +83,7 @@ const printCommonLine = (
   printDiffLine(
     line,
     isFirstOrLast,
-    commonColor,
+    noDim ? noColor : DIM_STYLE,
     commonIndicator,
     commonLineTrailingSpaceColor,
     emptyFirstOrLastLinePlaceholder,

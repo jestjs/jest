@@ -17,13 +17,13 @@ export type DiffOptions = {
   bIndicator?: string;
   changeColor?: DiffOptionsColor;
   changeLineTrailingSpaceColor?: DiffOptionsColor;
-  commonColor?: DiffOptionsColor;
   commonIndicator?: string;
   commonLineTrailingSpaceColor?: DiffOptionsColor;
   contextLines?: number;
   emptyFirstOrLastLinePlaceholder?: string;
   expand?: boolean;
   includeChangeCounts?: boolean;
+  noDim?: boolean;
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
   compareKeys?: CompareKeys;
@@ -38,7 +38,6 @@ export type DiffOptionsNormalized = {
   bIndicator: string;
   changeColor: DiffOptionsColor;
   changeLineTrailingSpaceColor: DiffOptionsColor;
-  commonColor: DiffOptionsColor;
   commonIndicator: string;
   commonLineTrailingSpaceColor: DiffOptionsColor;
   compareKeys: CompareKeys;
@@ -46,6 +45,7 @@ export type DiffOptionsNormalized = {
   emptyFirstOrLastLinePlaceholder: string;
   expand: boolean;
   includeChangeCounts: boolean;
+  noDim: boolean;
   omitAnnotationLines: boolean;
   patchColor: DiffOptionsColor;
 };

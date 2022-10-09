@@ -19,9 +19,10 @@ import {
   subsetEquality,
   typeEquality,
 } from '@jest/expect-utils';
+import {noColor} from 'jest-diff';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
-  DIM_COLOR,
+  DIM_STYLE,
   EXPECTED_COLOR,
   MatcherHintOptions,
   RECEIVED_COLOR,
@@ -83,8 +84,6 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const diffCommonColor = this.diffOptions?.commonColor ?? DIM_COLOR;
-
     const pass = Object.is(received, expected);
 
     const message = pass
@@ -119,13 +118,15 @@ const matchers: MatchersObject = {
             }
           }
 
+          const hintMessage = `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`;
+
           return (
             // eslint-disable-next-line prefer-template
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             (deepEqualityName !== null
-              ? `${diffCommonColor(
-                  `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
+              ? `${(this.diffOptions?.noDim ? noColor : DIM_STYLE)(
+                  hintMessage,
                 )}\n\n`
               : '') +
             printDiffOrStringify(

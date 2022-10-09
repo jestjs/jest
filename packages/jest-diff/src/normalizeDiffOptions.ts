@@ -10,6 +10,7 @@ import type {CompareKeys} from 'pretty-format';
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
 export const noColor = (string: string): string => string;
+export const DIM_STYLE = chalk.dim;
 
 const DIFF_CONTEXT_DEFAULT = 5;
 
@@ -22,7 +23,6 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   bIndicator: '+',
   changeColor: chalk.inverse,
   changeLineTrailingSpaceColor: noColor,
-  commonColor: chalk.dim,
   commonIndicator: ' ',
   commonLineTrailingSpaceColor: noColor,
   compareKeys: undefined,
@@ -30,6 +30,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   emptyFirstOrLastLinePlaceholder: '',
   expand: true,
   includeChangeCounts: false,
+  noDim: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
 };

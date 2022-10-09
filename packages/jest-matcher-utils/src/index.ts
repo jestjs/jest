@@ -67,7 +67,7 @@ export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
-export const DIM_COLOR = chalk.dim;
+export const DIM_STYLE = chalk.dim;
 
 const MULTILINE_REGEXP = /\n/;
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot
@@ -569,7 +569,7 @@ export const matcherHint = (
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
-  const dimStyle = noDim ? noColor : DIM_COLOR;
+  const dimStyle = noDim ? noColor : DIM_STYLE;
 
   if (!isDirectExpectCall && received !== '') {
     hint += dimStyle(`${dimString}(`) + receivedColor(received);

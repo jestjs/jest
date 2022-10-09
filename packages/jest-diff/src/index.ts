@@ -15,7 +15,7 @@ import {
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
-import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {DIM_STYLE, noColor, normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import type {DiffOptions} from './types';
 
@@ -24,10 +24,11 @@ export type {DiffOptions, DiffOptionsColor} from './types';
 export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
 export {diffStringsRaw, diffStringsUnified};
 export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
+export {noColor};
 
 const getCommonMessage = (message: string, options?: DiffOptions) => {
-  const {commonColor} = normalizeDiffOptions(options);
-  return commonColor(message);
+  const {noDim} = normalizeDiffOptions(options);
+  return (noDim ? noColor : DIM_STYLE)(message);
 };
 
 const {
