@@ -47,7 +47,7 @@ const hasWeakRef = typeof WeakRef === 'function';
 
 const asyncSleep = promisify(setTimeout);
 
-let gcFunc: Function | undefined = (globalThis as any).gc;
+let gcFunc: (() => void) | undefined = (globalThis as any).gc;
 function runGC() {
   if (!gcFunc) {
     v8.setFlagsFromString('--expose-gc');
@@ -145,7 +145,7 @@ export default function collectHandles(): HandleCollectionResult {
     // callback, we will not yet have seen the resource be destroyed here.
     await asyncSleep(100);
 
-    if (activeHandles.size !== 0) {
+    if (activeHandles.size > 0) {
       // For some special objects such as `TLSWRAP`.
       // Ref: https://github.com/facebook/jest/issues/11665
       runGC();
