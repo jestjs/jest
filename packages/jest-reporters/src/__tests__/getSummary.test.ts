@@ -7,14 +7,13 @@
 import {makeEmptyAggregatedTestResult} from '@jest/test-result';
 import getSummary from '../getSummary';
 
-const now = Date.now;
-
 beforeEach(() => {
-  Date.now = () => 10;
+  jest.useFakeTimers();
+  jest.setSystemTime(10);
 });
 
 afterEach(() => {
-  Date.now = now;
+  jest.useRealTimers();
 });
 
 describe('getSummary', () => {
