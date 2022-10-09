@@ -2092,3 +2092,25 @@ describe('seed', () => {
     expect(options.seed).toBe(4321);
   });
 });
+
+describe('showSeed', () => {
+  test('showSeed is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      showSeed: true,
+    } as Config.Argv);
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is set when the config is set', async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', showSeed: true},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.showSeed).toBeFalsy();
+  });
+});
