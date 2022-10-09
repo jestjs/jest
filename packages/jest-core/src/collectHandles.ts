@@ -54,11 +54,9 @@ function runGC() {
     gcFunc = vm.runInNewContext('gc');
     v8.setFlagsFromString('--no-expose-gc');
     if (!gcFunc) {
-      console.warn(
-        'Cannot find `global.gc` function. Please run node with `--expose-gc`',
+      throw new Error(
+        'Cannot find `global.gc` function. Please run node with `--expose-gc` and report this issue in jest repo.',
       );
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      gcFunc = () => {};
     }
   }
 

@@ -136,7 +136,7 @@ describe('collectHandles', () => {
     );
   });
 
-  it('should collect handles for some special objects such as `TLSWRAP`', async () => {
+  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
     const handleCollector = collectHandles();
 
     const socket = new TLSSocket();
