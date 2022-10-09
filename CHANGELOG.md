@@ -2,10 +2,11 @@
 
 ### Features
 
-- `[@jest/cli, jest-config, @jest/environment, jest-environment-node, jest-environment-jsdom, @jest/reporters, jest-runtime, @jest/types]` Add `getSeed()` to the jest object available at runtime ([#13400](https://github.com/facebook/jest/pull/13400/))
-- `[@jest/cli, jest-config]` `showSeed` will display the seed value in the report can be set via a CLI flag or through the config file ([#13400](https://github.com/facebook/jest/pull/13400/))
+- `[@jest/cli, jest-config]` A seed for the test run will be randomly generated, or set by a CLI option  ([#13400](https://github.com/facebook/jest/pull/13400))
+- `[@jest/cli, jest-config]` `--show-seed` will display the seed value in the report, and can be set via a CLI flag or through the config file ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
 - `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
+- `[@jest/environment, jest-environment-node, jest-environment-jsdom, jest-runtime]` Add `getSeed()` to the `jest` object ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
 
 ### Fixes
