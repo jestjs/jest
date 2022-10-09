@@ -61,6 +61,7 @@ export interface MatcherState {
   assertionCalls: number;
   currentConcurrentTestName?: () => string | undefined;
   currentTestName?: string;
+  diffOptions?: DiffOptions;
   error?: Error;
   expand?: boolean;
   expectedAssertionsNumber: number | null;
@@ -68,12 +69,11 @@ export interface MatcherState {
   isExpectingAssertions: boolean;
   isExpectingAssertionsError?: Error;
   isNot?: boolean;
+  matcherHintOptions?: MatcherHintOptions;
   numPassingAsserts: number;
   promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;
-  matcherHintOptions?: MatcherHintOptions;
-  diffOptions?: DiffOptions;
 }
 
 export type MatcherContext = MatcherUtils & Readonly<MatcherState>;

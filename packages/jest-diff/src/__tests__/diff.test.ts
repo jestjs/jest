@@ -989,8 +989,8 @@ describe('options', () => {
 
   describe('common', () => {
     const options = {
-      noDim: true,
       commonIndicator: '=',
+      noDim: true,
     };
 
     test('diff', () => {
