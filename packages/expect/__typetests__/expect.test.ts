@@ -16,6 +16,8 @@ import {
   TesterContext,
   expect,
 } from 'expect';
+import type {DiffOptions} from 'jest-diff';
+import type {MatcherHintOptions} from 'jest-matcher-utils';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 type M = Matchers<void>;
@@ -69,6 +71,7 @@ expectType<void>(
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
       expectType<Array<Tester>>(this.customTesters);
+      expectType<DiffOptions | undefined>(this.diffOptions);
       expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
@@ -79,6 +82,7 @@ expectType<void>(
       expectType<Error | undefined>(this.isExpectingAssertionsError);
       expectType<boolean | undefined>(this.isNot);
       expectType<number>(this.numPassingAsserts);
+      expectType<MatcherHintOptions | undefined>(this.matcherHintOptions);
       expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);

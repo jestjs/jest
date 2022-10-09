@@ -26,7 +26,7 @@ const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) ?? '');
 const optionsBe: DiffOptions = {
   aColor: noColor,
   bColor: noColor,
-  commonColor: noColor,
+  noDim: true,
   omitAnnotationLines: true,
 };
 const unexpandedBe: DiffOptions = {
@@ -973,7 +973,7 @@ describe('options', () => {
   describe('change color', () => {
     const options = {
       changeColor: chalk.bold,
-      commonColor: chalk.yellow,
+      noDim: true,
     };
 
     test('diffStringsUnified', () => {
@@ -989,7 +989,7 @@ describe('options', () => {
 
   describe('common', () => {
     const options = {
-      commonColor: noColor,
+      noDim: true,
       commonIndicator: '=',
     };
 

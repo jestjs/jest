@@ -20,8 +20,8 @@ const optionsNoColor = {
   aColor: noColor,
   bColor: noColor,
   changeColor,
-  commonColor: noColor,
   emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
+  noDim: true,
   patchColor: noColor,
 };
 

@@ -16,7 +16,7 @@ const options = {
   aColor: identity,
   bColor: identity,
   changeColor,
-  commonColor: identity,
+  noDim: true,
   omitAnnotationLines: true,
   patchColor: identity,
 };

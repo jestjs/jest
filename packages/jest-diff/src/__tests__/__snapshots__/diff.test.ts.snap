@@ -249,10 +249,10 @@ exports[`options change color diffStringsUnified 1`] = `
 <g>- changed <b>from</></>
 <r>+ changed <b>to</></>
 <r>+ insert</>
-<y>  common</>
+  common
 `;
 
-exports[`options change color no diff 1`] = `<y>Compared values have no visual difference.</>`;
+exports[`options change color no diff 1`] = `Compared values have no visual difference.`;
 
 exports[`options change indicators diff 1`] = `
 <g>< Expected</>
