@@ -5,13 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-beforeEach(() => jest.resetModules());
+import type {Plugin} from 'pretty-format';
+
+beforeEach(() => {
+  jest.resetModules();
+});
 
 const testPath = (names: Array<string>) => {
-  const {addSerializer, getSerializers} = require('../plugins');
+  const {addSerializer, getSerializers} =
+    require('../plugins') as typeof import('../plugins');
   const prev = getSerializers();
-  const added = names.map(name =>
-    require(require.resolve(`./plugins/${name}`)),
+  const added = names.map(
+    name => require(require.resolve(`./plugins/${name}`)) as Plugin,
   );
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
@@ -27,7 +32,7 @@ const testPath = (names: Array<string>) => {
 };
 
 it('gets plugins', () => {
-  const {getSerializers} = require('../plugins');
+  const {getSerializers} = require('../plugins') as typeof import('../plugins');
   const plugins = getSerializers();
   expect(plugins).toHaveLength(5);
 });

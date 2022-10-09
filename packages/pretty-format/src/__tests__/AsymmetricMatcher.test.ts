@@ -121,8 +121,10 @@ test('stringMatching(regexp) {escapeRegex: false}', () => {
 });
 
 test('stringMatching(regexp) {escapeRegex: true}', () => {
-  options.escapeRegex = true;
-  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), options);
+  const result = prettyFormat(expect.stringMatching(/regexp\d/gi), {
+    ...options,
+    escapeRegex: true,
+  });
   expect(result).toBe('StringMatching /regexp\\\\d/gi');
 });
 
@@ -238,18 +240,17 @@ describe('indent option', () => {
     expect(prettyFormat(val, options)).toEqual(result);
   });
   test('default explicit: 2 spaces', () => {
-    options.indent = 2;
-    expect(prettyFormat(val, options)).toEqual(result);
+    expect(prettyFormat(val, {...options, indent: 2})).toEqual(result);
   });
 
   // Tests assume that no strings in val contain multiple adjacent spaces!
   test('non-default: 0 spaces', () => {
-    options.indent = 0;
-    expect(prettyFormat(val, options)).toEqual(result.replace(/ {2}/g, ''));
+    expect(prettyFormat(val, {...options, indent: 0})).toEqual(
+      result.replace(/ {2}/g, ''),
+    );
   });
   test('non-default: 4 spaces', () => {
-    options.indent = 4;
-    expect(prettyFormat(val, options)).toEqual(
+    expect(prettyFormat(val, {...options, indent: 4})).toEqual(
       result.replace(/ {2}/g, ' '.repeat(4)),
     );
   });
@@ -257,7 +258,6 @@ describe('indent option', () => {
 
 describe('maxDepth option', () => {
   test('matchers as leaf nodes', () => {
-    options.maxDepth = 2;
     const val = {
       // ++depth === 1
       nested: [
@@ -277,7 +277,7 @@ describe('maxDepth option', () => {
         expect.anything(),
       ],
     };
-    const result = prettyFormat(val, options);
+    const result = prettyFormat(val, {...options, maxDepth: 2});
     expect(result).toBe(`Object {
   "nested": Array [
     [ArrayContaining],
@@ -290,7 +290,6 @@ describe('maxDepth option', () => {
 }`);
   });
   test('matchers as internal nodes', () => {
-    options.maxDepth = 2;
     const val = [
       // ++depth === 1
       expect.arrayContaining([
@@ -312,7 +311,7 @@ describe('maxDepth option', () => {
         primitive: 'printed',
       }),
     ];
-    const result = prettyFormat(val, options);
+    const result = prettyFormat(val, {...options, maxDepth: 2});
     expect(result).toBe(`Array [
   ArrayContaining [
     "printed",
@@ -327,7 +326,6 @@ describe('maxDepth option', () => {
 });
 
 test('min option', () => {
-  options.min = true;
   const result = prettyFormat(
     {
       test: {
@@ -341,7 +339,7 @@ test('min option', () => {
         }),
       },
     },
-    options,
+    {...options, min: true},
   );
   expect(result).toBe(
     '{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}',

@@ -10,7 +10,7 @@ jest.mock('graceful-fs', () => ({
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import assert = require('assert');
+import {strict as assert} from 'assert';
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
@@ -74,7 +74,7 @@ test('getSnapshotData() throws when no snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+    .mockReturnValue('exports[`myKey`] = `<div>\n</div>`;\n');
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrow(
@@ -91,9 +91,8 @@ test('getSnapshotData() throws for older snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(
-      () =>
-        `// Jest Snapshot v0.99, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+    .mockReturnValue(
+      `// Jest Snapshot v0.99, ${SNAPSHOT_GUIDE_LINK}\n\n` +
         'exports[`myKey`] = `<div>\n</div>`;\n',
     );
   const update = 'none';
@@ -114,9 +113,8 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(
-      () =>
-        `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+    .mockReturnValue(
+      `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}\n\n` +
         'exports[`myKey`] = `<div>\n</div>`;\n',
     );
   const update = 'none';
@@ -137,7 +135,7 @@ test('getSnapshotData() does not throw for when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+    .mockReturnValue('exports[`myKey`] = `<div>\n</div>`;\n');
   const update = 'all';
 
   expect(() => getSnapshotData(filename, update)).not.toThrow();
@@ -147,7 +145,7 @@ test('getSnapshotData() marks invalid snapshot dirty when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+    .mockReturnValue('exports[`myKey`] = `<div>\n</div>`;\n');
   const update = 'all';
 
   expect(getSnapshotData(filename, update)).toMatchObject({dirty: true});
@@ -157,9 +155,8 @@ test('getSnapshotData() marks valid snapshot not dirty when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   jest
     .mocked(fs.readFileSync)
-    .mockImplementation(
-      () =>
-        `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+    .mockReturnValue(
+      `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}\n\n` +
         'exports[`myKey`] = `<div>\n</div>`;\n',
     );
   const update = 'all';
@@ -308,154 +305,151 @@ describe('removeLinesBeforeExternalMatcherTrap', () => {
 describe('DeepMerge with property matchers', () => {
   const matcher = expect.any(String);
 
-  /* eslint-disable sort-keys */
-  // to keep keys in numerical order rather than alphabetical
-  const cases = [
+  it.each(
+    /* eslint-disable sort-keys */
+    // to keep keys in numerical order rather than alphabetical
     [
-      'a nested object',
-      // Target
-      {
-        data: {
-          one: 'one',
-          two: 'two',
+      [
+        'a nested object',
+        // Target
+        {
+          data: {
+            one: 'one',
+            two: 'two',
+          },
         },
-      },
-      // Matchers
-      {
-        data: {
-          two: matcher,
+        // Matchers
+        {
+          data: {
+            two: matcher,
+          },
         },
-      },
-      // Expected
-      {
-        data: {
-          one: 'one',
-          two: matcher,
+        // Expected
+        {
+          data: {
+            one: 'one',
+            two: matcher,
+          },
         },
-      },
+      ],
+
+      [
+        'an object with an array of objects',
+        // Target
+        {
+          data: {
+            one: [
+              {
+                two: 'two',
+                three: 'three',
+              },
+              // Include an array element not present in the propertyMatchers
+              {
+                four: 'four',
+                five: 'five',
+              },
+            ],
+            six: [{seven: 'seven'}],
+            nine: [[{ten: 'ten'}]],
+          },
+        },
+        // Matchers
+        {
+          data: {
+            one: [
+              {
+                two: matcher,
+              },
+            ],
+            six: [
+              {seven: matcher},
+              // Include an array element not present in the target
+              {eight: matcher},
+            ],
+            nine: [[{ten: matcher}]],
+          },
+        },
+        // Expected
+        {
+          data: {
+            one: [
+              {
+                two: matcher,
+                three: 'three',
+              },
+              {
+                four: 'four',
+                five: 'five',
+              },
+            ],
+            six: [{seven: matcher}, {eight: matcher}],
+            nine: [[{ten: matcher}]],
+          },
+        },
+      ],
+
+      [
+        'an object with an array of strings',
+        // Target
+        {
+          data: {
+            one: ['one'],
+            two: ['two'],
+            three: ['three', 'four'],
+            five: ['five'],
+          },
+        },
+        // Matchers
+        {
+          data: {
+            one: [matcher],
+            two: ['two'],
+            three: [matcher],
+            five: 'five',
+          },
+        },
+        // Expected
+        {
+          data: {
+            one: [matcher],
+            two: ['two'],
+            three: [matcher, 'four'],
+            five: 'five',
+          },
+        },
+      ],
+
+      [
+        'an array of objects',
+        // Target
+        [{name: 'one'}, {name: 'two'}, {name: 'three'}],
+        // Matchers
+        [{name: 'one'}, {name: matcher}, {name: matcher}],
+        // Expected
+        [{name: 'one'}, {name: matcher}, {name: matcher}],
+      ],
+
+      [
+        'an array of arrays',
+        // Target
+        [['one'], ['two'], ['three']],
+        // Matchers
+        [['one'], [matcher], [matcher]],
+        // Expected
+        [['one'], [matcher], [matcher]],
+      ],
     ],
+    /* eslint-enable sort-keys */
+  )('Correctly merges %s', (_case, target, propertyMatchers, expected) => {
+    const originalTarget = JSON.parse(JSON.stringify(target));
+    const mergedOutput = deepMerge(target, propertyMatchers);
 
-    [
-      'an object with an array of objects',
-      // Target
-      {
-        data: {
-          one: [
-            {
-              two: 'two',
-              three: 'three',
-            },
-            // Include an array element not present in the propertyMatchers
-            {
-              four: 'four',
-              five: 'five',
-            },
-          ],
-          six: [{seven: 'seven'}],
-          nine: [[{ten: 'ten'}]],
-        },
-      },
-      // Matchers
-      {
-        data: {
-          one: [
-            {
-              two: matcher,
-            },
-          ],
-          six: [
-            {seven: matcher},
-            // Include an array element not present in the target
-            {eight: matcher},
-          ],
-          nine: [[{ten: matcher}]],
-        },
-      },
-      // Expected
-      {
-        data: {
-          one: [
-            {
-              two: matcher,
-              three: 'three',
-            },
-            {
-              four: 'four',
-              five: 'five',
-            },
-          ],
-          six: [{seven: matcher}, {eight: matcher}],
-          nine: [[{ten: matcher}]],
-        },
-      },
-    ],
+    // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
+    // since we want to actually validate that we got the matcher
+    // rather than treat it specially the way that expect() does
+    assert.deepStrictEqual(mergedOutput, expected);
 
-    [
-      'an object with an array of strings',
-      // Target
-      {
-        data: {
-          one: ['one'],
-          two: ['two'],
-          three: ['three', 'four'],
-          five: ['five'],
-        },
-      },
-      // Matchers
-      {
-        data: {
-          one: [matcher],
-          two: ['two'],
-          three: [matcher],
-          five: 'five',
-        },
-      },
-      // Expected
-      {
-        data: {
-          one: [matcher],
-          two: ['two'],
-          three: [matcher, 'four'],
-          five: 'five',
-        },
-      },
-    ],
-
-    [
-      'an array of objects',
-      // Target
-      [{name: 'one'}, {name: 'two'}, {name: 'three'}],
-      // Matchers
-      [{name: 'one'}, {name: matcher}, {name: matcher}],
-      // Expected
-      [{name: 'one'}, {name: matcher}, {name: matcher}],
-    ],
-
-    [
-      'an array of arrays',
-      // Target
-      [['one'], ['two'], ['three']],
-      // Matchers
-      [['one'], [matcher], [matcher]],
-      // Expected
-      [['one'], [matcher], [matcher]],
-    ],
-  ];
-  /* eslint-enable sort-keys */
-
-  it.each(cases)(
-    'Correctly merges %s',
-    (_case, target, propertyMatchers, expected) => {
-      const originalTarget = JSON.parse(JSON.stringify(target));
-      const mergedOutput = deepMerge(target, propertyMatchers);
-
-      // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
-      // since we want to actually validate that we got the matcher
-      // rather than treat it specially the way that expect() does
-      assert.deepStrictEqual(mergedOutput, expected);
-
-      // Ensure original target is not modified
-      expect(target).toStrictEqual(originalTarget);
-    },
-  );
+    // Ensure original target is not modified
+    expect(target).toStrictEqual(originalTarget);
+  });
 });

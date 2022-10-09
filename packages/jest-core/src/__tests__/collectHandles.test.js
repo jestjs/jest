@@ -10,6 +10,7 @@ import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
+import {TLSSocket} from 'tls';
 import zlib from 'zlib';
 import collectHandles from '../collectHandles';
 
@@ -133,5 +134,16 @@ describe('collectHandles', () => {
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),
     );
+  });
+
+  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+    const handleCollector = collectHandles();
+
+    const socket = new TLSSocket();
+    socket.destroy();
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).toHaveLength(0);
   });
 });

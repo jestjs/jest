@@ -3,10 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  */
 
-import {defaults} from '../';
+import {SuperTestClass} from './SuperTestClass';
 
-test('get configuration defaults', () => {
-  expect(defaults).toBeDefined();
-});
+export default class TestClass extends SuperTestClass {}
