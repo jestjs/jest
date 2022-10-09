@@ -11,45 +11,42 @@ import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../jest-object');
 
+const randomSeedValueRegExp = /Seed:\s+<<REPLACED>>/;
+const seedValueRegExp = /Seed:\s+1234/;
+
 test('--showSeed changes report to output seed', () => {
-  const {stderr} = runJest(dir, [
-    '--showSeed',
-    '--no-cache',
-    // Make the snapshot flag stable on CI.
-    '--ci',
-  ]);
-
-  const summary = replaceSeed(extractSummary(stderr).summary);
-
-  expect(summary).toMatchSnapshot();
-});
-
-test('if --showSeed is not present the report will not show the seed', () => {
-  const {stderr} = runJest(dir, ['--seed', '1234', '--ci']);
+  const {stderr} = runJest(dir, ['--showSeed', '--no-cache']);
 
   const {summary} = extractSummary(stderr);
 
-  expect(summary).toMatchSnapshot();
+  expect(replaceSeed(summary)).toMatch(randomSeedValueRegExp);
+});
+
+test('if --showSeed is not present the report will not show the seed', () => {
+  const {stderr} = runJest(dir, ['--seed', '1234']);
+
+  const {summary} = extractSummary(stderr);
+
+  expect(replaceSeed(summary)).not.toMatch(randomSeedValueRegExp);
 });
 
 test('if showSeed is present in the config the report will show the seed', () => {
   const {stderr} = runJest(dir, [
     '--seed',
     '1234',
-    '--ci',
     '--config',
     'different-config.json',
   ]);
 
   const {summary} = extractSummary(stderr);
 
-  expect(summary).toMatchSnapshot();
+  expect(summary).toMatch(seedValueRegExp);
 });
 
 test('--seed --showSeed will show the seed in the report', () => {
-  const {stderr} = runJest(dir, ['--showSeed', '--seed', '1234', '--ci']);
+  const {stderr} = runJest(dir, ['--showSeed', '--seed', '1234']);
 
-  const summary = replaceSeed(extractSummary(stderr).summary);
+  const {summary} = extractSummary(stderr);
 
-  expect(summary).toMatchSnapshot();
+  expect(summary).toMatch(seedValueRegExp);
 });
