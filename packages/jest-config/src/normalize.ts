@@ -1024,13 +1024,19 @@ export default async function normalize(
 
   newOptions.showSeed = newOptions.showSeed || argv.showSeed;
 
+  const upperBoundSeedValue = 2 ** 31;
+
   // xoroshiro128plus is used in v8 and is used here (at time of writing)
   newOptions.seed =
-    argv.seed ?? Math.floor(0xffffffff * Math.random() - 0x80000000);
-  if (newOptions.seed < -0x80000000 || newOptions.seed > 0x7fffffff) {
+    argv.seed ??
+    Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
+  if (
+    newOptions.seed < -upperBoundSeedValue ||
+    newOptions.seed > upperBoundSeedValue - 1
+  ) {
     throw new ValidationError(
       'Validation Error',
-      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive',
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
     );
   }
 

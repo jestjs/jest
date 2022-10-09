@@ -2091,6 +2091,23 @@ describe('seed', () => {
     } as Config.Argv);
     expect(options.seed).toBe(4321);
   });
+
+  it('throws if seed is too large or too small', async () => {
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: 2 ** 33,
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is 8589934592',
+    );
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: -(2 ** 33),
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is -8589934592',
+    );
+  });
 });
 
 describe('showSeed', () => {
