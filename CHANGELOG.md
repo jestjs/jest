@@ -8,6 +8,8 @@
 
 ### Performance
 
+- `[jest-runtime]` Defer reading of source files, because it's out-of-date if the transform output is up-to-date [#13419](https://github.com/facebook/jest/pull/13419)
+
 ## 29.2.0
 
 ### Features
