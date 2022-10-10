@@ -8,6 +8,8 @@
 
 ### Performance
 
+- `[jest-transform]` Defer creation of cache directory [#13420](https://github.com/facebook/jest/pull/13420)
+
 ## 29.3.0
 
 ### Features
