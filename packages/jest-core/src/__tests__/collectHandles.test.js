@@ -45,8 +45,11 @@ describe('collectHandles', () => {
   it('should not collect the DNSCHANNEL open handle', async () => {
     const handleCollector = collectHandles();
 
-    const resolver = new dns.Resolver();
+    let resolver = new dns.Resolver();
     resolver.getServers();
+
+    // We must drop references to it
+    resolver = null;
 
     const openHandles = await handleCollector();
 
