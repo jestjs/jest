@@ -19,10 +19,10 @@
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-proposal-decorators": "*",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-typescript": "^7.0.0",
+    "@babel/core": "^7.19.3",
+    "@babel/plugin-proposal-decorators": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-typescript": "^7.18.6",
     "@jest/globals": "workspace:^",
     "babel-jest": "workspace:^",
     "babel-plugin-transform-typescript-metadata": "*",
