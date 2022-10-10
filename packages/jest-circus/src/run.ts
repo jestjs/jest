@@ -13,8 +13,8 @@ import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
   getEachHooksForTest,
-  getTestID,
   invariant,
+  isTestSkipped,
   makeRunResult,
 } from './utils';
 
@@ -118,17 +118,12 @@ function collectConcurrentTests(
   if (describeBlock.mode === 'skip') {
     return [];
   }
-  const {hasFocusedTests, testNamePattern} = getState();
   return describeBlock.children.flatMap(child => {
     switch (child.type) {
       case 'describeBlock':
         return collectConcurrentTests(child);
       case 'test':
-        const skip =
-          !child.concurrent ||
-          child.mode === 'skip' ||
-          (hasFocusedTests && child.mode !== 'only') ||
-          (testNamePattern && !testNamePattern.test(getTestID(child)));
+        const skip = !child.concurrent || isTestSkipped(child);
         return skip
           ? []
           : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];
@@ -142,13 +137,8 @@ const _runTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
-  const {hasFocusedTests, testNamePattern} = getState();
 
-  const isSkipped =
-    parentSkipped ||
-    test.mode === 'skip' ||
-    (hasFocusedTests && test.mode !== 'only') ||
-    (testNamePattern && !testNamePattern.test(getTestID(test)));
+  const isSkipped = parentSkipped || isTestSkipped(test);
 
   if (isSkipped) {
     await dispatch({name: 'test_skip', test});

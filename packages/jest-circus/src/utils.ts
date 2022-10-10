@@ -89,15 +89,10 @@ export const makeTest = (
 // Traverse the tree of describe blocks and return true if at least one describe
 // block has an enabled test.
 const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
-  const {hasFocusedTests, testNamePattern} = getState();
   return describeBlock.children.some(child =>
     child.type === 'describeBlock'
       ? hasEnabledTest(child)
-      : !(
-          child.mode === 'skip' ||
-          (hasFocusedTests && child.mode !== 'only') ||
-          (testNamePattern && !testNamePattern.test(getTestID(child)))
-        ),
+      : !isTestSkipped(child),
   );
 };
 
@@ -437,10 +432,14 @@ export const addErrorToEachTestUnderDescribe = (
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock':
-        addErrorToEachTestUnderDescribe(child, error, asyncError);
+        if (child.mode != 'skip') {
+          addErrorToEachTestUnderDescribe(child, error, asyncError);
+        }
         break;
       case 'test':
-        child.errors.push([error, asyncError]);
+        if (!isTestSkipped(child)) {
+          child.errors.push([error, asyncError]);
+        }
         break;
     }
   }
@@ -490,3 +489,12 @@ export const parseSingleTestResult = (
     title: testResult.testPath[testResult.testPath.length - 1],
   };
 };
+
+export function isTestSkipped(test: Circus.TestEntry): boolean {
+  const {hasFocusedTests, testNamePattern} = getState();
+  return (
+    test.mode === 'skip' ||
+    (hasFocusedTests && test.mode !== 'only') ||
+    (testNamePattern != null && !testNamePattern.test(getTestID(test)))
+  );
+}
