@@ -39,8 +39,8 @@
     "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.3",
-    "@babel/register": "^7.18.9",
+    "@babel/core": "^7.11.6",
+    "@babel/register": "^7.0.0",
     "@types/co": "^4.6.2",
     "@types/dedent": "^0.7.0",
     "@types/graceful-fs": "^4.1.3",
