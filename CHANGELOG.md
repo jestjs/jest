@@ -2173,7 +2173,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 
 - `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/6308))
 - `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
-- `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
+- `[examples]` Update typescript example to using `ts-jest` ([#6260](https://github.com/facebook/jest/pull/6260))
 
 ### Fixes
 
