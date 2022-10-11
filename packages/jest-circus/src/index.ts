@@ -186,10 +186,8 @@ const test: Global.It = (() => {
     ) => void,
     timeout?: number,
     failing?: boolean,
-    asyncError?: Error,
+    asyncError: Error = new ErrorWithStack(undefined, testFn),
   ) => {
-    asyncError = asyncError || new ErrorWithStack(undefined, testFn);
-
     try {
       testName = convertDescriptorToString(testName);
     } catch (error) {
