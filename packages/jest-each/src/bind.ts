@@ -67,13 +67,7 @@ export default function bind<EachCallback extends Global.TestCallback>(
         );
       } catch (e: any) {
         const err = new Error(e.message);
-
-        // @ts-expect-error: CIRCUS
-        if (typeof global.it !== 'undefined') {
-          err.stack = error.stack?.replace(/^Error: /s, e.message);
-        } else {
-          err.stack = error.stack;
-        }
+        err.stack = error.stack?.replace(/^Error: /s, `Error: ${e.message}`);
 
         return cb(title, () => {
           throw err;
