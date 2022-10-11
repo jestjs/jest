@@ -21,7 +21,7 @@
 
 ### Chore & Maintenance
 
-- `[*]` Update `@babel/*` deps ([#13422](https://github.com/facebook/jest/pull/13422))
+- `[*]` Update `@babel/*` deps, resulting on slightly different atack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
 
 ### Performance
 
