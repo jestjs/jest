@@ -31,6 +31,7 @@
     "@tsd/typescript": "^5.0.4",
     "chalk": "^4.0.0",
     "immutable": "^4.0.0",
+    "jest-diff": "workspace:^",
     "tsd-lite": "^0.7.0"
   },
   "engines": {

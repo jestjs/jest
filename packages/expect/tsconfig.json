@@ -9,6 +9,7 @@
   "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../expect-utils"},
+    {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
