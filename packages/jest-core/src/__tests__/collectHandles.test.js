@@ -42,7 +42,6 @@ describe('collectHandles', () => {
     expect(openHandles).not.toContainEqual(
       expect.objectContaining({message: 'PerformanceObserver'}),
     );
-    obs.disconnect();
   });
 
   it('should not collect the DNSCHANNEL open handle', async () => {
