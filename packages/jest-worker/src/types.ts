@@ -205,7 +205,7 @@ export type ChildMessageInitialize = [
   type: typeof CHILD_MESSAGE_INITIALIZE,
   isProcessed: boolean,
   fileName: string,
-  setupArgs: Array<unknown> | undefined,
+  setupArgs: Array<unknown>,
   workerId: string | undefined,
 ];
 

@@ -46,7 +46,7 @@ const messageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = init[3] ?? [];
+      setupArgs = init[3];
       process.env.JEST_WORKER_ID = init[4];
       break;
 
