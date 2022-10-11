@@ -31,8 +31,11 @@ describe('collectHandles', () => {
 
   it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
-    const obs = new PerformanceObserver((list, observer) => {});
+
+    let obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
+    obs.disconnect();
+    obs = null;
 
     const openHandles = await handleCollector();
 
