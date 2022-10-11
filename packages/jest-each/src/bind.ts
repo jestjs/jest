@@ -26,17 +26,19 @@ type GlobalCallback = (
   testName: string,
   fn: Global.ConcurrentTestFn,
   timeout?: number,
+  eachError?: Error,
 ) => void;
 
 export default function bind<EachCallback extends Global.TestCallback>(
   cb: GlobalCallback,
   supportsDone = true,
-) {
+  needsEachError = false,
+): Global.EachTestFn<any> {
   const bindWrap = (
     table: Global.EachTable,
     ...taggedTemplateData: Global.TemplateData
   ) => {
-    const error = new ErrorWithStack('', bindWrap);
+    const error = new ErrorWithStack(undefined, bindWrap);
 
     return function eachBind(
       title: Global.BlockNameLike,
@@ -50,16 +52,23 @@ export default function bind<EachCallback extends Global.TestCallback>(
           : buildTemplateTests(title, table, taggedTemplateData);
 
         return tests.forEach(row =>
-          cb(
-            row.title,
-            applyArguments(supportsDone, row.arguments, test),
-            timeout,
-          ),
+          needsEachError
+            ? cb(
+                row.title,
+                applyArguments(supportsDone, row.arguments, test),
+                timeout,
+                error,
+              )
+            : cb(
+                row.title,
+                applyArguments(supportsDone, row.arguments, test),
+                timeout,
+              ),
         );
       } catch (e: any) {
         const err = new Error(e.message);
         err.stack = error.stack?.replace(/^Error: /s, e.message);
-        err.name = e.name;
+        err.name = '';
 
         return cb(title, () => {
           throw err;
