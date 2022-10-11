@@ -32,11 +32,13 @@ export default function bind<EachCallback extends Global.TestCallback>(
   cb: GlobalCallback,
   supportsDone = true,
 ) {
-  return (
+  const bindWrap = (
     table: Global.EachTable,
     ...taggedTemplateData: Global.TemplateData
-  ) =>
-    function eachBind(
+  ) => {
+    const error = new ErrorWithStack('', bindWrap);
+
+    return function eachBind(
       title: Global.BlockNameLike,
       test: Global.EachTestFn<EachCallback>,
       timeout?: number,
@@ -55,12 +57,17 @@ export default function bind<EachCallback extends Global.TestCallback>(
           ),
         );
       } catch (e: any) {
-        const error = new ErrorWithStack(e.message, eachBind);
+        const err = new Error(e.message);
+        err.stack = error.stack?.replace(/^Error: /s, e.message);
+        err.name = e.name;
+
         return cb(title, () => {
-          throw error;
+          throw err;
         });
       }
     };
+  };
+  return bindWrap;
 }
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;

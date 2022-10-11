@@ -79,7 +79,7 @@ export default class BufferedConsole extends Console {
       if (!(error instanceof AssertionError)) {
         throw error;
       }
-      this._log('assert', error.toString());
+      this._log('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 

@@ -60,15 +60,15 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
 
     Missing 1 argument
 
+       6 |  */
+       7 |
+    >  8 | it.each\`
+         |         ^
+       9 |   left    | right
       10 |   \${true} | \${true}
       11 |   \${true}
-    > 12 | \`(
-         |  ^
-      13 |   'throws exception when one argument too few are supplied $left == $right',
-      14 |   ({left, right}) => {
-      15 |     expect(left).toBe(right);
 
-      at Object.<anonymous> (__tests__/eachException.test.js:12:2)
+      at Object.<anonymous> (__tests__/eachException.test.js:8:9)
 
   ● throws exception when not enough arguments are supplied $left == $right
 
@@ -83,15 +83,15 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
 
     Missing 2 arguments
 
+      17 | );
+      18 |
+    > 19 | it.each\`
+         |         ^
       20 |   left    | right   | up | down
       21 |   \${true} | \${true}
-    > 22 | \`(
-         |  ^
-      23 |   'throws exception when not enough arguments are supplied $left == $right',
-      24 |   ({left, right}) => {
-      25 |     expect(left).toBe(right);
+      22 | \`(
 
-      at Object.<anonymous> (__tests__/eachException.test.js:22:2)"
+      at Object.<anonymous> (__tests__/eachException.test.js:19:9)"
 `;
 
 exports[`shows only the tests with .only as being ran 1`] = `
