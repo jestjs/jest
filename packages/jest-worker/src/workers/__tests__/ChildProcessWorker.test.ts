@@ -164,18 +164,18 @@ it('provides stdout and stderr from the child processes', async () => {
     workerPath: '/tmp/foo',
   } as WorkerOptions);
 
-  const stdout = worker.getStdout();
-  const stderr = worker.getStderr();
+  const stdout = worker.getStdout() as NodeJS.ReadableStream;
+  const stderr = worker.getStderr() as NodeJS.ReadableStream;
 
   (forkInterface.stdout as PassThrough).end('Hello ', 'utf8');
-  (forkInterface.stdout as PassThrough).end('Jest ', 'utf8');
+  (forkInterface.stderr as PassThrough).end('Jest ', 'utf8');
   forkInterface.emit('exit', 1);
   (forkInterface.stdout as PassThrough).end('World!', 'utf8');
-  (forkInterface.stdout as PassThrough).end('Workers!', 'utf8');
+  (forkInterface.stderr as PassThrough).end('Workers!', 'utf8');
   forkInterface.emit('exit', 0);
 
-  await expect(getStream(stdout!)).resolves.toBe('Hello World!');
-  await expect(getStream(stderr!)).resolves.toBe('Jest Workers!');
+  await expect(getStream(stdout)).resolves.toBe('Hello World!');
+  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
 });
 
 it('sends the task to the child process', () => {
