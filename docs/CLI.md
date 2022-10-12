@@ -370,17 +370,17 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 :::
 
-### `--seed`
+### `--seed=<num>`
 
-Run the tests in the order specified by the seed value. Must be used with the [`--randomize`](#--randomize) flag.
+Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive (`-2147483648` (`-(2 ** 31)`) and `2147483647` (`2 ** 31 - 1`) in decimal).
 
 ```bash
-jest --randomize --seed 1234
+jest --seed=1324
 ```
 
-:::note
+:::tip
 
-This option is only supported using the default `jest-circus` test runner.
+If this option is not specified Jest will randomly generate the value. You can use the [`--showSeed`](#--showseed) flag to print the seed in the test report summary.
 
 :::
 
@@ -413,6 +413,12 @@ jest --shard=3/3
 ### `--showConfig`
 
 Print your Jest config and then exits.
+
+### `--showSeed`
+
+Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednum) for the details.
+
+Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boolean).
 
 ### `--silent`
 

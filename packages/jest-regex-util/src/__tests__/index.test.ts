@@ -11,7 +11,7 @@ describe('replacePathSepForRegex()', () => {
   describe('posix', () => {
     beforeAll(() => {
       jest.mock('path', () => ({
-        ...jest.createMockFromModule('path'),
+        ...jest.createMockFromModule<typeof import('path')>('path'),
         sep: '/',
       }));
       jest.isolateModules(() => {
@@ -21,14 +21,14 @@ describe('replacePathSepForRegex()', () => {
 
     it('should return the path', () => {
       const expected = {};
-      expect(replacePathSepForRegex(expected as any)).toBe(expected);
+      expect(replacePathSepForRegex(expected as string)).toBe(expected);
     });
   });
 
   describe('win32', () => {
     beforeAll(() => {
       jest.mock('path', () => ({
-        ...jest.createMockFromModule('path'),
+        ...jest.createMockFromModule<typeof import('path')>('path'),
         sep: '\\',
       }));
       jest.isolateModules(() => {

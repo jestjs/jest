@@ -45,7 +45,7 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
+      setupArgs = init[3];
       break;
 
     case CHILD_MESSAGE_CALL:

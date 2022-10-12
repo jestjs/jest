@@ -291,6 +291,7 @@ export type InitialOptions = Partial<{
   sandboxInjectedGlobals: Array<string>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  showSeed: boolean;
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
@@ -394,7 +395,8 @@ export type GlobalConfig = {
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
-  seed?: number;
+  seed: number;
+  showSeed?: boolean;
   shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
@@ -540,6 +542,10 @@ export type Argv = Arguments<
     roots: Array<string>;
     runInBand: boolean;
     seed: number;
+<<<<<<< HEAD
+=======
+    showSeed: boolean;
+>>>>>>> a49d2dee430835addadb069652af98fc5b87689b
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;

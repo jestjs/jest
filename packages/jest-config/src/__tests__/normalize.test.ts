@@ -38,7 +38,7 @@ let virtualModuleRegexes: Array<RegExp>;
 beforeEach(() => {
   virtualModuleRegexes = [/jest-circus/, /babel-jest/];
 });
-const findNodeModule = jest.fn(name => {
+const findNodeModule = jest.fn((name: string) => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
   }
@@ -59,7 +59,9 @@ beforeEach(() => {
   expectedPathAbs = path.join(root, 'an', 'abs', 'path');
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 
-  require('jest-resolve').default.findNodeModule = findNodeModule;
+  (
+    require('jest-resolve') as typeof import('jest-resolve')
+  ).default.findNodeModule = findNodeModule;
 
   jest.spyOn(console, 'warn');
 });
@@ -94,7 +96,9 @@ it('keeps custom project id based on the projects rootDir', async () => {
     {} as Config.Argv,
   );
 
-  expect(options.projects[0].id).toBe(id);
+  expect((options.projects as Array<Config.InitialProjectOptions>)[0].id).toBe(
+    id,
+  );
 });
 
 it('keeps custom ids based on the rootDir', async () => {
@@ -110,14 +114,12 @@ it('keeps custom ids based on the rootDir', async () => {
 });
 
 it('minimal config is stable across runs', async () => {
-  const firstNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
-  const secondNormalization = await normalize(
-    {rootDir: '/root/path/foo'},
-    {} as Config.Argv,
-  );
+  const firstNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55555,
+  } as Config.Argv);
+  const secondNormalization = await normalize({rootDir: '/root/path/foo'}, {
+    seed: 55555,
+  } as Config.Argv);
 
   expect(firstNormalization).toEqual(secondNormalization);
   expect(JSON.stringify(firstNormalization)).toBe(
@@ -256,10 +258,11 @@ describe('roots', () => {
 });
 
 describe('reporters', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
   });
 
   it('allows empty list', async () => {
@@ -303,6 +306,7 @@ describe('reporters', () => {
     await expect(
       normalize(
         {
+          // @ts-expect-error: Testing runtime error
           reporters: [123],
           rootDir: '/root/',
         },
@@ -316,6 +320,7 @@ describe('reporters', () => {
     await expect(
       normalize(
         {
+          // @ts-expect-error: Testing runtime error
           reporters: [[123]],
           rootDir: '/root/',
         },
@@ -329,6 +334,7 @@ describe('reporters', () => {
     await expect(
       normalize(
         {
+          // @ts-expect-error: Testing runtime error
           reporters: [['some-reporter']],
           rootDir: '/root/',
         },
@@ -342,6 +348,7 @@ describe('reporters', () => {
     await expect(
       normalize(
         {
+          // @ts-expect-error: Testing runtime error
           reporters: [['some-reporter', true]],
           rootDir: '/root/',
         },
@@ -352,10 +359,11 @@ describe('reporters', () => {
 });
 
 describe('transform', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
   });
 
   it('normalizes the path', async () => {
@@ -398,10 +406,11 @@ describe('transform', () => {
 });
 
 describe('haste', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
   });
 
   it('normalizes the path for hasteImplModulePath', async () => {
@@ -422,10 +431,11 @@ describe('haste', () => {
 });
 
 describe('setupFilesAfterEnv', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) =>
       name.startsWith('/') ? name : `/root/path/foo${path.sep}${name}`,
     );
   });
@@ -684,8 +694,9 @@ describe('testRunner', () => {
   });
 
   it('resolves jasmine', async () => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
     const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
@@ -699,8 +710,9 @@ describe('testRunner', () => {
   });
 
   it('is overwritten by argv', async () => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => name);
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => name);
     const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
@@ -728,10 +740,11 @@ describe('coverageDirectory', () => {
 });
 
 describe('testEnvironment', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
         return `node_modules/${name}`;
       }
@@ -793,10 +806,11 @@ describe('testEnvironment', () => {
 });
 
 describe('babel-jest', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name =>
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) =>
       name.indexOf('babel-jest') === -1
         ? `${path.sep}node_modules${path.sep}${name}`
         : name,
@@ -944,8 +958,9 @@ describe('moduleDirectories', () => {
 
 describe('preset', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
@@ -1084,6 +1099,7 @@ describe('preset', () => {
     jest.doMock(
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => ({
+        // @ts-expect-error: Testing runtime error
         transform: {}.nonExistingProp.call(),
       }),
       {virtual: true},
@@ -1118,11 +1134,11 @@ describe('preset', () => {
 
   test.each(['react-native-js-preset', 'cjs-preset'])(
     'works with cjs preset',
-    async presetName => {
+    async preset => {
       await expect(
         normalize(
           {
-            preset: presetName,
+            preset,
             rootDir: '/root/path/foo',
           },
           {} as Config.Argv,
@@ -1144,7 +1160,8 @@ describe('preset', () => {
   });
 
   test('searches for .json, .js, .cjs, .mjs preset files', async () => {
-    const Resolver = require('jest-resolve').default;
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
 
     await normalize(
       {
@@ -1154,7 +1171,7 @@ describe('preset', () => {
       {} as Config.Argv,
     );
 
-    const options = Resolver.findNodeModule.mock.calls[0][1];
+    const options = jest.mocked(Resolver.findNodeModule).mock.calls[0][1];
     expect(options.extensions).toEqual(['.json', '.js', '.cjs', '.mjs']);
   });
 
@@ -1258,8 +1275,9 @@ describe('preset', () => {
 
 describe('preset with globals', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (name === 'global-foo/jest-preset') {
         return '/node_modules/global-foo/jest-preset.json';
       }
@@ -1314,12 +1332,13 @@ describe('preset with globals', () => {
   });
 });
 
-describe.each(['setupFiles', 'setupFilesAfterEnv'])(
+describe.each(['setupFiles', 'setupFilesAfterEnv'] as const)(
   'preset without %s',
   configKey => {
     let Resolver;
     beforeEach(() => {
-      Resolver = require('jest-resolve').default;
+      Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+        .default;
       Resolver.findNodeModule = jest.fn(
         name => `${path.sep}node_modules${path.sep}${name}`,
       );
@@ -1359,8 +1378,9 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
 
 describe("preset with 'reporters' option", () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    const Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (name === 'with-reporters/jest-preset') {
         return '/node_modules/with-reporters/jest-preset.json';
       }
@@ -1407,10 +1427,11 @@ describe("preset with 'reporters' option", () => {
 });
 
 describe('runner', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (['eslint', 'jest-runner-eslint', 'my-runner-foo'].includes(name)) {
         return `node_modules/${name}`;
       }
@@ -1465,10 +1486,11 @@ describe('runner', () => {
 });
 
 describe('watchPlugins', () => {
-  let Resolver;
+  let Resolver: typeof import('jest-resolve').default;
   beforeEach(() => {
-    Resolver = require('jest-resolve').default;
-    Resolver.findNodeModule = jest.fn(name => {
+    Resolver = (require('jest-resolve') as typeof import('jest-resolve'))
+      .default;
+    Resolver.findNodeModule = jest.fn((name: string) => {
       if (
         ['typeahead', 'jest-watch-typeahead', 'my-watch-plugin'].includes(name)
       ) {
@@ -1614,7 +1636,9 @@ describe('testPathPattern', () => {
             'path',
             () => jest.requireActual<typeof import('path')>('path').win32,
           );
-          require('jest-resolve').default.findNodeModule = findNodeModule;
+          (
+            require('jest-resolve') as typeof import('jest-resolve')
+          ).default.findNodeModule = findNodeModule;
         });
 
         afterEach(() => {
@@ -1622,31 +1646,28 @@ describe('testPathPattern', () => {
         });
 
         it('preserves any use of "\\"', async () => {
-          const argv = {[opt.property]: ['a\\b', 'c\\\\d']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
+          const argv = {[opt.property]: ['a\\b', 'c\\\\d']} as Config.Argv;
+          const {options} = await (
+            require('../normalize') as typeof import('../normalize')
+          ).default(initialOptions, argv);
 
           expect(options.testPathPattern).toBe('a\\b|c\\\\d');
         });
 
         it('replaces POSIX path separators', async () => {
-          const argv = {[opt.property]: ['a/b']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
+          const argv = {[opt.property]: ['a/b']} as Config.Argv;
+          const {options} = await (
+            require('../normalize') as typeof import('../normalize')
+          ).default(initialOptions, argv);
 
           expect(options.testPathPattern).toBe('a\\\\b');
         });
 
         it('replaces POSIX paths in multiple args', async () => {
-          const argv = {[opt.property]: ['a/b', 'c/d']};
-          const {options} = await require('../normalize').default(
-            initialOptions,
-            argv,
-          );
+          const argv = {[opt.property]: ['a/b', 'c/d']} as Config.Argv;
+          const {options} = await (
+            require('../normalize') as typeof import('../normalize')
+          ).default(initialOptions, argv);
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
         });
@@ -1688,7 +1709,7 @@ describe('moduleFileExtensions', () => {
     ]);
   });
 
-  it.each([undefined, 'jest-runner'])(
+  it.each([undefined, 'jest-runner'] as const)(
     'throws if missing `js` but using jest-runner',
     async runner => {
       await expect(
@@ -1747,7 +1768,7 @@ describe('Defaults', () => {
 });
 
 describe('displayName', () => {
-  test.each`
+  test.each<{displayName: Config.DisplayName; description: string}>`
     displayName             | description
     ${{}}                   | ${'is an empty object'}
     ${{name: 'hello'}}      | ${'missing color'}
@@ -1949,6 +1970,7 @@ describe('logs a deprecation warning', () => {
   test("when 'browser' option is passed", async () => {
     await normalize(
       {
+        // @ts-expect-error: Testing deprecated option
         browser: true,
         rootDir: '/root/',
       },
@@ -1961,6 +1983,7 @@ describe('logs a deprecation warning', () => {
   test("when 'collectCoverageOnlyFrom' option is passed", async () => {
     await normalize(
       {
+        // @ts-expect-error: Testing deprecated option
         collectCoverageOnlyFrom: {
           '<rootDir>/this-directory-is-covered/Covered.js': true,
         },
@@ -1975,6 +1998,7 @@ describe('logs a deprecation warning', () => {
   test("when 'extraGlobals' option is passed", async () => {
     await normalize(
       {
+        // @ts-expect-error: Testing deprecated option
         extraGlobals: ['Math'],
         rootDir: '/root/',
       },
@@ -1987,6 +2011,7 @@ describe('logs a deprecation warning', () => {
   test("when 'moduleLoader' option is passed", async () => {
     await normalize(
       {
+        // @ts-expect-error: Testing deprecated option
         moduleLoader: '<rootDir>/runtime.js',
         rootDir: '/root/',
       },
@@ -1999,6 +2024,7 @@ describe('logs a deprecation warning', () => {
   test("when 'preprocessorIgnorePatterns' option is passed", async () => {
     await normalize(
       {
+        // @ts-expect-error: Testing deprecated option
         preprocessorIgnorePatterns: ['/node_modules/'],
         rootDir: '/root/',
       },
@@ -2012,6 +2038,7 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
         scriptPreprocessor: 'preprocessor.js',
       },
       {} as Config.Argv,
@@ -2024,6 +2051,7 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
         setupTestFrameworkScriptFile: 'setup.js',
       },
       {} as Config.Argv,
@@ -2036,6 +2064,7 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
         testPathDirs: ['<rootDir>'],
       },
       {} as Config.Argv,
@@ -2048,6 +2077,7 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
         testURL: 'https://jestjs.io',
       },
       {} as Config.Argv,
@@ -2060,6 +2090,7 @@ describe('logs a deprecation warning', () => {
     await normalize(
       {
         rootDir: '/root/',
+        // @ts-expect-error: Testing deprecated option
         timers: 'real',
       },
       {} as Config.Argv,
@@ -2079,4 +2110,57 @@ it('parses workerIdleMemoryLimit', async () => {
   );
 
   expect(options.workerIdleMemoryLimit).toBe(47185920);
+});
+
+describe('seed', () => {
+  it('generates seed when not specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.seed).toEqual(expect.any(Number));
+  });
+
+  it('uses seed specified', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      seed: 4321,
+    } as Config.Argv);
+    expect(options.seed).toBe(4321);
+  });
+
+  it('throws if seed is too large or too small', async () => {
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: 2 ** 33,
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is 8589934592',
+    );
+    await expect(
+      normalize({rootDir: '/root/'}, {
+        seed: -(2 ** 33),
+      } as Config.Argv),
+    ).rejects.toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive - is -8589934592',
+    );
+  });
+});
+
+describe('showSeed', () => {
+  test('showSeed is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      showSeed: true,
+    } as Config.Argv);
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is set when the config is set', async () => {
+    const {options} = await normalize(
+      {rootDir: '/root/', showSeed: true},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
+
+  test('showSeed is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.showSeed).toBeFalsy();
+  });
 });
