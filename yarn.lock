@@ -12923,7 +12923,7 @@ __metadata:
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
     react-markdown: ^8.0.0
-    typescript: ^4.7.4
+    typescript: ^4.8.2
   languageName: unknown
   linkType: soft
 
@@ -19977,7 +19977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.7.4, typescript@npm:^4.8.2":
+"typescript@npm:^4.8.2":
   version: 4.8.4
   resolution: "typescript@npm:4.8.4"
   bin:
@@ -19997,7 +19997,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:
