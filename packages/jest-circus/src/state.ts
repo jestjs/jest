@@ -30,7 +30,7 @@ const createState = (): Circus.State => {
     maxConcurrency: 5,
     parentProcess: null,
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
-    seed: undefined,
+    seed: 0,
     testNamePattern: null,
     testTimeout: 5000,
     unhandledErrors: [],

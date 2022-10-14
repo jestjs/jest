@@ -7,7 +7,7 @@
 
 import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
-import {rngBuilder, RandomNumberGenerator, shuffleArray} from 'jest-util';
+import {RandomNumberGenerator, rngBuilder, shuffleArray} from 'jest-util';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {
@@ -22,12 +22,9 @@ import {
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed} = getState();
   await dispatch({name: 'run_start'});
-  let nextRng: undefined | RandomNumberGenerator["next"] = undefined;
-  if (seed) {
-    const rng = rngBuilder(seed);
-    nextRng = () => rng.next();
-  }
-  await _runTestsForDescribeBlock(rootDescribeBlock, nextRng, true);
+  const rng = rngBuilder(seed);
+
+  await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
   await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
@@ -37,7 +34,7 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
-  rng: (() => number) | undefined,
+  rng: RandomNumberGenerator,
   isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});

@@ -5,22 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {xoroshiro128plus} from 'pure-rand';
+import {xoroshiro128plus, unsafeUniformIntDistribution} from 'pure-rand';
 
-export type RandomNumberGenerator = {next: () => number};
+// Generates [from, to] inclusive
+export type RandomNumberGenerator = {next: (from: number, to: number) => number};
 
+// Will likely fail if there are more than 2**32 items to randomize
 export const rngBuilder: (seed: number) => RandomNumberGenerator = (
   seed: number,
 ) => {
   const gen = xoroshiro128plus(seed);
-  return {next: () => gen.unsafeNext()};
+  return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
 };
 
 // Fisher-Yates shuffle
 // This is performed in-place
 export default function shuffleArray<T>(
   array: Array<T>,
-  random: () => number = Math.random,
+  random: RandomNumberGenerator,
 ): Array<T> {
   const length = array == null ? 0 : array.length;
 
@@ -30,10 +32,10 @@ export default function shuffleArray<T>(
   let index = -1;
   const lastIndex = length - 1;
   while (++index < length) {
-    const rand = index + Math.floor(random() * (lastIndex - index + 1));
+    const n = random.next(index, lastIndex);
     const value = array[index];
-    array[index] = array[rand];
-    array[rand] = value;
+    array[index] = array[n];
+    array[n] = value;
   }
   return array;
 }
