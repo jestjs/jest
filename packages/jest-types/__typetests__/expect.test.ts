@@ -97,6 +97,7 @@ expectError(expect(1).rejects.rejects.toBe(2));
 
 expectType<void>(expect(2).toBe(2));
 expectType<void>(expect('three').not.toBe('four'));
+expectError(expect('1').toBe(1));
 expectError(expect(false).toBe());
 
 expectType<void>(expect(0.2 + 0.1).toBeCloseTo(0.3));
