@@ -10,10 +10,6 @@ import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {
-  if (argv.seed && !argv.randomize) {
-    throw new Error('--seed requires --randomize to be specified.');
-  }
-
   if (
     argv.runInBand &&
     Object.prototype.hasOwnProperty.call(argv, 'maxWorkers')
@@ -455,7 +451,7 @@ export const options: {[key: string]: Options} = {
   },
   randomize: {
     description:
-      'Shuffle the order of the tests within a file. The seed used to generate the new order will be printed to stdout. In order to choose the seed refer to the `--seed` CLI option.',
+      'Shuffle the order of the tests within a file. In order to choose the seed refer to the `--seed` CLI option.',
     type: 'boolean',
   },
   reporters: {
