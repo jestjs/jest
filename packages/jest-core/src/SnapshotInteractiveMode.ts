@@ -14,7 +14,7 @@ import {KEYS} from 'jest-watcher';
 const {ARROW, CLEAR} = specialChars;
 
 export default class SnapshotInteractiveMode {
-  private _pipe: NodeJS.WritableStream;
+  private readonly _pipe: NodeJS.WritableStream;
   private _isActive: boolean;
   private _updateTestRunnerConfig!: (
     assertion: AssertionLocation | null,

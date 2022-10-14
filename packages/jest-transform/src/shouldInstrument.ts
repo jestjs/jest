@@ -61,17 +61,7 @@ export default function shouldInstrument(
   }
 
   if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    options.collectCoverageOnlyFrom &&
-    !options.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
     // still cover if `only` is specified
-    !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom.length &&
     !globsToMatcher(options.collectCoverageFrom)(
       replacePathSepForGlob(path.relative(config.rootDir, filename)),

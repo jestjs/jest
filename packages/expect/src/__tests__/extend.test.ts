@@ -16,7 +16,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 jestExpect.extend({
   toBeDivisibleBy(actual: number, expected: number) {
     const pass = actual % expected === 0;
-    const message = pass
+    const message: () => string = pass
       ? () =>
           `expected ${this.utils.printReceived(
             actual,
@@ -51,29 +51,47 @@ jestExpect.extend({
   },
 });
 
+declare module '../types' {
+  interface AsymmetricMatchers {
+    toBeDivisibleBy(expected: number): void;
+    toBeSymbol(expected: symbol): void;
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface Matchers<R> {
+    toBeDivisibleBy(expected: number): R;
+    toBeSymbol(expected: symbol): R;
+    toBeWithinRange(floor: number, ceiling: number): R;
+
+    shouldNotError(): R;
+    toFailWithoutMessage(): R;
+    toBeOne(): R;
+    toAllowOverridingExistingMatcher(): R;
+  }
+}
+
 it('is available globally when matcher is unary', () => {
   jestExpect(15).toBeDivisibleBy(5);
   jestExpect(15).toBeDivisibleBy(3);
   jestExpect(15).not.toBeDivisibleBy(6);
 
-  jestExpect(() =>
+  expect(() =>
     jestExpect(15).toBeDivisibleBy(2),
   ).toThrowErrorMatchingSnapshot();
 });
 
 it('is available globally when matcher is variadic', () => {
   jestExpect(15).toBeWithinRange(10, 20);
-  jestExpect(15).not.toBeWithinRange(6);
+  jestExpect(15).not.toBeWithinRange(6, 10);
 
-  jestExpect(() =>
+  expect(() =>
     jestExpect(15).toBeWithinRange(1, 3),
   ).toThrowErrorMatchingSnapshot();
 });
 
 it('exposes matcherUtils in context', () => {
   jestExpect.extend({
-    _shouldNotError(_actual: unknown, _expected: unknown) {
-      const pass = this.equals(
+    shouldNotError(_actual: unknown) {
+      const pass: boolean = this.equals(
         this.utils,
         Object.assign(matcherUtils, {
           iterableEquality,
@@ -88,13 +106,13 @@ it('exposes matcherUtils in context', () => {
     },
   });
 
-  jestExpect()._shouldNotError();
+  jestExpect('test').shouldNotError();
 });
 
 it('is ok if there is no message specified', () => {
   jestExpect.extend({
     toFailWithoutMessage(_expected: unknown) {
-      return {pass: false};
+      return {message: () => '', pass: false};
     },
   });
 
@@ -107,13 +125,13 @@ it('exposes an equality function to custom matchers', () => {
   // jestExpect and expect share the same global state
   expect.assertions(3);
   jestExpect.extend({
-    toBeOne() {
+    toBeOne(_expected: unknown) {
       expect(this.equals).toBe(equals);
-      return {pass: !!this.equals(1, 1)};
+      return {message: () => '', pass: !!this.equals(1, 1)};
     },
   });
 
-  expect(() => jestExpect().toBeOne()).not.toThrow();
+  expect(() => jestExpect('test').toBeOne()).not.toThrow();
 });
 
 it('defines asymmetric unary matchers', () => {
@@ -170,7 +188,7 @@ it('prints the Symbol into the error message', () => {
 it('allows overriding existing extension', () => {
   jestExpect.extend({
     toAllowOverridingExistingMatcher(_expected: unknown) {
-      return {pass: _expected === 'bar'};
+      return {message: () => '', pass: _expected === 'bar'};
     },
   });
 
@@ -178,7 +196,7 @@ it('allows overriding existing extension', () => {
 
   jestExpect.extend({
     toAllowOverridingExistingMatcher(_expected: unknown) {
-      return {pass: _expected === 'foo'};
+      return {message: () => '', pass: _expected === 'foo'};
     },
   });
 
@@ -188,6 +206,7 @@ it('allows overriding existing extension', () => {
 it('throws descriptive errors for invalid matchers', () => {
   expect(() =>
     jestExpect.extend({
+      // @ts-expect-error: Testing runtime error
       default: undefined,
     }),
   ).toThrow(
@@ -195,6 +214,7 @@ it('throws descriptive errors for invalid matchers', () => {
   );
   expect(() =>
     jestExpect.extend({
+      // @ts-expect-error: Testing runtime error
       default: 42,
     }),
   ).toThrow(
@@ -202,6 +222,7 @@ it('throws descriptive errors for invalid matchers', () => {
   );
   expect(() =>
     jestExpect.extend({
+      // @ts-expect-error: Testing runtime error
       default: 'foobar',
     }),
   ).toThrow(

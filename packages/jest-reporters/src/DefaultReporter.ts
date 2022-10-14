@@ -33,11 +33,11 @@ const TITLE_BULLET = chalk.bold('\u25cf ');
 
 export default class DefaultReporter extends BaseReporter {
   private _clear: string; // ANSI clear sequence for the last printed status
-  private _err: write;
+  private readonly _err: write;
   protected _globalConfig: Config.GlobalConfig;
-  private _out: write;
-  private _status: Status;
-  private _bufferedOutput: Set<FlushBufferedOutput>;
+  private readonly _out: write;
+  private readonly _status: Status;
+  private readonly _bufferedOutput: Set<FlushBufferedOutput>;
 
   static readonly filename = __filename;
 
@@ -47,7 +47,7 @@ export default class DefaultReporter extends BaseReporter {
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
-    this._status = new Status();
+    this._status = new Status(globalConfig);
     this._bufferedOutput = new Set();
     this.__wrapStdio(process.stdout);
     this.__wrapStdio(process.stderr);

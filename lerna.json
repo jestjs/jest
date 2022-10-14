@@ -3,5 +3,10 @@
     "packages/*"
   ],
   "npmClient": "yarn",
-  "version": "28.1.2"
+  "command": {
+    "version": {
+      "syncWorkspaceLock": true
+    }
+  },
+  "version": "29.1.2"
 }

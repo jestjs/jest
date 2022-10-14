@@ -6,7 +6,7 @@
  */
 
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import {
   CompilerState,
@@ -38,173 +38,177 @@ const copyrightSnippet = `
 
 const typesNodeReferenceDirective = '/// <reference types="node" />';
 
-const excludedPackages = new Set(['@jest/globals']);
+const excludedPackages = new Set(['@jest/globals', '@jest/test-globals']);
 
-(async () => {
-  const packages = getPackages();
+const packages = getPackages();
 
-  const isTsPackage = p =>
-    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
+const isTsPackage = p =>
+  fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json'));
 
-  const packagesToBundle = packages.filter(
-    p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
-  );
+const packagesToBundle = packages.filter(
+  p => isTsPackage(p) && !excludedPackages.has(p.pkg.name),
+);
 
-  console.log(chalk.inverse(' Extracting TypeScript definition files '));
+console.log(chalk.inverse(' Extracting TypeScript definition files '));
 
-  const sharedExtractorConfig = {
-    $schema:
-      'https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json',
+const sharedExtractorConfig = {
+  $schema:
+    'https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json',
 
-    apiReport: {
-      enabled: false,
-    },
+  apiReport: {
+    enabled: false,
+  },
 
-    /**
-     * A list of NPM package names whose exports should be treated as part of this package.
-     */
-    bundledPackages: [],
+  /**
+   * A list of NPM package names whose exports should be treated as part of this package.
+   */
+  bundledPackages: [],
 
-    compiler: {
-      skipLibCheck: true,
-    },
+  compiler: {
+    skipLibCheck: true,
+  },
 
-    docModel: {
-      enabled: false,
-    },
+  docModel: {
+    enabled: false,
+  },
 
-    dtsRollup: {
-      enabled: true,
-      untrimmedFilePath: '<projectFolder>/dist/index.d.ts',
-    },
+  dtsRollup: {
+    enabled: true,
+    untrimmedFilePath: '<projectFolder>/dist/index.d.ts',
+  },
 
-    messages: {
-      compilerMessageReporting: {
-        default: {
-          logLevel: 'warning',
-        },
-      },
-
-      extractorMessageReporting: {
-        'ae-forgotten-export': {
-          logLevel: 'none',
-        },
-        'ae-missing-release-tag': {
-          logLevel: 'none',
-        },
-        default: {
-          logLevel: 'warning',
-        },
-      },
-
-      tsdocMessageReporting: {
-        default: {
-          logLevel: 'none',
-        },
+  messages: {
+    compilerMessageReporting: {
+      default: {
+        logLevel: 'warning',
       },
     },
 
-    tsdocMetadata: {
-      enabled: false,
+    extractorMessageReporting: {
+      'ae-forgotten-export': {
+        logLevel: 'none',
+      },
+      'ae-missing-release-tag': {
+        logLevel: 'none',
+      },
+      default: {
+        logLevel: 'warning',
+      },
     },
-  };
 
-  await fs.promises.writeFile(
-    path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      '../api-extractor.json',
-    ),
-    JSON.stringify(sharedExtractorConfig, null, 2),
-  );
+    tsdocMessageReporting: {
+      default: {
+        logLevel: 'none',
+      },
+    },
+  },
 
-  let compilerState;
+  tsdocMetadata: {
+    enabled: false,
+  },
+};
 
-  await Promise.all(
-    packagesToBundle.map(async ({packageDir, pkg}) => {
-      const configFile = path.resolve(packageDir, 'api-extractor.json');
+await fs.promises.writeFile(
+  path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../api-extractor.json',
+  ),
+  JSON.stringify(sharedExtractorConfig, null, 2),
+);
 
-      await fs.promises.writeFile(
-        configFile,
-        JSON.stringify(
-          {
-            extends: '../../api-extractor.json',
-            mainEntryPointFilePath: path.resolve(packageDir, pkg.types),
-            projectFolder: packageDir,
-          },
-          null,
-          2,
+let compilerState;
+
+await Promise.all(
+  packagesToBundle.map(async ({packageDir, pkg}) => {
+    const configFile = path.resolve(packageDir, 'api-extractor.json');
+
+    await fs.promises.writeFile(
+      configFile,
+      JSON.stringify(
+        {
+          extends: '../../api-extractor.json',
+          mainEntryPointFilePath: path.resolve(packageDir, pkg.types),
+          projectFolder: packageDir,
+        },
+        null,
+        2,
+      ),
+    );
+    const extractorConfig = ExtractorConfig.loadFileAndPrepare(configFile);
+
+    if (!compilerState) {
+      compilerState = CompilerState.create(extractorConfig, {
+        additionalEntryPoints: packagesToBundle.map(({pkg, packageDir}) =>
+          path.resolve(packageDir, pkg.types),
         ),
-      );
-      const extractorConfig = ExtractorConfig.loadFileAndPrepare(configFile);
-
-      if (!compilerState) {
-        compilerState = CompilerState.create(extractorConfig, {
-          additionalEntryPoints: packagesToBundle.map(({pkg, packageDir}) =>
-            path.resolve(packageDir, pkg.types),
-          ),
-          typescriptCompilerFolder,
-        });
-      }
-
-      const extractorResult = Extractor.invoke(extractorConfig, {
-        compilerState,
-        localBuild: true,
-        showVerboseMessages: true,
         typescriptCompilerFolder,
       });
+    }
 
-      if (!extractorResult.succeeded || extractorResult.warningCount > 0) {
-        console.error(
-          chalk.inverse.red(' Unable to extract TypeScript definition files '),
-        );
-        throw new Error(
-          `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings`,
-        );
-      }
+    const extractorResult = Extractor.invoke(extractorConfig, {
+      compilerState,
+      localBuild: true,
+      showVerboseMessages: true,
+      typescriptCompilerFolder,
+    });
 
-      const filepath = extractorResult.extractorConfig.untrimmedFilePath;
-
-      let definitionFile = await fs.promises.readFile(filepath, 'utf8');
-
-      rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
-      rimraf.sync(path.resolve(packageDir, 'dist/'));
-      // this is invalid now, so remove it to not confuse `tsc`
-      rimraf.sync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'));
-
-      definitionFile = definitionFile.replace(/\r\n/g, '\n');
-
-      const hasNodeTypesReference = definitionFile.includes(
-        typesNodeReferenceDirective,
+    if (!extractorResult.succeeded || extractorResult.warningCount > 0) {
+      console.error(
+        chalk.inverse.red(' Unable to extract TypeScript definition files '),
       );
+      throw new Error(
+        `API Extractor completed with ${extractorResult.errorCount} errors and ${extractorResult.warningCount} warnings`,
+      );
+    }
 
-      if (hasNodeTypesReference) {
-        definitionFile = [
-          typesNodeReferenceDirective,
-          ...definitionFile.split(typesNodeReferenceDirective),
-        ].join('\n');
-      }
+    const filepath = extractorResult.extractorConfig.untrimmedFilePath;
 
+    let definitionFile = await fs.promises.readFile(filepath, 'utf8');
+
+    rimraf.sync(path.resolve(packageDir, 'build/**/*.d.ts'));
+    fs.rmSync(path.resolve(packageDir, 'dist/'), {
+      force: true,
+      recursive: true,
+    });
+    // this is invalid now, so remove it to not confuse `tsc`
+    fs.rmSync(path.resolve(packageDir, 'tsconfig.tsbuildinfo'), {
+      force: true,
+      recursive: true,
+    });
+
+    definitionFile = definitionFile.replace(/\r\n/g, '\n');
+
+    const hasNodeTypesReference = definitionFile.includes(
+      typesNodeReferenceDirective,
+    );
+
+    if (hasNodeTypesReference) {
       definitionFile = [
-        copyrightSnippet,
-        ...definitionFile.split(copyrightSnippet),
+        typesNodeReferenceDirective,
+        ...definitionFile.split(typesNodeReferenceDirective),
       ].join('\n');
+    }
 
-      const formattedContent = prettier.format(definitionFile, {
-        ...prettierConfig,
-        filepath,
-      });
+    definitionFile = [
+      copyrightSnippet,
+      ...definitionFile.split(copyrightSnippet),
+    ].join('\n');
 
-      await fs.promises.writeFile(
-        filepath.replace('/dist/', '/build/'),
-        formattedContent,
-      );
-    }),
-  );
+    const formattedContent = prettier.format(definitionFile, {
+      ...prettierConfig,
+      filepath,
+    });
 
-  console.log(
-    chalk.inverse.green(' Successfully extracted TypeScript definition files '),
-  );
-})().catch(error => {
-  console.error('Got error', error.stack);
-  process.exitCode = 1;
-});
+    await fs.promises.writeFile(
+      filepath.replace(
+        `${path.sep}dist${path.sep}`,
+        `${path.sep}build${path.sep}`,
+      ),
+      formattedContent,
+    );
+  }),
+);
+
+console.log(
+  chalk.inverse.green(' Successfully extracted TypeScript definition files '),
+);

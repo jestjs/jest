@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export type Milliseconds = number;
-
 type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled';
 
 type Callsite = {
@@ -17,7 +15,7 @@ type Callsite = {
 // this is here to make it possible to avoid huge dependency trees just for types
 export type AssertionResult = {
   ancestorTitles: Array<string>;
-  duration?: Milliseconds | null;
+  duration?: number | null;
   failureDetails: Array<unknown>;
   failureMessages: Array<string>;
   fullName: string;

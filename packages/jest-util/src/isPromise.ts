@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// capture globalThis.Promise before it may potentially be overwritten
-const Promise = globalThis.Promise;
-
-// see ES2015 spec 25.4.4.5, https://stackoverflow.com/a/38339199
-const isPromise = (candidate: unknown): candidate is Promise<unknown> =>
-  Promise.resolve(candidate) === candidate;
-export default isPromise;
+export default function isPromise<T = unknown>(
+  candidate: unknown,
+): candidate is PromiseLike<T> {
+  return (
+    candidate != null &&
+    (typeof candidate === 'object' || typeof candidate === 'function') &&
+    typeof (candidate as any).then === 'function'
+  );
+}

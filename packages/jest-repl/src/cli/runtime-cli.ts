@@ -102,11 +102,11 @@ export async function run(
         changedFiles: undefined,
         collectCoverage: false,
         collectCoverageFrom: [],
-        collectCoverageOnlyFrom: undefined,
         coverageProvider: 'v8',
         sourcesRelatedToTestsInChangedFiles: undefined,
       },
       filePath,
+      globalConfig,
     );
 
     for (const path of projectConfig.setupFiles) {

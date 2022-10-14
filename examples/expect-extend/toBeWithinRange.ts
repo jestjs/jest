@@ -8,8 +8,8 @@
 import {expect} from '@jest/globals';
 import type {MatcherFunction} from 'expect';
 
-const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> =
-  function (actual: unknown, floor: unknown, ceiling: unknown) {
+const toBeWithinRange: MatcherFunction<[floor: unknown, ceiling: unknown]> =
+  function (actual, floor, ceiling) {
     if (
       typeof actual !== 'number' ||
       typeof floor !== 'number' ||

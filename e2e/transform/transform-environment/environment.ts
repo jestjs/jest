@@ -5,12 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
+import type {
+  EnvironmentContext,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import NodeEnvironment from 'jest-environment-node';
 
 export default class CustomEnvironment extends NodeEnvironment {
-  constructor(config: Config.ProjectConfig) {
-    super(config);
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
+    super(config, context);
     this.global.one = 1;
   }
 }

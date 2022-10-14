@@ -14,6 +14,7 @@ import {
   CallExpression,
   Expression,
   Identifier,
+  ImportDeclaration,
   MemberExpression,
   Node,
   Program,
@@ -31,6 +32,7 @@ const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
 
 const hoistedVariables = new WeakSet<VariableDeclarator>();
+const hoistedJestExpressions = new WeakSet<Expression>();
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
@@ -104,13 +106,18 @@ const IDVisitor = {
   ) {
     ids.add(path);
   },
-  blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
+  blacklist: [
+    'TypeAnnotation',
+    'TSTypeAnnotation',
+    'TSTypeQuery',
+    'TSTypeReference',
+  ],
 };
 
-const FUNCTIONS: Record<
+const FUNCTIONS = Object.create(null) as Record<
   string,
   <T extends Node>(args: Array<NodePath<T>>) => boolean
-> = Object.create(null);
+>;
 
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
@@ -135,7 +142,7 @@ FUNCTIONS.mock = args => {
       let scope = id.scope;
 
       while (scope !== parentScope) {
-        if (scope.bindings[name]) {
+        if (scope.bindings[name] != null) {
           found = true;
           break;
         }
@@ -160,6 +167,19 @@ FUNCTIONS.mock = args => {
             if (initNode && binding.constant && scope.isPure(initNode, true)) {
               hoistedVariables.add(node);
               isAllowedIdentifier = true;
+            }
+          } else if (binding?.path.isImportSpecifier()) {
+            const importDecl = binding.path
+              .parentPath as NodePath<ImportDeclaration>;
+            const imported = binding.path.node.imported;
+            if (
+              importDecl.node.source.value === JEST_GLOBALS_MODULE_NAME &&
+              (isIdentifier(imported) ? imported.name : imported.value) ===
+                JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
+            ) {
+              isAllowedIdentifier = true;
+              // Imports are already hoisted, so we don't need to add it
+              // to hoistedVariables.
             }
           }
         }
@@ -264,9 +284,26 @@ const extractJestObjExprIfHoistable = (
   // Important: Call the function check last
   // It might throw an error to display to the user,
   // which should only happen if we're already sure it's a call on the Jest object.
-  const functionLooksHoistable = FUNCTIONS[propertyName]?.(args);
+  let functionLooksHoistableOrInHoistable = FUNCTIONS[propertyName]?.(args);
 
-  return functionLooksHoistable ? jestObjExpr : null;
+  for (
+    let path: NodePath<Node> | null = expr;
+    path && !functionLooksHoistableOrInHoistable;
+    path = path.parentPath
+  ) {
+    functionLooksHoistableOrInHoistable = hoistedJestExpressions.has(
+      // @ts-expect-error: it's ok if path.node is not an Expression, .has will
+      // just return false.
+      path.node,
+    );
+  }
+
+  if (functionLooksHoistableOrInHoistable) {
+    hoistedJestExpressions.add(expr.node);
+    return jestObjExpr;
+  }
+
+  return null;
 };
 
 /* eslint-disable sort-keys */

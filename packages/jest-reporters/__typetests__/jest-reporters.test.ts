@@ -6,13 +6,13 @@
  */
 
 import {expectError, expectType} from 'tsd-lite';
-import {utils} from '@jest/reporters';
-import type {
+import {
   AggregatedResult,
   Config,
   SnapshotSummary,
   SummaryOptions,
   TestResult,
+  utils,
 } from '@jest/reporters';
 
 declare const aggregatedResults: AggregatedResult;

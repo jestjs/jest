@@ -7,7 +7,7 @@
  */
 'use strict';
 
-import path from 'path';
+import * as path from 'path';
 import getMockName from '../getMockName';
 
 describe('getMockName', () => {

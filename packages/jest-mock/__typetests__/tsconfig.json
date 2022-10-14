@@ -1,12 +1,7 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../../tsconfig.typetest.json",
   "compilerOptions": {
-    "composite": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-
-    "types": []
+    "types": ["node"]
   },
   "include": ["./**/*"]
 }

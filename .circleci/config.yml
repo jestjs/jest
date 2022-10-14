@@ -12,7 +12,7 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@5.0.0
+  node: circleci/node@5.0.3
 
 jobs:
   test-node:
@@ -42,7 +42,11 @@ jobs:
           node-version: lts/*
       - node/install-packages: *install
       - run:
-          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL && JEST_JASMINE=1 yarn test-leak
+          name: Test
+          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
+      - run:
+          name: Leak test
+          command: JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
@@ -54,5 +58,5 @@ workflows:
           name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: ['12', '14', '16', '17', '18']
+              node-version: ['14', '16', '18']
       - test-jest-jasmine

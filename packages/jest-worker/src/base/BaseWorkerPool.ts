@@ -40,6 +40,7 @@ export default class BaseWorkerPool {
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
         forkOptions,
+        idleMemoryLimit: this._options.idleMemoryLimit,
         maxRetries,
         resourceLimits,
         setupArgs,

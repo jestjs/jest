@@ -11,7 +11,7 @@ export default function tryRealpath(path: string): string {
   try {
     path = realpathSync.native(path);
   } catch (error: any) {
-    if (error.code !== 'ENOENT') {
+    if (error.code !== 'ENOENT' && error.code !== 'EISDIR') {
       throw error;
     }
   }

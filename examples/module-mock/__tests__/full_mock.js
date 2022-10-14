@@ -8,7 +8,7 @@ import defaultExport, {apple, strawberry} from '../fruit';
 jest.mock('../fruit');
 
 it('does a full mock', () => {
-  expect(defaultExport()).toBe(undefined);
+  expect(defaultExport()).toBeUndefined();
   expect(apple).toBe('apple');
-  expect(strawberry()).toBe(undefined);
+  expect(strawberry()).toBeUndefined();
 });

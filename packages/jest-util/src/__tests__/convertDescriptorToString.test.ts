@@ -29,7 +29,7 @@ describe(convertDescriptorToString, () => {
     expect(() => {
       // @ts-expect-error
       return convertDescriptorToString(input);
-    }).toThrowError(
+    }).toThrow(
       `Invalid first argument, ${input}. It must be a named class, named function, number, or string.`,
     );
   });

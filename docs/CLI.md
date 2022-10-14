@@ -118,7 +118,7 @@ import TOCInline from '@theme/TOCInline';
 
 When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--bail`
+### `--bail[=<n>]`
 
 Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
@@ -180,8 +180,6 @@ Alias: `--collectCoverage`. Indicates that test coverage information should be c
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
-
 ### `--debug`
 
 Print debugging info about your Jest config.
@@ -204,11 +202,14 @@ Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--filter=<file>`
 
-Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with the "filtered" property. Especially useful when used in conjunction with a testing infrastructure to filter known broken, e.g.
+Path to a module exporting a filtering function. This asynchronous function receives a list of test paths which can be manipulated to exclude tests from running by returning an object with shape `{ filtered: Array<{ test: string }> }`. Especially useful when used in conjunction with a testing infrastructure to filter known broken tests, e.g.
 
 ```js title="my-filter.js"
 module.exports = testPaths => {
-  const allowedPaths = testPaths.filter(filteringFunction); // ["path1.spec.js", "path2.spec.js", etc]
+  const allowedPaths = testPaths
+    .filter(filteringFunction)
+    .map(test => ({test})); // [{ test: "path1.spec.js" }, { test: "path2.spec.js" }, etc]
+
   return {
     filtered: allowedPaths,
   };
@@ -309,7 +310,13 @@ Allows the test suite to pass when no files are found.
 
 ### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option.
+
+:::note
+
+If configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+:::
 
 ### `--reporters`
 
@@ -343,6 +350,20 @@ The default regex matching works fine on small runs, but becomes slow if provide
 
 :::
 
+### `--seed=<num>`
+
+Sets a seed value that can be retrieved in a test file via [`jest.getSeed()`](JestObjectAPI.md#jestgetseed). The seed value must be between `-0x80000000` and `0x7fffffff` inclusive (`-2147483648` (`-(2 ** 31)`) and `2147483647` (`2 ** 31 - 1`) in decimal).
+
+```bash
+jest --seed=1324
+```
+
+:::tip
+
+If this option is not specified Jest will randomly generate the value. You can use the [`--showSeed`](#--showseed) flag to print the seed in the test report summary.
+
+:::
+
 ### `--selectProjects <project1> ... <projectN>`
 
 Run the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
@@ -373,6 +394,12 @@ jest --shard=3/3
 
 Print your Jest config and then exits.
 
+### `--showSeed`
+
+Prints the seed value in the test report summary. See [`--seed=<num>`](#--seednum) for the details.
+
+Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boolean).
+
 ### `--silent`
 
 Prevent tests from printing messages through the console.
@@ -385,7 +412,9 @@ A JSON string with options that will be passed to the `testEnvironment`. The rel
 
 Adds a `location` field to test results. Useful if you want to report the location of a test in a reporter.
 
-Note that `column` is 0-indexed while `line` is not.
+:::note
+
+In the resulting object `column` is 0-indexed while `line` is not.
 
 ```json
 {
@@ -393,6 +422,8 @@ Note that `column` is 0-indexed while `line` is not.
   "line": 5
 }
 ```
+
+:::
 
 ### `--testMatch glob1 ... globN`
 
@@ -454,7 +485,13 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+Use `--watchAll=false` to explicitly disable the watch mode.
+
+:::tip
+
+In most CI environments, this is automatically handled for you.
+
+:::
 
 ### `--watchman`
 

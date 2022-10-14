@@ -7,19 +7,26 @@
 
 import {createContext, runInContext} from 'vm';
 
+declare global {
+  function DTRACE_NET_SERVER_CONNECTION(): unknown;
+}
+
+const fake = jest.fn();
+globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
+
 let installCommonGlobals: typeof import('../installCommonGlobals').default;
-let fake: jest.Mock;
 
 function getGlobal(): typeof globalThis {
   return runInContext('this', createContext());
 }
 
 beforeEach(() => {
-  fake = jest.fn();
-  // @ts-expect-error
-  globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
-
   installCommonGlobals = require('../installCommonGlobals').default;
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+  jest.resetModules();
 });
 
 it('returns the passed object', () => {
@@ -33,8 +40,9 @@ it('turns a V8 global object into a Node global object', () => {
 
   expect(myGlobal.process).toBeDefined();
   expect(myGlobal.DTRACE_NET_SERVER_CONNECTION).toBeDefined();
-
   expect(myGlobal.DTRACE_NET_SERVER_CONNECTION).not.toBe(fake);
+
   myGlobal.DTRACE_NET_SERVER_CONNECTION();
-  expect(fake.mock.calls.length).toBe(1);
+
+  expect(fake).toHaveBeenCalledTimes(1);
 });

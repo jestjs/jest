@@ -1,5 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`babel-plugin-jest-hoist TS typeof usage in jest.mock: TS typeof usage in jest.mock 1`] = `
+
+jest.mock('some-module', () => {
+  const actual = jest.requireActual('some-module');
+
+  return jest.fn<typeof actual.method>();
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  const actual = jest.requireActual('some-module');
+  return jest.fn();
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+
+`;
+
 exports[`babel-plugin-jest-hoist automatic react runtime: automatic react runtime 1`] = `
 
 jest.mock('./App', () => () => <div>Hello world</div>);
@@ -7,7 +30,6 @@ jest.mock('./App', () => () => <div>Hello world</div>);
       ↓ ↓ ↓ ↓ ↓ ↓
 
 var _jsxFileName = '/root/project/src/file.js';
-
 _getJestObj().mock(
   './App',
   () => () =>
@@ -26,16 +48,104 @@ _getJestObj().mock(
       this,
     ),
 );
-
 import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
-
 function _getJestObj() {
   const {jest} = require('@jest/globals');
-
   _getJestObj = () => jest;
-
   return jest;
 }
+
+
+`;
+
+exports[`babel-plugin-jest-hoist global jest.mock within jest.mock: global jest.mock within jest.mock 1`] = `
+
+jest.mock('some-module', () => {
+  jest.mock('some-module');
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().mock('some-module');
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+
+
+`;
+
+exports[`babel-plugin-jest-hoist global jest.requireActual in jest.mock: global jest.requireActual in jest.mock 1`] = `
+
+jest.mock('some-module', () => {
+  jest.requireActual('some-module');
+});
+
+jest.requireActual('some-module');
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().requireActual('some-module');
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+jest.requireActual('some-module');
+
+
+`;
+
+exports[`babel-plugin-jest-hoist imported jest.mock within jest.mock: imported jest.mock within jest.mock 1`] = `
+
+import {jest} from '@jest/globals';
+
+jest.mock('some-module', () => {
+  jest.mock('some-module');
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().mock('some-module');
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+import {jest} from '@jest/globals';
+
+
+`;
+
+exports[`babel-plugin-jest-hoist imported jest.requireActual in jest.mock: imported jest.requireActual in jest.mock 1`] = `
+
+import {jest} from '@jest/globals';
+
+jest.mock('some-module', () => {
+  jest.requireActual('some-module');
+});
+
+jest.requireActual('some-module');
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().mock('some-module', () => {
+  _getJestObj().requireActual('some-module');
+});
+function _getJestObj() {
+  const {jest} = require('@jest/globals');
+  _getJestObj = () => jest;
+  return jest;
+}
+import {jest} from '@jest/globals';
+jest.requireActual('some-module');
 
 
 `;
@@ -51,7 +161,6 @@ jest.mock('some-module', () => {
       ↓ ↓ ↓ ↓ ↓ ↓
 
 const {jest} = require('@jest/globals');
-
 jest.mock('some-module', () => {
   jest.requireActual('some-module');
 });
@@ -69,17 +178,12 @@ jest.disableAutomock();
       ↓ ↓ ↓ ↓ ↓ ↓
 
 _getJestObj().enableAutomock();
-
 _getJestObj().disableAutomock();
-
 function _getJestObj() {
   const {jest} = require('@jest/globals');
-
   _getJestObj = () => jest;
-
   return jest;
 }
-
 require('x');
 
 
@@ -95,12 +199,9 @@ beforeEach(() => {
 
 function _getJestObj() {
   const {jest} = require('@jest/globals');
-
   _getJestObj = () => jest;
-
   return jest;
 }
-
 beforeEach(() => {
   _getJestObj().mock('someNode');
 });
@@ -119,15 +220,11 @@ beforeEach(() => {
 
 function _getJestObj() {
   const {jest} = require('@jest/globals');
-
   _getJestObj = () => jest;
-
   return jest;
 }
-
 beforeEach(() => {
   _getJestObj().mock('someNode');
-
   require('x');
 });
 

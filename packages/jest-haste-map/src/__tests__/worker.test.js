@@ -9,7 +9,7 @@
 'use strict';
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import H from '../constants';
 import {getSha1, worker} from '../worker';
 
@@ -142,7 +142,7 @@ describe('worker', () => {
       error = err;
     }
 
-    expect(error.message).toEqual("Cannot read path '/kiwi.js'.");
+    expect(error.message).toBe("Cannot read path '/kiwi.js'.");
   });
 
   it('simply computes SHA-1s when requested (works well with binary data)', async () => {
@@ -180,7 +180,7 @@ describe('worker', () => {
 
     await expect(
       getSha1({computeSha1: true, filePath: '/i/dont/exist.js', rootDir}),
-    ).rejects.toThrow();
+    ).rejects.toThrow("Cannot read path '/i/dont/exist.js'.");
   });
 
   it('avoids computing dependencies if not requested and Haste does not need it', async () => {

@@ -10,6 +10,7 @@
 
 import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
+import {isPromise} from 'jest-util';
 import {
   any,
   anything,
@@ -38,10 +39,11 @@ import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
 import type {
-  AsyncExpectationResult,
   Expect,
   ExpectationResult,
+  MatcherContext,
   MatcherState,
+  MatcherUtils,
   MatchersObject,
   PromiseMatcherFn,
   RawMatcherFn,
@@ -51,30 +53,29 @@ import type {
 
 export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
+  AsyncExpectationResult,
   AsymmetricMatchers,
   BaseExpect,
   Expect,
+  ExpectationResult,
+  MatcherContext,
   MatcherFunction,
-  MatcherFunctionWithState,
+  MatcherFunctionWithContext,
   MatcherState,
+  MatcherUtils,
   Matchers,
+  SyncExpectationResult,
 } from './types';
 
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
-
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
   return function (
-    this: MatcherState,
+    this: MatcherContext,
     received: any,
     testNameOrInlineSnapshot?: string,
   ) {
@@ -269,21 +270,29 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils = {...matcherUtils, iterableEquality, subsetEquality};
+    const utils: MatcherUtils['utils'] = {
+      ...matcherUtils,
+      iterableEquality,
+      subsetEquality,
+    };
 
-    const matcherContext: MatcherState = {
+    const matcherUtilsThing: MatcherUtils = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
       dontThrow: () => (throws = false),
-      ...getState(),
       equals,
+      utils,
+    };
+
+    const matcherContext: MatcherContext = {
+      ...getState<MatcherState>(),
+      ...matcherUtilsThing,
       error: err,
       isNot,
       promise,
-      utils,
     };
 
     const processResult = (
@@ -355,19 +364,16 @@ const makeThrowingMatcher = (
             })();
 
       if (isPromise(potentialResult)) {
-        const asyncResult = potentialResult as AsyncExpectationResult;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
         }
 
-        return asyncResult
+        return potentialResult
           .then(aResult => processResult(aResult, asyncError))
           .catch(handleError);
       } else {
-        const syncResult = potentialResult as SyncExpectationResult;
-
-        return processResult(syncResult);
+        return processResult(potentialResult);
       }
     } catch (error: any) {
       return handleError(error);

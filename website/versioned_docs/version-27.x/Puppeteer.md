@@ -5,7 +5,11 @@ title: Using with puppeteer
 
 With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
-> Generating code coverage for test files using Puppeteer is currently not possible if your test uses `page.$eval`, `page.$$eval` or `page.evaluate` as the passed function is executed outside of Jest's scope. Check out [issue #7962](https://github.com/facebook/jest/issues/7962#issuecomment-495272339) on GitHub for a workaround.
+:::note
+
+Generating code coverage for test files using Puppeteer is currently not possible if your test uses `page.$eval`, `page.$$eval` or `page.evaluate` as the passed function is executed outside of Jest's scope. Check out [issue #7962](https://github.com/facebook/jest/issues/7962#issuecomment-495272339) on GitHub for a workaround.
+
+:::
 
 ## Use jest-puppeteer Preset
 

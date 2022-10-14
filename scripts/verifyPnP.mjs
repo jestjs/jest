@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import dedent from 'dedent';
 import execa from 'execa';
 import fs from 'graceful-fs';
 import yaml from 'js-yaml';
-import rimraf from 'rimraf';
 import tempy from 'tempy';
 
 const rootDirectory = path.resolve(
@@ -78,5 +77,5 @@ try {
 
   console.log(chalk.inverse.green(' Successfully ran Jest with PnP linker '));
 } finally {
-  rimraf.sync(cwd);
+  fs.rmSync(cwd, {force: true, recursive: true});
 }

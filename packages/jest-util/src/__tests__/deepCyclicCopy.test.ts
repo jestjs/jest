@@ -11,8 +11,8 @@ import deepCyclicCopy from '../deepCyclicCopy';
 it('returns the same value for primitive or function values', () => {
   const fn = () => {};
 
-  expect(deepCyclicCopy(undefined)).toBe(undefined);
-  expect(deepCyclicCopy(null)).toBe(null);
+  expect(deepCyclicCopy(undefined)).toBeUndefined();
+  expect(deepCyclicCopy(null)).toBeNull();
   expect(deepCyclicCopy(true)).toBe(true);
   expect(deepCyclicCopy(42)).toBe(42);
   expect(Number.isNaN(deepCyclicCopy(NaN))).toBe(true);
@@ -31,7 +31,7 @@ it('does not execute getters/setters, but copies them', () => {
   const copy = deepCyclicCopy(obj);
 
   expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toBeDefined();
-  expect(fn).not.toBeCalled();
+  expect(fn).not.toHaveBeenCalled();
 });
 
 it('copies symbols', () => {

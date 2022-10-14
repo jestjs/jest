@@ -24,9 +24,6 @@ const initialOptions: Config.InitialOptions = {
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
-  collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/Covered.js': true,
-  },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'v8',
@@ -140,6 +137,7 @@ const initialOptions: Config.InitialOptions = {
   sandboxInjectedGlobals: [],
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
+  showSeed: false,
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
@@ -187,6 +185,7 @@ const initialOptions: Config.InitialOptions = {
     ],
   ],
   watchman: true,
+  workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
 };
 
 export default initialOptions;

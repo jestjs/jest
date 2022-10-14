@@ -21,7 +21,7 @@ In this post we'll outline what the Jest Open Collective is, the structure, and 
 
 ![Banner image for Jest Open Collective](/img/blog/collective.png)
 
-Open Collective is a platform to manage groups of people transparently. Jest joins projects like [Webpack](https://opencollective.com/webpack), [Babel](https://opencollective.com/babel), [Mocha](https://opencollective.com/mochajs), [Preact](https://opencollective.com/preact), [Vue](https://opencollective.com/vuejs), and many more in supporting the open source community through the Open Collective platform.
+Open Collective is a platform to manage groups of people transparently. Jest joins projects like [webpack](https://opencollective.com/webpack), [Babel](https://opencollective.com/babel), [Mocha](https://opencollective.com/mochajs), [Preact](https://opencollective.com/preact), [Vue](https://opencollective.com/vuejs), and many more in supporting the open source community through the Open Collective platform.
 
 ## What is the Jest Open Collective
 

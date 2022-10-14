@@ -121,7 +121,7 @@ test('respects recursiveDenylist', () => {
 
   validate(config, {exampleConfig});
 
-  expect(console.warn).toBeCalled();
+  expect(console.warn).toHaveBeenCalled();
 
   console.warn.mockReset();
 
@@ -130,7 +130,7 @@ test('respects recursiveDenylist', () => {
     recursiveDenylist: ['something.nested'],
   });
 
-  expect(console.warn).not.toBeCalled();
+  expect(console.warn).not.toHaveBeenCalled();
   console.warn = warn;
 });
 
@@ -285,7 +285,7 @@ test('Comments in config JSON using "//" key are not warned', () => {
   validate(config, {
     exampleConfig: validConfig,
   });
-  expect(console.warn).not.toBeCalled();
+  expect(console.warn).not.toHaveBeenCalled();
 
   console.warn.mockReset();
 
@@ -293,7 +293,7 @@ test('Comments in config JSON using "//" key are not warned', () => {
     exampleConfig: validConfig,
     recursiveDenylist: ['myCustomKey' as "don't validate this"],
   });
-  expect(console.warn).not.toBeCalled();
+  expect(console.warn).not.toHaveBeenCalled();
 
   console.warn.mockRestore();
 });

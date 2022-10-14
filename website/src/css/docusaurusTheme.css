@@ -21,6 +21,8 @@
   --grey: #aaaaaa;
   --grey2: #ededed;
   --grey3: #545454;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 :root[data-theme='dark'] {
@@ -39,6 +41,8 @@
   --grey: #aaaaaa;
   --grey2: #545454;
   --grey3: #ededed;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
 .header-github-link:hover {
@@ -69,15 +73,4 @@ html[data-theme='dark'] .footer--dark {
 
 .footer--dark .text--center {
   color: var(--grey);
-}
-
-.docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.1);
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
-}
-
-html[data-theme='dark'] .docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.3);
 }

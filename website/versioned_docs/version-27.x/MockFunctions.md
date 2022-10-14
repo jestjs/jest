@@ -74,7 +74,7 @@ expect(someMockFunction.mock.instances.length).toBe(2);
 
 // The object returned by the first instantiation of this function
 // had a `name` property whose value was set to 'test'
-expect(someMockFunction.mock.instances[0].name).toEqual('test');
+expect(someMockFunction.mock.instances[0].name).toBe('test');
 
 // The first argument of the last call to the function was 'test'
 expect(someMockFunction.mock.lastCall[0]).toBe('test');
@@ -262,7 +262,7 @@ const otherObj = {
 
 ## Mock Names
 
-You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in the test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
+You can optionally provide a name for your mock functions, which will be displayed instead of `'jest.fn()'` in the test error output. Use [`.mockName()`](MockFunctionAPI.md/#mockfnmocknamename) if you want to be able to quickly identify the mock function reporting an error in your test output.
 
 ```javascript
 const myMockFn = jest

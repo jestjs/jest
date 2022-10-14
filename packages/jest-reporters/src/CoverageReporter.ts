@@ -37,11 +37,11 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
-  private _context: ReporterContext;
-  private _coverageMap: istanbulCoverage.CoverageMap;
-  private _globalConfig: Config.GlobalConfig;
-  private _sourceMapStore: libSourceMaps.MapStore;
-  private _v8CoverageResults: Array<V8CoverageResult>;
+  private readonly _context: ReporterContext;
+  private readonly _coverageMap: istanbulCoverage.CoverageMap;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _sourceMapStore: libSourceMaps.MapStore;
+  private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
 
@@ -148,7 +148,6 @@ export default class CoverageReporter extends BaseReporter {
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
-        // @ts-expect-error: option does not exist on the node 12 types
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,

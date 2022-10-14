@@ -47,9 +47,9 @@ export default class TestRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    return await (options.serial
+    return options.serial
       ? this.#createInBandTestRun(tests, watcher)
-      : this.#createParallelTestRun(tests, watcher));
+      : this.#createParallelTestRun(tests, watcher);
   }
 
   async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
@@ -106,8 +106,13 @@ export default class TestRunner extends EmittingTestRunner {
 
     const worker = new Worker(require.resolve('./testWorker'), {
       exposedMethods: ['worker'],
-      // @ts-expect-error: option does not exist on the node 12 types
       forkOptions: {serialization: 'json', stdio: 'pipe'},
+      // The workerIdleMemoryLimit should've been converted to a number during
+      // the normalization phase.
+      idleMemoryLimit:
+        typeof this._globalConfig.workerIdleMemoryLimit === 'number'
+          ? this._globalConfig.workerIdleMemoryLimit
+          : undefined,
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],

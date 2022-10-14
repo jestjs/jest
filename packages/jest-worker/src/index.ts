@@ -81,9 +81,9 @@ function getExposedMethods(
  */
 export class Worker {
   private _ending: boolean;
-  private _farm: Farm;
-  private _options: WorkerFarmOptions;
-  private _workerPool: WorkerPoolInterface;
+  private readonly _farm: Farm;
+  private readonly _options: WorkerFarmOptions;
+  private readonly _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: WorkerFarmOptions) {
     this._options = {...options};
@@ -96,6 +96,7 @@ export class Worker {
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
+      idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
       numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},

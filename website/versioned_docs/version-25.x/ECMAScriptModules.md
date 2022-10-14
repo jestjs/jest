@@ -3,11 +3,15 @@ id: ecmascript-modules
 title: ECMAScript Modules
 ---
 
-Jest ships with _experimental_ support for ECMAScript Modules (ESM).
+:::caution
 
-> Note that due to its experimental nature there are many bugs and missing features in Jest's implementation, both known and unknown. You should check out the [tracking issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker for the latest status.
+Jest ships with **experimental** support for ECMAScript Modules (ESM).
 
-> Also note that the APIs Jest uses to implement ESM support is still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `14.13.1`).
+The implementation may have bugs and lack features. For the latest status check out the [issue](https://github.com/facebook/jest/issues/9430) and the [label](https://github.com/facebook/jest/labels/ES%20Modules) on the issue tracker.
+
+Also note that the APIs Jest uses to implement ESM support are still [considered experimental by Node](https://nodejs.org/api/vm.html#vm_class_vm_module) (as of version `18.8.0`).
+
+:::
 
 With the warnings out of the way, this is how you activate ESM support in your tests.
 
@@ -28,6 +32,42 @@ Most of the differences are explained in [Node's documentation](https://nodejs.o
 import {jest} from '@jest/globals';
 
 jest.useFakeTimers();
+
+// etc.
+```
+
+Additionally, since ESM evaluates static `import` statements before looking at the code, the hoisting of `jest.mock` calls that happens in CJS won't work in ESM. To mock modules in ESM, you need to use `require` or dynamic `import()` after `jest.mock` calls to load the mocked modules - the same applies to modules which load the mocked modules.
+
+```js title="main.cjs"
+const {BrowserWindow, app} = require('electron');
+
+// etc.
+
+module.exports = {example};
+```
+
+```js title="main.test.cjs"
+import {createRequire} from 'node:module';
+import {jest} from '@jest/globals';
+
+const require = createRequire(import.meta.url);
+
+jest.mock('electron', () => ({
+  app: {
+    on: jest.fn(),
+    whenReady: jest.fn(() => Promise.resolve()),
+  },
+  BrowserWindow: jest.fn().mockImplementation(() => ({
+    // partial mocks.
+  })),
+}));
+
+const {BrowserWindow} = require('electron');
+const exported = require('./main.cjs');
+
+// alternatively
+const {BrowserWindow} = (await import('electron')).default;
+const exported = await import('./main.cjs');
 
 // etc.
 ```

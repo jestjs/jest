@@ -27,6 +27,14 @@ test.failing('failing fails = passes with test syntax', () => {
   expect(10).toBe(101);
 });
 
+test.failing.each([
+  {a: 1, b: 1, expected: 2},
+  {a: 1, b: 2, expected: 3},
+  {a: 2, b: 1, expected: 3},
+])('.add($a, $b)', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+
 it.skip.failing('skipped failing 1', () => {
   expect(10).toBe(10);
 });

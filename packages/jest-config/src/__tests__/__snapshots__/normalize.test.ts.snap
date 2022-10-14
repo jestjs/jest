@@ -137,6 +137,30 @@ exports[`logs a deprecation warning when 'browser' option is passed 1`] = `
 }
 `;
 
+exports[`logs a deprecation warning when 'collectCoverageOnlyFrom' option is passed 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "<yellow><bold><bold>●</intensity><bold> Deprecation Warning</intensity>:</color>
+<yellow></color>
+<yellow>  Option <bold>"collectCoverageOnlyFrom"</intensity> was replaced by <bold>"collectCoverageFrom"</intensity>.</color>
+<yellow></color>
+<yellow>    Please update your configuration.</color>
+<yellow></color>
+<yellow>  <bold>Configuration Documentation:</intensity></color>
+<yellow>  https://jestjs.io/docs/configuration</color>
+<yellow></color>",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
 exports[`logs a deprecation warning when 'extraGlobals' option is passed 1`] = `
 [MockFunction] {
   "calls": Array [

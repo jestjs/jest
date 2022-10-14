@@ -15,7 +15,8 @@ describe('invalid arg', () => {
   describe('length', () => {
     test('is not a number', () => {
       expect(() => {
-        diff('0' as any, 0, isCommon, foundSubsequence);
+        // @ts-expect-error: Testing runtime errors here
+        diff('0', 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Infinity is not a safe integer', () => {
@@ -49,12 +50,14 @@ describe('invalid arg', () => {
   describe('callback', () => {
     test('null is not a function', () => {
       expect(() => {
-        diff(0, 0, null as any, foundSubsequence);
+        // @ts-expect-error: Testing runtime errors here
+        diff(0, 0, null, foundSubsequence);
       }).toThrow(/isCommon/);
     });
     test('undefined is not a function', () => {
       expect(() => {
-        diff(0, 0, isCommon, undefined as any);
+        // @ts-expect-error: Testing runtime errors here
+        diff(0, 0, isCommon, undefined);
       }).toThrow(/foundSubsequence/);
     });
   });
@@ -97,10 +100,10 @@ describe('input callback encapsulates comparison', () => {
     const b = [-0];
 
     test('are not common according to Object.is method', () => {
-      expect(countCommonObjectIs(a, b)).toEqual(0);
+      expect(countCommonObjectIs(a, b)).toBe(0);
     });
     test('are common according to === operator', () => {
-      expect(countCommonStrictEquality(a, b)).toEqual(1);
+      expect(countCommonStrictEquality(a, b)).toBe(1);
     });
   });
 
@@ -109,10 +112,10 @@ describe('input callback encapsulates comparison', () => {
     const a = [NaN];
 
     test('is common according to Object.is method', () => {
-      expect(countCommonObjectIs(a, a)).toEqual(1);
+      expect(countCommonObjectIs(a, a)).toBe(1);
     });
     test('is not common according to === operator', () => {
-      expect(countCommonStrictEquality(a, a)).toEqual(0);
+      expect(countCommonStrictEquality(a, a)).toBe(0);
     });
   });
 });
@@ -156,7 +159,7 @@ const assertCommonItems = (
 const countDifferences = (
   aLength: number,
   bLength: number,
-  isCommon,
+  isCommon: (aIndex: number, bIndex: number) => boolean,
 ): number => {
   const dMax = aLength + bLength;
   const aIndexes = [-1]; // initialize for aLast + 1 in loop when d = 0
@@ -274,7 +277,7 @@ describe('no common items', () => {
   // default export does not call findSubsequences nor divide
 
   describe('negative zero is equivalent to zero for length', () => {
-    const countItemsNegativeZero = (aLength, bLength) => {
+    const countItemsNegativeZero = (aLength: number, bLength: number) => {
       let n = 0;
       diff(
         aLength,
@@ -290,32 +293,32 @@ describe('no common items', () => {
     };
 
     test('of a', () => {
-      expect(countItemsNegativeZero(-0, 1)).toEqual(0);
+      expect(countItemsNegativeZero(-0, 1)).toBe(0);
     });
     test('of b', () => {
-      expect(countItemsNegativeZero(1, -0)).toEqual(0);
+      expect(countItemsNegativeZero(1, -0)).toBe(0);
     });
     test('of a and b', () => {
-      expect(countItemsNegativeZero(-0, -0)).toEqual(0);
+      expect(countItemsNegativeZero(-0, -0)).toBe(0);
     });
   });
 
   test('a empty and b empty', () => {
-    const a = [];
-    const b = [];
-    const expected = [];
+    const a: Array<unknown> = [];
+    const b: Array<unknown> = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
   test('a empty and b non-empty', () => {
-    const a = [];
+    const a: Array<unknown> = [];
     const b = [false];
-    const expected = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
   test('a non-empty and b empty', () => {
     const a = [false, true];
-    const b = [];
-    const expected = [];
+    const b: Array<unknown> = [];
+    const expected: Array<unknown> = [];
     expectCommonItems(a, b, expected);
   });
 
@@ -327,7 +330,7 @@ describe('no common items', () => {
       // last segment cannot have a prev segment
       const a = [false];
       const b = [true];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 1 odd', () => {
@@ -336,7 +339,7 @@ describe('no common items', () => {
       // last segment has a prev segment because unroll a half iteration
       const a = [0, 1];
       const b = ['0'];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 2 even', () => {
@@ -345,7 +348,7 @@ describe('no common items', () => {
       // last segment has a prev segment
       const a = [0, 1, 2, 3];
       const b = ['0', '1'];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
     test('baDeltaLength 7 odd', () => {
@@ -354,7 +357,7 @@ describe('no common items', () => {
       // last segment has a prev segment
       const a = ['0', '1', '2'];
       const b = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-      const expected = [];
+      const expected: Array<unknown> = [];
       expectCommonItems(a, b, expected);
     });
   });
@@ -734,7 +737,7 @@ const assertCommonSubstring = (
 
 // Return array of substrings in a longest common subsequence of strings.
 const findCommonSubstrings = (a: string, b: string): Array<string> => {
-  const array = [];
+  const array: Array<string> = [];
   diff(
     a.length,
     b.length,

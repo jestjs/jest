@@ -63,9 +63,6 @@ const validConfig = {
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
-  collectCoverageOnlyFrom: {
-    '<rootDir>/this-directory-is-covered/Covered.js': true,
-  },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
