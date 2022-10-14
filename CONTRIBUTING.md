@@ -33,6 +33,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     ```
 
     Note: Replace `<your_username>` with your GitHub username
+
 1.  Run Jest with [Docker](https://docs.docker.com/engine/docker-overview/) (Optional) or continue reading for manual instructions.
 
     1. If you haven't already, [Install Docker](https://docs.docker.com/install/).
@@ -54,7 +55,6 @@ _Before_ submitting a pull request, please make sure the following is done…
     1. The `yarn run watch` command will watch the `/packages` directory for file changes. See `package.json` for a full list of commands. [Learn how to run commands in a container](https://docs.docker.com/engine/reference/commandline/exec/) or visit the [official Docker docs](https://docs.docker.com/) for other Docker related questions.
 
     1. **Skip to step #8 and continue reading.**
-
 
 1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
