@@ -278,6 +278,7 @@ export type InitialOptions = Partial<{
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
+  randomize: boolean;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -391,6 +392,7 @@ export type GlobalConfig = {
   onlyFailures: boolean;
   passWithNoTests: boolean;
   projects: Array<string>;
+  randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
@@ -542,10 +544,7 @@ export type Argv = Arguments<
     roots: Array<string>;
     runInBand: boolean;
     seed: number;
-<<<<<<< HEAD
-=======
     showSeed: boolean;
->>>>>>> a49d2dee430835addadb069652af98fc5b87689b
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
