@@ -5,16 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import type {JestWorkerFarm, Worker, WorkerFarmOptions} from '..';
+import type FarmClass from '../Farm';
+import type WorkerPoolClass from '../WorkerPool';
 
-let Farm;
-let WorkerPool;
-let Queue;
+let WorkerFarm: typeof Worker;
+let WorkerPool: typeof WorkerPoolClass;
+let Farm: typeof FarmClass;
 
 beforeEach(() => {
   jest.mock('../Farm', () => {
     const fakeClass = jest.fn(() => ({
-      doWork: jest.fn().mockResolvedValue(42),
+      doWork: jest.fn(() => 42),
     }));
 
     return {
@@ -27,8 +29,8 @@ beforeEach(() => {
     const fakeWorker = jest.fn(() => ({
       createWorker: jest.fn(),
       end: jest.fn(),
-      getStderr: () => jest.fn(a => a),
-      getStdout: () => jest.fn(a => a),
+      getStderr: () => '<mocked stderr>',
+      getStdout: () => '<mocked stdout>',
       send: jest.fn(),
     }));
 
@@ -52,9 +54,10 @@ beforeEach(() => {
     virtual: true,
   });
 
-  Farm = require('..').Worker;
-  Queue = require('../Farm').default;
-  WorkerPool = require('../WorkerPool').default;
+  WorkerFarm = (require('../') as typeof import('..')).Worker;
+  Farm = (require('../Farm') as typeof import('../Farm')).default;
+  WorkerPool = (require('../WorkerPool') as typeof import('../WorkerPool'))
+    .default;
 });
 
 afterEach(() => {
@@ -64,15 +67,15 @@ afterEach(() => {
 it('makes a non-existing relative worker throw', () => {
   expect(() => {
     // eslint-disable-next-line no-new
-    new Farm('./relative/worker-module.js');
+    new WorkerFarm('./relative/worker-module.js');
   }).toThrow("'workerPath' must be absolute");
 });
 
 it('exposes the right API using default working', () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
-  });
+  }) as JestWorkerFarm<{foo(): void; bar(): void}>;
 
   expect(typeof farm.foo).toBe('function');
   expect(typeof farm.bar).toBe('function');
@@ -85,13 +88,16 @@ it('exposes the right API using passed worker', () => {
     getStderr: () => jest.fn(a => a),
     getStdout: () => jest.fn(a => a),
     send: jest.fn(),
-  }));
+  })) as unknown as typeof WorkerPoolClass;
 
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     WorkerPool,
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
-  });
+  } as WorkerFarmOptions) as JestWorkerFarm<{
+    foo(): void;
+    bar(): void;
+  }>;
 
   expect(typeof farm.foo).toBe('function');
   expect(typeof farm.bar).toBe('function');
@@ -99,40 +105,50 @@ it('exposes the right API using passed worker', () => {
 
 it('breaks if any of the forbidden methods is tried to be exposed', () => {
   expect(
-    () => new Farm('/tmp/baz.js', {exposedMethods: ['getStdout']}),
+    () => new WorkerFarm('/tmp/baz.js', {exposedMethods: ['getStdout']}),
   ).toThrow('Cannot define a method called getStdout');
 
   expect(
-    () => new Farm('/tmp/baz.js', {exposedMethods: ['getStderr']}),
+    () => new WorkerFarm('/tmp/baz.js', {exposedMethods: ['getStderr']}),
   ).toThrow('Cannot define a method called getStderr');
 
-  expect(() => new Farm('/tmp/baz.js', {exposedMethods: ['end']})).toThrow(
-    'Cannot define a method called end',
-  );
+  expect(
+    () => new WorkerFarm('/tmp/baz.js', {exposedMethods: ['end']}),
+  ).toThrow('Cannot define a method called end');
 });
 
 it('works with minimal options', () => {
-  const farm1 = new Farm('/fake-worker.js');
+  const farm1 = new WorkerFarm('/fake-worker.js') as JestWorkerFarm<{
+    methodA(): void;
+    methodB(): void;
+  }>;
 
-  expect(Queue).toHaveBeenCalledTimes(1);
+  expect(Farm).toHaveBeenCalledTimes(1);
   expect(WorkerPool).toHaveBeenCalledTimes(1);
   expect(typeof farm1.methodA).toBe('function');
   expect(typeof farm1.methodB).toBe('function');
-  expect(typeof farm1._shouldNotExist).not.toBe('function');
+  expect(typeof farm1).toEqual(
+    expect.not.objectContaining({
+      _shouldNotExist: expect.anything,
+    }),
+  );
 
-  const farm2 = new Farm('/fake-worker-with-default-method.js');
+  const farm2 = new WorkerFarm(
+    '/fake-worker-with-default-method.js',
+  ) as JestWorkerFarm<{default(): void}>;
 
   expect(typeof farm2.default).toBe('function');
 });
 
 it('does not let make calls after the farm is ended', () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
-  });
+  }) as JestWorkerFarm<{foo(): void; bar(): void}>;
 
   farm.end();
 
+  // @ts-expect-error: Testing internal method
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
   expect(() => farm.foo()).toThrow(
     'Farm is ended, no more calls can be done to it',
@@ -143,12 +159,13 @@ it('does not let make calls after the farm is ended', () => {
 });
 
 it('does not let end the farm after it is ended', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
   });
 
   farm.end();
+  // @ts-expect-error: Testing internal method
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
   await expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
@@ -156,14 +173,15 @@ it('does not let end the farm after it is ended', async () => {
   await expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
   );
+  // @ts-expect-error: Testing internal method
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
 });
 
 it('calls doWork', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 1,
-  });
+  }) as JestWorkerFarm<{foo(a: string, b: string): number}>;
 
   const promise = farm.foo('car', 'plane');
 
@@ -171,11 +189,11 @@ it('calls doWork', async () => {
 });
 
 it('calls getStderr and getStdout from worker', async () => {
-  const farm = new Farm('/tmp/baz.js', {
+  const farm = new WorkerFarm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 1,
   });
 
-  expect(farm.getStderr()('err')).toBe('err');
-  expect(farm.getStdout()('out')).toBe('out');
+  expect(farm.getStderr()).toBe('<mocked stderr>');
+  expect(farm.getStdout()).toBe('<mocked stdout>');
 });

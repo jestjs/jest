@@ -3,10 +3,21 @@
 ### Features
 
 - `[jest-circus, @jest/cli, jest-config]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
+
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.2.0
+
+### Features
+
 - `[@jest/cli, jest-config]` A seed for the test run will be randomly generated, or set by a CLI option ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[@jest/cli, jest-config]` `--show-seed` will display the seed value in the report, and can be set via a CLI flag or through the config file ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
-- `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
+- `[jest-core]` Allow `testResultsProcessor` to be async ([#13343](https://github.com/facebook/jest/pull/13343))
 - `[@jest/environment, jest-environment-node, jest-environment-jsdom, jest-runtime]` Add `getSeed()` to the `jest` object ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
 - `[expect]` Expose `AsyncExpectationResult` and `SyncExpectationResult` types ([#13411](https://github.com/facebook/jest/pull/13411))
@@ -14,7 +25,7 @@
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
-- `[jest-core]` Fix `detectOpenHandles` false positives for some special objects such as `TLSWRAP`. ([#13414](https://github.com/facebook/jest/pull/13414))
+- `[jest-core]` Fix `detectOpenHandles` false positives for some special objects such as `TLSWRAP` ([#13414](https://github.com/facebook/jest/pull/13414))
 - `[jest-mock]` Fix mocking of getters and setters on classes ([#13398](https://github.com/facebook/jest/pull/13398))
 - `[jest-reporters]` Revert: Transform file paths into hyperlinks ([#13399](https://github.com/facebook/jest/pull/13399))
 - `[@jest/types]` Infer type of `each` table correctly when the table is a tuple or array ([#13381](https://github.com/facebook/jest/pull/13381))
@@ -22,11 +33,11 @@
 
 ### Chore & Maintenance
 
-- `[*]` Update `@babel/*` deps, resulting on slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
+- `[*]` Update `@babel/*` deps, resulting in slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
 
 ### Performance
 
-- `[jest-runner]` Do not instrument v8 coverage data if coverage should not be collected [#13282](https://github.com/facebook/jest/pull/13282)
+- `[jest-runner]` Do not instrument v8 coverage data if coverage should not be collected ([#13282](https://github.com/facebook/jest/pull/13282))
 
 ## 29.1.2
 
