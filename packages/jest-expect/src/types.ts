@@ -29,7 +29,7 @@ type Inverse<Matchers> = {
   not: Matchers;
 };
 
-type JestMatchers<R extends void | Promise<void>, T> = Matchers<R> &
+type JestMatchers<R extends void | Promise<void>, T> = Matchers<R, T> &
   SnapshotMatchers<R, T>;
 
 type PromiseMatchers<T = unknown> = {

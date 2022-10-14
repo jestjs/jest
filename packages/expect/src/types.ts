@@ -94,8 +94,8 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void> &
-    Inverse<Matchers<void>> &
+  <T = unknown>(actual: T): Matchers<void, T> &
+    Inverse<Matchers<void, T>> &
     PromiseMatchers;
 } & BaseExpect &
   AsymmetricMatchers &
@@ -131,7 +131,7 @@ type PromiseMatchers = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
-export interface Matchers<R extends void | Promise<void>> {
+export interface Matchers<R extends void | Promise<void>, E = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -152,7 +152,7 @@ export interface Matchers<R extends void | Promise<void>> {
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
    */
-  toBe(expected: unknown): R;
+  toBe(expected: E): R;
   /**
    * Ensures that a mock function is called.
    */
