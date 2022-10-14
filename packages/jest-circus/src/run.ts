@@ -20,9 +20,9 @@ import {
 } from './utils';
 
 const run = async (): Promise<Circus.RunResult> => {
-  const {rootDescribeBlock, seed} = getState();
+  const {rootDescribeBlock, seed, randomize} = getState();
   await dispatch({name: 'run_start'});
-  const rng = rngBuilder(seed);
+  const rng = randomize ? rngBuilder(seed) : undefined;
 
   await _runTestsForDescribeBlock(rootDescribeBlock, rng, true);
   await dispatch({name: 'run_finish'});
@@ -34,7 +34,7 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
-  rng: RandomNumberGenerator,
+  rng?: RandomNumberGenerator,
   isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
