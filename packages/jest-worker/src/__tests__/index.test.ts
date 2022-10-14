@@ -194,6 +194,6 @@ it('calls getStderr and getStdout from worker', async () => {
     numWorkers: 1,
   });
 
-  expect(farm.getStderr()('err')).toBe('err');
-  expect(farm.getStdout()('out')).toBe('out');
+  expect(farm.getStderr()).toBe('<mocked stderr>');
+  expect(farm.getStdout()).toBe('<mocked stdout>');
 });
