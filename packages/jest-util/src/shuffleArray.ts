@@ -5,11 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Prando from 'prando';
+import {xoroshiro128plus} from 'pure-rand';
 
 export const rngBuilder: (seed: number) => {next: () => number} = (
   seed: number,
-) => new Prando(seed);
+) => {
+  const gen = xoroshiro128plus(seed);
+  return { next: () => gen.unsafeNext() };
+}
 
 // Fisher-Yates shuffle
 // This is performed in-place
@@ -18,6 +21,7 @@ export default function shuffleArray<T>(
   random: () => number = Math.random,
 ): Array<T> {
   const length = array == null ? 0 : array.length;
+
   if (!length) {
     return [];
   }

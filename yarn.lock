@@ -12819,7 +12819,7 @@ __metadata:
     ci-info: ^3.2.0
     graceful-fs: ^4.2.9
     picomatch: ^2.2.3
-    prando: ^6.0.1
+    pure-rand: ^5.0.3
   languageName: unknown
   linkType: soft
 
@@ -16625,13 +16625,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prando@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "prando@npm:6.0.1"
-  checksum: c0c25dbb2cb92dff4b0f44781f0e2132886c34ab6a12f7f0839d6073c783d86589d4c632727819d8fb0a5a675a7e27223285c6907261d3b6a49167b4cbdc162a
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -16957,6 +16950,13 @@ __metadata:
   version: 5.0.1
   resolution: "pure-rand@npm:5.0.1"
   checksum: 2b05a6d80163308583a013fab8d7f7f2958a6f77895680c99d8c3ea1f3e49ac273716a59cb1777cfc370540df53e6dc017e46c70a869da81fe490b2e6703d77d
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "pure-rand@npm:5.0.3"
+  checksum: a898ab8a40a8eebc641123dab19308044d8bd979efeaba1d8a45e9977593b25b00c3bd9681e2a558a7daec96c6fb8709995b8f10c55475e892b96f381bb6c6d2
   languageName: node
   linkType: hard
 
