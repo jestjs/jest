@@ -910,6 +910,7 @@ export default async function normalize(
       case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'randomize':
       case 'replname':
       case 'resetMocks':
       case 'resetModules':
@@ -1021,6 +1022,8 @@ export default async function normalize(
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
   }
+
+  newOptions.randomize = newOptions.randomize || argv.randomize;
 
   newOptions.showSeed = newOptions.showSeed || argv.showSeed;
 

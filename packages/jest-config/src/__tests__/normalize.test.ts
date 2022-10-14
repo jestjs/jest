@@ -2164,3 +2164,25 @@ describe('showSeed', () => {
     expect(options.showSeed).toBeFalsy();
   });
 });
+
+describe('randomize', () => {
+  test('randomize is set when argv flag is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {
+      randomize: true,
+    } as Config.Argv);
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is set when the config is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.randomize).toBe(true);
+  });
+
+  test('randomize is false when neither is set', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
+    expect(options.randomize).toBeFalsy();
+  });
+});
