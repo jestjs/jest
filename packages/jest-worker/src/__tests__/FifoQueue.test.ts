@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import FifoQueue from '../FifoQueue';
-import {CHILD_MESSAGE_CALL} from '../types';
+import {
+  CHILD_MESSAGE_CALL,
+  ChildMessageCall,
+  QueueChildMessage,
+} from '../types';
 
 it('returns the shared tasks in FIFO ordering', () => {
   const queue = new FifoQueue();
@@ -82,8 +84,8 @@ it('maintains global FIFO ordering between worker specific and shared tasks', ()
   expect(queue.dequeue(2)).toBeNull();
 });
 
-function createQueueChildMessage(...args) {
-  const request = [CHILD_MESSAGE_CALL, false, 'test', args];
+function createQueueChildMessage(...args: Array<unknown>): QueueChildMessage {
+  const request: ChildMessageCall = [CHILD_MESSAGE_CALL, false, 'test', args];
 
   return {
     onCustomMessage: () => {},
