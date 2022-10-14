@@ -22,6 +22,7 @@
 ### Chore & Maintenance
 
 - `[*]` Update `@babel/*` deps, resulting on slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
+- `[*]` Added Dockerfile for Jest Development ([#9109](https://github.com/facebook/jest/pull/9109), [#13009](https://github.com/facebook/jest/pull/13009))
 
 ### Performance
 
@@ -155,7 +156,6 @@
 
 - `[*]` Replace internal usage of `pretty-format/ConvertAnsi` with `jest-serializer-ansi-escapes` ([#12935](https://github.com/facebook/jest/pull/12935), [#13004](https://github.com/facebook/jest/pull/13004))
 - `[docs]` Update spyOn docs ([#13000](https://github.com/facebook/jest/pull/13000))
-- `[*]` Added Dockerfile for Jest Development ([#9109](https://github.com/facebook/jest/pull/9109))
 
 ## 28.1.2
 
