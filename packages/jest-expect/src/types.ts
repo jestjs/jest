@@ -15,7 +15,7 @@ import type {
 export type JestExpect = {
   <T = unknown>(actual: T): JestMatchers<void, T> &
     Inverse<JestMatchers<void, unknown>> &
-    PromiseMatchers<T>;
+    PromiseMatchers<unknown>;
   // Duplicated due to https://github.com/microsoft/rushstack/issues/1709
   addSnapshotSerializer: typeof addSerializer;
 } & BaseExpect &
