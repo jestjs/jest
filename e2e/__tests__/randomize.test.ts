@@ -14,6 +14,8 @@ skipSuiteOnJasmine();
 
 const dir = path.resolve(__dirname, '../randomize');
 
+const trimFirstLine = (str: string): string => str.split('\n').slice(1).join('\n');
+
 function runJestTwice(
   dir: string,
   args: Array<string>,
@@ -31,14 +33,9 @@ test('works with passing tests', () => {
     '123',
   ]);
 
-  const rest1 = extractSummary(result1.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
-  const rest2 = extractSummary(result2.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
+  const rest1 = trimFirstLine(extractSummary(result1.stderr).rest);
+  const rest2 = trimFirstLine(extractSummary(result2.stderr).rest);
+
   expect(rest1).toEqual(rest2);
   expect(rest1).toMatchSnapshot();
 });
@@ -49,14 +46,10 @@ test('works with each', () => {
     '--seed',
     '123',
   ]);
-  const rest1 = extractSummary(result1.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
-  const rest2 = extractSummary(result2.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
+
+  const rest1 = trimFirstLine(extractSummary(result1.stderr).rest);
+  const rest2 = trimFirstLine(extractSummary(result2.stderr).rest);
+
   expect(rest1).toEqual(rest2);
   expect(rest1).toMatchSnapshot();
 });
@@ -69,14 +62,9 @@ test('works with hooks', () => {
   ]);
 
   // Change in formatting could change this one
-  const rest1 = extractSummary(result1.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
-  const rest2 = extractSummary(result2.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
+  const rest1 = trimFirstLine(extractSummary(result1.stderr).rest);
+  const rest2 = trimFirstLine(extractSummary(result2.stderr).rest);
+
   expect(rest1).toEqual(rest2);
   expect(rest1).toMatchSnapshot();
 });
@@ -88,14 +76,9 @@ test('works with snapshots', () => {
     '123',
   ]);
 
-  const rest1 = extractSummary(result1.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
-  const rest2 = extractSummary(result2.stderr)
-    .rest.split('\n')
-    .slice(1)
-    .join('\n');
+  const rest1 = trimFirstLine(extractSummary(result1.stderr).rest);
+  const rest2 = trimFirstLine(extractSummary(result2.stderr).rest);
+
   expect(rest1).toEqual(rest2);
   expect(rest1).toMatchSnapshot();
 });
