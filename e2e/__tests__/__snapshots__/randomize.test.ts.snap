@@ -5,6 +5,10 @@ exports[`works with each 1`] = `
   ✓ test1
   ✓ test2
   ✓ test3
+  describe2
+    ✓ test4
+    ✓ test6
+    ✓ test5
   describe1
     ✓ test4
     ✓ test6
@@ -15,17 +19,22 @@ exports[`works with each 1`] = `
     ✓ test10
     describe4
       ✓ test14
-      ✓ test13
       ✓ test15
-  describe2
-    ✓ test4
-    ✓ test5
-    ✓ test6"
+      ✓ test13"
 `;
 
 exports[`works with hooks 1`] = `
-"Seed is 123
-This is before all
+"This is before all
+This is before each
+test7
+This is after each
+This is before each
+test9
+This is after each
+This is before each
+test8
+This is after each
+This is after all describe2
 This is before each
 test4
 This is after each
@@ -39,6 +48,12 @@ This is before each
 test1
 This is after each
 This is before each
+test2
+This is after each
+This is before each
+test3
+This is after each
+This is before each
 This is before each describe3
 test11
 This is after each
@@ -48,11 +63,11 @@ test12
 This is after each
 This is before each
 This is before each describe3
-test14
+test10
 This is after each
 This is before each
 This is before each describe3
-test13
+test14
 This is after each
 This is before each
 This is before each describe3
@@ -60,23 +75,7 @@ test15
 This is after each
 This is before each
 This is before each describe3
-test10
-This is after each
-This is before each
-test7
-This is after each
-This is before each
-test8
-This is after each
-This is before each
-test9
-This is after each
-This is after all describe2
-This is before each
-test2
-This is after each
-This is before each
-test3
+test13
 This is after each
 This is after all"
 `;
@@ -86,6 +85,10 @@ exports[`works with passing tests 1`] = `
   ✓ test1
   ✓ test2
   ✓ test3
+  describe2
+    ✓ test7
+    ✓ test9
+    ✓ test8
   describe1
     ✓ test4
     ✓ test6
@@ -96,12 +99,8 @@ exports[`works with passing tests 1`] = `
     ✓ test10
     describe4
       ✓ test14
-      ✓ test13
       ✓ test15
-  describe2
-    ✓ test7
-    ✓ test8
-    ✓ test9"
+      ✓ test13"
 `;
 
 exports[`works with snapshots 1`] = `
@@ -109,6 +108,10 @@ exports[`works with snapshots 1`] = `
   ✓ test1
   ✓ test2
   ✓ test3
+  describe2
+    ✓ test4
+    ✓ test6
+    ✓ test5
   describe1
     ✓ test4
     ✓ test6
@@ -119,10 +122,6 @@ exports[`works with snapshots 1`] = `
     ✓ test10
     describe4
       ✓ test14
-      ✓ test13
       ✓ test15
-  describe2
-    ✓ test4
-    ✓ test5
-    ✓ test6"
+      ✓ test13"
 `;
