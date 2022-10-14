@@ -320,7 +320,7 @@ If configuration files are found in the specified paths, _all_ projects specifie
 
 ### `--randomize`
 
-Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed`](#--seednum) for more info.
+Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed=<num>`](#--seednum) for more info.
 
 ```bash
 jest --randomize --seed 1234
