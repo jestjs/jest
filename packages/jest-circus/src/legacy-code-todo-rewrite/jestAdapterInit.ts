@@ -62,9 +62,8 @@ export const initialize = async ({
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
   getRunnerState().maxConcurrency = globalConfig.maxConcurrency;
-  if (globalConfig.seed) {
-    getRunnerState().seed = globalConfig.seed;
-  }
+
+  getRunnerState().seed = globalConfig.seed;
 
   // @ts-expect-error: missing `concurrent` which is added later
   const globalsObject: Global.TestFrameworkGlobals = {

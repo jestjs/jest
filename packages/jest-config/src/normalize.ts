@@ -1161,13 +1161,6 @@ export default async function normalize(
     newOptions.shard = parseShardPair(argv.shard);
   }
 
-  if (argv.randomize) {
-    // at time of writing we use Prando which starts repeating after 2^29 - 1
-    // 0 is not a valid input seed
-    newOptions.seed =
-      argv.seed ?? Math.floor((1 - Math.random()) * (Math.pow(2, 29) - 1));
-  }
-
   return {
     hasDeprecationWarnings,
     options: newOptions,

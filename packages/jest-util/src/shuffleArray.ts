@@ -7,7 +7,9 @@
 
 import {xoroshiro128plus} from 'pure-rand';
 
-export const rngBuilder: (seed: number) => {next: () => number} = (
+export type RandomNumberGenerator = {next: () => number};
+
+export const rngBuilder: (seed: number) => RandomNumberGenerator = (
   seed: number,
 ) => {
   const gen = xoroshiro128plus(seed);
