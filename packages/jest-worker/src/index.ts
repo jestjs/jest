@@ -118,6 +118,7 @@ export class Worker {
       {
         computeWorkerKey: this._options.computeWorkerKey,
         taskQueue: this._options.taskQueue,
+        taskTimeout: this._options.taskTimeout,
         workerSchedulingPolicy: this._options.workerSchedulingPolicy,
       },
     );

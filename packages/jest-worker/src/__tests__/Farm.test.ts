@@ -24,9 +24,10 @@ let mockWorkerCalls: Array<{
 }>;
 
 let callback: WorkerCallback;
-
+const forceExitAndRestart: () => void = jest.fn();
 function workerReplyStart(i: number) {
   mockWorkerCalls[i].onStart({
+    forceExitAndRestart,
     getWorkerId: () => mockWorkerCalls[i].workerId,
   } as WorkerInterface);
 }
@@ -44,6 +45,8 @@ function workerReplyCustomMessage(i: number, message: unknown) {
   mockWorkerCalls[i].onCustomMessage(message);
 }
 
+jest.useFakeTimers();
+
 describe('Farm', () => {
   beforeEach(() => {
     mockWorkerCalls = [];
@@ -58,6 +61,7 @@ describe('Farm', () => {
         });
       },
     );
+    jest.mocked(forceExitAndRestart).mockClear();
   });
 
   it('sends a request to one worker', () => {
@@ -403,5 +407,25 @@ describe('Farm', () => {
     workerReply(1, null, 17);
     await p0;
     await p1;
+  });
+
+  it('kills and restarts the worker after time is expired', async () => {
+    const farm = new Farm(1, callback, {taskTimeout: 10000});
+    farm.doWork('work-0');
+    workerReplyStart(0);
+    jest.advanceTimersByTime(5000);
+    expect(forceExitAndRestart).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(6000);
+    expect(forceExitAndRestart).toHaveBeenCalled();
+  });
+
+  it('does not kill and restarts the worker if the task completes', async () => {
+    const farm = new Farm(1, callback, {taskTimeout: 10000});
+    farm.doWork('work-0');
+    workerReplyStart(0);
+    jest.advanceTimersByTime(5000);
+    workerReplyEnd(0, null);
+    jest.advanceTimersByTime(6000);
+    expect(forceExitAndRestart).not.toHaveBeenCalled();
   });
 });

@@ -13,11 +13,22 @@ const SLOW_TEST_TIME = 1000;
 export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
-  {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
+  {
+    detectOpenHandles,
+    maxWorkers,
+    watch,
+    watchAll,
+    taskTimeout,
+  }: Config.GlobalConfig,
 ): boolean {
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
     return true;
+  }
+
+  // taskTimeout cannot be enforced if tests are run in the same process
+  if (taskTimeout) {
+    return false;
   }
 
   /*

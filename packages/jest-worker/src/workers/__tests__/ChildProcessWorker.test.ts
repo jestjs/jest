@@ -665,3 +665,18 @@ it('should check for memory limits and restart if above absolute limit', async (
   expect(totalmem).not.toHaveBeenCalled();
   expect(forkInterface.kill).toHaveBeenCalledTimes(1);
 });
+
+it('should force exit and restart the child process if forceExitAndRestart is called', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  const exitResult = worker.forceExitAndRestart();
+  expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM']]);
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
+  forkInterface.emit('exit', 0);
+  await exitResult;
+  expect(childProcess.fork).toHaveBeenCalledTimes(2);
+});

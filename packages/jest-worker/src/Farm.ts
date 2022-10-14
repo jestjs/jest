@@ -29,6 +29,7 @@ export default class Farm {
   private readonly _locks: Array<boolean> = [];
   private _offset = 0;
   private readonly _taskQueue: TaskQueue;
+  private readonly _taskTimeout: number | null;
 
   constructor(
     private readonly _numOfWorkers: number,
@@ -39,6 +40,7 @@ export default class Farm {
     this._workerSchedulingPolicy =
       options.workerSchedulingPolicy ?? 'round-robin';
     this._taskQueue = options.taskQueue ?? new FifoQueue();
+    this._taskTimeout = options.taskTimeout ?? null;
   }
 
   doWork(
@@ -78,18 +80,39 @@ export default class Farm {
           worker = hash == null ? null : this._cacheKeys[hash];
         }
 
+        let timer: NodeJS.Timeout | null = null;
+        let timedOut = false;
         const onStart: OnStart = (worker: WorkerInterface) => {
           if (hash != null) {
             this._cacheKeys[hash] = worker;
+          }
+          if (this._taskTimeout != null) {
+            timer = setTimeout(() => {
+              worker.forceExitAndRestart?.()?.then(() => {
+                timedOut = true;
+                reject(
+                  new Error(
+                    'running task on worker exceeded timeout and worker had to be killed',
+                  ),
+                );
+                this._unlock(worker.getWorkerId());
+                this._process(worker.getWorkerId());
+              });
+            }, this._taskTimeout);
           }
         };
 
         const onEnd: OnEnd = (error: Error | null, result: unknown) => {
           customMessageListeners.clear();
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
+          if (timer) {
+            clearTimeout(timer);
+          }
+          if (!timedOut) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
           }
         };
 

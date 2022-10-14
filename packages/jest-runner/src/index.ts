@@ -116,6 +116,7 @@ export default class TestRunner extends EmittingTestRunner {
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
+      taskTimeout: this._globalConfig.taskTimeout,
     }) as JestWorkerFarm<TestWorker>;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);

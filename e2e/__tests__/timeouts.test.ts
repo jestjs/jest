@@ -107,3 +107,48 @@ test('does not exceed the command line testTimeout', () => {
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
+
+test('exceeds the command line taskTimeout with infinite loop', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+
+      test('banana', () => {
+        while (true) {}
+      });
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '--taskTimeout=1000',
+  ]);
+  const {rest, summary} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(1);
+});
+
+test('finishes before the command line taskTimeout', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+
+      test('banana', () => {
+        let start = Date.now();
+        while (200 < (Date.now() - start)) {}
+      });
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '--taskTimeout=1000',
+  ]);
+  const {rest, summary} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});

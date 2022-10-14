@@ -404,6 +404,10 @@ Can also be set in configuration. See [`showSeed`](Configuration.md#showseed-boo
 
 Prevent tests from printing messages through the console.
 
+### `--taskTimeout=<number>`
+
+Timeout for each test file in milliseconds before worker process is killed and restarted. Default value: undefined. Only supported for child_process workers. Unlike other timeouts, this will stop tests even if the event loop is blocked. Not compatible with runInBand.
+
 ### `--testEnvironmentOptions=<json string>`
 
 A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.

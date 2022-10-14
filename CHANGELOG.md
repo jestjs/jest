@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-cli, jest-config, jest-core, jest-reporters, jest-runner, jest-types, jest-worker]` Add taskTimeout option to allow non-responsive worker processes to be stopped ([#13473](https://github.com/facebook/jest/pull/13473))
+
 ### Fixes
 
 ### Chore & Maintenance

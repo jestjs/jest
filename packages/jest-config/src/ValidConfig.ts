@@ -145,6 +145,7 @@ const initialOptions: Config.InitialOptions = {
   snapshotFormat: PRETTY_FORMAT_DEFAULTS,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
+  taskTimeout: 50000,
   testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {
     url: 'http://localhost',

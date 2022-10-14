@@ -432,6 +432,15 @@ export default class ChildProcessWorker
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
+  forceExitAndRestart(): Promise<void> {
+    this.forceExit();
+
+    return this.waitForExit().then(() => {
+      this.state = WorkerStates.STARTING;
+      this.initialize();
+    });
+  }
+
   getWorkerId(): number {
     return this._options.workerId;
   }

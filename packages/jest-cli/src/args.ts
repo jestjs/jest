@@ -568,6 +568,11 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
+  taskTimeout: {
+    description:
+      'Timeout for each test file in milliseconds before worker process is killed and restarted. Default value: undefined. Only supported for child_process workers. Unlike other timeouts, this will stop tests even if the event loop is blocked.',
+    type: 'number',
+  },
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',

@@ -863,10 +863,11 @@ export default async function normalize(
         }
         break;
       }
+      case 'taskTimeout':
       case 'testTimeout': {
         if (oldOptions[key] < 0) {
           throw createConfigError(
-            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+            `  Option "${chalk.bold(key)}" must be a natural number.`,
           );
         }
 

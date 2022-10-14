@@ -300,6 +300,7 @@ export type InitialOptions = Partial<{
   snapshotSerializers: Array<string>;
   snapshotFormat: SnapshotFormat;
   errorOnDeprecated: boolean;
+  taskTimeout?: number;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
@@ -402,6 +403,7 @@ export type GlobalConfig = {
   skipFilter: boolean;
   snapshotFormat: SnapshotFormat;
   errorOnDeprecated: boolean;
+  taskTimeout?: number;
   testFailureExitCode: number;
   testNamePattern?: string;
   testPathPattern: string;

@@ -121,6 +121,7 @@ const groupOptions = (
     silent: options.silent,
     skipFilter: options.skipFilter,
     snapshotFormat: options.snapshotFormat,
+    taskTimeout: options.taskTimeout,
     testFailureExitCode: options.testFailureExitCode,
     testNamePattern: options.testNamePattern,
     testPathPattern: options.testPathPattern,

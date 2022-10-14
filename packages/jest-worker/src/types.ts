@@ -76,6 +76,7 @@ export interface WorkerInterface {
 
   waitForExit(): Promise<void>;
   forceExit(): void;
+  forceExitAndRestart?(): Promise<void>;
 
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
@@ -144,6 +145,7 @@ export type WorkerFarmOptions = {
   ) => WorkerPoolInterface;
   workerSchedulingPolicy?: WorkerSchedulingPolicy;
   idleMemoryLimit?: number;
+  taskTimeout?: number;
 };
 
 export type WorkerPoolOptions = {

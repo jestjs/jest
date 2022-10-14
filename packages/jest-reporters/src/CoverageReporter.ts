@@ -151,6 +151,7 @@ export default class CoverageReporter extends BaseReporter {
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,
+        taskTimeout: this._globalConfig.taskTimeout,
       }) as JestWorkerFarm<CoverageWorker>;
     }
 

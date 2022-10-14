@@ -26,6 +26,23 @@ Time:        <<REPLACED>>
 Ran all test suites."
 `;
 
+exports[`exceeds the command line taskTimeout with infinite loop 1`] = `
+"FAIL __tests__/a-banana.js
+  ● Test suite failed to run
+
+    running task on worker exceeded timeout and worker had to be killed
+
+      at ../../packages/jest-worker/build/Farm.js:71:19"
+`;
+
+exports[`exceeds the command line taskTimeout with infinite loop 2`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
 exports[`exceeds the command line testTimeout 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
@@ -37,6 +54,19 @@ Ran all test suites."
 exports[`exceeds the timeout 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`finishes before the command line taskTimeout 1`] = `
+"PASS __tests__/a-banana.js
+  ✓ banana"
+`;
+
+exports[`finishes before the command line taskTimeout 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."

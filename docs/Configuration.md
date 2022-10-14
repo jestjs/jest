@@ -1770,6 +1770,12 @@ More about serializers API can be found [here](https://github.com/facebook/jest/
 
 :::
 
+### `taskTimeout` \[number | undefined]
+
+Default: `undefined`
+
+Timeout for each test file in milliseconds before worker process is killed and restarted. Default value: unlimited. Only supported for child_process workers. Unlike other timeouts, this will stop tests even if the event loop is blocked. Not compatible with runInBand.
+
 ### `testEnvironment` \[string]
 
 Default: `"node"`
