@@ -162,6 +162,8 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 npm install --save-dev ts-jest
 ```
 
+In order for Jest to transpile TypeScript with `ts-jest`, you may also need to create a [configuration](https://kulshekhar.github.io/ts-jest/docs/getting-started/installation#jest-config-file) file.
+
 #### Type definitions
 
 There are two ways to have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.

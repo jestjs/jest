@@ -95,6 +95,7 @@ exports[`prints the config object 1`] = `
     "reporters": [],
     "rootDir": "/test_root_dir/",
     "runTestsByPath": false,
+    "seed": 1234,
     "silent": false,
     "skipFilter": false,
     "snapshotFormat": {},

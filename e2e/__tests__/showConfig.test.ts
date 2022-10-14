@@ -37,7 +37,8 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>')
+    .replace(/"seed": (-?\d+)/g, '"seed": <<RANDOM_SEED>>');
 
   expect(stdout).toMatchSnapshot();
 });

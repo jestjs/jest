@@ -149,6 +149,11 @@ export interface Jest {
    */
   getRealSystemTime(): number;
   /**
+   * Retrieves the seed value. It will be randomly generated for each test run
+   * or can be manually set via the `--seed` CLI argument.
+   */
+  getSeed(): number;
+  /**
    * Returns the number of fake timers still left to run.
    */
   getTimerCount(): number;

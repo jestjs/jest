@@ -510,6 +510,11 @@ export const options: {[key: string]: Options} = {
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
   },
+  seed: {
+    description:
+      'Sets a seed value that can be retrieved in a tests file via `jest.getSeed()`. If this option is not specified Jest will randomly generate the value. The seed value must be between `-0x80000000` and `0x7fffffff` inclusive.',
+    type: 'number',
+  },
   selectProjects: {
     description:
       'Run the tests of the specified projects. ' +
@@ -539,6 +544,11 @@ export const options: {[key: string]: Options} = {
   },
   showConfig: {
     description: 'Print your jest config and then exits.',
+    type: 'boolean',
+  },
+  showSeed: {
+    description:
+      'Prints the seed value in the test report summary. See `--seed` for how to set this value',
     type: 'boolean',
   },
   silent: {

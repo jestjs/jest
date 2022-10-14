@@ -908,6 +908,16 @@ This function is not available when using legacy fake timers implementation.
 
 ## Misc
 
+### `jest.getSeed()`
+
+Every time Jest runs a seed value is randomly generated which you could use in a pseudorandom number generator or anywhere else.
+
+:::tip
+
+Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test report summary. To manually set the value of the seed use [`--seed=<num>`](CLI.md#--seednum) CLI argument.
+
+:::
+
 ### `jest.setTimeout(timeout)`
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
