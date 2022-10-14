@@ -9,6 +9,7 @@
 - `[@jest/environment, jest-environment-node, jest-environment-jsdom, jest-runtime]` Add `getSeed()` to the `jest` object ([#13400](https://github.com/facebook/jest/pull/13400))
 - `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
 - `[expect]` Expose `AsyncExpectationResult` and `SyncExpectationResult` types ([#13411](https://github.com/facebook/jest/pull/13411))
+- `[expect]` Typesafe Assertions ([#13334](https://github.com/facebook/jest/issues/13334))
 
 ### Fixes
 
