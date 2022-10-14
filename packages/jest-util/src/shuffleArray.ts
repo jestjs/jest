@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {xoroshiro128plus, unsafeUniformIntDistribution} from 'pure-rand';
+import {unsafeUniformIntDistribution, xoroshiro128plus} from 'pure-rand';
 
 // Generates [from, to] inclusive
-export type RandomNumberGenerator = {next: (from: number, to: number) => number};
+export type RandomNumberGenerator = {
+  next: (from: number, to: number) => number;
+};
 
 // Will likely fail if there are more than 2**32 items to randomize
 export const rngBuilder: (seed: number) => RandomNumberGenerator = (

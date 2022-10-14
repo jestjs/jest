@@ -8,37 +8,46 @@
 import {runTest} from '../__mocks__/testUtils';
 
 test('simple test', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    `
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => {});
       test('one', () => {});
       test('two', () => {});
     })
-  `, { randomize: true, seed: 3 });
+  `,
+    {randomize: true, seed: 3},
+  );
 
   expect(stdout).toMatchSnapshot();
 });
 
 test('function descriptors', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    `
     describe(function describer() {}, () => {
       test(class One {}, () => {});
     })
-  `, { randomize: true, seed: 3 });
+  `,
+    {randomize: true, seed: 3},
+  );
 
   expect(stdout).toMatchSnapshot();
 });
 
 test('failures', () => {
-  const {stdout} = runTest(`
+  const {stdout} = runTest(
+    `
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => { throw new Error('banana')});
       test('one', () => { throw new Error('kentucky')});
       test('two', () => {});
     })
-  `, { randomize: true, seed: 3 });
+  `,
+    {randomize: true, seed: 3},
+  );
 
   expect(stdout).toMatchSnapshot();
 });

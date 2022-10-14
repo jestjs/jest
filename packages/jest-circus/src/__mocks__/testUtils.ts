@@ -30,7 +30,10 @@ interface Result extends ExecaSyncReturnValue {
   error: string;
 }
 
-export const runTest = (source: string, opts?: { seed?: number, randomize?: boolean }) => {
+export const runTest = (
+  source: string,
+  opts?: {seed?: number; randomize?: boolean},
+) => {
   const filename = createHash('sha256')
     .update(source)
     .digest('hex')
