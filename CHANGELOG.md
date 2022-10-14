@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-circus, @jest/cli, jest-config]` Add cli feature to randomize order or tests ([#12922](https://github.com/facebook/jest/pull/12922))
+- `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
 
 ### Fixes
 
