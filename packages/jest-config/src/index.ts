@@ -111,6 +111,7 @@ const groupOptions = (
     outputFile: options.outputFile,
     passWithNoTests: options.passWithNoTests,
     projects: options.projects,
+    randomize: options.randomize,
     replname: options.replname,
     reporters: options.reporters,
     rootDir: options.rootDir,
