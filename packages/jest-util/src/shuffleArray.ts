@@ -11,8 +11,8 @@ export const rngBuilder: (seed: number) => {next: () => number} = (
   seed: number,
 ) => {
   const gen = xoroshiro128plus(seed);
-  return { next: () => gen.unsafeNext() };
-}
+  return {next: () => gen.unsafeNext()};
+};
 
 // Fisher-Yates shuffle
 // This is performed in-place
