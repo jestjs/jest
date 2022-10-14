@@ -1099,10 +1099,9 @@ export class ModuleMocker {
   }
 
   isMockFunction<T extends FunctionLike = UnknownFunction>(
-    fn: SpyInstance<T>,
-  ): fn is SpyInstance<T>;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-  isMockFunction<P extends Array<unknown>, R extends unknown>(
+    fn: MockInstance<T>,
+  ): fn is MockInstance<T>;
+  isMockFunction<P extends Array<unknown>, R>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;

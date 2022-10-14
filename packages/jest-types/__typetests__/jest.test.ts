@@ -9,13 +9,13 @@ import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import {jest} from '@jest/globals';
 import type {
   Mock,
+  MockInstance,
   Mocked,
   MockedClass,
   MockedFunction,
   MockedObject,
   MockedShallow,
   ModuleMocker,
-  SpyInstance,
 } from 'jest-mock';
 
 expectType<typeof jest>(
@@ -216,7 +216,7 @@ const spiedObject = {
 const surelySpy = jest.spyOn(spiedObject, 'methodA');
 
 if (jest.isMockFunction(surelySpy)) {
-  expectType<SpyInstance<(a: number, b: string) => boolean>>(surelySpy);
+  expectType<MockInstance<(a: number, b: string) => boolean>>(surelySpy);
 
   surelySpy.mockReturnValueOnce(false);
   expectError(surelyMock.mockReturnValueOnce(123));
