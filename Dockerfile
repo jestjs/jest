@@ -1,9 +1,7 @@
 #Build: docker build -t jest .
 #Run: docker run --volume="$PWD:/usr/src/app" --rm jest:latest
 
-#Use Node 12.13.0 image
-#Includes Python2.7
-FROM node:12
+FROM node:lts
 
 #Setup basic environment
 ENV DEBIAN_FRONTEND=noninteractive \
