@@ -6,6 +6,7 @@
  */
 
 import WorkerPool from '../WorkerPool';
+import type {ChildMessage, WorkerPoolOptions} from '../types';
 import ChildProcessWorker from '../workers/ChildProcessWorker';
 import NodeThreadWorker from '../workers/NodeThreadsWorker';
 
@@ -37,8 +38,8 @@ jest.mock('../workers/NodeThreadsWorker', () => {
 
 describe('WorkerPool', () => {
   beforeEach(() => {
-    ChildProcessWorker.mockClear();
-    NodeThreadWorker.mockClear();
+    jest.mocked(ChildProcessWorker).mockClear();
+    jest.mocked(NodeThreadWorker).mockClear();
   });
 
   it('should create a ChildProcessWorker and send to it', () => {
@@ -49,13 +50,14 @@ describe('WorkerPool', () => {
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,
-      workerId: 0,
-      workerPath: '/path',
-    });
+    } as WorkerPoolOptions);
 
+    const request = {foo: 'bar'} as unknown as ChildMessage;
     const onStart = () => {};
     const onEnd = () => {};
-    workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
+    const onCustomMessage = () => {};
+
+    workerPool.send(0, request, onStart, onEnd, onCustomMessage);
 
     expect(ChildProcessWorker).toHaveBeenCalledWith({
       forkOptions: {},
@@ -64,11 +66,12 @@ describe('WorkerPool', () => {
       workerPath: '/path',
     });
     expect(NodeThreadWorker).not.toHaveBeenCalled();
+    // @ts-expect-error: Testing internal method
     expect(workerPool._workers[0].send).toHaveBeenCalledWith(
-      {foo: 'bar'},
+      request,
       onStart,
       onEnd,
-      undefined,
+      onCustomMessage,
     );
   });
 
@@ -79,13 +82,14 @@ describe('WorkerPool', () => {
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,
-      workerId: 0,
-      workerPath: '/path',
-    });
+    } as WorkerPoolOptions);
 
+    const request = {foo: 'bar'} as unknown as ChildMessage;
     const onStart = () => {};
     const onEnd = () => {};
-    workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
+    const onCustomMessage = () => {};
+
+    workerPool.send(0, request, onStart, onEnd, onCustomMessage);
 
     expect(NodeThreadWorker).toHaveBeenCalledWith({
       forkOptions: {},
@@ -94,11 +98,12 @@ describe('WorkerPool', () => {
       workerPath: '/path',
     });
     expect(ChildProcessWorker).not.toHaveBeenCalled();
+    // @ts-expect-error: Testing internal method
     expect(workerPool._workers[0].send).toHaveBeenCalledWith(
-      {foo: 'bar'},
+      request,
       onStart,
       onEnd,
-      undefined,
+      onCustomMessage,
     );
   });
 
@@ -108,13 +113,14 @@ describe('WorkerPool', () => {
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,
-      workerId: 0,
-      workerPath: '/path',
-    });
+    } as WorkerPoolOptions);
 
+    const request = {foo: 'bar'} as unknown as ChildMessage;
     const onStart = () => {};
     const onEnd = () => {};
-    workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
+    const onCustomMessage = () => {};
+
+    workerPool.send(0, request, onStart, onEnd, onCustomMessage);
 
     expect(ChildProcessWorker).toHaveBeenCalledWith({
       forkOptions: {},
@@ -123,11 +129,12 @@ describe('WorkerPool', () => {
       workerPath: '/path',
     });
     expect(NodeThreadWorker).not.toHaveBeenCalled();
+    // @ts-expect-error: Testing internal method
     expect(workerPool._workers[0].send).toHaveBeenCalledWith(
-      {foo: 'bar'},
+      request,
       onStart,
       onEnd,
-      undefined,
+      onCustomMessage,
     );
   });
 });
