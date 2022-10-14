@@ -8,47 +8,59 @@
 import * as path from 'path';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
-import runJest from '../runJest';
+import runJest, { RunJestResult } from '../runJest';
 
 skipSuiteOnJasmine();
 
 const dir = path.resolve(__dirname, '../randomize');
 
+function runJestTwice(
+  dir: string,
+  args: Array<string>,
+): [RunJestResult, RunJestResult] {
+  return [runJest(dir, [...args, '--randomize']), runJest(dir, [...args, '--config', 'different-config.json'])];
+}
+
 test('works with passing tests', () => {
-  const result = runJest(dir, [
-    'success.test.js',
-    '--randomize',
-    '--seed',
-    '123',
-  ]);
-  const {rest} = extractSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+  const [result1, result2] = runJestTwice(dir, ['success.test.js', '--seed', '123']);
+
+  const rest1 = extractSummary(result1.stderr).rest.split('\n').slice(1).join('\n');
+  const rest2 = extractSummary(result2.stderr).rest.split('\n').slice(1).join('\n');
+  expect(rest1).toEqual(rest2);
+  expect(rest1).toMatchSnapshot();
 });
 
 test('works with each', () => {
-  const result = runJest(dir, ['each.test.js', '--randomize', '--seed', '123']);
-  const {rest} = extractSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+  const [result1, result2] = runJestTwice(dir, ['each.test.js', '--seed', '123']);
+  const rest1 = extractSummary(result1.stderr).rest.split('\n').slice(1).join('\n');
+  const rest2 = extractSummary(result2.stderr).rest.split('\n').slice(1).join('\n');
+  expect(rest1).toEqual(rest2);
+  expect(rest1).toMatchSnapshot();
 });
 
 test('works with hooks', () => {
-  const result = runJest(dir, [
+  const [result1, result2] = runJestTwice(dir, [
     'hooks.test.js',
-    '--randomize',
     '--seed',
     '123',
   ]);
+
   // Change in formatting could change this one
-  expect(result.stdout).toMatchSnapshot();
+  const rest1 = extractSummary(result1.stderr).rest.split('\n').slice(1).join('\n');
+  const rest2 = extractSummary(result2.stderr).rest.split('\n').slice(1).join('\n');
+  expect(rest1).toEqual(rest2);
+  expect(rest1).toMatchSnapshot();
 });
 
 test('works with snapshots', () => {
-  const result = runJest(dir, [
+  const [result1, result2] = runJestTwice(dir, [
     'snapshots.test.js',
-    '--randomize',
     '--seed',
     '123',
   ]);
-  const {rest} = extractSummary(result.stderr);
-  expect(rest).toMatchSnapshot();
+
+  const rest1 = extractSummary(result1.stderr).rest.split('\n').slice(1).join('\n');
+  const rest2 = extractSummary(result2.stderr).rest.split('\n').slice(1).join('\n');
+  expect(rest1).toEqual(rest2);
+  expect(rest1).toMatchSnapshot();
 });

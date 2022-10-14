@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`works with each 1`] = `
-"PASS __tests__/each.test.js
-  ✓ test1
+"  ✓ test1
   ✓ test2
   ✓ test3
   describe2
@@ -24,65 +23,29 @@ exports[`works with each 1`] = `
 `;
 
 exports[`works with hooks 1`] = `
-"This is before all
-This is before each
-test7
-This is after each
-This is before each
-test9
-This is after each
-This is before each
-test8
-This is after each
-This is after all describe2
-This is before each
-test4
-This is after each
-This is before each
-test6
-This is after each
-This is before each
-test5
-This is after each
-This is before each
-test1
-This is after each
-This is before each
-test2
-This is after each
-This is before each
-test3
-This is after each
-This is before each
-This is before each describe3
-test11
-This is after each
-This is before each
-This is before each describe3
-test12
-This is after each
-This is before each
-This is before each describe3
-test10
-This is after each
-This is before each
-This is before each describe3
-test14
-This is after each
-This is before each
-This is before each describe3
-test15
-This is after each
-This is before each
-This is before each describe3
-test13
-This is after each
-This is after all"
+"  ✓ test1
+  ✓ test2
+  ✓ test3
+  describe2
+    ✓ test7
+    ✓ test9
+    ✓ test8
+  describe1
+    ✓ test4
+    ✓ test6
+    ✓ test5
+  describe3
+    ✓ test11
+    ✓ test12
+    ✓ test10
+    describe4
+      ✓ test14
+      ✓ test15
+      ✓ test13"
 `;
 
 exports[`works with passing tests 1`] = `
-"PASS __tests__/success.test.js
-  ✓ test1
+"  ✓ test1
   ✓ test2
   ✓ test3
   describe2
@@ -104,8 +67,7 @@ exports[`works with passing tests 1`] = `
 `;
 
 exports[`works with snapshots 1`] = `
-"PASS __tests__/snapshots.test.js
-  ✓ test1
+"  ✓ test1
   ✓ test2
   ✓ test3
   describe2
