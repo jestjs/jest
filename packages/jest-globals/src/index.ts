@@ -66,7 +66,7 @@ declare namespace jest {
   /**
    * Constructs the type of a spied class or function.
    */
-  export type Spied<T extends ClassLike> = JestSpied<T>;
+  export type Spied<T extends ClassLike | FunctionLike> = JestSpied<T>;
   /**
    * Constructs the type of a spied class.
    */
