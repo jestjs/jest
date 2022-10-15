@@ -9,7 +9,6 @@ import {EventEmitter} from 'events';
 import {PassThrough} from 'stream';
 import getStream = require('get-stream');
 import * as supportsColor from 'supports-color';
-import type {SpyInstance} from 'jest-mock';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -31,7 +30,8 @@ let Worker: typeof import('../ChildProcessWorker').default;
 let childProcess: typeof import('child_process');
 let forkInterface: ReturnType<typeof childProcess.fork>;
 let originalExecArgv: typeof process.execArgv;
-let totalmem: SpyInstance<() => number>;
+
+const totalmem = jest.spyOn(require('os') as typeof import('os'), 'totalmem');
 
 class MockedForkInterface extends EventEmitter {
   connected = true;
@@ -40,11 +40,6 @@ class MockedForkInterface extends EventEmitter {
   stderr = new PassThrough();
   stdout = new PassThrough();
 }
-
-beforeAll(() => {
-  const os = require('os') as typeof import('os');
-  totalmem = jest.spyOn(os, 'totalmem');
-});
 
 beforeEach(() => {
   originalExecArgv = process.execArgv;
