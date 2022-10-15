@@ -1193,12 +1193,15 @@ export class ModuleMocker {
           ${this._typeOf(descriptor?.[accessType])} given instead`,
         );
       }
-    } else if (typeof descriptor.value !== 'function') {
+    } else if (
+      (descriptor.value && typeof descriptor.value !== 'function') ||
+      (descriptor.get && typeof descriptor.get !== 'function')
+    ) {
       throw new Error(
         `Cannot spy the ${String(
           methodKey,
         )} property because it is not a function; ${this._typeOf(
-          descriptor.value,
+          descriptor.value ? descriptor.value : descriptor.get,
         )} given instead`,
       );
     }
@@ -1238,6 +1241,14 @@ export class ModuleMocker {
       mock.mockImplementation(function (this: unknown) {
         return originalAccessor.call(this, arguments[0]);
       });
+      Object.defineProperty(object, methodKey, descriptor);
+    } else if (descriptor.get) {
+      const originalGet = descriptor.get;
+      mock = this._makeComponent({type: 'function'}, () => {
+        descriptor!.get = originalGet;
+        Object.defineProperty(object, methodKey, descriptor!);
+      });
+      descriptor.get = () => mock;
       Object.defineProperty(object, methodKey, descriptor);
     } else {
       const isMethodOwner = Object.prototype.hasOwnProperty.call(
