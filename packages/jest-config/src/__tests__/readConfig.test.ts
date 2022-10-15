@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readConfig} from '../index';
+import {readConfig} from '../';
 
 test('readConfig() throws when an object is passed without a file path', async () => {
   await expect(

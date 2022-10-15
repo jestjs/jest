@@ -5,13 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import PriorityQueue from '../PriorityQueue';
-import {CHILD_MESSAGE_CALL} from '../types';
+import {
+  CHILD_MESSAGE_CALL,
+  ChildMessageCall,
+  QueueChildMessage,
+} from '../types';
 
 it('returns the tasks in order', () => {
-  const computePriority = (_method, task) => task.priority;
+  const computePriority = (_method: string, task: unknown) =>
+    (task as {priority: number}).priority;
   const queue = new PriorityQueue(computePriority);
   const priorities = [10, 3, 4, 8, 2, 9, 7, 1, 2, 6, 5];
 
@@ -36,7 +39,8 @@ it('returns the task with the lowest priority value if inserted in reversed orde
   const mid = createQueueChildMessage({priority: 2});
   const first = createQueueChildMessage({priority: 1});
 
-  const computePriority = (_method, task) => task.priority;
+  const computePriority = (_method: string, task: unknown) =>
+    (task as {priority: number}).priority;
   const queue = new PriorityQueue(computePriority);
 
   queue.enqueue(last, 1);
@@ -54,7 +58,8 @@ it('returns the task with the lowest priority value if inserted in correct order
   const mid = createQueueChildMessage({priority: 2});
   const last = createQueueChildMessage({priority: 3});
 
-  const computePriority = (_method, task) => task.priority;
+  const computePriority = (_method: string, task: unknown) =>
+    (task as {priority: number}).priority;
   const queue = new PriorityQueue(computePriority);
 
   queue.enqueue(last, 1);
@@ -73,7 +78,8 @@ it('uses different queues for each worker', () => {
   const task1Worker2 = createQueueChildMessage({priority: 1});
   const task2Worker2 = createQueueChildMessage({priority: 3});
 
-  const computePriority = (_method, task) => task.priority;
+  const computePriority = (_method: string, task: unknown) =>
+    (task as {priority: number}).priority;
   const queue = new PriorityQueue(computePriority);
 
   queue.enqueue(task2Worker1, 1);
@@ -89,7 +95,8 @@ it('uses different queues for each worker', () => {
 });
 
 it('process task in the global and shared queue in order', () => {
-  const computePriority = (_method, task) => task.priority;
+  const computePriority = (_method: string, task: unknown) =>
+    (task as {priority: number}).priority;
   const queue = new PriorityQueue(computePriority);
 
   const sharedTask1 = createQueueChildMessage({priority: 1});
@@ -116,8 +123,8 @@ it('process task in the global and shared queue in order', () => {
   expect(queue.dequeue(2)).toBeNull();
 });
 
-function createQueueChildMessage(...args) {
-  const request = [CHILD_MESSAGE_CALL, false, 'test', args];
+function createQueueChildMessage(...args: Array<unknown>): QueueChildMessage {
+  const request: ChildMessageCall = [CHILD_MESSAGE_CALL, false, 'test', args];
 
   return {
     onCustomMessage: () => {},

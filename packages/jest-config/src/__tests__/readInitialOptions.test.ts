@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import type {Config} from '@jest/types';
-import {readInitialOptions} from '../index';
+import {readInitialOptions} from '../';
 
 describe(readInitialOptions, () => {
   test('should be able to use serialized jest config', async () => {

@@ -301,7 +301,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -918,6 +918,7 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
+      case 'showSeed':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
@@ -1019,6 +1020,24 @@ export default async function normalize(
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+  }
+
+  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
+
+  const upperBoundSeedValue = 2 ** 31;
+
+  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  newOptions.seed =
+    argv.seed ??
+    Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
+  if (
+    newOptions.seed < -upperBoundSeedValue ||
+    newOptions.seed > upperBoundSeedValue - 1
+  ) {
+    throw new ValidationError(
+      'Validation Error',
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
+    );
   }
 
   if (!newOptions.onlyChanged) {

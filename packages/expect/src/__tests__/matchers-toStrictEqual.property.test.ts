@@ -6,7 +6,7 @@
  *
  */
 
-import * as assert from 'assert';
+import {strict as assert} from 'assert';
 import fc from 'fast-check';
 import expect from '../';
 import {

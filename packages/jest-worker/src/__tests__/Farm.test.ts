@@ -5,42 +5,59 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import Farm from '../Farm';
+import type {
+  ChildMessage,
+  OnCustomMessage,
+  OnEnd,
+  OnStart,
+  WorkerCallback,
+  WorkerInterface,
+} from '../types';
 
-let mockWorkerCalls;
-let callback;
+let mockWorkerCalls: Array<{
+  onCustomMessage: OnCustomMessage;
+  onEnd: OnEnd;
+  onStart: OnStart;
+  passed: ChildMessage;
+  workerId: number;
+}>;
 
-function workerReplyStart(i) {
-  mockWorkerCalls[i].onStart({getWorkerId: () => mockWorkerCalls[i].workerId});
+let callback: WorkerCallback;
+
+function workerReplyStart(i: number) {
+  mockWorkerCalls[i].onStart({
+    getWorkerId: () => mockWorkerCalls[i].workerId,
+  } as WorkerInterface);
 }
 
-function workerReplyEnd(i, error, result) {
+function workerReplyEnd(i: number, error: Error | null, result?: unknown) {
   mockWorkerCalls[i].onEnd(error, result);
 }
 
-function workerReply(i, error, result) {
+function workerReply(i: number, error: Error | null = null, result?: unknown) {
   workerReplyStart(i);
   workerReplyEnd(i, error, result);
 }
 
-function workerReplyCustomMessage(i, message) {
+function workerReplyCustomMessage(i: number, message: unknown) {
   mockWorkerCalls[i].onCustomMessage(message);
 }
 
 describe('Farm', () => {
   beforeEach(() => {
     mockWorkerCalls = [];
-    callback = jest.fn((...args) => {
-      mockWorkerCalls.push({
-        onCustomMessage: args[4],
-        onEnd: args[3],
-        onStart: args[2],
-        passed: args[1],
-        workerId: args[0],
-      });
-    });
+    callback = jest.fn<WorkerCallback>(
+      (workerId, request, onStart, onEnd, onCustomMessage) => {
+        mockWorkerCalls.push({
+          onCustomMessage,
+          onEnd,
+          onStart,
+          passed: request,
+          workerId,
+        });
+      },
+    );
   });
 
   it('sends a request to one worker', () => {
@@ -127,7 +144,7 @@ describe('Farm', () => {
 
   it('sends the same worker key to the same worker', async () => {
     const computeWorkerKey = jest
-      .fn(() => {})
+      .fn<() => string>()
       .mockReturnValueOnce('one')
       .mockReturnValueOnce('two')
       .mockReturnValueOnce('one');
@@ -296,23 +313,23 @@ describe('Farm', () => {
 
   it('checks that locking works, and jobs are never lost', async () => {
     const hash = jest
-      .fn()
+      .fn<() => string>()
       // This will go to both queues, but picked by the first worker.
-      .mockReturnValueOnce(0)
+      .mockReturnValueOnce('0')
       // This will go to both queues too, but picked by the second worker.
-      .mockReturnValueOnce(1)
-      // This will go to worker 0, now only assigned to it.
-      .mockReturnValueOnce(0)
-      // This will go to worker 1, now only assigned to it.
-      .mockReturnValueOnce(1)
+      .mockReturnValueOnce('1')
+      // This will go to worker '0', now only assigned to it.
+      .mockReturnValueOnce('0')
+      // This will go to worker '1', now only assigned to it.
+      .mockReturnValueOnce('1')
       // This will go to both queues too, but will wait, since workers are busy.
-      .mockReturnValueOnce(2)
+      .mockReturnValueOnce('2')
       // This will only go to the first queue.
-      .mockReturnValueOnce(0)
+      .mockReturnValueOnce('0')
       // This will be gone if the queue implementation is wrong.
-      .mockReturnValueOnce(0)
+      .mockReturnValueOnce('0')
       // Push onto the second queue; potentially wiping the earlier job.
-      .mockReturnValueOnce(1);
+      .mockReturnValueOnce('1');
 
     const farm = new Farm(2, callback, {computeWorkerKey: hash});
 
@@ -364,11 +381,11 @@ describe('Farm', () => {
     const p0 = farm.doWork('work-0');
     const p1 = farm.doWork('work-1');
 
-    const unsubscribe = p0.UNSTABLE_onCustomMessage(message => {
+    const unsubscribe = p0.UNSTABLE_onCustomMessage!(message => {
       expect(message).toEqual({key: 0, message: 'foo'});
     });
 
-    p1.UNSTABLE_onCustomMessage(message => {
+    p1.UNSTABLE_onCustomMessage!(message => {
       expect(message).toEqual({key: 1, message: 'bar'});
     });
 

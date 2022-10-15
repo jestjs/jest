@@ -7,12 +7,12 @@
 
 import * as path from 'path';
 import * as mockedFs from 'graceful-fs';
-import type {Test, TestContext} from '@jest/test-result';
+import type {AggregatedResult, Test, TestContext} from '@jest/test-result';
 import {makeProjectConfig} from '@jest/test-utils';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
-  ...jest.createMockFromModule('fs'),
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn(() => true),
   readFileSync: jest.fn(() => '{}'),
 }));
@@ -161,7 +161,9 @@ test('writes the cache based on results without existing cache', async () => {
       },
     ],
   });
-  const fileData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileData = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileData).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-c.js': [FAIL, 3],
@@ -219,7 +221,9 @@ test('writes the cache based on the results', async () => {
       },
     ],
   });
-  const fileData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileData = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileData).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-b.js': [FAIL, 1],
@@ -228,16 +232,20 @@ test('writes the cache based on the results', async () => {
 });
 
 test('works with multiple contexts', async () => {
-  fs.readFileSync.mockImplementationOnce(cacheName =>
-    cacheName.startsWith(`${path.sep}cache${path.sep}`)
+  fs.readFileSync.mockImplementationOnce(cacheName => {
+    if (typeof cacheName !== 'string') {
+      throw new Error('Must be called with a string');
+    }
+
+    return cacheName.startsWith(`${path.sep}cache${path.sep}`)
       ? JSON.stringify({
           '/test-a.js': [SUCCESS, 5],
           '/test-b.js': [FAIL, 1],
         })
       : JSON.stringify({
           '/test-c.js': [FAIL],
-        }),
-  );
+        });
+  });
 
   const testPaths = [
     {context, duration: null, path: '/test-a.js'},
@@ -270,12 +278,16 @@ test('works with multiple contexts', async () => {
       },
     ],
   });
-  const fileDataA = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+  const fileDataA = JSON.parse(
+    fs.writeFileSync.mock.calls[0][1],
+  ) as AggregatedResult;
   expect(fileDataA).toEqual({
     '/test-a.js': [SUCCESS, 1],
     '/test-b.js': [FAIL, 1],
   });
-  const fileDataB = JSON.parse(fs.writeFileSync.mock.calls[1][1]);
+  const fileDataB = JSON.parse(
+    fs.writeFileSync.mock.calls[1][1],
+  ) as AggregatedResult;
   expect(fileDataB).toEqual({
     '/test-c.js': [SUCCESS, 3],
   });

@@ -12,3 +12,12 @@ export type ProjectPackageJson = {
   scripts?: Record<string, string>;
   type?: 'commonjs' | 'module';
 };
+
+export type PromptsResults = {
+  useTypescript: boolean;
+  clearMocks: boolean;
+  coverage: boolean;
+  coverageProvider: boolean;
+  environment: boolean;
+  scripts: boolean;
+};

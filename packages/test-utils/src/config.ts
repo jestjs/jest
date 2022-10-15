@@ -47,6 +47,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   reporters: [],
   rootDir: '/test_root_dir/',
   runTestsByPath: false,
+  seed: 1234,
   silent: false,
   skipFilter: false,
   snapshotFormat: {},

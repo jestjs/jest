@@ -19,12 +19,18 @@ jest.mock('prettier', () => {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
-          require('path').dirname(require.resolve('prettier')),
+          (require('path') as typeof import('path')).dirname(
+            require.resolve('prettier'),
+          ),
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({ignored: false, inferredParser: 'babel'})} as unknown as typeof prettier.getFileInfo,
-    resolveConfig: {sync: jest.fn()} as unknown as typeof prettier.resolveConfig,
+    getFileInfo: {
+      sync: () => ({ignored: false, inferredParser: 'babel'}),
+    } as unknown as typeof prettier.getFileInfo,
+    resolveConfig: {
+      sync: jest.fn(),
+    } as unknown as typeof prettier.resolveConfig,
     version: realPrettier.version,
   } as typeof prettier;
   return mockPrettier;
