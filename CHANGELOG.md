@@ -8,7 +8,7 @@
 
 ### Performance
 
-- Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
+- `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
 
 ## 29.2.0
 
