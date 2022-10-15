@@ -93,6 +93,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
 
 #### Usage with Docker
+
 Run Jest with [Docker](https://docs.docker.com/engine/docker-overview/):
 
 1. If you haven't already, [Install Docker](https://docs.docker.com/install/).
