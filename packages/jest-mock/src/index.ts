@@ -1213,8 +1213,8 @@ export class ModuleMocker {
 
     let mock: Mock;
 
-    if (accessType == 'get' && descriptor['get']) {
-      const originalAccessor = descriptor['get'];
+    if (accessType == 'get' && descriptor.get) {
+      const originalAccessor = descriptor.get;
       mock = this._makeComponent(
         {
           type: 'function',
@@ -1230,8 +1230,8 @@ export class ModuleMocker {
         return originalAccessor.call(this);
       });
       Object.defineProperty(object, methodKey, descriptor);
-    } else if (accessType == 'set' && descriptor['set']) {
-      const originalAccessor = descriptor['set'];
+    } else if (accessType == 'set' && descriptor.set) {
+      const originalAccessor = descriptor.set;
       mock = this._makeComponent(
         {
           type: 'function',
