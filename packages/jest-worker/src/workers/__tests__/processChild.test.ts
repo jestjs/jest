@@ -17,15 +17,6 @@ import {
 
 const spyProcessSend = jest.spyOn(process, 'send');
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Process {
-      emit(event: 'message', message: unknown): this; // overrides DT type, which requires the third argument
-    }
-  }
-}
-
 class MockExtendedError extends ReferenceError {
   baz = 123;
   qux = 456;
@@ -129,21 +120,29 @@ afterEach(() => {
 it('lazily requires the file', () => {
   expect(mockCount).toBe(0);
 
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
   expect(mockCount).toBe(0);
   expect(initializeParm).toBe(uninitializedParam); // Not called yet.
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooWorks',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooWorks',
+      [],
+    ],
+    null,
+  );
 
   expect(mockCount).toBe(1);
   expect(initializeParm).toBeUndefined();
@@ -152,7 +151,7 @@ it('lazily requires the file', () => {
 it('should return memory usage', () => {
   expect(mockCount).toBe(0);
 
-  process.emit('message', [CHILD_MESSAGE_MEM_USAGE]);
+  process.emit('message', [CHILD_MESSAGE_MEM_USAGE], null);
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_MEM_USAGE,
@@ -163,45 +162,65 @@ it('should return memory usage', () => {
 it('calls initialize with the correct arguments', () => {
   expect(mockCount).toBe(0);
 
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-    ['foo'], // Pass empty initialize params so the initialize method is called.
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+      ['foo'], // Pass empty initialize params so the initialize method is called.
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooWorks',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooWorks',
+      [],
+    ],
+    null,
+  );
 
   expect(initializeParm).toBe('foo');
 });
 
 it('returns results immediately when function is synchronous', () => {
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooWorks',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooWorks',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooThrows',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooThrows',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
@@ -211,12 +230,16 @@ it('returns results immediately when function is synchronous', () => {
     {},
   ]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooThrowsANumber',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooThrowsANumber',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[2][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
@@ -226,12 +249,16 @@ it('returns results immediately when function is synchronous', () => {
     412,
   ]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooThrowsAnErrorWithExtraProperties',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooThrowsAnErrorWithExtraProperties',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[3][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
@@ -241,12 +268,16 @@ it('returns results immediately when function is synchronous', () => {
     {baz: 123, qux: 456},
   ]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooThrowsNull',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooThrowsNull',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
   expect(spyProcessSend.mock.calls[4][0][1]).toBe('Error');
@@ -258,29 +289,41 @@ it('returns results immediately when function is synchronous', () => {
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooPromiseWorks',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooPromiseWorks',
+      [],
+    ],
+    null,
+  );
 
   await sleep(10);
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'fooPromiseThrows',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'fooPromiseThrows',
+      [],
+    ],
+    null,
+  );
 
   await sleep(10);
 
@@ -296,63 +339,91 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 });
 
 it('calls the main module if the method call is "default"', () => {
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-standalone-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-standalone-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'default',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'default',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-babel-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-babel-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for type purity.
-    'default',
-    [],
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_CALL,
+      true, // Not really used here, but for type purity.
+      'default',
+      [],
+    ],
+    null,
+  );
 
   expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
 it('removes the message listener on END message', () => {
   // So that there are no more open handles preventing Node from exiting
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [CHILD_MESSAGE_END]);
+  process.emit('message', [CHILD_MESSAGE_END], null);
 
   expect(process.listenerCount('message')).toBe(0);
 });
 
 it('calls the teardown method ', () => {
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
-  process.emit('message', [
-    CHILD_MESSAGE_END,
-    true, // Not really used here, but for type purity.
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_END,
+      true, // Not really used here, but for type purity.
+    ],
+    null,
+  );
 
   expect(ended).toBe(true);
 });
@@ -360,34 +431,46 @@ it('calls the teardown method ', () => {
 it('throws if an invalid message is detected', () => {
   // Type 27 does not exist.
   expect(() => {
-    process.emit('message', [27]);
+    process.emit('message', [27], null);
   }).toThrow(TypeError);
 });
 
 it('throws if child is not forked', () => {
   delete process.send;
 
-  process.emit('message', [
-    CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for type purity.
-    './my-fancy-worker',
-  ]);
+  process.emit(
+    'message',
+    [
+      CHILD_MESSAGE_INITIALIZE,
+      true, // Not really used here, but for type purity.
+      './my-fancy-worker',
+    ],
+    null,
+  );
 
   expect(() => {
-    process.emit('message', [
-      CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for type purity.
-      'fooWorks',
-      [],
-    ]);
+    process.emit(
+      'message',
+      [
+        CHILD_MESSAGE_CALL,
+        true, // Not really used here, but for type purity.
+        'fooWorks',
+        [],
+      ],
+      null,
+    );
   }).toThrow('Child can only be used on a forked process');
 
   expect(() => {
-    process.emit('message', [
-      CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for type purity.
-      'fooThrows',
-      [],
-    ]);
+    process.emit(
+      'message',
+      [
+        CHILD_MESSAGE_CALL,
+        true, // Not really used here, but for type purity.
+        'fooThrows',
+        [],
+      ],
+      null,
+    );
   }).toThrow('Child can only be used on a forked process');
 });
