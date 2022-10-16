@@ -85,19 +85,17 @@ it('exposes the right API using passed worker', () => {
   const WorkerPool = jest.fn(() => ({
     createWorker: jest.fn(),
     end: jest.fn(),
-    getStderr: () => jest.fn(a => a),
-    getStdout: () => jest.fn(a => a),
+    getStderr: jest.fn(),
+    getStdout: jest.fn(),
+    getWorkers: jest.fn(),
     send: jest.fn(),
-  })) as unknown as typeof WorkerPoolClass;
+  }));
 
   const farm = new WorkerFarm('/tmp/baz.js', {
     WorkerPool,
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
-  } as WorkerFarmOptions) as JestWorkerFarm<{
-    foo(): void;
-    bar(): void;
-  }>;
+  } as WorkerFarmOptions) as JestWorkerFarm<{foo(): void; bar(): void}>;
 
   expect(typeof farm.foo).toBe('function');
   expect(typeof farm.bar).toBe('function');
