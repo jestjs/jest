@@ -181,15 +181,11 @@ it('calls initialize with the correct arguments', () => {
 });
 
 it('returns results immediately when function is synchronous', () => {
-  process.emit(
-    'message',
-    [
-      CHILD_MESSAGE_INITIALIZE,
-      true, // Not really used here, but for type purity.
-      './my-fancy-worker',
-    ],
-    null,
-  );
+  process.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true, // Not really used here, but for type purity.
+    './my-fancy-worker',
+  ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
