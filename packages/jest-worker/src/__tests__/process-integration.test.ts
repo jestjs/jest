@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ChildProcess} from 'child_process';
 import {EventEmitter} from 'events';
 import type {JestWorkerFarm, Worker} from '../';
 import {
@@ -14,8 +13,13 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
+class MockChildProcess extends EventEmitter {
+  connected = true;
+  send = jest.fn<(...args: Array<unknown>) => boolean>();
+}
+
 let WorkerFarm: typeof Worker;
-let mockForkedProcesses: Array<ChildProcess>;
+let mockForkedProcesses: Array<MockChildProcess>;
 
 function replySuccess(i: number, result: unknown) {
   mockForkedProcesses[i].emit('message', [PARENT_MESSAGE_OK, result]);
@@ -42,15 +46,9 @@ describe('Jest Worker Integration', () => {
   beforeEach(() => {
     mockForkedProcesses = [];
 
-    class MockChildProcess extends EventEmitter {
-      connected = true;
-      send = jest.fn();
-    }
-
     jest.mock('child_process', () => ({
       fork() {
-        const forkedProcess = new MockChildProcess() as unknown as ChildProcess;
-
+        const forkedProcess = new MockChildProcess();
         mockForkedProcesses.push(forkedProcess);
 
         return forkedProcess;
