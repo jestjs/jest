@@ -15,7 +15,7 @@ import {
 
 class MockChildProcess extends EventEmitter {
   connected = true;
-  send = jest.fn<(...args: Array<unknown>) => boolean>();
+  send = jest.fn<(message: unknown) => boolean>();
 }
 
 let WorkerFarm: typeof Worker;
