@@ -661,10 +661,10 @@ export function setDateNow(now: number): jest.Spied<typeof Date.now> {
 import {afterEach, expect, jest, test} from '@jest/globals';
 import {setDateNow} from './__utils__/setDateNow';
 
-let spiedDateNow: jest.Spied<typeof Date.now>;
+let spiedDateNow: jest.Spied<typeof Date.now> | undefined = undefined;
 
 afterEach(() => {
-  spiedDateNow.mockReset();
+  spiedDateNow?.mockReset();
 });
 
 test('renders correctly with a given date', () => {
