@@ -141,9 +141,7 @@ module.exports = {
 ```js title="__tests__/createMockFromModule.test.js"
 const utils = jest.createMockFromModule('../utils');
 
-jest
-  .spyOn(utils, 'isAuthorized')
-  .mockImplementation(secret => secret === 'not wizard');
+utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
   expect(jest.isMockFunction(utils.authorize)).toBe(true);
@@ -164,9 +162,7 @@ export const utils = {
 const {utils} =
   jest.createMockFromModule<typeof import('../utils')>('../utils');
 
-jest
-  .spyOn(utils, 'isAuthorized')
-  .mockImplementation((secret: string) => secret === 'not wizard');
+utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
   expect(jest.isMockFunction(utils.authorize)).toBe(true);
