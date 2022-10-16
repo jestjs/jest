@@ -10,13 +10,14 @@ declare const jestProjectConfig: Config.ProjectConfig;
 
 import * as path from 'path';
 import * as repl from 'repl';
+import * as util from 'util';
 import {runInThisContext} from 'vm';
 import type {SyncTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
 
 // TODO: support async as well
-let transformer: SyncTransformer;
+let transformer: SyncTransformer | undefined;
 let transformerConfig: unknown;
 
 const evalCommand: repl.REPLEval = (
@@ -25,12 +26,12 @@ const evalCommand: repl.REPLEval = (
   _filename: string,
   callback: (e: Error | null, result?: unknown) => void,
 ) => {
-  let result;
+  let result: unknown;
   try {
-    if (transformer) {
+    if (transformer != null) {
       const transformResult = transformer.process(
         cmd,
-        jestGlobalConfig.replname || 'jest.js',
+        jestGlobalConfig.replname ?? 'jest.js',
         {
           cacheFS: new Map<string, string>(),
           config: jestProjectConfig,
@@ -48,15 +49,19 @@ const evalCommand: repl.REPLEval = (
           ? transformResult
           : transformResult.code;
     }
-    result = runInThisContext(cmd);
+    result = runInThisContext(cmd) as unknown;
   } catch (e: any) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
 };
 
-const isRecoverableError = (error: Error) => {
-  if (error && error.name === 'SyntaxError') {
+const isRecoverableError = (error: unknown) => {
+  if (!util.types.isNativeError(error)) {
+    return false;
+  }
+
+  if (error.name === 'SyntaxError') {
     return [
       'Unterminated template',
       'Missing } in template expression',
@@ -77,7 +82,7 @@ if (jestProjectConfig.transform) {
       break;
     }
   }
-  if (transformerPath) {
+  if (transformerPath != null) {
     const transformerOrFactory = interopRequireDefault(
       require(transformerPath),
     ).default;
@@ -88,7 +93,7 @@ if (jestProjectConfig.transform) {
       transformer = transformerOrFactory;
     }
 
-    if (typeof transformer.process !== 'function') {
+    if (typeof transformer?.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',
       );
@@ -106,5 +111,5 @@ replInstance.context.require = (moduleName: string) => {
   if (/(\/|\\|\.)/.test(moduleName)) {
     moduleName = path.resolve(process.cwd(), moduleName);
   }
-  return require(moduleName);
+  return require(moduleName) as unknown;
 };
