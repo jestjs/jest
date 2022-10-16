@@ -7,6 +7,7 @@
 
 import {cpus} from 'os';
 import * as path from 'path';
+import * as util from 'util';
 import chalk = require('chalk');
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
@@ -24,7 +25,7 @@ export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
 ): Promise<void> {
-  let argv;
+  let argv: Config.Argv;
   if (cliArgv) {
     argv = cliArgv;
   } else {
@@ -36,13 +37,13 @@ export async function run(
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 
-  if (argv.help) {
+  if (argv.help === true) {
     yargs.showHelp();
     process.on('exit', () => (process.exitCode = 1));
     return;
   }
 
-  if (argv.version) {
+  if (argv.version == true) {
     console.log(`v${VERSION}\n`);
     return;
   }
@@ -56,7 +57,7 @@ export async function run(
   const root = tryRealpath(process.cwd());
   const filePath = path.resolve(root, argv._[0].toString());
 
-  if (argv.debug) {
+  if (argv.debug === true) {
     const info = cliInfo ? `, ${cliInfo.join(', ')}` : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
@@ -130,7 +131,9 @@ export async function run(
       runtime.requireModule(filePath);
     }
   } catch (e: any) {
-    console.error(chalk.red(e.stack || e));
-    process.on('exit', () => (process.exitCode = 1));
+    console.error(chalk.red(util.types.isNativeError(e) ? e.stack : e));
+    process.on('exit', () => {
+      process.exitCode = 1;
+    });
   }
 }
