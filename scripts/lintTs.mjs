@@ -64,6 +64,16 @@ try {
             extends: [
               'plugin:@typescript-eslint/recommended-requiring-type-checking',
             ],
+            overrides: [
+              {
+                files: ['**/__tests__/**'],
+                plugins: ['jest'],
+                rules: {
+                  '@typescript-eslint/unbound-method': 'off',
+                  'jest/unbound-method': 'error',
+                },
+              },
+            ],
             parser: '@typescript-eslint/parser',
             parserOptions: {
               project: ['./tsconfig.json', `${packageDir}/tsconfig.json`],
