@@ -701,7 +701,7 @@ test('plays audio', () => {
 
 ### `jest.Spied<Source>`
 
-See [TypeScript Usage](MockFunctionAPI.md/#jestspiedsource) chapter of Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#jestspiedsource) chapter of Mock Functions page for documentation.
 
 ### `jest.clearAllMocks()`
 
