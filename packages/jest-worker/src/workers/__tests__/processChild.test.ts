@@ -170,7 +170,12 @@ it('calls initialize with the correct arguments', () => {
     ['foo'], // Pass empty initialize params so the initialize method is called.
   ]);
 
-  process.emit('message', [CHILD_MESSAGE_CALL, true, 'fooWorks', []]);
+  process.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true, // Not really used here, but for type purity.
+    'fooWorks',
+    [],
+  ]);
 
   expect(initializeParm).toBe('foo');
 });
