@@ -9,10 +9,58 @@ const chalk = require('chalk');
 const Immutable = require('immutable');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {stringify} = require('jest-matcher-utils');
+const matcherUtils = require('jest-matcher-utils');
 const {expect: jestExpect} = require('../');
 const chalkEnabled = chalk.enabled;
+const matcherHintOptions = {
+  expectedColor: chalk.yellow,
+  noDim: true,
+  receivedColor: chalk.magenta,
+  secondArgumentColor: chalk.yellow,
+};
+const diffOptions = {
+  aColor: chalk.bgHex(' #0000FF'),
+  bColor: chalk.magenta,
+  noDim: true,
+};
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
+expect.setState({diffOptions, matcherHintOptions});
+
+const registerSpies = () => {
+  return {
+    matcherHint: jest.spyOn(matcherUtils, 'matcherHint'),
+    printDiffOrStringify: jest.spyOn(matcherUtils, 'printDiffOrStringify'),
+    printExpected: jest.spyOn(matcherUtils, 'printExpected'),
+    printReceived: jest.spyOn(matcherUtils, 'printReceived'),
+  };
+};
+
+const expectUserColorsAreUsed = (
+  matcherHint,
+  printExpected,
+  printReceived,
+  printDiffOrStringify,
+) => {
+  matcherHint.mock.calls.forEach(call => {
+    const passedOptions = call[3];
+    Object.keys(matcherHintOptions).forEach(key => {
+      expect(matcherHintOptions[key]).toEqual(passedOptions[key]);
+    });
+  });
+
+  printExpected.mock.calls.forEach(call =>
+    expect(call[1]).toEqual(diffOptions.aColor),
+  );
+
+  printReceived.mock.calls.forEach(call =>
+    expect(call[1]).toEqual(diffOptions.bColor),
+  );
+
+  printDiffOrStringify.mock.calls.forEach(call =>
+    expect(call[5]).toEqual(diffOptions),
+  );
+};
 
 jestExpect.extend({
   optionalFn(fn) {
@@ -245,7 +293,17 @@ describe('.toBe()', () => {
     [-0, +0],
   ].forEach(([a, b]) => {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(a).toBe(b)).toThrowErrorMatchingSnapshot();
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
@@ -254,32 +312,75 @@ describe('.toBe()', () => {
     [{a: BigInt(1)}, {a: BigInt(1)}],
   ].forEach(([a, b]) => {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(a).toBe(b)).toThrow('toBe');
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
   [false, 1, 'a', undefined, null, {}, []].forEach(v => {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(v).not.toBe(v)).toThrowErrorMatchingSnapshot();
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
   [BigInt(1), BigInt('1')].forEach(v => {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(v).not.toBe(v)).toThrow('toBe');
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
   it('does not crash on circular references', () => {
     const obj = {};
     obj.circular = obj;
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
 
     expect(() => jestExpect(obj).toBe({})).toThrowErrorMatchingSnapshot();
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 
-  test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
+  it('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
     const expected = {a: 2};
+
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
+
     try {
       jestExpect(actual).toBe(expected);
     } catch (error) {
@@ -291,6 +392,13 @@ describe('.toBe()', () => {
         }),
       );
     }
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 });
 
@@ -348,6 +456,9 @@ describe('.toStrictEqual()', () => {
   });
 
   it('matches the expected snapshot when it fails', () => {
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
+
     expect(() =>
       jestExpect({
         test: 2,
@@ -359,6 +470,13 @@ describe('.toStrictEqual()', () => {
         test: new TestClassA(1, 2),
       }).not.toStrictEqual({test: new TestClassA(1, 2)}),
     ).toThrowErrorMatchingSnapshot();
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 
   it('displays substring diff', () => {
@@ -366,9 +484,20 @@ describe('.toStrictEqual()', () => {
       'Another caveat is that Jest will not typecheck your tests.';
     const received =
       'Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they run.';
+
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
+
     expect(() =>
       jestExpect(received).toStrictEqual(expected),
     ).toThrowErrorMatchingSnapshot();
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 
   it('displays substring diff for multiple lines', () => {
@@ -392,9 +521,20 @@ describe('.toStrictEqual()', () => {
       '    73 | });',
       '    at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)',
     ].join('\n');
+
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
+
     expect(() =>
       jestExpect(received).toStrictEqual(expected),
     ).toThrowErrorMatchingSnapshot();
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 
   it('does not pass for different types', () => {
@@ -687,8 +827,18 @@ describe('.toEqual()', () => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
     )})`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
       jestExpect(a).not.toEqual(b);
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
@@ -699,8 +849,18 @@ describe('.toEqual()', () => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
     )})`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() => jestExpect(a).toEqual(b)).toThrow('toEqual');
       jestExpect(a).not.toEqual(b);
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
@@ -932,8 +1092,18 @@ describe('.toEqual()', () => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
@@ -952,14 +1122,27 @@ describe('.toEqual()', () => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrow('toEqual');
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
   test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
     const expected = {a: 2};
+    const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+      registerSpies();
+
     try {
       jestExpect(actual).toEqual(expected);
     } catch (error) {
@@ -971,6 +1154,13 @@ describe('.toEqual()', () => {
         }),
       );
     }
+
+    expectUserColorsAreUsed(
+      matcherHint,
+      printExpected,
+      printReceived,
+      printDiffOrStringify,
+    );
   });
 
   test('symbol based keys in arrays are processed correctly', () => {
@@ -1103,11 +1293,21 @@ describe('.toBeInstanceOf()', () => {
     [new HasStaticNameMethod(), HasStaticNameMethod], // Expected
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() =>
         jestExpect(a).not.toBeInstanceOf(b),
       ).toThrowErrorMatchingSnapshot();
 
       jestExpect(a).toBeInstanceOf(b);
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
@@ -1123,11 +1323,21 @@ describe('.toBeInstanceOf()', () => {
     [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
+      const {matcherHint, printExpected, printReceived, printDiffOrStringify} =
+        registerSpies();
+
       expect(() =>
         jestExpect(a).toBeInstanceOf(b),
       ).toThrowErrorMatchingSnapshot();
 
       jestExpect(a).not.toBeInstanceOf(b);
+
+      expectUserColorsAreUsed(
+        matcherHint,
+        printExpected,
+        printReceived,
+        printDiffOrStringify,
+      );
     });
   });
 
