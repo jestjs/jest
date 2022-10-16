@@ -650,7 +650,7 @@ test('direct usage', () => {
 Constructs the type of a spied class or function (i.e. the return type of `jest.spyOn()`).
 
 ```ts
-import {expect, jest, test} from '@jest/globals';
+import {jest, test} from '@jest/globals';
 import * as platform from './';
 
 function getLoginSpy(): jest.Spied<typeof platform.login> {
