@@ -16,6 +16,11 @@ import type {
   MockedClass as JestMockedClass,
   MockedFunction as JestMockedFunction,
   MockedObject as JestMockedObject,
+  Spied as JestSpied,
+  SpiedClass as JestSpiedClass,
+  SpiedFunction as JestSpiedFunction,
+  SpiedGetter as JestSpiedGetter,
+  SpiedSetter as JestSpiedSetter,
   UnknownFunction,
 } from 'jest-mock';
 
@@ -63,5 +68,25 @@ declare global {
      * Wraps an object type with Jest mock type definitions.
      */
     export type MockedObject<T extends object> = JestMockedObject<T>;
+    /**
+     * Constructs the type of a spied class or function.
+     */
+    export type Spied<T extends ClassLike | FunctionLike> = JestSpied<T>;
+    /**
+     * Constructs the type of a spied class.
+     */
+    export type SpiedClass<T extends ClassLike> = JestSpiedClass<T>;
+    /**
+     * Constructs the type of a spied function.
+     */
+    export type SpiedFunction<T extends FunctionLike> = JestSpiedFunction<T>;
+    /**
+     * Constructs the type of a spied getter.
+     */
+    export type SpiedGetter<T> = JestSpiedGetter<T>;
+    /**
+     * Constructs the type of a spied setter.
+     */
+    export type SpiedSetter<T> = JestSpiedSetter<T>;
   }
 }
