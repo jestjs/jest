@@ -39,8 +39,8 @@ const config = {
   organizationName: 'facebook',
   projectName: 'jest',
   favicon: 'img/favicon/favicon.ico',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
   presets: [
     [
       '@docusaurus/preset-classic',
