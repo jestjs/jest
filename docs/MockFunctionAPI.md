@@ -647,7 +647,7 @@ test('direct usage', () => {
 
 ### `jest.Spied<Source>`
 
-Constructs the type of a spied class or function, i.e. the return type of `jest.spyOn()`.
+Constructs the type of a spied class or function (i.e. the return type of `jest.spyOn()`).
 
 ```ts
 import {expect, jest, test} from '@jest/globals';
