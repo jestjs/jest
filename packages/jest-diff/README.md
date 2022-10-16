@@ -391,7 +391,7 @@ For other applications, you can provide an options object as a third argument:
 | `bIndicator`                      | `'+'`              |
 | `changeColor`                     | `chalk.inverse`    |
 | `changeLineTrailingSpaceColor`    | `string => string` |
-| `commonColor`                     | `chalk.dim`        |
+| `noDim`                           | `false`            |
 | `commonIndicator`                 | `' '`              |
 | `commonLineTrailingSpaceColor`    | `string => string` |
 | `compareKeys`                     | `undefined`        |
@@ -496,7 +496,7 @@ const options = {
   aColor: noColor,
   bColor: noColor,
   changeColor: noColor,
-  commonColor: noColor,
+  noDim: noColor,
   patchColor: noColor,
 };
 ```
