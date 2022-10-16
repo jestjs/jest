@@ -113,7 +113,7 @@ jobs:
       os: windows-latest
 
   test-leak:
-    name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
+    name: Node LTS on Ubuntu with leak detection
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache-ubuntu
 
