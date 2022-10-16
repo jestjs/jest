@@ -155,7 +155,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
-  private _globalConfig?: Config.GlobalConfig | null;
+  private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
@@ -1265,7 +1265,6 @@ export default class Runtime {
     this.resetAllMocks();
     this.resetModules();
 
-    this._globalConfig = null;
     this._internalModuleRegistry.clear();
     this._mainModule = null;
     this._mockFactories.clear();
