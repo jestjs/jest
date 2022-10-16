@@ -7,7 +7,7 @@
 import {makeEmptyAggregatedTestResult} from '@jest/test-result';
 import getSummary from '../getSummary';
 
-jest.useFakeTimers().setSystemTime(10);
+jest.spyOn(Date, 'now').mockReturnValue(10);
 
 describe('getSummary', () => {
   test('does not print seed value when showSeed is false', () => {
