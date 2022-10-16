@@ -44,6 +44,7 @@ describe('Jest Worker Integration', () => {
 
     class MockChildProcess extends EventEmitter {
       send = jest.fn();
+      connected = true;
     }
 
     jest.mock('child_process', () => ({
@@ -185,7 +186,6 @@ describe('Jest Worker Integration', () => {
 
   it('should check for memory limits', async () => {
     const farm = new WorkerFarm('/tmp/baz.js', {
-      computeWorkerKey: () => '1234567890abcdef',
       exposedMethods: ['foo', 'bar'],
       idleMemoryLimit: 0.4,
       numWorkers: 2,
