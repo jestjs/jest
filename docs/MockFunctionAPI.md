@@ -649,20 +649,25 @@ test('direct usage', () => {
 
 Constructs the type of a spied class or function (i.e. the return type of `jest.spyOn()`).
 
-```ts
-import {jest, test} from '@jest/globals';
-import * as platform from './';
+```ts title="__utils__/setDateNow.ts"
+import {jest} from '@jest/globals';
 
-function getLoginSpy(): jest.Spied<typeof platform.login> {
-  // ...
+export function setDateNow(now: number): jest.Spied<typeof Date.now> {
+  return jest.spyOn(Date, 'now').mockReturnValue(now);
 }
+```
 
-let loginSpy: jest.Spied<typeof platform.login>;
-// equivalent to: `ReturnType<typeof jest.spyOn(platform, 'login')> {
+```ts
+import {expect, jest, test} from '@jest/globals';
+import {setDateNow} from './__utils__/setDateNow';
 
-test('passes username and password', () => {
-  loginSpy = getLoginSpy();
+let spiedDateNow: jest.Spied<typeof Date.now>;
+
+test('renders correctly with a given date', () => {
+  spiedDateNow = setDateNow(1482363367071);
   // ...
+
+  expect(spiedDateNow).toHaveBeenCalledTimes(1);
 });
 ```
 
