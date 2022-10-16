@@ -15,6 +15,8 @@ import {
   PARENT_MESSAGE_OK,
 } from '../../types';
 
+const spyProcessSend = jest.spyOn(process, 'send');
+
 class MockExtendedError extends ReferenceError {
   baz = 123;
   qux = 456;
@@ -22,8 +24,6 @@ class MockExtendedError extends ReferenceError {
 
 const mockError = new TypeError('Boo');
 const mockExtendedError = new MockExtendedError('Boo extended');
-const processExit = process.exit;
-const processSend = process.send;
 const uninitializedParam = {};
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -107,20 +107,14 @@ beforeEach(() => {
     {virtual: true},
   );
 
-  process.exit = jest.fn<typeof process.exit>();
-  process.send = jest.fn<NonNullable<typeof process.send>>();
-
   // Require the child!
   require('../processChild');
 });
 
 afterEach(() => {
-  jest.resetModules();
+  jest.clearAllMocks().resetModules();
 
   process.removeAllListeners('message');
-
-  process.exit = processExit;
-  process.send = processSend;
 });
 
 it('lazily requires the file', () => {
@@ -142,13 +136,11 @@ it('lazily requires the file', () => {
 });
 
 it('should return memory usage', () => {
-  process.send = jest.fn<NonNullable<typeof process.send>>();
-
   expect(mockCount).toBe(0);
 
   process.emit('message', [CHILD_MESSAGE_MEM_USAGE], null);
 
-  expect(jest.mocked(process.send!).mock.calls[0][0]).toEqual([
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_MEM_USAGE,
     expect.any(Number),
   ]);
@@ -174,8 +166,6 @@ it('calls initialize with the correct arguments', () => {
 });
 
 it('returns results immediately when function is synchronous', () => {
-  process.send = jest.fn<NonNullable<typeof process.send>>();
-
   process.emit(
     'message',
     [CHILD_MESSAGE_INITIALIZE, true, './my-fancy-worker'],
@@ -184,14 +174,11 @@ it('returns results immediately when function is synchronous', () => {
 
   process.emit('message', [CHILD_MESSAGE_CALL, true, 'fooWorks', []], null);
 
-  expect(jest.mocked(process.send!).mock.calls[0][0]).toEqual([
-    PARENT_MESSAGE_OK,
-    1989,
-  ]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
   process.emit('message', [CHILD_MESSAGE_CALL, true, 'fooThrows', []], null);
 
-  expect(jest.mocked(process.send!).mock.calls[1][0]).toEqual([
+  expect(spyProcessSend.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
     'Boo',
@@ -205,7 +192,7 @@ it('returns results immediately when function is synchronous', () => {
     null,
   );
 
-  expect(jest.mocked(process.send!).mock.calls[2][0]).toEqual([
+  expect(spyProcessSend.mock.calls[2][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'Number',
     void 0,
@@ -219,7 +206,7 @@ it('returns results immediately when function is synchronous', () => {
     null,
   );
 
-  expect(jest.mocked(process.send!).mock.calls[3][0]).toEqual([
+  expect(spyProcessSend.mock.calls[3][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'MockExtendedError',
     'Boo extended',
@@ -233,15 +220,13 @@ it('returns results immediately when function is synchronous', () => {
     null,
   );
 
-  expect(jest.mocked(process.send!).mock.calls[4][0][0]).toBe(
-    PARENT_MESSAGE_CLIENT_ERROR,
-  );
-  expect(jest.mocked(process.send!).mock.calls[4][0][1]).toBe('Error');
-  expect(jest.mocked(process.send!).mock.calls[4][0][2]).toBe(
+  expect(spyProcessSend.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
+  expect(spyProcessSend.mock.calls[4][0][1]).toBe('Error');
+  expect(spyProcessSend.mock.calls[4][0][2]).toBe(
     '"null" or "undefined" thrown',
   );
 
-  expect(process.send).toHaveBeenCalledTimes(5);
+  expect(spyProcessSend).toHaveBeenCalledTimes(5);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
@@ -259,10 +244,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   await sleep(10);
 
-  expect(jest.mocked(process.send!).mock.calls[0][0]).toEqual([
-    PARENT_MESSAGE_OK,
-    1989,
-  ]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
   process.emit(
     'message',
@@ -272,7 +254,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   await sleep(10);
 
-  expect(jest.mocked(process.send!).mock.calls[1][0]).toEqual([
+  expect(spyProcessSend.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
     'Boo',
@@ -280,7 +262,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
     {},
   ]);
 
-  expect(process.send).toHaveBeenCalledTimes(2);
+  expect(spyProcessSend).toHaveBeenCalledTimes(2);
 });
 
 it('calls the main module if the method call is "default"', () => {
@@ -292,10 +274,7 @@ it('calls the main module if the method call is "default"', () => {
 
   process.emit('message', [CHILD_MESSAGE_CALL, true, 'default', []], null);
 
-  expect(jest.mocked(process.send!).mock.calls[0][0]).toEqual([
-    PARENT_MESSAGE_OK,
-    12345,
-  ]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
@@ -307,10 +286,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   process.emit('message', [CHILD_MESSAGE_CALL, true, 'default', []], null);
 
-  expect(jest.mocked(process.send!).mock.calls[0][0]).toEqual([
-    PARENT_MESSAGE_OK,
-    67890,
-  ]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
 it('removes the message listener on END message', () => {
