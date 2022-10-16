@@ -43,8 +43,8 @@ describe('Jest Worker Integration', () => {
     mockForkedProcesses = [];
 
     class MockChildProcess extends EventEmitter {
-      send = jest.fn();
       connected = true;
+      send = jest.fn();
     }
 
     jest.mock('child_process', () => ({
