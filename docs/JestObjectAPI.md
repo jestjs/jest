@@ -141,7 +141,9 @@ module.exports = {
 ```js title="__tests__/createMockFromModule.test.js"
 const utils = jest.createMockFromModule('../utils');
 
-utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
+jest
+  .spyOn(utils, 'isAuthorized')
+  .mockImplementation(secret => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
   expect(jest.isMockFunction(utils.authorize)).toBe(true);
@@ -162,7 +164,9 @@ export const utils = {
 const {utils} =
   jest.createMockFromModule<typeof import('../utils')>('../utils');
 
-utils.isAuthorized = jest.fn((secret: string) => secret === 'not wizard');
+jest
+  .spyOn(utils, 'isAuthorized')
+  .mockImplementation((secret: string) => secret === 'not wizard');
 
 test('implementation created by jest.createMockFromModule', () => {
   expect(jest.isMockFunction(utils.authorize)).toBe(true);
@@ -698,6 +702,10 @@ test('plays audio', () => {
   expect(audio.volume).toBe(100);
 });
 ```
+
+### `jest.Spied<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md/#jestspiedsource) chapter of Mock Functions page for documentation.
 
 ### `jest.clearAllMocks()`
 

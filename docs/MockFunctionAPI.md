@@ -644,3 +644,28 @@ test('direct usage', () => {
   expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
 });
 ```
+
+### `jest.Spied<Source>`
+
+Constructs the type of a spied class or function, i.e. the return type of `jest.spyOn()`.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+import * as platform from './';
+
+function getLoginSpy(): jest.Spied<typeof platform.login> {
+  // ...
+}
+
+let loginSpy: jest.Spied<typeof platform.login>;
+// equivalent to: `ReturnType<typeof jest.spyOn(platform, 'login')> {
+
+test('passes username and password', () => {
+  loginSpy = getLoginSpy();
+  // ...
+});
+```
+
+Types of a class or function can be passed as type argument to `jest.Spied<Source>`. If you prefer to constrain the input type, use: `jest.SpiedClass<Source>` or `jest.SpiedFunction<Source>`.
+
+Use `jest.SpiedGetter<Source>` or `jest.SpiedSetter<Source>` to create the type of a spied getter or setter respectively.
