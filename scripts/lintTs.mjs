@@ -39,6 +39,7 @@ const packagesToTest = [
   'jest-test-sequencer',
   'jest-transform',
   'jest-types',
+  'jest-watcher',
   'test-globals',
   'test-utils',
 ];
