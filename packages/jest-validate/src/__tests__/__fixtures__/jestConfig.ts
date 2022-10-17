@@ -126,7 +126,7 @@ const format = (value: string) =>
   });
 
 export const deprecatedConfig = {
-  preprocessorIgnorePatterns: (config: {preprocessorIgnorePatterns: string}) =>
+  preprocessorIgnorePatterns: (config: Record<string, unknown>) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
     )} was replaced by ${chalk.bold(
@@ -136,13 +136,13 @@ export const deprecatedConfig = {
   Jest now treats your current configuration as:
   {
     ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(
-      `${format(config.preprocessorIgnorePatterns)}`,
+      `${format(config.preprocessorIgnorePatterns as string)}`,
     )}
   }
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: {scriptPreprocessor: string}) =>
+  scriptPreprocessor: (config: Record<string, unknown>) =>
     `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
       'transform',
     )}, which support multiple preprocessors.
@@ -150,7 +150,7 @@ export const deprecatedConfig = {
   Jest now treats your current configuration as:
   {
     ${chalk.bold('"transform"')}: ${chalk.bold(
-      `{".*": ${format(config.scriptPreprocessor)}}`,
+      `{".*": ${format(config.scriptPreprocessor as string)}}`,
     )}
   }
 
