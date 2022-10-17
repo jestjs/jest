@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -65,6 +64,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.testMethod()).toBe('testMethod');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
@@ -106,6 +106,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.get()).toBe('get');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.prototype.hasOwnProperty('get')).toBe(false);
   });
 
@@ -147,6 +148,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.set()).toBe('set');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.prototype.hasOwnProperty('set')).toBe(false);
   });
 
@@ -188,6 +190,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.testMethod).toBe('testMethod');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
@@ -235,6 +238,7 @@ describe('Testing the mocking of a class', () => {
     mocktestMethod.mockRestore();
     testClassInstance.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(0);
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
@@ -274,6 +278,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.testMethod()).toBe('testMethod');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 
@@ -309,6 +314,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.get()).toBe('get');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.hasOwnProperty('get')).toBe(false);
   });
 
@@ -344,6 +350,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.set()).toBe('set');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.hasOwnProperty('set')).toBe(false);
   });
 
@@ -383,6 +390,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.testMethod).toBe('testMethod');
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 
@@ -426,6 +434,7 @@ describe('Testing the mocking of a class', () => {
 
     mocktestMethod.mockRestore();
     expect(mocktestMethod).toHaveBeenCalledTimes(0);
+    // eslint-disable-next-line no-prototype-builtins
     expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 });
