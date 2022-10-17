@@ -19,7 +19,7 @@ const replacePathSepForRegex = (string: string) => {
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-const defaultConfig = {
+export const defaultConfig = {
   automock: false,
   bail: 0,
   cacheDirectory: path.join(tmpdir(), 'jest'),
@@ -55,7 +55,7 @@ const defaultConfig = {
   watchPathIgnorePatterns: [],
 };
 
-const validConfig = {
+export const validConfig = {
   automock: false,
   bail: 0,
   cache: true,
@@ -121,10 +121,12 @@ const validConfig = {
 };
 
 const format = (value: string) =>
-  require('pretty-format').format(value, {min: true});
+  (require('pretty-format') as typeof import('pretty-format')).format(value, {
+    min: true,
+  });
 
-const deprecatedConfig = {
-  preprocessorIgnorePatterns: (config: Record<string, any>) =>
+export const deprecatedConfig = {
+  preprocessorIgnorePatterns: (config: {preprocessorIgnorePatterns: string}) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
     )} was replaced by ${chalk.bold(
@@ -140,7 +142,7 @@ const deprecatedConfig = {
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: Record<string, any>) =>
+  scriptPreprocessor: (config: {scriptPreprocessor: string}) =>
     `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
       'transform',
     )}, which support multiple preprocessors.
@@ -153,10 +155,4 @@ const deprecatedConfig = {
   }
 
   Please update your configuration.`,
-};
-
-module.exports = {
-  defaultConfig,
-  deprecatedConfig,
-  validConfig,
 };
