@@ -3,12 +3,15 @@
 ### Features
 
 - `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
+- `[@jest/globals, jest-mock]` Add `jest.Spied*` utility types ([#13440](https://github.com/facebook/jest/pull/13440))
 
 ### Fixes
 
 ### Chore & Maintenance
 
 ### Performance
+
+- `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
 
 ## 29.2.0
 

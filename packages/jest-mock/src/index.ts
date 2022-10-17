@@ -100,6 +100,29 @@ export type MockedShallow<T> = T extends ClassLike
   : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
+export type UnknownClass = {new (...args: Array<unknown>): unknown};
+
+export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
+  (...args: ConstructorParameters<T>) => InstanceType<T>
+>;
+
+export type SpiedFunction<T extends FunctionLike = UnknownFunction> =
+  MockInstance<(...args: Parameters<T>) => ReturnType<T>>;
+
+export type SpiedGetter<T> = MockInstance<() => T>;
+
+export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
+
+export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
+  ? MockInstance<(...args: ConstructorParameters<T>) => InstanceType<T>>
+  : T extends FunctionLike
+  ? MockInstance<(...args: Parameters<T>) => ReturnType<T>>
+  : never;
+
+// TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface SpyInstance<T extends FunctionLike = UnknownFunction>
+  extends MockInstance<T> {}
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -148,10 +171,6 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SpyInstance<T extends FunctionLike = UnknownFunction>
-  extends MockInstance<T> {}
 
 type MockFunctionResultIncomplete = {
   type: 'incomplete';
@@ -1080,10 +1099,9 @@ export class ModuleMocker {
   }
 
   isMockFunction<T extends FunctionLike = UnknownFunction>(
-    fn: SpyInstance<T>,
-  ): fn is SpyInstance<T>;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-  isMockFunction<P extends Array<unknown>, R extends unknown>(
+    fn: MockInstance<T>,
+  ): fn is MockInstance<T>;
+  isMockFunction<P extends Array<unknown>, R>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;
@@ -1107,35 +1125,25 @@ export class ModuleMocker {
     T extends object,
     K extends PropertyLikeKeys<T>,
     V extends Required<T>[K],
-  >(object: T, methodKey: K, accessType: 'get'): SpyInstance<() => V>;
-
-  spyOn<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-    V extends Required<T>[K],
-  >(object: T, methodKey: K, accessType: 'set'): SpyInstance<(arg: V) => void>;
-
-  spyOn<
-    T extends object,
-    K extends ConstructorLikeKeys<T>,
-    V extends Required<T>[K],
+    A extends 'get' | 'set',
   >(
     object: T,
     methodKey: K,
-  ): V extends ClassLike
-    ? SpyInstance<(...args: ConstructorParameters<V>) => InstanceType<V>>
+    accessType: A,
+  ): A extends 'get'
+    ? SpiedGetter<V>
+    : A extends 'set'
+    ? SpiedSetter<V>
     : never;
 
   spyOn<
     T extends object,
-    K extends MethodLikeKeys<T>,
+    K extends ConstructorLikeKeys<T> | MethodLikeKeys<T>,
     V extends Required<T>[K],
   >(
     object: T,
     methodKey: K,
-  ): V extends FunctionLike
-    ? SpyInstance<(...args: Parameters<V>) => ReturnType<V>>
-    : never;
+  ): V extends ClassLike | FunctionLike ? Spied<V> : never;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   spyOn<T extends object, K extends PropertyLikeKeys<T>>(
@@ -1205,8 +1213,8 @@ export class ModuleMocker {
 
     let mock: Mock;
 
-    if (accessType == 'get' && descriptor['get']) {
-      const originalAccessor = descriptor['get'];
+    if (accessType == 'get' && descriptor.get) {
+      const originalAccessor = descriptor.get;
       mock = this._makeComponent(
         {
           type: 'function',
@@ -1222,8 +1230,8 @@ export class ModuleMocker {
         return originalAccessor.call(this);
       });
       Object.defineProperty(object, methodKey, descriptor);
-    } else if (accessType == 'set' && descriptor['set']) {
-      const originalAccessor = descriptor['set'];
+    } else if (accessType == 'set' && descriptor.set) {
+      const originalAccessor = descriptor.set;
       mock = this._makeComponent(
         {
           type: 'function',

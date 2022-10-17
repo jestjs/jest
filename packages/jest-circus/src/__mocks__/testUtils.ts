@@ -34,7 +34,7 @@ export const runTest = (
   source: string,
   opts?: {seed?: number; randomize?: boolean},
 ) => {
-  const filename = createHash('sha256')
+  const filename = createHash('sha1')
     .update(source)
     .digest('hex')
     .substring(0, 32);

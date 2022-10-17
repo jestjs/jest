@@ -301,7 +301,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')

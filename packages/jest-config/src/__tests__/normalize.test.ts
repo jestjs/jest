@@ -72,7 +72,7 @@ afterEach(() => {
 
 it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = createHash('sha256')
+  const expected = createHash('sha1')
     .update('/root/path/foo')
     .update(String(Infinity))
     .digest('hex')

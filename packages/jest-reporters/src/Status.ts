@@ -85,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor(private _globalConfig: Config.GlobalConfig) {
+  constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
