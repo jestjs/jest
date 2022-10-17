@@ -5,15 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const mockError = new TypeError('Booo');
-const mockExtendedError = new ReferenceError('Booo extended');
-const processExit = process.exit;
-const processSend = process.send;
-const uninitializedParam = {};
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -24,8 +15,29 @@ import {
   PARENT_MESSAGE_OK,
 } from '../../types';
 
-let ended;
-let mockCount;
+const spyProcessSend = jest.spyOn(process, 'send');
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface Process {
+      emit(event: 'message', message: unknown): this; // overrides DT type, which requires the third argument
+    }
+  }
+}
+
+class MockExtendedError extends ReferenceError {
+  baz = 123;
+  qux = 456;
+}
+
+const mockError = new TypeError('Boo');
+const mockExtendedError = new MockExtendedError('Boo extended');
+const uninitializedParam = {};
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+let ended: boolean;
+let mockCount: number;
 let initializeParm = uninitializedParam;
 
 beforeEach(() => {
@@ -39,7 +51,7 @@ beforeEach(() => {
 
       return {
         fooPromiseThrows() {
-          return new Promise((resolve, reject) => {
+          return new Promise((_resolve, reject) => {
             setTimeout(() => reject(mockError), 5);
           });
         },
@@ -75,7 +87,7 @@ beforeEach(() => {
           return 1989;
         },
 
-        setup(param) {
+        setup(param: Record<string, unknown>) {
           initializeParm = param;
         },
 
@@ -104,20 +116,14 @@ beforeEach(() => {
     {virtual: true},
   );
 
-  process.exit = jest.fn();
-  process.send = jest.fn();
-
   // Require the child!
   require('../processChild');
 });
 
 afterEach(() => {
-  jest.resetModules();
+  jest.clearAllMocks().resetModules();
 
   process.removeAllListeners('message');
-
-  process.exit = processExit;
-  process.send = processSend;
 });
 
 it('lazily requires the file', () => {
@@ -125,7 +131,7 @@ it('lazily requires the file', () => {
 
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
@@ -134,7 +140,7 @@ it('lazily requires the file', () => {
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooWorks',
     [],
   ]);
@@ -144,13 +150,11 @@ it('lazily requires the file', () => {
 });
 
 it('should return memory usage', () => {
-  process.send = jest.fn();
-
   expect(mockCount).toBe(0);
 
   process.emit('message', [CHILD_MESSAGE_MEM_USAGE]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_MEM_USAGE,
     expect.any(Number),
   ]);
@@ -161,14 +165,14 @@ it('calls initialize with the correct arguments', () => {
 
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
     ['foo'], // Pass empty initialize params so the initialize method is called.
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooWorks',
     [],
   ]);
@@ -177,46 +181,44 @@ it('calls initialize with the correct arguments', () => {
 });
 
 it('returns results immediately when function is synchronous', () => {
-  process.send = jest.fn();
-
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooWorks',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooThrows',
     [],
   ]);
 
-  expect(process.send.mock.calls[1][0]).toEqual([
+  expect(spyProcessSend.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
-    'Booo',
+    'Boo',
     mockError.stack,
     {},
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooThrowsANumber',
     [],
   ]);
 
-  expect(process.send.mock.calls[2][0]).toEqual([
+  expect(spyProcessSend.mock.calls[2][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'Number',
     void 0,
@@ -226,110 +228,112 @@ it('returns results immediately when function is synchronous', () => {
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooThrowsAnErrorWithExtraProperties',
     [],
   ]);
 
-  expect(process.send.mock.calls[3][0]).toEqual([
+  expect(spyProcessSend.mock.calls[3][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
-    'ReferenceError',
-    'Booo extended',
+    'MockExtendedError',
+    'Boo extended',
     mockExtendedError.stack,
     {baz: 123, qux: 456},
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooThrowsNull',
     [],
   ]);
 
-  expect(process.send.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
-  expect(process.send.mock.calls[4][0][1]).toBe('Error');
-  expect(process.send.mock.calls[4][0][2]).toBe('"null" or "undefined" thrown');
+  expect(spyProcessSend.mock.calls[4][0][0]).toBe(PARENT_MESSAGE_CLIENT_ERROR);
+  expect(spyProcessSend.mock.calls[4][0][1]).toBe('Error');
+  expect(spyProcessSend.mock.calls[4][0][2]).toBe(
+    '"null" or "undefined" thrown',
+  );
 
-  expect(process.send).toHaveBeenCalledTimes(5);
+  expect(spyProcessSend).toHaveBeenCalledTimes(5);
 });
 
 it('returns results when it gets resolved if function is asynchronous', async () => {
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooPromiseWorks',
     [],
   ]);
 
   await sleep(10);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'fooPromiseThrows',
     [],
   ]);
 
   await sleep(10);
 
-  expect(process.send.mock.calls[1][0]).toEqual([
+  expect(spyProcessSend.mock.calls[1][0]).toEqual([
     PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
-    'Booo',
+    'Boo',
     mockError.stack,
     {},
   ]);
 
-  expect(process.send).toHaveBeenCalledTimes(2);
+  expect(spyProcessSend).toHaveBeenCalledTimes(2);
 });
 
 it('calls the main module if the method call is "default"', () => {
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-standalone-worker',
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'default',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-babel-worker',
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     'default',
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
+  expect(spyProcessSend.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
 it('removes the message listener on END message', () => {
   // So that there are no more open handles preventing Node from exiting
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
@@ -341,13 +345,13 @@ it('removes the message listener on END message', () => {
 it('calls the teardown method ', () => {
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
   process.emit('message', [
     CHILD_MESSAGE_END,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
   ]);
 
   expect(ended).toBe(true);
@@ -365,14 +369,14 @@ it('throws if child is not forked', () => {
 
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
-    true, // Not really used here, but for flow type purity.
+    true, // Not really used here, but for type purity.
     './my-fancy-worker',
   ]);
 
   expect(() => {
     process.emit('message', [
       CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for flow type purity.
+      true, // Not really used here, but for type purity.
       'fooWorks',
       [],
     ]);
@@ -381,7 +385,7 @@ it('throws if child is not forked', () => {
   expect(() => {
     process.emit('message', [
       CHILD_MESSAGE_CALL,
-      true, // Not really used here, but for flow type purity.
+      true, // Not really used here, but for type purity.
       'fooThrows',
       [],
     ]);

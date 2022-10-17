@@ -26,6 +26,7 @@ const packagesToTest = [
   'babel-jest',
   'babel-plugin-jest-hoist',
   'diff-sequences',
+  'jest',
   'jest-changed-files',
   'jest-console',
   'jest-docblock',
@@ -63,6 +64,16 @@ try {
           overrideConfig: {
             extends: [
               'plugin:@typescript-eslint/recommended-requiring-type-checking',
+            ],
+            overrides: [
+              {
+                files: ['**/__tests__/**'],
+                plugins: ['jest'],
+                rules: {
+                  '@typescript-eslint/unbound-method': 'off',
+                  'jest/unbound-method': 'error',
+                },
+              },
             ],
             parser: '@typescript-eslint/parser',
             parserOptions: {

@@ -699,6 +699,10 @@ test('plays audio', () => {
 });
 ```
 
+### `jest.Spied<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md#jestspiedsource) chapter of Mock Functions page for documentation.
+
 ### `jest.clearAllMocks()`
 
 Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
