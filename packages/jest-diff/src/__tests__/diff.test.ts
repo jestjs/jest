@@ -20,7 +20,7 @@ const optionsCounts: DiffOptions = {
 };
 
 // Use only in toBe assertions for edge case messages.
-const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
+const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) ?? '');
 
 // Use in toBe assertions for comparison lines.
 const optionsBe: DiffOptions = {
@@ -62,7 +62,7 @@ describe('different types', () => {
     test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(stripped(a, b)).toBe(
         '  Comparing two different types of values. ' +
-          `Expected ${typeA} but received ${typeB}.`,
+          `Expected ${String(typeA)} but received ${String(typeB)}.`,
       );
     });
   });

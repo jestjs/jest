@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[@jest/globals, jest-mock]` Add `jest.Spied*` utility types ([#13440](https://github.com/facebook/jest/pull/13440))
+
 ### Fixes
 
 ### Chore & Maintenance

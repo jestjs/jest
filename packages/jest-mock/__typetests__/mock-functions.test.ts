@@ -11,7 +11,15 @@ import {
   expectNotAssignable,
   expectType,
 } from 'tsd-lite';
-import {Mock, SpyInstance, fn, spyOn} from 'jest-mock';
+import {
+  Mock,
+  SpiedClass,
+  SpiedFunction,
+  SpiedGetter,
+  SpiedSetter,
+  fn,
+  spyOn,
+} from 'jest-mock';
 
 // jest.fn()
 
@@ -320,26 +328,30 @@ expectNotAssignable<Function>(spy); // eslint-disable-line @typescript-eslint/ba
 expectError(spy());
 expectError(new spy());
 
-expectType<SpyInstance<typeof spiedObject.methodA>>(
+expectType<SpiedFunction<typeof spiedObject.methodA>>(
   spyOn(spiedObject, 'methodA'),
 );
-expectType<SpyInstance<typeof spiedObject.methodB>>(
+expectType<SpiedFunction<typeof spiedObject.methodB>>(
   spyOn(spiedObject, 'methodB'),
 );
-expectType<SpyInstance<typeof spiedObject.methodC>>(
+expectType<SpiedFunction<typeof spiedObject.methodC>>(
   spyOn(spiedObject, 'methodC'),
 );
 
-expectType<SpyInstance<() => boolean>>(spyOn(spiedObject, 'propertyB', 'get'));
-expectType<SpyInstance<(value: boolean) => void>>(
+expectType<SpiedGetter<typeof spiedObject.propertyB>>(
+  spyOn(spiedObject, 'propertyB', 'get'),
+);
+expectType<SpiedSetter<typeof spiedObject.propertyB>>(
   spyOn(spiedObject, 'propertyB', 'set'),
 );
 expectError(spyOn(spiedObject, 'propertyB'));
 expectError(spyOn(spiedObject, 'methodB', 'get'));
 expectError(spyOn(spiedObject, 'methodB', 'set'));
 
-expectType<SpyInstance<() => string>>(spyOn(spiedObject, 'propertyA', 'get'));
-expectType<SpyInstance<(value: string) => void>>(
+expectType<SpiedGetter<typeof spiedObject.propertyA>>(
+  spyOn(spiedObject, 'propertyA', 'get'),
+);
+expectType<SpiedSetter<typeof spiedObject.propertyA>>(
   spyOn(spiedObject, 'propertyA', 'set'),
 );
 expectError(spyOn(spiedObject, 'propertyA'));
@@ -351,40 +363,38 @@ expectError(spyOn(true, 'methodA'));
 expectError(spyOn(spiedObject));
 expectError(spyOn());
 
-expectType<SpyInstance<(arg: any) => boolean>>(
+expectType<SpiedFunction<typeof Array.isArray>>(
   spyOn(spiedArray as unknown as ArrayConstructor, 'isArray'),
 );
 expectError(spyOn(spiedArray, 'isArray'));
 
-expectType<SpyInstance<() => string>>(
+expectType<SpiedFunction<typeof spiedFunction.toString>>(
   spyOn(spiedFunction as unknown as Function, 'toString'), // eslint-disable-line @typescript-eslint/ban-types
 );
 expectError(spyOn(spiedFunction, 'toString'));
 
-expectType<SpyInstance<(value: string | number | Date) => Date>>(
-  spyOn(globalThis, 'Date'),
-);
-expectType<SpyInstance<() => number>>(spyOn(Date, 'now'));
+expectType<SpiedClass<typeof Date>>(spyOn(globalThis, 'Date'));
+expectType<SpiedFunction<typeof Date.now>>(spyOn(Date, 'now'));
 
 // object with index signatures
 
-expectType<SpyInstance<typeof indexSpiedObject.methodA>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodA>>(
   spyOn(indexSpiedObject, 'methodA'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodB>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodB>>(
   spyOn(indexSpiedObject, 'methodB'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodC>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodC>>(
   spyOn(indexSpiedObject, 'methodC'),
 );
-expectType<SpyInstance<typeof indexSpiedObject.methodE>>(
+expectType<SpiedFunction<typeof indexSpiedObject.methodE>>(
   spyOn(indexSpiedObject, 'methodE'),
 );
 
-expectType<SpyInstance<() => {a: string}>>(
+expectType<SpiedGetter<typeof indexSpiedObject.propertyA>>(
   spyOn(indexSpiedObject, 'propertyA', 'get'),
 );
-expectType<SpyInstance<(value: {a: string}) => void>>(
+expectType<SpiedSetter<typeof indexSpiedObject.propertyA>>(
   spyOn(indexSpiedObject, 'propertyA', 'set'),
 );
 expectError(spyOn(indexSpiedObject, 'propertyA'));
@@ -419,48 +429,48 @@ interface OptionalInterface {
 
 const optionalSpiedObject = {} as OptionalInterface;
 
-expectType<SpyInstance<(one: string) => SomeClass>>(
+expectType<SpiedClass<NonNullable<typeof optionalSpiedObject.constructorA>>>(
   spyOn(optionalSpiedObject, 'constructorA'),
 );
-expectType<SpyInstance<(one: string, two: boolean) => SomeClass>>(
+expectType<SpiedClass<typeof optionalSpiedObject.constructorB>>(
   spyOn(optionalSpiedObject, 'constructorB'),
 );
 
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'get'));
 expectError(spyOn(optionalSpiedObject, 'constructorA', 'set'));
 
-expectType<SpyInstance<(a: boolean) => void>>(
+expectType<SpiedFunction<NonNullable<typeof optionalSpiedObject.methodA>>>(
   spyOn(optionalSpiedObject, 'methodA'),
 );
-expectType<SpyInstance<(b: string) => boolean>>(
+expectType<SpiedFunction<typeof optionalSpiedObject.methodB>>(
   spyOn(optionalSpiedObject, 'methodB'),
 );
 
 expectError(spyOn(optionalSpiedObject, 'methodA', 'get'));
 expectError(spyOn(optionalSpiedObject, 'methodA', 'set'));
 
-expectType<SpyInstance<() => number>>(
+expectType<SpiedGetter<NonNullable<typeof optionalSpiedObject.propertyA>>>(
   spyOn(optionalSpiedObject, 'propertyA', 'get'),
 );
-expectType<SpyInstance<(arg: number) => void>>(
+expectType<SpiedSetter<NonNullable<typeof optionalSpiedObject.propertyA>>>(
   spyOn(optionalSpiedObject, 'propertyA', 'set'),
 );
-expectType<SpyInstance<() => number>>(
+expectType<SpiedGetter<NonNullable<typeof optionalSpiedObject.propertyB>>>(
   spyOn(optionalSpiedObject, 'propertyB', 'get'),
 );
-expectType<SpyInstance<(arg: number) => void>>(
+expectType<SpiedSetter<NonNullable<typeof optionalSpiedObject.propertyB>>>(
   spyOn(optionalSpiedObject, 'propertyB', 'set'),
 );
-expectType<SpyInstance<() => number | undefined>>(
+expectType<SpiedGetter<typeof optionalSpiedObject.propertyC>>(
   spyOn(optionalSpiedObject, 'propertyC', 'get'),
 );
-expectType<SpyInstance<(arg: number | undefined) => void>>(
+expectType<SpiedSetter<typeof optionalSpiedObject.propertyC>>(
   spyOn(optionalSpiedObject, 'propertyC', 'set'),
 );
-expectType<SpyInstance<() => string>>(
+expectType<SpiedGetter<typeof optionalSpiedObject.propertyD>>(
   spyOn(optionalSpiedObject, 'propertyD', 'get'),
 );
-expectType<SpyInstance<(arg: string) => void>>(
+expectType<SpiedSetter<typeof optionalSpiedObject.propertyD>>(
   spyOn(optionalSpiedObject, 'propertyD', 'set'),
 );
 

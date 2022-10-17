@@ -6,4 +6,6 @@
  */
 
 // For some reason, doing `require`ing here works, while inside `cli` fails
-export const VERSION: string = require('../../package.json').version;
+export const VERSION = (
+  require('../../package.json') as Record<string, unknown>
+).version as string;
