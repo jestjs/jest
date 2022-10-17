@@ -51,7 +51,7 @@ export default class TestSequencer {
 
   _getCache(test: Test): Cache {
     const {context} = test;
-    if (!this._cache.has(context) && context.config.cache) {
+    if (!this._cache.has(context) && false) {
       const cachePath = this._getCachePath(context);
       if (fs.existsSync(cachePath)) {
         try {
