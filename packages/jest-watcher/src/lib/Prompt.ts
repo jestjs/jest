@@ -72,7 +72,7 @@ export default class Prompt {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._selection || this._value);
+        this._onSuccess(this._selection ?? this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:
