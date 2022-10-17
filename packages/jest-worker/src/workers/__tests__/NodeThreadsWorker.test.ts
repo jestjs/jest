@@ -5,45 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-import getStream from 'get-stream';
+import {EventEmitter} from 'events';
+import {PassThrough} from 'stream';
+import getStream = require('get-stream');
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
+  ChildMessageCall,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
+  WorkerOptions,
 } from '../../types';
 
-let Worker;
-let workerThreads;
-let originalExecArgv;
+let Worker: typeof import('../NodeThreadsWorker').default;
+let workerThreads: typeof import('worker_threads').Worker;
+let originalExecArgv: typeof process.execArgv;
+
+class MockedWorker extends EventEmitter {
+  postMessage = jest.fn();
+  terminate = jest.fn();
+  stdout = new PassThrough();
+  stderr = new PassThrough();
+}
 
 beforeEach(() => {
   jest.mock('worker_threads', () => {
-    const fakeClass = jest.fn(() => {
-      const EventEmitter = require('events');
-      const {PassThrough} = require('stream');
-
-      const thread = new EventEmitter();
-      thread.postMessage = jest.fn();
-      thread.terminate = jest.fn();
-      thread.stdout = new PassThrough();
-      thread.stderr = new PassThrough();
-      return thread;
-    });
-
     return {
-      Worker: fakeClass,
+      Worker: jest.fn(() => new MockedWorker()),
     };
   });
   originalExecArgv = process.execArgv;
 
-  workerThreads = require('worker_threads').Worker;
-  workerThreads.postMessage = jest.fn();
+  workerThreads = (require('worker_threads') as typeof import('worker_threads'))
+    .Worker;
 
-  Worker = require('../NodeThreadsWorker').default;
+  Worker = (
+    require('../NodeThreadsWorker') as typeof import('../NodeThreadsWorker')
+  ).default;
 });
 
 afterEach(() => {
@@ -64,12 +63,12 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
     workerData: {
       foo: 'bar',
     },
-    workerId: process.env.JEST_WORKER_ID - 1,
+    workerId: Number(process.env.JEST_WORKER_ID) - 1,
     workerPath: '/tmp/foo/bar/baz.js',
-  });
+  } as WorkerOptions);
 
-  expect(workerThreads.mock.calls[0][0]).toBe(thread);
-  expect(workerThreads.mock.calls[0][1]).toEqual({
+  expect(jest.mocked(workerThreads).mock.calls[0][0]).toBe(thread);
+  expect(jest.mocked(workerThreads).mock.calls[0][1]).toEqual({
     eval: false,
     execArgv: ['--inspect', '-p'],
     execPath: 'hello', // Added option.
@@ -90,9 +89,10 @@ it('initializes the thread with the given workerPath and workerId', () => {
     setupArgs: ['foo', 'bar'],
     workerId: 2,
     workerPath: '/tmp/foo/bar/baz.js',
-  });
+  } as WorkerOptions);
 
-  expect(worker._worker.postMessage.mock.calls[0][0]).toEqual([
+  // @ts-expect-error: Testing internal method
+  expect(jest.mocked(worker._worker.postMessage).mock.calls[0][0]).toEqual([
     CHILD_MESSAGE_INITIALIZE,
     false,
     '/tmp/foo/bar/baz.js',
@@ -106,25 +106,29 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
-  });
+  } as WorkerOptions);
 
-  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []] as ChildMessageCall;
   const onProcessStart = jest.fn();
   const onProcessEnd = jest.fn();
 
-  worker.send(request, onProcessStart, onProcessEnd);
+  worker.send(request, onProcessStart, onProcessEnd, () => {});
 
   // We fail four times (initial + three retries).
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
 
   expect(workerThreads).toHaveBeenCalledTimes(5);
   expect(onProcessStart).toHaveBeenCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
-  expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');
+  expect(onProcessEnd.mock.calls[0][0]).toMatchObject({type: 'WorkerError'});
   expect(onProcessEnd.mock.calls[0][1]).toBeNull();
 });
 
@@ -133,20 +137,26 @@ it('provides stdout and stderr from the threads', async () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   const stdout = worker.getStdout();
   const stderr = worker.getStderr();
 
+  // @ts-expect-error: Testing internal method
   worker._worker.stdout.end('Hello ', 'utf8');
+  // @ts-expect-error: Testing internal method
   worker._worker.stderr.end('Jest ', 'utf8');
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
+  // @ts-expect-error: Testing internal method
   worker._worker.stdout.end('World!', 'utf8');
+  // @ts-expect-error: Testing internal method
   worker._worker.stderr.end('Workers!', 'utf8');
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit', 0);
 
-  await expect(getStream(stdout)).resolves.toBe('Hello World!');
-  await expect(getStream(stderr)).resolves.toBe('Jest Workers!');
+  await expect(getStream(stdout!)).resolves.toBe('Hello World!');
+  await expect(getStream(stderr!)).resolves.toBe('Jest Workers!');
 });
 
 it('sends the task to the thread', () => {
@@ -154,18 +164,22 @@ it('sends the task to the thread', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
-  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []] as ChildMessageCall;
 
   worker.send(
     request,
     () => {},
     () => {},
+    () => {},
   );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
-  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+  // @ts-expect-error: Testing internal method
+  expect(jest.mocked(worker._worker.postMessage).mock.calls[1][0]).toEqual(
+    request,
+  );
 });
 
 it('resends the task to the thread after a retry', () => {
@@ -173,26 +187,36 @@ it('resends the task to the thread after a retry', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo/bar/baz.js',
-  });
+  } as WorkerOptions);
 
-  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []] as ChildMessageCall;
 
   worker.send(
     request,
     () => {},
     () => {},
+    () => {},
   );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
-  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+  // @ts-expect-error: Testing internal method
+  expect(jest.mocked(worker._worker.postMessage).mock.calls[1][0]).toEqual(
+    request,
+  );
 
+  // @ts-expect-error: Testing internal method
   const previousWorker = worker._worker;
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit');
 
+  // @ts-expect-error: Testing internal method
   expect(worker._worker).not.toBe(previousWorker);
 
   // Skipping call "0" because it corresponds to the "initialize" one.
-  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+  // @ts-expect-error: Testing internal method
+  expect(jest.mocked(worker._worker.postMessage).mock.calls[1][0]).toEqual(
+    request,
+  );
 });
 
 it('calls the onProcessStart method synchronously if the queue is empty', () => {
@@ -200,7 +224,7 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   const onProcessStart = jest.fn();
   const onProcessEnd = jest.fn();
@@ -209,6 +233,7 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
     [CHILD_MESSAGE_CALL, false, 'foo', []],
     onProcessStart,
     onProcessEnd,
+    () => {},
   );
 
   // Only onProcessStart has been called
@@ -216,6 +241,7 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
   expect(onProcessEnd).not.toHaveBeenCalled();
 
   // then first call replies...
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('message', [PARENT_MESSAGE_OK]);
 
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
@@ -226,7 +252,7 @@ it('can send multiple messages to parent', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   const onProcessStart = jest.fn();
   const onProcessEnd = jest.fn();
@@ -245,6 +271,7 @@ it('can send multiple messages to parent', () => {
   expect(onCustomMessage).not.toHaveBeenCalled();
 
   // then first call replies...
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('message', [
     PARENT_MESSAGE_CUSTOM,
     {message: 'foo bar', otherKey: 1},
@@ -263,15 +290,21 @@ it('creates error instances for known errors', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   const callback1 = jest.fn();
   const callback2 = jest.fn();
   const callback3 = jest.fn();
 
   // Testing a generic ECMAScript error.
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback1);
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    callback1,
+    () => {},
+  );
 
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('message', [
     PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
@@ -281,13 +314,21 @@ it('creates error instances for known errors', () => {
   ]);
 
   expect(callback1.mock.calls[0][0]).toBeInstanceOf(TypeError);
-  expect(callback1.mock.calls[0][0].message).toBe('bar');
-  expect(callback1.mock.calls[0][0].type).toBe('TypeError');
-  expect(callback1.mock.calls[0][0].stack).toBe('TypeError: bar');
+  expect(callback1.mock.calls[0][0]).toMatchObject({
+    message: 'bar',
+    stack: 'TypeError: bar',
+    type: 'TypeError',
+  });
 
   // Testing a custom error.
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback2);
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    callback2,
+    () => {},
+  );
 
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('message', [
     PARENT_MESSAGE_CLIENT_ERROR,
     'RandomCustomError',
@@ -297,14 +338,22 @@ it('creates error instances for known errors', () => {
   ]);
 
   expect(callback2.mock.calls[0][0]).toBeInstanceOf(Error);
-  expect(callback2.mock.calls[0][0].message).toBe('bar');
-  expect(callback2.mock.calls[0][0].type).toBe('RandomCustomError');
-  expect(callback2.mock.calls[0][0].stack).toBe('RandomCustomError: bar');
-  expect(callback2.mock.calls[0][0].qux).toBe('extra property');
+  expect(callback2.mock.calls[0][0]).toMatchObject({
+    message: 'bar',
+    qux: 'extra property',
+    stack: 'RandomCustomError: bar',
+    type: 'RandomCustomError',
+  });
 
   // Testing a non-object throw.
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback3);
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    callback3,
+    () => {},
+  );
 
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('message', [
     PARENT_MESSAGE_CLIENT_ERROR,
     'Number',
@@ -321,16 +370,18 @@ it('throws when the thread returns a strange message', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   worker.send(
     [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
     () => {},
     () => {},
   );
 
   // Type 27 does not exist.
   expect(() => {
+    // @ts-expect-error: Testing internal method
     worker._worker.emit('message', [27]);
   }).toThrow(TypeError);
 });
@@ -340,9 +391,10 @@ it('does not restart the thread if it cleanly exited', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   expect(workerThreads).toHaveBeenCalledTimes(1);
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit', 0);
   expect(workerThreads).toHaveBeenCalledTimes(1);
 });
@@ -352,9 +404,10 @@ it('resolves waitForExit() after the thread cleanly exited', async () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   expect(workerThreads).toHaveBeenCalledTimes(1);
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit', 0);
   await worker.waitForExit(); // should not timeout
 });
@@ -362,9 +415,10 @@ it('resolves waitForExit() after the thread cleanly exited', async () => {
 it('restarts the thread when the thread dies', () => {
   const worker = new Worker({
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   expect(workerThreads).toHaveBeenCalledTimes(1);
+  // @ts-expect-error: Testing internal method
   worker._worker.emit('exit', 1);
   expect(workerThreads).toHaveBeenCalledTimes(2);
 });
@@ -374,8 +428,9 @@ it('terminates the thread when forceExit() is called', () => {
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
-  });
+  } as WorkerOptions);
 
   worker.forceExit();
+  // @ts-expect-error: Testing internal method
   expect(worker._worker.terminate).toHaveBeenCalled();
 });
