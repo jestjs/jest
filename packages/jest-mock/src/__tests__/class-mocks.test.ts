@@ -5,6 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+describe('Testing the mocking of the format of a function export exposed on import through an accessor/getter', () => {
+  it('can mock a function export', () => {
+    const exports = {
+      __esModule: true,
+      fn: () => {},
+    };
+    Object.defineProperty(exports, 'fn', {
+      configurable: true,
+      enumerable: true,
+      get: () => {
+        () => 'testFunction';
+      },
+    });
+
+    jest.spyOn(exports, 'fn').mockImplementation(() => 'mockTestFunction');
+    expect(exports.fn()).toBe('mockTestFunction');
+
+    // mockFn.mockRestore();
+    // expect(exports.fn()).toBe('testFunction');
+  });
+});
 
 describe('Testing the mocking of a class', () => {
   it('can call an instance method', () => {
@@ -14,11 +35,14 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass.prototype, 'testMethod').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'testMethod')
+      .mockImplementation(() => 'mockTestMethod');
     const testClassInstance = new TestClass();
     expect(testClassInstance.testMethod()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.testMethod()).toBe('testMethod');
   });
 
   it('can call a superclass instance method', () => {
@@ -30,11 +54,17 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass.prototype, 'testMethod').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'testMethod')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     const testClassInstance = new TestClass();
     expect(testClassInstance.testMethod()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.testMethod()).toBe('testMethod');
+    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
   });
 
   it('can call an instance method named "get"', () => {
@@ -44,11 +74,16 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass.prototype, 'get').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'get')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     const testClassInstance = new TestClass();
     expect(testClassInstance.get()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.get()).toBe('get');
   });
 
   it('can call a superclass instance method named "get"', () => {
@@ -60,11 +95,17 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass.prototype, 'get').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'get')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     const testClassInstance = new TestClass();
     expect(testClassInstance.get()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.get()).toBe('get');
+    expect(Object.hasOwn(TestClass.prototype, 'get')).toBe(false);
   });
 
   it('can call an instance method named "set"', () => {
@@ -74,11 +115,16 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass.prototype, 'set').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'set')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     const testClassInstance = new TestClass();
     expect(testClassInstance.set()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.set()).toBe('set');
   });
 
   it('can call a superclass instance method named "set"', () => {
@@ -90,11 +136,17 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass.prototype, 'set').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass.prototype, 'set')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     const testClassInstance = new TestClass();
     expect(testClassInstance.set()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.set()).toBe('set');
+    expect(Object.hasOwn(TestClass.prototype, 'set')).toBe(false);
   });
 
   it('can read a value from an instance getter', () => {
@@ -104,13 +156,16 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest
+    const mockFn = jest
       .spyOn(TestClass.prototype, 'testMethod', 'get')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
     const testClassInstance = new TestClass();
     expect(testClassInstance.testMethod).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.testMethod).toBe('testMethod');
   });
 
   it('can read a value from an superclass instance getter', () => {
@@ -122,13 +177,17 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest
+    const mockFn = jest
       .spyOn(TestClass.prototype, 'testMethod', 'get')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
     const testClassInstance = new TestClass();
     expect(testClassInstance.testMethod).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(testClassInstance.testMethod).toBe('testMethod');
+    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
   });
 
   it('can write a value to an instance setter', () => {
@@ -147,6 +206,10 @@ describe('Testing the mocking of a class', () => {
     const testClassInstance = new TestClass();
     testClassInstance.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(1);
+
+    mocktestMethod.mockRestore();
+    testClassInstance.testMethod = '';
+    expect(mocktestMethod).toHaveBeenCalledTimes(0);
   });
 
   it('can write a value to a superclass instance setter', () => {
@@ -167,6 +230,11 @@ describe('Testing the mocking of a class', () => {
     const testClassInstance = new TestClass();
     testClassInstance.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(1);
+
+    mocktestMethod.mockRestore();
+    testClassInstance.testMethod = '';
+    expect(mocktestMethod).toHaveBeenCalledTimes(0);
+    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
   });
 
   it('can call a static method', () => {
@@ -176,10 +244,15 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass, 'testMethod').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass, 'testMethod')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     expect(TestClass.testMethod()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.testMethod()).toBe('testMethod');
   });
 
   it('can call a superclass static method', () => {
@@ -191,10 +264,16 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass, 'testMethod').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass, 'testMethod')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     expect(TestClass.testMethod()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.testMethod()).toBe('testMethod');
+    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
   });
 
   it('can call a static method named "get"', () => {
@@ -204,10 +283,13 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass, 'get').mockImplementation(() => {
+    const mockFn = jest.spyOn(TestClass, 'get').mockImplementation(() => {
       return 'mockTestMethod';
     });
     expect(TestClass.get()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.get()).toBe('get');
   });
 
   it('can call a superclass static method named "get"', () => {
@@ -219,10 +301,14 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass, 'get').mockImplementation(() => {
+    const mockFn = jest.spyOn(TestClass, 'get').mockImplementation(() => {
       return 'mockTestMethod';
     });
     expect(TestClass.get()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.get()).toBe('get');
+    expect(Object.hasOwn(TestClass, 'get')).toBe(false);
   });
 
   it('can call a static method named "set"', () => {
@@ -232,10 +318,13 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass, 'set').mockImplementation(() => {
+    const mockFn = jest.spyOn(TestClass, 'set').mockImplementation(() => {
       return 'mockTestMethod';
     });
     expect(TestClass.set()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.set()).toBe('set');
   });
 
   it('can call a superclass static method named "set"', () => {
@@ -247,10 +336,14 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass, 'set').mockImplementation(() => {
+    const mockFn = jest.spyOn(TestClass, 'set').mockImplementation(() => {
       return 'mockTestMethod';
     });
     expect(TestClass.set()).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.set()).toBe('set');
+    expect(Object.hasOwn(TestClass, 'set')).toBe(false);
   });
 
   it('can read a value from a static getter', () => {
@@ -260,10 +353,15 @@ describe('Testing the mocking of a class', () => {
       }
     }
 
-    jest.spyOn(TestClass, 'testMethod', 'get').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass, 'testMethod', 'get')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     expect(TestClass.testMethod).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.testMethod).toBe('testMethod');
   });
 
   it('can read a value from a superclass static getter', () => {
@@ -275,10 +373,16 @@ describe('Testing the mocking of a class', () => {
 
     class TestClass extends SuperTestClass {}
 
-    jest.spyOn(TestClass, 'testMethod', 'get').mockImplementation(() => {
-      return 'mockTestMethod';
-    });
+    const mockFn = jest
+      .spyOn(TestClass, 'testMethod', 'get')
+      .mockImplementation(() => {
+        return 'mockTestMethod';
+      });
     expect(TestClass.testMethod).toBe('mockTestMethod');
+
+    mockFn.mockRestore();
+    expect(TestClass.testMethod).toBe('testMethod');
+    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
   });
 
   it('can write a value to a static setter', () => {
@@ -296,6 +400,9 @@ describe('Testing the mocking of a class', () => {
       });
     TestClass.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(1);
+
+    mocktestMethod.mockRestore();
+    expect(mocktestMethod).toHaveBeenCalledTimes(0);
   });
 
   it('can write a value to a superclass static setter', () => {
@@ -315,5 +422,9 @@ describe('Testing the mocking of a class', () => {
       });
     TestClass.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(1);
+
+    mocktestMethod.mockRestore();
+    expect(mocktestMethod).toHaveBeenCalledTimes(0);
+    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
   });
 });

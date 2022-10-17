@@ -1165,9 +1165,11 @@ export class ModuleMocker {
 
     let descriptor = Object.getOwnPropertyDescriptor(object, methodKey);
     let proto = Object.getPrototypeOf(object);
+    let isMethodOwner = true;
     while (!descriptor && proto !== null) {
       descriptor = Object.getOwnPropertyDescriptor(proto, methodKey);
       proto = Object.getPrototypeOf(proto);
+      isMethodOwner = false;
     }
     if (!descriptor) {
       throw new Error(`${String(methodKey)} property does not exist`);
@@ -1208,41 +1210,48 @@ export class ModuleMocker {
 
     let mock: Mock;
 
-    if (accessType == 'get' && descriptor['get']) {
-      const originalAccessor = descriptor['get'];
+    if (accessType == 'get' && descriptor.get) {
+      const originalAccessor = descriptor.get;
       mock = this._makeComponent(
         {
           type: 'function',
         },
         () => {
-          descriptor![accessType] = originalAccessor;
-          Object.defineProperty(object, methodKey, descriptor!);
+          if (isMethodOwner) {
+            descriptor!.get = originalAccessor;
+            Object.defineProperty(object, methodKey, descriptor!);
+          } else {
+            delete object[methodKey];
+          }
         },
       );
-
-      descriptor[accessType] = mock;
+      descriptor.get = mock;
       mock.mockImplementation(function (this: unknown) {
         return originalAccessor.call(this);
       });
       Object.defineProperty(object, methodKey, descriptor);
-    } else if (accessType == 'set' && descriptor['set']) {
-      const originalAccessor = descriptor['set'];
+    } else if (accessType == 'set' && descriptor.set) {
+      const originalAccessor = descriptor.set;
       mock = this._makeComponent(
         {
           type: 'function',
         },
         () => {
-          descriptor![accessType] = originalAccessor;
-          Object.defineProperty(object, methodKey, descriptor!);
+          if (isMethodOwner) {
+            descriptor!.set = originalAccessor;
+            Object.defineProperty(object, methodKey, descriptor!);
+          } else {
+            delete object[methodKey];
+          }
         },
       );
-
-      descriptor[accessType] = mock;
+      descriptor.set = mock;
       mock.mockImplementation(function (this: unknown) {
         return originalAccessor.call(this, arguments[0]);
       });
       Object.defineProperty(object, methodKey, descriptor);
     } else if (descriptor.get) {
+      //this branch exists for function exports exposed through accessors/getters during import
       const originalGet = descriptor.get;
       mock = this._makeComponent({type: 'function'}, () => {
         descriptor!.get = originalGet;
@@ -1251,10 +1260,6 @@ export class ModuleMocker {
       descriptor.get = () => mock;
       Object.defineProperty(object, methodKey, descriptor);
     } else {
-      const isMethodOwner = Object.prototype.hasOwnProperty.call(
-        object,
-        methodKey,
-      );
       const original = descriptor;
 
       mock = this._makeComponent(
