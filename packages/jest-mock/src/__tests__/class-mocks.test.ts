@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -64,7 +65,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.testMethod()).toBe('testMethod');
-    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
+    expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
   it('can call an instance method named "get"', () => {
@@ -105,7 +106,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.get()).toBe('get');
-    expect(Object.hasOwn(TestClass.prototype, 'get')).toBe(false);
+    expect(TestClass.prototype.hasOwnProperty('get')).toBe(false);
   });
 
   it('can call an instance method named "set"', () => {
@@ -146,7 +147,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.set()).toBe('set');
-    expect(Object.hasOwn(TestClass.prototype, 'set')).toBe(false);
+    expect(TestClass.prototype.hasOwnProperty('set')).toBe(false);
   });
 
   it('can read a value from an instance getter', () => {
@@ -187,7 +188,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(testClassInstance.testMethod).toBe('testMethod');
-    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
+    expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
   it('can write a value to an instance setter', () => {
@@ -234,7 +235,7 @@ describe('Testing the mocking of a class', () => {
     mocktestMethod.mockRestore();
     testClassInstance.testMethod = '';
     expect(mocktestMethod).toHaveBeenCalledTimes(0);
-    expect(Object.hasOwn(TestClass.prototype, 'testMethod')).toBe(false);
+    expect(TestClass.prototype.hasOwnProperty('testMethod')).toBe(false);
   });
 
   it('can call a static method', () => {
@@ -273,7 +274,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.testMethod()).toBe('testMethod');
-    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
+    expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 
   it('can call a static method named "get"', () => {
@@ -308,7 +309,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.get()).toBe('get');
-    expect(Object.hasOwn(TestClass, 'get')).toBe(false);
+    expect(TestClass.hasOwnProperty('get')).toBe(false);
   });
 
   it('can call a static method named "set"', () => {
@@ -343,7 +344,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.set()).toBe('set');
-    expect(Object.hasOwn(TestClass, 'set')).toBe(false);
+    expect(TestClass.hasOwnProperty('set')).toBe(false);
   });
 
   it('can read a value from a static getter', () => {
@@ -382,7 +383,7 @@ describe('Testing the mocking of a class', () => {
 
     mockFn.mockRestore();
     expect(TestClass.testMethod).toBe('testMethod');
-    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
+    expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 
   it('can write a value to a static setter', () => {
@@ -425,6 +426,6 @@ describe('Testing the mocking of a class', () => {
 
     mocktestMethod.mockRestore();
     expect(mocktestMethod).toHaveBeenCalledTimes(0);
-    expect(Object.hasOwn(TestClass, 'testMethod')).toBe(false);
+    expect(TestClass.hasOwnProperty('testMethod')).toBe(false);
   });
 });
