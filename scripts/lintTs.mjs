@@ -38,8 +38,8 @@ const packagesToTest = [
   'jest-test-result',
   'jest-test-sequencer',
   'jest-transform',
-  'jest-watcher',
   'jest-types',
+  'jest-watcher',
   'test-globals',
   'test-utils',
 ];
