@@ -17,11 +17,13 @@ globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
 let installCommonGlobals: typeof import('../installCommonGlobals').default;
 
 function getGlobal(): typeof globalThis {
-  return runInContext('this', createContext());
+  return runInContext('this', createContext()) as typeof globalThis;
 }
 
 beforeEach(() => {
-  installCommonGlobals = require('../installCommonGlobals').default;
+  installCommonGlobals = (
+    require('../installCommonGlobals') as typeof import('../installCommonGlobals')
+  ).default;
 });
 
 afterEach(() => {

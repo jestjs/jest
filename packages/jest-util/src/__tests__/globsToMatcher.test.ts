@@ -59,7 +59,7 @@ it('works like micromatch with only negative globs', () => {
 });
 
 it('works like micromatch with empty globs', () => {
-  const globs = [];
+  const globs: Array<string> = [];
   const matcher = globsToMatcher(globs);
 
   expect(matcher('some-module.js')).toBe(
