@@ -213,10 +213,6 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
-  coverageProvider: {
-    choices: ['babel', 'v8'],
-    description: 'Select between Babel and V8 to collect coverage',
-  },
   coverageReporters: {
     description:
       'A list of reporter names that Jest uses when writing ' +

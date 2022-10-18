@@ -107,7 +107,6 @@ module.exports = async function createRuntime(filename, projectConfig) {
       changedFiles: undefined,
       collectCoverage: false,
       collectCoverageFrom: [],
-      coverageProvider: 'v8',
       sourcesRelatedToTestsInChangedFiles: undefined,
     },
     filename,

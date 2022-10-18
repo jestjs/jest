@@ -6,13 +6,8 @@
  */
 
 module.exports = {
-  canInstrument: true,
   process(src, filename, options) {
-    let code = `${src};\nglobalThis.__PREPROCESSED__ = true;`;
-
-    if (options.instrument) {
-      code = `${src};\nglobalThis.__INSTRUMENTED__ = true;`;
-    }
+    const code = `${src};\nglobalThis.__PREPROCESSED__ = true;`;
 
     return {code};
   },

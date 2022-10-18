@@ -1118,11 +1118,7 @@ export default class Runtime {
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
 
-    if (
-      this._coverageOptions.collectCoverage &&
-      this._coverageOptions.coverageProvider === 'v8' &&
-      this._v8CoverageSources
-    ) {
+    if (this._coverageOptions.collectCoverage && this._v8CoverageSources) {
       this._v8CoverageSources = new Map([
         ...this._v8CoverageSources,
         ...this._fileTransforms,

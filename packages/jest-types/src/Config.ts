@@ -10,8 +10,6 @@ import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
 import type {SnapshotFormat} from '@jest/schemas';
 
-type CoverageProvider = 'babel' | 'v8';
-
 export type FakeableAPI =
   | 'Date'
   | 'hrtime'
@@ -157,7 +155,6 @@ export type DefaultOptions = {
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
-  coverageProvider: CoverageProvider;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
@@ -234,7 +231,6 @@ export type InitialOptions = Partial<{
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
-  coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   coverageThreshold: CoverageThreshold;
   dependencyExtractor: string;
@@ -364,7 +360,6 @@ export type GlobalConfig = {
   collectCoverageFrom: Array<string>;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
-  coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;

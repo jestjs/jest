@@ -31,16 +31,6 @@ const defaultQuestions: Array<PromptObject> = [
     type: 'confirm',
   },
   {
-    choices: [
-      {title: 'v8', value: 'v8'},
-      {title: 'babel', value: 'babel'},
-    ],
-    initial: 0,
-    message: 'Which provider should be used to instrument code for coverage?',
-    name: 'coverageProvider',
-    type: 'select',
-  },
-  {
     initial: false,
     message:
       'Automatically clear mock calls, instances, contexts and results before every test?',

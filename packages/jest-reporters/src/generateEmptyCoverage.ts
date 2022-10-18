@@ -7,87 +7,55 @@
 
 import type {V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
-import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {createScriptTransformer, shouldInstrument} from '@jest/transform';
+import {shouldInstrument} from '@jest/transform';
 import type {Config} from '@jest/types';
 
 type SingleV8Coverage = V8Coverage[number];
 
-export type CoverageWorkerResult =
-  | {
-      kind: 'BabelCoverage';
-      coverage: FileCoverage;
-    }
-  | {
-      kind: 'V8Coverage';
-      result: SingleV8Coverage;
-    };
+export type CoverageWorkerResult = {
+  kind: 'V8Coverage';
+  result: SingleV8Coverage;
+};
 
 export default async function generateEmptyCoverage(
-  source: string,
   filename: string,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   changedFiles?: Set<string>,
   sourcesRelatedToTestsInChangedFiles?: Set<string>,
 ): Promise<CoverageWorkerResult | null> {
-  const coverageOptions = {
-    changedFiles,
-    collectCoverage: globalConfig.collectCoverage,
-    collectCoverageFrom: globalConfig.collectCoverageFrom,
-    coverageProvider: globalConfig.coverageProvider,
-    sourcesRelatedToTestsInChangedFiles,
-  };
-  let coverageWorkerResult: CoverageWorkerResult | null = null;
-  if (shouldInstrument(filename, coverageOptions, config)) {
-    if (coverageOptions.coverageProvider === 'v8') {
-      const stat = fs.statSync(filename);
-      return {
-        kind: 'V8Coverage',
-        result: {
-          functions: [
-            {
-              functionName: '(empty-report)',
-              isBlockCoverage: true,
-              ranges: [
-                {
-                  count: 0,
-                  endOffset: stat.size,
-                  startOffset: 0,
-                },
-              ],
-            },
-          ],
-          scriptId: '0',
-          url: filename,
-        },
-      };
-    }
-
-    const scriptTransformer = await createScriptTransformer(config);
-
-    // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code} = await scriptTransformer.transformSourceAsync(
+  if (
+    shouldInstrument(
       filename,
-      source,
       {
-        instrument: true,
-        supportsDynamicImport: true,
-        supportsExportNamespaceFrom: true,
-        supportsStaticESM: true,
-        supportsTopLevelAwait: true,
+        changedFiles,
+        collectCoverage: globalConfig.collectCoverage,
+        collectCoverageFrom: globalConfig.collectCoverageFrom,
+        sourcesRelatedToTestsInChangedFiles,
       },
-    );
-    // TODO: consider passing AST
-    const extracted = readInitialCoverage(code);
-    // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
-    if (extracted) {
-      coverageWorkerResult = {
-        coverage: createFileCoverage(extracted.coverageData),
-        kind: 'BabelCoverage',
-      };
-    }
+      config,
+    )
+  ) {
+    return {
+      kind: 'V8Coverage',
+      result: {
+        functions: [
+          {
+            functionName: '(empty-report)',
+            isBlockCoverage: true,
+            ranges: [
+              {
+                count: 0,
+                endOffset: fs.statSync(filename).size,
+                startOffset: 0,
+              },
+            ],
+          },
+        ],
+        scriptId: '0',
+        url: filename,
+      },
+    };
   }
-  return coverageWorkerResult;
+  return null;
 }

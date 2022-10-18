@@ -6,7 +6,6 @@
  */
 
 jest
-  .mock('istanbul-lib-source-maps')
   .mock('istanbul-lib-report', () => ({
     ...jest.requireActual('istanbul-lib-report'),
     createContext: jest.fn(),
@@ -18,7 +17,6 @@ jest
   }));
 
 let libCoverage;
-let libSourceMaps;
 let CoverageReporter;
 let istanbulReports;
 
@@ -28,7 +26,6 @@ import mock from 'mock-fs';
 beforeEach(() => {
   CoverageReporter = require('../CoverageReporter').default;
   libCoverage = require('istanbul-lib-coverage');
-  libSourceMaps = require('istanbul-lib-source-maps');
   istanbulReports = require('istanbul-reports');
 
   const fileTree = {};
@@ -127,12 +124,6 @@ describe('onRunComplete', () => {
         },
       };
     });
-
-    libSourceMaps.createSourceMapStore = jest.fn(() => ({
-      transformCoverage(map) {
-        return Promise.resolve(map);
-      },
-    }));
   });
 
   test('getLastError() returns an error when threshold is not met for global', () => {

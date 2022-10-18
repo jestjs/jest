@@ -19,8 +19,8 @@ exports[`excludes tests matched by path threshold groups from global group: stdo
 "-----------|---------|----------|---------|---------|-------------------
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
-All files  |      50 |      100 |      50 |      50 |                   
- apple.js  |       0 |      100 |       0 |       0 | 1-2               
+All files  |      50 |       50 |      50 |      50 |                   
+ apple.js  |       0 |        0 |       0 |       0 | 1-3               
  banana.js |     100 |      100 |     100 |     100 |                   
 -----------|---------|----------|---------|---------|-------------------"
 `;
@@ -38,7 +38,7 @@ exports[`exits with 1 if coverage threshold is not met 1`] = `
 "PASS __tests__/a-banana.js
   ✓ banana
 
-Jest: "global" coverage threshold for lines (90%) not met: 50%"
+Jest: "global" coverage threshold for lines (90%) not met: 33.33%"
 `;
 
 exports[`exits with 1 if coverage threshold is not met 2`] = `
@@ -53,8 +53,8 @@ exports[`exits with 1 if coverage threshold is not met: stdout 1`] = `
 "----------------|---------|----------|---------|---------|-------------------
 File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------------|---------|----------|---------|---------|-------------------
-All files       |      50 |      100 |       0 |      50 |                   
- not-covered.js |      50 |      100 |       0 |      50 | 2                 
+All files       |   33.33 |      100 |       0 |   33.33 |                   
+ not-covered.js |   33.33 |      100 |       0 |   33.33 | 2-3               
 ----------------|---------|----------|---------|---------|-------------------"
 `;
 
@@ -86,9 +86,9 @@ exports[`file is matched by all path and glob threshold groups 1`] = `
 "PASS __tests__/banana.test.js
   ✓ banana
 
-Jest: "./" coverage threshold for lines (100%) not met: 50%
-Jest: "<<FULL_PATH_TO_BANANA_JS>>" coverage threshold for lines (100%) not met: 50%
-Jest: "./banana.js" coverage threshold for lines (100%) not met: 50%"
+Jest: "./" coverage threshold for lines (100%) not met: 33.33%
+Jest: "<<FULL_PATH_TO_BANANA_JS>>" coverage threshold for lines (100%) not met: 33.33%
+Jest: "./banana.js" coverage threshold for lines (100%) not met: 33.33%"
 `;
 
 exports[`file is matched by all path and glob threshold groups 2`] = `
@@ -103,7 +103,7 @@ exports[`file is matched by all path and glob threshold groups: stdout 1`] = `
 "-----------|---------|----------|---------|---------|-------------------
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
-All files  |      50 |      100 |       0 |      50 |                   
- banana.js |      50 |      100 |       0 |      50 | 2                 
+All files  |   33.33 |      100 |       0 |   33.33 |                   
+ banana.js |   33.33 |      100 |       0 |   33.33 | 2-3               
 -----------|---------|----------|---------|---------|-------------------"
 `;

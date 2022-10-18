@@ -18,7 +18,7 @@ import {
 // after CHILD_MESSAGE_END before sending force exiting.
 const FORCE_EXIT_DELAY = 500;
 
-/* istanbul ignore next */
+/* c8 ignore next */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyMethod = () => {};
 

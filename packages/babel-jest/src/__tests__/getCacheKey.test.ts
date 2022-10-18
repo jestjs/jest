@@ -38,7 +38,6 @@ describe('getCacheKey', () => {
   const transformOptions = {
     config: {rootDir: 'mock-root-dir'},
     configString: 'mock-config-string',
-    instrument: true,
   } as TransformOptions<BabelTransformOptions>;
 
   const oldCacheKey = getCacheKey!(sourceText, sourcePath, transformOptions);
@@ -161,15 +160,6 @@ describe('getCacheKey', () => {
       sourcePath,
       transformOptions,
     );
-
-    expect(oldCacheKey).not.toEqual(newCacheKey);
-  });
-
-  test('if `instrument` value is changing', () => {
-    const newCacheKey = getCacheKey!(sourceText, sourcePath, {
-      ...transformOptions,
-      instrument: false,
-    });
 
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });

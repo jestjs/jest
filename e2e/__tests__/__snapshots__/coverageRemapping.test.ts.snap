@@ -3,201 +3,209 @@
 exports[`maps code coverage against original source 1`] = `
 Object {
   "covered.ts": Object {
+    "all": false,
     "b": Object {
       "0": Array [
         1,
-        0,
       ],
       "1": Array [
-        1,
         0,
       ],
       "2": Array [
-        1,
-        0,
         0,
       ],
       "3": Array [
-        1,
+        0,
+      ],
+      "4": Array [
+        0,
+      ],
+      "5": Array [
         0,
       ],
     },
     "branchMap": Object {
       "0": Object {
-        "loc": Object {
-          "end": Object {
-            "column": 39,
-            "line": 11,
-          },
-          "start": Object {
-            "column": 27,
-            "line": 11,
-          },
-        },
-        "locations": Array [
-          Object {
-            "end": Object {
-              "column": 35,
-              "line": 11,
-            },
-            "start": Object {
-              "column": 34,
-              "line": 11,
-            },
-          },
-          Object {
-            "end": Object {
-              "column": 39,
-              "line": 11,
-            },
-            "start": Object {
-              "column": 38,
-              "line": 11,
-            },
-          },
-        ],
-        "type": "cond-expr",
-      },
-      "1": Object {
-        "loc": Object {
-          "end": Object {
-            "column": 39,
-            "line": 12,
-          },
-          "start": Object {
-            "column": 27,
-            "line": 12,
-          },
-        },
-        "locations": Array [
-          Object {
-            "end": Object {
-              "column": 35,
-              "line": 12,
-            },
-            "start": Object {
-              "column": 34,
-              "line": 12,
-            },
-          },
-          Object {
-            "end": Object {
-              "column": 39,
-              "line": 12,
-            },
-            "start": Object {
-              "column": 38,
-              "line": 12,
-            },
-          },
-        ],
-        "type": "cond-expr",
-      },
-      "2": Object {
-        "loc": Object {
-          "end": Object {
-            "column": 48,
-            "line": 13,
-          },
-          "start": Object {
-            "column": 27,
-            "line": 13,
-          },
-        },
-        "locations": Array [
-          Object {
-            "end": Object {
-              "column": 31,
-              "line": 13,
-            },
-            "start": Object {
-              "column": 27,
-              "line": 13,
-            },
-          },
-          Object {
-            "end": Object {
-              "column": 39,
-              "line": 13,
-            },
-            "start": Object {
-              "column": 35,
-              "line": 13,
-            },
-          },
-          Object {
-            "end": Object {
-              "column": 48,
-              "line": 13,
-            },
-            "start": Object {
-              "column": 43,
-              "line": 13,
-            },
-          },
-        ],
-        "type": "binary-expr",
-      },
-      "3": Object {
-        "loc": Object {
-          "end": Object {
-            "column": 53,
-            "line": 14,
-          },
-          "start": Object {
-            "column": 23,
-            "line": 14,
-          },
-        },
-        "locations": Array [
-          Object {
-            "end": Object {
-              "column": 40,
-              "line": 14,
-            },
-            "start": Object {
-              "column": 30,
-              "line": 14,
-            },
-          },
-          Object {
-            "end": Object {
-              "column": 53,
-              "line": 14,
-            },
-            "start": Object {
-              "column": 43,
-              "line": 14,
-            },
-          },
-        ],
-        "type": "cond-expr",
-      },
-    },
-    "f": Object {
-      "0": 1,
-      "1": 0,
-      "2": 0,
-    },
-    "fnMap": Object {
-      "0": Object {
-        "decl": Object {
-          "end": Object {
-            "column": 26,
-            "line": 10,
-          },
-          "start": Object {
-            "column": 16,
-            "line": 10,
-          },
-        },
+        "line": 10,
         "loc": Object {
           "end": Object {
             "column": 1,
             "line": 17,
           },
           "start": Object {
-            "column": 47,
+            "column": 0,
+            "line": 10,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 1,
+              "line": 17,
+            },
+            "start": Object {
+              "column": 0,
+              "line": 10,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+      "1": Object {
+        "line": 11,
+        "loc": Object {
+          "end": Object {
+            "column": 39,
+            "line": 11,
+          },
+          "start": Object {
+            "column": 36,
+            "line": 11,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 39,
+              "line": 11,
+            },
+            "start": Object {
+              "column": 36,
+              "line": 11,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+      "2": Object {
+        "line": 12,
+        "loc": Object {
+          "end": Object {
+            "column": 39,
+            "line": 12,
+          },
+          "start": Object {
+            "column": 36,
+            "line": 12,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 39,
+              "line": 12,
+            },
+            "start": Object {
+              "column": 36,
+              "line": 12,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+      "3": Object {
+        "line": 13,
+        "loc": Object {
+          "end": Object {
+            "column": 39,
+            "line": 13,
+          },
+          "start": Object {
+            "column": 31,
+            "line": 13,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 39,
+              "line": 13,
+            },
+            "start": Object {
+              "column": 31,
+              "line": 13,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+      "4": Object {
+        "line": 13,
+        "loc": Object {
+          "end": Object {
+            "column": 48,
+            "line": 13,
+          },
+          "start": Object {
+            "column": 39,
+            "line": 13,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 48,
+              "line": 13,
+            },
+            "start": Object {
+              "column": 39,
+              "line": 13,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+      "5": Object {
+        "line": 14,
+        "loc": Object {
+          "end": Object {
+            "column": 53,
+            "line": 14,
+          },
+          "start": Object {
+            "column": 41,
+            "line": 14,
+          },
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 53,
+              "line": 14,
+            },
+            "start": Object {
+              "column": 41,
+              "line": 14,
+            },
+          },
+        ],
+        "type": "branch",
+      },
+    },
+    "f": Object {
+      "0": 1,
+      "1": 0,
+    },
+    "fnMap": Object {
+      "0": Object {
+        "decl": Object {
+          "end": Object {
+            "column": 1,
+            "line": 17,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 10,
+          },
+        },
+        "line": 10,
+        "loc": Object {
+          "end": Object {
+            "column": 1,
+            "line": 17,
+          },
+          "start": Object {
+            "column": 0,
             "line": 10,
           },
         },
@@ -206,7 +214,7 @@ Object {
       "1": Object {
         "decl": Object {
           "end": Object {
-            "column": 36,
+            "column": 40,
             "line": 14,
           },
           "start": Object {
@@ -214,6 +222,7 @@ Object {
             "line": 14,
           },
         },
+        "line": 14,
         "loc": Object {
           "end": Object {
             "column": 40,
@@ -224,117 +233,193 @@ Object {
             "line": 14,
           },
         },
-        "name": "(anonymous_1)",
-      },
-      "2": Object {
-        "decl": Object {
-          "end": Object {
-            "column": 49,
-            "line": 14,
-          },
-          "start": Object {
-            "column": 43,
-            "line": 14,
-          },
-        },
-        "loc": Object {
-          "end": Object {
-            "column": 53,
-            "line": 14,
-          },
-          "start": Object {
-            "column": 43,
-            "line": 14,
-          },
-        },
-        "name": "(anonymous_2)",
+        "name": "fn",
       },
     },
     "path": "covered.ts",
     "s": Object {
       "0": 1,
       "1": 1,
+      "10": 1,
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
       "2": 1,
       "3": 1,
-      "4": 0,
-      "5": 0,
+      "4": 1,
+      "5": 1,
       "6": 1,
       "7": 1,
+      "8": 1,
+      "9": 1,
     },
     "statementMap": Object {
       "0": Object {
         "end": Object {
-          "column": 39,
-          "line": 11,
+          "column": 3,
+          "line": 1,
         },
         "start": Object {
-          "column": 27,
-          "line": 11,
+          "column": 0,
+          "line": 1,
         },
       },
       "1": Object {
         "end": Object {
-          "column": 39,
+          "column": 72,
+          "line": 2,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 2,
+        },
+      },
+      "10": Object {
+        "end": Object {
+          "column": 40,
+          "line": 11,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 11,
+        },
+      },
+      "11": Object {
+        "end": Object {
+          "column": 40,
           "line": 12,
         },
         "start": Object {
-          "column": 27,
+          "column": 0,
           "line": 12,
         },
       },
-      "2": Object {
+      "12": Object {
         "end": Object {
-          "column": 48,
+          "column": 49,
           "line": 13,
         },
         "start": Object {
-          "column": 27,
+          "column": 0,
           "line": 13,
         },
       },
-      "3": Object {
-        "end": Object {
-          "column": 53,
-          "line": 14,
-        },
-        "start": Object {
-          "column": 23,
-          "line": 14,
-        },
-      },
-      "4": Object {
-        "end": Object {
-          "column": 41,
-          "line": 14,
-        },
-        "start": Object {
-          "column": 36,
-          "line": 14,
-        },
-      },
-      "5": Object {
+      "13": Object {
         "end": Object {
           "column": 54,
           "line": 14,
         },
         "start": Object {
-          "column": 49,
+          "column": 0,
           "line": 14,
         },
       },
-      "6": Object {
+      "14": Object {
+        "end": Object {
+          "column": 0,
+          "line": 15,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 15,
+        },
+      },
+      "15": Object {
         "end": Object {
           "column": 15,
           "line": 16,
         },
         "start": Object {
-          "column": 2,
+          "column": 0,
           "line": 16,
+        },
+      },
+      "16": Object {
+        "end": Object {
+          "column": 1,
+          "line": 17,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 17,
+        },
+      },
+      "2": Object {
+        "end": Object {
+          "column": 2,
+          "line": 3,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 3,
+        },
+      },
+      "3": Object {
+        "end": Object {
+          "column": 66,
+          "line": 4,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 4,
+        },
+      },
+      "4": Object {
+        "end": Object {
+          "column": 58,
+          "line": 5,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 5,
+        },
+      },
+      "5": Object {
+        "end": Object {
+          "column": 3,
+          "line": 6,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 6,
+        },
+      },
+      "6": Object {
+        "end": Object {
+          "column": 0,
+          "line": 7,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 7,
         },
       },
       "7": Object {
         "end": Object {
-          "column": 16,
+          "column": 47,
+          "line": 8,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 8,
+        },
+      },
+      "8": Object {
+        "end": Object {
+          "column": 0,
+          "line": 9,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 9,
+        },
+      },
+      "9": Object {
+        "end": Object {
+          "column": 58,
           "line": 10,
         },
         "start": Object {

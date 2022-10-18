@@ -13,11 +13,9 @@ const DIR = path.resolve(__dirname, '../coverage-provider-v8');
 test('prints coverage with missing sourcemaps', () => {
   const sourcemapDir = path.join(DIR, 'no-sourcemap');
 
-  const {stdout, exitCode} = runJest(
-    sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8'],
-    {stripAnsi: true},
-  );
+  const {stdout, exitCode} = runJest(sourcemapDir, ['--coverage'], {
+    stripAnsi: true,
+  });
 
   expect(exitCode).toBe(0);
   expect(stdout).toMatchSnapshot();
@@ -26,11 +24,9 @@ test('prints coverage with missing sourcemaps', () => {
 test('prints coverage with empty sourcemaps', () => {
   const sourcemapDir = path.join(DIR, 'empty-sourcemap');
 
-  const {stdout, exitCode} = runJest(
-    sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8'],
-    {stripAnsi: true},
-  );
+  const {stdout, exitCode} = runJest(sourcemapDir, ['--coverage'], {
+    stripAnsi: true,
+  });
 
   expect(exitCode).toBe(0);
   expect(stdout).toMatchSnapshot();
@@ -39,11 +35,9 @@ test('prints coverage with empty sourcemaps', () => {
 test('reports coverage with `resetModules`', () => {
   const sourcemapDir = path.join(DIR, 'with-resetModules');
 
-  const {stdout, exitCode} = runJest(
-    sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8'],
-    {stripAnsi: true},
-  );
+  const {stdout, exitCode} = runJest(sourcemapDir, ['--coverage'], {
+    stripAnsi: true,
+  });
 
   expect(exitCode).toBe(0);
   expect(stdout).toMatchSnapshot();
@@ -54,7 +48,7 @@ test('prints correct coverage report, if a CJS module is put under test without 
 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+    ['--coverage', '--no-cache'],
     {stripAnsi: true},
   );
 
@@ -67,7 +61,7 @@ test('prints correct coverage report, if a TS module is transpiled by Babel to C
 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+    ['--coverage', '--no-cache'],
     {stripAnsi: true},
   );
 
@@ -80,7 +74,7 @@ test('prints correct coverage report, if an ESM module is put under test without
 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+    ['--coverage', '--no-cache'],
     {
       nodeOptions: '--experimental-vm-modules --no-warnings',
       stripAnsi: true,
@@ -96,7 +90,7 @@ test('prints correct coverage report, if a TS module is transpiled by custom tra
 
   const {stdout, exitCode} = runJest(
     sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+    ['--coverage', '--no-cache'],
     {
       nodeOptions: '--experimental-vm-modules --no-warnings',
       stripAnsi: true,

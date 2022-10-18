@@ -186,11 +186,9 @@ Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-Jest ships with two coverage providers: `babel` (default) and `v8`. See the [`coverageProvider`](#coverageprovider-string) option for more details.
-
 :::info
 
-The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/* c8 ignore next */` comments to exclude lines from coverage reports, respectively. For more information, you can view the [`istanbuljs` documentation](https://github.com/istanbuljs/nyc#parsing-hints-ignoring-lines) and the [`c8` documentation](https://github.com/bcoe/c8#ignoring-uncovered-lines-functions-and-blocks).
+The `v8` coverage providers uses `/* c8 ignore next */` comments to exclude lines from coverage reports, respectively. For more information, you can view the [`c8` documentation](https://github.com/bcoe/c8#ignoring-uncovered-lines-functions-and-blocks).
 
 :::
 
@@ -272,10 +270,6 @@ Default: `["/node_modules/"]`
 An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
-
-### `coverageProvider` \[string]
-
-Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 

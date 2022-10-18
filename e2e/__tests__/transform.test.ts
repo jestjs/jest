@@ -31,17 +31,6 @@ describe('babel-jest', () => {
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(2);
   });
-
-  it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
-      stripAnsi: true,
-    });
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('notCovered.js');
-    expect(stdout).not.toMatch('excludedFromCoverage.js');
-    // coverage result should not change
-    expect(stdout).toMatchSnapshot();
-  });
 });
 
 describe('babel-jest ignored', () => {
@@ -120,15 +109,6 @@ describe('custom transformer', () => {
     expect(json.numPassedTests).toBe(1);
     expect(json.numFailedTests).toBe(1);
   });
-
-  it('instruments files', () => {
-    const {stdout, exitCode} = runJest(dir, ['--no-cache', '--coverage'], {
-      stripAnsi: true,
-    });
-    // coverage should be empty because there's no real instrumentation
-    expect(stdout).toMatchSnapshot();
-    expect(exitCode).toBe(0);
-  });
 });
 
 describe('multiple-transformers', () => {
@@ -174,17 +154,6 @@ describe('transformer-config', () => {
     const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
-  });
-
-  it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
-      stripAnsi: true,
-    });
-    expect(stdout).toMatch('Covered.js');
-    expect(stdout).not.toMatch('NotCovered.js');
-    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
-    // coverage result should not change
-    expect(stdout).toMatchSnapshot();
   });
 });
 

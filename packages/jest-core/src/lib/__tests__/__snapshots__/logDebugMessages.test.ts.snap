@@ -67,7 +67,6 @@ exports[`prints the config object 1`] = `
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "coverage",
-    "coverageProvider": "babel",
     "coverageReporters": [],
     "coverageThreshold": {
       "global": {}

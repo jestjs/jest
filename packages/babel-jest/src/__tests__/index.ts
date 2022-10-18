@@ -55,7 +55,6 @@ test('Returns source string with inline maps when no transformOptions is passed'
       cacheFS: new Map<string, string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
-      instrument: false,
       transformerConfig: {},
     } as TransformOptions<BabelTransformOptions>,
   );
@@ -79,7 +78,6 @@ test('Returns source string with inline maps when no transformOptions is passed 
       cacheFS: new Map<string, string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
-      instrument: false,
       transformerConfig: {},
     } as TransformOptions<BabelTransformOptions>,
   );
@@ -144,7 +142,6 @@ describe('caller option correctly merges from defaults and options', () => {
       cacheFS: new Map<string, string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
-      instrument: false,
       transformerConfig: {},
       ...input,
     } as TransformOptions<BabelTransformOptions>);
@@ -169,7 +166,6 @@ test('can pass null to createTransformer', () => {
     cacheFS: new Map<string, string>(),
     config: makeProjectConfig(),
     configString: JSON.stringify(makeProjectConfig()),
-    instrument: false,
     transformerConfig: {},
   } as TransformOptions<BabelTransformOptions>);
 

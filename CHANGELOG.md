@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[*] Switch to v8 code coverage by default. Remove istanbul code coverage transformer ([#13461](github.com/facebook/jest/pull/13461))
+
 ### Performance
 
 - `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)

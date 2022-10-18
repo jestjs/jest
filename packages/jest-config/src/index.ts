@@ -83,7 +83,6 @@ const groupOptions = (
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
     coverageDirectory: options.coverageDirectory,
-    coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,

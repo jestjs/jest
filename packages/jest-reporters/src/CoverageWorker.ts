@@ -6,7 +6,6 @@
  */
 
 import exit = require('exit');
-import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
@@ -44,7 +43,6 @@ export function worker({
   context,
 }: CoverageWorkerData): Promise<CoverageWorkerResult | null> {
   return generateEmptyCoverage(
-    fs.readFileSync(path, 'utf8'),
     path,
     globalConfig,
     config,

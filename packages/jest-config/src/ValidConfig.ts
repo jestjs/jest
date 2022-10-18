@@ -26,7 +26,6 @@ const initialOptions: Config.InitialOptions = {
   collectCoverageFrom: ['src', '!public'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
-  coverageProvider: 'v8',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {

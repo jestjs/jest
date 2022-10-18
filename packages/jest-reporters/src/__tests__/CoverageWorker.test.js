@@ -31,13 +31,11 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
 
   const validJS = 'function(){}';
 
-  fs.readFileSync.mockImplementation(() => validJS);
   generateEmptyCoverage.mockImplementation(() => 42);
 
   const result = await worker(workerOptions);
 
   expect(generateEmptyCoverage).toHaveBeenCalledWith(
-    validJS,
     'banana.js',
     globalConfig,
     config,

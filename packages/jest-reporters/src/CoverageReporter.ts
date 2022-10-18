@@ -13,7 +13,6 @@ import glob = require('glob');
 import * as fs from 'graceful-fs';
 import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
-import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
@@ -40,7 +39,6 @@ export default class CoverageReporter extends BaseReporter {
   private readonly _context: ReporterContext;
   private readonly _coverageMap: istanbulCoverage.CoverageMap;
   private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _sourceMapStore: libSourceMaps.MapStore;
   private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
@@ -50,7 +48,6 @@ export default class CoverageReporter extends BaseReporter {
     this._context = context;
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
-    this._sourceMapStore = libSourceMaps.createSourceMapStore();
     this._v8CoverageResults = [];
   }
 
@@ -183,13 +180,9 @@ export default class CoverageReporter extends BaseReporter {
           });
 
           if (result) {
-            if (result.kind === 'V8Coverage') {
-              this._v8CoverageResults.push([
-                {codeTransformResult: undefined, result: result.result},
-              ]);
-            } else {
-              this._coverageMap.addFileCoverage(result.coverage);
-            }
+            this._v8CoverageResults.push([
+              {codeTransformResult: undefined, result: result.result},
+            ]);
           }
         } catch (error: any) {
           console.error(
@@ -426,78 +419,66 @@ export default class CoverageReporter extends BaseReporter {
     map: istanbulCoverage.CoverageMap;
     reportContext: istanbulReport.Context;
   }> {
-    if (this._globalConfig.coverageProvider === 'v8') {
-      const mergedCoverages = mergeProcessCovs(
-        this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
-      );
+    const mergedCoverages = mergeProcessCovs(
+      this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
+    );
 
-      const fileTransforms = new Map<string, RuntimeTransformResult>();
+    const fileTransforms = new Map<string, RuntimeTransformResult>();
 
-      this._v8CoverageResults.forEach(res =>
-        res.forEach(r => {
-          if (r.codeTransformResult && !fileTransforms.has(r.result.url)) {
-            fileTransforms.set(r.result.url, r.codeTransformResult);
-          }
-        }),
-      );
+    this._v8CoverageResults.forEach(res =>
+      res.forEach(r => {
+        if (r.codeTransformResult && !fileTransforms.has(r.result.url)) {
+          fileTransforms.set(r.result.url, r.codeTransformResult);
+        }
+      }),
+    );
 
-      const transformedCoverage = await Promise.all(
-        mergedCoverages.result.map(async res => {
-          const fileTransform = fileTransforms.get(res.url);
+    const transformedCoverage = await Promise.all(
+      mergedCoverages.result.map(async res => {
+        const fileTransform = fileTransforms.get(res.url);
 
-          let sourcemapContent: EncodedSourceMap | undefined = undefined;
+        let sourcemapContent: EncodedSourceMap | undefined = undefined;
 
-          if (
-            fileTransform?.sourceMapPath &&
-            fs.existsSync(fileTransform.sourceMapPath)
-          ) {
-            sourcemapContent = JSON.parse(
-              fs.readFileSync(fileTransform.sourceMapPath, 'utf8'),
-            );
-          }
-
-          const converter = v8toIstanbul(
-            res.url,
-            fileTransform?.wrapperLength ?? 0,
-            fileTransform && sourcemapContent
-              ? {
-                  originalSource: fileTransform.originalCode,
-                  source: fileTransform.code,
-                  sourceMap: {
-                    sourcemap: {file: res.url, ...sourcemapContent},
-                  },
-                }
-              : {source: fs.readFileSync(res.url, 'utf8')},
+        if (
+          fileTransform?.sourceMapPath &&
+          fs.existsSync(fileTransform.sourceMapPath)
+        ) {
+          sourcemapContent = JSON.parse(
+            fs.readFileSync(fileTransform.sourceMapPath, 'utf8'),
           );
+        }
 
-          await converter.load();
+        const converter = v8toIstanbul(
+          res.url,
+          fileTransform?.wrapperLength ?? 0,
+          fileTransform && sourcemapContent
+            ? {
+                originalSource: fileTransform.originalCode,
+                source: fileTransform.code,
+                sourceMap: {
+                  sourcemap: {file: res.url, ...sourcemapContent},
+                },
+              }
+            : {source: fs.readFileSync(res.url, 'utf8')},
+        );
 
-          converter.applyCoverage(res.functions);
+        await converter.load();
 
-          const istanbulData = converter.toIstanbul();
+        converter.applyCoverage(res.functions);
 
-          return istanbulData;
-        }),
-      );
+        const istanbulData = converter.toIstanbul();
 
-      const map = istanbulCoverage.createCoverageMap({});
+        return istanbulData;
+      }),
+    );
 
-      transformedCoverage.forEach(res => map.merge(res));
+    const map = istanbulCoverage.createCoverageMap({});
 
-      const reportContext = istanbulReport.createContext({
-        coverageMap: map,
-        dir: this._globalConfig.coverageDirectory,
-        watermarks: getWatermarks(this._globalConfig),
-      });
+    transformedCoverage.forEach(res => map.merge(res));
 
-      return {map, reportContext};
-    }
-
-    const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
     const reportContext = istanbulReport.createContext({
       coverageMap: map,
       dir: this._globalConfig.coverageDirectory,
-      sourceFinder: this._sourceMapStore.sourceFinder,
       watermarks: getWatermarks(this._globalConfig),
     });
 

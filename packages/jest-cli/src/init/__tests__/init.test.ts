@@ -114,34 +114,6 @@ describe('init', () => {
         });
       });
 
-      it('should create configuration for {coverageProvider: "babel"}', async () => {
-        jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'babel'});
-
-        await init(resolveFromFixture('only-package-json'));
-
-        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
-          string,
-          unknown
-        >;
-        // should modify when the default coverageProvider will be changed to "v8"
-        expect(evaluatedConfig).toEqual({});
-      });
-
-      it('should create configuration for {coverageProvider: "v8"}', async () => {
-        jest.mocked(prompts).mockResolvedValueOnce({coverageProvider: 'v8'});
-
-        await init(resolveFromFixture('only-package-json'));
-
-        const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
-        const evaluatedConfig = eval(writtenJestConfig as string) as Record<
-          string,
-          unknown
-        >;
-        // should modify when the default coverageProvider will be changed to "v8"
-        expect(evaluatedConfig).toEqual({coverageProvider: 'v8'});
-      });
-
       it('should create configuration for {environment: "jsdom"}', async () => {
         jest.mocked(prompts).mockResolvedValueOnce({environment: 'jsdom'});
 

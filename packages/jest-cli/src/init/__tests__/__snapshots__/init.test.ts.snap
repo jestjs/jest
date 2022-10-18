@@ -91,22 +91,6 @@ Array [
     "type": "confirm",
   },
   Object {
-    "choices": Array [
-      Object {
-        "title": "v8",
-        "value": "v8",
-      },
-      Object {
-        "title": "babel",
-        "value": "babel",
-      },
-    ],
-    "initial": 0,
-    "message": "Which provider should be used to instrument code for coverage?",
-    "name": "coverageProvider",
-    "type": "select",
-  },
-  Object {
     "initial": false,
     "message": "Automatically clear mock calls, instances, contexts and results before every test?",
     "name": "clearMocks",
@@ -147,9 +131,6 @@ module.exports = {
   // coveragePathIgnorePatterns: [
   //   "/node_modules/"
   // ],
-
-  // Indicates which provider should be used to instrument code for coverage
-  // coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [

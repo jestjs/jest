@@ -7,9 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {transformSync as babelTransform} from '@babel/core';
-// @ts-expect-error: should just be `require.resolve`, but the tests mess that up
-import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import stableStringify = require('fast-json-stable-stringify');
 import * as fs from 'graceful-fs';
@@ -31,11 +28,10 @@ import {
   makeInvalidSyncTransformerError,
   makeInvalidTransformerError,
 } from './runtimeErrorsAndWarnings';
-import shouldInstrument from './shouldInstrument';
 import type {
+  CallerTransformOptions,
   FixedRawSourceMap,
   Options,
-  ReducedTransformOptions,
   RequireAndTranspileModuleOptions,
   StringMap,
   SyncTransformer,
@@ -127,7 +123,6 @@ class ScriptTransformer {
     return createHash('sha1')
       .update(fileData)
       .update(transformOptions.configString)
-      .update(transformOptions.instrument ? 'instrument' : '')
       .update(filename)
       .update(CACHE_VERSION)
       .digest('hex')
@@ -137,7 +132,7 @@ class ScriptTransformer {
   private _getCacheKey(
     fileData: string,
     filename: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): string {
     const configString = this._cache.configString;
     const {transformer, transformerConfig = {}} =
@@ -171,7 +166,7 @@ class ScriptTransformer {
   private async _getCacheKeyAsync(
     fileData: string,
     filename: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): Promise<string> {
     const configString = this._cache.configString;
     const {transformer, transformerConfig = {}} =
@@ -234,7 +229,7 @@ class ScriptTransformer {
   private _getFileCachePath(
     filename: string,
     content: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): string {
     const cacheKey = this._getCacheKey(content, filename, options);
 
@@ -244,7 +239,7 @@ class ScriptTransformer {
   private async _getFileCachePathAsync(
     filename: string,
     content: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): Promise<string> {
     const cacheKey = await this._getCacheKeyAsync(content, filename, options);
 
@@ -321,58 +316,12 @@ class ScriptTransformer {
     );
   }
 
-  private _instrumentFile(
-    filename: string,
-    input: TransformedSource,
-    canMapToInput: boolean,
-    options: ReducedTransformOptions,
-  ): TransformedSource {
-    const inputCode = typeof input === 'string' ? input : input.code;
-    const inputMap = typeof input === 'string' ? null : input.map;
-
-    const result = babelTransform(inputCode, {
-      auxiliaryCommentBefore: ' istanbul ignore next ',
-      babelrc: false,
-      caller: {
-        name: '@jest/transform',
-        supportsDynamicImport: options.supportsDynamicImport,
-        supportsExportNamespaceFrom: options.supportsExportNamespaceFrom,
-        supportsStaticESM: options.supportsStaticESM,
-        supportsTopLevelAwait: options.supportsTopLevelAwait,
-      },
-      configFile: false,
-      filename,
-      plugins: [
-        [
-          babelPluginIstanbul,
-          {
-            compact: false,
-            // files outside `cwd` will not be instrumented
-            cwd: this._config.rootDir,
-            exclude: [],
-            extension: false,
-            inputSourceMap: inputMap,
-            useInlineSourceMaps: false,
-          },
-        ],
-      ],
-      sourceMaps: canMapToInput ? 'both' : false,
-    });
-
-    if (result?.code != null) {
-      return result as TransformResult;
-    }
-
-    return input;
-  }
-
   private _buildTransformResult(
     filename: string,
     cacheFilePath: string,
     content: string,
     transformer: Transformer | undefined,
     shouldCallTransform: boolean,
-    options: ReducedTransformOptions,
     processed: TransformedSource | null,
     sourceMapPath: string | null,
   ): TransformResult {
@@ -406,40 +355,7 @@ class ScriptTransformer {
       }
     }
 
-    // That means that the transform has a custom instrumentation
-    // logic and will handle it based on `config.collectCoverage` option
-    const transformWillInstrument =
-      shouldCallTransform && transformer && transformer.canInstrument;
-
-    // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
-    let map = transformed.map;
-    let code;
-    if (transformWillInstrument !== true && options.instrument) {
-      /**
-       * We can map the original source code to the instrumented code ONLY if
-       * - the process of transforming the code produced a source map e.g. ts-jest
-       * - we did not transform the source code
-       *
-       * Otherwise we cannot make any statements about how the instrumented code corresponds to the original code,
-       * and we should NOT emit any source maps
-       *
-       */
-      const shouldEmitSourceMaps =
-        (transformer != null && map != null) || transformer == null;
-
-      const instrumented = this._instrumentFile(
-        filename,
-        transformed,
-        shouldEmitSourceMaps,
-        options,
-      );
-
-      code =
-        typeof instrumented === 'string' ? instrumented : instrumented.code;
-      map = typeof instrumented === 'string' ? null : instrumented.map;
-    } else {
-      code = transformed.code;
-    }
+    const {code, map} = transformed;
 
     if (map != null) {
       const sourceMapContent =
@@ -464,7 +380,7 @@ class ScriptTransformer {
   transformSource(
     filepath: string,
     content: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): TransformResult {
     const filename = tryRealpath(filepath);
     const {transformer, transformerConfig = {}} =
@@ -510,7 +426,6 @@ class ScriptTransformer {
       content,
       transformer,
       shouldCallTransform,
-      options,
       processed,
       sourceMapPath,
     );
@@ -519,7 +434,7 @@ class ScriptTransformer {
   async transformSourceAsync(
     filepath: string,
     content: string,
-    options: ReducedTransformOptions,
+    options: CallerTransformOptions,
   ): Promise<TransformResult> {
     const filename = tryRealpath(filepath);
     const {transformer, transformerConfig = {}} =
@@ -574,7 +489,6 @@ class ScriptTransformer {
       content,
       transformer,
       shouldCallTransform,
-      options,
       processed,
       sourceMapPath,
     );
@@ -583,7 +497,7 @@ class ScriptTransformer {
   private async _transformAndBuildScriptAsync(
     filename: string,
     options: Options,
-    transformOptions: ReducedTransformOptions,
+    transformOptions: CallerTransformOptions,
     fileSource?: string,
   ): Promise<TransformResult> {
     const {isInternalModule} = options;
@@ -598,8 +512,7 @@ class ScriptTransformer {
     let sourceMapPath: string | null = null;
 
     const willTransform =
-      isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      isInternalModule !== true && this.shouldTransform(filename);
 
     try {
       if (willTransform) {
@@ -629,7 +542,7 @@ class ScriptTransformer {
   private _transformAndBuildScript(
     filename: string,
     options: Options,
-    transformOptions: ReducedTransformOptions,
+    transformOptions: CallerTransformOptions,
     fileSource?: string,
   ): TransformResult {
     const {isInternalModule} = options;
@@ -644,8 +557,7 @@ class ScriptTransformer {
     let sourceMapPath: string | null = null;
 
     const willTransform =
-      isInternalModule !== true &&
-      (transformOptions.instrument || this.shouldTransform(filename));
+      isInternalModule !== true && this.shouldTransform(filename);
 
     try {
       if (willTransform) {
@@ -677,10 +589,7 @@ class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): Promise<TransformResult> {
-    const instrument =
-      options.coverageProvider === 'babel' &&
-      shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename);
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -689,7 +598,7 @@ class ScriptTransformer {
     result = await this._transformAndBuildScriptAsync(
       filename,
       options,
-      {...options, instrument},
+      options,
       fileSource,
     );
 
@@ -705,10 +614,7 @@ class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    const instrument =
-      options.coverageProvider === 'babel' &&
-      shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const scriptCacheKey = getScriptCacheKey(filename);
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
@@ -718,7 +624,7 @@ class ScriptTransformer {
     result = this._transformAndBuildScript(
       filename,
       options,
-      {...options, instrument},
+      options,
       fileSource,
     );
 
@@ -742,7 +648,7 @@ class ScriptTransformer {
       const {code: transformedJsonSource} = this.transformSource(
         filename,
         fileSource,
-        {...options, instrument: false},
+        options,
       );
       return transformedJsonSource;
     }
@@ -755,7 +661,6 @@ class ScriptTransformer {
     callback?: (module: ModuleType) => void | Promise<void>,
     options: RequireAndTranspileModuleOptions = {
       applyInteropRequireDefault: true,
-      instrument: false,
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
@@ -846,7 +751,6 @@ export async function createTranspilingRequire(
         () => {},
         {
           applyInteropRequireDefault,
-          instrument: false,
           supportsDynamicImport: false, // this might be true, depending on node version.
           supportsExportNamespaceFrom: false,
           supportsStaticESM: false,
@@ -982,10 +886,8 @@ const readCacheFile = (cachePath: string): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: string, instrument: boolean) => {
-  const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
-};
+const getScriptCacheKey = (filename: string) =>
+  `${filename}_${fs.statSync(filename).mtime.getTime()}`;
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (

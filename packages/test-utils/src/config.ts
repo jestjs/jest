@@ -15,7 +15,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   collectCoverage: false,
   collectCoverageFrom: [],
   coverageDirectory: 'coverage',
-  coverageProvider: 'babel',
   coverageReporters: [],
   coverageThreshold: {global: {}},
   detectLeaks: false,

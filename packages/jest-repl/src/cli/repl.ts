@@ -36,7 +36,6 @@ const evalCommand: repl.REPLEval = (
           cacheFS: new Map<string, string>(),
           config: jestProjectConfig,
           configString: JSON.stringify(jestProjectConfig),
-          instrument: false,
           supportsDynamicImport: false,
           supportsExportNamespaceFrom: false,
           supportsStaticESM: false,

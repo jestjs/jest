@@ -38,7 +38,6 @@ interface TransformOptions<TransformerConfig = unknown> {
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
-  instrument: boolean;
   /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: Map<string, string>;
   /** Jest configuration of currently running project. */
@@ -55,8 +54,6 @@ type TransformedSource = {
 };
 
 interface SyncTransformer<TransformerConfig = unknown> {
-  canInstrument?: boolean;
-
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
@@ -83,8 +80,6 @@ interface SyncTransformer<TransformerConfig = unknown> {
 }
 
 interface AsyncTransformer<TransformerConfig = unknown> {
-  canInstrument?: boolean;
-
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,

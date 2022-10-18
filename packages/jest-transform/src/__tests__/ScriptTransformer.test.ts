@@ -10,9 +10,7 @@ import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import type {
   AsyncTransformer,
-  FixedRawSourceMap,
   Options,
-  ReducedTransformOptions,
   ShouldInstrumentOptions,
   SyncTransformer,
   TransformedSource,
@@ -323,93 +321,60 @@ describe('ScriptTransformer', () => {
 
   it('transforms a file properly', async () => {
     const scriptTransformer = await createScriptTransformer(config);
-    const transformedBananaWithCoverage = scriptTransformer.transform(
+    const transformedBanana = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
 
-    expect(transformedBananaWithCoverage.code).toMatchSnapshot();
+    expect(transformedBanana.code).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const transformedBananaWithCoverageAgain = scriptTransformer.transform(
+    const transformedBananaAgain = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
     );
-    expect(transformedBananaWithCoverageAgain).toBe(
-      transformedBananaWithCoverage,
-    );
+    expect(transformedBananaAgain).toBe(transformedBanana);
 
-    const transformedKiwiWithCoverage = scriptTransformer.transform(
+    const transformedKiwi = scriptTransformer.transform(
       '/fruits/kiwi.js',
       getCoverageOptions({collectCoverage: true}),
     );
-    expect(transformedKiwiWithCoverage.code).toMatchSnapshot();
+    expect(transformedKiwi.code).toMatchSnapshot();
 
-    expect(transformedBananaWithCoverage.code).not.toEqual(
-      transformedKiwiWithCoverage.code,
-    );
-    expect(transformedBananaWithCoverage.code).not.toMatch(/instrumented kiwi/);
-
-    // If we disable coverage, we get a different result.
-    const transformedKiwiWithoutCoverage = scriptTransformer.transform(
-      '/fruits/kiwi.js',
-      getCoverageOptions({collectCoverage: false}),
-    );
-
-    expect(transformedKiwiWithoutCoverage.code).not.toEqual(
-      transformedKiwiWithCoverage.code,
-    );
+    expect(transformedBanana.code).not.toEqual(transformedKiwi.code);
   });
 
   it('transforms a file async properly', async () => {
     const scriptTransformer = await createScriptTransformer(config);
-    const transformedBananaWithCoverage =
-      await scriptTransformer.transformAsync(
-        '/fruits/banana.js',
-        getCoverageOptions({collectCoverage: true}),
-      );
+    const transformedBanana = await scriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions({collectCoverage: true}),
+    );
 
-    expect(transformedBananaWithCoverage.code).toMatchSnapshot();
+    expect(transformedBanana.code).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const transformedBananaWithCoverageAgain =
-      await scriptTransformer.transformAsync(
-        '/fruits/banana.js',
-        getCoverageOptions({collectCoverage: true}),
-      );
-    expect(transformedBananaWithCoverageAgain).toBe(
-      transformedBananaWithCoverage,
+    const transformedBananaAgain = await scriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions({collectCoverage: true}),
     );
+    expect(transformedBananaAgain).toBe(transformedBanana);
 
-    const transformedKiwiWithCoverage = await scriptTransformer.transformAsync(
+    const transformedKiwi = await scriptTransformer.transformAsync(
       '/fruits/kiwi.js',
       getCoverageOptions({collectCoverage: true}),
     );
-    expect(transformedKiwiWithCoverage.code).toMatchSnapshot();
+    expect(transformedKiwi.code).toMatchSnapshot();
 
-    expect(transformedBananaWithCoverage.code).not.toEqual(
-      transformedKiwiWithCoverage.code,
-    );
-    expect(transformedBananaWithCoverage.code).not.toMatch(/instrumented kiwi/);
-
-    // If we disable coverage, we get a different result.
-    const transformedKiwiWithoutCoverage =
-      await scriptTransformer.transformAsync(
-        '/fruits/kiwi.js',
-        getCoverageOptions({collectCoverage: false}),
-      );
-
-    expect(transformedKiwiWithoutCoverage.code).not.toEqual(
-      transformedKiwiWithCoverage.code,
-    );
+    expect(transformedBanana.code).not.toEqual(transformedKiwi.code);
   });
 
   it("throws an error if `process` doesn't return an object containing `code` key with processed string", async () => {
@@ -526,11 +491,7 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource(
-        'sample.js',
-        '',
-        getTransformOptions(false),
-      ),
+      scriptTransformer.transformSource('sample.js', '', transformOptions),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -546,7 +507,7 @@ describe('ScriptTransformer', () => {
       await scriptTransformer.transformSourceAsync(
         'sample.js',
         '',
-        getTransformOptions(false),
+        transformOptions,
       ),
     ).toBeDefined();
   });
@@ -574,11 +535,7 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource(
-        'sample.js',
-        '',
-        getTransformOptions(false),
-      ),
+      scriptTransformer.transformSource('sample.js', '', transformOptions),
     ).not.toThrow();
   });
 
@@ -596,14 +553,14 @@ describe('ScriptTransformer', () => {
         scriptTransformer.transformSourceAsync(
           'async-sample.js',
           '',
-          getTransformOptions(false),
+          transformOptions,
         ),
       ).resolves.toBeDefined(),
       expect(
         scriptTransformer.transformSourceAsync(
           'sync-sample.js',
           '',
-          getTransformOptions(false),
+          transformOptions,
         ),
       ).resolves.toBeDefined(),
     ]);
@@ -1223,275 +1180,6 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
   });
 
-  it('should write a source map for the instrumented file when transformed', async () => {
-    const transformerConfig: Config.ProjectConfig = {
-      ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
-    };
-    const scriptTransformer = await createScriptTransformer(transformerConfig);
-
-    const map = {
-      mappings: ';AAAA',
-      version: 3,
-    };
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap: FixedRawSourceMap = {
-      version: 3,
-      names: ['content'],
-      sources: ['banana.js'],
-      sourcesContent: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
-      )
-      .mockReturnValue({
-        code: 'content',
-        map,
-      });
-
-    const result = scriptTransformer.transform(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
-  it('in async mode, should write a source map for the instrumented file when transformed', async () => {
-    const transformerConfig: Config.ProjectConfig = {
-      ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
-    };
-    const scriptTransformer = await createScriptTransformer(transformerConfig);
-
-    const map = {
-      mappings: ';AAAA',
-      version: 3,
-    };
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
-      version: 3,
-      names: ['content'],
-      sources: ['banana.js'],
-      sourcesContent: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
-      )
-      .mockReturnValue({
-        code: 'content',
-        map,
-      });
-
-    const result = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
-  it('should write a source map for the instrumented file when async transformed', async () => {
-    const transformerConfig: Config.ProjectConfig = {
-      ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
-    };
-    const scriptTransformer = await createScriptTransformer(transformerConfig);
-
-    const map = {
-      mappings: ';AAAA',
-      version: 3,
-    };
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
-      version: 3,
-      names: ['content'],
-      sources: ['banana.js'],
-      sourcesContent: ['content'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
-          .processAsync,
-      )
-      .mockResolvedValue({
-        code: 'content',
-        map,
-      });
-
-    const result = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
-  it('should write a source map for the instrumented file when not transformed', async () => {
-    const scriptTransformer = await createScriptTransformer(config);
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
-      version: 3,
-      names: ['module', 'exports'],
-      sources: ['banana.js'],
-      sourcesContent: ['module.exports = "banana";'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
-      )
-      .mockReturnValue({
-        code: 'content',
-        map: null,
-      });
-
-    const result = scriptTransformer.transform(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
-  it('in async mode, should write a source map for the instrumented file when not transformed', async () => {
-    const scriptTransformer = await createScriptTransformer(config);
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
-      version: 3,
-      names: ['module', 'exports'],
-      sources: ['banana.js'],
-      sourcesContent: ['module.exports = "banana";'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('preprocessor-with-sourcemaps') as SyncTransformer).process,
-      )
-      .mockReturnValue({
-        code: 'content',
-        map: null,
-      });
-
-    const result = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
-  it('should write a source map for the instrumented file when not transformed by async preprocessor', async () => {
-    const scriptTransformer = await createScriptTransformer(config);
-
-    // A map from the original source to the instrumented output
-    /* eslint-disable sort-keys */
-    const instrumentedCodeMap = {
-      version: 3,
-      names: ['module', 'exports'],
-      sources: ['banana.js'],
-      sourcesContent: ['module.exports = "banana";'],
-      mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
-    };
-    /* eslint-enable */
-
-    jest
-      .mocked(
-        (require('async-preprocessor-with-sourcemaps') as AsyncTransformer)
-          .processAsync,
-      )
-      .mockResolvedValue({
-        code: 'content',
-        map: null,
-      });
-
-    const result = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toEqual(expect.any(String));
-    expect(writeFileAtomic.sync).toHaveBeenCalledTimes(2);
-    expect(writeFileAtomic.sync).toHaveBeenCalledWith(
-      result.sourceMapPath,
-      JSON.stringify(instrumentedCodeMap),
-      expect.anything(),
-    );
-
-    // Inline source map allows debugging of original source when running instrumented code
-    expect(result.code).toContain('//# sourceMappingURL');
-  });
-
   it('passes expected transform options to getCacheKey', async () => {
     config = {
       ...config,
@@ -2006,15 +1694,12 @@ describe('ScriptTransformer', () => {
   });
 });
 
-function getTransformOptions(instrument: boolean): ReducedTransformOptions {
-  return {
-    instrument,
-    supportsDynamicImport: false,
-    supportsExportNamespaceFrom: false,
-    supportsStaticESM: false,
-    supportsTopLevelAwait: false,
-  };
-}
+const transformOptions = {
+  supportsDynamicImport: false,
+  supportsExportNamespaceFrom: false,
+  supportsStaticESM: false,
+  supportsTopLevelAwait: false,
+};
 
 function getCoverageOptions(
   overrides: Partial<ShouldInstrumentOptions> = {},
@@ -2024,7 +1709,6 @@ function getCoverageOptions(
   return {
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
-    coverageProvider: globalConfig.coverageProvider,
     supportsDynamicImport: false,
     supportsExportNamespaceFrom: false,
     supportsStaticESM: false,

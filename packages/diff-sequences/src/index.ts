@@ -637,7 +637,7 @@ const divide = (
     }
   }
 
-  /* istanbul ignore next */
+  /* c8 ignore next */
   throw new Error(
     `${pkg}: no overlap aStart=${aStart} aEnd=${aEnd} bStart=${bStart} bEnd=${bEnd}`,
   );

@@ -9,10 +9,7 @@ import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Config, TransformTypes} from '@jest/types';
 
 export interface ShouldInstrumentOptions
-  extends Pick<
-    Config.GlobalConfig,
-    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
-  > {
+  extends Pick<Config.GlobalConfig, 'collectCoverage' | 'collectCoverageFrom'> {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
 }
@@ -43,19 +40,15 @@ export interface CallerTransformOptions {
   supportsTopLevelAwait: boolean;
 }
 
-export interface ReducedTransformOptions extends CallerTransformOptions {
-  instrument: boolean;
-}
-
 export interface RequireAndTranspileModuleOptions
-  extends ReducedTransformOptions {
+  extends CallerTransformOptions {
   applyInteropRequireDefault: boolean;
 }
 
 export type StringMap = Map<string, string>;
 
 export interface TransformOptions<TransformerConfig = unknown>
-  extends ReducedTransformOptions {
+  extends CallerTransformOptions {
   /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: StringMap;
   /** Jest configuration of currently running project. */
@@ -67,14 +60,6 @@ export interface TransformOptions<TransformerConfig = unknown>
 }
 
 export interface SyncTransformer<TransformerConfig = unknown> {
-  /**
-   * Indicates if the transformer is capable of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
-  canInstrument?: boolean;
-
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
@@ -101,14 +86,6 @@ export interface SyncTransformer<TransformerConfig = unknown> {
 }
 
 export interface AsyncTransformer<TransformerConfig = unknown> {
-  /**
-   * Indicates if the transformer is capable of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
-  canInstrument?: boolean;
-
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,

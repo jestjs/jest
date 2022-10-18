@@ -35,8 +35,8 @@ exports[`collects coverage only from specified files avoiding dependencies 1`] =
 "----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
-All files |    87.5 |      100 |      50 |     100 |                   
- sum.js   |    87.5 |      100 |      50 |     100 |                   
+All files |     100 |      100 |      50 |     100 |                   
+ sum.js   |     100 |      100 |      50 |     100 |                   
 ----------|---------|----------|---------|---------|-------------------"
 `;
 
@@ -46,13 +46,13 @@ exports[`generates coverage when using the testRegex config param  1`] = `
 "-------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
-All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.36 |        0 |      25 |      50 |                   
+All files                            |   60.86 |       60 |      50 |   60.86 |                   
+ coverage-report                     |      50 |    33.33 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 1-21              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
-  sum.js                             |    87.5 |      100 |      50 |     100 |                   
-  sumDependency.js                   |       0 |        0 |       0 |       0 | 8-13              
+  sum.js                             |     100 |      100 |      50 |     100 |                   
+  sumDependency.js                   |       0 |        0 |       0 |       0 | 1-15              
  coverage-report/cached-duplicates/a |     100 |      100 |     100 |     100 |                   
   identical.js                       |     100 |      100 |     100 |     100 |                   
  coverage-report/cached-duplicates/b |     100 |      100 |     100 |     100 |                   
@@ -72,13 +72,13 @@ exports[`outputs coverage report 1`] = `
 "-------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
-All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.36 |        0 |      25 |      50 |                   
+All files                            |   60.86 |       60 |      50 |   60.86 |                   
+ coverage-report                     |      50 |    33.33 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 1-21              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
-  sum.js                             |    87.5 |      100 |      50 |     100 |                   
-  sumDependency.js                   |       0 |        0 |       0 |       0 | 8-13              
+  sum.js                             |     100 |      100 |      50 |     100 |                   
+  sumDependency.js                   |       0 |        0 |       0 |       0 | 1-15              
  coverage-report/cached-duplicates/a |     100 |      100 |     100 |     100 |                   
   identical.js                       |     100 |      100 |     100 |     100 |                   
  coverage-report/cached-duplicates/b |     100 |      100 |     100 |     100 |                   
@@ -89,21 +89,21 @@ All files                            |      60 |        0 |      50 |      60 |
 exports[`outputs coverage report when text and text-summary is requested 1`] = `
 "
 =============================== Coverage summary ===============================
-Statements   : 60% ( 15/25 )
-Branches     : 0% ( 0/4 )
+Statements   : 60.86% ( 56/92 )
+Branches     : 60% ( 3/5 )
 Functions    : 50% ( 3/6 )
-Lines        : 60% ( 12/20 )
+Lines        : 60.86% ( 56/92 )
 ================================================================================
 -------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
-All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.36 |        0 |      25 |      50 |                   
+All files                            |   60.86 |       60 |      50 |   60.86 |                   
+ coverage-report                     |      50 |    33.33 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 1-21              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
-  sum.js                             |    87.5 |      100 |      50 |     100 |                   
-  sumDependency.js                   |       0 |        0 |       0 |       0 | 8-13              
+  sum.js                             |     100 |      100 |      50 |     100 |                   
+  sumDependency.js                   |       0 |        0 |       0 |       0 | 1-15              
  coverage-report/cached-duplicates/a |     100 |      100 |     100 |     100 |                   
   identical.js                       |     100 |      100 |     100 |     100 |                   
  coverage-report/cached-duplicates/b |     100 |      100 |     100 |     100 |                   
@@ -115,13 +115,13 @@ exports[`outputs coverage report when text is requested 1`] = `
 "-------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
-All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.36 |        0 |      25 |      50 |                   
+All files                            |   60.86 |       60 |      50 |   60.86 |                   
+ coverage-report                     |      50 |    33.33 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 1-21              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
-  sum.js                             |    87.5 |      100 |      50 |     100 |                   
-  sumDependency.js                   |       0 |        0 |       0 |       0 | 8-13              
+  sum.js                             |     100 |      100 |      50 |     100 |                   
+  sumDependency.js                   |       0 |        0 |       0 |       0 | 1-15              
  coverage-report/cached-duplicates/a |     100 |      100 |     100 |     100 |                   
   identical.js                       |     100 |      100 |     100 |     100 |                   
  coverage-report/cached-duplicates/b |     100 |      100 |     100 |     100 |                   
@@ -132,9 +132,9 @@ All files                            |      60 |        0 |      50 |      60 |
 exports[`outputs coverage report when text-summary is requested 1`] = `
 "
 =============================== Coverage summary ===============================
-Statements   : 60% ( 15/25 )
-Branches     : 0% ( 0/4 )
+Statements   : 60.86% ( 56/92 )
+Branches     : 60% ( 3/5 )
 Functions    : 50% ( 3/6 )
-Lines        : 60% ( 12/20 )
+Lines        : 60.86% ( 56/92 )
 ================================================================================"
 `;
