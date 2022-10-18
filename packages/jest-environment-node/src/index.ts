@@ -90,7 +90,10 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
               configurable: descriptor.configurable,
               enumerable: descriptor.enumerable,
               value: val,
-              writable: descriptor.writable,
+              writable:
+                descriptor.writable === true ||
+                // Node 19 makes performance non-readable. This is probably not the correct solution.
+                nodeGlobalsKey === 'performance',
             });
             return val;
           },
