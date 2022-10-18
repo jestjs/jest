@@ -95,7 +95,7 @@ export interface BaseExpect {
 
 export type Expect = {
   <T = unknown>(actual: T): Matchers<void, T> &
-    Inverse<Matchers<void, T>> &
+    Inverse<Matchers<void>> &
     PromiseMatchers<T>;
 } & BaseExpect &
   AsymmetricMatchers &
@@ -129,7 +129,7 @@ type PromiseMatchers<T = unknown> = {
    * If the promise is rejected the assertion fails.
    */
   resolves: Matchers<Promise<void>, Awaited<T>> &
-    Inverse<Matchers<Promise<void>, Awaited<T>>>;
+    Inverse<Matchers<Promise<void>>>;
 };
 
 export interface Matchers<R extends void | Promise<void>, T = unknown> {

@@ -46,7 +46,7 @@ type PromiseMatchers<T = unknown> = {
    * If the promise is rejected the assertion fails.
    */
   resolves: JestMatchers<Promise<void>, Awaited<T>> &
-    Inverse<JestMatchers<Promise<void>, Awaited<T>>>;
+    Inverse<JestMatchers<Promise<void>>>;
 };
 
 declare module 'expect' {
