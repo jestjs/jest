@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-environment-node]` make `globalThis.performance` writable for Node 19 and fake timers ([#13467](https://github.com/facebook/jest/pull/13467))
+
 ### Chore & Maintenance
 
 ### Performance
