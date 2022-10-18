@@ -222,9 +222,9 @@ expectType<void>(
 );
 
 expectType<void>(
-  expect({name: 'someName', age: 12}).toBe({name: 'someOtherName', age: 13}),
+  expect({age: 12, name: 'someName'}).toBe({age: 13, name: 'someOtherName'}),
 );
-expectError(expect({name: 'someName', age: 12}).toBe({name: 'someOtherName'}));
+expectError(expect({age: 12, name: 'someName'}).toBe({name: 'someOtherName'}));
 
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
