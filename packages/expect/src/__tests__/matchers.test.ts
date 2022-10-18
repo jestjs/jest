@@ -263,6 +263,7 @@ describe('.toBe()', () => {
 
   it('does not crash on circular references', () => {
     type Circular = {circular?: Circular};
+
     const obj: Circular = {};
     obj.circular = obj;
 
