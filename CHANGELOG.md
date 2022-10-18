@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[expect, @jest/expect]` support type inference for `toBe` assertions ([#xxxxx](https://github.com/facebook/jest/pull/xxxxx))
 - `[@jest/globals, jest-mock]` Add `jest.Spied*` utility types ([#13440](https://github.com/facebook/jest/pull/13440))
 
 ### Fixes

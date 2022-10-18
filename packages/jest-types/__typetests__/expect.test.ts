@@ -221,6 +221,9 @@ expectType<void>(
   ),
 );
 
+expectType<void>(expect(3).toBe(5));
+expectError(expect(3).toBe('5'));
+
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123, 'value'));
