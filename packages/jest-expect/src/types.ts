@@ -29,7 +29,10 @@ type Inverse<Matchers> = {
   not: Matchers;
 };
 
-type JestMatchers<R extends void | Promise<void>, T> = Matchers<R, T> &
+type JestMatchers<R extends void | Promise<void>, T = unknown> = Matchers<
+  R,
+  T
+> &
   SnapshotMatchers<R, T>;
 
 type PromiseMatchers<T = unknown> = {
@@ -37,14 +40,13 @@ type PromiseMatchers<T = unknown> = {
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: JestMatchers<Promise<void>, T> &
-    Inverse<JestMatchers<Promise<void>, T>>;
+  rejects: JestMatchers<Promise<void>> & Inverse<JestMatchers<Promise<void>>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: JestMatchers<Promise<void>, T> &
-    Inverse<JestMatchers<Promise<void>, T>>;
+  resolves: JestMatchers<Promise<void>, Awaited<T>> &
+    Inverse<JestMatchers<Promise<void>, Awaited<T>>>;
 };
 
 declare module 'expect' {

@@ -123,12 +123,13 @@ type PromiseMatchers<T = unknown> = {
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>, T>>;
+  resolves: Matchers<Promise<void>, Awaited<T>> &
+    Inverse<Matchers<Promise<void>, Awaited<T>>>;
 };
 
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
