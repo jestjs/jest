@@ -58,5 +58,5 @@ workflows:
           name: test-node-partial-<< matrix.node-version >>
           matrix:
             parameters:
-              node-version: ['14', '16', '18']
+              node-version: ['14', '16', '18', '19']
       - test-jest-jasmine
