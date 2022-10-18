@@ -1082,6 +1082,10 @@ describe('preset', () => {
       jest.requireActual('./jest-preset.json'),
     );
 
+    const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
+      ? /Unexpected token } in JSON at position (104|110)[\s\S]* at /
+      : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
+
     await expect(
       normalize(
         {
@@ -1090,9 +1094,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrow(
-      /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
-    );
+    ).rejects.toThrow(errorMessage);
   });
 
   test('throws when preset evaluation throws type error', async () => {
@@ -1105,9 +1107,9 @@ describe('preset', () => {
       {virtual: true},
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '>=16.9.1')
-      ? "TypeError: Cannot read properties of undefined (reading 'call')"
-      : /TypeError: Cannot read property 'call' of undefined[\s\S]* at /;
+    const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
+      ? /TypeError: Cannot read property 'call' of undefined[\s\S]* at /
+      : "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
       normalize(
