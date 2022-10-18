@@ -5,28 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-describe('Testing the mocking of the format of a function export exposed on import through an accessor/getter', () => {
-  it('can mock a function export', () => {
-    const exports = {
-      __esModule: true,
-      fn: () => {},
-    };
-    Object.defineProperty(exports, 'fn', {
-      configurable: true,
-      enumerable: true,
-      get: () => {
-        () => 'testFunction';
-      },
-    });
-
-    jest.spyOn(exports, 'fn').mockImplementation(() => 'mockTestFunction');
-    expect(exports.fn()).toBe('mockTestFunction');
-
-    // mockFn.mockRestore();
-    // expect(exports.fn()).toBe('testFunction');
-  });
-});
-
 describe('Testing the mocking of a class', () => {
   it('can call an instance method', () => {
     class TestClass {
