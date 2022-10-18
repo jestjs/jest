@@ -12,7 +12,6 @@
     {"path": "../jest-resolve"},
     {"path": "../jest-runtime"},
     {"path": "../jest-snapshot"},
-    {"path": "../jest-types"},
-    {"path": "../test-utils"}
+    {"path": "../jest-types"}
   ]
 }

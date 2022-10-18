@@ -11,7 +11,6 @@
     {"path": "../jest-fake-timers"},
     {"path": "../jest-mock"},
     {"path": "../jest-types"},
-    {"path": "../jest-util"},
-    {"path": "../test-utils"}
+    {"path": "../jest-util"}
   ]
 }

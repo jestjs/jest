@@ -57,6 +57,12 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
         }
       }
 
+      // Only test files depend on `@jest/test-utils`, i.e. it is always a dev dependency.
+      // There is no need to include it as a project reference, because it is not needed to build the packages.
+      if (dep === '@jest/test-utils') {
+        return false;
+      }
+
       return true;
     })
     .map(dep =>
