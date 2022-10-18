@@ -7,11 +7,13 @@
 
 import {EventEmitter} from 'events';
 
-let createProcessObject;
+let createProcessObject: typeof import('../createProcessObject').default;
 
 function requireCreateProcessObject() {
   jest.isolateModules(() => {
-    createProcessObject = require('../createProcessObject').default;
+    createProcessObject = (
+      require('../createProcessObject') as typeof import('../createProcessObject')
+    ).default;
   });
 }
 
@@ -22,13 +24,13 @@ it('creates a process object that looks like the original one', () => {
   // "process" inherits from EventEmitter through the prototype chain.
   expect(fakeProcess instanceof EventEmitter).toBe(true);
 
-  // They look the same, but they are NOT the same (deep copied object). The
-  // "_events" property is checked to ensure event emitter properties are
+  // They look the same, but they are NOT the same (deep copied object).
+  // The `_events` property is checked to ensure event emitter properties are
   // properly copied.
-  ['argv', 'env', '_events'].forEach(key => {
-    // @ts-expect-error
+  (['argv', 'env', '_events'] as const).forEach(key => {
+    // @ts-expect-error: Testing internal `_events` property
     expect(fakeProcess[key]).toEqual(process[key]);
-    // @ts-expect-error
+    // @ts-expect-error: Testing internal `_events` property
     expect(fakeProcess[key]).not.toBe(process[key]);
   });
 
@@ -47,7 +49,7 @@ it('checks that process.env works as expected on Linux platforms', () => {
 
   // Existing properties inside process.env are copied to the fake environment.
   process.env.PROP_STRING = 'foo';
-  // @ts-expect-error
+  // @ts-expect-error: Type 'number' is not assignable to type 'string'.
   process.env.PROP_NUMBER = 3;
   process.env.PROP_UNDEFINED = undefined;
 
@@ -102,6 +104,6 @@ it('checks that process.env works as expected in Windows platforms', () => {
   // You can delete through case-insensitiveness too.
   delete fake.prop_string;
 
-  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
-  expect(Object.prototype.hasOwnProperty.call('PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call(fake, 'PROP_string')).toBe(false);
+  expect(Object.prototype.hasOwnProperty.call(fake, 'PROP_string')).toBe(false);
 });
