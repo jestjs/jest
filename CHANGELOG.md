@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Remove `ansi-escapes` dependency [#13471](https://github.com/facebook/jest/pull/13471)
+
 ### Performance
 
 - `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
