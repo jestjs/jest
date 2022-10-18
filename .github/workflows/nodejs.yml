@@ -40,6 +40,8 @@ jobs:
         with:
           node-version: 16
           cache: yarn
+      - name: Node version
+        run:  node -v
       - name: install
         run: yarn --immutable
       - name: build
