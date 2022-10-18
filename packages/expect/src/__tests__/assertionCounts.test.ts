@@ -37,7 +37,7 @@ describe('.hasAssertions()', () => {
 
   it('throws if expected is not undefined', () => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime error
       jestExpect.hasAssertions(2);
     }).toThrowErrorMatchingSnapshot();
   });
