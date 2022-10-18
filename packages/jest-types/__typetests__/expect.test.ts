@@ -221,8 +221,10 @@ expectType<void>(
   ),
 );
 
-expectType<void>(expect(3).toBe(5));
-expectError(expect(3).toBe('5'));
+expectType<void>(
+  expect({name: 'someName', age: 12}).toBe({name: 'someOtherName', age: 13}),
+);
+expectError(expect({name: 'someName', age: 12}).toBe({name: 'someOtherName'}));
 
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
 expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(123));
@@ -476,6 +478,7 @@ declare module 'expect' {
   interface AsymmetricMatchers {
     toBeWithinRange(floor: number, ceiling: number): void;
   }
+
   interface Matchers<R> {
     toBeWithinRange(floor: number, ceiling: number): R;
   }
