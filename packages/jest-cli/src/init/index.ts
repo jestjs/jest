@@ -15,7 +15,7 @@ import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generateConfigFile';
 import modifyPackageJson from './modifyPackageJson';
 import defaultQuestions, {testScriptQuestion} from './questions';
-import type {ProjectPackageJson} from './types';
+import type {ProjectPackageJson, PromptsResults} from './types';
 
 const {
   JEST_CONFIG_BASE_NAME,
@@ -25,15 +25,6 @@ const {
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } = constants;
-
-type PromptsResults = {
-  useTypescript: boolean;
-  clearMocks: boolean;
-  coverage: boolean;
-  coverageProvider: boolean;
-  environment: boolean;
-  scripts: boolean;
-};
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
@@ -101,12 +92,11 @@ export default async function init(
 
   let promptAborted = false;
 
-  // @ts-expect-error: Return type cannot be object - faulty typings
-  const results: PromptsResults = await prompts(questions, {
+  const results = (await prompts(questions, {
     onCancel: () => {
       promptAborted = true;
     },
-  });
+  })) as PromptsResults;
 
   if (promptAborted) {
     console.log();

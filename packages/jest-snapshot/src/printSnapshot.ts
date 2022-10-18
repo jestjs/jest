@@ -235,7 +235,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
-  snapshotFormat: SnapshotFormat,
+  snapshotFormat?: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';

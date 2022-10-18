@@ -644,3 +644,37 @@ test('direct usage', () => {
   expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
 });
 ```
+
+### `jest.Spied<Source>`
+
+Constructs the type of a spied class or function (i.e. the return type of `jest.spyOn()`).
+
+```ts title="__utils__/setDateNow.ts"
+import {jest} from '@jest/globals';
+
+export function setDateNow(now: number): jest.Spied<typeof Date.now> {
+  return jest.spyOn(Date, 'now').mockReturnValue(now);
+}
+```
+
+```ts
+import {afterEach, expect, jest, test} from '@jest/globals';
+import {setDateNow} from './__utils__/setDateNow';
+
+let spiedDateNow: jest.Spied<typeof Date.now> | undefined = undefined;
+
+afterEach(() => {
+  spiedDateNow?.mockReset();
+});
+
+test('renders correctly with a given date', () => {
+  spiedDateNow = setDateNow(1482363367071);
+  // ...
+
+  expect(spiedDateNow).toHaveBeenCalledTimes(1);
+});
+```
+
+Types of a class or function can be passed as type argument to `jest.Spied<Source>`. If you prefer to constrain the input type, use: `jest.SpiedClass<Source>` or `jest.SpiedFunction<Source>`.
+
+Use `jest.SpiedGetter<Source>` or `jest.SpiedSetter<Source>` to create the type of a spied getter or setter respectively.

@@ -155,6 +155,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
+  private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
@@ -213,12 +214,15 @@ export default class Runtime {
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
+    // TODO: make mandatory in Jest 30
+    globalConfig?: Config.GlobalConfig,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
     this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
+    this._globalConfig = globalConfig;
     this._explicitShouldMock = new Map();
     this._explicitShouldMockModule = new Map();
     this._internalModuleRegistry = new Map();
@@ -2122,6 +2126,15 @@ export default class Runtime {
             '`jest.getRealSystemTime()` is not available when using legacy fake timers.',
           );
         }
+      },
+      getSeed: () => {
+        // TODO: remove this check in Jest 30
+        if (this._globalConfig?.seed === undefined) {
+          throw new Error(
+            'The seed value is not available. Likely you are using older versions of the jest dependencies.',
+          );
+        }
+        return this._globalConfig.seed;
       },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,

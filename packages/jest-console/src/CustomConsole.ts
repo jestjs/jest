@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
+import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
@@ -52,8 +52,12 @@ export default class CustomConsole extends Console {
   override assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
-    } catch (error: any) {
-      this._logError('assert', error.toString());
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+      // https://github.com/facebook/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 
@@ -89,7 +93,7 @@ export default class CustomConsole extends Console {
   override group(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('group', chalk.bold(format(title, ...args)));
     }
   }
@@ -97,7 +101,7 @@ export default class CustomConsole extends Console {
   override groupCollapsed(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...args)));
     }
   }
@@ -117,7 +121,7 @@ export default class CustomConsole extends Console {
   }
 
   override time(label = 'default'): void {
-    if (this._timers[label]) {
+    if (this._timers[label] != null) {
       return;
     }
 
@@ -127,7 +131,7 @@ export default class CustomConsole extends Console {
   override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
@@ -138,7 +142,7 @@ export default class CustomConsole extends Console {
   override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));

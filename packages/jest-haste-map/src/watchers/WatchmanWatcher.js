@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as assert from 'assert';
+import {strict as assert} from 'assert';
 import {EventEmitter} from 'events';
 import * as path from 'path';
 import watchman from 'fb-watchman';

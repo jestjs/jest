@@ -19,7 +19,9 @@ jest.mock('prettier', () => {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
-          require('path').dirname(require.resolve('prettier')),
+          (require('path') as typeof import('path')).dirname(
+            require.resolve('prettier'),
+          ),
         ],
         ...opts,
       }),

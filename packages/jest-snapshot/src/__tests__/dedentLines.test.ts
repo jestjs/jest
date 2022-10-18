@@ -11,12 +11,14 @@ import {dedentLines} from '../dedentLines';
 const $$typeof = Symbol.for('react.test.json');
 const plugins = [builtinPlugins.ReactTestComponent];
 
-const formatLines2 = val => format(val, {indent: 2, plugins}).split('\n');
-const formatLines0 = val => format(val, {indent: 0, plugins}).split('\n');
+const formatLines2 = (val: unknown) =>
+  format(val, {indent: 2, plugins}).split('\n');
+const formatLines0 = (val: unknown) =>
+  format(val, {indent: 0, plugins}).split('\n');
 
 describe('dedentLines non-null', () => {
   test('no lines', () => {
-    const indented = [];
+    const indented: Array<string> = [];
     const dedented = indented;
 
     expect(dedentLines(indented)).toEqual(dedented);
@@ -129,7 +131,7 @@ describe('dedentLines null', () => {
     ['object key multi-line', {'multi\nline\nkey': false}],
     ['object value multi-line', {key: 'multi\nline\nvalue'}],
     ['object key and value multi-line', {'multi\nline': '\nleading nl'}],
-  ])('%s', (name, val) => {
+  ])('%s', (_name, val) => {
     expect(dedentLines(formatLines2(val))).toBeNull();
   });
 

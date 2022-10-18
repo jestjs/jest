@@ -8,7 +8,16 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
+import type {SyncExpectationResult} from 'expect';
 import format from 'pretty-format';
+import {
+  Context,
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from '../';
+import type SnapshotState from '../State';
 import {
   aBackground2,
   aBackground3,
@@ -19,12 +28,6 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
-import {
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-} from '../index';
 import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
@@ -144,7 +147,7 @@ describe('chalk', () => {
   // so snapshot tests pass in any environment with chalk level >= 1.
 
   // Simulate comparison lines from printSnapshotAndReceived.
-  const formatLines = chalkInstance => {
+  const formatLines = (chalkInstance: chalk.Chalk) => {
     const aColor = getSnapshotColorForChalkInstance(chalkInstance);
     const bColor = getReceivedColorForChalkInstance(chalkInstance);
     const cColor = chalkInstance.dim;
@@ -220,10 +223,11 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = false;
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -232,11 +236,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
       const snapshot = '';
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -245,7 +250,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties: Array<unknown> = [];
       const snapshot = '';
 
@@ -258,11 +263,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'resolves',
-      };
+      } as Context;
       const properties = {};
       const snapshot = Symbol('is not a string');
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -271,7 +277,7 @@ describe('matcher error', () => {
       const context = {
         isNot: true,
         promise: '',
-      };
+      } as Context;
       const received = -13;
       const snapshot = '13';
 
@@ -292,7 +298,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = () => {};
 
       expect(() => {
@@ -304,11 +310,12 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
       const hint = 'reminder';
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchSnapshot.call(context, received, properties, hint);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -317,10 +324,11 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties = null;
 
       expect(() => {
+        // @ts-expect-error: Testing runtime error
         toMatchSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -329,7 +337,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const properties: Array<unknown> = [];
 
       expect(() => {
@@ -343,7 +351,7 @@ describe('matcher error', () => {
         isNot: false,
         promise: '',
         snapshotState: {},
-      };
+      } as Context;
       const properties = {};
 
       test('(non-null)', () => {
@@ -365,7 +373,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'resolves',
-      };
+      } as Context;
       const hint = 'initialize me';
 
       expect(() => {
@@ -379,7 +387,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = () => {
         throw new Error('Not found');
       };
@@ -390,6 +398,7 @@ describe('matcher error', () => {
         toThrowErrorMatchingInlineSnapshot.call(
           context,
           received,
+          // @ts-expect-error: Testing runtime error
           snapshot,
           fromPromise,
         );
@@ -400,7 +409,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: 'rejects',
-      };
+      } as Context;
       const received = new Error('404');
       const snapshot = '"Not found"';
       const fromPromise = true;
@@ -421,7 +430,7 @@ describe('matcher error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = 13;
       const fromPromise = false;
 
@@ -439,7 +448,7 @@ describe('matcher error', () => {
       const context = {
         isNot: true,
         promise: '',
-      };
+      } as Context;
       const received = new Error('received');
       const hint = 'reminder';
       const fromPromise = true;
@@ -459,7 +468,7 @@ describe('other error', () => {
       const context = {
         isNot: false,
         promise: '',
-      };
+      } as Context;
       const received = () => {};
       const fromPromise = false;
 
@@ -489,13 +498,13 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => `${fullTestName} 1`,
+            fail: (fullTestName: string) => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id: 'abcdefg',
           text: 'Increase code coverage',
@@ -509,7 +518,7 @@ describe('pass false', () => {
             received,
             properties,
             snapshot,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -519,7 +528,7 @@ describe('pass false', () => {
             context,
             received,
             properties,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -541,12 +550,12 @@ describe('pass false', () => {
                 pass: false,
               };
             },
-          },
+          } as SnapshotState,
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id,
           text: 'received',
@@ -563,7 +572,7 @@ describe('pass false', () => {
           received,
           properties,
           snapshot,
-        );
+        ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
       });
@@ -586,11 +595,15 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = 'To write or not to write,\nthat is the question.';
       const hint = '(CI)';
 
-      const {message, pass} = toMatchSnapshot.call(context, received, hint);
+      const {message, pass} = toMatchSnapshot.call(
+        context,
+        received,
+        hint,
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -610,11 +623,15 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = 'Write me if you can!';
       const hint = '(CI)';
 
-      const {message, pass} = toMatchSnapshot.call(context, received, hint);
+      const {message, pass} = toMatchSnapshot.call(
+        context,
+        received,
+        hint,
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -631,20 +648,20 @@ describe('pass false', () => {
           isNot: false,
           promise: '',
           snapshotState: {
-            fail: fullTestName => `${fullTestName} 1`,
+            fail: (fullTestName: string) => `${fullTestName} 1`,
           },
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
 
         test('isLineDiffable false', () => {
           const {message, pass} = toMatchSnapshot.call(
             context,
             new RangeError('Invalid array length'),
             {name: 'Error'},
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -660,7 +677,7 @@ describe('pass false', () => {
             context,
             received,
             properties,
-          );
+          ) as SyncExpectationResult;
           expect(pass).toBe(false);
           expect(message()).toMatchSnapshot();
         });
@@ -686,12 +703,12 @@ describe('pass false', () => {
                 pass: false,
               };
             },
-          },
+          } as SnapshotState,
           utils: {
             iterableEquality: () => {},
             subsetEquality: () => {},
           },
-        };
+        } as unknown as Context;
         const received = {
           id,
           text: 'received',
@@ -704,7 +721,7 @@ describe('pass false', () => {
           received,
           properties,
           hint,
-        );
+        ) as SyncExpectationResult;
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
       });
@@ -728,7 +745,7 @@ describe('pass false', () => {
             };
           },
         },
-      };
+      } as Context;
       const received = new Error('received');
       const snapshot = '"inline snapshot"';
       const fromPromise = true;
@@ -738,7 +755,7 @@ describe('pass false', () => {
         received,
         snapshot,
         fromPromise,
-      );
+      ) as SyncExpectationResult;
       expect(pass).toBe(false);
       expect(message()).toMatchSnapshot();
     });
@@ -759,10 +776,13 @@ describe('pass true', () => {
             };
           },
         },
-      };
+      } as unknown as Context;
       const received = 7;
 
-      const {pass} = toMatchSnapshot.call(context, received);
+      const {pass} = toMatchSnapshot.call(
+        context,
+        received,
+      ) as SyncExpectationResult;
       expect(pass).toBe(true);
     });
   });
@@ -1142,14 +1162,14 @@ describe('printSnapshotAndReceived', () => {
       });
 
       test('single line expected and received', () => {
-        const expected = [];
+        const expected: Array<unknown> = [];
         const received = {};
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();
       });
 
       test('single line expected and multi line received', () => {
-        const expected = [];
+        const expected: Array<unknown> = [];
         const received = [0];
 
         expect(testWithStringify(expected, received, false)).toMatchSnapshot();

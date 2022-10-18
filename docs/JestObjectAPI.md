@@ -699,6 +699,10 @@ test('plays audio', () => {
 });
 ```
 
+### `jest.Spied<Source>`
+
+See [TypeScript Usage](MockFunctionAPI.md#jestspiedsource) chapter of Mock Functions page for documentation.
+
 ### `jest.clearAllMocks()`
 
 Clears the `mock.calls`, `mock.instances`, `mock.contexts` and `mock.results` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
@@ -907,6 +911,16 @@ This function is not available when using legacy fake timers implementation.
 :::
 
 ## Misc
+
+### `jest.getSeed()`
+
+Every time Jest runs a seed value is randomly generated which you could use in a pseudorandom number generator or anywhere else.
+
+:::tip
+
+Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test report summary. To manually set the value of the seed use [`--seed=<num>`](CLI.md#--seednum) CLI argument.
+
+:::
 
 ### `jest.setTimeout(timeout)`
 

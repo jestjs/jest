@@ -1243,7 +1243,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1292,7 +1292,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1341,7 +1341,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['content'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,OAAO',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,OAAO',
     };
     /* eslint-enable */
 
@@ -1382,7 +1382,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1422,7 +1422,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 
@@ -1462,7 +1462,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       sourcesContent: ['module.exports = "banana";'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAA;MAAA;IAAA;EAAA;EAAA;AAAA;AAAA;AAAA;AAfZA,MAAM,CAACC,OAAO,GAAG,QAAQ',
     };
     /* eslint-enable */
 

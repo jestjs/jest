@@ -7,6 +7,9 @@
 
 'use strict';
 
+// @ts-check
+// Note: type annotations allow type checking and IDEs autocompletion
+
 const path = require('path');
 const fs = require('fs');
 const yaml = require('js-yaml');
@@ -25,13 +28,15 @@ const localeMapping = new Map(
   )
 );
 
-module.exports = {
+/** @type {import('@docusaurus/types').Config} */
+const config = {
   i18n,
   title: 'Jest',
   titleDelimiter: '·',
   tagline: '🃏 Delightful JavaScript Testing',
   url: 'https://jestjs.io',
   baseUrl: '/',
+  organizationName: 'facebook',
   projectName: 'jest',
   favicon: 'img/favicon/favicon.ico',
   onBrokenLinks: 'warn',
@@ -39,7 +44,8 @@ module.exports = {
   presets: [
     [
       '@docusaurus/preset-classic',
-      {
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
         docs: {
           // homePageId: 'getting-started',
           showLastUpdateAuthor: true,
@@ -60,8 +66,8 @@ module.exports = {
           ],
         },
         blog: {
-          path: 'blog',
-          blogSidebarCount: 'ALL',
+          showReadingTime: true,
+          editUrl: 'https://github.com/facebook/jest/tree/main/website/',
         },
         theme: {
           customCss: [
@@ -83,20 +89,22 @@ module.exports = {
             [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
           ],
         },
-      },
+      }),
     ],
   ],
   plugins: [
     [
       '@docusaurus/plugin-client-redirects',
-      {
+      /** @type {import('@docusaurus/plugin-client-redirects').Options} */
+      ({
         // for legacy v1 Docusaurus site: /api.html => /api
         fromExtensions: ['html'],
-      },
+      }),
     ],
     [
       '@docusaurus/plugin-pwa',
-      {
+      /** @type {import('@docusaurus/plugin-pwa').Options} */
+      ({
         pwaHead: [
           {
             tagName: 'link',
@@ -145,158 +153,162 @@ module.exports = {
             content: '#000',
           },
         ],
-      },
+      }),
     ],
   ],
-  themeConfig: {
-    announcementBar: {
-      id: 'support_ukraine',
-      content:
-        'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.facebook.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
-      backgroundColor: '#20232a',
-      textColor: '#fff',
-      isCloseable: false,
-    },
-    docs: {
-      sidebar: {
-        hideable: true,
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      announcementBar: {
+        id: 'support_ukraine',
+        content:
+          'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.facebook.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
+        backgroundColor: '#20232a',
+        textColor: '#fff',
+        isCloseable: false,
       },
-    },
-    navbar: {
-      title: 'Jest',
-      items: [
-        // left items
-        {
-          type: 'docsVersionDropdown',
-          position: 'left',
-          dropdownActiveClassDisabled: true,
-          dropdownItemsAfter: [
-            ...Object.entries(ArchivedVersions).map(
-              ([versionName, versionUrl]) => ({
-                to: versionUrl,
-                label: versionName,
-              })
-            ),
-            {
-              to: '/versions',
-              label: 'All versions',
-            },
-          ],
+      docs: {
+        sidebar: {
+          hideable: true,
         },
-        // right items
-        {
-          label: 'Docs',
-          type: 'doc',
-          docId: 'getting-started',
-          position: 'right',
-        },
-        {
-          label: 'API',
-          type: 'doc',
-          docId: 'api',
-          position: 'right',
-        },
-        {
-          to: '/help',
-          label: 'Help',
-          position: 'right',
-        },
-        {to: 'blog', label: 'Blog', position: 'right'},
-        {type: 'localeDropdown', position: 'right'},
-        {
-          href: 'https://github.com/facebook/jest',
-          position: 'right',
-          className: 'header-github-link',
-          'aria-label': 'GitHub repository',
-        },
-      ],
-    },
-    image: 'img/opengraph.png',
-    prism: {
-      theme: require('./src/prism/themeLight'),
-      darkTheme: require('./src/prism/themeDark'),
-    },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Getting Started',
-              to: '/docs/getting-started',
-            },
-            {
-              label: 'Guides',
-              to: '/docs/snapshot-testing',
-            },
-            {
-              label: 'API Reference',
-              to: '/docs/api',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              to: 'https://stackoverflow.com/questions/tagged/jestjs',
-            },
-            {
-              label: 'Reactiflux',
-              to: 'https://www.reactiflux.com',
-            },
-            {
-              label: 'Twitter',
-              to: 'https://twitter.com/fbjest',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              to: 'https://github.com/facebook/jest',
-            },
-            {
-              label: 'Twitter',
-              to: 'https://twitter.com/fbjest',
-            },
-          ],
-        },
-        {
-          title: 'Legal',
-          items: [
-            {
-              label: 'Privacy',
-              href: 'https://opensource.facebook.com/legal/privacy/',
-            },
-            {
-              label: 'Terms',
-              href: 'https://opensource.facebook.com/legal/terms/',
-            },
-          ],
-        },
-      ],
-      logo: {
-        //         src: 'img/jest-outline.svg',
-        alt: 'Facebook Open Source Logo',
-        src: 'img/oss_logo.png',
-        href: 'https://opensource.facebook.com',
       },
-      copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
-    },
-    algolia: {
-      indexName: 'jest-v2',
-      appId: 'HP439UUSOL',
-      apiKey: 'e5e670fd16f8f17caada79d6b0931682',
-      contextualSearch: true,
-    },
-  },
+      navbar: {
+        title: 'Jest',
+        items: [
+          // left items
+          {
+            type: 'docsVersionDropdown',
+            position: 'left',
+            dropdownActiveClassDisabled: true,
+            dropdownItemsAfter: [
+              ...Object.entries(ArchivedVersions).map(
+                ([versionName, versionUrl]) => ({
+                  to: versionUrl,
+                  label: versionName,
+                })
+              ),
+              {
+                to: '/versions',
+                label: 'All versions',
+              },
+            ],
+          },
+          // right items
+          {
+            label: 'Docs',
+            type: 'doc',
+            docId: 'getting-started',
+            position: 'right',
+          },
+          {
+            label: 'API',
+            type: 'doc',
+            docId: 'api',
+            position: 'right',
+          },
+          {
+            to: '/help',
+            label: 'Help',
+            position: 'right',
+          },
+          {to: 'blog', label: 'Blog', position: 'right'},
+          {type: 'localeDropdown', position: 'right'},
+          {
+            href: 'https://github.com/facebook/jest',
+            position: 'right',
+            className: 'header-github-link',
+            'aria-label': 'GitHub repository',
+          },
+        ],
+      },
+      image: 'img/opengraph.png',
+      prism: {
+        theme: require('./src/prism/themeLight'),
+        darkTheme: require('./src/prism/themeDark'),
+      },
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Docs',
+            items: [
+              {
+                label: 'Getting Started',
+                to: '/docs/getting-started',
+              },
+              {
+                label: 'Guides',
+                to: '/docs/snapshot-testing',
+              },
+              {
+                label: 'API Reference',
+                to: '/docs/api',
+              },
+            ],
+          },
+          {
+            title: 'Community',
+            items: [
+              {
+                label: 'Stack Overflow',
+                href: 'https://stackoverflow.com/questions/tagged/jestjs',
+              },
+              {
+                label: 'Reactiflux',
+                href: 'https://www.reactiflux.com',
+              },
+              {
+                label: 'Twitter',
+                href: 'https://twitter.com/fbjest',
+              },
+            ],
+          },
+          {
+            title: 'More',
+            items: [
+              {
+                label: 'Blog',
+                to: '/blog',
+              },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/facebook/jest',
+              },
+              {
+                label: 'Twitter',
+                href: 'https://twitter.com/fbjest',
+              },
+            ],
+          },
+          {
+            title: 'Legal',
+            items: [
+              {
+                label: 'Privacy',
+                href: 'https://opensource.facebook.com/legal/privacy/',
+              },
+              {
+                label: 'Terms',
+                href: 'https://opensource.facebook.com/legal/terms/',
+              },
+            ],
+          },
+        ],
+        logo: {
+          //         src: 'img/jest-outline.svg',
+          alt: 'Facebook Open Source Logo',
+          src: 'img/oss_logo.png',
+          href: 'https://opensource.facebook.com',
+        },
+        copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
+      },
+      algolia: {
+        indexName: 'jest-v2',
+        appId: 'HP439UUSOL',
+        apiKey: 'e5e670fd16f8f17caada79d6b0931682',
+        contextualSearch: true,
+      },
+    }),
 };
+
+module.exports = config;
