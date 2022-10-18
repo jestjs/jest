@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ansiEscapes allows passing an argument to cursorDown function 1`] = `
+"<moveCursorDownBy2Rows>
+"
+`;
+
+exports[`ansiEscapes allows passing an argument to cursorUp function 1`] = `
+"<moveCursorUpBy2Rows>
+"
+`;
+
+exports[`ansiEscapes allows passing arguments to cursorTo function 1`] = `
+"<moveCursorToRow3Column12>
+"
+`;
+
+exports[`ansiEscapes clearTerminal sequence 1`] = `
+"<clearTerminal>
+"
+`;
+
+exports[`ansiEscapes cursorToFirstColumn sequence 1`] = `
+"<moveCursorToColumn1>
+"
+`;
+
+exports[`ansiEscapes eraseLine sequence 1`] = `
+"<eraseLine>
+"
+`;
+
+exports[`ansiEscapes eraseScreenDown sequence 1`] = `
+"<eraseScreenDown>
+"
+`;
+
+exports[`ansiEscapes hideCursor sequence 1`] = `
+"<hideCursor>
+"
+`;
+
+exports[`ansiEscapes restoreCursorPosition sequence 1`] = `
+"<restoreCursorPosition>
+"
+`;
+
+exports[`ansiEscapes restoreCursorPosition sequence on Terminal App 1`] = `
+"<restoreCursorPosition>
+"
+`;
+
+exports[`ansiEscapes returns cursorDown sequence 1`] = `
+"<moveCursorDownBy1Row>
+"
+`;
+
+exports[`ansiEscapes returns cursorUp sequence 1`] = `
+"<moveCursorUpBy1Row>
+"
+`;
+
+exports[`ansiEscapes saveCursorPosition sequence 1`] = `
+"<saveCursorPosition>
+"
+`;
+
+exports[`ansiEscapes saveCursorPosition sequence on Terminal App 1`] = `
+"<saveCursorPosition>
+"
+`;
+
+exports[`ansiEscapes showCursor sequence 1`] = `
+"<showCursor>
+"
+`;

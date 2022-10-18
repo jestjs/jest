@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
@@ -15,10 +14,10 @@ import type {Config} from '@jest/types';
 import type {IHasteMap as HasteMap} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {
+  ansiEscapes,
   isInteractive,
   preRunMessage,
   requireOrImportModule,
-  specialChars,
 } from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
@@ -267,7 +266,7 @@ export default async function watch(
     process.on('exit', () => {
       if (activePlugin) {
         outputStream.write(ansiEscapes.cursorDown());
-        outputStream.write(ansiEscapes.eraseDown);
+        outputStream.write(ansiEscapes.eraseScreenDown);
       }
     });
   }
@@ -280,7 +279,7 @@ export default async function watch(
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    isInteractive && outputStream.write(specialChars.CLEAR);
+    isInteractive && outputStream.write(ansiEscapes.clearTerminal);
     preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
@@ -434,7 +433,7 @@ export default async function watch(
       case 'w':
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
           outputStream.write(ansiEscapes.cursorUp());
-          outputStream.write(ansiEscapes.eraseDown);
+          outputStream.write(ansiEscapes.eraseScreenDown);
           outputStream.write(usage(globalConfig, watchPlugins));
           isWatchUsageDisplayed = true;
           shouldDisplayWatchUsage = false;
@@ -444,10 +443,10 @@ export default async function watch(
   };
 
   const onCancelPatternPrompt = () => {
-    outputStream.write(ansiEscapes.cursorHide);
-    outputStream.write(specialChars.CLEAR);
+    outputStream.write(ansiEscapes.hideCursor);
+    outputStream.write(ansiEscapes.clearTerminal);
     outputStream.write(usage(globalConfig, watchPlugins));
-    outputStream.write(ansiEscapes.cursorShow);
+    outputStream.write(ansiEscapes.showCursor);
   };
 
   if (typeof stdin.setRawMode === 'function') {

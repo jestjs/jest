@@ -6,9 +6,11 @@
  */
 
 // need to do this for api-extractor: https://github.com/microsoft/rushstack/issues/2780
+import * as ansiEscapes from './ansiEscapes';
 import * as preRunMessage from './preRunMessage';
 import * as specialChars from './specialChars';
 
+export {ansiEscapes};
 export {default as clearLine} from './clearLine';
 export {default as createDirectory} from './createDirectory';
 export {default as ErrorWithStack} from './ErrorWithStack';

@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
-import {pluralize, specialChars} from 'jest-util';
+import {ansiEscapes, pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';
 
 type RunnerUpdateFunction = (failure?: AssertionLocation) => void;
 
-const {ARROW, CLEAR} = specialChars;
+const {ARROW} = specialChars;
 
 function describeKey(key: string, description: string) {
   return `${chalk.dim(`${ARROW}Press`)} ${key} ${chalk.dim(description)}`;
@@ -98,11 +97,11 @@ export default class FailedTestsInteractiveMode {
 
   private _clearTestSummary() {
     this._pipe.write(ansiEscapes.cursorUp(6));
-    this._pipe.write(ansiEscapes.eraseDown);
+    this._pipe.write(ansiEscapes.eraseScreenDown);
   }
 
   private _drawUIDone() {
-    this._pipe.write(CLEAR);
+    this._pipe.write(ansiEscapes.clearTerminal);
 
     const messages: Array<string> = [
       chalk.bold('Watch Usage'),
@@ -113,7 +112,7 @@ export default class FailedTestsInteractiveMode {
   }
 
   private _drawUIDoneWithSkipped() {
-    this._pipe.write(CLEAR);
+    this._pipe.write(ansiEscapes.clearTerminal);
 
     let stats = `${pluralize('test', this._countPaths)} reviewed`;
 

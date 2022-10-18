@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {clearTerminal} from './ansiEscapes';
+
 const isWindows = process.platform === 'win32';
 
 export const ARROW = ' \u203A ';
@@ -15,4 +17,5 @@ export const ICONS = {
   todo: '\u270E',
 };
 
-export const CLEAR = isWindows ? '\x1B[2J\x1B[0f' : '\x1B[2J\x1B[3J\x1B[H';
+// TODO Remove reexport in Jest 30
+export const CLEAR = clearTerminal;

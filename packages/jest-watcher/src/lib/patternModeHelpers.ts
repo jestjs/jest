@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import stringLength = require('string-length');
+import {ansiEscapes} from 'jest-util';
 
 export function printPatternCaret(
   pattern: string,
@@ -15,9 +15,9 @@ export function printPatternCaret(
 ): void {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
-  pipe.write(ansiEscapes.eraseDown);
+  pipe.write(ansiEscapes.eraseScreenDown);
   pipe.write(inputText);
-  pipe.write(ansiEscapes.cursorSavePosition);
+  pipe.write(ansiEscapes.saveCursorPosition);
 }
 
 export function printRestoredPatternCaret(
@@ -28,7 +28,7 @@ export function printRestoredPatternCaret(
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(
-    ansiEscapes.cursorTo(stringLength(inputText), currentUsageRows - 1),
+    ansiEscapes.cursorTo(currentUsageRows, stringLength(inputText) + 1),
   );
-  pipe.write(ansiEscapes.cursorRestorePosition);
+  pipe.write(ansiEscapes.restoreCursorPosition);
 }

@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
-import {pluralize, specialChars} from 'jest-util';
+import {ansiEscapes, pluralize, specialChars} from 'jest-util';
 import {KEYS} from 'jest-watcher';
 
-const {ARROW, CLEAR} = specialChars;
+const {ARROW} = specialChars;
 
 export default class SnapshotInteractiveMode {
   private readonly _pipe: NodeJS.WritableStream;
@@ -40,7 +39,7 @@ export default class SnapshotInteractiveMode {
 
   private _clearTestSummary() {
     this._pipe.write(ansiEscapes.cursorUp(6));
-    this._pipe.write(ansiEscapes.eraseDown);
+    this._pipe.write(ansiEscapes.eraseScreenDown);
   }
 
   private _drawUIProgress() {
@@ -87,7 +86,7 @@ export default class SnapshotInteractiveMode {
   }
 
   private _drawUIDoneWithSkipped() {
-    this._pipe.write(CLEAR);
+    this._pipe.write(ansiEscapes.clearTerminal);
     const numPass = this._countPaths - this._testAssertions.length;
 
     let stats = chalk.bold.dim(
@@ -121,7 +120,7 @@ export default class SnapshotInteractiveMode {
   }
 
   private _drawUIDone() {
-    this._pipe.write(CLEAR);
+    this._pipe.write(ansiEscapes.clearTerminal);
     const numPass = this._countPaths - this._testAssertions.length;
 
     let stats = chalk.bold.dim(
