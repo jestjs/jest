@@ -1264,7 +1264,9 @@ describe('moduleMocker', () => {
       }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow('method property does not exist');
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(
@@ -1432,7 +1434,9 @@ describe('moduleMocker', () => {
       }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow('method property does not exist');
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(

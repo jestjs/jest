@@ -6,11 +6,14 @@
 
 ### Fixes
 
+- `[jest-environment-node]` make `globalThis.performance` writable for Node 19 and fake timers ([#13467](https://github.com/facebook/jest/pull/13467))
+- `[jest-mock]` Revert [#13398](https://github.com/facebook/jest/pull/13398) to restore mocking of setters ([#13472](https://github.com/facebook/jest/pull/13472))
+
 ### Chore & Maintenance
 
 ### Performance
 
-- `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
+- `[*]` Use sha1 instead of sha256 for hashing ([#13421](https://github.com/facebook/jest/pull/13421))
 
 ## 29.2.0
 
