@@ -24,6 +24,10 @@ export type ShardOptions = {
   shardCount: number;
 };
 
+type ShardPositionOptions = ShardOptions & {
+  suiteLength: number;
+};
+
 /**
  * The TestSequencer will ultimately decide which tests should run first.
  * It is responsible for storing and reading from a local cache
@@ -72,13 +76,13 @@ export default class TestSequencer {
     return cache;
   }
 
-  private _shardPosition(options: ShardOptions & {suiteLength: number}): number {
+  private _shardPosition(options: ShardPositionOptions): number {
     const shardRest = options.suiteLength % options.shardCount;
     const ratio = options.suiteLength / options.shardCount;
 
     return new Array(options.shardIndex)
       .fill(true)
-      .reduce((acc, _, shardIndex) => {
+      .reduce<number>((acc, _, shardIndex) => {
         const dangles = shardIndex < shardRest;
         const shardSize = dangles ? Math.ceil(ratio) : Math.floor(ratio);
         return acc + shardSize;
