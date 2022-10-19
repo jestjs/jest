@@ -20,7 +20,7 @@ test('that the failureDetails property is set', () => {
   ]);
 
   // safety check: if the reporter errors it'll show up here
-  expect(stderr).toStrictEqual('');
+  expect(stderr).toBe('');
 
   const output = JSON.parse(removeStackTraces(stdout));
 
@@ -90,11 +90,11 @@ test('that the failureDetails property is set', () => {
             "actual": "",
             "error": Object {
               "matcherResult": Object {
-                "actual": "Object {
+                "actual": "{
         "p1": "hello",
         "p2": "world",
       }",
-                "expected": "Object {
+                "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
@@ -105,7 +105,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -123,7 +123,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -136,7 +136,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -160,19 +160,19 @@ test('that the failureDetails property is set', () => {
           Object {
             "actual": "",
             "error": Object {
-              "message": "expect(received).rejects.toThrowError()
+              "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             },
             "expected": "",
             "matcherName": "",
-            "message": "Error: expect(received).rejects.toThrowError()
+            "message": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             "passed": false,
-            "stack": "Error: expect(received).rejects.toThrowError()
+            "stack": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1
@@ -215,11 +215,11 @@ test('that the failureDetails property is set', () => {
         Array [
           Object {
             "matcherResult": Object {
-              "actual": "Object {
+              "actual": "{
         "p1": "hello",
         "p2": "world",
       }",
-              "expected": "Object {
+              "expected": "{
         "p1": "hello",
         "p2": "sunshine",
       }",
@@ -230,7 +230,7 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
+        {
           "p1": "hello",
       -   "p2": "sunshine",
       +   "p2": "world",
@@ -245,7 +245,7 @@ test('that the failureDetails property is set', () => {
         ],
         Array [
           Object {
-            "message": "expect(received).rejects.toThrowError()
+            "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",

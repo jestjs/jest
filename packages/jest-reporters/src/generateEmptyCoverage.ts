@@ -36,7 +36,6 @@ export default async function generateEmptyCoverage(
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
     sourcesRelatedToTestsInChangedFiles,
   };

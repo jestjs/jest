@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "28.1.1",
+  "version": "29.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,25 +18,25 @@
     "./runner": "./runner.js"
   },
   "dependencies": {
-    "@jest/environment": "^28.1.1",
-    "@jest/expect": "^28.1.1",
-    "@jest/test-result": "^28.1.1",
-    "@jest/types": "^28.1.1",
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/test-result": "workspace:^",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "dedent": "^0.7.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^28.1.1",
-    "jest-matcher-utils": "^28.1.1",
-    "jest-message-util": "^28.1.1",
-    "jest-runtime": "^28.1.1",
-    "jest-snapshot": "^28.1.1",
-    "jest-util": "^28.1.1",
-    "pretty-format": "^28.1.1",
+    "jest-each": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-runtime": "workspace:^",
+    "jest-snapshot": "workspace:^",
+    "jest-util": "workspace:^",
+    "p-limit": "^3.1.0",
+    "pretty-format": "workspace:^",
     "slash": "^3.0.0",
-    "stack-utils": "^2.0.3",
-    "throat": "^6.0.1"
+    "stack-utils": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -49,7 +49,7 @@
     "graceful-fs": "^4.2.9"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

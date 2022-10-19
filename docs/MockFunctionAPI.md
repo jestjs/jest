@@ -5,15 +5,9 @@ title: Mock Functions
 
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
-:::info
+import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
-The TypeScript examples from this page will only work as document if you import `jest` from `'@jest/globals'`:
-
-```ts
-import {jest} from '@jest/globals';
-```
-
-:::
+<TypeScriptExamplesNote />
 
 ## Methods
 
@@ -27,7 +21,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `mockFn.getMockName()`
 
-Returns the mock name string set by calling `mockFn.mockName(value)`.
+Returns the mock name string set by calling [`.mockName()`](#mockfnmocknamename).
 
 ### `mockFn.mock.calls`
 
@@ -134,7 +128,7 @@ Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also rem
 
 This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
 
-The [`mockReset`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
+The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
 ### `mockFn.mockRestore()`
 
@@ -283,15 +277,16 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```
+```bash
 expect(mockedFunction).toHaveBeenCalled()
 
-Expected mock function "mockedFunction" to have been called, but it was not called.
+Expected number of calls: >= 1
+Received number of calls:    0
 ```
 
 ### `mockFn.mockReturnThis()`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn(function () {
@@ -355,7 +350,7 @@ mockFn(); // 'default'
 
 ### `mockFn.mockResolvedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -381,7 +376,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -421,7 +416,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -451,7 +446,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Syntactic sugar function for:
+Shorthand for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
@@ -480,6 +475,43 @@ test('async test', async () => {
 
   await asyncMock(); // 'first call'
   await asyncMock(); // throws 'Async error message'
+});
+```
+
+### `mockFn.withImplementation(fn, callback)`
+
+Accepts a function which should be temporarily used as the implementation of the mock while the callback is being executed.
+
+```js
+test('test', () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  mock.withImplementation(
+    () => 'inside callback',
+    () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
+});
+```
+
+`mockFn.withImplementation` can be used regardless of whether or not the callback is asynchronous (returns a `thenable`). If the callback is asynchronous a promise will be returned. Awaiting the promise will await the callback and reset the implementation.
+
+```js
+test('async test', async () => {
+  const mock = jest.fn(() => 'outside callback');
+
+  // We await this call since the callback is async
+  await mock.withImplementation(
+    () => 'inside callback',
+    async () => {
+      mock(); // 'inside callback'
+    },
+  );
+
+  mock(); // 'outside callback'
 });
 ```
 
@@ -516,7 +548,133 @@ test('calculate calls add', () => {
   // requiring `add`.
   calculate(mockAdd, 1, 2);
 
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
+  expect(mockAdd).toHaveBeenCalledTimes(1);
+  expect(mockAdd).toHaveBeenCalledWith(1, 2);
 });
 ```
+
+### `jest.Mock<T>`
+
+Constructs the type of a mock function, e.g. the return type of `jest.fn()`. It can be useful if you have to defined a recursive mock function:
+
+```ts
+import {jest} from '@jest/globals';
+
+const sumRecursively: jest.Mock<(value: number) => number> = jest.fn(value => {
+  if (value === 0) {
+    return 0;
+  } else {
+    return value + fn(value - 1);
+  }
+});
+```
+
+### `jest.Mocked<Source>`
+
+The `jest.Mocked<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock function.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+import type {fetch} from 'node-fetch';
+
+jest.mock('node-fetch');
+
+let mockedFetch: jest.Mocked<typeof fetch>;
+
+afterEach(() => {
+  mockedFetch.mockClear();
+});
+
+test('makes correct call', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+
+test('returns correct data', () => {
+  mockedFetch = getMockedFetch();
+  // ...
+});
+```
+
+Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
+
+### `jest.mocked(source, options?)`
+
+The `mocked()` helper method wraps types of the `source` object and its deep nested members with type definitions of Jest mock function. You can pass `{shallow: true}` as the `options` argument to disable the deeply mocked behavior.
+
+Returns the `source` object.
+
+```ts title="song.ts"
+export const song = {
+  one: {
+    more: {
+      time: (t: number) => {
+        return t;
+      },
+    },
+  },
+};
+```
+
+```ts title="song.test.ts"
+import {expect, jest, test} from '@jest/globals';
+import {song} from './song';
+
+jest.mock('./song');
+jest.spyOn(console, 'log');
+
+const mockedSong = jest.mocked(song);
+// or through `jest.Mocked<Source>`
+// const mockedSong = song as jest.Mocked<typeof song>;
+
+test('deep method is typed correctly', () => {
+  mockedSong.one.more.time.mockReturnValue(12);
+
+  expect(mockedSong.one.more.time(10)).toBe(12);
+  expect(mockedSong.one.more.time.mock.calls).toHaveLength(1);
+});
+
+test('direct usage', () => {
+  jest.mocked(console.log).mockImplementation(() => {
+    return;
+  });
+
+  console.log('one more time');
+
+  expect(jest.mocked(console.log).mock.calls).toHaveLength(1);
+});
+```
+
+### `jest.Spied<Source>`
+
+Constructs the type of a spied class or function (i.e. the return type of `jest.spyOn()`).
+
+```ts title="__utils__/setDateNow.ts"
+import {jest} from '@jest/globals';
+
+export function setDateNow(now: number): jest.Spied<typeof Date.now> {
+  return jest.spyOn(Date, 'now').mockReturnValue(now);
+}
+```
+
+```ts
+import {afterEach, expect, jest, test} from '@jest/globals';
+import {setDateNow} from './__utils__/setDateNow';
+
+let spiedDateNow: jest.Spied<typeof Date.now> | undefined = undefined;
+
+afterEach(() => {
+  spiedDateNow?.mockReset();
+});
+
+test('renders correctly with a given date', () => {
+  spiedDateNow = setDateNow(1482363367071);
+  // ...
+
+  expect(spiedDateNow).toHaveBeenCalledTimes(1);
+});
+```
+
+Types of a class or function can be passed as type argument to `jest.Spied<Source>`. If you prefer to constrain the input type, use: `jest.SpiedClass<Source>` or `jest.SpiedFunction<Source>`.
+
+Use `jest.SpiedGetter<Source>` or `jest.SpiedSetter<Source>` to create the type of a spied getter or setter respectively.

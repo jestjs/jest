@@ -114,6 +114,7 @@ export const initialize = async ({
   const snapshotState = new SnapshotState(snapshotPath, {
     expand: globalConfig.expand,
     prettierPath: config.prettierPath,
+    rootDir: config.rootDir,
     snapshotFormat: config.snapshotFormat,
     updateSnapshot: globalConfig.updateSnapshot,
   });

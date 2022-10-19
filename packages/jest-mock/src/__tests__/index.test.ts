@@ -8,7 +8,8 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
-import vm, {Context} from 'vm';
+import * as util from 'util';
+import {Context, createContext, runInContext, runInNewContext} from 'vm';
 import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
@@ -17,8 +18,8 @@ describe('moduleMocker', () => {
   let mockGlobals: typeof globalThis;
 
   beforeEach(() => {
-    mockContext = vm.createContext();
-    mockGlobals = vm.runInNewContext('this', mockContext);
+    mockContext = createContext();
+    mockGlobals = runInNewContext('this', mockContext);
     moduleMocker = new ModuleMocker(mockGlobals);
   });
 
@@ -27,11 +28,12 @@ describe('moduleMocker', () => {
       function x() {}
       const metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
-      expect(metadata.name).toBe('x');
+      expect(metadata!.name).toBe('x');
     });
 
     it('does not return broken name property', () => {
       class By {
+        // @ts-expect-error
         static name() {
           return 'this is not a name';
         }
@@ -44,9 +46,9 @@ describe('moduleMocker', () => {
     it('mocks constant values', () => {
       const metadata = moduleMocker.getMetadata(Symbol.for('bowties.are.cool'));
       expect(metadata.value).toEqual(Symbol.for('bowties.are.cool'));
-      expect(moduleMocker.getMetadata('banana').value).toEqual('banana');
-      expect(moduleMocker.getMetadata(27).value).toEqual(27);
-      expect(moduleMocker.getMetadata(false).value).toEqual(false);
+      expect(moduleMocker.getMetadata('banana').value).toBe('banana');
+      expect(moduleMocker.getMetadata(27).value).toBe(27);
+      expect(moduleMocker.getMetadata(false).value).toBe(false);
       expect(moduleMocker.getMetadata(Infinity).value).toEqual(Infinity);
     });
 
@@ -55,21 +57,21 @@ describe('moduleMocker', () => {
       const metadata = moduleMocker.getMetadata(array);
       expect(metadata.value).toBeUndefined();
       expect(metadata.members).toBeUndefined();
-      expect(metadata.type).toEqual('array');
+      expect(metadata.type).toBe('array');
     });
 
     it('does not retrieve metadata for undefined', () => {
       const metadata = moduleMocker.getMetadata(undefined);
       expect(metadata.value).toBeUndefined();
       expect(metadata.members).toBeUndefined();
-      expect(metadata.type).toEqual('undefined');
+      expect(metadata.type).toBe('undefined');
     });
 
     it('does not retrieve metadata for null', () => {
       const metadata = moduleMocker.getMetadata(null);
       expect(metadata.value).toBeNull();
       expect(metadata.members).toBeUndefined();
-      expect(metadata.type).toEqual('null');
+      expect(metadata.type).toBe('null');
     });
 
     it('retrieves metadata for ES6 classes', () => {
@@ -78,22 +80,22 @@ describe('moduleMocker', () => {
       }
       const fooInstance = new ClassFooMock();
       const metadata = moduleMocker.getMetadata(fooInstance);
-      expect(metadata.type).toEqual('object');
-      expect(metadata.members.constructor.name).toEqual('ClassFooMock');
+      expect(metadata.type).toBe('object');
+      expect(metadata.members.constructor.name).toBe('ClassFooMock');
     });
 
     it('retrieves synchronous function metadata', () => {
       function functionFooMock() {}
       const metadata = moduleMocker.getMetadata(functionFooMock);
-      expect(metadata.type).toEqual('function');
-      expect(metadata.name).toEqual('functionFooMock');
+      expect(metadata.type).toBe('function');
+      expect(metadata.name).toBe('functionFooMock');
     });
 
     it('retrieves asynchronous function metadata', () => {
       async function asyncFunctionFooMock() {}
       const metadata = moduleMocker.getMetadata(asyncFunctionFooMock);
-      expect(metadata.type).toEqual('function');
-      expect(metadata.name).toEqual('asyncFunctionFooMock');
+      expect(metadata.type).toBe('function');
+      expect(metadata.name).toBe('asyncFunctionFooMock');
     });
 
     it("retrieves metadata for object literals and it's members", () => {
@@ -101,20 +103,20 @@ describe('moduleMocker', () => {
         bar: 'two',
         foo: 1,
       });
-      expect(metadata.type).toEqual('object');
-      expect(metadata.members.bar.value).toEqual('two');
-      expect(metadata.members.bar.type).toEqual('constant');
-      expect(metadata.members.foo.value).toEqual(1);
-      expect(metadata.members.foo.type).toEqual('constant');
+      expect(metadata.type).toBe('object');
+      expect(metadata.members.bar.value).toBe('two');
+      expect(metadata.members.bar.type).toBe('constant');
+      expect(metadata.members.foo.value).toBe(1);
+      expect(metadata.members.foo.type).toBe('constant');
     });
 
     it('retrieves Date object metadata', () => {
       const metadata = moduleMocker.getMetadata(Date);
-      expect(metadata.type).toEqual('function');
-      expect(metadata.name).toEqual('Date');
-      expect(metadata.members.now.name).toEqual('now');
-      expect(metadata.members.parse.name).toEqual('parse');
-      expect(metadata.members.UTC.name).toEqual('UTC');
+      expect(metadata.type).toBe('function');
+      expect(metadata.name).toBe('Date');
+      expect(metadata.members.now.name).toBe('now');
+      expect(metadata.members.parse.name).toBe('parse');
+      expect(metadata.members.UTC.name).toBe('UTC');
     });
   });
 
@@ -284,7 +286,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from Object.prototype (in mock context)', () => {
-      const Bar = vm.runInContext(
+      const Bar = runInContext(
         `
           const Foo = { foo() {} };
           const Bar = Object.assign(Object.create(Foo), { bar() {} });
@@ -320,7 +322,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from Function.prototype (in mock context)', () => {
-      const Bar = vm.runInContext(
+      const Bar = runInContext(
         `
           class Foo {}
           class Bar extends Foo {}
@@ -351,7 +353,7 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock methods from RegExp.prototype (in mock context)', () => {
-      const bar = vm.runInContext(
+      const bar = runInContext(
         `
           const bar = /bar/;
           bar;
@@ -454,15 +456,15 @@ describe('moduleMocker', () => {
 
         // null context
         fn.apply(null, []); // eslint-disable-line no-useless-call
-        expect(fn.mock.contexts[3]).toBe(null);
+        expect(fn.mock.contexts[3]).toBeNull();
         fn.call(null); // eslint-disable-line no-useless-call
-        expect(fn.mock.contexts[4]).toBe(null);
+        expect(fn.mock.contexts[4]).toBeNull();
         fn.bind(null)();
-        expect(fn.mock.contexts[5]).toBe(null);
+        expect(fn.mock.contexts[5]).toBeNull();
 
         // Unspecified context is `undefined` in strict mode (like in this test) and `window` otherwise.
         fn();
-        expect(fn.mock.contexts[6]).toBe(undefined);
+        expect(fn.mock.contexts[6]).toBeUndefined();
       });
 
       it('supports clearing mock calls', () => {
@@ -483,7 +485,7 @@ describe('moduleMocker', () => {
         expect(fn.mock.calls).toEqual([['a', 'b', 'c']]);
         expect(fn.mock.contexts).toEqual([undefined]);
 
-        expect(fn()).toEqual('abcd');
+        expect(fn()).toBe('abcd');
       });
 
       it('supports clearing mocks', () => {
@@ -514,8 +516,8 @@ describe('moduleMocker', () => {
         moduleMocker.clearAllMocks();
         expect(fn1.mock.calls).toEqual([]);
         expect(fn2.mock.calls).toEqual([]);
-        expect(fn1()).toEqual('abcd');
-        expect(fn2()).toEqual('abcde');
+        expect(fn1()).toBe('abcd');
+        expect(fn2()).toBe('abcde');
       });
 
       it('supports resetting mock return values', () => {
@@ -523,12 +525,12 @@ describe('moduleMocker', () => {
         fn.mockReturnValue('abcd');
 
         const before = fn();
-        expect(before).toEqual('abcd');
+        expect(before).toBe('abcd');
 
         fn.mockReset();
 
         const after = fn();
-        expect(after).not.toEqual('abcd');
+        expect(after).not.toBe('abcd');
       });
 
       it('supports resetting single use mock return values', () => {
@@ -538,7 +540,7 @@ describe('moduleMocker', () => {
         fn.mockReset();
 
         const after = fn();
-        expect(after).not.toEqual('abcd');
+        expect(after).not.toBe('abcd');
       });
 
       it('supports resetting mock implementations', () => {
@@ -546,12 +548,12 @@ describe('moduleMocker', () => {
         fn.mockImplementation(() => 'abcd');
 
         const before = fn();
-        expect(before).toEqual('abcd');
+        expect(before).toBe('abcd');
 
         fn.mockReset();
 
         const after = fn();
-        expect(after).not.toEqual('abcd');
+        expect(after).not.toBe('abcd');
       });
 
       it('supports resetting single use mock implementations', () => {
@@ -561,7 +563,7 @@ describe('moduleMocker', () => {
         fn.mockReset();
 
         const after = fn();
-        expect(after).not.toEqual('abcd');
+        expect(after).not.toBe('abcd');
       });
 
       it('supports resetting all mocks', () => {
@@ -578,16 +580,16 @@ describe('moduleMocker', () => {
         moduleMocker.resetAllMocks();
         expect(fn1.mock.calls).toEqual([]);
         expect(fn2.mock.calls).toEqual([]);
-        expect(fn1()).not.toEqual('abcd');
-        expect(fn2()).not.toEqual('abcd');
+        expect(fn1()).not.toBe('abcd');
+        expect(fn2()).not.toBe('abcd');
       });
 
       it('maintains function arity', () => {
         const mockFunctionArity1 = moduleMocker.fn(x => x);
         const mockFunctionArity2 = moduleMocker.fn((x, y) => y);
 
-        expect(mockFunctionArity1.length).toBe(1);
-        expect(mockFunctionArity2.length).toBe(2);
+        expect(mockFunctionArity1).toHaveLength(1);
+        expect(mockFunctionArity2).toHaveLength(2);
       });
     });
 
@@ -598,8 +600,8 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
 
       expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(true);
-      expect(child.func()).toEqual('efgh');
-      expect(parent.func()).toEqual('abcd');
+      expect(child.func()).toBe('efgh');
+      expect(parent.func()).toBe('abcd');
     });
 
     it('should delete previously inexistent methods when restoring', () => {
@@ -609,12 +611,12 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
 
       moduleMocker.restoreAllMocks();
-      expect(child.func()).toEqual('abcd');
+      expect(child.func()).toBe('abcd');
 
       moduleMocker.spyOn(parent, 'func').mockReturnValue('jklm');
 
       expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(false);
-      expect(child.func()).toEqual('jklm');
+      expect(child.func()).toBe('jklm');
     });
 
     it('supports mock value returning undefined', () => {
@@ -624,7 +626,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(obj, 'func').mockReturnValue(undefined);
 
-      expect(obj.func()).not.toEqual('some text');
+      expect(obj.func()).not.toBe('some text');
     });
 
     it('supports mock value once returning undefined', () => {
@@ -634,14 +636,14 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(obj, 'func').mockReturnValueOnce(undefined);
 
-      expect(obj.func()).not.toEqual('some text');
+      expect(obj.func()).not.toBe('some text');
     });
 
     it('mockReturnValueOnce mocks value just once', () => {
       const fake = jest.fn(a => a + 2);
       fake.mockReturnValueOnce(42);
-      expect(fake(2)).toEqual(42);
-      expect(fake(2)).toEqual(4);
+      expect(fake(2)).toBe(42);
+      expect(fake(2)).toBe(4);
     });
 
     it('supports mocking resolvable async functions', () => {
@@ -983,7 +985,7 @@ describe('moduleMocker', () => {
         fn('a', 'b', 'c');
         expect(fn.mock.invocationCallOrder).toEqual([2]);
 
-        expect(fn()).toEqual('abcd');
+        expect(fn()).toBe('abcd');
       });
 
       it('supports clearing all mocks invocationCallOrder', () => {
@@ -1002,8 +1004,8 @@ describe('moduleMocker', () => {
         moduleMocker.clearAllMocks();
         expect(fn1.mock.invocationCallOrder).toEqual([]);
         expect(fn2.mock.invocationCallOrder).toEqual([]);
-        expect(fn1()).toEqual('abcd');
-        expect(fn2()).toEqual('abcde');
+        expect(fn1()).toBe('abcd');
+        expect(fn2()).toBe('abcde');
       });
 
       it('handles a property called `prototype`', () => {
@@ -1070,6 +1072,62 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Bar');
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
+    });
+  });
+
+  describe('withImplementation', () => {
+    it('sets an implementation which is available within the callback', () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      Module.withImplementation(
+        () => ({someFn: mock2}),
+        () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(3);
+    });
+
+    it('returns a promise if the provided callback is asynchronous', async () => {
+      const mock1 = jest.fn();
+      const mock2 = jest.fn();
+
+      const Module = jest.fn(() => ({someFn: mock1}));
+      const testFn = function () {
+        const m = new Module();
+        m.someFn();
+      };
+
+      const promise = Module.withImplementation(
+        () => ({someFn: mock2}),
+        async () => {
+          testFn();
+          expect(mock2).toHaveBeenCalled();
+          expect(mock1).not.toHaveBeenCalled();
+        },
+      );
+
+      expect(util.types.isPromise(promise)).toBe(true);
+
+      await promise;
+
+      testFn();
+      expect(mock1).toHaveBeenCalled();
+
+      expect.assertions(4);
     });
   });
 
@@ -1182,7 +1240,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).toHaveBeenCalled();
@@ -1194,7 +1252,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
@@ -1203,13 +1261,17 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow();
+      }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; number given instead',
+      );
     });
 
     it('supports restoring all spies', () => {
@@ -1233,8 +1295,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(1);
       expect(methodTwoCalls).toBe(1);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
 
       moduleMocker.restoreAllMocks();
 
@@ -1244,8 +1306,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
     });
 
     it('should work with getters', () => {
@@ -1263,7 +1325,7 @@ describe('moduleMocker', () => {
         },
       };
 
-      const spy = moduleMocker.spyOn(obj, 'method');
+      const spy = moduleMocker.spyOn(obj, 'method', 'get');
 
       const thisArg = {this: true};
       const firstArg = {first: true};
@@ -1271,7 +1333,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).toHaveBeenCalled();
@@ -1283,7 +1345,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
@@ -1326,7 +1388,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).toHaveBeenCalled();
@@ -1338,7 +1400,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
@@ -1369,13 +1431,17 @@ describe('moduleMocker', () => {
     it('should throw on invalid input', () => {
       expect(() => {
         moduleMocker.spyOn(null, 'method');
-      }).toThrow();
+      }).toThrow('spyOn could not find an object to spy upon for method');
       expect(() => {
         moduleMocker.spyOn({}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; undefined given instead',
+      );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
-      }).toThrow();
+      }).toThrow(
+        'Cannot spy the method property because it is not a function; number given instead',
+      );
     });
 
     it('supports restoring all spies', () => {
@@ -1403,8 +1469,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(1);
       expect(methodTwoCalls).toBe(1);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
 
       moduleMocker.restoreAllMocks();
 
@@ -1414,8 +1480,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
     });
 
     it('should work with getters on the prototype chain', () => {
@@ -1442,7 +1508,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).toHaveBeenCalled();
@@ -1454,7 +1520,7 @@ describe('moduleMocker', () => {
       obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
       expect(originalCallThis).toBe(thisArg);
-      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments).toHaveLength(2);
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
@@ -1509,8 +1575,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(1);
       expect(methodTwoCalls).toBe(1);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
 
       moduleMocker.restoreAllMocks();
 
@@ -1520,8 +1586,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls.length).toBe(1);
-      expect(spy2.mock.calls.length).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
     });
   });
 });

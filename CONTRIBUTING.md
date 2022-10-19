@@ -108,7 +108,7 @@ Code that is written needs to be tested to ensure that it achieves the desired b
 
 ##### Unit tests
 
-Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much if any setup.
+Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much of any setup.
 
 ##### Integration tests
 

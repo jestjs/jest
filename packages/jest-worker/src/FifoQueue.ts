@@ -27,7 +27,7 @@ type WorkerQueueValue = {
 export default class FifoQueue implements TaskQueue {
   private _workerQueues: Array<InternalQueue<WorkerQueueValue> | undefined> =
     [];
-  private _sharedQueue = new InternalQueue<QueueChildMessage>();
+  private readonly _sharedQueue = new InternalQueue<QueueChildMessage>();
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
     if (workerId == null) {

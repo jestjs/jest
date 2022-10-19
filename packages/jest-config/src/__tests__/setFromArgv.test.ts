@@ -30,13 +30,13 @@ test('maps special values to valid options', () => {
 test('maps regular values to themselves', () => {
   const options = {} as Config.InitialOptions;
   const argv = {
-    collectCoverageOnlyFrom: ['a', 'b'],
+    collectCoverageFrom: '**/*.{js,jsx}',
     coverageDirectory: 'covDir',
     watchman: true,
   } as Config.Argv;
 
   expect(setFromArgv(options, argv)).toMatchObject({
-    collectCoverageOnlyFrom: ['a', 'b'],
+    collectCoverageFrom: '**/*.{js,jsx}',
     coverageDirectory: 'covDir',
     watchman: true,
   });

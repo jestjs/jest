@@ -22,5 +22,6 @@ export type {
   TransformOptions,
   TransformResult,
   TransformedSource,
+  TransformerFactory,
 } from './types';
 export {default as handlePotentialSyntaxError} from './enhanceUnexpectedTokenMessage';

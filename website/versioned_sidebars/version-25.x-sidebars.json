@@ -68,6 +68,10 @@
         },
         {
           "type": "doc",
+          "id": "version-25.x/ecmascript-modules"
+        },
+        {
+          "type": "doc",
           "id": "version-25.x/webpack"
         },
         {

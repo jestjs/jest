@@ -140,11 +140,26 @@ const test: Global.It = (() => {
   ): void => _addTest(testName, 'only', true, fn, concurrentOnly, timeout);
 
   const bindFailing = (concurrent: boolean, mode: Circus.TestMode) => {
-    const failing = (
+    type FailingReturn = typeof concurrent extends true
+      ? Global.ConcurrentTestFn
+      : Global.TestFn;
+    const failing: Global.Failing<FailingReturn> = (
       testName: Circus.TestNameLike,
       fn?: Circus.TestFn,
       timeout?: number,
-    ): void => _addTest(testName, mode, concurrent, fn, failing, timeout, true);
+      eachError?: Error,
+    ): void =>
+      _addTest(
+        testName,
+        mode,
+        concurrent,
+        fn,
+        failing,
+        timeout,
+        true,
+        eachError,
+      );
+    failing.each = bindEach(failing, false, true);
     return failing;
   };
 
@@ -171,9 +186,8 @@ const test: Global.It = (() => {
     ) => void,
     timeout?: number,
     failing?: boolean,
+    asyncError: Error = new ErrorWithStack(undefined, testFn),
   ) => {
-    const asyncError = new ErrorWithStack(undefined, testFn);
-
     try {
       testName = convertDescriptorToString(testName);
     } catch (error) {

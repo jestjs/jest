@@ -7,13 +7,13 @@
 
 import chalk = require('chalk');
 import exit = require('exit');
-import rimraf = require('rimraf');
+import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
-import type HasteMap from 'jest-haste-map';
+import type {IHasteMap} from 'jest-haste-map';
 import Runtime from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {TestWatcher} from 'jest-watcher';
@@ -63,10 +63,13 @@ export async function runCLI(
   }
 
   if (argv.clearCache) {
-    configs.forEach(config => {
-      rimraf.sync(config.cacheDirectory);
-      process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
-    });
+    // stick in a Set to dedupe the deletions
+    new Set(configs.map(config => config.cacheDirectory)).forEach(
+      cacheDirectory => {
+        fs.rmSync(cacheDirectory, {force: true, recursive: true});
+        process.stdout.write(`Cleared ${cacheDirectory}\n`);
+      },
+    );
 
     exit(0);
   }
@@ -233,13 +236,13 @@ const runWatch = async (
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
-  hasteMapInstances: Array<HasteMap>,
+  hasteMapInstances: Array<IHasteMap>,
   filter?: Filter,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(
+      return await watch(
         globalConfig,
         contexts,
         outputStream,

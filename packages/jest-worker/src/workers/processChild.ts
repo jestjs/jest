@@ -5,16 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isPromise} from 'jest-util';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   ChildMessageCall,
   ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
+  ParentMessageMemUsage,
 } from '../types';
 
 type UnknownFunction = (...args: Array<unknown>) => unknown | Promise<unknown>;
@@ -41,7 +45,7 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
+      setupArgs = init[3];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -51,6 +55,10 @@ const messageListener: NodeJS.MessageListener = (request: any) => {
 
     case CHILD_MESSAGE_END:
       end();
+      break;
+
+    case CHILD_MESSAGE_MEM_USAGE:
+      reportMemoryUsage();
       break;
 
     default:
@@ -75,6 +83,19 @@ function reportClientError(error: Error) {
 
 function reportInitializeError(error: Error) {
   return reportError(error, PARENT_MESSAGE_SETUP_ERROR);
+}
+
+function reportMemoryUsage() {
+  if (!process || !process.send) {
+    throw new Error('Child can only be used on a forked process');
+  }
+
+  const msg: ParentMessageMemUsage = [
+    PARENT_MESSAGE_MEM_USAGE,
+    process.memoryUsage().heapUsed,
+  ];
+
+  process.send(msg);
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
@@ -118,7 +139,7 @@ function execMethod(method: string, args: Array<unknown>): void {
   let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }
@@ -137,11 +158,6 @@ function execMethod(method: string, args: Array<unknown>): void {
 
   execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
 }
-
-const isPromise = (obj: any): obj is PromiseLike<unknown> =>
-  !!obj &&
-  (typeof obj === 'object' || typeof obj === 'function') &&
-  typeof obj.then === 'function';
 
 function execFunction(
   fn: UnknownFunction,

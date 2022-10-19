@@ -191,13 +191,23 @@ async function runTestInternal(
       changedFiles: context.changedFiles,
       collectCoverage: globalConfig.collectCoverage,
       collectCoverageFrom: globalConfig.collectCoverageFrom,
-      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
       coverageProvider: globalConfig.coverageProvider,
       sourcesRelatedToTestsInChangedFiles:
         context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
+    globalConfig,
   );
+
+  let isTornDown = false;
+
+  const tearDownEnv = async () => {
+    if (!isTornDown) {
+      runtime.teardown();
+      await environment.teardown();
+      isTornDown = true;
+    }
+  };
 
   const start = Date.now();
 
@@ -271,9 +281,13 @@ async function runTestInternal(
 
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
+    globalConfig.collectCoverage &&
     globalConfig.coverageProvider === 'v8' &&
     typeof environment.getVmContext === 'function';
 
+  // Node's error-message stack size is limited at 10, but it's pretty useful
+  // to see more than that when a test fails.
+  Error.stackTraceLimit = 100;
   try {
     await environment.setup();
 
@@ -345,13 +359,14 @@ async function runTestInternal(
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
+    await tearDownEnv();
+
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    runtime.teardown();
-    await environment.teardown();
+    await tearDownEnv();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

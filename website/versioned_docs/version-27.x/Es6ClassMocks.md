@@ -44,7 +44,11 @@ export default class SoundPlayerConsumer {
 
 Calling `jest.mock('./sound-player')` returns a useful "automatic mock" you can use to spy on calls to the class constructor and all of its methods. It replaces the ES6 class with a mock constructor, and replaces all of its methods with [mock functions](MockFunctions.md) that always return `undefined`. Method calls are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
-Please note that if you use arrow functions in your classes, they will _not_ be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.
+:::note
+
+If you use arrow functions in your classes, they will _not_ be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.
+
+:::
 
 If you don't need to replace the implementation of the class, this is the easiest option to set up. For example:
 
@@ -77,7 +81,7 @@ it('We can check if the consumer called a method on the class instance', () => {
   // mock.instances is available with automatic mocks:
   const mockSoundPlayerInstance = SoundPlayer.mock.instances[0];
   const mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
-  expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
+  expect(mockPlaySoundFile.mock.calls[0][0]).toBe(coolSoundFileName);
   // Equivalent to above check:
   expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
   expect(mockPlaySoundFile).toHaveBeenCalledTimes(1);
@@ -240,9 +244,9 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-**_Note: Arrow functions won't work_**
+:::note
 
-Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
+The mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -254,6 +258,8 @@ jest.mock('./sound-player', () => {
 ```
 
 This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, unless the code is transpiled to ES5, e.g. by `@babel/preset-env`. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
+
+:::
 
 ## Mocking a specific method of a class
 
@@ -343,7 +349,7 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
+This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toBeGreaterThan(0);`
 
 ### Mocking non-default class exports
 
@@ -438,6 +444,6 @@ it('We can check if the consumer called a method on the class instance', () => {
   const soundPlayerConsumer = new SoundPlayerConsumer();
   const coolSoundFileName = 'song.mp3';
   soundPlayerConsumer.playSomethingCool();
-  expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
+  expect(mockPlaySoundFile.mock.calls[0][0]).toBe(coolSoundFileName);
 });
 ```

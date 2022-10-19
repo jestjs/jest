@@ -6,6 +6,7 @@
  */
 
 import {createHash} from 'crypto';
+import {totalmem} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
 import merge = require('deepmerge');
@@ -36,6 +37,7 @@ import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
 import {parseShardPair} from './parseShardPair';
 import setFromArgv from './setFromArgv';
+import stringToBytes from './stringToBytes';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -50,7 +52,7 @@ const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
-type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+export type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -88,29 +90,16 @@ function verifyDirectoryExists(path: string, key: string) {
   }
 }
 
-// TS 3.5 forces us to split these into 2
-const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
+const mergeOptionWithPreset = <T extends 'moduleNameMapper' | 'transform'>(
+  options: Config.InitialOptions,
   preset: Config.InitialOptions,
+  optionName: T,
 ) => {
-  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
-    options['moduleNameMapper'] = {
-      ...options['moduleNameMapper'],
-      ...preset['moduleNameMapper'],
-      ...options['moduleNameMapper'],
-    };
-  }
-};
-
-const mergeTransformWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
-  preset: Config.InitialOptions,
-) => {
-  if (options['transform'] && preset['transform']) {
-    options['transform'] = {
-      ...options['transform'],
-      ...preset['transform'],
-      ...options['transform'],
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
     };
   }
 };
@@ -119,8 +108,8 @@ const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
 ) => {
-  if (options['globals'] && preset['globals']) {
-    options['globals'] = merge(preset['globals'], options['globals']);
+  if (options.globals && preset.globals) {
+    options.globals = merge(preset.globals, options.globals);
   }
 };
 
@@ -204,8 +193,8 @@ const setupPreset = async (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeModuleNameMapperWithPreset(options, preset);
-  mergeTransformWithPreset(options, preset);
+  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
+  mergeOptionWithPreset(options, preset, 'transform');
   mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
@@ -250,27 +239,6 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-};
-
-const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptionsWithRootDir &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<string> = Array.isArray(
-    initialCollectCoverageFrom,
-  )
-    ? initialCollectCoverageFrom // passed from argv
-    : Object.keys(initialCollectCoverageFrom); // passed from options
-  return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
-    map[filePath] = true;
-    return map;
-  }, Object.create(null));
 };
 
 const normalizeCollectCoverageFrom = (
@@ -333,7 +301,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -528,7 +496,6 @@ export default async function normalize(
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
     recursiveDenylist: [
-      'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
       'coverageThreshold',
@@ -625,9 +592,6 @@ export default async function normalize(
       Required<Pick<Config.InitialOptions, typeof key>>;
     let value;
     switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-        break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
@@ -909,6 +873,11 @@ export default async function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'snapshotFormat': {
+        value = {...DEFAULT_CONFIG.snapshotFormat, ...oldOptions[key]};
+
+        break;
+      }
       case 'automock':
       case 'cache':
       case 'changedSince':
@@ -949,10 +918,10 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
+      case 'showSeed':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
-      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -964,6 +933,9 @@ export default async function normalize(
       case 'watchAll':
       case 'watchman':
         value = oldOptions[key];
+        break;
+      case 'workerIdleMemoryLimit':
+        value = stringToBytes(oldOptions[key], totalmem());
         break;
       case 'watchPlugins':
         value = (oldOptions[key] || []).map(watchPlugin => {
@@ -1050,6 +1022,24 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
+
+  const upperBoundSeedValue = 2 ** 31;
+
+  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  newOptions.seed =
+    argv.seed ??
+    Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
+  if (
+    newOptions.seed < -upperBoundSeedValue ||
+    newOptions.seed > upperBoundSeedValue - 1
+  ) {
+    throw new ValidationError(
+      'Validation Error',
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
+    );
+  }
+
   if (!newOptions.onlyChanged) {
     newOptions.onlyChanged = false;
   }
@@ -1090,14 +1080,14 @@ export default async function normalize(
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
 
-  if (newOptions.testRegex!.length && options.testMatch) {
+  if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex!.length && !options.testMatch) {
+  if (newOptions.testRegex.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1130,7 +1120,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom!,
+            newOptions.collectCoverageFrom,
           ).length === 0
         ) {
           return patterns;

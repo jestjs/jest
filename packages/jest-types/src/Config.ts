@@ -35,7 +35,7 @@ export type GlobalFakeTimersConfig = {
    *
    * @defaultValue
    * The default is `false`.
-   * */
+   */
   enableGlobally?: boolean;
 };
 
@@ -55,7 +55,7 @@ export type FakeTimersConfig = {
    *
    * @defaultValue
    * The default is `[]`, meaning all APIs are faked.
-   * */
+   */
   doNotFake?: Array<FakeableAPI>;
   /**
    * Sets current system time to be used by fake timers.
@@ -190,6 +190,7 @@ export type DefaultOptions = {
   setupFilesAfterEnv: Array<string>;
   skipFilter: boolean;
   slowTestThreshold: number;
+  snapshotFormat: SnapshotFormat;
   snapshotSerializers: Array<string>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -231,9 +232,6 @@ export type InitialOptions = Partial<{
   changedSince: string;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
-  collectCoverageOnlyFrom: {
-    [key: string]: boolean;
-  };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
@@ -293,6 +291,7 @@ export type InitialOptions = Partial<{
   sandboxInjectedGlobals: Array<string>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  showSeed: boolean;
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
@@ -326,6 +325,7 @@ export type InitialOptions = Partial<{
   watchAll: boolean;
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
+  workerIdleMemoryLimit: number | string;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -362,9 +362,6 @@ export type GlobalConfig = {
   ci: boolean;
   collectCoverage: boolean;
   collectCoverageFrom: Array<string>;
-  collectCoverageOnlyFrom?: {
-    [key: string]: boolean;
-  };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
@@ -398,6 +395,8 @@ export type GlobalConfig = {
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
+  seed: number;
+  showSeed?: boolean;
   shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
@@ -419,6 +418,7 @@ export type GlobalConfig = {
     path: string;
     config: Record<string, unknown>;
   }> | null;
+  workerIdleMemoryLimit?: number;
 };
 
 export type ProjectConfig = {
@@ -477,6 +477,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<string>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns?: Array<string>;
+  workerIdleMemoryLimit?: number;
 };
 
 export type Argv = Arguments<
@@ -493,7 +494,6 @@ export type Argv = Arguments<
     clearMocks: boolean;
     collectCoverage: boolean;
     collectCoverageFrom: string;
-    collectCoverageOnlyFrom: Array<string>;
     color: boolean;
     colors: boolean;
     config: string;
@@ -540,6 +540,8 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    seed: number;
+    showSeed: boolean;
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
@@ -570,5 +572,6 @@ export type Argv = Arguments<
     watchAll: boolean;
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
+    workerIdleMemoryLimit: number | string;
   }>
 >;

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "include": ["./src/**/*"],
+  "references": [
+    {"path": "../jest-environment"},
+    {"path": "../jest-expect"},
+    {"path": "../jest-mock"},
+    {"path": "../jest-types"}
+  ]
+}

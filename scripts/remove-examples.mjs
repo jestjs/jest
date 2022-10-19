@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import fs from 'graceful-fs';
-import rimraf from 'rimraf';
 import config from '../jest.config.mjs';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,4 +21,7 @@ fs.writeFileSync(
   `export default ${JSON.stringify(config, null, 2)};\n`,
 );
 
-rimraf.sync(path.resolve(dirname, '../examples/'));
+fs.rmSync(path.resolve(dirname, '../examples/'), {
+  force: true,
+  recursive: true,
+});

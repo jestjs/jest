@@ -59,10 +59,6 @@ export default function updateGlobalConfig(
     newConfig.collectCoverageFrom = options.collectCoverageFrom;
   }
 
-  if (options.collectCoverageOnlyFrom !== undefined) {
-    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
-  }
-
   if (options.coverageDirectory !== undefined) {
     newConfig.coverageDirectory = options.coverageDirectory;
   }

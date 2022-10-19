@@ -41,8 +41,9 @@ exports[`moduleNameMapper wrong array configuration 1`] = `
       12 | module.exports = () => 'test';
       13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:900:17)
-      at Object.require (index.js:10:1)"
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:752:17)
+      at Object.require (index.js:10:1)
+      at Object.require (__tests__/index.js:10:20)"
 `;
 
 exports[`moduleNameMapper wrong configuration 1`] = `
@@ -70,6 +71,7 @@ exports[`moduleNameMapper wrong configuration 1`] = `
       12 | module.exports = () => 'test';
       13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:900:17)
-      at Object.require (index.js:10:1)"
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/resolver.js:752:17)
+      at Object.require (index.js:10:1)
+      at Object.require (__tests__/index.js:10:20)"
 `;

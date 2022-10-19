@@ -88,6 +88,13 @@ export default async function jasmine2(
     );
   };
 
+  failing.each = () => {
+    throw new ErrorWithStack(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+      failing.each,
+    );
+  };
+
   environment.global.it.failing = failing;
   environment.global.fit.failing = failing;
   environment.global.xit.failing = failing;

@@ -50,13 +50,13 @@ describe('promise it', () => {
   });
 
   it('fails if failed expectation with done', done => {
-    expect(true).toEqual(false);
+    expect(true).toBe(false);
     done();
   });
 
   it('fails if failed expectation with done - async', done => {
     setTimeout(() => {
-      expect(true).toEqual(false);
+      expect(true).toBe(false);
       done();
     }, 1);
   });

@@ -10,8 +10,7 @@ import * as util from 'util';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
-import type {Templates} from './interpolation';
-import {interpolateVariables} from './interpolation';
+import {Templates, interpolateVariables} from './interpolation';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp#]/g;
 const PRETTY_PLACEHOLDER = '%p';

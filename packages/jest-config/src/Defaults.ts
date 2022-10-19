@@ -72,6 +72,7 @@ const defaultOptions: Config.DefaultOptions = {
   setupFilesAfterEnv: [],
   skipFilter: false,
   slowTestThreshold: 5,
+  snapshotFormat: {escapeString: false, printBasicPrototype: false},
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {},

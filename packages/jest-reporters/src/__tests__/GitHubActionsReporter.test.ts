@@ -8,7 +8,9 @@
 import type {Test, TestCaseResult, TestResult} from '@jest/test-result';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
-process.stderr.write = jest.fn();
+const mockedStderrWrite = jest
+  .spyOn(process.stderr, 'write')
+  .mockImplementation(() => true);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -81,8 +83,8 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
-    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
+    expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 
   test('when a test has reference error', () => {
@@ -98,8 +100,8 @@ describe('logs error annotation', () => {
       } as TestResult,
     );
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
-    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
+    expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 
   test('when test is wrapped in describe block', () => {
@@ -112,8 +114,8 @@ describe('logs error annotation', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(1);
-    expect(jest.mocked(process.stderr.write).mock.calls[0]).toMatchSnapshot();
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(1);
+    expect(mockedStderrWrite.mock.calls[0]).toMatchSnapshot();
   });
 });
 
@@ -129,7 +131,7 @@ describe('logs warning annotation before logging errors', () => {
       ],
     } as TestResult);
 
-    expect(jest.mocked(process.stderr.write)).toBeCalledTimes(2);
-    expect(jest.mocked(process.stderr.write).mock.calls).toMatchSnapshot();
+    expect(mockedStderrWrite).toHaveBeenCalledTimes(2);
+    expect(mockedStderrWrite.mock.calls).toMatchSnapshot();
   });
 });

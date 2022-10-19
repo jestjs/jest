@@ -63,7 +63,7 @@ export const printCloseTo = (
   receivedDiff: number,
   expectedDiff: number,
   precision: number,
-  isNot: boolean,
+  isNot: boolean | undefined,
 ): string => {
   const receivedDiffString = stringify(receivedDiff);
   const expectedDiffString = receivedDiffString.includes('e')

@@ -12,7 +12,7 @@ skipSuiteOnJasmine();
 
 it('calls asynchronous handleTestEvent in testEnvironment', () => {
   const result = runJest('test-environment-circus-async');
-  expect(result.failed).toEqual(true);
+  expect(result.failed).toBe(true);
 
   const lines = result.stdout.split('\n');
   expect(lines).toMatchInlineSnapshot(`

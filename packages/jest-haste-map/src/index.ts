@@ -34,6 +34,8 @@ import type {
   FileMetaData,
   HasteMapStatic,
   HasteRegExp,
+  IHasteMap,
+  IModuleMap,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
@@ -109,11 +111,12 @@ type Watcher = {
 
 type HasteWorker = typeof import('./worker');
 
-export type {default as FS} from './HasteFS';
-export {default as ModuleMap} from './ModuleMap';
+export const ModuleMap = HasteModuleMap as {
+  create: (rootPath: string) => IModuleMap;
+};
 export type {
-  ChangeEvent,
-  HasteMap as HasteMapObject,
+  IHasteFS,
+  IHasteMap,
   IModuleMap,
   SerializableModuleMap,
 } from './types';
@@ -210,11 +213,11 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-export default class HasteMap extends EventEmitter {
+class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
-  private _console: Console;
+  private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
@@ -227,7 +230,7 @@ export default class HasteMap extends EventEmitter {
     return HasteMap;
   }
 
-  static async create(options: Options): Promise<HasteMap> {
+  static async create(options: Options): Promise<IHasteMap> {
     if (options.hasteMapModulePath) {
       const CustomHasteMap = require(options.hasteMapModulePath);
       return new CustomHasteMap(options);
@@ -292,7 +295,7 @@ export default class HasteMap extends EventEmitter {
   }
 
   private async setupCachePath(options: Options): Promise<void> {
-    const rootDirHash = createHash('sha256')
+    const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
       .substring(0, 32);
@@ -341,7 +344,7 @@ export default class HasteMap extends EventEmitter {
     id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('sha256').update(extra.join(''));
+    const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
       `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
@@ -746,7 +749,6 @@ export default class HasteMap extends EventEmitter {
       } else {
         this._worker = new WorkerFarm(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
-          // @ts-expect-error: option does not exist on the node 12 types
           forkOptions: {serialization: 'json'},
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
@@ -795,7 +797,7 @@ export default class HasteMap extends EventEmitter {
     };
 
     try {
-      return crawl(crawlerOptions).catch(retry);
+      return await crawl(crawlerOptions);
     } catch (error: any) {
       return retry(error);
     }
@@ -1144,3 +1146,11 @@ function copy<T extends Record<string, unknown>>(object: T): T {
 function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
+
+// Export the smallest API surface required by Jest
+type IJestHasteMap = HasteMapStatic & {
+  create(options: Options): Promise<IHasteMap>;
+  getStatic(config: Config.ProjectConfig): HasteMapStatic;
+};
+const JestHasteMap: IJestHasteMap = HasteMap;
+export default JestHasteMap;
