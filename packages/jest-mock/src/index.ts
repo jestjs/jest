@@ -1314,7 +1314,7 @@ export class ModuleMocker {
     this._spyState = new Set();
   }
 
-  private _typeOf(value: any): string {
+  private _typeOf(value: unknown): string {
     return value == null ? `${value}` : typeof value;
   }
 
