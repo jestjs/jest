@@ -37,7 +37,7 @@ describe('createWorkerFarm', () => {
   test('exposes named methods correctly', async () => {
     await createWorkerFarm('/fake-worker.js');
 
-    expect(WorkerFarm).toBeCalledWith('/fake-worker.js', {
+    expect(WorkerFarm).toHaveBeenCalledWith('/fake-worker.js', {
       exposedMethods: ['methodA', 'methodB'],
     });
   });
@@ -45,15 +45,18 @@ describe('createWorkerFarm', () => {
   test('exposes default method correctly', async () => {
     await createWorkerFarm('/fake-worker-with-default-method.js');
 
-    expect(WorkerFarm).toBeCalledWith('/fake-worker-with-default-method.js', {
-      exposedMethods: ['default'],
-    });
+    expect(WorkerFarm).toHaveBeenCalledWith(
+      '/fake-worker-with-default-method.js',
+      {
+        exposedMethods: ['default'],
+      },
+    );
   });
 
   test('allows exposing methods explicitly', async () => {
     await createWorkerFarm('/fake-worker.js', {exposedMethods: ['methodA']});
 
-    expect(WorkerFarm).toBeCalledWith('/fake-worker.js', {
+    expect(WorkerFarm).toHaveBeenCalledWith('/fake-worker.js', {
       exposedMethods: ['methodA'],
     });
   });
