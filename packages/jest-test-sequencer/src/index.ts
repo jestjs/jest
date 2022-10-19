@@ -72,7 +72,7 @@ export default class TestSequencer {
     return cache;
   }
 
-  _shardPosition(options: ShardOptions & {suiteLength: number}): number {
+  private _shardPosition(options: ShardOptions & {suiteLength: number}): number {
     const shardRest = options.suiteLength % options.shardCount;
     const ratio = options.suiteLength / options.shardCount;
 
