@@ -13,7 +13,7 @@
     "@jest/globals": "workspace:^",
     "@jest/test-utils": "workspace:^",
     "@lerna-lite/cli": "^1.11.3",
-    "@microsoft/api-extractor": "^7.29.0",
+    "@microsoft/api-extractor": "^7.33.4",
     "@tsconfig/node14": "^1.0.3",
     "@tsd/typescript": "~4.8.2",
     "@types/babel__core": "^7.1.14",
