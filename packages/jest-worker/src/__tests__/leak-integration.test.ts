@@ -18,7 +18,7 @@ describe('WorkerThreads leaks', () => {
     writeFileSync(workerFile, 'module.exports.fn = () => {};');
   });
 
-  let worker: JestWorkerFarm<{fn(): void}>;
+  let worker: JestWorkerFarm<{fn(a?: unknown): unknown}>;
   beforeEach(async () => {
     worker = await createWorkerFarm(workerFile, {
       enableWorkerThreads: true,
@@ -48,7 +48,7 @@ describe('Worker leaks', () => {
     writeFileSync(workerFile, 'module.exports.fn = (obj) => [obj];');
   });
 
-  let worker: JestWorkerFarm<{fn(): void}>;
+  let worker: JestWorkerFarm<{fn(a?: unknown): unknown}>;
   beforeEach(async () => {
     worker = await createWorkerFarm(workerFile, {
       enableWorkerThreads: false,
