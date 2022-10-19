@@ -129,7 +129,7 @@ If legacy fake timers are enabled in Jest config file, but you would like to dis
 
 ### Custom Environment
 
-The constructor of [test environment](Configuration.md#testenvironment-string) class now receives an object with Jest's `globalConfig` and `projectConfig` as its first argument. The second argument is now mandatory.
+The constructor of [test environment](Configuration.md#testenvironment-string) class now receives an object with Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v28.1.3/packages/jest-types/src/Config.ts#L358-L422) and `projectConfig` as its first argument. The second argument is now mandatory.
 
 ```diff
   class CustomEnvironment extends NodeEnvironment {
