@@ -768,7 +768,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.0.3/packages/jest-types/src/Config.ts#L357-L419) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.0.3/packages/jest-types/src/Config.ts#L421-L478).
 
 :::info
 
