@@ -58,7 +58,8 @@ describe('Jest Worker Process Integration', () => {
       };
     });
 
-    createWorkerFarm = require('../').createWorkerFarm;
+    createWorkerFarm = (require('../') as typeof import('../'))
+      .createWorkerFarm;
   });
 
   afterEach(() => {

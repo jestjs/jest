@@ -12,13 +12,12 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
-let createWorkerFarm: typeof import('../').createWorkerFarm;
-
 class MockChildProcess extends EventEmitter {
   connected = true;
   send = jest.fn<(message: unknown) => boolean>();
 }
 
+let createWorkerFarm: typeof import('../').createWorkerFarm;
 let mockForkedProcesses: Array<MockChildProcess>;
 
 function replySuccess(i: number, result: unknown) {
