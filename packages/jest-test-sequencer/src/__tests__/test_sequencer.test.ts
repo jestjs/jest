@@ -368,6 +368,23 @@ test('returns expected 100/8 shards', async () => {
   );
 
   expect(shards.map(shard => shard.length)).toEqual([
-    13, 13, 13, 13, 13, 13, 13, 9,
+    13, 13, 13, 13, 12, 12, 12, 12,
+  ]);
+});
+
+test('returns expected 55/12 shards', async () => {
+  const allTests = toTests(new Array(55).fill(true).map((_, i) => `/${i}.js`));
+
+  const shards = await Promise.all(
+    new Array(12).fill(true).map((_, i) =>
+      sequencer.shard(allTests, {
+        shardCount: 12,
+        shardIndex: i + 1,
+      }),
+    ),
+  );
+
+  expect(shards.map(shard => shard.length)).toEqual([
+    5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4,
   ]);
 });
