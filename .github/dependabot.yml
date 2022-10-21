@@ -7,4 +7,4 @@ updates:
   - package-ecosystem: 'npm'
     directory: /
     schedule:
-      interval: dailyte
+      interval: daily
