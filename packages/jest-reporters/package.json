@@ -41,7 +41,7 @@
     "@jest/test-utils": "workspace:^",
     "@tsd/typescript": "~4.8.2",
     "@types/exit": "^0.1.30",
-    "@types/glob": "^7.1.1",
+    "@types/glob": "^8.0.0",
     "@types/graceful-fs": "^4.1.3",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-lib-instrument": "^1.7.2",
