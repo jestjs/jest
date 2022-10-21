@@ -8622,6 +8622,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emittery@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "emittery@npm:1.0.0"
+  checksum: 271943d3fb94571e8d1474c8147c5045641ecb508ec7e83f89960fdca397b0dad6b5ee26083931872d97b0101c3749cbcd82111da60227c9c439b2ebc79b3a46
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -12644,7 +12651,7 @@ __metadata:
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
-    emittery: ^0.10.2
+    emittery: ^1.0.0
     graceful-fs: ^4.2.9
     jest-docblock: "workspace:^"
     jest-environment-node: "workspace:^"
@@ -12892,7 +12899,7 @@ __metadata:
     "@types/node": "*"
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
-    emittery: ^0.10.2
+    emittery: ^1.0.0
     jest-util: "workspace:^"
     string-length: ^4.0.1
   languageName: unknown

@@ -17,7 +17,7 @@
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "emittery": "^0.10.2",
+    "emittery": "^1.0.0",
     "jest-util": "workspace:^",
     "string-length": "^4.0.1"
   },
