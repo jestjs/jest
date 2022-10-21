@@ -14,7 +14,8 @@ skipSuiteOnJasmine();
 
 const dir = path.resolve(__dirname, '../randomize');
 
-const trimFirstLine = (str: string): string => str.split('\n').slice(1).join('\n');
+const trimFirstLine = (str: string): string =>
+  str.split('\n').slice(1).join('\n');
 
 function runJestTwice(
   dir: string,
