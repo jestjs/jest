@@ -6,16 +6,21 @@
  */
 
 import {unsafeUniformIntDistribution, xoroshiro128plus} from 'pure-rand';
+import {invariant} from './invariant';
 
 // Generates [from, to] inclusive
 export type RandomNumberGenerator = {
   next: (from: number, to: number) => number;
 };
 
-// Will likely fail if there are more than 2**32 items to randomize
 export const rngBuilder: (seed: number) => RandomNumberGenerator = (
   seed: number,
 ) => {
+  const upperBoundSeedValue = 2 ** 31;
+  invariant(
+    seed < -upperBoundSeedValue || seed > upperBoundSeedValue - 1,
+    `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${seed}`,
+  );
   const gen = xoroshiro128plus(seed);
   return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
 };
@@ -28,16 +33,16 @@ export default function shuffleArray<T>(
 ): Array<T> {
   const length = array == null ? 0 : array.length;
 
-  if (!length) {
+  if (length === 0) {
     return [];
   }
-  let index = -1;
-  const lastIndex = length - 1;
-  while (++index < length) {
-    const n = random.next(index, lastIndex);
-    const value = array[index];
-    array[index] = array[n];
+
+  for (let i = 0; i < length; i++) {
+    const n = random.next(i, length - 1);
+    const value = array[i];
+    array[i] = array[n];
     array[n] = value;
   }
+
   return array;
 }

@@ -2165,6 +2165,14 @@ describe('showSeed', () => {
     const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
     expect(options.showSeed).toBeFalsy();
   });
+
+  test('showSeed is true when randomize is set', async () => {
+    const {options} = await normalize(
+      {randomize: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+    expect(options.showSeed).toBe(true);
+  });
 });
 
 describe('randomize', () => {
