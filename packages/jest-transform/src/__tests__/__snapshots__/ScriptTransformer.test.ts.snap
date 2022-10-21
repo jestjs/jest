@@ -360,7 +360,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -373,7 +373,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -386,7 +386,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -399,7 +399,7 @@ exports[`ScriptTransformer throws an error if \`process\` doesn't return an obje
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -412,7 +412,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -425,7 +425,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -438,7 +438,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
@@ -451,7 +451,7 @@ exports[`ScriptTransformer throws an error if \`processAsync\` doesn't return a 
 <red>  should return an object or a Promise resolving to an object. The object </color>
 <red>  must have \`code\` property with a string of processed code.</color>
 <red>  <bold>This error may be caused by a breaking change in Jest 28:</intensity></color>
-<red>  https://jestjs.io/docs/upgrading-to-jest28#transformer</color>
+<red>  https://jestjs.io/docs/28.x/upgrading-to-jest28#transformer</color>
 <red>  <bold>Code Transformation Documentation:</intensity></color>
 <red>  https://jestjs.io/docs/code-transformation</color>
 <red></color>"
