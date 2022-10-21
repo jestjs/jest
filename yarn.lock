@@ -16946,14 +16946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "pure-rand@npm:5.0.1"
-  checksum: 2b05a6d80163308583a013fab8d7f7f2958a6f77895680c99d8c3ea1f3e49ac273716a59cb1777cfc370540df53e6dc017e46c70a869da81fe490b2e6703d77d
-  languageName: node
-  linkType: hard
-
-"pure-rand@npm:^5.0.3":
+"pure-rand@npm:^5.0.1, pure-rand@npm:^5.0.3":
   version: 5.0.3
   resolution: "pure-rand@npm:5.0.3"
   checksum: a898ab8a40a8eebc641123dab19308044d8bd979efeaba1d8a45e9977593b25b00c3bd9681e2a558a7daec96c6fb8709995b8f10c55475e892b96f381bb6c6d2
