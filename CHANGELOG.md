@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Update link to Jest 28 upgrade guide in error message ([#13483](https://github.com/facebook/jest/pull/13483))
+- `[jest-runner, jest-watcher]` Update `emittery` ([#13490](https://github.com/facebook/jest/pull/13490))
 
 ### Performance
 
