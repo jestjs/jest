@@ -2513,6 +2513,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fast-check/jest@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@fast-check/jest@npm:1.3.0"
+  dependencies:
+    fast-check: ^3.0.0
+  peerDependencies:
+    "@jest/globals": ">=25.5.2"
+  checksum: 6956f2e14b83de57bd8b65ae11205cf277409dd657ceeca38af0c5e0849332041f210ca4fb1a4d34b598365e25f7f9dfc1e1f1c4cdbbc72ffcdcb37ba3db315a
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -2785,7 +2796,6 @@ __metadata:
     eslint-plugin-markdown: ^3.0.0
     eslint-plugin-prettier: ^4.0.0
     execa: ^5.0.0
-    fast-check: ^3.0.0
     find-process: ^1.4.1
     glob: ^8.0.0
     globby: ^11.0.1
@@ -8273,9 +8283,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "diff-sequences@workspace:packages/diff-sequences"
   dependencies:
+    "@fast-check/jest": ^1.3.0
     benchmark: ^2.1.4
     diff: ^5.0.0
-    fast-check: ^3.0.0
   languageName: unknown
   linkType: soft
 
@@ -9533,11 +9543,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
+    "@fast-check/jest": ^1.3.0
     "@jest/expect-utils": "workspace:^"
     "@jest/test-utils": "workspace:^"
     "@tsd/typescript": ~4.8.2
     chalk: ^4.0.0
-    fast-check: ^3.0.0
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
@@ -9647,11 +9657,11 @@ __metadata:
   linkType: hard
 
 "fast-check@npm:^3.0.0":
-  version: 3.1.1
-  resolution: "fast-check@npm:3.1.1"
+  version: 3.3.0
+  resolution: "fast-check@npm:3.3.0"
   dependencies:
-    pure-rand: ^5.0.1
-  checksum: 6f0aa2c6b88e91cd90bcad3bf32b5e674ea25117ecff22e5c26ec886dae51e9219d7f5863f4a9379b3d43862fcd9725e53254be04dfe284654736f53137ce224
+    pure-rand: ^5.0.2
+  checksum: 94767971594dd9eebeaa6897b3937a5a7d96abb7ab249f6cb7fb2115ad7ac9d6a5709501f7e57086bd35806669bddc7f420f247d66aa23c9c66ddda7268b2b23
   languageName: node
   linkType: hard
 
@@ -16840,10 +16850,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "pure-rand@npm:5.0.1"
-  checksum: 2b05a6d80163308583a013fab8d7f7f2958a6f77895680c99d8c3ea1f3e49ac273716a59cb1777cfc370540df53e6dc017e46c70a869da81fe490b2e6703d77d
+"pure-rand@npm:^5.0.2":
+  version: 5.0.3
+  resolution: "pure-rand@npm:5.0.3"
+  checksum: a898ab8a40a8eebc641123dab19308044d8bd979efeaba1d8a45e9977593b25b00c3bd9681e2a558a7daec96c6fb8709995b8f10c55475e892b96f381bb6c6d2
   languageName: node
   linkType: hard
 

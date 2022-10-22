@@ -42,7 +42,6 @@
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "execa": "^5.0.0",
-    "fast-check": "^3.0.0",
     "find-process": "^1.4.1",
     "glob": "^8.0.0",
     "globby": "^11.0.1",
