@@ -708,6 +708,7 @@ describe('.toEqual()', () => {
     [true, true],
     [1, 1],
     [NaN, NaN],
+    [new Date(NaN), new Date(NaN)],
     [0, Number(0)],
     [Number(0), 0],
     [new Number(0), new Number(0)],
