@@ -7,7 +7,7 @@
 
 import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
-import {RandomNumberGenerator, rngBuilder, shuffleArray} from 'jest-util';
+import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
 import {

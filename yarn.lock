@@ -12222,6 +12222,7 @@ __metadata:
     jest-util: "workspace:^"
     p-limit: ^3.1.0
     pretty-format: "workspace:^"
+    pure-rand: ^5.0.3
     slash: ^3.0.0
     stack-utils: ^2.0.3
   languageName: unknown
@@ -12819,7 +12820,6 @@ __metadata:
     ci-info: ^3.2.0
     graceful-fs: ^4.2.9
     picomatch: ^2.2.3
-    pure-rand: ^5.0.3
   languageName: unknown
   linkType: soft
 

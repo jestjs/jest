@@ -7,7 +7,7 @@
 
 import shuffleArray, {rngBuilder} from '../shuffleArray';
 
-describe(rngBuilder, () => {
+describe('rngBuilder', () => {
   // Breaking these orders would be a breaking change
   // Some people will be using seeds relying on a particular order
   test.each([1, 2, 4, 8, 16])('creates a randomizer given seed %s', seed => {
@@ -17,10 +17,19 @@ describe(rngBuilder, () => {
       .map(() => rng.next(0, 10));
     expect(results).toMatchSnapshot();
   });
+
+  test('throwing is seed is too large or too small', () => {
+    expect(() => rngBuilder(2 ** 33)).toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive instead it is 8589934592',
+    );
+    expect(() => rngBuilder(-(2 ** 33))).toThrow(
+      'seed value must be between `-0x80000000` and `0x7fffffff` inclusive instead it is -8589934592',
+    );
+  });
 });
 
-describe(shuffleArray, () => {
-  it('empty array is shuffled', () => {
+describe('shuffleArray', () => {
+  test('empty array is shuffled', () => {
     const shuffled = shuffleArray([], rngBuilder(seed));
     expect(shuffled).toEqual([]);
   });

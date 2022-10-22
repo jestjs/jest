@@ -6,7 +6,6 @@
  */
 
 import {unsafeUniformIntDistribution, xoroshiro128plus} from 'pure-rand';
-import {invariant} from './invariant';
 
 // Generates [from, to] inclusive
 export type RandomNumberGenerator = {
@@ -17,10 +16,12 @@ export const rngBuilder: (seed: number) => RandomNumberGenerator = (
   seed: number,
 ) => {
   const upperBoundSeedValue = 2 ** 31;
-  invariant(
-    seed > -upperBoundSeedValue || seed < upperBoundSeedValue - 1,
-    `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive instead it is ${seed}`,
-  );
+  if (seed < -upperBoundSeedValue || seed > upperBoundSeedValue - 1) {
+    throw new Error(
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive instead it is ${seed}`,
+    );
+  }
+
   const gen = xoroshiro128plus(seed);
   return {next: (from, to) => unsafeUniformIntDistribution(from, to, gen)};
 };
