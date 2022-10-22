@@ -3,7 +3,7 @@
 ### Features
 
 ### Fixes
-
+- `[@expect-utils]` Checking for invalid date [(#13492](https://github.com/facebook/jest/issues/13492))
 - `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
 
 ### Chore & Maintenance
