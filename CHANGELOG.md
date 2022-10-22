@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Update link to Jest 28 upgrade guide in error message ([#13483](https://github.com/facebook/jest/pull/13483))
+
 ### Performance
 
 ## 29.2.1
