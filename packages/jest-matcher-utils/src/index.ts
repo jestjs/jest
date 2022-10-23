@@ -412,7 +412,7 @@ export const replaceMatchedToAsymmetricMatcher = (
   replacedReceived: unknown,
   expectedCycles: Array<unknown>,
   receivedCycles: Array<unknown>,
-): any => {
+): {replacedExpected: unknown; replacedReceived: unknown} => {
   return _replaceMatchedToAsymmetricMatcher(
     deepCyclicCopyReplaceable(replacedExpected),
     deepCyclicCopyReplaceable(replacedReceived),
