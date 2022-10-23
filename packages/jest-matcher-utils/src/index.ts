@@ -407,19 +407,19 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   return true;
 };
 
-export const replaceMatchedToAsymmetricMatcher = (
+export function replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
   replacedReceived: unknown,
   expectedCycles: Array<unknown>,
   receivedCycles: Array<unknown>,
-): {replacedExpected: unknown; replacedReceived: unknown} => {
+): {replacedExpected: unknown; replacedReceived: unknown} {
   return _replaceMatchedToAsymmetricMatcher(
     deepCyclicCopyReplaceable(replacedExpected),
     deepCyclicCopyReplaceable(replacedReceived),
     expectedCycles,
     receivedCycles,
   );
-};
+}
 
 function _replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
