@@ -172,6 +172,19 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
 
+export interface MockedProperty {
+  /**
+   * Restore property to its original value known at the time of mocking.
+   */
+  mockRestore(): void;
+}
+
+type MockedPropertyRestorer<T = object> = {
+  (): void;
+  object: T;
+  property: keyof T;
+};
+
 type MockFunctionResultIncomplete = {
   type: 'incomplete';
   /**
@@ -988,6 +1001,27 @@ export class ModuleMocker {
   }
 
   /**
+   * Check whether given property of an object has been already mocked.
+   */
+  private _isAlreadyMocked<T extends object>(
+    object: T,
+    propertyKey: keyof T,
+  ): boolean {
+    for (const spyState of this._spyState) {
+      if (
+        'object' in spyState &&
+        'property' in spyState &&
+        (spyState as MockedPropertyRestorer).object === object &&
+        (spyState as MockedPropertyRestorer).property === propertyKey
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * @see README.md
    * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
@@ -1275,6 +1309,116 @@ export class ModuleMocker {
     }
 
     return mock;
+  }
+
+  mockProperty<
+    T extends object,
+    P extends PropertyLikeKeys<T>,
+    V extends Required<T>[P],
+  >(object: T, propertyKey: P, value: V): MockedProperty {
+    if (!object) {
+      throw new Error(
+        `mockProperty could not find an object on which to replace ${String(
+          propertyKey,
+        )}`,
+      );
+    }
+
+    if (!propertyKey) {
+      throw new Error('No property name supplied');
+    }
+
+    if (typeof object !== 'object') {
+      throw new Error(
+        `Cannot mock property on a primitive value; ${this._typeOf(
+          object,
+        )} given`,
+      );
+    }
+
+    let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
+    let proto = Object.getPrototypeOf(object);
+    while (!descriptor && proto !== null) {
+      descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
+      proto = Object.getPrototypeOf(proto);
+    }
+    if (!descriptor) {
+      throw new Error(`${String(propertyKey)} property does not exist`);
+    }
+    if (!descriptor.configurable) {
+      throw new Error(`${String(propertyKey)} is not declared configurable`);
+    }
+
+    if (this._isAlreadyMocked(object, propertyKey)) {
+      throw new Error(
+        `Cannot mock the ${String(
+          propertyKey,
+        )} property because it is already mocked`,
+      );
+    }
+
+    if (descriptor.get !== undefined) {
+      throw new Error(
+        `Cannot mock the ${String(
+          propertyKey,
+        )} property because it has a getter`,
+      );
+    }
+
+    if (descriptor.set !== undefined) {
+      throw new Error(
+        `Cannot mock the ${String(
+          propertyKey,
+        )} property because it has a setter`,
+      );
+    }
+
+    if (typeof descriptor.value !== typeof value) {
+      throw new Error(
+        `Cannot mock the ${String(
+          propertyKey,
+        )} property because it is not a ${this._typeOf(
+          descriptor.value,
+        )}; ${this._typeOf(value)} given instead`,
+      );
+    }
+
+    if (typeof descriptor.value === 'function') {
+      throw new Error(
+        `Cannot mock the ${String(
+          propertyKey,
+        )} property because it is a function; use spyOn instead`,
+      );
+    }
+
+    const isPropertyOwner = Object.prototype.hasOwnProperty.call(
+      object,
+      propertyKey,
+    );
+    const originalValue = descriptor.value;
+
+    object[propertyKey] = value;
+
+    const restore: MockedPropertyRestorer<typeof object> = () => {
+      if (isPropertyOwner) {
+        object[propertyKey] = originalValue;
+      } else {
+        delete object[propertyKey];
+      }
+    };
+
+    restore.object = object;
+    restore.property = propertyKey;
+
+    this._spyState.add(restore);
+
+    return {
+      mockRestore: (): void => {
+        restore();
+
+        this._spyState.delete(restore);
+      },
+    };
   }
 
   clearAllMocks(): void {
