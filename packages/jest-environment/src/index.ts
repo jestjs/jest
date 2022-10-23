@@ -320,6 +320,16 @@ export interface Jest {
    */
   spyOn: ModuleMocker['spyOn'];
   /**
+   * Replaces property on object with mock value.
+   *
+   * This method does not work on 'get' or 'set' accessors, and cannot be called
+   * on already replaced value.
+   *
+   * @remarks
+   * For mocking functions, use `jest.spyOn()` instead.
+   */
+  mockProperty: ModuleMocker['mockProperty'];
+  /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from `require()` (e.g. that it should always return the
    * real module).
