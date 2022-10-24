@@ -258,7 +258,7 @@ test('imports from "data:text/javascript" URI with invalid data fail', async () 
 test('imports from "data:application/wasm" URI not supported', async () => {
   await expect(() =>
     import('data:application/wasm,96cafe00babe'),
-  ).rejects.toThrow('WASM is currently not supported');
+  ).rejects.toThrow('WASM in data URLs is currently not supported');
 });
 
 test('supports imports from "data:application/json" URI', async () => {

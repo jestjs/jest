@@ -398,9 +398,12 @@ export default class Runtime {
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
   unstable_shouldLoadAsEsm(path: string): boolean {
-    return Resolver.unstable_shouldLoadAsEsm(
-      path,
-      this._config.extensionsToTreatAsEsm,
+    return (
+      path.endsWith('wasm') ||
+      Resolver.unstable_shouldLoadAsEsm(
+        path,
+        this._config.extensionsToTreatAsEsm,
+      )
     );
   }
 
@@ -440,6 +443,15 @@ export default class Runtime {
         transformResolve! && transformReject!,
         'Promise initialization should be sync - please report this bug to Jest!',
       );
+
+      if (modulePath.endsWith('wasm')) {
+        const wasm = this._importWasmModule(modulePath, context);
+
+        this._esmoduleRegistry.set(cacheKey, wasm);
+
+        transformResolve();
+        return wasm;
+      }
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
@@ -568,7 +580,7 @@ export default class Runtime {
 
       const mime = match.groups.mime;
       if (mime === 'application/wasm') {
-        throw new Error('WASM is currently not supported');
+        throw new Error('WASM in data URLs is currently not supported');
       }
 
       const encoding = match.groups.encoding;
@@ -1638,6 +1650,49 @@ export default class Runtime {
     );
 
     return evaluateSyntheticModule(module);
+  }
+
+  private async _importWasmModule(moduleName: string, context: VMContext) {
+    const wasmModule = await WebAssembly.compile(fs.readFileSync(moduleName));
+
+    const exports = WebAssembly.Module.exports(wasmModule);
+    const imports = WebAssembly.Module.imports(wasmModule);
+
+    const moduleLookup: Record<string, VMModule> = {};
+    for (const {module} of imports) {
+      if (moduleLookup[module] === undefined) {
+        moduleLookup[module] = await this.linkAndEvaluateModule(
+          await this.resolveModule(module, moduleName, context),
+        );
+      }
+    }
+
+    const syntheticModule = new SyntheticModule(
+      exports.map(({name}) => name),
+      function () {
+        const importsObject: WebAssembly.Imports = {};
+        for (const {module, name} of imports) {
+          if (!importsObject[module]) {
+            importsObject[module] = {};
+          }
+          importsObject[module][name] = moduleLookup[module].namespace[name];
+        }
+        const wasmInstance = new WebAssembly.Instance(
+          wasmModule,
+          importsObject,
+        );
+        for (const {name} of exports) {
+          // @ts-expect-error: TS doesn't know what `this` is
+          this.setExport(name, wasmInstance.exports[name]);
+        }
+      },
+      {
+        context,
+        identifier: moduleName,
+      },
+    );
+
+    return syntheticModule;
   }
 
   private _getMockedNativeModule(): typeof nativeModule.Module {
