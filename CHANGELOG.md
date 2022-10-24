@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
+- `[jest-mock]` Ensure mock resolved and rejected values are promises from correct realm ([#13503](https://github.com/facebook/jest/pull/13503))
 
 ### Chore & Maintenance
 
