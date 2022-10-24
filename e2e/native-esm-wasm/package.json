@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "name": "native-esm-wasm",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  }
+}
