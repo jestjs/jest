@@ -652,7 +652,7 @@ describe('moduleMocker', () => {
 
       const promise = fn();
 
-      expect(promise).toBeInstanceOf(Promise);
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
 
       return expect(promise).resolves.toBe('abcd');
     });
@@ -675,7 +675,7 @@ describe('moduleMocker', () => {
 
       const promise = fn();
 
-      expect(promise).toBeInstanceOf(Promise);
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
 
       return expect(promise).rejects.toBe(err);
     });
