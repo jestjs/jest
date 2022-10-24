@@ -113,7 +113,7 @@
     "test": "yarn lint && yarn jest",
     "typecheck": "yarn typecheck:examples && yarn typecheck:tests",
     "typecheck:examples": "tsc -p examples/angular --noEmit && tsc -p examples/expect-extend --noEmit && tsc -p examples/typescript --noEmit",
-    "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-snapshot,jest-util,jest-worker,pretty-format}/**/__tests__",
+    "typecheck:tests": "tsc -b packages/{babel-jest,babel-plugin-jest-hoist,diff-sequences,expect,expect-utils,jest-circus,jest-cli,jest-config,jest-console,jest-snapshot,jest-util,jest-validate,jest-watcher,jest-worker,pretty-format}/**/__tests__",
     "verify-old-ts": "node ./scripts/verifyOldTs.mjs",
     "verify-pnp": "node ./scripts/verifyPnP.mjs",
     "watch": "yarn build:js && node ./scripts/watch.mjs",
