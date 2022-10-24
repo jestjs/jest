@@ -4,6 +4,14 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 29.2.2
+
+### Fixes
+
 - `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
 - `[jest-circus]` Test marked as `todo` are shown as todo when inside a focussed describe ([#13504](https://github.com/facebook/jest/pull/13504))
 - `[jest-mock]` Ensure mock resolved and rejected values are promises from correct realm ([#13503](https://github.com/facebook/jest/pull/13503))
@@ -13,8 +21,6 @@
 
 - `[docs]` Update link to Jest 28 upgrade guide in error message ([#13483](https://github.com/facebook/jest/pull/13483))
 - `[jest-runner, jest-watcher]` Update `emittery` ([#13490](https://github.com/facebook/jest/pull/13490))
-
-### Performance
 
 ## 29.2.1
 
