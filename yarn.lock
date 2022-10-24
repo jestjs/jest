@@ -9724,11 +9724,11 @@ __metadata:
   linkType: hard
 
 "fb-watchman@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "fb-watchman@npm:2.0.1"
+  version: 2.0.2
+  resolution: "fb-watchman@npm:2.0.2"
   dependencies:
     bser: 2.1.1
-  checksum: 8510230778ab3a51c27dffb1b76ef2c24fab672a42742d3c0a45c2e9d1e5f20210b1fbca33486088da4a9a3958bde96b5aec0a63aac9894b4e9df65c88b2cbd6
+  checksum: b15a124cef28916fe07b400eb87cbc73ca082c142abf7ca8e8de6af43eca79ca7bd13eb4d4d48240b3bd3136eaac40d16e42d6edf87a8e5d1dd8070626860c78
   languageName: node
   linkType: hard
 
