@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Test marked as `todo` are shown as todo when inside a focussed describe ([#13504](https://github.com/facebook/jest/pull/13504))
 - `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
 
 ### Chore & Maintenance
