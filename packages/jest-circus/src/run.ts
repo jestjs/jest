@@ -147,7 +147,7 @@ const _runTest = async (
   const isSkipped =
     parentSkipped ||
     test.mode === 'skip' ||
-    (hasFocusedTests && test.mode !== 'only') ||
+    (hasFocusedTests && test.mode === undefined) ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));
 
   if (isSkipped) {
