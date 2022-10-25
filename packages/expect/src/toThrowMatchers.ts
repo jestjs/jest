@@ -31,9 +31,8 @@ import {
 } from './print';
 import type {
   ExpectationResult,
-  MatcherState,
+  MatcherFunction,
   MatchersObject,
-  RawMatcherFn,
   SyncExpectationResult,
 } from './types';
 
@@ -77,12 +76,8 @@ const getThrown = (e: any): Thrown => {
 export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
-): RawMatcherFn =>
-  function (
-    this: MatcherState,
-    received: Function,
-    expected: any,
-  ): ExpectationResult {
+): MatcherFunction<[any]> =>
+  function (received, expected): ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
