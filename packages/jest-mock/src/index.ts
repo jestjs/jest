@@ -426,7 +426,7 @@ function getType(ref?: unknown): MockMetadataType | null {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (typeName === 'Object') {
+  } else if (typeName === 'Object' || typeName === 'Module') {
     return 'object';
   } else if (
     typeName === 'Number' ||
