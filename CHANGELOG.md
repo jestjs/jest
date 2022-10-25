@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+
 ### Performance
 
 ## 29.2.2
