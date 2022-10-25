@@ -2809,7 +2809,7 @@ __metadata:
     rimraf: ^3.0.0
     semver: ^7.3.5
     slash: ^3.0.0
-    string-length: ^4.0.1
+    string-length: ^5.0.1
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
@@ -2857,7 +2857,7 @@ __metadata:
     jest-worker: "workspace:^"
     mock-fs: ^5.1.2
     slash: ^3.0.0
-    string-length: ^4.0.1
+    string-length: ^5.0.1
     strip-ansi: ^6.0.0
     tsd-lite: ^0.6.0
     v8-to-istanbul: ^9.0.1
@@ -6725,13 +6725,6 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: fe75c9d5c76a7a98d45495b91b2172fa3b7a09e0cc9370e5c8feb1c567b85c4288e2b3fded7cfdd7359ac28d6b3844feb8b82b8686842e93d23c827c417e83fc
-  languageName: node
-  linkType: hard
-
-"char-regex@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "char-regex@npm:1.0.2"
-  checksum: b563e4b6039b15213114626621e7a3d12f31008bdce20f9c741d69987f62aeaace7ec30f6018890ad77b2e9b4d95324c9f5acfca58a9441e3b1dcdd1e2525d17
   languageName: node
   linkType: hard
 
@@ -12908,7 +12901,7 @@ __metadata:
     chalk: ^4.0.0
     emittery: ^0.13.1
     jest-util: "workspace:^"
-    string-length: ^4.0.1
+    string-length: ^5.0.1
   languageName: unknown
   linkType: soft
 
@@ -19086,16 +19079,6 @@ __metadata:
   version: 0.3.1
   resolution: "string-argv@npm:0.3.1"
   checksum: efbd0289b599bee808ce80820dfe49c9635610715429c6b7cc50750f0437e3c2f697c81e5c390208c13b5d5d12d904a1546172a88579f6ee5cbaaaa4dc9ec5cf
-  languageName: node
-  linkType: hard
-
-"string-length@npm:^4.0.1":
-  version: 4.0.2
-  resolution: "string-length@npm:4.0.2"
-  dependencies:
-    char-regex: ^1.0.2
-    strip-ansi: ^6.0.0
-  checksum: ce85533ef5113fcb7e522bcf9e62cb33871aa99b3729cec5595f4447f660b0cefd542ca6df4150c97a677d58b0cb727a3fe09ac1de94071d05526c73579bf505
   languageName: node
   linkType: hard
 
