@@ -460,7 +460,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) object as a parameter.
 
 _Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -489,7 +489,7 @@ module.exports = async function () {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) object as a parameter.
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -748,7 +748,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+Custom reporter modules must define a class that takes a [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) and reporter options as constructor arguments:
 
 Example reporter:
 
@@ -915,7 +915,7 @@ This option allows you to use a custom runner instead of Jest's default test run
 
 _Note: The `runner` property value can omit the `jest-runner-` prefix of the package name._
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
