@@ -19,7 +19,10 @@ import {
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
-import {createScriptTransformer} from '@jest/transform';
+import {
+  createNodeEsmLoaderTransformer,
+  createScriptTransformer,
+} from '@jest/transform';
 import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
@@ -104,7 +107,9 @@ async function runTestInternal(
   }
 
   const cacheFS = new Map([[path, testSource]]);
-  const transformer = await createScriptTransformer(projectConfig, cacheFS);
+  const transformer =
+    (await createNodeEsmLoaderTransformer()) ??
+    (await createScriptTransformer(projectConfig, cacheFS));
 
   const TestEnvironment: typeof JestEnvironment =
     await transformer.requireAndTranspileModule(testEnvironment);

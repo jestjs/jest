@@ -2066,7 +2066,9 @@ describe('ScriptTransformer', () => {
     });
 
     // @ts-expect-error - private property
-    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
+    const cache = scriptTransformer._transformCache as Map<unknown, unknown>;
+
+    expect(Array.from(cache.entries())).toEqual([
       ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });
