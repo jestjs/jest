@@ -38,7 +38,7 @@
     "jest-snapshot": "workspace:^",
     "jest-util": "workspace:^",
     "slash": "^3.0.0",
-    "strip-bom": "^4.0.0"
+    "strip-bom": "^5.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
