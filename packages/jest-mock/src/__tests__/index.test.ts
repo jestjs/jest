@@ -213,7 +213,7 @@ describe('moduleMocker', () => {
       expect(mock.enumGetter).toBeDefined();
     });
 
-    it('mocks getters of cjs modules', () => {
+    it('handles custom toString of transpiled modules', () => {
       const foo = Object.defineProperties(
         {foo: 'bar'},
         {
