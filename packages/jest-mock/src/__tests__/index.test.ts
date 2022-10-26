@@ -215,12 +215,7 @@ describe('moduleMocker', () => {
 
     it('mocks getters of cjs modules', () => {
       const foo = Object.defineProperties(
-        {
-          enumGetter: {
-            enumerable: true,
-            get: () => 10,
-          },
-        },
+        {foo: 'bar'},
         {
           __esModule: {value: true},
           [Symbol.toStringTag]: {value: 'Module'},
@@ -229,7 +224,7 @@ describe('moduleMocker', () => {
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
-      expect(mock.enumGetter).toBeDefined();
+      expect(mock.foo).toBeDefined();
     });
 
     it('mocks ES2015 non-enumerable methods', () => {
