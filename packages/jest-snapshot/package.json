@@ -51,7 +51,7 @@
     "@types/natural-compare": "^1.4.0",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
-    "ansi-styles": "^5.0.0",
+    "ansi-styles": "^6.2.1",
     "prettier": "^2.1.1",
     "tsd-lite": "^0.6.0"
   },
