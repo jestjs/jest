@@ -30,7 +30,7 @@ interface NodeEsmLoader {
 }
 
 const reLoader =
-  /--loader\s+((@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*)/;
+  /--loader\s+((@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*(\/\S+)?)/;
 
 class NodeEsmLoaderTransformer implements ScriptTransformer {
   private readonly _loader: NodeEsmLoader;
