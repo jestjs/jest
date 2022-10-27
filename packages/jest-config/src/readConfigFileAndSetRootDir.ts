@@ -26,16 +26,27 @@ import {
 export default async function readConfigFileAndSetRootDir(
   configPath: string,
 ): Promise<Config.InitialOptions> {
+  const hasLoader = process.env.NODE_OPTIONS?.includes('--loader');
   const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
-    if (isTS) {
-      configObject = await loadTSConfigFile(configPath);
-    } else if (isJSON) {
+    if (isJSON) {
       const fileContent = fs.readFileSync(configPath, 'utf8');
       configObject = parseJson(stripJsonComments(fileContent), configPath);
+    } else if (hasLoader) {
+      const importedModule = await import(configPath);
+
+      if (!importedModule.default) {
+        throw new Error(
+          `Jest: Failed to load ESM at ${configPath} - did you use a default export?`,
+        );
+      }
+
+      configObject = importedModule.default;
+    } else if (isTS) {
+      configObject = await loadTSConfigFile(configPath);
     } else {
       configObject = await requireOrImportModule<any>(configPath);
     }
