@@ -39,7 +39,7 @@
     "micromatch": "^4.0.4",
     "pretty-format": "workspace:^",
     "slash": "^3.0.0",
-    "strip-ansi": "^6.0.0"
+    "strip-ansi": "^7.0.1"
   },
   "devDependencies": {
     "@jest/test-sequencer": "workspace:^",

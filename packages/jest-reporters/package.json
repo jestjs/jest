@@ -34,7 +34,7 @@
     "jest-worker": "workspace:^",
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "^7.0.1",
     "v8-to-istanbul": "^9.0.1"
   },
   "devDependencies": {

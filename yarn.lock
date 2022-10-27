@@ -2644,7 +2644,7 @@ __metadata:
     micromatch: ^4.0.4
     pretty-format: "workspace:^"
     slash: ^3.0.0
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -2810,7 +2810,7 @@ __metadata:
     semver: ^7.3.5
     slash: ^3.0.0
     string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.1
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
     ts-node: ^10.5.0
@@ -2858,7 +2858,7 @@ __metadata:
     mock-fs: ^5.1.2
     slash: ^3.0.0
     string-length: ^4.0.1
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.1
     tsd-lite: ^0.6.0
     v8-to-istanbul: ^9.0.1
   peerDependencies:
@@ -12384,7 +12384,7 @@ __metadata:
     diff-sequences: "workspace:^"
     jest-get-type: "workspace:^"
     pretty-format: "workspace:^"
-    strip-ansi: ^6.0.0
+    strip-ansi: ^7.0.1
   languageName: unknown
   linkType: soft
 
