@@ -68,7 +68,7 @@ onNodeVersions('>=16.9.0', () => {
   });
 });
 
-test('runs WASM test with native ESM', () => {
+test('runs Wasm test with native ESM', () => {
   const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm-wasm.test.js'], {
     nodeOptions: '--experimental-vm-modules --no-warnings',
   });
