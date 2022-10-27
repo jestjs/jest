@@ -32,6 +32,6 @@ test('imports from "data:text/wasm" URI without explicit encoding fail', async (
 
 test('imports from "data:text/wasm" URI with invalid encoding fail', async () => {
   await expect(() =>
-    import(`data:application/wasm,hex,${wasmFileBuffer.toString('hex')}`),
-  ).rejects.toThrow('Missing data URI encoding');
+    import('data:application/wasm;charset=utf-8,oops'),
+  ).rejects.toThrow('Invalid data URI encoding: charset=utf-8');
 });
