@@ -2,15 +2,44 @@
 
 ### Features
 
+### Fixes
+
+- `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+
+### Chore & Maintenance
+
+- `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+
+### Performance
+
+## 29.2.2
+
+### Fixes
+
+- `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
+- `[jest-circus]` Test marked as `todo` are shown as todo when inside a focussed describe ([#13504](https://github.com/facebook/jest/pull/13504))
+- `[jest-mock]` Ensure mock resolved and rejected values are promises from correct realm ([#13503](https://github.com/facebook/jest/pull/13503))
+- `[jest-snapshot]` Don't highlight passing asymmetric property matchers in snapshot diff ([#13480](https://github.com/facebook/jest/issues/13480))
+
+### Chore & Maintenance
+
+- `[docs]` Update link to Jest 28 upgrade guide in error message ([#13483](https://github.com/facebook/jest/pull/13483))
+- `[jest-runner, jest-watcher]` Update `emittery` ([#13490](https://github.com/facebook/jest/pull/13490))
+
+## 29.2.1
+
+### Features
+
 - `[@jest/globals, jest-mock]` Add `jest.Spied*` utility types ([#13440](https://github.com/facebook/jest/pull/13440))
 
 ### Fixes
 
-### Chore & Maintenance
+- `[jest-environment-node]` make `globalThis.performance` writable for Node 19 and fake timers ([#13467](https://github.com/facebook/jest/pull/13467))
+- `[jest-mock]` Revert [#13398](https://github.com/facebook/jest/pull/13398) to restore mocking of setters ([#13472](https://github.com/facebook/jest/pull/13472))
 
 ### Performance
 
-- `[*]` Use sha1 instead of sha256 for hashing [#13421](https://github.com/facebook/jest/pull/13421)
+- `[*]` Use sha1 instead of sha256 for hashing ([#13421](https://github.com/facebook/jest/pull/13421))
 
 ## 29.2.0
 

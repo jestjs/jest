@@ -10,9 +10,7 @@ import {dirname, join} from 'path';
 import {transformFileAsync} from '@babel/core';
 import {
   CHILD_MESSAGE_CALL,
-  CHILD_MESSAGE_MEM_USAGE,
   WorkerEvents,
-  WorkerInterface,
   WorkerOptions,
   WorkerStates,
 } from '../../types';
@@ -41,7 +39,7 @@ beforeAll(async () => {
 
     const result = await transformFileAsync(sourcePath);
 
-    await writeFile(writePath, result.code, {
+    await writeFile(writePath, result!.code!, {
       encoding: 'utf-8',
     });
   }
@@ -51,13 +49,16 @@ afterAll(async () => {
   await rm(writeDestination, {force: true, recursive: true});
 });
 
-test.each(filesToBuild)('%s.js should exist', async file => {
+test.each(filesToBuild)('%s.js should exist', file => {
   const path = join(writeDestination, `${file}.js`);
 
-  await expect(async () => await access(path)).not.toThrow();
+  expect(async () => await access(path)).not.toThrow();
 });
 
-async function closeWorkerAfter(worker, testBody) {
+async function closeWorkerAfter(
+  worker: ChildProcessWorker | ThreadsWorker,
+  testBody: (worker: ChildProcessWorker | ThreadsWorker) => Promise<void>,
+) {
   try {
     await testBody(worker);
   } finally {
@@ -78,14 +79,14 @@ describe.each([
     workerPath: threadChildWorkerPath,
   },
 ])('$name', ({workerClass, workerPath}) => {
-  let int;
+  let int: NodeJS.Timeout;
 
   afterEach(async () => {
     clearInterval(int);
   });
 
-  function waitForChange(fn) {
-    const inital = fn();
+  function waitForChange(fn: () => unknown) {
+    const initial = fn();
 
     return new Promise((resolve, reject) => {
       let count = 0;
@@ -93,7 +94,7 @@ describe.each([
       int = setInterval(() => {
         const updated = fn();
 
-        if (inital !== updated) {
+        if (initial !== updated) {
           resolve(updated);
           clearInterval(int);
         }
@@ -113,8 +114,8 @@ describe.each([
         childWorkerPath: workerPath,
         maxRetries: 0,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      }),
-      async worker => {
+      } as WorkerOptions),
+      async (worker: ChildProcessWorker | ThreadsWorker) => {
         const memoryUsagePromise = worker.getMemoryUsage();
         expect(memoryUsagePromise).toBeInstanceOf(Promise);
 
@@ -132,8 +133,8 @@ describe.each([
         idleMemoryLimit: 1000,
         maxRetries: 0,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      }),
-      async worker => {
+      } as WorkerOptions),
+      async (worker: ChildProcessWorker | ThreadsWorker) => {
         const startSystemId = worker.getWorkerSystemId();
         expect(startSystemId).toBeGreaterThanOrEqual(0);
 
@@ -155,9 +156,9 @@ describe.each([
   });
 
   describe('should automatically recycle on idle limit breach', () => {
-    let startPid;
-    let worker;
-    const orderOfEvents = [];
+    let startPid: number;
+    let worker: ChildProcessWorker | ThreadsWorker;
+    const orderOfEvents: Array<WorkerStates> = [];
 
     beforeAll(() => {
       worker = new workerClass({
@@ -167,13 +168,13 @@ describe.each([
         idleMemoryLimit: 1000,
         maxRetries: 0,
         on: {
-          [WorkerEvents.STATE_CHANGE]: state => {
+          [WorkerEvents.STATE_CHANGE]: (state: WorkerStates) => {
             orderOfEvents.push(state);
           },
         },
         silent: true,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      });
+      } as unknown as WorkerOptions);
     });
 
     afterAll(async () => {
@@ -188,7 +189,7 @@ describe.each([
       expect(startPid).toBeGreaterThanOrEqual(0);
       expect(worker.state).toEqual(WorkerStates.OK);
 
-      expect(orderOfEvents).toMatchObject(['ok']);
+      expect(orderOfEvents).toEqual(['ok']);
     });
 
     test('new worker starts', async () => {
@@ -226,36 +227,30 @@ describe.each([
     );
 
     test('expected state order', () => {
-      expect(orderOfEvents).toMatchObject([
-        'ok',
-        'restarting',
-        'starting',
-        'ok',
-      ]);
+      expect(orderOfEvents).toEqual(['ok', 'restarting', 'starting', 'ok']);
     });
   });
 
   describe('should cleanly exit on out of memory crash', () => {
     const workerHeapLimit = 50;
 
-    let worker;
-    let orderOfEvents = [];
+    let worker: ChildProcessWorker | ThreadsWorker;
+    let orderOfEvents: Array<WorkerStates> = [];
 
     beforeAll(() => {
       orderOfEvents = [];
 
-      /** @type WorkerOptions */
       const options = {
         childWorkerPath: workerPath,
         maxRetries: 0,
         on: {
-          [WorkerEvents.STATE_CHANGE]: state => {
+          [WorkerEvents.STATE_CHANGE]: (state: WorkerStates) => {
             orderOfEvents.push(state);
           },
         },
         silent: true,
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      };
+      } as unknown as WorkerOptions;
 
       if (workerClass === ThreadsWorker) {
         options.resourceLimits = {
@@ -275,7 +270,7 @@ describe.each([
     });
 
     afterAll(async () => {
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         setTimeout(async () => {
           if (worker) {
             worker.forceExit();
@@ -322,16 +317,16 @@ describe.each([
     });
 
     test('expected state order', () => {
-      expect(orderOfEvents).toMatchObject([
+      expect(orderOfEvents).toEqual([
         WorkerStates.OK,
         WorkerStates.OUT_OF_MEMORY,
         WorkerStates.SHUT_DOWN,
       ]);
     });
-  }, 15000);
+  });
 
   describe('should handle regular fatal crashes', () => {
-    let worker;
+    let worker: ChildProcessWorker | ThreadsWorker;
     let startedWorkers = 0;
 
     beforeAll(() => {
@@ -339,14 +334,14 @@ describe.each([
         childWorkerPath: workerPath,
         maxRetries: 4,
         on: {
-          [WorkerEvents.STATE_CHANGE]: state => {
+          [WorkerEvents.STATE_CHANGE]: (state: WorkerStates) => {
             if (state === WorkerStates.OK) {
               startedWorkers++;
             }
           },
         },
         workerPath: join(__dirname, '__fixtures__', 'EdgeCasesWorker'),
-      });
+      } as unknown as WorkerOptions);
     });
 
     afterAll(async () => {

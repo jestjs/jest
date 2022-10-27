@@ -5,57 +5,60 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import EventEmitter from 'events';
-import {
-  CHILD_MESSAGE_CALL,
-  CHILD_MESSAGE_MEM_USAGE,
-  PARENT_MESSAGE_OK,
-  WorkerFarmOptions,
-} from '../types';
+import {EventEmitter} from 'events';
+import type {Worker as ThreadWorker} from 'worker_threads';
+import type {JestWorkerFarm, Worker} from '../';
+import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
-let Farm;
-let mockForkedProcesses;
+let WorkerFarm: typeof Worker;
+let mockForkedProcesses: Array<ThreadWorker>;
 
-function mockBuildForkedProcess() {
-  const mockChild = new EventEmitter();
-
-  mockChild.send = jest.fn();
-  mockChild.connected = true;
-
-  return mockChild;
-}
-
-function replySuccess(i, result) {
+function replySuccess(i: number, result: unknown) {
   mockForkedProcesses[i].emit('message', [PARENT_MESSAGE_OK, result]);
 }
 
-function assertCallsToChild(childNum, ...calls) {
-  expect(mockForkedProcesses[childNum].send).toHaveBeenCalledTimes(
+function assertCallsToChild(
+  childNum: number,
+  ...calls: Array<[unknown, ...[unknown]]>
+) {
+  expect(mockForkedProcesses[childNum].postMessage).toHaveBeenCalledTimes(
     calls.length + 1,
   );
 
   calls.forEach(([methodName, ...args], numCall) => {
     expect(
-      mockForkedProcesses[childNum].send.mock.calls[numCall + 1][0],
+      jest.mocked(mockForkedProcesses[childNum].postMessage).mock.calls[
+        numCall + 1
+      ][0],
     ).toEqual([CHILD_MESSAGE_CALL, true, methodName, args]);
   });
 }
 
-describe('Jest Worker Integration', () => {
+describe('Jest Worker Process Integration', () => {
   beforeEach(() => {
     mockForkedProcesses = [];
 
-    jest.mock('child_process', () => ({
-      fork() {
-        const forkedProcess = mockBuildForkedProcess();
+    class MockForkedProcess extends EventEmitter {
+      postMessage = jest.fn();
+    }
+
+    jest.mock('worker_threads', () => {
+      const fakeClass = jest.fn(() => {
+        const forkedProcess =
+          new MockForkedProcess() as unknown as ThreadWorker;
 
         mockForkedProcesses.push(forkedProcess);
 
         return forkedProcess;
-      },
-    }));
+      });
 
-    Farm = require('../index').Worker;
+      return {
+        Worker: fakeClass,
+        __esModule: true,
+      };
+    });
+
+    WorkerFarm = (require('../') as typeof import('../')).Worker;
   });
 
   afterEach(() => {
@@ -63,10 +66,11 @@ describe('Jest Worker Integration', () => {
   });
 
   it('calls a single method from the worker', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = new WorkerFarm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
-    });
+    }) as JestWorkerFarm<{foo(): void}>;
 
     const promise = farm.foo();
 
@@ -76,10 +80,11 @@ describe('Jest Worker Integration', () => {
   });
 
   it('distributes sequential calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = new WorkerFarm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
-    });
+    }) as JestWorkerFarm<{foo(a: unknown): void}>;
 
     // The first call will go to the first child process.
     const promise0 = farm.foo('param-0');
@@ -95,11 +100,12 @@ describe('Jest Worker Integration', () => {
   });
 
   it('schedules the task on the first available child processes if the scheduling policy is in-order', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = new WorkerFarm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
       workerSchedulingPolicy: 'in-order',
-    });
+    }) as JestWorkerFarm<{foo(a: unknown): void}>;
 
     // The first call will go to the first child process.
     const promise0 = farm.foo('param-0');
@@ -108,27 +114,48 @@ describe('Jest Worker Integration', () => {
     // The second call will go to the second child process.
     const promise1 = farm.foo(1);
 
-    // The first task on worker 0 completes
+    // The first task on worker 0 completes.
     replySuccess(0, 'worker-0');
     expect(await promise0).toBe('worker-0');
 
-    // The second task on worker 1 completes
+    // The second task on worker 1 completes.
     assertCallsToChild(1, ['foo', 1]);
     replySuccess(1, 'worker-1');
     expect(await promise1).toBe('worker-1');
 
-    // The third call will go to the first child process
+    // The third call will go to the first child process.
     const promise2 = farm.foo('param-2');
     assertCallsToChild(0, ['foo', 'param-0'], ['foo', 'param-2']);
     replySuccess(0, 'worker-0');
     expect(await promise2).toBe('worker-0');
   });
 
-  it('distributes concurrent calls across child processes', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+  it('schedules the task on the first available child processes', async () => {
+    const farm = new WorkerFarm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
-    });
+    }) as JestWorkerFarm<{foo(a: unknown): void}>;
+
+    // The first call will go to the first child process.
+    const promise0 = farm.foo('param-0');
+    assertCallsToChild(0, ['foo', 'param-0']);
+    replySuccess(0, 'worker-0');
+    expect(await promise0).toBe('worker-0');
+
+    // The second call will go to the second child process.
+    const promise1 = farm.foo(1);
+    assertCallsToChild(1, ['foo', 1]);
+    replySuccess(1, 'worker-1');
+    expect(await promise1).toBe('worker-1');
+  });
+
+  it('distributes concurrent calls across child processes', async () => {
+    const farm = new WorkerFarm('/tmp/baz.js', {
+      enableWorkerThreads: true,
+      exposedMethods: ['foo', 'bar'],
+      numWorkers: 4,
+    }) as JestWorkerFarm<{foo(a: unknown): void}>;
 
     // Do 3 calls to the farm in parallel.
     const promise0 = farm.foo('param-0');
@@ -152,11 +179,12 @@ describe('Jest Worker Integration', () => {
   });
 
   it('sticks parallel calls to children', async () => {
-    const farm = new Farm('/tmp/baz.js', {
+    const farm = new WorkerFarm('/tmp/baz.js', {
       computeWorkerKey: () => '1234567890abcdef',
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
-    });
+    }) as JestWorkerFarm<{foo(a: unknown): void}>;
 
     // Do 3 calls to the farm in parallel.
     const promise0 = farm.foo('param-0');
@@ -168,7 +196,7 @@ describe('Jest Worker Integration', () => {
     replySuccess(0, 'worker-1');
     replySuccess(0, 'worker-2');
 
-    // Check that all the calls have been received by the same child).
+    // Check that all the calls have been received by the same child.
     assertCallsToChild(
       0,
       ['foo', 'param-0'],
@@ -180,37 +208,5 @@ describe('Jest Worker Integration', () => {
     expect(await promise0).toBe('worker-0');
     expect(await promise1).toBe('worker-1');
     expect(await promise2).toBe('worker-2');
-  });
-
-  it('should check for memory limits', async () => {
-    /** @type WorkerFarmOptions */
-    const options = {
-      computeWorkerKey: () => '1234567890abcdef',
-      exposedMethods: ['foo', 'bar'],
-      idleMemoryLimit: 0.4,
-      numWorkers: 2,
-    };
-
-    const farm = new Farm('/tmp/baz.js', options);
-
-    // Send a call to the farm
-    const promise0 = farm.foo('param-0');
-
-    // Send different responses for each call (from the same child).
-    replySuccess(0, 'worker-0');
-
-    // Check that all the calls have been received by the same child).
-    // We're not using the assertCallsToChild helper because we need to check
-    // for other send types.
-    expect(mockForkedProcesses[0].send).toHaveBeenCalledTimes(3);
-    expect(mockForkedProcesses[0].send.mock.calls[1][0]).toEqual([
-      CHILD_MESSAGE_CALL,
-      true,
-      'foo',
-      ['param-0'],
-    ]);
-    expect(mockForkedProcesses[0].send.mock.calls[2][0]).toEqual([
-      CHILD_MESSAGE_MEM_USAGE,
-    ]);
   });
 });

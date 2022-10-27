@@ -19,7 +19,7 @@ const replacePathSepForRegex = (string: string) => {
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-const defaultConfig = {
+export const defaultConfig = {
   automock: false,
   bail: 0,
   cacheDirectory: path.join(tmpdir(), 'jest'),
@@ -55,7 +55,7 @@ const defaultConfig = {
   watchPathIgnorePatterns: [],
 };
 
-const validConfig = {
+export const validConfig = {
   automock: false,
   bail: 0,
   cache: true,
@@ -121,10 +121,12 @@ const validConfig = {
 };
 
 const format = (value: string) =>
-  require('pretty-format').format(value, {min: true});
+  (require('pretty-format') as typeof import('pretty-format')).format(value, {
+    min: true,
+  });
 
-const deprecatedConfig = {
-  preprocessorIgnorePatterns: (config: Record<string, any>) =>
+export const deprecatedConfig = {
+  preprocessorIgnorePatterns: (config: Record<string, unknown>) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
     )} was replaced by ${chalk.bold(
@@ -134,13 +136,13 @@ const deprecatedConfig = {
   Jest now treats your current configuration as:
   {
     ${chalk.bold('"transformIgnorePatterns"')}: ${chalk.bold(
-      `${format(config.preprocessorIgnorePatterns)}`,
+      `${format(config.preprocessorIgnorePatterns as string)}`,
     )}
   }
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: Record<string, any>) =>
+  scriptPreprocessor: (config: Record<string, unknown>) =>
     `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
       'transform',
     )}, which support multiple preprocessors.
@@ -148,15 +150,9 @@ const deprecatedConfig = {
   Jest now treats your current configuration as:
   {
     ${chalk.bold('"transform"')}: ${chalk.bold(
-      `{".*": ${format(config.scriptPreprocessor)}}`,
+      `{".*": ${format(config.scriptPreprocessor as string)}}`,
     )}
   }
 
   Please update your configuration.`,
-};
-
-module.exports = {
-  defaultConfig,
-  deprecatedConfig,
-  validConfig,
 };
