@@ -18,6 +18,6 @@ test('runs WASM test with native ESM', () => {
 
   expect(exitCode).toBe(0);
 
-  expect(json.numTotalTests).toBe(1);
-  expect(json.numPassedTests).toBe(1);
+  expect(json.numTotalTests).toBe(4);
+  expect(json.numPassedTests).toBe(4);
 });

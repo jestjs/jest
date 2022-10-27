@@ -445,7 +445,11 @@ export default class Runtime {
       );
 
       if (modulePath.endsWith('wasm')) {
-        const wasm = this._importWasmModule(modulePath, context);
+        const wasm = this._importWasmModule(
+          fs.readFileSync(modulePath),
+          modulePath,
+          context,
+        );
 
         this._esmoduleRegistry.set(cacheKey, wasm);
 
@@ -579,56 +583,67 @@ export default class Runtime {
       }
 
       const mime = match.groups.mime;
-      if (mime === 'application/wasm') {
-        throw new Error('WASM in data URLs is currently not supported');
-      }
-
       const encoding = match.groups.encoding;
-      let code = match.groups.code;
-      if (!encoding || encoding === 'charset=utf-8') {
-        code = decodeURIComponent(code);
-      } else if (encoding === 'base64') {
-        code = Buffer.from(code, 'base64').toString();
-      } else {
-        throw new Error(`Invalid data URI encoding: ${encoding}`);
-      }
-
       let module;
-      if (mime === 'application/json') {
-        module = new SyntheticModule(
-          ['default'],
-          function () {
-            const obj = JSON.parse(code);
-            // @ts-expect-error: TS doesn't know what `this` is
-            this.setExport('default', obj);
-          },
-          {context, identifier: specifier},
+
+      if (mime === 'application/wasm') {
+        if (!encoding) {
+          throw new Error('Missing data URI encoding');
+        }
+        if (encoding !== 'base64') {
+          throw new Error(`Invalid data URI encoding: ${encoding}`);
+        }
+        module = await this._importWasmModule(
+          Buffer.from(match.groups.code, 'base64'),
+          specifier,
+          context,
         );
       } else {
-        module = new SourceTextModule(code, {
-          context,
-          identifier: specifier,
-          importModuleDynamically: async (
-            specifier: string,
-            referencingModule: VMModule,
-          ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            const module = await this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            );
+        let code = match.groups.code;
+        if (!encoding || encoding === 'charset=utf-8') {
+          code = decodeURIComponent(code);
+        } else if (encoding === 'base64') {
+          code = Buffer.from(code, 'base64').toString();
+        } else {
+          throw new Error(`Invalid data URI encoding: ${encoding}`);
+        }
 
-            return this.linkAndEvaluateModule(module);
-          },
-          initializeImportMeta(meta: ImportMeta) {
-            // no `jest` here as it's not loaded in a file
-            meta.url = specifier;
-          },
-        });
+        if (mime === 'application/json') {
+          module = new SyntheticModule(
+            ['default'],
+            function () {
+              const obj = JSON.parse(code);
+              // @ts-expect-error: TS doesn't know what `this` is
+              this.setExport('default', obj);
+            },
+            {context, identifier: specifier},
+          );
+        } else {
+          module = new SourceTextModule(code, {
+            context,
+            identifier: specifier,
+            importModuleDynamically: async (
+              specifier: string,
+              referencingModule: VMModule,
+            ) => {
+              invariant(
+                runtimeSupportsVmModules,
+                'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+              );
+              const module = await this.resolveModule(
+                specifier,
+                referencingModule.identifier,
+                referencingModule.context,
+              );
+
+              return this.linkAndEvaluateModule(module);
+            },
+            initializeImportMeta(meta: ImportMeta) {
+              // no `jest` here as it's not loaded in a file
+              meta.url = specifier;
+            },
+          });
+        }
       }
 
       this._esmoduleRegistry.set(specifier, module);
@@ -1652,8 +1667,12 @@ export default class Runtime {
     return evaluateSyntheticModule(module);
   }
 
-  private async _importWasmModule(moduleName: string, context: VMContext) {
-    const wasmModule = await WebAssembly.compile(fs.readFileSync(moduleName));
+  private async _importWasmModule(
+    source: Buffer,
+    identifier: string,
+    context: VMContext,
+  ) {
+    const wasmModule = await WebAssembly.compile(source);
 
     const exports = WebAssembly.Module.exports(wasmModule);
     const imports = WebAssembly.Module.imports(wasmModule);
@@ -1662,7 +1681,7 @@ export default class Runtime {
     for (const {module} of imports) {
       if (moduleLookup[module] === undefined) {
         moduleLookup[module] = await this.linkAndEvaluateModule(
-          await this.resolveModule(module, moduleName, context),
+          await this.resolveModule(module, identifier, context),
         );
       }
     }
@@ -1686,10 +1705,7 @@ export default class Runtime {
           this.setExport(name, wasmInstance.exports[name]);
         }
       },
-      {
-        context,
-        identifier: moduleName,
-      },
+      {context, identifier},
     );
 
     return syntheticModule;
