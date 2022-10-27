@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-runtime]` Support WASM imports ([#13505](https://github.com/facebook/jest/pull/13505))
+
 ### Fixes
 
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
