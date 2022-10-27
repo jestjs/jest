@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-runtime]` Support WASM imports ([#13505](https://github.com/facebook/jest/pull/13505))
+- `[jest-runtime]` Support WASM imports in ESM modules ([#13505](https://github.com/facebook/jest/pull/13505))
 
 ### Fixes
 
