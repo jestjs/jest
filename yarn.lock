@@ -2757,7 +2757,7 @@ __metadata:
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^5.14.0
     "@typescript-eslint/parser": ^5.14.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.1
     ansi-styles: ^5.0.0
     camelcase: ^6.2.0
     chalk: ^4.0.0
@@ -2930,7 +2930,7 @@ __metadata:
     "@jest/types": "workspace:^"
     "@types/node": "*"
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.1
     ansi-styles: ^5.0.0
     pretty-format: "workspace:^"
     semver: ^7.3.5
@@ -12796,7 +12796,7 @@ __metadata:
     "@types/natural-compare": ^1.4.0
     "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.1
+    ansi-regex: ^6.0.1
     ansi-styles: ^5.0.0
     babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
