@@ -4,7 +4,11 @@
 
 ### Fixes
 
+- `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+
 ### Chore & Maintenance
+
+- `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
 
 ### Performance
 

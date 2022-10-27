@@ -772,7 +772,7 @@ If you specify a global reference value (like an object or array) here, and some
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global setup module, which must export a function (it can be sync or async). The function will be triggered once before all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -807,7 +807,7 @@ module.exports = async function (globalConfig, projectConfig) {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L282) and [`projectConfig`](https://github.com/facebook/jest/blob/main/packages/jest-types/src/Config.ts#L347).
+This option allows the use of a custom global teardown module which must export a function (it can be sync or async). The function will be triggered once after all test suites and it will receive two arguments: Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481).
 
 :::info
 
@@ -1330,7 +1330,7 @@ Hungry for reporters? Take a look at long list of [awesome reporters](https://gi
 
 :::
 
-Custom reporter module must export a class that takes `globalConfig`, `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
+Custom reporter module must export a class that takes [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422), `reporterOptions` and `reporterContext` as constructor arguments and implements at least `onRunComplete()` method (for the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts)):
 
 ```js title="custom-reporter.js"
 class CustomReporter {
@@ -1512,7 +1512,7 @@ The `runner` property value can omit the `jest-runner-` prefix of the package na
 
 :::
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1789,7 +1789,7 @@ test('use jsdom in this test file', () => {
 });
 ```
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [global config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L284) and [project config](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-types/src/Config.ts#L349) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `getVmContext` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables. The constructor is passed [`globalConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L358-L422) and [`projectConfig`](https://github.com/facebook/jest/blob/v29.2.1/packages/jest-types/src/Config.ts#L424-L481) as its first argument, and [`testEnvironmentContext`](https://github.com/facebook/jest/blob/491e7cb0f2daa8263caccc72d48bdce7ba759b11/packages/jest-environment/src/index.ts#L13) as its second.
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/main/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
