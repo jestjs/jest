@@ -399,7 +399,7 @@ export default class Runtime {
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
   unstable_shouldLoadAsEsm(path: string): boolean {
     return (
-      path.endsWith('wasm') ||
+      path.endsWith('.wasm') ||
       Resolver.unstable_shouldLoadAsEsm(
         path,
         this._config.extensionsToTreatAsEsm,
@@ -444,7 +444,7 @@ export default class Runtime {
         'Promise initialization should be sync - please report this bug to Jest!',
       );
 
-      if (modulePath.endsWith('wasm')) {
+      if (modulePath.endsWith('.wasm')) {
         const wasm = this._importWasmModule(
           fs.readFileSync(modulePath),
           modulePath,
