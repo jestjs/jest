@@ -27,6 +27,7 @@ import {
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
+  replaceMatchedToAsymmetricMatcher,
 } from 'jest-matcher-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
@@ -205,9 +206,13 @@ export const printPropertiesAndReceived = (
   const bAnnotation = 'Received value';
 
   if (isLineDiffable(properties) && isLineDiffable(received)) {
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(properties, received, [], []);
     return diffLinesUnified(
-      serialize(properties).split('\n'),
-      serialize(getObjectSubset(received, properties)).split('\n'),
+      serialize(replacedExpected).split('\n'),
+      serialize(getObjectSubset(replacedReceived, replacedExpected)).split(
+        '\n',
+      ),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,

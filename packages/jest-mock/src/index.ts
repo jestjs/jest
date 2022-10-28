@@ -426,7 +426,7 @@ function getType(ref?: unknown): MockMetadataType | null {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (typeName === 'Object') {
+  } else if (typeName === 'Object' || typeName === 'Module') {
     return 'object';
   } else if (
     typeName === 'Number' ||
@@ -768,20 +768,28 @@ export class ModuleMocker {
         f.mockImplementationOnce(() => value);
 
       f.mockResolvedValueOnce = (value: ResolveType<T>) =>
-        f.mockImplementationOnce(() => Promise.resolve(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValueOnce = (value: unknown) =>
-        f.mockImplementationOnce(() => Promise.reject(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
       f.mockReturnValue = (value: ReturnType<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
       f.mockResolvedValue = (value: ResolveType<T>) =>
-        f.mockImplementation(() => Promise.resolve(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValue = (value: unknown) =>
-        f.mockImplementation(() => Promise.reject(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
       f.mockImplementationOnce = (fn: UnknownFunction) => {
         // next function call will use this mock implementation return value

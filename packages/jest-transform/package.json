@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "29.2.1",
+  "version": "29.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,7 +22,7 @@
     "@jridgewell/trace-mapping": "^0.3.15",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^4.0.0",
-    "convert-source-map": "^1.4.0",
+    "convert-source-map": "^2.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "workspace:^",

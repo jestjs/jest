@@ -213,6 +213,20 @@ describe('moduleMocker', () => {
       expect(mock.enumGetter).toBeDefined();
     });
 
+    it('handles custom toString of transpiled modules', () => {
+      const foo = Object.defineProperties(
+        {foo: 'bar'},
+        {
+          __esModule: {value: true},
+          [Symbol.toStringTag]: {value: 'Module'},
+        },
+      );
+      const mock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(foo),
+      );
+      expect(mock.foo).toBeDefined();
+    });
+
     it('mocks ES2015 non-enumerable methods', () => {
       class ClassFoo {
         foo() {}
@@ -652,7 +666,7 @@ describe('moduleMocker', () => {
 
       const promise = fn();
 
-      expect(promise).toBeInstanceOf(Promise);
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
 
       return expect(promise).resolves.toBe('abcd');
     });
@@ -675,7 +689,7 @@ describe('moduleMocker', () => {
 
       const promise = fn();
 
-      expect(promise).toBeInstanceOf(Promise);
+      expect(promise).toBeInstanceOf(mockGlobals.Promise);
 
       return expect(promise).rejects.toBe(err);
     });
