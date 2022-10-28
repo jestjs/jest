@@ -9369,7 +9369,7 @@ __metadata:
     enzyme-adapter-react-16: "*"
     jest: "workspace:^"
     react: ^16.14.0
-    react-dom: ^16.14.0
+    react-dom: ^18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9459,7 +9459,7 @@ __metadata:
     babel-jest: "workspace:^"
     jest: "workspace:^"
     react: 17.0.2
-    react-dom: ^17.0.1
+    react-dom: ^18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9473,7 +9473,7 @@ __metadata:
     babel-jest: "workspace:^"
     jest: "workspace:^"
     react: 17.0.2
-    react-dom: ^17.0.1
+    react-dom: ^18.2.0
   languageName: unknown
   linkType: soft
 
@@ -9514,7 +9514,7 @@ __metadata:
     babel-jest: "workspace:^"
     jest: "workspace:^"
     react: 17.0.2
-    react-dom: ^17.0.1
+    react-dom: ^18.2.0
     typescript: ^4.8.2
   languageName: unknown
   linkType: soft
@@ -12940,7 +12940,7 @@ __metadata:
     graphql-request: ^5.0.0
     js-yaml: ^4.1.0
     react: ^17.0.2
-    react-dom: ^17.0.2
+    react-dom: ^18.2.0
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
     react-markdown: ^8.0.0
@@ -16735,7 +16735,7 @@ __metadata:
     immutable: ^4.0.0
     jest-util: "workspace:^"
     react: 17.0.2
-    react-dom: ^17.0.1
+    react-dom: ^18.2.0
     react-is: ^18.0.0
     react-test-renderer: 17.0.2
   languageName: unknown
@@ -17135,30 +17135,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react-dom@npm:16.14.0"
+"react-dom@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "react-dom@npm:18.2.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-    scheduler: ^0.19.1
+    scheduler: ^0.23.0
   peerDependencies:
-    react: ^16.14.0
-  checksum: 5a5c49da0f106b2655a69f96c622c347febcd10532db391c262b26aec225b235357d9da1834103457683482ab1b229af7a50f6927a6b70e53150275e31785544
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^17.0.1, react-dom@npm:^17.0.2":
-  version: 17.0.2
-  resolution: "react-dom@npm:17.0.2"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    scheduler: ^0.20.2
-  peerDependencies:
-    react: 17.0.2
-  checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
+    react: ^18.2.0
+  checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
   languageName: node
   linkType: hard
 
@@ -18326,6 +18311,15 @@ __metadata:
   dependencies:
     loose-envify: ^1.1.0
   checksum: a8ef5cab769c020cd6382ad9ecc3f72dbde56a50a36639b3a42ad9c11f7724f03700bcad373044059b8067d4a6365154dc7c0ca8027ef20ff4900cf58a0fc2c5
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "scheduler@npm:0.23.0"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: d79192eeaa12abef860c195ea45d37cbf2bbf5f66e3c4dcd16f54a7da53b17788a70d109ee3d3dde1a0fd50e6a8fc171f4300356c5aee4fc0171de526bf35f8a
   languageName: node
   linkType: hard
 
