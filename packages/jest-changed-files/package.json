@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "execa": "^5.0.0",
+    "execa": "^6.1.0",
     "p-limit": "^3.1.0"
   },
   "engines": {
