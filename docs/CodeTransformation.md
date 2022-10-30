@@ -40,7 +40,7 @@ interface TransformOptions<TransformerConfig = unknown> {
   supportsTopLevelAwait: boolean;
   instrument: boolean;
   /** Cached file system which is used by `jest-runtime` to improve performance. */
-  cacheFS: Map<string, string>;
+  cacheFS: Map<string, Buffer | string>;
   /** Jest configuration of currently running project. */
   config: ProjectConfig;
   /** Stringified version of the `config` - useful in cache busting. */

@@ -52,7 +52,7 @@ test('Returns source string with inline maps when no transformOptions is passed'
     sourceString,
     'dummy_path.js',
     {
-      cacheFS: new Map<string, string>(),
+      cacheFS: new Map<string, Buffer | string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
       instrument: false,
@@ -76,7 +76,7 @@ test('Returns source string with inline maps when no transformOptions is passed 
     sourceString,
     'dummy_path.js',
     {
-      cacheFS: new Map<string, string>(),
+      cacheFS: new Map<string, Buffer | string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
       instrument: false,
@@ -141,7 +141,7 @@ describe('caller option correctly merges from defaults and options', () => {
     ],
   ])('%j -> %j', (input, output) => {
     defaultBabelJestTransformer.process(sourceString, 'dummy_path.js', {
-      cacheFS: new Map<string, string>(),
+      cacheFS: new Map<string, Buffer | string>(),
       config: makeProjectConfig(),
       configString: JSON.stringify(makeProjectConfig()),
       instrument: false,
@@ -166,7 +166,7 @@ describe('caller option correctly merges from defaults and options', () => {
 test('can pass null to createTransformer', () => {
   const transformer = createTransformer();
   transformer.process(sourceString, 'dummy_path.js', {
-    cacheFS: new Map<string, string>(),
+    cacheFS: new Map<string, Buffer | string>(),
     config: makeProjectConfig(),
     configString: JSON.stringify(makeProjectConfig()),
     instrument: false,
