@@ -1680,7 +1680,7 @@ export default class Runtime {
     const moduleLookup: Record<string, VMModule> = {};
     for (const {module} of imports) {
       if (moduleLookup[module] === undefined) {
-        moduleLookup[module] = await this.linkAndEvaluateModule(
+        moduleLookup[module] = await this.loadEsmModule(
           await this.resolveModule(module, identifier, context),
         );
       }
