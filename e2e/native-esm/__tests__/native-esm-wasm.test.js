@@ -40,13 +40,13 @@ test('supports imports from "data:application/wasm" URI with base64 encoding', a
   expect(importedWasmModule.add(0, 42)).toBe(42);
 });
 
-test('imports from "data:text/wasm" URI without explicit encoding fail', async () => {
+test('imports from "data:application/wasm" URI without explicit encoding fail', async () => {
   await expect(() =>
     import(`data:application/wasm,${wasmFileBuffer.toString('base64')}`),
   ).rejects.toThrow('Missing data URI encoding');
 });
 
-test('imports from "data:text/wasm" URI with invalid encoding fail', async () => {
+test('imports from "data:application/wasm" URI with invalid encoding fail', async () => {
   await expect(() =>
     import('data:application/wasm;charset=utf-8,oops'),
   ).rejects.toThrow('Invalid data URI encoding: charset=utf-8');
