@@ -170,6 +170,9 @@ export default class ExperimentalWorker
   }
 
   private _onMessage(response: ParentMessage) {
+    // Ignore messages not intended for us
+    if (!Array.isArray(response)) return;
+
     let error;
 
     switch (response[0]) {
@@ -227,7 +230,8 @@ export default class ExperimentalWorker
         break;
 
       default:
-        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
+        // Ignore messages not intended for us
+        break;
     }
   }
 

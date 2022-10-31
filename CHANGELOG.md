@@ -19,6 +19,7 @@
 - `[jest-config]` Add config validation for `projects` option ([#13565](https://github.com/facebook/jest/pull/13565))
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
 - `[jest-worker]` Throw an error instead of hanging when jest workers terminate unexpectedly ([#13566](https://github.com/facebook/jest/pull/13566))
+- `[jest-worker]` Ignore IPC messages not intended for Jest ([#13543](https://github.com/facebook/jest/pull/13543))
 
 ### Chore & Maintenance
 
