@@ -33,7 +33,7 @@
     "@jest/test-sequencer": "workspace:^",
     "@jest/types": "workspace:^",
     "babel-jest": "workspace:^",
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "ci-info": "^3.2.0",
     "deepmerge": "^4.2.2",
     "glob": "^7.1.3",

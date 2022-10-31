@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "workspace:^",
     "jest-pnp-resolver": "^1.2.2",

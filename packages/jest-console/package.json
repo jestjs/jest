@@ -19,7 +19,7 @@
   "dependencies": {
     "@jest/types": "workspace:^",
     "@types/node": "*",
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "jest-message-util": "workspace:^",
     "jest-util": "workspace:^",
     "slash": "^3.0.0"

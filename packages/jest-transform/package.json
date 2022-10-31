@@ -21,7 +21,7 @@
     "@jest/types": "workspace:^",
     "@jridgewell/trace-mapping": "^0.3.15",
     "babel-plugin-istanbul": "^6.1.1",
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "convert-source-map": "^2.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.9",

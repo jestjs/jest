@@ -27,7 +27,7 @@
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "camelcase": "^6.2.0",
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "chokidar": "^3.3.0",
     "debug": "^4.0.1",
     "dedent": "^0.7.0",

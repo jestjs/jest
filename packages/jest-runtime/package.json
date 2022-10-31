@@ -25,7 +25,7 @@
     "@jest/transform": "workspace:^",
     "@jest/types": "workspace:^",
     "@types/node": "*",
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.2",
     "cjs-module-lexer": "^1.0.0",
     "collect-v8-coverage": "^1.0.0",
     "glob": "^7.1.3",
