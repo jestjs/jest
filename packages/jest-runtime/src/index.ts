@@ -134,6 +134,8 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   return null;
 };
 
+const isWasm = (modulePath: string): boolean => modulePath.endsWith('.wasm');
+
 const unmockRegExpCache = new WeakMap();
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
@@ -397,11 +399,11 @@ export default class Runtime {
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm(path: string): boolean {
+  unstable_shouldLoadAsEsm(modulePath: string): boolean {
     return (
-      path.endsWith('.wasm') ||
+      isWasm(modulePath) ||
       Resolver.unstable_shouldLoadAsEsm(
-        path,
+        modulePath,
         this._config.extensionsToTreatAsEsm,
       )
     );
@@ -444,7 +446,7 @@ export default class Runtime {
         'Promise initialization should be sync - please report this bug to Jest!',
       );
 
-      if (modulePath.endsWith('.wasm')) {
+      if (isWasm(modulePath)) {
         const wasm = this._importWasmModule(
           this.readFileBuffer(modulePath),
           modulePath,
