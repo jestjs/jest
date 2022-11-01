@@ -33,6 +33,11 @@ test('supports native wasm imports', () => {
   expect(add(1, 2, 3)).toBe(3);
 });
 
+test('supports dynamic wasm imports', async () => {
+  const {add: dynamicAdd} = await import('../add.wasm');
+  expect(dynamicAdd(1, 2)).toBe(3);
+});
+
 test('supports imports from "data:application/wasm" URI with base64 encoding', async () => {
   const importedWasmModule = await import(
     `data:application/wasm;base64,${wasmFileBuffer.toString('base64')}`
