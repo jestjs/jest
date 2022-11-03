@@ -54,13 +54,11 @@ If you have JavaScript files that are transformed by Babel, you can [enable supp
 
 Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
-```json title="package.json"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    }
+```js title="jest.config.js"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
   }
 }
 ```
@@ -85,13 +83,11 @@ npm install --save-dev identity-obj-proxy
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
-```json title="package.json (for CSS Modules)"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
-    }
+```js title="jest.config.js (for CSS Modules)"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+    "\\.(css|less)$": "identity-obj-proxy"
   }
 }
 ```
@@ -110,15 +106,13 @@ module.exports = {
 };
 ```
 
-```json title="package.json (for custom transformers and CSS Modules)"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
-    }
+```js title="jest.config.js (for custom transformers and CSS Modules)"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(css|less)$": "identity-obj-proxy"
+  },
+  "transform": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
   }
 }
 ```
@@ -142,16 +136,14 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modules`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
-```json title="package.json"
-{
-  "jest": {
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+```js title="jest.config.js"
+module.exports = {
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
-    }
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
   }
 }
 ```
@@ -164,36 +156,32 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 Similarly, Jest's counterpart for Webpack's `resolve.roots` (an alternative to setting `NODE_PATH`) is `modulePaths`.
 
-```json title="package.json"
-{
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
-    }
+```js title="jest.config.js"
+module.exports = {
+  "modulePaths": ["/shared/vendor/modules"],
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
   }
 }
 ```
 
 And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
-```json title="package.json"
-{
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+```js title="jest.config.js"
+module.exports = {
+  "modulePaths": ["/shared/vendor/modules"],
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
 
-      "^react(.*)$": "<rootDir>/vendor/react-master$1",
-      "^config$": "<rootDir>/configs/app-config.js"
-    }
+    "^react(.*)$": "<rootDir>/vendor/react-master$1",
+    "^config$": "<rootDir>/configs/app-config.js"
   }
 }
 ```
