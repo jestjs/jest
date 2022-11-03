@@ -12,11 +12,24 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 ```js title="webpack.config.js"
 module.exports = {
   module: {
-    loaders: [
-      {exclude: ['node_modules'], loader: 'babel', test: /\.jsx?$/},
-      {loader: 'style-loader!css-loader', test: /\.css$/},
-      {loader: 'url-loader', test: /\.gif$/},
-      {loader: 'file-loader', test: /\.(ttf|eot|svg)$/},
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: ['node_modules'],
+        use: ['babel-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.gif$/,
+        type: 'asset/inline',
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        type: 'asset/resource',
+      },
     ],
   },
   resolve: {
@@ -24,7 +37,7 @@ module.exports = {
       config$: './configs/app-config.js',
       react: './vendor/react-master',
     },
-    extensions: ['', 'js', 'jsx'],
+    extensions: ['.js', '.jsx'],
     modules: [
       'node_modules',
       'bower_components',
@@ -127,7 +140,7 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 
 ### Configuring Jest to find our files
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modules`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
 ```json title="package.json"
 {
@@ -143,13 +156,13 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 }
 ```
 
-:::info
+:::note
 
-`<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
+`<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom [`rootDir`](Configuration.md#rootdir-string) option in your configuration.
 
 :::
 
-Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+Similarly, Jest's counterpart for Webpack's `resolve.roots` (an alternative to setting `NODE_PATH`) is `modulePaths`.
 
 ```json title="package.json"
 {
@@ -193,19 +206,19 @@ For more complex webpack configurations, you may also want to investigate projec
 
 :::
 
-## Using with webpack 2
+## Using with webpack
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+In addition to installing `babel-jest` as described earlier, you'll need to add `@babel/preset-env` like so:
+
+```bash npm2yarn
+	npm install --save-dev @babel/preset-env
+```
+
+Then, you'll want to configure Babel as follows:
 
 ```json title=".babelrc"
 {
-  "presets": [["env", {"modules": false}]],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  "presets": ["@babel/preset-env"]
 }
 ```
 

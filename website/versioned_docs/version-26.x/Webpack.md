@@ -12,19 +12,35 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 ```js title="webpack.config.js"
 module.exports = {
   module: {
-    loaders: [
-      {exclude: ['node_modules'], loader: 'babel', test: /\.jsx?$/},
-      {loader: 'style-loader!css-loader', test: /\.css$/},
-      {loader: 'url-loader', test: /\.gif$/},
-      {loader: 'file-loader', test: /\.(ttf|eot|svg)$/},
-    ],
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: ['node_modules'],
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.gif$/,
+        type: 'asset/inline'
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        type: 'asset/resource'
+      }
+    ]
   },
   resolve: {
     alias: {
       config$: './configs/app-config.js',
       react: './vendor/react-master',
     },
-    extensions: ['', 'js', 'jsx'],
+    extensions: ['.js', '.jsx'],
     modules: [
       'node_modules',
       'bower_components',
@@ -66,8 +82,8 @@ module.exports = 'test-file-stub';
 
 You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
 
-```bash
-yarn add --dev identity-obj-proxy
+```bash npm2yarn
+npm install --save-dev identity-obj-proxy
 ```
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
@@ -110,19 +126,23 @@ module.exports = {
 
 We've told Jest to ignore files matching a stylesheet or image extension, and instead, require our mock files. You can adjust the regular expression to match the file types your webpack config handles.
 
-_Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module._
+:::tip
+
+Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
 
 ```json
 "transform": {
-  "\\.js$": "babel-jest",
-  "\\.css$": "custom-transformer",
+  "\\.[jt]sx?$": "babel-jest",
+  "\\.css$": "some-css-transformer",
   ...
 }
 ```
 
+:::
+
 ### Configuring Jest to find our files
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modules`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
 ```json title="package.json"
 {
@@ -188,26 +208,25 @@ For more complex webpack configurations, you may also want to investigate projec
 
 :::
 
-## Using with webpack 2
+## Using with webpack
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+In addition to installing `babel-jest` as described earlier, you'll need to add `@babel/preset-env` like so:
 
-```json
-// .babelrc
+```bash npm2yarn
+	npm install --save-dev @babel/preset-env
+```
+
+Then, you'll want to configure Babel as follows:
+
+```json title=".babelrc"
 {
-  "presets": [["env", {"modules": false}]],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  "presets": ["@babel/preset-env"]
 }
 ```
 
 :::tip
 
-Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+Jest caches files to speed up test execution. If you updated `.babelrc` and Jest is not working as expected, try clearing the cache by running `jest --clearCache`.
 
 :::
 
@@ -215,8 +234,7 @@ Jest caches files to speed up test execution. If you updated .babelrc and Jest i
 
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
 
-```json
-// .babelrc
+```json title=".babelrc"
 {
   "presets": [["env", {"modules": false}]],
 

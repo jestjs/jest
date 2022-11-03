@@ -12,19 +12,35 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 ```js title="webpack.config.js"
 module.exports = {
   module: {
-    loaders: [
-      {exclude: ['node_modules'], loader: 'babel', test: /\.jsx?$/},
-      {loader: 'style-loader!css-loader', test: /\.css$/},
-      {loader: 'url-loader', test: /\.gif$/},
-      {loader: 'file-loader', test: /\.(ttf|eot|svg)$/},
-    ],
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: ['node_modules'],
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.gif$/,
+        type: 'asset/inline'
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        type: 'asset/resource'
+      }
+    ]
   },
   resolve: {
     alias: {
       config$: './configs/app-config.js',
       react: './vendor/react-master',
     },
-    extensions: ['', 'js', 'jsx'],
+    extensions: ['.js', '.jsx'],
     modules: [
       'node_modules',
       'bower_components',
@@ -89,10 +105,8 @@ If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`tra
 const path = require('path');
 
 module.exports = {
-  process(sourceText, sourcePath, options) {
-    return {
-      code: `module.exports = ${JSON.stringify(path.basename(sourcePath))};`,
-    };
+  process(src, filename, config, options) {
+    return `module.exports = ${JSON.stringify(path.basename(filename))};`;
   },
 };
 ```
@@ -120,6 +134,7 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 "transform": {
   "\\.[jt]sx?$": "babel-jest",
   "\\.css$": "some-css-transformer",
+  ...
 }
 ```
 
@@ -127,7 +142,7 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 
 ### Configuring Jest to find our files
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modules`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
 ```json title="package.json"
 {
@@ -193,19 +208,19 @@ For more complex webpack configurations, you may also want to investigate projec
 
 :::
 
-## Using with webpack 2
+## Using with webpack
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+In addition to installing `babel-jest` as described earlier, you'll need to add `@babel/preset-env` like so:
+
+```bash npm2yarn
+	npm install --save-dev @babel/preset-env
+```
+
+Then, you'll want to configure Babel as follows:
 
 ```json title=".babelrc"
 {
-  "presets": [["env", {"modules": false}]],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  "presets": ["@babel/preset-env"]
 }
 ```
 
