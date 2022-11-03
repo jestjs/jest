@@ -215,17 +215,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/forms@npm:^12.0.0":
-  version: 12.2.16
-  resolution: "@angular/forms@npm:12.2.16"
+"@angular/forms@npm:^14.2.8":
+  version: 14.2.8
+  resolution: "@angular/forms@npm:14.2.8"
   dependencies:
-    tslib: ^2.2.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": 12.2.16
-    "@angular/core": 12.2.16
-    "@angular/platform-browser": 12.2.16
-    rxjs: ^6.5.3 || ^7.0.0
-  checksum: 10bec99d169a2fcd438c81fa20fcacf29d7b328871947d7310b38505f1722268e95e38e8b51b3ddf1c3b115ecb76768c7c195725996c34262d28fde9af5ae702
+    "@angular/common": 14.2.8
+    "@angular/core": 14.2.8
+    "@angular/platform-browser": 14.2.8
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 1c45939318835f0f146ef954c2dc3baf56fa9c8adf745f4269724d4dc33bdb608306e4909667d2ef03a28313262ed35e0a44f022e0b7c8851d52ae8f0505e73f
   languageName: node
   linkType: hard
 
@@ -5622,7 +5622,7 @@ __metadata:
     "@angular/common": ^12.0.0
     "@angular/compiler": ^12.0.0
     "@angular/core": ^12.0.0
-    "@angular/forms": ^12.0.0
+    "@angular/forms": ^14.2.8
     "@angular/platform-browser": ^12.0.0
     "@angular/platform-browser-dynamic": ^12.0.0
     "@babel/core": ^7.11.6
