@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+- `[docs]` Mention `toStrictEqual` in UsingMatchers docs. ([#13560](https://github.com/facebook/jest/pull/13560))
 
 ### Performance
 
