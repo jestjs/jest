@@ -126,7 +126,13 @@ The [`clearMocks`](configuration#clearmocks-boolean) configuration option is ava
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
+This is useful when you want to completely reset a _mock_ back to its initial state. 
+
+:::note
+
+Resetting a _spy_ will result in a function with no return value.
+
+:::
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 

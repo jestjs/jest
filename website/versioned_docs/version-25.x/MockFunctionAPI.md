@@ -91,7 +91,13 @@ The [`clearMocks`](configuration#clearmocks-boolean) configuration option is ava
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
+This is useful when you want to completely reset a _mock_ back to its initial state. 
+
+:::note
+
+Resetting a _spy_ will result in a function with no return value.
+
+:::
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
@@ -109,7 +115,11 @@ The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is
 
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-_Note: `jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`._
+:::note
+
+`jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`.
+
+:::
 
 For example:
 
