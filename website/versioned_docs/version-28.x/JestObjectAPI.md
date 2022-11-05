@@ -59,7 +59,11 @@ Examples of dependencies that might be considered "implementation details" are t
 
 Returns the `jest` object for chaining.
 
-_Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior._
+:::info
+
+This method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.enableAutomock()`
 
@@ -92,7 +96,11 @@ test('original implementation', () => {
 });
 ```
 
-_Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
+:::info
+
+This method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.createMockFromModule(moduleName)`
 
@@ -376,7 +384,11 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
+:::info
+
+It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
+
+:::
 
 ### `jest.requireActual(moduleName)`
 
@@ -602,7 +614,11 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
 
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
+:::note
+
+While it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value.
+
+:::
 
 Example:
 
@@ -835,11 +851,13 @@ This function is not available when using legacy fake timers implementation.
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
 
-To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout). The default timeout interval is 5 seconds if this method is not called.
 
-_Note: The default timeout interval is 5 seconds if this method is not called._
+:::tip
 
-_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
+If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`.
+
+:::
 
 Example:
 

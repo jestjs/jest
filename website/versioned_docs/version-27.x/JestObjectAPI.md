@@ -59,7 +59,11 @@ Examples of dependencies that might be considered "implementation details" are t
 
 Returns the `jest` object for chaining.
 
-_Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior._
+:::info
+
+This method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.enableAutomock()`
 
@@ -92,7 +96,11 @@ test('original implementation', () => {
 });
 ```
 
-_Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
+:::info
+
+This method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.
+
+:::
 
 ### `jest.createMockFromModule(moduleName)`
 
@@ -596,7 +604,11 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 The `mocked` test helper provides typings on your mocked modules and even their deep methods, based on the typing of its source. It makes use of the latest TypeScript feature, so you even have argument types completion in the IDE (as opposed to `jest.MockInstance`).
 
-_Note: while it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value._
+:::note
+
+While it needs to be a function so that input type is changed, the helper itself does nothing else than returning the given input value.
+
+:::
 
 Example:
 
@@ -670,7 +682,11 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 Exhausts all tasks queued by `setImmediate()`.
 
-> Note: This function is not available when using modern fake timers implementation
+:::note
+
+This function is not available when using modern fake timers implementation
+
+:::
 
 ### `jest.advanceTimersByTime(msToRun)`
 
@@ -704,13 +720,21 @@ Returns the number of fake timers still left to run.
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
-> Note: This function is only available when using modern fake timers implementation
+:::info
+
+This function is only available when using modern fake timers implementation
+
+:::
 
 ### `jest.getRealSystemTime()`
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
-> Note: This function is only available when using modern fake timers implementation
+:::info
+
+This function is only available when using modern fake timers implementation
+
+:::
 
 ## Misc
 
@@ -718,11 +742,13 @@ When mocking time, `Date.now()` will also be mocked. If you for some reason need
 
 Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
 
-To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout). The default timeout interval is 5 seconds if this method is not called.
 
-_Note: The default timeout interval is 5 seconds if this method is not called._
+:::tip
 
-_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
+If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`.
+
+:::
 
 Example:
 
