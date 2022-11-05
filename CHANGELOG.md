@@ -5,7 +5,6 @@
 ### Fixes
 
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
-- `[jest-mock]` Remove useless conditional ([#13561](https://github.com/facebook/jest/pull/13561))
 
 ### Chore & Maintenance
 
