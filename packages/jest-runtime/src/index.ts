@@ -155,7 +155,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 })();
 
 export default class Runtime {
-  private readonly _cacheFS: Map<string, Buffer | string>;
+  private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
@@ -213,7 +213,7 @@ export default class Runtime {
     environment: JestEnvironment,
     resolver: Resolver,
     transformer: ScriptTransformer,
-    cacheFS: Map<string, Buffer | string>,
+    cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: string,
     // TODO: make mandatory in Jest 30
@@ -448,7 +448,7 @@ export default class Runtime {
 
       if (isWasm(modulePath)) {
         const wasm = this._importWasmModule(
-          this.readFileBuffer(modulePath),
+          fs.readFileSync(modulePath),
           modulePath,
           context,
         );
@@ -2378,23 +2378,6 @@ export default class Runtime {
     };
   }
 
-  private readFileBuffer(filename: string): Buffer {
-    let source = this._cacheFS.get(filename);
-
-    if (!source) {
-      source = fs.readFileSync(filename);
-
-      this._cacheFS.set(filename, source);
-    }
-
-    if (typeof source === 'string') {
-      // This may occur if readFileBuffer and readFile are called interchangeably for one file
-      throw new Error("Expected source to be a 'Buffer', but got 'string'");
-    }
-
-    return source;
-  }
-
   private readFile(filename: string): string {
     let source = this._cacheFS.get(filename);
 
@@ -2402,11 +2385,6 @@ export default class Runtime {
       source = fs.readFileSync(filename, 'utf8');
 
       this._cacheFS.set(filename, source);
-    }
-
-    if (typeof source !== 'string') {
-      // This may occur if readFileBuffer and readFile are called interchangeably for one file
-      throw new Error("Expected source to be a 'string', but got 'Buffer'");
     }
 
     return source;
