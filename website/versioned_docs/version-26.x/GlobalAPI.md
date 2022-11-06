@@ -233,7 +233,13 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 #### 1. `describe.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+  
+:::info
+
+If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+
+:::
+
 - `name`: `String` the title of the test suite.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -508,7 +514,13 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
 #### 1. `test.concurrent.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+  
+:::info
+
+If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+
+:::
+
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -651,7 +663,13 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 #### 1. `test.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+  
+:::info
+
+If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+
+:::
+
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
     - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
@@ -835,7 +853,11 @@ Also under the alias: `it.todo(name)`
 
 Use `test.todo` when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.
 
-_Note_: If you supply a test callback function then the `test.todo` will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use `test.skip` instead.
+:::info
+
+If you supply a test callback function then the `test.todo` will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use `test.skip` instead.
+
+:::
 
 #### API
 

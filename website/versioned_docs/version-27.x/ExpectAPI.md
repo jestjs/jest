@@ -67,7 +67,9 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+:::info
+
+In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
 interface CustomMatchers<R = unknown> {
@@ -82,6 +84,8 @@ declare global {
   }
 }
 ```
+
+:::
 
 #### Async Matchers
 
