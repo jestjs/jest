@@ -1147,6 +1147,7 @@ export default class Runtime {
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
+    this._cacheFSBuffer.clear();
 
     if (
       this._coverageOptions.collectCoverage &&
