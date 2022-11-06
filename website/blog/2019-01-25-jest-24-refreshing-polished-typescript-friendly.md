@@ -27,7 +27,7 @@ If you want to run typechecks while you test, you should use [`ts-jest`](https:/
 
 See [the docs](/docs/getting-started#using-typescript) for more details.
 
-:::info 
+:::info
 
 If you for whatever reason cannot upgrade to Babel 7, you can still use Jest 24 with `babel@6` as long as you keep `babel-jest` at version 23.
 

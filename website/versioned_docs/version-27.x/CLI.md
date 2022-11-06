@@ -122,7 +122,7 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 ### `--cache`
 
-Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. 
+Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`.
 
 :::caution
 
@@ -146,7 +146,7 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 ### `--clearCache`
 
-Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. 
+Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`.
 
 :::caution
 
@@ -214,7 +214,7 @@ Find and run the tests that cover a space separated list of source files that we
 
 ### `--forceExit`
 
-Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. 
+Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
 
 :::caution
 

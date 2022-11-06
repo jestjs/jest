@@ -233,7 +233,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 #### 1. `describe.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
-  
+
 :::info
 
 If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
@@ -538,7 +538,7 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
 #### 1. `test.concurrent.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  
+
 :::info
 
 If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
@@ -687,7 +687,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 #### 1. `test.each(table)(name, fn, timeout)`
 
 - `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-  
+
 :::info
 
 If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`

@@ -15,7 +15,7 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
-This will run Jest in a Node process that an external debugger can connect to. 
+This will run Jest in a Node process that an external debugger can connect to.
 
 :::caution
 
@@ -183,7 +183,7 @@ jest --runInBand
 yarn test --runInBand
 ```
 
-Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. 
+Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half.
 
 :::note
 

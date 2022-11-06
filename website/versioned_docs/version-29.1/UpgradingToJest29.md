@@ -36,7 +36,7 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 ## JSDOM upgrade
 
-`jest-environment-jsdom` has upgraded `jsdom` from v19 to v20. 
+`jest-environment-jsdom` has upgraded `jsdom` from v19 to v20.
 
 :::info
 

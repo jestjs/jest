@@ -15,7 +15,7 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
-This will run Jest in a Node process that an external debugger can connect to. 
+This will run Jest in a Node process that an external debugger can connect to.
 
 :::caution
 
