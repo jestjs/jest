@@ -5,7 +5,7 @@
 ### Fixes
 
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
-- `[jest-worker]` Throw an error instead of hanging when jest workers are killed ([#13566](https://github.com/facebook/jest/pull/13566))
+- `[jest-worker]` Throw an error instead of hanging when jest workers terminate unexpectedly ([#13566](https://github.com/facebook/jest/pull/13566))
 
 ### Chore & Maintenance
 
