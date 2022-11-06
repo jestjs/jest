@@ -156,6 +156,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
+  private readonly _cacheFSBuffer = new Map<string, Buffer>();
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
@@ -448,7 +449,7 @@ export default class Runtime {
 
       if (isWasm(modulePath)) {
         const wasm = this._importWasmModule(
-          fs.readFileSync(modulePath),
+          this.readFileBuffer(modulePath),
           modulePath,
           context,
         );
@@ -2378,11 +2379,24 @@ export default class Runtime {
     };
   }
 
+  private readFileBuffer(filename: string): Buffer {
+    let source = this._cacheFSBuffer.get(filename);
+
+    if (!source) {
+      source = fs.readFileSync(filename);
+
+      this._cacheFSBuffer.set(filename, source);
+    }
+
+    return source;
+  }
+
   private readFile(filename: string): string {
     let source = this._cacheFS.get(filename);
 
     if (!source) {
-      source = fs.readFileSync(filename, 'utf8');
+      const buffer = this.readFileBuffer(filename);
+      source = buffer.toString('utf8');
 
       this._cacheFS.set(filename, source);
     }
