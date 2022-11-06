@@ -31,7 +31,10 @@ import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
-import VALID_CONFIG from './ValidConfig';
+import {
+  initialOptions as VALID_CONFIG,
+  initialProjectOptions as VALID_PROJECT_CONFIG,
+} from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
@@ -487,6 +490,7 @@ export default async function normalize(
   argv: Config.Argv,
   configPath?: string | null,
   projectIndex = Infinity,
+  isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
@@ -494,7 +498,7 @@ export default async function normalize(
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
-    exampleConfig: VALID_CONFIG,
+    exampleConfig: isProjectOptions ? VALID_PROJECT_CONFIG : VALID_CONFIG,
     recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config

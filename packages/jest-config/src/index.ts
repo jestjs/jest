@@ -58,6 +58,7 @@ export async function readConfig(
     argv,
     configPath,
     projectIndex,
+    skipArgvConfigOption && !(packageRootOrConfig === parentConfigDirname),
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
