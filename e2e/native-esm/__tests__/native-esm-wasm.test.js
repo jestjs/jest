@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// the point here is that it's the node core module
-// eslint-disable-next-line no-restricted-imports
-import {readFileSync} from 'fs';
+import {readFileSync} from 'node:fs';
 // file origin: https://github.com/mdn/webassembly-examples/blob/2f2163287f86fe29deb162335bccca7d5d95ca4f/understanding-text-format/add.wasm
 // source code: https://github.com/mdn/webassembly-examples/blob/2f2163287f86fe29deb162335bccca7d5d95ca4f/understanding-text-format/add.was
 import {add} from '../add.wasm';
