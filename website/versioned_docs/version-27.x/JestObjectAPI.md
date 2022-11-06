@@ -684,7 +684,7 @@ Exhausts all tasks queued by `setImmediate()`.
 
 :::note
 
-This function is not available when using modern fake timers implementation
+This function is not available when using modern fake timers implementation.
 
 :::
 
@@ -722,7 +722,7 @@ Set the current system time used by fake timers. Simulates a user changing the s
 
 :::info
 
-This function is only available when using modern fake timers implementation
+This function is only available when using modern fake timers implementation.
 
 :::
 
@@ -732,7 +732,7 @@ When mocking time, `Date.now()` will also be mocked. If you for some reason need
 
 :::info
 
-This function is only available when using modern fake timers implementation
+This function is only available when using modern fake timers implementation.
 
 :::
 

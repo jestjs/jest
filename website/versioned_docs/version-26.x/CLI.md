@@ -98,8 +98,6 @@ jest --update-snapshot --detectOpenHandles
 
 ## Options
 
-
-
 :::note
 
 CLI options take precedence over values from the [Configuration](Configuration.md).
@@ -218,7 +216,7 @@ Find and run the tests that cover a space separated list of source files that we
 
 Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. 
 
-:::info
+:::caution
 
 This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
 
@@ -334,7 +332,7 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 Run only the tests that were specified with their exact paths.
 
-:::caution
+:::tip
 
 The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files
 
@@ -381,7 +379,7 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
 
-:::note
+:::tip
 
 The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks.
 

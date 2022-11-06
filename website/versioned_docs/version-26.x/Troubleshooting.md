@@ -15,7 +15,13 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 ```
 
-This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.
+This will run Jest in a Node process that an external debugger can connect to. 
+
+:::caution
+
+The process will pause until the debugger has connected to it.
+
+:::
 
 To debug in Google Chrome (or any Chromium-based browser), open your browser and go to `chrome://inspect` and click on "Open Dedicated DevTools for Node", which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like `localhost:9229`) after running the above command, and you will be able to debug Jest using Chrome's DevTools.
 
