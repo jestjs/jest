@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+- `[website]` Use Admonitions on website ([#13563](https://github.com/facebook/jest/pull/13563))
 
 ### Performance
 
