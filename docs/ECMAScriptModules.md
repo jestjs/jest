@@ -22,6 +22,8 @@ With the warnings out of the way, this is how you activate ESM support in your t
 
    If you use Yarn, you can use `yarn node --experimental-vm-modules $(yarn bin jest)`. This command will also work if you use [Yarn Plug'n'Play](https://yarnpkg.com/features/pnp).
 
+   If your codebase includes ESM imports from `*.wasm` files, you do _not_ need to pass `--experimental-wasm-modules` to `node`. Current implementation of WebAssembly imports in Jest relies on experimental VM modules, however, this may change in the future.
+
 1. Beyond that, we attempt to follow `node`'s logic for activating "ESM mode" (such as looking at `type` in `package.json` or `.mjs` files), see [their docs](https://nodejs.org/api/esm.html#esm_enabling) for details.
 1. If you want to treat other file extensions (such as `.jsx` or `.ts`) as ESM, please use the [`extensionsToTreatAsEsm` option](Configuration.md#extensionstotreatasesm-arraystring).
 
