@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+- `[jest-config]` Add config validation for `projects` option ([#13565](https://github.com/facebook/jest/pull/13565))
 
 ### Chore & Maintenance
 
