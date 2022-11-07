@@ -324,8 +324,8 @@ module.exports = class NodeWatcher extends EventEmitter {
    */
 
   emitEvent(type, file, stat) {
-    const key = type + '-' + file;
-    const addKey = ADD_EVENT + '-' + file;
+    const key = `${type}-${file}`;
+    const addKey = `${ADD_EVENT}-${file}`;
     if (type === CHANGE_EVENT && this.changeTimers[addKey]) {
       // Ignore the change event that is immediately fired after an add event.
       // (This happens on Linux).

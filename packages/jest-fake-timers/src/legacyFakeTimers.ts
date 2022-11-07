@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
+/* eslint-disable local/prefer-spread-eventually */
 
-import util = require('util');
+import {promisify} from 'util';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
-import type {ModuleMocker} from 'jest-mock';
+import type {
+  FunctionLike,
+  Mock,
+  ModuleMocker,
+  UnknownFunction,
+} from 'jest-mock';
 import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
@@ -29,16 +34,27 @@ type Timer = {
 };
 
 type TimerAPI = {
-  cancelAnimationFrame: FakeTimersGlobal['cancelAnimationFrame'];
-  clearImmediate: typeof global.clearImmediate;
-  clearInterval: typeof global.clearInterval;
-  clearTimeout: typeof global.clearTimeout;
+  cancelAnimationFrame: typeof globalThis.cancelAnimationFrame;
+  clearImmediate: typeof globalThis.clearImmediate;
+  clearInterval: typeof globalThis.clearInterval;
+  clearTimeout: typeof globalThis.clearTimeout;
   nextTick: typeof process.nextTick;
+  requestAnimationFrame: typeof globalThis.requestAnimationFrame;
+  setImmediate: typeof globalThis.setImmediate;
+  setInterval: typeof globalThis.setInterval;
+  setTimeout: typeof globalThis.setTimeout;
+};
 
-  requestAnimationFrame: FakeTimersGlobal['requestAnimationFrame'];
-  setImmediate: typeof global.setImmediate;
-  setInterval: typeof global.setInterval;
-  setTimeout: typeof global.setTimeout;
+type FakeTimerAPI = {
+  cancelAnimationFrame: Mock<FakeTimers['_fakeClearTimer']>;
+  clearImmediate: Mock<FakeTimers['_fakeClearImmediate']>;
+  clearInterval: Mock<FakeTimers['_fakeClearTimer']>;
+  clearTimeout: Mock<FakeTimers['_fakeClearTimer']>;
+  nextTick: Mock<FakeTimers['_fakeNextTick']>;
+  requestAnimationFrame: Mock<FakeTimers['_fakeRequestAnimationFrame']>;
+  setImmediate: Mock<FakeTimers['_fakeSetImmediate']>;
+  setInterval: Mock<FakeTimers['_fakeSetInterval']>;
+  setTimeout: Mock<FakeTimers['_fakeSetTimeout']>;
 };
 
 type TimerConfig<Ref> = {
@@ -48,28 +64,22 @@ type TimerConfig<Ref> = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-type GlobalThis = typeof globalThis;
-
-interface FakeTimersGlobal extends GlobalThis {
-  cancelAnimationFrame: (handle: number) => void;
-  requestAnimationFrame: (callback: (time: number) => void) => number;
-}
-
-export default class FakeTimers<TimerRef> {
+export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
-  private _config: StackTraceConfig;
-  private _disposed?: boolean;
-  private _fakeTimerAPIs!: TimerAPI;
-  private _global: FakeTimersGlobal;
+  private readonly _config: StackTraceConfig;
+  private _disposed: boolean;
+  private _fakeTimerAPIs!: FakeTimerAPI;
+  private _fakingTime = false;
+  private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
-  private _maxLoops: number;
-  private _moduleMocker: ModuleMocker;
+  private readonly _maxLoops: number;
+  private readonly _moduleMocker: ModuleMocker;
   private _now!: number;
   private _ticks!: Array<Tick>;
-  private _timerAPIs: TimerAPI;
+  private readonly _timerAPIs: TimerAPI;
   private _timers!: Map<string, Timer>;
   private _uuidCounter: number;
-  private _timerConfig: TimerConfig<TimerRef>;
+  private readonly _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
     global,
@@ -78,7 +88,7 @@ export default class FakeTimers<TimerRef> {
     config,
     maxLoops,
   }: {
-    global: FakeTimersGlobal;
+    global: typeof globalThis;
     moduleMocker: ModuleMocker;
     timerConfig: TimerConfig<TimerRef>;
     config: StackTraceConfig;
@@ -104,6 +114,8 @@ export default class FakeTimers<TimerRef> {
       setTimeout: global.setTimeout,
     };
 
+    this._disposed = false;
+
     this.reset();
   }
 
@@ -125,6 +137,13 @@ export default class FakeTimers<TimerRef> {
     this._timers = new Map();
   }
 
+  now(): number {
+    if (this._fakingTime) {
+      return this._now;
+    }
+    return Date.now();
+  }
+
   runAllTicks(): void {
     this._checkFakeTimers();
     // Only run a generous number of ticks and then bail.
@@ -137,7 +156,9 @@ export default class FakeTimers<TimerRef> {
         break;
       }
 
-      if (!this._cancelledTicks.hasOwnProperty(tick.uuid)) {
+      if (
+        !Object.prototype.hasOwnProperty.call(this._cancelledTicks, tick.uuid)
+      ) {
         // Callback may throw, so update the map prior calling.
         this._cancelledTicks[tick.uuid] = true;
         tick.callback();
@@ -146,9 +167,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' ticks, and there are still more! ' +
+        `Ran ${this._maxLoops} ticks, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -168,9 +187,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' immediates, and there are still more! Assuming ' +
+        `Ran ${this._maxLoops} immediates, and there are still more! Assuming ` +
           "we've hit an infinite recursion and bailing out...",
       );
     }
@@ -193,13 +210,15 @@ export default class FakeTimers<TimerRef> {
     // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
-      const nextTimerHandle = this._getNextTimerHandle();
+      const nextTimerHandleAndExpiry = this._getNextTimerHandleAndExpiry();
 
       // If there are no more timer handles, stop!
-      if (nextTimerHandle === null) {
+      if (nextTimerHandleAndExpiry === null) {
         break;
       }
 
+      const [nextTimerHandle, expiry] = nextTimerHandleAndExpiry;
+      this._now = expiry;
       this._runTimerHandle(nextTimerHandle);
 
       // Some of the immediate calls could be enqueued
@@ -216,9 +235,7 @@ export default class FakeTimers<TimerRef> {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -234,7 +251,10 @@ export default class FakeTimers<TimerRef> {
 
     timerEntries
       .sort(([, left], [, right]) => left.expiry - right.expiry)
-      .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
+      .forEach(([timerHandle, timer]) => {
+        this._now = timer.expiry;
+        this._runTimerHandle(timerHandle);
+      });
   }
 
   advanceTimersToNextTimer(steps = 1): void {
@@ -260,21 +280,16 @@ export default class FakeTimers<TimerRef> {
     // This is just to help avoid recursive loops
     let i;
     for (i = 0; i < this._maxLoops; i++) {
-      const timerHandle = this._getNextTimerHandle();
+      const timerHandleAndExpiry = this._getNextTimerHandleAndExpiry();
 
       // If there are no more timer handles, stop!
-      if (timerHandle === null) {
+      if (timerHandleAndExpiry === null) {
         break;
       }
-      const timerValue = this._timers.get(timerHandle);
-      if (timerValue === undefined) {
-        break;
-      }
-      const nextTimerExpiry = timerValue.expiry;
+      const [timerHandle, nextTimerExpiry] = timerHandleAndExpiry;
+
       if (this._now + msToRun < nextTimerExpiry) {
-        // There are no timers between now and the target we're running to, so
-        // adjust our time cursor and quit
-        this._now += msToRun;
+        // There are no timers between now and the target we're running to
         break;
       } else {
         msToRun -= nextTimerExpiry - this._now;
@@ -283,11 +298,12 @@ export default class FakeTimers<TimerRef> {
       }
     }
 
+    // Advance the clock by whatever time we still have left to run
+    this._now += msToRun;
+
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' +
-          this._maxLoops +
-          ' timers, and there are still more! ' +
+        `Ran ${this._maxLoops} timers, and there are still more! ` +
           "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
@@ -308,7 +324,7 @@ export default class FakeTimers<TimerRef> {
     let errThrown = false;
     try {
       cb();
-    } catch (e: unknown) {
+    } catch (e) {
       errThrown = true;
       cbErr = e;
     }
@@ -355,6 +371,8 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
     global.process.nextTick = this._timerAPIs.nextTick;
+
+    this._fakingTime = false;
   }
 
   useFakeTimers(): void {
@@ -387,6 +405,8 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
+
+    this._fakingTime = true;
   }
 
   getTimerCount(): number {
@@ -396,50 +416,42 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _checkFakeTimers() {
-    if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
+    if (!this._fakingTime) {
       this._global.console.warn(
-        `A function to advance timers was called but the timers API is not ` +
-          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
-          `test or enable fake timers globally by setting ` +
-          `\`"timers": "fake"\` in ` +
-          `the configuration file. This warning is likely a result of a ` +
-          `default configuration change in Jest 15.\n\n` +
-          `Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n` +
-          `Stack Trace:\n` +
-          formatStackTrace(new Error().stack!, this._config, {
-            noStackTrace: false,
-          }),
+        'A function to advance timers was called but the timers APIs are not mocked ' +
+          'with fake timers. Call `jest.useFakeTimers({legacyFakeTimers: true})` ' +
+          'in this test file or enable fake timers for all tests by setting ' +
+          "{'enableGlobally': true, 'legacyFakeTimers': true} in " +
+          `Jest configuration file.\nStack Trace:\n${formatStackTrace(
+            new Error().stack!,
+            this._config,
+            {noStackTrace: false},
+          )}`,
       );
     }
   }
 
   private _createMocks() {
-    const fn = (impl: Function) =>
-      // @ts-expect-error TODO: figure out better typings here
-      this._moduleMocker.fn().mockImplementation(impl);
+    const fn = <T extends FunctionLike = UnknownFunction>(implementation?: T) =>
+      this._moduleMocker.fn(implementation);
 
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
-    // @ts-expect-error TODO: figure out better typings here
-    promisifiableFakeSetTimeout[util.promisify.custom] = (
+    // @ts-expect-error: no index
+    promisifiableFakeSetTimeout[promisify.custom] = (
       delay?: number,
       arg?: unknown,
     ) =>
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 
-    // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
       cancelAnimationFrame: fn(this._fakeClearTimer.bind(this)),
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
       clearInterval: fn(this._fakeClearTimer.bind(this)),
       clearTimeout: fn(this._fakeClearTimer.bind(this)),
       nextTick: fn(this._fakeNextTick.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       requestAnimationFrame: fn(this._fakeRequestAnimationFrame.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setInterval: fn(this._fakeSetInterval.bind(this)),
-      // @ts-expect-error TODO: figure out better typings here
       setTimeout: promisifiableFakeSetTimeout,
     };
   }
@@ -458,7 +470,7 @@ export default class FakeTimers<TimerRef> {
     );
   }
 
-  private _fakeNextTick(callback: Callback, ...args: Array<any>) {
+  private _fakeNextTick(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return;
     }
@@ -472,7 +484,7 @@ export default class FakeTimers<TimerRef> {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (!cancelledTicks.hasOwnProperty(uuid)) {
+      if (!Object.prototype.hasOwnProperty.call(cancelledTicks, uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
         callback.apply(null, args);
@@ -487,7 +499,7 @@ export default class FakeTimers<TimerRef> {
     }, 1000 / 60);
   }
 
-  private _fakeSetImmediate(callback: Callback, ...args: Array<any>) {
+  private _fakeSetImmediate(callback: Callback, ...args: Array<unknown>) {
     if (this._disposed) {
       return null;
     }
@@ -500,11 +512,13 @@ export default class FakeTimers<TimerRef> {
     });
 
     this._timerAPIs.setImmediate(() => {
-      if (this._immediates.find(x => x.uuid === uuid)) {
-        try {
-          callback.apply(null, args);
-        } finally {
-          this._fakeClearImmediate(uuid);
+      if (!this._disposed) {
+        if (this._immediates.find(x => x.uuid === uuid)) {
+          try {
+            callback.apply(null, args);
+          } finally {
+            this._fakeClearImmediate(uuid);
+          }
         }
       }
     });
@@ -515,7 +529,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetInterval(
     callback: Callback,
     intervalDelay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;
@@ -540,7 +554,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeSetTimeout(
     callback: Callback,
     delay?: number,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ) {
     if (this._disposed) {
       return null;
@@ -561,7 +575,7 @@ export default class FakeTimers<TimerRef> {
     return this._timerConfig.idToRef(uuid);
   }
 
-  private _getNextTimerHandle() {
+  private _getNextTimerHandleAndExpiry(): [string, number] | null {
     let nextTimerHandle = null;
     let soonestTime = MS_IN_A_YEAR;
 
@@ -572,13 +586,19 @@ export default class FakeTimers<TimerRef> {
       }
     });
 
-    return nextTimerHandle;
+    if (nextTimerHandle === null) {
+      return null;
+    }
+
+    return [nextTimerHandle, soonestTime];
   }
 
   private _runTimerHandle(timerHandle: TimerID) {
     const timer = this._timers.get(timerHandle);
 
     if (!timer) {
+      // Timer has been cleared - we'll hit this when a timer is cleared within
+      // another timer in runOnlyPendingTimers
       return;
     }
 
@@ -594,7 +614,7 @@ export default class FakeTimers<TimerRef> {
         break;
 
       default:
-        throw new Error('Unexpected timer type: ' + timer.type);
+        throw new Error(`Unexpected timer type: ${timer.type}`);
     }
   }
 }

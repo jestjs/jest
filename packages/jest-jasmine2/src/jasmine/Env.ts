@@ -31,7 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import {ErrorWithStack, isPromise} from 'jest-util';
+import type {Circus} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
 import queueRunner, {
@@ -49,7 +50,7 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-export default function (j$: Jasmine) {
+export default function jasmineEnv(j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -59,7 +60,11 @@ export default function (j$: Jasmine) {
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
-    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    fit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     throwingExpectationFailures: () => boolean;
     randomizeTests: (value: unknown) => void;
     randomTests: () => boolean;
@@ -69,7 +74,7 @@ export default function (j$: Jasmine) {
       suiteTree?: Suite,
     ) => Promise<void>;
     fdescribe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
     spyOn: (
@@ -84,18 +89,26 @@ export default function (j$: Jasmine) {
     afterEach: (afterEachFunction: QueueableFn['fn'], timeout?: number) => void;
     clearReporters: () => void;
     addReporter: (reporterToAdd: Reporter) => void;
-    it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    it: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     xdescribe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
-    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    xit: (
+      description: Circus.TestNameLike,
+      fn: QueueableFn['fn'],
+      timeout?: number,
+    ) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
     describe: (
-      description: string,
+      description: Circus.TestNameLike,
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
 
@@ -104,10 +117,8 @@ export default function (j$: Jasmine) {
 
       let catchExceptions = true;
 
-      const realSetTimeout =
-        global.setTimeout as typeof globalThis['setTimeout'];
-      const realClearTimeout =
-        global.clearTimeout as typeof globalThis['clearTimeout'];
+      const realSetTimeout = globalThis.setTimeout;
+      const realClearTimeout = globalThis.clearTimeout;
 
       const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
@@ -119,11 +130,11 @@ export default function (j$: Jasmine) {
       let nextSuiteId = 0;
 
       const getNextSpecId = function () {
-        return 'spec' + nextSpecId++;
+        return `spec${nextSpecId++}`;
       };
 
       const getNextSuiteId = function () {
-        return 'suite' + nextSuiteId++;
+        return `suite${nextSuiteId++}`;
       };
 
       const topSuite = new j$.Suite({
@@ -366,7 +377,7 @@ export default function (j$: Jasmine) {
         return spyRegistry.spyOn.apply(spyRegistry, args);
       };
 
-      const suiteFactory = function (description: string) {
+      const suiteFactory = function (description: Circus.TestNameLike) {
         const suite = new j$.Suite({
           id: getNextSuiteId(),
           description,
@@ -380,11 +391,14 @@ export default function (j$: Jasmine) {
         return suite;
       };
 
-      this.describe = function (description: string, specDefinitions) {
+      this.describe = function (
+        description: Circus.TestNameLike,
+        specDefinitions,
+      ) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
-            `Missing second argument. It must be a callback function.`,
+            'Missing second argument. It must be a callback function.',
           );
         }
         if (typeof specDefinitions !== 'function') {
@@ -485,7 +499,7 @@ export default function (j$: Jasmine) {
       }
 
       const specFactory = (
-        description: string,
+        description: Circus.TestNameLike,
         fn: QueueableFn['fn'],
         suite: Suite,
         timeout?: number,
@@ -536,11 +550,7 @@ export default function (j$: Jasmine) {
       };
 
       this.it = function (description, fn, timeout) {
-        if (typeof description !== 'string') {
-          throw new Error(
-            `Invalid first argument, ${description}. It must be a string.`,
-          );
-        }
+        description = convertDescriptorToString(description);
         if (fn === undefined) {
           throw new Error(
             'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -589,6 +599,7 @@ export default function (j$: Jasmine) {
 
         const spec = specFactory(
           description,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {},
           currentDeclarationSuite,
         );
@@ -683,9 +694,7 @@ export default function (j$: Jasmine) {
         const runnable = currentRunnable();
 
         if (!runnable) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          errorAsErrorObject.message = `Caught error after test environment was torn down\n\n${errorAsErrorObject.message}`;
 
           throw errorAsErrorObject;
         }

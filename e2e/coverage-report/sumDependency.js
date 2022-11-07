@@ -7,6 +7,7 @@
 
 require('path');
 
+// eslint-disable-next-line prefer-template
 const uncoveredFunction = () => (true ? 1 + '5' : '999');
 
 module.exports = {

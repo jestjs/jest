@@ -16,9 +16,6 @@ import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
 
-// TODO: remove export in Jest 28
-export {resolveTestEnvironment as getTestEnvironment} from 'jest-resolve';
-
 export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
@@ -28,7 +25,7 @@ export {default as descriptions} from './Descriptions';
 export {constants};
 
 type ReadConfig = {
-  configPath: Config.Path | null | undefined;
+  configPath: string | null | undefined;
   globalConfig: Config.GlobalConfig;
   hasDeprecationWarnings: boolean;
   projectConfig: Config.ProjectConfig;
@@ -36,69 +33,36 @@ type ReadConfig = {
 
 export async function readConfig(
   argv: Config.Argv,
-  packageRootOrConfig: Config.Path | Config.InitialOptions,
+  packageRootOrConfig: string | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigDirname?: Config.Path | null,
+  parentConfigDirname?: string | null,
   projectIndex = Infinity,
-  skipMultipleConfigWarning = false,
+  skipMultipleConfigError = false,
 ): Promise<ReadConfig> {
-  let rawOptions: Config.InitialOptions;
-  let configPath = null;
-
-  if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigDirname) {
-      rawOptions = packageRootOrConfig;
-      rawOptions.rootDir = rawOptions.rootDir
-        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
-        : parentConfigDirname;
-    } else {
-      throw new Error(
-        'Jest: Cannot use configuration as an object without a file path.',
-      );
-    }
-  } else if (isJSONString(argv.config)) {
-    // A JSON string was passed to `--config` argument and we can parse it
-    // and use as is.
-    let config;
-    try {
-      config = JSON.parse(argv.config);
-    } catch {
-      throw new Error(
-        'There was an error while parsing the `--config` argument as a JSON string.',
-      );
-    }
-
-    // NOTE: we might need to resolve this dir to an absolute path in the future
-    config.rootDir = config.rootDir || packageRootOrConfig;
-    rawOptions = config;
-    // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
-  } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(
-      argv.config,
-      process.cwd(),
-      skipMultipleConfigWarning,
-    );
-    rawOptions = await readConfigFileAndSetRootDir(configPath);
-  } else {
-    // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(
+  const {config: initialOptions, configPath} = await readInitialOptions(
+    argv.config,
+    {
       packageRootOrConfig,
-      process.cwd(),
-      skipMultipleConfigWarning,
-    );
-    rawOptions = await readConfigFileAndSetRootDir(configPath);
-  }
+      parentConfigDirname,
+      readFromCwd: skipArgvConfigOption,
+      skipMultipleConfigError,
+    },
+  );
 
+  const packageRoot =
+    typeof packageRootOrConfig === 'string'
+      ? path.resolve(packageRootOrConfig)
+      : undefined;
   const {options, hasDeprecationWarnings} = await normalize(
-    rawOptions,
+    initialOptions,
     argv,
     configPath,
     projectIndex,
+    skipArgvConfigOption && !(packageRoot === parentConfigDirname),
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
@@ -120,9 +84,9 @@ const groupOptions = (
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
+    ci: options.ci,
     collectCoverage: options.collectCoverage,
     collectCoverageFrom: options.collectCoverageFrom,
-    collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
     coverageDirectory: options.coverageDirectory,
     coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
@@ -156,6 +120,9 @@ const groupOptions = (
     reporters: options.reporters,
     rootDir: options.rootDir,
     runTestsByPath: options.runTestsByPath,
+    seed: options.seed,
+    shard: options.shard,
+    showSeed: options.showSeed,
     silent: options.silent,
     skipFilter: options.skipFilter,
     snapshotFormat: options.snapshotFormat,
@@ -172,6 +139,7 @@ const groupOptions = (
     watchAll: options.watchAll,
     watchPlugins: options.watchPlugins,
     watchman: options.watchman,
+    workerIdleMemoryLimit: options.workerIdleMemoryLimit,
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
@@ -186,21 +154,20 @@ const groupOptions = (
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
     extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
-    extraGlobals: options.extraGlobals,
+    fakeTimers: options.fakeTimers,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,
     globalSetup: options.globalSetup,
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    id: options.id,
     injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
-    moduleLoader: options.moduleLoader,
     moduleNameMapper: options.moduleNameMapper,
     modulePathIgnorePatterns: options.modulePathIgnorePatterns,
     modulePaths: options.modulePaths,
-    name: options.name,
     prettierPath: options.prettierPath,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
@@ -209,6 +176,8 @@ const groupOptions = (
     rootDir: options.rootDir,
     roots: options.roots,
     runner: options.runner,
+    runtime: options.runtime,
+    sandboxInjectedGlobals: options.sandboxInjectedGlobals,
     setupFiles: options.setupFiles,
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
@@ -224,8 +193,6 @@ const groupOptions = (
     testPathIgnorePatterns: options.testPathIgnorePatterns,
     testRegex: options.testRegex,
     testRunner: options.testRunner,
-    testURL: options.testURL,
-    timers: options.timers,
     transform: options.transform,
     transformIgnorePatterns: options.transformIgnorePatterns,
     unmockedModulePathPatterns: options.unmockedModulePathPatterns,
@@ -269,6 +236,90 @@ This usually means that your ${chalk.bold(
   }
 };
 
+export interface ReadJestConfigOptions {
+  /**
+   * The package root or deserialized config (default is cwd)
+   */
+  packageRootOrConfig?: string | Config.InitialOptions;
+  /**
+   * When the `packageRootOrConfig` contains config, this parameter should
+   * contain the dirname of the parent config
+   */
+  parentConfigDirname?: null | string;
+  /**
+   * Indicates whether or not to read the specified config file from disk.
+   * When true, jest will read try to read config from the current working directory.
+   * (default is false)
+   */
+  readFromCwd?: boolean;
+  /**
+   * Indicates whether or not to ignore the error of jest finding multiple config files.
+   * (default is false)
+   */
+  skipMultipleConfigError?: boolean;
+}
+
+/**
+ * Reads the jest config, without validating them or filling it out with defaults.
+ * @param config The path to the file or serialized config.
+ * @param param1 Additional options
+ * @returns The raw initial config (not validated)
+ */
+export async function readInitialOptions(
+  config?: string,
+  {
+    packageRootOrConfig = process.cwd(),
+    parentConfigDirname = null,
+    readFromCwd = false,
+    skipMultipleConfigError = false,
+  }: ReadJestConfigOptions = {},
+): Promise<{config: Config.InitialOptions; configPath: string | null}> {
+  if (typeof packageRootOrConfig !== 'string') {
+    if (parentConfigDirname) {
+      const rawOptions = packageRootOrConfig;
+      rawOptions.rootDir = rawOptions.rootDir
+        ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
+        : parentConfigDirname;
+      return {config: rawOptions, configPath: null};
+    } else {
+      throw new Error(
+        'Jest: Cannot use configuration as an object without a file path.',
+      );
+    }
+  }
+  if (isJSONString(config)) {
+    try {
+      // A JSON string was passed to `--config` argument and we can parse it
+      // and use as is.
+      const initialOptions = JSON.parse(config);
+      // NOTE: we might need to resolve this dir to an absolute path in the future
+      initialOptions.rootDir = initialOptions.rootDir || packageRootOrConfig;
+      return {config: initialOptions, configPath: null};
+    } catch {
+      throw new Error(
+        'There was an error while parsing the `--config` argument as a JSON string.',
+      );
+    }
+  }
+  if (!readFromCwd && typeof config == 'string') {
+    // A string passed to `--config`, which is either a direct path to the config
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
+    const configPath = resolveConfigPath(
+      config,
+      process.cwd(),
+      skipMultipleConfigError,
+    );
+    return {config: await readConfigFileAndSetRootDir(configPath), configPath};
+  }
+  // Otherwise just try to find config in the current rootDir.
+  const configPath = resolveConfigPath(
+    packageRootOrConfig,
+    process.cwd(),
+    skipMultipleConfigError,
+  );
+  return {config: await readConfigFileAndSetRootDir(configPath), configPath};
+}
+
 // Possible scenarios:
 //  1. jest --config config.json
 //  2. jest --projects p1 p2
@@ -280,7 +331,7 @@ This usually means that your ${chalk.bold(
 // (and only) project.
 export async function readConfigs(
   argv: Config.Argv,
-  projectPaths: Array<Config.Path>,
+  projectPaths: Array<string>,
 ): Promise<{
   globalConfig: Config.GlobalConfig;
   configs: Array<Config.ProjectConfig>;
@@ -290,7 +341,7 @@ export async function readConfigs(
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: Config.Path | null | undefined;
+  let configPath: string | null | undefined;
 
   if (projectPaths.length === 1) {
     const parsedConfig = await readConfig(argv, projects[0]);

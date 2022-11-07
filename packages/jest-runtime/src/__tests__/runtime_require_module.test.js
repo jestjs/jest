@@ -9,7 +9,7 @@
 'use strict';
 
 import {builtinModules, createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {pathToFileURL} from 'url';
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';
@@ -83,7 +83,7 @@ describe('Runtime requireModule', () => {
       runtime.__mockRootPath,
       'inner_parent_module',
     );
-    expect(exports.outputString).toEqual('This should happen');
+    expect(exports.outputString).toBe('This should happen');
   });
 
   it('resolve module.parent.filename correctly', async () => {
@@ -93,7 +93,7 @@ describe('Runtime requireModule', () => {
       'inner_parent_module',
     );
 
-    expect(slash(exports.parentFileName.replace(__dirname, ''))).toEqual(
+    expect(slash(exports.parentFileName.replace(__dirname, ''))).toBe(
       '/test_root/inner_parent_module.js',
     );
   });
@@ -106,9 +106,9 @@ describe('Runtime requireModule', () => {
     );
 
     // `exports.loaded` is set while the module is loaded, so should be `false`
-    expect(exports.loaded).toEqual(false);
+    expect(exports.loaded).toBe(false);
     // After the module is loaded we can query `module.loaded` again, at which point it should be `true`
-    expect(exports.isLoaded()).toEqual(true);
+    expect(exports.isLoaded()).toBe(true);
   });
 
   it('provides `module.filename` to modules', async () => {
@@ -118,7 +118,7 @@ describe('Runtime requireModule', () => {
       'RegularModule',
     );
     expect(
-      exports.filename.endsWith('test_root' + path.sep + 'RegularModule.js'),
+      exports.filename.endsWith(`test_root${path.sep}RegularModule.js`),
     ).toBe(true);
   });
 
@@ -240,7 +240,7 @@ describe('Runtime requireModule', () => {
     expect(exports.isExclusivelyManualMockModule).toBe(true);
   });
 
-  it(`doesn't override real modules with manual mocks when explicitly unmocked`, async () => {
+  it("doesn't override real modules with manual mocks when explicitly unmocked", async () => {
     const runtime = await createRuntime(__filename, {
       automock: true,
     });
@@ -366,53 +366,51 @@ describe('Runtime requireModule', () => {
     const runtime = await createRuntime(__filename);
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
     expect(() =>
       runtime.requireModule(runtime.__mockRootPath, 'throwing'),
-    ).toThrowError();
+    ).toThrow('throwing');
   });
 
-  onNodeVersions('>=12.12.0', () => {
-    it('overrides module.createRequire', async () => {
-      const runtime = await createRuntime(__filename);
-      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+  it('overrides module.createRequire', async () => {
+    const runtime = await createRuntime(__filename);
+    const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
 
-      expect(exports.createRequire).not.toBe(createRequire);
+    expect(exports.createRequire).not.toBe(createRequire);
 
-      // createRequire with string
-      {
-        const customRequire = exports.createRequire(runtime.__mockRootPath);
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with string
+    {
+      const customRequire = exports.createRequire(runtime.__mockRootPath);
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with URL object
-      {
-        const customRequire = exports.createRequire(
-          pathToFileURL(runtime.__mockRootPath),
-        );
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with URL object
+    {
+      const customRequire = exports.createRequire(
+        pathToFileURL(runtime.__mockRootPath),
+      );
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with file URL string
-      {
-        const customRequire = exports.createRequire(
-          pathToFileURL(runtime.__mockRootPath).toString(),
-        );
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with file URL string
+    {
+      const customRequire = exports.createRequire(
+        pathToFileURL(runtime.__mockRootPath).toString(),
+      );
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      // createRequire with absolute module path
-      {
-        const customRequire = exports.createRequire(runtime.__mockRootPath);
-        expect(customRequire('./create_require_module').foo).toBe('foo');
-      }
+    // createRequire with absolute module path
+    {
+      const customRequire = exports.createRequire(runtime.__mockRootPath);
+      expect(customRequire('./create_require_module').foo).toBe('foo');
+    }
 
-      expect(exports.syncBuiltinESMExports).not.toThrow();
-      expect(exports.builtinModules).toEqual(builtinModules);
-    });
+    expect(exports.syncBuiltinESMExports).not.toThrow();
+    expect(exports.builtinModules).toEqual(builtinModules);
   });
 
-  onNodeVersions('>=12.12.0 <16.0.0', () => {
+  onNodeVersions('<16.0.0', () => {
     it('overrides module.createRequireFromPath', async () => {
       const runtime = await createRuntime(__filename);
       const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
@@ -420,7 +418,7 @@ describe('Runtime requireModule', () => {
       // createRequire with relative module path
       expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
         new TypeError(
-          `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
+          "The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'",
         ),
       );
 

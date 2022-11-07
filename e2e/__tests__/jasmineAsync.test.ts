@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isJestJasmineRun} from '@jest/test-utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 describe('async jasmine', () => {
@@ -46,7 +47,7 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(0);
     expect(json.testResults[0].message).toBe('');
 
-    expect((result.stderr.match(/unset flag/g) || []).length).toBe(1);
+    expect(result.stderr.match(/unset flag/g) || []).toHaveLength(1);
   });
 
   it('works with afterEach', () => {
@@ -107,16 +108,25 @@ describe('async jasmine', () => {
   });
 
   it('works with concurrent', () => {
-    const {json} = runWithJson('jasmine-async', ['concurrent.test.js']);
+    const {json, stderr} = runWithJson('jasmine-async', ['concurrent.test.js']);
     expect(json.numTotalTests).toBe(4);
     expect(json.numPassedTests).toBe(2);
     expect(json.numFailedTests).toBe(1);
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
+    if (!isJestJasmineRun()) {
+      expect(stderr.match(/\[\[\w+\]\]/g)).toEqual([
+        '[[beforeAll]]',
+        '[[test]]',
+        '[[test]]',
+        '[[test]]',
+        '[[afterAll]]',
+      ]);
+    }
   });
 
   it('works with concurrent within a describe block when invoked with testNamePattern', () => {
-    const {json} = runWithJson('jasmine-async', [
+    const {json, stderr} = runWithJson('jasmine-async', [
       '--testNamePattern',
       'one concurrent test fails',
       'concurrentWithinDescribe.test.js',
@@ -126,6 +136,8 @@ describe('async jasmine', () => {
     expect(json.numFailedTests).toBe(1);
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
+    expect(stderr).toMatch(/this is logged \d/);
+    expect(stderr).not.toMatch(/this is not logged \d/);
   });
 
   it('works with concurrent.each', () => {
@@ -167,5 +179,14 @@ describe('async jasmine', () => {
     const result = runJest('jasmine-async', ['generator.test.js']);
 
     expect(result.exitCode).toBe(0);
+  });
+
+  it('works when another test fails while one is running', () => {
+    const {json} = runWithJson('jasmine-async', [
+      'concurrent-parallel-failure.test.js',
+    ]);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(1);
   });
 });

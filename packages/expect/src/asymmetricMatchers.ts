@@ -6,14 +6,33 @@
  *
  */
 
+import {
+  equals,
+  isA,
+  iterableEquality,
+  subsetEquality,
+} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
-import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
+import {pluralize} from 'jest-util';
 import {getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
+  MatcherContext,
   MatcherState,
 } from './types';
-import {iterableEquality, subsetEquality} from './utils';
+
+const functionToString = Function.prototype.toString;
+
+function fnNameFor(func: () => unknown) {
+  if (func.name) {
+    return func.name;
+  }
+
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
+  return matches ? matches[1] : '<anonymous>';
+}
 
 const utils = Object.freeze({
   ...matcherUtils,
@@ -21,22 +40,46 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-export abstract class AsymmetricMatcher<
-  T,
-  State extends MatcherState = MatcherState,
-> implements AsymmetricMatcherInterface
+function getPrototype(obj: object) {
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj);
+  }
+
+  if (obj.constructor.prototype == obj) {
+    return null;
+  }
+
+  return obj.constructor.prototype;
+}
+
+export function hasProperty(obj: object | null, property: string): boolean {
+  if (!obj) {
+    return false;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(obj, property)) {
+    return true;
+  }
+
+  return hasProperty(getPrototype(obj), property);
+}
+
+export abstract class AsymmetricMatcher<T>
+  implements AsymmetricMatcherInterface
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
   constructor(protected sample: T, protected inverse = false) {}
 
-  protected getMatcherContext(): State {
+  protected getMatcherContext(): MatcherContext {
     return {
-      ...getState(),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      dontThrow: () => {},
+      ...getState<MatcherState>(),
       equals,
       isNot: this.inverse,
       utils,
-    } as State;
+    };
   }
 
   abstract asymmetricMatch(other: unknown): boolean;
@@ -92,7 +135,7 @@ class Any extends AsymmetricMatcher<any> {
     return 'Any';
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     if (this.sample == String) {
       return 'string';
     }
@@ -116,14 +159,14 @@ class Any extends AsymmetricMatcher<any> {
     return fnNameFor(this.sample);
   }
 
-  toAsymmetricMatcher() {
-    return 'Any<' + fnNameFor(this.sample) + '>';
+  override toAsymmetricMatcher() {
+    return `Any<${fnNameFor(this.sample)}>`;
   }
 }
 
 class Anything extends AsymmetricMatcher<void> {
   asymmetricMatch(other: unknown) {
-    return !isUndefined(other) && other !== null;
+    return other != null;
   }
 
   toString() {
@@ -132,7 +175,7 @@ class Anything extends AsymmetricMatcher<void> {
 
   // No getExpectedType method, because it matches either null or undefined.
 
-  toAsymmetricMatcher() {
+  override toAsymmetricMatcher() {
     return 'Anything';
   }
 }
@@ -142,12 +185,11 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: Array<unknown>) {
+  asymmetricMatch(other: unknown) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        `You must provide an array to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an array to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 
@@ -165,7 +207,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
     return `Array${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'array';
   }
 }
@@ -178,9 +220,8 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
   asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        `You must provide an object to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        `You must provide an object to ${this.toString()}, not '${typeof this
+          .sample}'.`,
       );
     }
 
@@ -203,7 +244,7 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     return `Object${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'object';
   }
 }
@@ -216,8 +257,8 @@ class StringContaining extends AsymmetricMatcher<string> {
     super(sample, inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && other.includes(this.sample);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && other.includes(this.sample);
 
     return this.inverse ? !result : result;
   }
@@ -226,7 +267,7 @@ class StringContaining extends AsymmetricMatcher<string> {
     return `String${this.inverse ? 'Not' : ''}Containing`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
   }
 }
@@ -239,8 +280,8 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     super(new RegExp(sample), inverse);
   }
 
-  asymmetricMatch(other: string) {
-    const result = isA('String', other) && this.sample.test(other);
+  asymmetricMatch(other: unknown) {
+    const result = isA<string>('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
   }
@@ -249,8 +290,58 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
     return `String${this.inverse ? 'Not' : ''}Matching`;
   }
 
-  getExpectedType() {
+  override getExpectedType() {
     return 'string';
+  }
+}
+
+class CloseTo extends AsymmetricMatcher<number> {
+  private readonly precision: number;
+
+  constructor(sample: number, precision = 2, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+
+    if (!isA('Number', precision)) {
+      throw new Error('Precision is not a Number');
+    }
+
+    super(sample);
+    this.inverse = inverse;
+    this.precision = precision;
+  }
+
+  asymmetricMatch(other: unknown) {
+    if (!isA<number>('Number', other)) {
+      return false;
+    }
+    let result = false;
+    if (other === Infinity && this.sample === Infinity) {
+      result = true; // Infinity - Infinity is NaN
+    } else if (other === -Infinity && this.sample === -Infinity) {
+      result = true; // -Infinity - -Infinity is NaN
+    } else {
+      result =
+        Math.abs(this.sample - other) < Math.pow(10, -this.precision) / 2;
+    }
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}CloseTo`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+
+  override toAsymmetricMatcher(): string {
+    return [
+      this.toString(),
+      this.sample,
+      `(${pluralize('digit', this.precision)})`,
+    ].join(' ');
   }
 }
 
@@ -274,3 +365,7 @@ export const stringMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected);
 export const stringNotMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected, true);
+export const closeTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision);
+export const notCloseTo = (expected: number, precision?: number): CloseTo =>
+  new CloseTo(expected, precision, true);

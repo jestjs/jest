@@ -24,7 +24,7 @@ it('successfully runs the tests inside `pnp/`', () => {
       YARN_ENABLE_GLOBAL_CACHE: 'false',
       YARN_NODE_LINKER: 'pnp',
     },
-    nodeOptions: `--require ${DIR}/.pnp.js`,
+    nodeOptions: `--require ${DIR}/.pnp.cjs`,
   });
 
   expect(json.success).toBe(true);

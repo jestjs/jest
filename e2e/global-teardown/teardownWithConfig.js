@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = function (jestConfig) {
-  console.log(jestConfig.testPathPattern);
+module.exports = function (globalConfig, projectConfig) {
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
 };

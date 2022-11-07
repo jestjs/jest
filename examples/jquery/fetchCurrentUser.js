@@ -4,7 +4,7 @@ const $ = require('jquery');
 
 function parseJSON(user) {
   return {
-    fullName: user.firstName + ' ' + user.lastName,
+    fullName: `${user.firstName} ${user.lastName}`,
     loggedIn: true,
   };
 }

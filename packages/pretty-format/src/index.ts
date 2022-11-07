@@ -15,7 +15,6 @@ import {
   printObjectProperties,
 } from './collections';
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
-import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';
 import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
@@ -106,7 +105,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
   }
-  return '[Function ' + (val.name || 'anonymous') + ']';
+  return `[Function ${val.name || 'anonymous'}]`;
 }
 
 function printSymbol(val: symbol): string {
@@ -114,7 +113,7 @@ function printSymbol(val: symbol): string {
 }
 
 function printError(val: Error): string {
-  return '[' + errorToString.call(val) + ']';
+  return `[${errorToString.call(val)}]`;
 }
 
 /**
@@ -128,7 +127,7 @@ function printBasicValue(
   escapeString: boolean,
 ): string | null {
   if (val === true || val === false) {
-    return '' + val;
+    return `${val}`;
   }
   if (val === undefined) {
     return 'undefined';
@@ -147,9 +146,9 @@ function printBasicValue(
   }
   if (typeOf === 'string') {
     if (escapeString) {
-      return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+      return `"${val.replace(/"|\\/g, '\\$&')}"`;
     }
-    return '"' + val + '"';
+    return `"${val}"`;
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -231,65 +230,70 @@ function printComplexValue(
   if (toStringed === '[object Arguments]') {
     return hitMaxDepth
       ? '[Arguments]'
-      : (min ? '' : 'Arguments ') +
-          '[' +
-          printListItems(val, config, indentation, depth, refs, printer) +
-          ']';
+      : `${min ? '' : 'Arguments '}[${printListItems(
+          val,
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}]`;
   }
   if (isToStringedArrayType(toStringed)) {
     return hitMaxDepth
-      ? '[' + val.constructor.name + ']'
-      : (min
-          ? ''
-          : !config.printBasicPrototype && val.constructor.name === 'Array'
-          ? ''
-          : val.constructor.name + ' ') +
-          '[' +
-          printListItems(val, config, indentation, depth, refs, printer) +
-          ']';
+      ? `[${val.constructor.name}]`
+      : `${
+          min
+            ? ''
+            : !config.printBasicPrototype && val.constructor.name === 'Array'
+            ? ''
+            : `${val.constructor.name} `
+        }[${printListItems(val, config, indentation, depth, refs, printer)}]`;
   }
   if (toStringed === '[object Map]') {
     return hitMaxDepth
       ? '[Map]'
-      : 'Map {' +
-          printIteratorEntries(
-            val.entries(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-            ' => ',
-          ) +
-          '}';
+      : `Map {${printIteratorEntries(
+          val.entries(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+          ' => ',
+        )}}`;
   }
   if (toStringed === '[object Set]') {
     return hitMaxDepth
       ? '[Set]'
-      : 'Set {' +
-          printIteratorValues(
-            val.values(),
-            config,
-            indentation,
-            depth,
-            refs,
-            printer,
-          ) +
-          '}';
+      : `Set {${printIteratorValues(
+          val.values(),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        )}}`;
   }
 
   // Avoid failure to serialize global window object in jsdom test environment.
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
-    ? '[' + getConstructorName(val) + ']'
-    : (min
-        ? ''
-        : !config.printBasicPrototype && getConstructorName(val) === 'Object'
-        ? ''
-        : getConstructorName(val) + ' ') +
-        '{' +
-        printObjectProperties(val, config, indentation, depth, refs, printer) +
-        '}';
+    ? `[${getConstructorName(val)}]`
+    : `${
+        min
+          ? ''
+          : !config.printBasicPrototype && getConstructorName(val) === 'Object'
+          ? ''
+          : `${getConstructorName(val)} `
+      }{${printObjectProperties(
+        val,
+        config,
+        indentation,
+        depth,
+        refs,
+        printer,
+      )}}`;
 }
 
 function isNewPlugin(plugin: Plugin): plugin is NewPlugin {
@@ -316,7 +320,7 @@ function printPlugin(
             const indentationNext = indentation + config.indent;
             return (
               indentationNext +
-              str.replace(NEWLINE_REGEXP, '\n' + indentationNext)
+              str.replace(NEWLINE_REGEXP, `\n${indentationNext}`)
             );
           },
           {
@@ -396,7 +400,10 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-export const DEFAULT_OPTIONS: Options = {
+// could be replaced by `satisfies` operator in the future: https://github.com/microsoft/TypeScript/issues/47920
+const toOptionsSubtype = <T extends Options>(options: T) => options;
+
+export const DEFAULT_OPTIONS = toOptionsSubtype({
   callToJSON: true,
   compareKeys: undefined,
   escapeRegex: false,
@@ -404,16 +411,17 @@ export const DEFAULT_OPTIONS: Options = {
   highlight: false,
   indent: 2,
   maxDepth: Infinity,
+  maxWidth: Infinity,
   min: false,
   plugins: [],
   printBasicPrototype: true,
   printFunctionName: true,
   theme: DEFAULT_THEME,
-};
+});
 
 function validateOptions(options: OptionsReceived) {
   Object.keys(options).forEach(key => {
-    if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(DEFAULT_OPTIONS, key)) {
       throw new Error(`pretty-format: Unknown option "${key}".`);
     }
   });
@@ -426,7 +434,7 @@ function validateOptions(options: OptionsReceived) {
 
   if (options.theme !== undefined) {
     if (options.theme === null) {
-      throw new Error(`pretty-format: Option "theme" must not be null.`);
+      throw new Error('pretty-format: Option "theme" must not be null.');
     }
 
     if (typeof options.theme !== 'object') {
@@ -465,56 +473,34 @@ const getColorsEmpty = (): Colors =>
   }, Object.create(null));
 
 const getPrintFunctionName = (options?: OptionsReceived) =>
-  options && options.printFunctionName !== undefined
-    ? options.printFunctionName
-    : DEFAULT_OPTIONS.printFunctionName;
+  options?.printFunctionName ?? DEFAULT_OPTIONS.printFunctionName;
 
 const getEscapeRegex = (options?: OptionsReceived) =>
-  options && options.escapeRegex !== undefined
-    ? options.escapeRegex
-    : DEFAULT_OPTIONS.escapeRegex;
+  options?.escapeRegex ?? DEFAULT_OPTIONS.escapeRegex;
 
 const getEscapeString = (options?: OptionsReceived) =>
-  options && options.escapeString !== undefined
-    ? options.escapeString
-    : DEFAULT_OPTIONS.escapeString;
+  options?.escapeString ?? DEFAULT_OPTIONS.escapeString;
 
 const getConfig = (options?: OptionsReceived): Config => ({
-  callToJSON:
-    options && options.callToJSON !== undefined
-      ? options.callToJSON
-      : DEFAULT_OPTIONS.callToJSON,
-  colors:
-    options && options.highlight
-      ? getColorsHighlight(options)
-      : getColorsEmpty(),
+  callToJSON: options?.callToJSON ?? DEFAULT_OPTIONS.callToJSON,
+  colors: options?.highlight ? getColorsHighlight(options) : getColorsEmpty(),
   compareKeys:
-    options && typeof options.compareKeys === 'function'
+    typeof options?.compareKeys === 'function' || options?.compareKeys === null
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
-  indent:
-    options && options.min
-      ? ''
-      : createIndent(
-          options && options.indent !== undefined
-            ? options.indent
-            : DEFAULT_OPTIONS.indent,
-        ),
-  maxDepth:
-    options && options.maxDepth !== undefined
-      ? options.maxDepth
-      : DEFAULT_OPTIONS.maxDepth,
-  min: options && options.min !== undefined ? options.min : DEFAULT_OPTIONS.min,
-  plugins:
-    options && options.plugins !== undefined
-      ? options.plugins
-      : DEFAULT_OPTIONS.plugins,
+  indent: options?.min
+    ? ''
+    : createIndent(options?.indent ?? DEFAULT_OPTIONS.indent),
+  maxDepth: options?.maxDepth ?? DEFAULT_OPTIONS.maxDepth,
+  maxWidth: options?.maxWidth ?? DEFAULT_OPTIONS.maxWidth,
+  min: options?.min ?? DEFAULT_OPTIONS.min,
+  plugins: options?.plugins ?? DEFAULT_OPTIONS.plugins,
   printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
-  spacingInner: options && options.min ? ' ' : '\n',
-  spacingOuter: options && options.min ? '' : '\n',
+  spacingInner: options?.min ? ' ' : '\n',
+  spacingOuter: options?.min ? '' : '\n',
 });
 
 function createIndent(indent: number): string {
@@ -552,7 +538,6 @@ export function format(val: unknown, options?: OptionsReceived): string {
 
 export const plugins = {
   AsymmetricMatcher,
-  ConvertAnsi,
   DOMCollection,
   DOMElement,
   Immutable,

@@ -8,5 +8,5 @@
 const m = require('../module');
 
 test('ESM transformer intercepts', () => {
-  expect(m).toEqual(42);
+  expect(m).toBe(42);
 });

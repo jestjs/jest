@@ -9,6 +9,10 @@ exports.rules = {
   'ban-types-eventually': require('@typescript-eslint/eslint-plugin').rules[
     'ban-types'
   ],
-  'prefer-rest-params-eventually': require('eslint/lib/rules/prefer-rest-params'),
-  'prefer-spread-eventually': require('eslint/lib/rules/prefer-spread'),
+  'prefer-rest-params-eventually':
+    require('eslint/use-at-your-own-risk').builtinRules.get(
+      'prefer-rest-params',
+    ),
+  'prefer-spread-eventually':
+    require('eslint/use-at-your-own-risk').builtinRules.get('prefer-spread'),
 };

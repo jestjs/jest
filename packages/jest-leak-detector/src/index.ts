@@ -4,8 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-/* eslint-disable local/ban-types-eventually */
+/// <reference lib="es2021.WeakRef" />
 
 import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
@@ -15,36 +14,26 @@ import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 
-export default class {
+export default class LeakDetector {
   private _isReferenceBeingHeld: boolean;
+  private readonly _finalizationRegistry?: FinalizationRegistry<undefined>;
 
   constructor(value: unknown) {
     if (isPrimitive(value)) {
       throw new TypeError(
         [
           'Primitives cannot leak memory.',
-          'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
+          `You passed a ${typeof value}: <${prettyFormat(value)}>`,
         ].join(' '),
       );
     }
 
-    let weak: typeof import('weak-napi');
+    // When `_finalizationRegistry` is GCed the callback we set will no longer be called,
+    this._finalizationRegistry = new FinalizationRegistry(() => {
+      this._isReferenceBeingHeld = false;
+    });
+    this._finalizationRegistry.register(value as object, undefined);
 
-    try {
-      // eslint-disable-next-line import/no-extraneous-dependencies
-      weak = require('weak-napi');
-    } catch (err: any) {
-      if (!err || err.code !== 'MODULE_NOT_FOUND') {
-        throw err;
-      }
-
-      throw new Error(
-        'The leaking detection mechanism requires the "weak-napi" package to be installed and work. ' +
-          'Please install it as a dependency on your main project',
-      );
-    }
-
-    weak(value as object, () => (this._isReferenceBeingHeld = false));
     this._isReferenceBeingHeld = true;
 
     // Ensure value is not leaked by the closure created by the "weak" callback.
@@ -63,7 +52,8 @@ export default class {
   }
 
   private _runGarbageCollector() {
-    const isGarbageCollectorHidden = !global.gc;
+    // @ts-expect-error: not a function on `globalThis`
+    const isGarbageCollectorHidden = globalThis.gc == null;
 
     // GC is usually hidden, so we have to expose it before running.
     setFlagsFromString('--expose-gc');

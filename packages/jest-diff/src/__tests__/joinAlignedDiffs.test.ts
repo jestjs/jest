@@ -15,7 +15,7 @@ import {noColor, normalizeDiffOptions} from '../normalizeDiffOptions';
 // To align columns so people can review snapshots confidently:
 
 // 1. Use options to omit line colors.
-const changeColor = (string: string) => '<i>' + string + '</i>';
+const changeColor = (string: string) => `<i>${string}</i>`;
 const optionsNoColor = {
   aColor: noColor,
   bColor: noColor,

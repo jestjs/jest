@@ -14,7 +14,7 @@ export function relative(rootDir: string, filename: string): string {
     : path.relative(rootDir, filename);
 }
 
-const INDIRECTION_FRAGMENT = '..' + path.sep;
+const INDIRECTION_FRAGMENT = `..${path.sep}`;
 
 // rootDir must be an absolute path and relativeFilename must be simple
 // (e.g.: foo/bar or ../foo/bar, but never ./foo or foo/../bar)

@@ -58,16 +58,14 @@ const getType = (element: any) => {
 
       const functionName = type.render.displayName || type.render.name || '';
 
-      return functionName !== ''
-        ? 'ForwardRef(' + functionName + ')'
-        : 'ForwardRef';
+      return functionName !== '' ? `ForwardRef(${functionName})` : 'ForwardRef';
     }
 
     if (ReactIs.isMemo(element)) {
       const functionName =
         type.displayName || type.type.displayName || type.type.name || '';
 
-      return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
+      return functionName !== '' ? `Memo(${functionName})` : 'Memo';
     }
   }
   return 'UNDEFINED';

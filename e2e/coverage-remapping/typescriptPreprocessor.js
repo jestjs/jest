@@ -22,6 +22,6 @@ module.exports = {
         map: JSON.parse(result.sourceMapText),
       };
     }
-    return src;
+    return {code: src};
   },
 };

@@ -7,4 +7,4 @@
 
 'use strict';
 
-module.exports = `in_mapped`;
+module.exports = 'in_mapped';

@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`processes stack traces and code frames with source maps with coverage 1`] = `
-FAIL __tests__/fails.ts
+"FAIL __tests__/fails.ts
   ✕ fails
 
   ● fails
 
     This did not work!
 
-      13 |
-      14 | export function error() {
-    > 15 |   throw new Error('This did not work!');
+      12 |
+      13 | export function error() {
+    > 14 |   throw new Error('This did not work!');
          |         ^
-      16 | }
-      17 |
+      15 | }
+      16 |
 
-      at Object.error (lib.ts:15:9)
-      at Object.<anonymous> (__tests__/fails.ts:10:3)
+      at error (lib.ts:14:9)
+      at Object.<anonymous> (__tests__/fails.ts:10:8)"
 `;

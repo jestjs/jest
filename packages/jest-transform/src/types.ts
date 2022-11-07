@@ -5,19 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {RawSourceMap} from 'source-map';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Config, TransformTypes} from '@jest/types';
 
 export interface ShouldInstrumentOptions
   extends Pick<
     Config.GlobalConfig,
-    | 'collectCoverage'
-    | 'collectCoverageFrom'
-    | 'collectCoverageOnlyFrom'
-    | 'coverageProvider'
+    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
   > {
-  changedFiles?: Set<Config.Path>;
-  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+  changedFiles?: Set<string>;
+  sourcesRelatedToTestsInChangedFiles?: Set<string>;
 }
 
 export interface Options
@@ -26,15 +23,15 @@ export interface Options
   isInternalModule?: boolean;
 }
 
-// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+// `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
+export interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 
-// TODO: For Jest 26 normalize this (always structured data, never a string)
-export type TransformedSource =
-  | {code: string; map?: FixedRawSourceMap | string | null}
-  | string;
+export type TransformedSource = {
+  code: string;
+  map?: FixedRawSourceMap | string | null;
+};
 
 export type TransformResult = TransformTypes.TransformResult;
 
@@ -57,87 +54,108 @@ export interface RequireAndTranspileModuleOptions
 
 export type StringMap = Map<string, string>;
 
-export interface TransformOptions<OptionType = unknown>
+export interface TransformOptions<TransformerConfig = unknown>
   extends ReducedTransformOptions {
-  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  /** Cached file system which is used by `jest-runtime` to improve performance. */
   cacheFS: StringMap;
+  /** Jest configuration of currently running project. */
   config: Config.ProjectConfig;
-  /** A stringified version of the configuration - useful in cache busting */
+  /** Stringified version of the `config` - useful in cache busting. */
   configString: string;
-  /** the options passed through Jest's config by the user */
-  transformerConfig: OptionType;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig: TransformerConfig;
 }
 
-export interface SyncTransformer<OptionType = unknown> {
+export interface SyncTransformer<TransformerConfig = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
-export interface AsyncTransformer<OptionType = unknown> {
+export interface AsyncTransformer<TransformerConfig = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
   ) => Promise<TransformedSource>;
 }
 
-export type Transformer<OptionType = unknown> =
-  | SyncTransformer<OptionType>
-  | AsyncTransformer<OptionType>;
+/**
+ * We have both sync (`process`) and async (`processAsync`) code transformation, which both can be provided.
+ * `require` will always use `process`, and `import` will use `processAsync` if it exists, otherwise fall back to `process`.
+ * Meaning, if you use `import` exclusively you do not need `process`, but in most cases supplying both makes sense:
+ * Jest transpiles on demand rather than ahead of time, so the sync one needs to exist.
+ *
+ * For more info on the sync vs async model, see https://jestjs.io/docs/code-transformation#writing-custom-transformers
+ */
+export type Transformer<TransformerConfig = unknown> =
+  | SyncTransformer<TransformerConfig>
+  | AsyncTransformer<TransformerConfig>;
+
+export type TransformerCreator<
+  X extends Transformer<TransformerConfig>,
+  TransformerConfig = unknown,
+> = (transformerConfig?: TransformerConfig) => X;
+
+/**
+ * Instead of having your custom transformer implement the Transformer interface
+ * directly, you can choose to export a factory function to dynamically create
+ * transformers. This is to allow having a transformer config in your jest config.
+ */
+export type TransformerFactory<X extends Transformer> = {
+  createTransformer: TransformerCreator<X>;
+};

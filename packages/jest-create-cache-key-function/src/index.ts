@@ -26,7 +26,7 @@ type NewCacheKeyOptions = {
 
 type OldGetCacheKeyFunction = (
   fileData: string,
-  filePath: Config.Path,
+  filePath: string,
   configStr: string,
   options: OldCacheKeyOptions,
 ) => string;
@@ -34,7 +34,7 @@ type OldGetCacheKeyFunction = (
 // Should mirror `import('@jest/transform').Transformer['getCacheKey']`
 type NewGetCacheKeyFunction = (
   sourceText: string,
-  sourcePath: Config.Path,
+  sourcePath: string,
   options: NewCacheKeyOptions,
 ) => string;
 
@@ -49,9 +49,10 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   ]
     .reduce(
       (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('md5'),
+      createHash('sha1'),
     )
-    .digest('hex');
+    .digest('hex')
+    .substring(0, 32);
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
@@ -61,7 +62,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
     const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
 
-    return createHash('md5')
+    return createHash('sha1')
       .update(globalCacheKey)
       .update('\0', 'utf8')
       .update(sourceText)
@@ -69,11 +70,14 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
       .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
-      .digest('hex');
+      .digest('hex')
+      .substring(0, 32);
   };
 }
 
-export default (
+export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
-): GetCacheKeyFunction => getCacheKeyFunction(getGlobalCacheKey(files, values));
+): GetCacheKeyFunction {
+  return getCacheKeyFunction(getGlobalCacheKey(files, values));
+}

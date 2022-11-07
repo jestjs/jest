@@ -9,7 +9,7 @@ import {makeGlobalConfig} from '@jest/test-utils';
 import getWatermarks from '../getWatermarks';
 
 describe('getWatermarks', () => {
-  test(`that watermarks use thresholds as upper target`, () => {
+  test('that watermarks use thresholds as upper target', () => {
     const watermarks = getWatermarks(
       makeGlobalConfig({
         coverageThreshold: {
@@ -31,7 +31,7 @@ describe('getWatermarks', () => {
     });
   });
 
-  test(`that watermarks are created always created`, () => {
+  test('that watermarks are created always created', () => {
     const watermarks = getWatermarks(makeGlobalConfig());
 
     expect(watermarks).toEqual({

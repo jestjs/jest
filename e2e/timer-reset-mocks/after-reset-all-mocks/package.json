@@ -1,6 +1,0 @@
-{
-  "jest": {
-    "testEnvironment": "node",
-    "resetMocks": false
-  }
-}

@@ -26,12 +26,14 @@ export default class Prompt {
     this._offset = -1;
     this._promptLength = 0;
 
+    /* eslint-disable @typescript-eslint/no-empty-function */
     this._onChange = () => {};
     this._onSuccess = () => {};
     this._onCancel = () => {};
+    /* eslint-enable */
   }
 
-  private _onResize = (): void => {
+  private readonly _onResize = (): void => {
     this._onChange();
   };
 
@@ -70,7 +72,7 @@ export default class Prompt {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
-        this._onSuccess(this._selection || this._value);
+        this._onSuccess(this._selection ?? this._value);
         this.abort();
         break;
       case KEYS.ESCAPE:

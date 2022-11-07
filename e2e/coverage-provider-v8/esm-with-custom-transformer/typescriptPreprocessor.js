@@ -21,6 +21,6 @@ export default {
 
       return {code: outputText, map: sourceMapText};
     }
-    return sourceText;
+    return {code: sourceText};
   },
 };

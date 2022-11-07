@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "27.3.1",
+  "version": "29.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,35 +10,36 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^27.3.1",
-    "@jest/source-map": "^27.0.6",
-    "@jest/test-result": "^27.3.1",
-    "@jest/types": "^27.2.5",
+    "@jest/environment": "workspace:^",
+    "@jest/expect": "workspace:^",
+    "@jest/source-map": "workspace:^",
+    "@jest/test-result": "workspace:^",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
-    "expect": "^27.3.1",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^27.3.1",
-    "jest-matcher-utils": "^27.3.1",
-    "jest-message-util": "^27.3.1",
-    "jest-runtime": "^27.3.1",
-    "jest-snapshot": "^27.3.1",
-    "jest-util": "^27.3.1",
-    "pretty-format": "^27.3.1",
-    "throat": "^6.0.1"
+    "jest-each": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-runtime": "workspace:^",
+    "jest-snapshot": "workspace:^",
+    "jest-util": "workspace:^",
+    "p-limit": "^3.1.0",
+    "pretty-format": "workspace:^"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.2"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

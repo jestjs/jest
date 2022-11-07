@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const difference = require('../covered.ts');
+const {difference} = require('../covered.ts');
 
 it('subtracts correctly', () => {
   expect(difference(3, 2)).toBe(1);

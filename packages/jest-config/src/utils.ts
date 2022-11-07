@@ -7,14 +7,13 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
 import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
 type ResolveOptions = {
-  rootDir: Config.Path;
+  rootDir: string;
   key: string;
-  filePath: Config.Path;
+  filePath: string;
   optional?: boolean;
 };
 
@@ -49,15 +48,15 @@ export const resolve = (
     );
   }
   /// can cast as string since nulls will be thrown
-  return module as string;
+  return module!;
 };
 
-export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
-  path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
+export const escapeGlobCharacters = (path: string): string =>
+  path.replace(/([()*{}[\]!?\\])/g, '\\$1');
 
 export const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
+  rootDir: string,
+  filePath: string,
 ): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
@@ -65,12 +64,12 @@ export const replaceRootDirInPath = (
 
   return path.resolve(
     rootDir,
-    path.normalize('./' + filePath.substring('<rootDir>'.length)),
+    path.normalize(`./${filePath.substring('<rootDir>'.length)}`),
   );
 };
 
 const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   const newConfig = {} as T;
@@ -84,14 +83,14 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
 };
 
 type OrArray<T> = T | Array<T>;
-type ReplaceRootDirConfigObj = Record<string, Config.Path>;
+type ReplaceRootDirConfigObj = Record<string, string>;
 type ReplaceRootDirConfigValues =
   | OrArray<ReplaceRootDirConfigObj>
   | OrArray<RegExp>
-  | OrArray<Config.Path>;
+  | OrArray<string>;
 
 export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
-  rootDir: Config.Path,
+  rootDir: string,
   config: T,
 ): T => {
   if (config == null) {
@@ -107,10 +106,7 @@ export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
         return config;
       }
 
-      return _replaceRootDirInObject(
-        rootDir,
-        config as ReplaceRootDirConfigObj,
-      ) as T;
+      return _replaceRootDirInObject(rootDir, config) as T;
     case 'string':
       return replaceRootDirInPath(rootDir, config) as T;
   }

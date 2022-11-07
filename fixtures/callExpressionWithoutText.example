@@ -1,5 +1,0 @@
-it("invoke forEach directly on array", () => {
-    [0, 1000, 777, Math.pow(10, 12)].forEach(n => {
-        expect(n).toEqual(n);
-    });
-});

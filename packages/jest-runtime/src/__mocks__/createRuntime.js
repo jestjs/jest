@@ -6,8 +6,8 @@
  */
 
 import {tmpdir} from 'os';
-import path from 'path';
-import {makeProjectConfig} from '@jest/test-utils';
+import * as path from 'path';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createScriptTransformer} from '@jest/transform';
 import NodeEnvironment from 'jest-environment-node';
 import {tryRealpath} from 'jest-util';
@@ -37,7 +37,7 @@ const setupModuleNameMapper = (config, rootDir) => {
   return [];
 };
 
-const setupTransform = (config, rootDir) => {
+const setupTransform = (config, rootDir, cwd) => {
   if (config?.transform) {
     const transform = config.transform;
     return Object.keys(transform).map(regex => [
@@ -45,72 +45,76 @@ const setupTransform = (config, rootDir) => {
       path.resolve(rootDir, transform[regex]),
     ]);
   }
-  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
+  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest'), {root: cwd}]];
 };
 
-module.exports = async function createRuntime(filename, config) {
+module.exports = async function createRuntime(filename, projectConfig) {
   const rootDir = path.resolve(path.dirname(filename), 'test_root');
+  const cwd = path.resolve(__dirname, '../../../..');
 
-  const moduleNameMapper = setupModuleNameMapper(config, rootDir);
-  const transform = setupTransform(config, rootDir);
+  const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
+  const transform = setupTransform(projectConfig, rootDir, cwd);
 
-  config = makeProjectConfig({
+  const globalConfig = makeGlobalConfig();
+
+  projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
-    cwd: path.resolve(__dirname, '..', '..', '..', '..'),
+    cwd,
     haste: {
-      hasteImplModulePath: path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'jest-haste-map',
-        'src',
-        '__tests__',
-        'haste_impl.js',
+      hasteImplModulePath: require.resolve(
+        '../../../jest-haste-map/src/__tests__/haste_impl.js',
       ),
     },
+    id: `Runtime-${filename.replace(/\W/, '-')}.tests`,
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
-    name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
     rootDir,
-    ...config,
+    ...projectConfig,
     moduleNameMapper,
     transform,
   });
 
-  if (!config.roots.length) {
-    config.roots = [config.rootDir];
+  if (!projectConfig.roots.length) {
+    projectConfig.roots = [projectConfig.rootDir];
   }
 
-  const environment = new NodeEnvironment(config);
+  const environment = new NodeEnvironment({
+    globalConfig,
+    projectConfig,
+  });
   environment.global.console = console;
 
-  const hasteMap = await Runtime.createHasteMap(config, {
-    maxWorkers: 1,
-    resetCache: false,
-  }).build();
+  const hasteMap = await (
+    await Runtime.createHasteMap(projectConfig, {
+      maxWorkers: 1,
+      resetCache: false,
+    })
+  ).build();
 
   const cacheFS = new Map();
-  const scriptTransformer = await createScriptTransformer(config, cacheFS);
+  const scriptTransformer = await createScriptTransformer(
+    projectConfig,
+    cacheFS,
+  );
 
   const runtime = new Runtime(
-    config,
+    projectConfig,
     environment,
-    Runtime.createResolver(config, hasteMap.moduleMap),
+    Runtime.createResolver(projectConfig, hasteMap.moduleMap),
     scriptTransformer,
     cacheFS,
     {
       changedFiles: undefined,
       collectCoverage: false,
       collectCoverageFrom: [],
-      collectCoverageOnlyFrom: undefined,
       coverageProvider: 'v8',
       sourcesRelatedToTestsInChangedFiles: undefined,
     },
     filename,
+    globalConfig,
   );
 
-  for (const path of config.setupFiles) {
+  for (const path of projectConfig.setupFiles) {
     const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
@@ -120,9 +124,9 @@ module.exports = async function createRuntime(filename, config) {
     }
   }
 
-  runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
+  runtime.__mockRootPath = path.join(projectConfig.rootDir, 'root.js');
   runtime.__mockSubdirPath = path.join(
-    config.rootDir,
+    projectConfig.rootDir,
     'subdir2',
     'module_dir',
     'module_dir_module.js',

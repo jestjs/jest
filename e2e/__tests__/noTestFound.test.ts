@@ -17,7 +17,7 @@ describe('Coverage Report', () => {
   });
 });
 
-describe('File path not found in mulit-project scenario', () => {
+describe('File path not found in multi-project scenario', () => {
   it('outputs coverage report', () => {
     const {stdout} = runJest('multi-project-config-root', [
       '--runTestsByPath',

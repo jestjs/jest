@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import Resolver from './resolver';
 
@@ -19,17 +18,14 @@ const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
 const createValidationError = (message: string) =>
   new ValidationError(`${BULLET}Validation Error`, message, DOCUMENTATION_NOTE);
 
-const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
-): string => {
+const replaceRootDirInPath = (rootDir: string, filePath: string): string => {
   if (!/^<rootDir>/.test(filePath)) {
     return filePath;
   }
 
   return path.resolve(
     rootDir,
-    path.normalize('./' + filePath.substr('<rootDir>'.length)),
+    path.normalize(`./${filePath.substr('<rootDir>'.length)}`),
   );
 };
 
@@ -48,7 +44,7 @@ const resolveWithPrefix = (
     optionName: string;
     prefix: string;
     requireResolveFunction: (moduleName: string) => string;
-    rootDir: Config.Path;
+    rootDir: string;
   },
 ): string => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
@@ -96,21 +92,35 @@ const resolveWithPrefix = (
 export const resolveTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
-  // TODO: remove default in Jest 28
-  requireResolveFunction = require.resolve,
+  requireResolveFunction,
 }: {
-  rootDir: Config.Path;
+  rootDir: string;
   testEnvironment: string;
-  requireResolveFunction?: (moduleName: string) => string;
-}): string =>
-  resolveWithPrefix(undefined, {
-    filePath,
-    humanOptionName: 'Test environment',
-    optionName: 'testEnvironment',
-    prefix: 'jest-environment-',
-    requireResolveFunction,
-    rootDir,
-  });
+  requireResolveFunction: (moduleName: string) => string;
+}): string => {
+  // we don't want to resolve the actual `jsdom` module if `jest-environment-jsdom` is not installed, but `jsdom` package is
+  if (filePath === 'jsdom') {
+    filePath = 'jest-environment-jsdom';
+  }
+
+  try {
+    return resolveWithPrefix(undefined, {
+      filePath,
+      humanOptionName: 'Test environment',
+      optionName: 'testEnvironment',
+      prefix: 'jest-environment-',
+      requireResolveFunction,
+      rootDir,
+    });
+  } catch (error: any) {
+    if (filePath === 'jest-environment-jsdom') {
+      error.message +=
+        '\n\nAs of Jest 28 "jest-environment-jsdom" is no longer shipped by default, make sure to install it separately.';
+    }
+
+    throw error;
+  }
+};
 
 /**
  * Finds the watch plugins to use:
@@ -125,12 +135,11 @@ export const resolveWatchPlugin = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    rootDir: string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {
@@ -155,12 +164,11 @@ export const resolveRunner = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    rootDir: string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {
@@ -177,12 +185,11 @@ export const resolveSequencer = (
   {
     filePath,
     rootDir,
-    // TODO: remove default in Jest 28
-    requireResolveFunction = require.resolve,
+    requireResolveFunction,
   }: {
     filePath: string;
-    rootDir: Config.Path;
-    requireResolveFunction?: (moduleName: string) => string;
+    rootDir: string;
+    requireResolveFunction: (moduleName: string) => string;
   },
 ): string =>
   resolveWithPrefix(resolver, {

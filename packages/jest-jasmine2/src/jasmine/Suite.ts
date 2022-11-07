@@ -29,9 +29,9 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually, sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
-import type {Config} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
@@ -43,22 +43,22 @@ export type SuiteResult = {
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: string;
   status?: string;
 };
 
 export type Attributes = {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => string;
 };
 
 export default class Suite {
   id: string;
   parentSuite?: Suite;
-  description: string;
+  description: Circus.TestNameLike;
   throwOnExpectationFailure: boolean;
   beforeFns: Array<QueueableFn>;
   afterFns: Array<QueueableFn>;
@@ -100,6 +100,7 @@ export default class Suite {
   getFullName() {
     const fullName = [];
     for (
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let parentSuite: Suite | undefined = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
@@ -158,7 +159,7 @@ export default class Suite {
   }
 
   getResult() {
-    this.result.status! = this.status();
+    this.result.status = this.status();
     return this.result;
   }
 
@@ -215,6 +216,7 @@ export default class Suite {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   execute(..._args: Array<any>) {}
 }
 

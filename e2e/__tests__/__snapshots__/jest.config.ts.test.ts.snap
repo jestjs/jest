@@ -1,49 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`traverses directory tree up until it finds jest.config 1`] = `
-  console.log
+"  console.log
 <<REPLACED>>/jest-config-ts/some/nested/directory
 
-      at Object.log (__tests__/a-giraffe.js:3:27)
-
+      at Object.<anonymous> (__tests__/a-giraffe.js:3:27)
+"
 `;
 
 exports[`traverses directory tree up until it finds jest.config 2`] = `
-PASS ../../../__tests__/a-giraffe.js
+"PASS ../../../__tests__/a-giraffe.js
   ✓ giraffe
-  ✓ abc
+  ✓ abc"
 `;
 
 exports[`traverses directory tree up until it finds jest.config 3`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`works with jest.config.ts 1`] = `
-PASS __tests__/a-giraffe.js
-  ✓ giraffe
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
 `;
 
 exports[`works with jest.config.ts 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`works with tsconfig.json 1`] = `
-PASS __tests__/a-giraffe.js
-  ✓ giraffe
+"PASS __tests__/a-giraffe.js
+  ✓ giraffe"
 `;
 
 exports[`works with tsconfig.json 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;

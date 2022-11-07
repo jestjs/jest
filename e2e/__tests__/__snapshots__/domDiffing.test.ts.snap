@@ -2,14 +2,14 @@
 
 exports[`should work without error 1`] = `
 "FAIL __tests__/dom.test.js
-  ✕ use toBe compare two div (<<REPLACED>>)
-  ✕ compare span and div (<<REPLACED>>)
+  ✕ use toBe compare two div
+  ✕ compare span and div
 
   ● use toBe compare two div
 
     expect(received).toBe(expected) // Object.is equality
 
-    If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"
+    If it should pass with deep equality, replace "toBe" with "toStrictEqual"
 
     Expected: <div />
     Received: serializes to the same string
@@ -41,9 +41,11 @@ exports[`should work without error 1`] = `
       19 | });
       20 |
 
-      at Object.toBe (__tests__/dom.test.js:18:41)
+      at Object.toBe (__tests__/dom.test.js:18:41)"
+`;
 
-Test Suites: 1 failed, 1 total
+exports[`should work without error 2`] = `
+"Test Suites: 1 failed, 1 total
 Tests:       2 failed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>

@@ -9,20 +9,19 @@ import chalk = require('chalk');
 import stringLength = require('string-length');
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {ReporterOnStartOptions, Test} from './types';
-import {
-  getSummary,
-  printDisplayName,
-  trimAndFormatPath,
-  wrapAnsiString,
-} from './utils';
+import getSummary from './getSummary';
+import printDisplayName from './printDisplayName';
+import trimAndFormatPath from './trimAndFormatPath';
+import type {ReporterOnStartOptions} from './types';
+import wrapAnsiString from './wrapAnsiString';
 
 const RUNNING_TEXT = ' RUNS ';
-const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
+const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;
 
 /**
  * This class is a perf optimization for sorting the list of currently
@@ -31,7 +30,7 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  */
 class CurrentTestList {
   private _array: Array<{
-    testPath: Config.Path;
+    testPath: string;
     config: Config.ProjectConfig;
   } | null>;
 
@@ -39,7 +38,7 @@ class CurrentTestList {
     this._array = [];
   }
 
-  add(testPath: Config.Path, config: Config.ProjectConfig) {
+  add(testPath: string, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
     if (index !== -1) {
@@ -49,7 +48,7 @@ class CurrentTestList {
     }
   }
 
-  delete(testPath: Config.Path) {
+  delete(testPath: string) {
     const record = this._array.find(
       record => record !== null && record.testPath === testPath,
     );
@@ -74,7 +73,7 @@ type Cache = {
 export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
-  private _currentTests: CurrentTestList;
+  private readonly _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
     testCaseResult: TestCaseResult;
@@ -86,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor() {
+  constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
@@ -126,7 +125,7 @@ export default class Status {
     }
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
+  testStarted(testPath: string, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -161,35 +160,34 @@ export default class Status {
       return {clear: '', content: ''};
     }
 
-    const width: number = process.stdout.columns!;
+    const width = process.stdout.columns;
     let content = '\n';
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
 
         const projectDisplayName = config.displayName
-          ? printDisplayName(config) + ' '
+          ? `${printDisplayName(config)} `
           : '';
         const prefix = RUNNING + projectDisplayName;
 
-        content +=
-          wrapAnsiString(
-            prefix +
-              trimAndFormatPath(stringLength(prefix), config, testPath, width),
-            width,
-          ) + '\n';
+        content += `${wrapAnsiString(
+          prefix +
+            trimAndFormatPath(stringLength(prefix), config, testPath, width),
+          width,
+        )}\n`;
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content +=
-        '\n' +
-        getSummary(this._aggregatedResults, {
-          currentTestCases: this._currentTestCases,
-          estimatedTime: this._estimatedTime,
-          roundTime: true,
-          width,
-        });
+      content += `\n${getSummary(this._aggregatedResults, {
+        currentTestCases: this._currentTestCases,
+        estimatedTime: this._estimatedTime,
+        roundTime: true,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
+        width,
+      })}`;
     }
 
     let height = 0;

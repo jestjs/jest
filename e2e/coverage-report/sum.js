@@ -9,6 +9,7 @@ require('./sumDependency.js');
 require('./otherFile');
 require('./file');
 
+// eslint-disable-next-line prefer-template
 const uncoveredFunction = () => 1 + 'abc';
 
 const sum = (a, b) => a + b;

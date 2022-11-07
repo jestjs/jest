@@ -7,4 +7,4 @@
 
 'use strict';
 
-global.Promise = require('promise/setimmediate');
+globalThis.Promise = require('promise/setimmediate');

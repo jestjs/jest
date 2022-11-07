@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`formats args with pretty format when given %p 1`] = `
-PASS __tests__/pretty.test.js
+"PASS __tests__/pretty.test.js
   array
     ✓ "hello" == "hello"
     ✓ 1 == 1
@@ -29,20 +29,20 @@ PASS __tests__/pretty.test.js
     ✓ [[Object]] == [[Object]]
     ✓ Infinity == Infinity
     ✓ -Infinity == -Infinity
-    ✓ NaN == NaN
+    ✓ NaN == NaN"
 `;
 
 exports[`runs only the describe.only.each tests 1`] = `
-PASS __tests__/describeOnly.test.js
+"PASS __tests__/describeOnly.test.js
   passes all rows expected true == true
     ✓ passes
     ✓ passes
   fails all rows expected false == true
-    ○ skipped fails
+    ○ skipped fails"
 `;
 
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
-FAIL __tests__/eachException.test.js
+"FAIL __tests__/eachException.test.js
   ✕ throws exception when one argument too few are supplied $left == $right
   ✕ throws exception when not enough arguments are supplied $left == $right
 
@@ -63,12 +63,12 @@ FAIL __tests__/eachException.test.js
        6 |  */
        7 |
     >  8 | it.each\`
-         | ^
+         |         ^
        9 |   left    | right
       10 |   \${true} | \${true}
       11 |   \${true}
 
-      at Object.<anonymous> (__tests__/eachException.test.js:8:1)
+      at Object.<anonymous> (__tests__/eachException.test.js:8:9)
 
   ● throws exception when not enough arguments are supplied $left == $right
 
@@ -86,16 +86,16 @@ FAIL __tests__/eachException.test.js
       17 | );
       18 |
     > 19 | it.each\`
-         | ^
+         |         ^
       20 |   left    | right   | up | down
       21 |   \${true} | \${true}
       22 | \`(
 
-      at Object.<anonymous> (__tests__/eachException.test.js:19:1)
+      at Object.<anonymous> (__tests__/eachException.test.js:19:9)"
 `;
 
 exports[`shows only the tests with .only as being ran 1`] = `
-PASS __tests__/eachOnly.test.js
+"PASS __tests__/eachOnly.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
@@ -103,11 +103,11 @@ PASS __tests__/eachOnly.test.js
   ○ skipped Should not be ran: fails all rows expected true == false
   ○ skipped Should not be ran: fails all rows expected true == true
   ○ skipped Should not be ran: fails all rows expected true == false
-  ○ skipped Should not be ran: fails all rows expected true == false
+  ○ skipped Should not be ran: fails all rows expected true == false"
 `;
 
 exports[`shows only the tests without .skip as being ran 1`] = `
-PASS __tests__/eachSkip.test.js
+"PASS __tests__/eachSkip.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
@@ -118,11 +118,11 @@ PASS __tests__/eachSkip.test.js
   ○ skipped Should not be ran: fails all rows expected true == false
   passes all rows expected true == true
     ○ skipped passes
-    ○ skipped passes
+    ○ skipped passes"
 `;
 
 exports[`shows the correct errors in stderr when failing tests 1`] = `
-FAIL __tests__/failure.test.js
+"FAIL __tests__/failure.test.js
   ✓ array table fails on one row: expected true == true
   ✕ array table fails on one row: expected true == false
   ✕ array table fails on all rows expected 1 == 2
@@ -362,5 +362,5 @@ FAIL __tests__/failure.test.js
       73 |   },
       74 | );
 
-      at Object.toBe (__tests__/failure.test.js:71:20)
+      at Object.toBe (__tests__/failure.test.js:71:20)"
 `;

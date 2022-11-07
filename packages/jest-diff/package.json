@@ -1,6 +1,6 @@
 {
   "name": "jest-diff",
-  "version": "27.3.1",
+  "version": "29.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,21 +10,24 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "diff-sequences": "^27.0.6",
-    "jest-get-type": "^27.3.1",
-    "pretty-format": "^27.3.1"
+    "diff-sequences": "workspace:^",
+    "jest-get-type": "workspace:^",
+    "pretty-format": "workspace:^"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.3.1",
+    "@jest/test-utils": "workspace:^",
     "strip-ansi": "^6.0.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

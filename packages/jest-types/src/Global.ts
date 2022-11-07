@@ -15,19 +15,21 @@ export type TestReturnValue = ValidTestReturnValues | TestReturnValuePromise;
 export type TestContext = Record<string, unknown>;
 
 export type DoneFn = (reason?: string | Error) => void;
-// these should not be undefined
+
 export type DoneTakingTestFn = (
-  this: TestContext | undefined,
+  this: TestContext,
   done: DoneFn,
 ) => ValidTestReturnValues;
-export type PromiseReturningTestFn = (
-  this: TestContext | undefined,
-) => TestReturnValue;
+export type PromiseReturningTestFn = (this: TestContext) => TestReturnValue;
 export type GeneratorReturningTestFn = (
-  this: TestContext | undefined,
+  this: TestContext,
 ) => TestReturnValueGenerator;
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NameLike = number | Function;
+
 export type TestName = string;
+export type TestNameLike = TestName | NameLike;
 export type TestFn =
   | PromiseReturningTestFn
   | GeneratorReturningTestFn
@@ -35,57 +37,96 @@ export type TestFn =
 export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
 export type BlockName = string;
+export type BlockNameLike = BlockName | NameLike;
+
 export type HookFn = TestFn;
 
 export type Col = unknown;
-export type Row = Array<Col>;
-export type Table = Array<Row>;
+export type Row = ReadonlyArray<Col>;
+export type Table = ReadonlyArray<Row>;
 export type ArrayTable = Table | Row;
 export type TemplateTable = TemplateStringsArray;
-export type TemplateData = Array<unknown>;
+export type TemplateData = ReadonlyArray<unknown>;
 export type EachTable = ArrayTable | TemplateTable;
 
 export type TestCallback = BlockFn | TestFn | ConcurrentTestFn;
 
 export type EachTestFn<EachCallback extends TestCallback> = (
-  ...args: Array<any>
+  ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
-// TODO: Get rid of this at some point
-type Jasmine = {
-  _DEFAULT_TIMEOUT_INTERVAL?: number;
-  addMatchers: (matchers: Record<string, unknown>) => void;
-};
+interface Each<EachFn extends TestFn | BlockFn> {
+  // when the table is an array of object literals
+  <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (arg: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
 
-type Each<EachCallback extends TestCallback> =
-  | ((
-      table: EachTable,
-      ...taggedTemplateData: Array<unknown>
-    ) => (
-      title: string,
-      test: EachTestFn<EachCallback>,
-      timeout?: number,
-    ) => void)
-  | (() => () => void);
+  // when the table is an array of tuples
+  <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  // when the table is an array of arrays
+  <T extends ReadonlyArray<unknown>>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (...args: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  // when the table is a tuple or array
+  <T>(table: ReadonlyArray<T>): (
+    name: string | NameLike,
+    fn: (arg: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  // when the table is a template literal
+  <T = unknown>(strings: TemplateStringsArray, ...expressions: Array<T>): (
+    name: string | NameLike,
+    fn: (arg: Record<string, T>) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  // when the table is a template literal with a type argument
+  <T extends Record<string, unknown>>(
+    strings: TemplateStringsArray,
+    ...expressions: Array<unknown>
+  ): (
+    name: string | NameLike,
+    fn: (arg: T) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+}
 
 export interface HookBase {
   (fn: HookFn, timeout?: number): void;
 }
 
+export interface Failing<T extends TestFn> {
+  (testName: TestNameLike, fn: T, timeout?: number): void;
+  each: Each<T>;
+}
+
 export interface ItBase {
-  (testName: TestName, fn: TestFn, timeout?: number): void;
+  (testName: TestNameLike, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
+  failing: Failing<TestFn>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName) => void;
+  todo: (testName: TestNameLike) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: string, testFn: ConcurrentTestFn, timeout?: number): void;
+  (testName: TestNameLike, testFn: ConcurrentTestFn, timeout?: number): void;
   each: Each<ConcurrentTestFn>;
+  failing: Failing<ConcurrentTestFn>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
@@ -98,7 +139,7 @@ export interface ItConcurrent extends It {
 }
 
 export interface DescribeBase {
-  (blockName: BlockName, blockFn: BlockFn): void;
+  (blockName: BlockNameLike, blockFn: BlockFn): void;
   each: Each<BlockFn>;
 }
 
@@ -124,15 +165,10 @@ export interface TestFrameworkGlobals {
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
-  jasmine: Jasmine;
-  fail: () => void;
-  pending: () => void;
-  spyOn: () => void;
-  spyOnProperty: () => void;
 }
 
 export interface Global
   extends GlobalAdditions,
     Omit<typeof globalThis, keyof GlobalAdditions> {
-  [extras: string]: unknown;
+  [extras: PropertyKey]: unknown;
 }

@@ -12,48 +12,41 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@4.7.0
+  node: circleci/node@5.0.3
 
 jobs:
   test-node:
     parameters:
       node-version:
         type: string
-      partial:
-        type: boolean
-        default: false
     working_directory: ~/jest
     executor: node/default
+    parallelism: 4
     steps:
       - checkout
       - node/install:
           node-version: << parameters.node-version >>
-          install-npm: false
       - node/install-packages: *install
-      - when:
-          condition: << parameters.partial >>
-          steps:
-            - run:
-                command: yarn test-ci-partial
-      - unless:
-          condition: << parameters.partial >>
-          steps:
-            - run:
-                command: yarn test-ci
+      - run:
+          command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: reports/junit
 
   test-jest-jasmine:
     working_directory: ~/jest
     executor: node/default
+    parallelism: 4
     steps:
       - checkout
       - node/install:
-          node-version: '14'
-          install-npm: false
+          node-version: lts/*
       - node/install-packages: *install
       - run:
-          command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak
+          name: Test
+          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
+      - run:
+          name: Leak test
+          command: JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
@@ -62,13 +55,8 @@ workflows:
   build-and-deploy:
     jobs:
       - test-node:
-          matrix:
-            parameters:
-              node-version: ['14']
-      - test-node:
           name: test-node-partial-<< matrix.node-version >>
-          partial: true
           matrix:
             parameters:
-              node-version: ['10', '12', '15', '16', '17']
+              node-version: ['14', '16', '18', '19']
       - test-jest-jasmine

@@ -12,9 +12,9 @@ const fileToTransform = require.resolve('./index.js');
 module.exports = {
   process(src, filename) {
     if (filename === fileToTransform) {
-      return src.replace('hello', 'hello, world');
+      return {code: src.replace('hello', 'hello, world')};
     }
 
-    return src;
+    return {code: src};
   },
 };

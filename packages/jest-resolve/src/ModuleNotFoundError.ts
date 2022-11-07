@@ -7,12 +7,11 @@
 
 import * as path from 'path';
 import slash = require('slash');
-import type {Config} from '@jest/types';
 
 export default class ModuleNotFoundError extends Error {
   public code = 'MODULE_NOT_FOUND';
   public hint?: string;
-  public requireStack?: Array<Config.Path>;
+  public requireStack?: Array<string>;
   public siblingWithSimilarExtensionFound?: boolean;
   public moduleName?: string;
 
@@ -24,7 +23,7 @@ export default class ModuleNotFoundError extends Error {
     this.moduleName = moduleName;
   }
 
-  public buildMessage(rootDir: Config.Path): void {
+  public buildMessage(rootDir: string): void {
     if (!this._originalMessage) {
       this._originalMessage = this.message || '';
     }

@@ -6,7 +6,7 @@
  */
 
 test('JSON is available in the global scope', () => {
-  expect(JSON).toBe(global.JSON);
+  expect(JSON).toBe(globalThis.JSON);
 });
 
 test('JSON.parse creates objects from within this context', () => {

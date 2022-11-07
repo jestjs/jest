@@ -4,6 +4,8 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  "include": ["./src/**/*"],
+  "exclude": ["./**/__tests__/**/*"],
   "references": [
     {"path": "../jest-config"},
     {"path": "../jest-console"},
@@ -12,7 +14,6 @@
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../jest-validate"},
-    {"path": "../test-utils"}
+    {"path": "../jest-validate"}
   ]
 }

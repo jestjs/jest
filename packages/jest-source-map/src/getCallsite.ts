@@ -5,25 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {TraceMap, originalPositionFor} from '@jridgewell/trace-mapping';
 import callsites = require('callsites');
 import {readFileSync} from 'graceful-fs';
-import {SourceMapConsumer} from 'source-map';
 import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
   callsite: callsites.CallSite,
-  consumer: SourceMapConsumer,
+  tracer: TraceMap,
 ) => {
-  const getLineNumber = callsite.getLineNumber;
-  const getColumnNumber = callsite.getColumnNumber;
-  let position: ReturnType<typeof consumer.originalPositionFor> | null = null;
+  const getLineNumber = callsite.getLineNumber.bind(callsite);
+  const getColumnNumber = callsite.getColumnNumber.bind(callsite);
+  let position: ReturnType<typeof originalPositionFor> | null = null;
 
   function getPosition() {
     if (!position) {
-      position = consumer.originalPositionFor({
-        column: getColumnNumber.call(callsite) || -1,
-        line: getLineNumber.call(callsite) || -1,
+      position = originalPositionFor(tracer, {
+        column: getColumnNumber() ?? -1,
+        line: getLineNumber() ?? -1,
       });
     }
 
@@ -33,36 +33,38 @@ const addSourceMapConsumer = (
   Object.defineProperties(callsite, {
     getColumnNumber: {
       value() {
-        return getPosition().column || getColumnNumber.call(callsite);
+        const value = getPosition().column;
+        return value == null || value === 0 ? getColumnNumber() : value;
       },
       writable: false,
     },
     getLineNumber: {
       value() {
-        return getPosition().line || getLineNumber.call(callsite);
+        const value = getPosition().line;
+
+        return value == null || value === 0 ? getLineNumber() : value;
       },
       writable: false,
     },
   });
 };
 
-export default (
+export default function getCallsite(
   level: number,
   sourceMaps?: SourceMapRegistry | null,
-): callsites.CallSite => {
+): callsites.CallSite {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
-  const sourceMapFileName = sourceMaps?.get(stack.getFileName() || '');
+  const sourceMapFileName = sourceMaps?.get(stack.getFileName() ?? '');
 
-  if (sourceMapFileName) {
+  if (sourceMapFileName != null && sourceMapFileName !== '') {
     try {
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-      // @ts-expect-error: Not allowed to pass string
-      addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
+      addSourceMapConsumer(stack, new TraceMap(sourceMap));
     } catch {
       // ignore
     }
   }
 
   return stack;
-};
+}

@@ -8,6 +8,7 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
+import dedent = require('dedent');
 import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
@@ -35,10 +36,17 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestResult {
-  return normalizeStdoutAndStderrOnResult(
-    spawnJest(dir, args, options),
-    options,
-  );
+  const result = spawnJest(dir, args, options);
+
+  if (result.killed) {
+    throw new Error(dedent`
+      Spawned process was killed.
+      DETAILS:
+        ${JSON.stringify(result, null, 2)}
+    `);
+  }
+
+  return normalizeStdoutAndStderrOnResult(result, options);
 }
 
 function spawnJest(
@@ -69,14 +77,11 @@ function spawnJest(
 
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
-    throw new Error(
-      `
+    throw new Error(dedent`
       Make sure you have a local package.json file at
         "${localPackageJson}".
-      Otherwise Jest will try to traverse the directory tree and find the
-      global package.json, which will send Jest into infinite loop.
-    `,
-    );
+      Otherwise Jest will try to traverse the directory tree and find the global package.json, which will send Jest into infinite loop.
+    `);
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
@@ -142,17 +147,15 @@ export const json = function (
   try {
     return {
       ...result,
-      json: JSON.parse(result.stdout || ''),
+      json: JSON.parse(result.stdout),
     };
   } catch (e: any) {
-    throw new Error(
-      `
+    throw new Error(dedent`
       Can't parse JSON.
       ERROR: ${e.name} ${e.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
-    `,
-    );
+    `);
   }
 };
 
@@ -160,7 +163,7 @@ type StdErrAndOutString = {stderr: string; stdout: string};
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
 type CheckerFunction = (arg: StdErrAndOutString) => void;
 
-// Runs `jest` continously (watch mode) and allows the caller to wait for
+// Runs `jest` continuously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
 export const runContinuous = function (
   dir: string,
@@ -266,13 +269,18 @@ export function getConfig(
   configs: Array<Config.ProjectConfig>;
   version: string;
 } {
-  const {exitCode, stdout} = runJest(
+  const {exitCode, stdout, stderr} = runJest(
     dir,
     args.concat('--show-config'),
     options,
   );
 
-  expect(exitCode).toBe(0);
+  try {
+    expect(exitCode).toBe(0);
+  } catch (error) {
+    console.error('Exit code is not 0', {stderr, stdout});
+    throw error;
+  }
 
   return JSON.parse(stdout);
 }

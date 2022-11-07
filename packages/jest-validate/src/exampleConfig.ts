@@ -14,6 +14,7 @@ const config: ValidationOptions = {
   deprecatedConfig: {
     key: (): string => 'Deprecation message',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   error: () => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
@@ -23,6 +24,7 @@ const config: ValidationOptions = {
     error: 'Validation Error',
     warning: 'Validation Warning',
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unknown: () => {},
 };
 

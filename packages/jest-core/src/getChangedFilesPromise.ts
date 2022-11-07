@@ -10,12 +10,12 @@ import type {Config} from '@jest/types';
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 
-export default (
+export default function getChangedFilesPromise(
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
-): ChangedFilesPromise | undefined => {
+): ChangedFilesPromise | undefined {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
+    const allRootsForAllProjects = configs.reduce<Array<string>>(
       (roots, config) => {
         if (config.roots) {
           roots.push(...config.roots);
@@ -41,4 +41,4 @@ export default (
   }
 
   return undefined;
-};
+}

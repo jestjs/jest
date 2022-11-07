@@ -18,8 +18,8 @@ module.exports = {
     if (
       filename.includes('__mocks__') ||
       filename.includes('NoHaste') ||
-      filename.includes(path.sep + 'module_dir' + path.sep) ||
-      filename.includes(path.sep + 'sourcemaps' + path.sep)
+      filename.includes(`${path.sep}module_dir${path.sep}`) ||
+      filename.includes(`${path.sep}sourcemaps${path.sep}`)
     ) {
       return undefined;
     }

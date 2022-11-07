@@ -8,13 +8,21 @@
 
 import * as path from 'path';
 import pluginTester from 'babel-plugin-tester';
-import {format as formatCode} from 'prettier';
+import {format as formatCode, resolveConfig} from 'prettier';
 import babelPluginJestHoist from '..';
+
+const prettierOptions = {
+  ...resolveConfig.sync(__filename),
+  filepath: __filename,
+};
+
+const formatResult = (code: string) => formatCode(code, prettierOptions);
 
 pluginTester({
   plugin: babelPluginJestHoist,
   pluginName: 'babel-plugin-jest-hoist',
   tests: {
+    /* eslint-disable sort-keys */
     'automatic react runtime': {
       babelOptions: {
         babelrc: false,
@@ -27,9 +35,9 @@ pluginTester({
           ],
         ],
       },
-      code: `
+      code: formatResult(`
         jest.mock('./App', () => () => <div>Hello world</div>);
-      `,
+      `),
       formatResult(code) {
         // replace the filename with something that will be the same across OSes and machine
         const codeWithoutSystemPath = code.replace(
@@ -37,35 +45,112 @@ pluginTester({
           'var _jsxFileName = "/root/project/src/file.js";',
         );
 
-        return formatCode(codeWithoutSystemPath, {parser: 'babel'});
+        return formatResult(codeWithoutSystemPath);
       },
       snapshot: true,
     },
     'top level mocking': {
-      code: `
+      code: formatResult(`
         require('x');
 
         jest.enableAutomock();
         jest.disableAutomock();
-      `,
+      `),
+      formatResult,
       snapshot: true,
     },
     'within a block': {
-      code: `
+      code: formatResult(`
         beforeEach(() => {
           require('x')
           jest.mock('someNode')
         })
-      `,
+      `),
+      formatResult,
       snapshot: true,
     },
     'within a block with no siblings': {
-      code: `
+      code: formatResult(`
         beforeEach(() => {
           jest.mock('someNode')
         })
-      `,
+      `),
+      formatResult,
+      snapshot: true,
+    },
+
+    'required `jest` within `jest`': {
+      code: formatResult(`
+        const {jest} = require('@jest/globals');
+
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'imported jest.mock within jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.mock within jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'imported jest.requireActual in jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.requireActual in jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'TS typeof usage in jest.mock': {
+      babelOptions: {
+        babelrc: false,
+        configFile: false,
+        filename: path.resolve(__dirname, '../file.ts'),
+        presets: [[require.resolve('@babel/preset-typescript')]],
+      },
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          const actual = jest.requireActual('some-module');
+
+          return jest.fn<typeof actual.method>();
+        });
+      `),
+      formatResult,
       snapshot: true,
     },
   },
+  /* eslint-enable */
 });

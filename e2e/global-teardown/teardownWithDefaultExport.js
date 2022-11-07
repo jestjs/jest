@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function (jestConfig): void {
-  console.log(jestConfig.testPathPattern);
+export default function (globalConfig, projectConfig): void {
+  console.log(globalConfig.testPathPattern);
+  console.log(projectConfig.cache);
 }

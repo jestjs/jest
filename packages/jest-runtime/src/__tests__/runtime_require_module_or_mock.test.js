@@ -36,7 +36,7 @@ it('mocks modules by default when using automocking', async () => {
   expect(exports.setModuleStateValue._isMockFunction).toBe(true);
 });
 
-it(`doesn't mock modules when explicitly unmocked when using automocking`, async () => {
+it("doesn't mock modules when explicitly unmocked when using automocking", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
@@ -50,7 +50,7 @@ it(`doesn't mock modules when explicitly unmocked when using automocking`, async
   expect(exports.isRealModule).toBe(true);
 });
 
-it(`doesn't mock modules when explicitly unmocked via a different name`, async () => {
+it("doesn't mock modules when explicitly unmocked via a different name", async () => {
   const runtime = await createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
@@ -64,7 +64,7 @@ it(`doesn't mock modules when explicitly unmocked via a different name`, async (
   expect(exports.isRealModule).toBe(true);
 });
 
-it(`doesn't mock modules when disableAutomock() has been called`, async () => {
+it("doesn't mock modules when disableAutomock() has been called", async () => {
   const runtime = await createRuntime(__filename, {moduleNameMapper});
   const root = runtime.requireModule(runtime.__mockRootPath);
   root.jest.disableAutomock();
@@ -153,7 +153,7 @@ it('automocking is disabled by default', async () => {
     runtime.__mockRootPath,
     'RegularModule',
   );
-  expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+  expect(exports.setModuleStateValue._isMockFunction).toBeUndefined();
 });
 
 it('unmocks modules in config.unmockedModulePathPatterns for tests with automock enabled when automock is false', async () => {
@@ -187,7 +187,7 @@ it('unmocks virtual mocks after they have been mocked previously', async () => {
 
   expect(() => {
     runtime.requireModuleOrMock(runtime.__mockRootPath, 'my-virtual-module');
-  }).toThrowError(
+  }).toThrow(
     new Error("Cannot find module 'my-virtual-module' from 'root.js'"),
   );
 });
@@ -271,7 +271,7 @@ describe('isolateModules', () => {
       runtime.isolateModules(() => {
         throw new Error('Error from isolated module');
       }),
-    ).toThrowError('Error from isolated module');
+    ).toThrow('Error from isolated module');
 
     runtime.isolateModules(() => {
       expect(true).toBe(true);
@@ -286,7 +286,7 @@ describe('isolateModules', () => {
       runtime.isolateModules(() => {
         runtime.isolateModules(() => {});
       });
-    }).toThrowError(
+    }).toThrow(
       'isolateModules cannot be nested inside another isolateModules.',
     );
   });

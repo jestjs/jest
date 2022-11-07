@@ -18,21 +18,18 @@ const usage = (entity: string) =>
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim(`to filter by a ${entity} regex pattern.`)}\n` +
-  `\n`;
+  '\n';
 
 const usageRows = usage('').split('\n').length;
 
-export default class PatternPrompt {
-  protected _pipe: NodeJS.WritableStream;
-  protected _prompt: Prompt;
-  protected _entityName: string;
+export default abstract class PatternPrompt {
   protected _currentUsageRows: number;
 
-  constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
-    // TODO: Should come in the constructor
-    this._entityName = '';
-    this._pipe = pipe;
-    this._prompt = prompt;
+  constructor(
+    protected _pipe: NodeJS.WritableStream,
+    protected _prompt: Prompt,
+    protected _entityName = '',
+  ) {
     this._currentUsageRows = usageRows;
   }
 
@@ -45,7 +42,7 @@ export default class PatternPrompt {
     this._pipe.write(CLEAR);
 
     if (options && options.header) {
-      this._pipe.write(options.header + '\n');
+      this._pipe.write(`${options.header}\n`);
       this._currentUsageRows = usageRows + options.header.split('\n').length;
     } else {
       this._currentUsageRows = usageRows;

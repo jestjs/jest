@@ -8,18 +8,17 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
+  paths?: Array<string>;
 };
 
 export default function nodeModulesPaths(
-  basedir: Config.Path,
+  basedir: string,
   options: NodeModulesPathsOptions,
-): Array<Config.Path> {
+): Array<string> {
   const modules =
     options && options.moduleDirectory
       ? Array.from(options.moduleDirectory)
@@ -46,7 +45,7 @@ export default function nodeModulesPaths(
     physicalBasedir = basedirAbs;
   }
 
-  const paths: Array<Config.Path> = [physicalBasedir];
+  const paths: Array<string> = [physicalBasedir];
   let parsed = path.parse(physicalBasedir);
   while (parsed.dir !== paths[paths.length - 1]) {
     paths.push(parsed.dir);
@@ -54,7 +53,7 @@ export default function nodeModulesPaths(
   }
 
   const dirs = paths
-    .reduce<Array<Config.Path>>(
+    .reduce<Array<string>>(
       (dirs, aPath) =>
         dirs.concat(
           modules.map(moduleDir =>

@@ -15,18 +15,18 @@ export async function toHaveLengthAsync(
   const pass = received.length === length;
   const message = pass
     ? () =>
-        `Expected value to not have length:\n` +
+        'Expected value to not have length:\n' +
         `  ${length}\n` +
-        `Received:\n` +
+        'Received:\n' +
         `  ${received}\n` +
-        `received.length:\n` +
+        'received.length:\n' +
         `  ${received.length}`
     : () =>
-        `Expected value to have length:\n` +
+        'Expected value to have length:\n' +
         `  ${length}\n` +
-        `Received:\n` +
+        'Received:\n' +
         `  ${received}\n` +
-        `received.length:\n` +
+        'received.length:\n' +
         `  ${received.length}`;
 
   return {message, pass};

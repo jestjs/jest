@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -31,5 +30,5 @@ test('shows the correct errors in stderr when failing tests', () => {
     .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
     .join('\n');
 
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
 });

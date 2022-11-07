@@ -15,7 +15,7 @@ class QuitPlugin extends BaseWatchPlugin {
     this.isInternal = true;
   }
 
-  async run(): Promise<void> {
+  override async run(): Promise<void> {
     if (typeof this._stdin.setRawMode === 'function') {
       this._stdin.setRawMode(false);
     }
@@ -23,7 +23,7 @@ class QuitPlugin extends BaseWatchPlugin {
     process.exit(0);
   }
 
-  getUsageInfo(): UsageData {
+  override getUsageInfo(): UsageData {
     return {
       key: 'q',
       prompt: 'quit watch mode',

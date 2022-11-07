@@ -7,9 +7,13 @@
 
 import type {Context} from 'vm';
 import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
-import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import type {
+  EnvironmentContext,
+  JestEnvironment,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {Config, Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 
@@ -22,56 +26,67 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment<number> {
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+export default class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
-  errorEventListener: ((event: Event & {error: Error}) => void) | null;
+  private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
+  customExportConditions = ['browser'];
 
-  constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
+  constructor(config: JestEnvironmentConfig, context: EnvironmentContext) {
+    const {projectConfig} = config;
+
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.sendTo(context.console, {omitJSDOMErrors: true});
+    virtualConsole.on('jsdomError', error => {
+      context.console.error(error);
+    });
+
     this.dom = new JSDOM(
-      typeof config.testEnvironmentOptions.html === 'string'
-        ? config.testEnvironmentOptions.html
+      typeof projectConfig.testEnvironmentOptions.html === 'string'
+        ? projectConfig.testEnvironmentOptions.html
         : '<!DOCTYPE html>',
       {
         pretendToBeVisual: true,
         resources:
-          typeof config.testEnvironmentOptions.userAgent === 'string'
+          typeof projectConfig.testEnvironmentOptions.userAgent === 'string'
             ? new ResourceLoader({
-                userAgent: config.testEnvironmentOptions.userAgent,
+                userAgent: projectConfig.testEnvironmentOptions.userAgent,
               })
             : undefined,
         runScripts: 'dangerously',
-        url: config.testURL,
-        virtualConsole: new VirtualConsole().sendTo(
-          options?.console || console,
-        ),
-        ...config.testEnvironmentOptions,
+        url: 'http://localhost/',
+        virtualConsole,
+        ...projectConfig.testEnvironmentOptions,
       },
     );
     const global = (this.global = this.dom.window.document
       .defaultView as unknown as Win);
 
-    if (!global) {
+    if (global == null) {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // for "universal" code (code should use `globalThis`)
-    global.global = global as any;
+    // @ts-expect-error - for "universal" code (code should use `globalThis`)
+    global.global = global;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global as any, config.globals);
+    installCommonGlobals(global, projectConfig.globals);
 
     // TODO: remove this ASAP, but it currently causes tests to run really slow
     global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
-      if (userErrorListenerCount === 0 && event.error) {
+      if (userErrorListenerCount === 0 && event.error != null) {
         process.emit('uncaughtException', event.error);
       }
     };
@@ -79,8 +94,8 @@ class JSDOMEnvironment implements JestEnvironment<number> {
 
     // However, don't report them as uncaught if the user listens to 'error' event.
     // In that case, we assume the might have custom error handling logic.
-    const originalAddListener = global.addEventListener;
-    const originalRemoveListener = global.removeEventListener;
+    const originalAddListener = global.addEventListener.bind(global);
+    const originalRemoveListener = global.removeEventListener.bind(global);
     let userErrorListenerCount = 0;
     global.addEventListener = function (
       ...args: Parameters<typeof originalAddListener>
@@ -99,26 +114,39 @@ class JSDOMEnvironment implements JestEnvironment<number> {
       return originalRemoveListener.apply(this, args);
     };
 
-    this.moduleMocker = new ModuleMocker(global as any);
+    if ('customExportConditions' in projectConfig.testEnvironmentOptions) {
+      const {customExportConditions} = projectConfig.testEnvironmentOptions;
+      if (
+        Array.isArray(customExportConditions) &&
+        customExportConditions.every(isString)
+      ) {
+        this.customExportConditions = customExportConditions;
+      } else {
+        throw new Error(
+          'Custom export conditions specified but they are not an array of strings',
+        );
+      }
+    }
 
-    const timerConfig = {
-      idToRef: (id: number) => id,
-      refToId: (ref: number) => ref,
-    };
+    this.moduleMocker = new ModuleMocker(global);
 
     this.fakeTimers = new LegacyFakeTimers({
-      config,
+      config: projectConfig,
       global: global as unknown as typeof globalThis,
       moduleMocker: this.moduleMocker,
-      timerConfig,
+      timerConfig: {
+        idToRef: (id: number) => id,
+        refToId: (ref: number) => ref,
+      },
     });
 
     this.fakeTimersModern = new ModernFakeTimers({
-      config,
+      config: projectConfig,
       global: global as unknown as typeof globalThis,
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   async setup(): Promise<void> {}
 
   async teardown(): Promise<void> {
@@ -128,7 +156,7 @@ class JSDOMEnvironment implements JestEnvironment<number> {
     if (this.fakeTimersModern) {
       this.fakeTimersModern.dispose();
     }
-    if (this.global) {
+    if (this.global != null) {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
@@ -142,11 +170,15 @@ class JSDOMEnvironment implements JestEnvironment<number> {
       Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
-    // @ts-expect-error
+    // @ts-expect-error: this.global not allowed to be `null`
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
+  }
+
+  exportConditions(): Array<string> {
+    return this.customExportConditions;
   }
 
   getVmContext(): Context | null {
@@ -157,4 +189,4 @@ class JSDOMEnvironment implements JestEnvironment<number> {
   }
 }
 
-export = JSDOMEnvironment;
+export const TestEnvironment = JSDOMEnvironment;

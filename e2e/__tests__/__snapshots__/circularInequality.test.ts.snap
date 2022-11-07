@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`handles circular inequality properly 1`] = `
-FAIL __tests__/test-1.js
+"FAIL __tests__/test-1.js
   ● test
 
     expect(received).toEqual(expected) // deep equality
@@ -41,13 +41,13 @@ FAIL __tests__/test-2.js
         |               ^
       6 | });
 
-      at Object.toEqual (__tests__/test-2.js:5:15)
+      at Object.toEqual (__tests__/test-2.js:5:15)"
 `;
 
 exports[`handles circular inequality properly 2`] = `
-Test Suites: 2 failed, 2 total
+"Test Suites: 2 failed, 2 total
 Tests:       2 failed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;

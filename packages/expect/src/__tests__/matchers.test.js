@@ -9,10 +9,17 @@ const chalk = require('chalk');
 const Immutable = require('immutable');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {stringify} = require('jest-matcher-utils');
-const jestExpect = require('../');
+const {expect: jestExpect} = require('../');
 const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
+
+jestExpect.extend({
+  optionalFn(fn) {
+    const pass = fn === undefined || typeof fn === 'function';
+    return {message: () => 'expect either a function or undefined', pass};
+  },
+});
 
 beforeAll(() => {
   chalk.enabled = true;
@@ -54,7 +61,7 @@ describe('.rejects', () => {
   });
 
   it('should reject async function to toThrow', async () => {
-    await expect(async () => {
+    await jestExpect(async () => {
       throw new Error('Test');
     }).rejects.toThrow('Test');
   });
@@ -247,7 +254,7 @@ describe('.toBe()', () => {
     [{a: BigInt(1)}, {a: BigInt(1)}],
   ].forEach(([a, b]) => {
     it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
-      expect(() => jestExpect(a).toBe(b)).toThrowError('toBe');
+      expect(() => jestExpect(a).toBe(b)).toThrow('toBe');
     });
   });
 
@@ -259,7 +266,7 @@ describe('.toBe()', () => {
 
   [BigInt(1), BigInt('1')].forEach(v => {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
-      expect(() => jestExpect(v).not.toBe(v)).toThrowError('toBe');
+      expect(() => jestExpect(v).not.toBe(v)).toThrow('toBe');
     });
   });
 
@@ -440,6 +447,40 @@ describe('.toStrictEqual()', () => {
     expect(Uint8Array.from([9, 3]).buffer).toStrictEqual(
       Uint8Array.from([9, 3]).buffer,
     );
+  });
+
+  it('fails for missing keys even if backed by an asymmetric matcher accepting them', () => {
+    // issue 12463
+    expect({a: 1}).not.toStrictEqual({a: 1, b: jestExpect.optionalFn()});
+    expect({a: 1, b: jestExpect.optionalFn()}).not.toStrictEqual({a: 1});
+    expect([1]).not.toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).not.toStrictEqual([1]);
+  });
+
+  it('passes if keys are present and asymmetric matcher accept them', () => {
+    // issue 12463
+    // with a proper function
+    expect({a: 1, b: () => {}}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: () => {},
+    });
+    expect([1, () => {}]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, () => {}]);
+    // with undefined
+    expect({a: 1, b: undefined}).toStrictEqual({
+      a: 1,
+      b: jestExpect.optionalFn(),
+    });
+    expect({a: 1, b: jestExpect.optionalFn()}).toStrictEqual({
+      a: 1,
+      b: undefined,
+    });
+    expect([1, undefined]).toStrictEqual([1, jestExpect.optionalFn()]);
+    expect([1, jestExpect.optionalFn()]).toStrictEqual([1, undefined]);
   });
   /* eslint-enable */
 });
@@ -658,7 +699,7 @@ describe('.toEqual()', () => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
     )})`, () => {
-      expect(() => jestExpect(a).toEqual(b)).toThrowError('toEqual');
+      expect(() => jestExpect(a).toEqual(b)).toThrow('toEqual');
       jestExpect(a).not.toEqual(b);
     });
   });
@@ -848,6 +889,45 @@ describe('.toEqual()', () => {
       // eslint-disable-next-line no-sparse-arrays
       [, , 1, undefined, ,], // same length but hole replaced by undefined
     ],
+    // issue 12463 - "matcher" vs "proper function"
+    [
+      {a: 1, b: () => {}},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: () => {}},
+    ],
+    [
+      [1, () => {}],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, () => {}],
+    ],
+    // issue 12463 - "matcher" vs "undefined"
+    [
+      {a: 1, b: undefined},
+      {a: 1, b: jestExpect.optionalFn()},
+    ],
+    [
+      {a: 1, b: jestExpect.optionalFn()},
+      {a: 1, b: undefined},
+    ],
+    [
+      [1, undefined],
+      [1, jestExpect.optionalFn()],
+    ],
+    [
+      [1, jestExpect.optionalFn()],
+      [1, undefined],
+    ],
+    // issue 12463 - "matcher" vs "missing"
+    [{a: 1}, {a: 1, b: jestExpect.optionalFn()}],
+    [{a: 1, b: jestExpect.optionalFn()}, {a: 1}],
+    [[1], [1, jestExpect.optionalFn()]],
+    [[1, jestExpect.optionalFn()], [1]],
   ].forEach(([a, b]) => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
@@ -873,7 +953,7 @@ describe('.toEqual()', () => {
       b,
     )})`, () => {
       jestExpect(a).toEqual(b);
-      expect(() => jestExpect(a).not.toEqual(b)).toThrowError('toEqual');
+      expect(() => jestExpect(a).not.toEqual(b)).toThrow('toEqual');
     });
   });
 
@@ -1085,9 +1165,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
       jestExpect(v).toBeTruthy();
       jestExpect(v).not.toBeFalsy();
 
-      expect(() => jestExpect(v).not.toBeTruthy()).toThrowError('toBeTruthy');
+      expect(() => jestExpect(v).not.toBeTruthy()).toThrow('toBeTruthy');
 
-      expect(() => jestExpect(v).toBeFalsy()).toThrowError('toBeFalsy');
+      expect(() => jestExpect(v).toBeFalsy()).toThrow('toBeFalsy');
     });
   });
 
@@ -1109,9 +1189,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
       jestExpect(v).toBeFalsy();
       jestExpect(v).not.toBeTruthy();
 
-      expect(() => jestExpect(v).toBeTruthy()).toThrowError('toBeTruthy');
+      expect(() => jestExpect(v).toBeTruthy()).toThrow('toBeTruthy');
 
-      expect(() => jestExpect(v).not.toBeFalsy()).toThrowError('toBeFalsy');
+      expect(() => jestExpect(v).not.toBeFalsy()).toThrow('toBeFalsy');
     });
   });
 });
@@ -1175,9 +1255,9 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
       jestExpect(v).toBeDefined();
       jestExpect(v).not.toBeUndefined();
 
-      expect(() => jestExpect(v).not.toBeDefined()).toThrowError('toBeDefined');
+      expect(() => jestExpect(v).not.toBeDefined()).toThrow('toBeDefined');
 
-      expect(() => jestExpect(v).toBeUndefined()).toThrowError('toBeUndefined');
+      expect(() => jestExpect(v).toBeUndefined()).toThrow('toBeUndefined');
     });
   });
 
@@ -1337,35 +1417,35 @@ describe(
       });
 
       it(`throws: [${stringify(small)}, ${stringify(big)}]`, () => {
-        expect(() => jestExpect(small).toBeGreaterThan(big)).toThrowError(
+        expect(() => jestExpect(small).toBeGreaterThan(big)).toThrow(
           'toBeGreaterThan',
         );
 
-        expect(() => jestExpect(small).not.toBeLessThan(big)).toThrowError(
+        expect(() => jestExpect(small).not.toBeLessThan(big)).toThrow(
           'toBeLessThan',
         );
 
-        expect(() => jestExpect(big).not.toBeGreaterThan(small)).toThrowError(
+        expect(() => jestExpect(big).not.toBeGreaterThan(small)).toThrow(
           'toBeGreaterThan',
         );
 
-        expect(() => jestExpect(big).toBeLessThan(small)).toThrowError(
+        expect(() => jestExpect(big).toBeLessThan(small)).toThrow(
           'toBeLessThan',
         );
 
-        expect(() =>
-          jestExpect(small).toBeGreaterThanOrEqual(big),
-        ).toThrowError('toBeGreaterThanOrEqual');
+        expect(() => jestExpect(small).toBeGreaterThanOrEqual(big)).toThrow(
+          'toBeGreaterThanOrEqual',
+        );
 
-        expect(() =>
-          jestExpect(small).not.toBeLessThanOrEqual(big),
-        ).toThrowError('toBeLessThanOrEqual');
+        expect(() => jestExpect(small).not.toBeLessThanOrEqual(big)).toThrow(
+          'toBeLessThanOrEqual',
+        );
 
-        expect(() =>
-          jestExpect(big).not.toBeGreaterThanOrEqual(small),
-        ).toThrowError('toBeGreaterThanOrEqual');
+        expect(() => jestExpect(big).not.toBeGreaterThanOrEqual(small)).toThrow(
+          'toBeGreaterThanOrEqual',
+        );
 
-        expect(() => jestExpect(big).toBeLessThanOrEqual(small)).toThrowError(
+        expect(() => jestExpect(big).toBeLessThanOrEqual(small)).toThrow(
           'toBeLessThanOrEqual',
         );
       });
@@ -1400,11 +1480,11 @@ describe(
         jestExpect(n1).toBeGreaterThanOrEqual(n2);
         jestExpect(n1).toBeLessThanOrEqual(n2);
 
-        expect(() =>
-          jestExpect(n1).not.toBeGreaterThanOrEqual(n2),
-        ).toThrowError('toBeGreaterThanOrEqual');
+        expect(() => jestExpect(n1).not.toBeGreaterThanOrEqual(n2)).toThrow(
+          'toBeGreaterThanOrEqual',
+        );
 
-        expect(() => jestExpect(n1).not.toBeLessThanOrEqual(n2)).toThrowError(
+        expect(() => jestExpect(n1).not.toBeLessThanOrEqual(n2)).toThrow(
           'toBeLessThanOrEqual',
         );
       });
@@ -1430,10 +1510,8 @@ describe('.toContain(), .toContainEqual()', () => {
 
     jestExpect(iterable).toContain(2);
     jestExpect(iterable).toContainEqual(2);
-    expect(() => jestExpect(iterable).not.toContain(1)).toThrowError(
-      'toContain',
-    );
-    expect(() => jestExpect(iterable).not.toContainEqual(1)).toThrowError(
+    expect(() => jestExpect(iterable).not.toContain(1)).toThrow('toContain');
+    expect(() => jestExpect(iterable).not.toContainEqual(1)).toThrow(
       'toContainEqual',
     );
   });
@@ -1465,7 +1543,7 @@ describe('.toContain(), .toContainEqual()', () => {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
 
-      expect(() => jestExpect(list).not.toContain(v)).toThrowError('toContain');
+      expect(() => jestExpect(list).not.toContain(v)).toThrow('toContain');
     });
   });
 
@@ -1488,7 +1566,7 @@ describe('.toContain(), .toContainEqual()', () => {
     it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
       jestExpect(list).not.toContain(v);
 
-      expect(() => jestExpect(list).toContain(v)).toThrowError('toContain');
+      expect(() => jestExpect(list).toContain(v)).toThrow('toContain');
     });
   });
 
@@ -1504,9 +1582,7 @@ describe('.toContain(), .toContainEqual()', () => {
     expect(() =>
       jestExpect('false').toContain(false),
     ).toThrowErrorMatchingSnapshot();
-    expect(() => jestExpect('1').toContain(BigInt(1))).toThrowError(
-      'toContain',
-    );
+    expect(() => jestExpect('1').toContain(BigInt(1))).toThrow('toContain');
   });
 
   [
@@ -1717,7 +1793,7 @@ describe('.toMatch()', () => {
     ['foo', undefined],
   ].forEach(([n1, n2]) => {
     it(
-      `throws if non String/RegExp expected value passed:` +
+      'throws if non String/RegExp expected value passed:' +
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
         expect(() => jestExpect(n1).toMatch(n2)).toThrowErrorMatchingSnapshot();
@@ -1883,8 +1959,10 @@ describe('.toHaveProperty()', () => {
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
-    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+    [{a: {b: [{c: [{d: 1}]}]}}, 'a.b[0].c[0].d', 1],
+    [{a: {b: [{c: {d: [{e: 1}, {f: 2}]}}]}}, 'a.b[0].c.d[1].f', 2],
+    [{a: {b: [[{c: [{d: 1}]}]]}}, 'a.b[0][0].c[0].d', 1],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
     [new Foo(), 'b', 'b'],
@@ -1895,6 +1973,7 @@ describe('.toHaveProperty()', () => {
     [new E('div'), 'nodeType', 1],
     ['', 'length', 0],
     [memoized, 'memo', []],
+    [{'': 1}, '', 1],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,
@@ -1923,7 +2002,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
+    [{a: {}}, 'a.b', undefined],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
@@ -1955,6 +2034,7 @@ describe('.toHaveProperty()', () => {
 
   [
     [{a: {b: {c: {}}}}, 'a.b.c.d'],
+    [{a: {b: {c: {}}}}, '.a.b.c'],
     [{a: 1}, 'a.b.c.d'],
     [{}, 'a'],
     [1, 'a.b.c'],

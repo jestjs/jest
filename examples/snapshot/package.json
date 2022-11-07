@@ -3,16 +3,15 @@
   "version": "0.0.0",
   "name": "example-snapshot",
   "dependencies": {
-    "react": "*"
+    "react": "17.0.2"
   },
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/plugin-proposal-class-properties": "*",
-    "@babel/preset-env": "*",
-    "@babel/preset-react": "*",
-    "babel-jest": "*",
-    "jest": "*",
-    "react-test-renderer": "*"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.12.1",
+    "babel-jest": "workspace:^",
+    "jest": "workspace:^",
+    "react-test-renderer": "17.0.2"
   },
   "scripts": {
     "test": "jest"

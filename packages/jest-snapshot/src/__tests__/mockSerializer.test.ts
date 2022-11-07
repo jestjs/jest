@@ -85,7 +85,7 @@ test('mock with 2 calls', () => {
 });
 
 test('indent option', () => {
-  const fn = jest.fn(val => val);
+  const fn = jest.fn((val: {key: string}) => val);
   fn({key: 'value'});
   const expected = [
     '[MockFunction] {',
@@ -110,7 +110,7 @@ test('indent option', () => {
 });
 
 test('min option', () => {
-  const fn = jest.fn(val => val);
+  const fn = jest.fn((val: {key: string}) => val);
   fn({key: 'value'});
   const expected =
     '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"type": "return", "value": {"key": "value"}}]}';

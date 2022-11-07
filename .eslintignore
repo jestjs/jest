@@ -1,13 +1,18 @@
+!.*
 **/coverage/**
 **/node_modules/**
 bin/
-flow-typed/**
 packages/*/build/**
-packages/jest-diff/src/cleanupSemantic.ts
+packages/*/dist/**
 website/.docusaurus
-website/blog
 website/build
 website/node_modules
 website/i18n/*.js
 website/static
-!.eslintrc.js
+
+# Third-party script
+packages/jest-diff/src/cleanupSemantic.ts
+
+**/.yarn
+**/.pnp.*
+

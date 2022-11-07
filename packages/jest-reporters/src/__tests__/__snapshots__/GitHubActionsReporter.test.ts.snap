@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`logs error annotation when a test has reference error 1`] = `
+Array [
+  "
+::error file=/user/project/__tests__/example.test.js,line=25,title=example test::ReferenceError: abc is not defined%0A%0A    at Object.abc (__tests__/example.test.js:25:12)
+",
+]
+`;
+
+exports[`logs error annotation when an expectation fails to pass 1`] = `
+Array [
+  "
+::error file=/user/project/__tests__/example.test.js,line=20,title=example test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
+",
+]
+`;
+
+exports[`logs error annotation when test is wrapped in describe block 1`] = `
+Array [
+  "
+::error file=/user/project/__tests__/example.test.js,line=20,title=describe › example test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
+",
+]
+`;
+
+exports[`logs warning annotation before logging errors when test result includes retry reasons 1`] = `
+Array [
+  Array [
+    "
+::warning file=/user/project/__tests__/example.test.js,line=19,title=RETRY 1: example test::expect(received).toBeFalsy()%0A%0AReceived: true%0A%0A    at Object.toBeFalsy (__tests__/example.test.js:19:20)
+",
+  ],
+  Array [
+    "
+::error file=/user/project/__tests__/example.test.js,line=19,title=example test::expect(received).toBeFalsy()%0A%0AReceived: true%0A%0A    at Object.toBeFalsy (__tests__/example.test.js:19:20)
+",
+  ],
+]
+`;

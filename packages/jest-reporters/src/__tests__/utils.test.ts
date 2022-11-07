@@ -9,22 +9,24 @@ import * as path from 'path';
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
 import {makeProjectConfig} from '@jest/test-utils';
-import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
+import printDisplayName from '../printDisplayName';
+import trimAndFormatPath from '../trimAndFormatPath';
+import wrapAnsiString from '../wrapAnsiString';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
     const string =
       `abcde ${chalk.red.bold('red-bold')} 1234456` +
       `${chalk.dim('bcd')} ` +
-      `123ttttttththththththththththththththththththththth` +
+      '123ttttttththththththththththththththththththththth' +
       `tetetetetettetetetetetetetete${chalk.underline.bold('stnhsnthsnth')}` +
-      `ssot`;
+      'ssot';
     expect(wrapAnsiString(string, 10)).toMatchSnapshot();
     expect(stripAnsi(wrapAnsiString(string, 10))).toMatchSnapshot();
   });
 
   it('returns the string unaltered if given a terminal width of zero', () => {
-    const string = `This string shouldn't cause you any trouble`;
+    const string = "This string shouldn't cause you any trouble";
     expect(wrapAnsiString(string, 0)).toMatchSnapshot();
     expect(stripAnsi(wrapAnsiString(string, 0))).toMatchSnapshot();
   });
@@ -44,7 +46,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(20);
+    expect(stripAnsi(result)).toHaveLength(20);
   });
 
   it('trims dirname (longer line width)', () => {
@@ -60,7 +62,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(25);
+    expect(stripAnsi(result)).toHaveLength(25);
   });
 
   it('trims dirname and basename', () => {
@@ -76,7 +78,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(10);
+    expect(stripAnsi(result)).toHaveLength(10);
   });
 
   it('does not trim anything', () => {
@@ -93,7 +95,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(totalLength);
+    expect(stripAnsi(result)).toHaveLength(totalLength);
   });
 
   test('split at the path.sep index', () => {
@@ -109,7 +111,7 @@ describe('trimAndFormatPath()', () => {
     );
 
     expect(result).toMatchSnapshot();
-    expect(stripAnsi(result).length).toBe(columns - pad);
+    expect(stripAnsi(result)).toHaveLength(columns - pad);
   });
 });
 

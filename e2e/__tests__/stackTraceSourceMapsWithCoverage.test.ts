@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import * as path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -18,5 +17,5 @@ it('processes stack traces and code frames with source maps with coverage', () =
   const {stderr} = runJest(dir, ['--no-cache', '--coverage']);
 
   // Should report an error at source line 13 in lib.ts at line 10 of the test
-  expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
+  expect(extractSummary(stderr).rest).toMatchSnapshot();
 });

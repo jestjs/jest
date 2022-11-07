@@ -30,6 +30,7 @@ const testResult = {
     updated: 0,
   },
   testFilePath: '/foo',
+  testResults: [],
 };
 
 let stdout;

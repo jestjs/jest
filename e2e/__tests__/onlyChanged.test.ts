@@ -46,7 +46,7 @@ afterEach(() => cleanup(DIR));
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -69,7 +69,7 @@ test('run for "onlyChanged" and "changedSince"', () => {
 test('run only changed files', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -90,10 +90,10 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR, ['-o']));
@@ -105,7 +105,7 @@ test('run only changed files', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(DIR, {
@@ -249,7 +249,7 @@ test('collect test coverage when using onlyChanged', () => {
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {onlyChanged: true}}),
   });
@@ -273,10 +273,10 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   ({stderr} = runJest(DIR));
@@ -288,7 +288,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR));
+  ({stdout} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
 
   ({stderr, stdout} = runJest(DIR, ['file2.test.js']));
@@ -312,16 +312,9 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
 });
 
 testIfHg('gets changed files for hg', async () => {
-  if (process.env.CI) {
-    // Circle and Travis have very old version of hg (v2, and current
-    // version is v4.2) and its API changed since then and not compatible
-    // any more. Changing the SCM version on CIs is not trivial, so we'll just
-    // skip this test and run it only locally.
-    return;
-  }
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
@@ -333,23 +326,23 @@ testIfHg('gets changed files for hg', async () => {
   let stdout;
   let stderr;
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stderr} = runJest(DIR, ['-o']));
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test2"`, DIR);
 
   writeFiles(DIR, {
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
   });
 
   ({stdout, stderr} = runJest(DIR, ['-o']));
@@ -372,7 +365,7 @@ test('path on Windows is case-insensitive', () => {
 
   writeFiles(modifiedDIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -385,10 +378,10 @@ test('path on Windows is case-insensitive', () => {
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
-    '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
-    '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
+    '__tests__/file2.test.js': "require('../file2'); test('file2', () => {});",
+    '__tests__/file3.test.js': "require('../file3'); test('file3', () => {});",
     'file2.js': 'module.exports = {}',
-    'file3.js': `require('./file2')`,
+    'file3.js': "require('./file2')",
   });
 
   const {stderr} = runJest(incorrectModifiedDIR, ['-o']);

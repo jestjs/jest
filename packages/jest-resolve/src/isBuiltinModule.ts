@@ -7,12 +7,7 @@
 
 import module = require('module');
 
-// TODO: remove when we drop support for node v10 - it is included from node v12
-const EXPERIMENTAL_MODULES = ['worker_threads'];
-
-const BUILTIN_MODULES = new Set(
-  module.builtinModules.concat(EXPERIMENTAL_MODULES),
-);
+const BUILTIN_MODULES = new Set(module.builtinModules);
 
 export default function isBuiltinModule(module: string): boolean {
   return BUILTIN_MODULES.has(module);

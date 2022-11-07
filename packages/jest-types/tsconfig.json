@@ -3,5 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build"
-  }
+  },
+  "include": ["./src/**/*"],
+  "references": [{"path": "../jest-schemas"}]
 }

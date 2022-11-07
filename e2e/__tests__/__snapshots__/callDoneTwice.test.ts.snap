@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`\`done()\` should not be called more than once 1`] = `
-FAIL __tests__/index.test.js
+"FAIL __tests__/index.test.js
   ● \`done()\` called more than once › should fail
 
     Expected done to be called once, but it was called multiple times.
@@ -70,7 +70,7 @@ FAIL __tests__/index.test.js
       50 |
       51 |   it('should fail', () => {
 
-      at done (__tests__/index.test.js:48:5)
+      at Object.done (__tests__/index.test.js:48:5)
 
 
   ● Test suite failed to run
@@ -85,5 +85,5 @@ FAIL __tests__/index.test.js
       61 |
       62 |   it('should fail', () => {
 
-      at done (__tests__/index.test.js:59:5)
+      at Object.done (__tests__/index.test.js:59:5)"
 `;

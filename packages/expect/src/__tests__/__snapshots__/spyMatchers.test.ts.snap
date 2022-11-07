@@ -90,10 +90,55 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`lastCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`lastCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -125,6 +170,23 @@ exports[`lastCalledWith works with trailing undefined arguments 1`] = `
 
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`lastCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>lastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -178,6 +240,29 @@ Received
 ->     3:     <d>"foo3"</>
 
 Number of returns: <r>3</>
+`;
+
+exports[`lastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`lastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
 `;
 
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
@@ -397,11 +482,61 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`nthCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`nthCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
 
 n: 1
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -424,6 +559,25 @@ exports[`nthCalledWith works with trailing undefined arguments 1`] = `
 n: 1
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`nthCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>nthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -974,10 +1128,55 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toBeCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toBeCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -1009,6 +1208,23 @@ exports[`toBeCalledWith works with trailing undefined arguments 1`] = `
 
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -1299,10 +1515,55 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -1334,6 +1595,23 @@ exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
 
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -1428,10 +1706,55 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenLastCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenLastCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
 
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -1463,6 +1786,23 @@ exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = 
 
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenLastCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenLastCalledWith<d>(</><g>...expected</><d>)</>
+
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -1592,11 +1932,61 @@ Received: <d>"foo"</>, <r>"bar1"</>
 Number of calls: <r>1</>
 `;
 
+exports[`toHaveBeenNthCalledWith works with arguments that don't match in number of arguments 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>"bar"</>
+Received: <d>"foo"</>, <d>"bar"</>, <r>"plop"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match in size even if one is an optional matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>optionalFn<></>
+Received: <d>"foo"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>Any<String></>, <g>Any<Number></>
+Received: <d>"foo"</>, <r>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match with matchers even when argument is undefined 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: <g>"foo"</>, <g>Any<String></>
+Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
 exports[`toHaveBeenNthCalledWith works with arguments that match 1`] = `
 <d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
 
 n: 1
 Expected: not <g>"foo"</>, <g>"bar"</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that match with matchers 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>Any<String></>, <g>Any<String></>
+Received:     <r>0</>, <r>["foo", "bar"]</>
 
 Number of calls: <r>1</>
 `;
@@ -1619,6 +2009,25 @@ exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
 n: 1
 Expected: <g>"foo"</>
 Received: <d>"foo"</>, <r>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with trailing undefined arguments if requested by the match query 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>undefined</>
+
+Number of calls: <r>1</>
+`;
+
+exports[`toHaveBeenNthCalledWith works with trailing undefined arguments when explicitly requested as optional by matcher 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toHaveBeenNthCalledWith<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Expected: not <g>"foo"</>, <g>optionalFn<></>
+Received:     <r>0</>, <r>["foo", undefined]</>
 
 Number of calls: <r>1</>
 `;
@@ -1672,6 +2081,29 @@ Received
 ->     3:     <d>"foo3"</>
 
 Number of returns: <r>3</>
+`;
+
+exports[`toHaveLastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`toHaveLastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
 `;
 
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `

@@ -9,10 +9,10 @@
 
 const fs = require('fs');
 const os = require('os');
-const JSDOMEnvironment = require('jest-environment-jsdom');
+const JSDOMEnvironment = require('jest-environment-jsdom').TestEnvironment;
 const {createDirectory} = require('jest-util');
 
-const DIR = os.tmpdir() + '/jest-test-environment';
+const DIR = `${os.tmpdir()}/jest-test-environment`;
 
 class TestEnvironment extends JSDOMEnvironment {
   constructor(config, context) {
@@ -30,7 +30,7 @@ class TestEnvironment extends JSDOMEnvironment {
   teardown() {
     return super.teardown().then(() => {
       createDirectory(DIR);
-      fs.writeFileSync(DIR + '/teardown', 'teardown');
+      fs.writeFileSync(`${DIR}/teardown`, 'teardown');
     });
   }
 

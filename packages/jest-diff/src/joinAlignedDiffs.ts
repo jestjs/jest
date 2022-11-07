@@ -23,12 +23,12 @@ const printDiffLine = (
 ): string =>
   line.length !== 0
     ? color(
-        indicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter),
+        `${indicator} ${formatTrailingSpaces(line, trailingSpaceFormatter)}`,
       )
     : indicator !== ' '
     ? color(indicator)
     : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
-    ? color(indicator + ' ' + emptyFirstOrLastLinePlaceholder)
+    ? color(`${indicator} ${emptyFirstOrLastLinePlaceholder}`)
     : '';
 
 const printDeleteLine = (

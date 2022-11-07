@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "jest": {
+    "resolver": "<rootDir>/resolver.cjs",
+    "transform": {}
+  }
+}

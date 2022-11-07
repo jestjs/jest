@@ -24,7 +24,7 @@ export const errorMessage = (
   );
 
   const message = `  Option ${chalk.bold(
-    `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
+    `"${path && path.length > 0 ? `${path.join('.')}.` : ''}${option}"`,
   )} must be of type:
     ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
   but instead received:

@@ -11,8 +11,8 @@ import deepCyclicCopyReplaceable from '../deepCyclicCopyReplaceable';
 test('returns the same value for primitive or function values', () => {
   const fn = () => {};
 
-  expect(deepCyclicCopyReplaceable(undefined)).toBe(undefined);
-  expect(deepCyclicCopyReplaceable(null)).toBe(null);
+  expect(deepCyclicCopyReplaceable(undefined)).toBeUndefined();
+  expect(deepCyclicCopyReplaceable(null)).toBeNull();
   expect(deepCyclicCopyReplaceable(true)).toBe(true);
   expect(deepCyclicCopyReplaceable(42)).toBe(42);
   expect(Number.isNaN(deepCyclicCopyReplaceable(NaN))).toBe(true);
@@ -43,7 +43,7 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
-test('shuold not skips non-enumerables', () => {
+test('should not skips non-enumerables', () => {
   const obj = {};
   Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
 

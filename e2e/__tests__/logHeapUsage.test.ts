@@ -17,7 +17,7 @@ afterAll(() => cleanup(DIR));
 
 test('logs memory usage', () => {
   writeFiles(DIR, {
-    '__tests__/a-banana.js': `test('banana', () => expect(1).toBe(1));`,
+    '__tests__/a-banana.js': "test('banana', () => expect(1).toBe(1));",
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 

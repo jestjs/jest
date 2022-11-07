@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Retries logs error(s) before retry 1`] = `
+"LOGGING RETRY ERRORS  retryTimes set
+ RETRY 1 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      14 |     expect(true).toBeTruthy();
+      15 |   } else {
+    > 16 |     expect(true).toBeFalsy();
+         |                  ^
+      17 |   }
+      18 | });
+      19 |
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:16:18)
+
+ RETRY 2 
+
+    expect(received).toBeFalsy()
+
+    Received: true
+
+      14 |     expect(true).toBeTruthy();
+      15 |   } else {
+    > 16 |     expect(true).toBeFalsy();
+         |                  ^
+      17 |   }
+      18 | });
+      19 |
+
+      at Object.toBeFalsy (__tests__/logErrorsBeforeRetries.test.js:16:18)
+
+PASS __tests__/logErrorsBeforeRetries.test.js
+  ✓ retryTimes set"
+`;

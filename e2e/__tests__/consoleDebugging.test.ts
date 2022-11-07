@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
@@ -17,7 +16,7 @@ test('console debugging with --verbose', () => {
   const {summary, rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

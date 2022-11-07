@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import {strict as assert} from 'assert';
 import {EventEmitter} from 'events';
-import path from 'path';
+import * as path from 'path';
 import watchman from 'fb-watchman';
-import * as fs from 'graceful-fs';
+import fs from 'graceful-fs';
 import RecrawlWarning from './RecrawlWarning';
 import common from './common';
 
@@ -34,8 +34,7 @@ export default function WatchmanWatcher(dir, opts) {
   this.init();
 }
 
-// eslint-disable-next-line no-proto
-WatchmanWatcher.prototype.__proto__ = EventEmitter.prototype;
+Object.setPrototypeOf(WatchmanWatcher.prototype, EventEmitter.prototype);
 
 /**
  * Run the watchman `watch` command on the root and subscribe to changes.

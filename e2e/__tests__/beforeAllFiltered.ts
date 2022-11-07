@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 
 describe('Correct BeforeAll run', () => {
@@ -15,6 +14,6 @@ describe('Correct BeforeAll run', () => {
     // for some reason Circus does not have the `Object` part
     stdout = stdout.replace(/at Object.log \(/g, 'at log (');
 
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });

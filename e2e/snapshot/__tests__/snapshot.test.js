@@ -23,7 +23,7 @@ describe('snapshot', () => {
     const test = {
       a: 43,
       b: '43',
-      c: 'fourtythree',
+      c: 'fortythree',
     };
     expect(test).toMatchSnapshot();
   });

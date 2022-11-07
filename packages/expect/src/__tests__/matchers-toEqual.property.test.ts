@@ -7,7 +7,7 @@
  */
 
 import fc from 'fast-check';
-import expect from '..';
+import expect from '../';
 import {
   anythingSettings,
   assertSettings,
@@ -16,7 +16,7 @@ import {
 describe('toEqual', () => {
   it('should be reflexive', () => {
     fc.assert(
-      fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
+      fc.property(fc.clone(fc.anything(anythingSettings), 2), ([a, b]) => {
         // Given: a and b identical values
         expect(a).toEqual(b);
       }),
@@ -25,7 +25,7 @@ describe('toEqual', () => {
   });
 
   it('should be symmetric', () => {
-    const safeExpectEqual = (a, b) => {
+    const safeExpectEqual = (a: unknown, b: unknown) => {
       try {
         expect(a).toEqual(b);
         return true;

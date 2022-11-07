@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import type {Config} from '@jest/types';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
@@ -90,7 +89,7 @@ async function capabilityCheck(
   });
 }
 
-export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
+export async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
@@ -142,7 +141,7 @@ export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
   }
 
   async function getWatchmanRoots(
-    roots: Array<Config.Path>,
+    roots: Array<string>,
   ): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(
@@ -353,4 +352,4 @@ export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
     hasteMap: data,
     removedFiles,
   };
-};
+}

@@ -12,19 +12,18 @@
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {Config, Global} from '@jest/types';
+import {isPromise} from 'jest-util';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
 import type {Jasmine} from './types';
 
-function isPromise(obj: any): obj is PromiseLike<unknown> {
-  return obj && typeof obj.then === 'function';
-}
-
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const doneFnNoop = () => {};
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 doneFnNoop.fail = () => {};
 
 function promisifyLifeCycleFunction(
@@ -70,12 +69,14 @@ function promisifyLifeCycleFunction(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
+    // eslint-disable-next-line no-self-assign
     extraError.stack = extraError.stack;
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
+      // @ts-expect-error: TS thinks `wrappedFn` is a generator function
       const returnValue = wrappedFn.call({}, doneFnNoop);
 
       if (isPromise(returnValue)) {
@@ -100,7 +101,7 @@ function promisifyLifeCycleFunction(
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
@@ -108,7 +109,7 @@ function promisifyIt(
   jasmine: Jasmine,
 ) {
   return function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn?: (done: DoneFn) => void | PromiseLike<void>,
     timeout?: number,
   ): Spec {
@@ -145,6 +146,7 @@ function promisifyIt(
     // in the stack in the Error object. This line stringifies the stack
     // property to allow garbage-collecting objects on the stack
     // https://crbug.com/v8/7142
+    // eslint-disable-next-line no-self-assign
     extraError.stack = extraError.stack;
 
     const asyncJestTest = function (done: DoneFn) {
@@ -183,15 +185,15 @@ function promisifyIt(
 
 function makeConcurrent(
   originalFn: (
-    description: string,
+    description: Global.TestNameLike,
     fn: QueueableFn['fn'],
     timeout?: number,
   ) => Spec,
   env: Jasmine['currentEnv_'],
-  mutex: ReturnType<typeof throat>,
+  mutex: ReturnType<typeof pLimit>,
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
-    specName: string,
+    specName: Global.TestNameLike,
     fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
@@ -212,14 +214,33 @@ function makeConcurrent(
           `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
-    } catch (error: unknown) {
+    } catch (error) {
       promise = Promise.reject(error);
     }
+    // Avoid triggering the uncaught promise rejection handler in case the test errors before
+    // being awaited on.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    promise.catch(() => {});
 
     return spec;
   };
-  // each is binded after the function is made concurrent, so for now it is made noop
+
+  const failing = () => {
+    throw new Error(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+    );
+  };
+
+  failing.each = () => {
+    throw new Error(
+      'Jest: `failing` tests are only supported in `jest-circus`.',
+    );
+  };
+  // each is bound after the function is made concurrent, so for now it is made noop
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   concurrentFn.each = () => () => {};
+  concurrentFn.failing = failing;
+
   return concurrentFn;
 }
 
@@ -227,8 +248,8 @@ export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
 ): void {
-  const jasmine = global.jasmine as Jasmine;
-  const mutex = throat(globalConfig.maxConcurrency);
+  const jasmine = global.jasmine;
+  const mutex = pLimit(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);

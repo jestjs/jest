@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -34,13 +33,13 @@ test('Tests are executed only once even in an MPR', () => {
 
   /* eslint-disable sort-keys */
   writeFiles(DIR, {
-    'foo/folder/my-test-bar.js': `test('bar', () => console.log('Bar!'));`,
+    'foo/folder/my-test-bar.js': "test('bar', () => console.log('Bar!'));",
     'foo/folder/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/directory/my-test-baz.js': `test('baz', () => console.log('Baz!'));`,
+    'foo/directory/my-test-baz.js': "test('baz', () => console.log('Baz!'));",
     'foo/directory/package.json': JSON.stringify(childConfig, null, 2),
 
-    'foo/whatever/my-test-qux.js': `test('qux', () => console.log('Qux!'));`,
+    'foo/whatever/my-test-qux.js': "test('qux', () => console.log('Qux!'));",
     'foo/whatever/package.json': JSON.stringify(childConfig, null, 2),
 
     'package.json': JSON.stringify(config, null, 2),
@@ -55,6 +54,6 @@ test('Tests are executed only once even in an MPR', () => {
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatch(/1 total/);
 });

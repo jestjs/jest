@@ -16,7 +16,7 @@ import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/activeFiltersMessage';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
-  private _prompt: Prompt;
+  private readonly _prompt: Prompt;
   isInternal: true;
 
   constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
@@ -25,18 +25,18 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     this.isInternal = true;
   }
 
-  getUsageInfo(): UsageData {
+  override getUsageInfo(): UsageData {
     return {
       key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     this._prompt.put(key);
   }
 
-  run(
+  override run(
     globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {

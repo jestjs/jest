@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://jestjs.io/docs/cli\n`;
+    '  https://jestjs.io/docs/cli\n';
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -35,13 +35,13 @@ const createCLIValidationError = (
       unrecognized.length > 1
         ? createDidYouMeanMessage(unrecognized, Array.from(allowedOptions))
         : '';
-    message =
-      `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
-      (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');
+    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.${
+      didYouMeanMessage ? ` ${didYouMeanMessage}` : ''
+    }`;
   } else {
     title += 's';
     message =
-      `  Following options were not recognized:\n` +
+      '  Following options were not recognized:\n' +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 
@@ -63,14 +63,13 @@ const logDeprecatedOptions = (
 
 export default function validateCLIOptions(
   argv: Config.Argv,
-  options: {
-    deprecationEntries: DeprecatedOptions;
-    [s: string]: Options;
-  },
+  options: Record<string, Options> & {
+    deprecationEntries?: DeprecatedOptions;
+  } = {},
   rawArgv: Array<string> = [],
 ): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const deprecationEntries = options.deprecationEntries || {};
+  const deprecationEntries = options.deprecationEntries ?? {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) =>
       acc.add(option).add((options[option].alias as string) || option),

@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -18,7 +17,7 @@ afterEach(() => cleanup(DIR));
 
 test('--showConfig outputs config info and exits', () => {
   writeFiles(DIR, {
-    '__tests__/test.test.js': `test('test', () => {});`,
+    '__tests__/test.test.js': "test('test', () => {});",
     'package.json': JSON.stringify({jest: {environment: 'node'}}),
   });
 
@@ -26,7 +25,7 @@ test('--showConfig outputs config info and exits', () => {
     '--showConfig',
     '--no-cache',
     // Make the snapshot flag stable on CI.
-    '--updateSnapshot',
+    '--ci',
   ]);
 
   stdout = stdout
@@ -34,11 +33,12 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
     .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
     .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
-    .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
+    .replace(/"id": "(.+)"/g, '"id": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
     .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>')
+    .replace(/"seed": (-?\d+)/g, '"seed": <<RANDOM_SEED>>');
 
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });

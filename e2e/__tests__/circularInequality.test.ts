@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
   createEmptyPackage,
@@ -53,6 +52,6 @@ test.skip('handles circular inequality properly', async () => {
   const {stderr} = await end();
 
   const {summary, rest} = extractSortedSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

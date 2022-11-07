@@ -4,11 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @jest-environment <rootDir>/browser-env.js
+ * @jest-environment jest-environment-jsdom
  */
 
 import {fn} from 'fake-dual-dep';
 
 test('returns correct message', () => {
-  expect(fn()).toEqual('hello from browser');
+  expect(fn()).toBe('hello from browser');
 });

@@ -8,13 +8,12 @@
 import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
-import type {Test} from '@jest/test-result';
+import type {Test, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
 import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
-import type {Context} from 'jest-runtime';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
@@ -27,20 +26,10 @@ export type SearchResult = {
   total?: number;
 };
 
-export type TestSelectionConfig = {
-  input?: string;
-  findRelatedTests?: boolean;
-  onlyChanged?: boolean;
-  paths?: Array<Config.Path>;
-  shouldTreatInputAsPattern?: boolean;
-  testPathPattern?: string;
-  watch?: boolean;
-};
-
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
   const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
-  return (path: Config.Path) =>
+  return (path: string) =>
     regexes.some(regex => {
       const result = regex.test(path);
 
@@ -51,7 +40,7 @@ const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
     });
 };
 
-const toTests = (context: Context, tests: Array<Config.Path>) =>
+const toTests = (context: TestContext, tests: Array<string>) =>
   tests.map(path => ({
     context,
     duration: undefined,
@@ -66,11 +55,11 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 };
 
 export default class SearchSource {
-  private _context: Context;
+  private readonly _context: TestContext;
   private _dependencyResolver: DependencyResolver | null;
-  private _testPathCases: TestPathCases = [];
+  private readonly _testPathCases: TestPathCases = [];
 
-  constructor(context: Context) {
+  constructor(context: TestContext) {
     const {config} = context;
     this._context = context;
     this._dependencyResolver = null;
@@ -121,7 +110,7 @@ export default class SearchSource {
 
   private _filterTestPathsWithStats(
     allPaths: Array<Test>,
-    testPathPattern?: string,
+    testPathPattern: string,
   ): SearchResult {
     const data: {
       stats: Stats;
@@ -142,7 +131,7 @@ export default class SearchSource {
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
       testCases.push({
-        isMatch: (path: Config.Path) => regex.test(path),
+        isMatch: (path: string) => regex.test(path),
         stat: 'testPathPattern',
       });
       data.stats.testPathPattern = 0;
@@ -163,23 +152,23 @@ export default class SearchSource {
     return data;
   }
 
-  private _getAllTestPaths(testPathPattern?: string): SearchResult {
+  private _getAllTestPaths(testPathPattern: string): SearchResult {
     return this._filterTestPathsWithStats(
       toTests(this._context, this._context.hasteFS.getAllFiles()),
       testPathPattern,
     );
   }
 
-  isTestFilePath(path: Config.Path): boolean {
+  isTestFilePath(path: string): boolean {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
-  findMatchingTests(testPathPattern?: string): SearchResult {
+  findMatchingTests(testPathPattern: string): SearchResult {
     return this._getAllTestPaths(testPathPattern);
   }
 
   async findRelatedTests(
-    allPaths: Set<Config.Path>,
+    allPaths: Set<string>,
     collectCoverage: boolean,
   ): Promise<SearchResult> {
     const dependencyResolver = await this._getOrBuildDependencyResolver();
@@ -235,7 +224,7 @@ export default class SearchSource {
     };
   }
 
-  findTestsByPaths(paths: Array<Config.Path>): SearchResult {
+  findTestsByPaths(paths: Array<string>): SearchResult {
     return {
       tests: toTests(
         this._context,
@@ -247,7 +236,7 @@ export default class SearchSource {
   }
 
   async findRelatedTestsFromPattern(
-    paths: Array<Config.Path>,
+    paths: Array<string>,
     collectCoverage: boolean,
   ): Promise<SearchResult> {
     if (Array.isArray(paths) && paths.length) {
@@ -333,7 +322,7 @@ export default class SearchSource {
 
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
-    changedFiles: ChangedFiles | undefined,
+    changedFiles?: ChangedFiles,
     filter?: Filter,
   ): Promise<SearchResult> {
     const searchResult = await this._getTestPaths(globalConfig, changedFiles);

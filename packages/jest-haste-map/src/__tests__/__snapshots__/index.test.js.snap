@@ -1,39 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the most recent duplicate is fixed 1`] = `
-The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or exclude files until there remains only one of these:
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or exclude files until there remains only one of these:
 
   * \`/project/fruits/Pear.js\` (module)
   * \`/project/fruits/another/Pear.js\` (module)
-
+"
 `;
 
 exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the oldest version of the duplicates is fixed 1`] = `
-The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or exclude files until there remains only one of these:
+"The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or exclude files until there remains only one of these:
 
   * \`/project/fruits/Pear.js\` (module)
   * \`/project/fruits/another/Pear.js\` (module)
-
+"
 `;
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
-jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
   Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
-  Error: watchman error
+  Error: watchman error"
 `;
 
 exports[`HasteMap warns on duplicate mock files 1`] = `
-jest-haste-map: duplicate manual mock found: subdir/Blueberry
+"jest-haste-map: duplicate manual mock found: subdir/Blueberry
   The following files share their name; please delete one of them:
     * <rootDir>/fruits1/__mocks__/subdir/Blueberry.js
     * <rootDir>/fruits2/__mocks__/subdir/Blueberry.js
-
+"
 `;
 
 exports[`HasteMap warns on duplicate module ids 1`] = `
-jest-haste-map: Haste module naming collision: Strawberry
+"jest-haste-map: Haste module naming collision: Strawberry
   The following files share their name; please adjust your hasteImpl:
     * <rootDir>/fruits/Strawberry.js
     * <rootDir>/fruits/other/Strawberry.js
-
+"
 `;

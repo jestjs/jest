@@ -6,5 +6,5 @@
  */
 
 test('globals are properly defined', () => {
-  expect(global.Object).toBe(Object);
+  expect(globalThis.Object).toBe(Object);
 });

@@ -20,7 +20,7 @@ test('that the failureDetails property is set', () => {
   ]);
 
   // safety check: if the reporter errors it'll show up here
-  expect(stderr).toStrictEqual('');
+  expect(stderr).toBe('');
 
   const output = JSON.parse(removeStackTraces(stdout));
 
@@ -90,13 +90,13 @@ test('that the failureDetails property is set', () => {
             "actual": "",
             "error": Object {
               "matcherResult": Object {
-                "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
+                "actual": "{
+        "p1": "hello",
+        "p2": "world",
       }",
-                "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
+                "expected": "{
+        "p1": "hello",
+        "p2": "sunshine",
       }",
                 "message": "expect(received).toMatchInlineSnapshot(snapshot)
 
@@ -105,10 +105,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
                 "name": "toMatchInlineSnapshot",
                 "pass": false,
@@ -123,10 +123,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
             "passed": false,
             "stack": "Error: expect(received).toMatchInlineSnapshot(snapshot)
@@ -136,10 +136,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }
           at <stacktrace>",
           },
@@ -160,19 +160,19 @@ test('that the failureDetails property is set', () => {
           Object {
             "actual": "",
             "error": Object {
-              "message": "expect(received).rejects.toThrowError()
+              "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             },
             "expected": "",
             "matcherName": "",
-            "message": "Error: expect(received).rejects.toThrowError()
+            "message": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             "passed": false,
-            "stack": "Error: expect(received).rejects.toThrowError()
+            "stack": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1
@@ -215,13 +215,13 @@ test('that the failureDetails property is set', () => {
         Array [
           Object {
             "matcherResult": Object {
-              "actual": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"world\\",
+              "actual": "{
+        "p1": "hello",
+        "p2": "world",
       }",
-              "expected": "Object {
-        \\"p1\\": \\"hello\\",
-        \\"p2\\": \\"sunshine\\",
+              "expected": "{
+        "p1": "hello",
+        "p2": "sunshine",
       }",
               "message": "expect(received).toMatchInlineSnapshot(snapshot)
 
@@ -230,10 +230,10 @@ test('that the failureDetails property is set', () => {
       - Snapshot  - 1
       + Received  + 1
 
-        Object {
-          \\"p1\\": \\"hello\\",
-      -   \\"p2\\": \\"sunshine\\",
-      +   \\"p2\\": \\"world\\",
+        {
+          "p1": "hello",
+      -   "p2": "sunshine",
+      +   "p2": "world",
         }",
               "name": "toMatchInlineSnapshot",
               "pass": false,
@@ -245,7 +245,7 @@ test('that the failureDetails property is set', () => {
         ],
         Array [
           Object {
-            "message": "expect(received).rejects.toThrowError()
+            "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",

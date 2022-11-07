@@ -13,21 +13,20 @@
     "@angular/platform-browser": "^12.0.0",
     "@angular/platform-browser-dynamic": "^12.0.0",
     "core-js": "^3.2.1",
-    "rxjs": "^7.3.0",
+    "rxjs": "^7.5.5",
     "tslib": "^2.0.0",
-    "typescript": "*",
+    "typescript": "^4.8.2",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
-    "@babel/core": "*",
-    "@babel/plugin-proposal-class-properties": "*",
+    "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-decorators": "*",
-    "@babel/preset-env": "*",
-    "@babel/preset-typescript": "*",
-    "@types/jest": "*",
-    "babel-jest": "*",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.0.0",
+    "@jest/globals": "workspace:^",
+    "babel-jest": "workspace:^",
     "babel-plugin-transform-typescript-metadata": "*",
-    "jest": "*",
+    "jest": "workspace:^",
     "jest-zone-patch": "*"
   }
 }

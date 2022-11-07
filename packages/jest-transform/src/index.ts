@@ -18,8 +18,10 @@ export type {
   AsyncTransformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
+  TransformerCreator,
   TransformOptions,
   TransformResult,
   TransformedSource,
+  TransformerFactory,
 } from './types';
 export {default as handlePotentialSyntaxError} from './enhanceUnexpectedTokenMessage';

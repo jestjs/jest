@@ -23,7 +23,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
     this._hasSnapshotFailure = false;
   }
 
-  run(
+  override run(
     _globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<boolean> {
@@ -31,13 +31,13 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
     return Promise.resolve(false);
   }
 
-  apply(hooks: JestHookSubscriber): void {
+  override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
 
-  getUsageInfo(): UsageData | null {
+  override getUsageInfo(): UsageData | null {
     if (this._hasSnapshotFailure) {
       return {
         key: 'u',

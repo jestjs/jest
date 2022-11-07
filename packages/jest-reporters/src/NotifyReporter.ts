@@ -8,40 +8,37 @@
 import * as path from 'path';
 import * as util from 'util';
 import exit = require('exit');
-import type {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult, TestContext} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {pluralize} from 'jest-util';
 import BaseReporter from './BaseReporter';
-import type {Context, TestSchedulerContext} from './types';
+import type {ReporterContext} from './types';
 
 const isDarwin = process.platform === 'darwin';
 
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
-  private _notifier = loadNotifier();
-  private _startRun: (globalConfig: Config.GlobalConfig) => unknown;
-  private _globalConfig: Config.GlobalConfig;
-  private _context: TestSchedulerContext;
+  private readonly _notifier = loadNotifier();
+  private readonly _globalConfig: Config.GlobalConfig;
+  private _context: ReporterContext;
 
   static readonly filename = __filename;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    startRun: (globalConfig: Config.GlobalConfig) => unknown,
-    context: TestSchedulerContext,
-  ) {
+  constructor(globalConfig: Config.GlobalConfig, context: ReporterContext) {
     super();
     this._globalConfig = globalConfig;
-    this._startRun = startRun;
     this._context = context;
   }
 
-  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
+  override onRunComplete(
+    testContexts: Set<TestContext>,
+    result: AggregatedResult,
+  ): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
-    const firstContext = contexts.values().next();
+    const firstContext = testContexts.values().next();
 
     const hasteFS =
       firstContext && firstContext.value && firstContext.value.hasteFS;
@@ -81,7 +78,13 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       )} passed`;
 
-      this._notifier.notify({icon, message, timeout: false, title});
+      this._notifier.notify({
+        hint: 'int:transient:1',
+        icon,
+        message,
+        timeout: false,
+        title,
+      });
     } else if (
       testsHaveRun &&
       !success &&
@@ -99,7 +102,7 @@ export default class NotifyReporter extends BaseReporter {
         Math.ceil(Number.isNaN(failed) ? 0 : failed * 100),
       );
       const message = util.format(
-        (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
+        `${isDarwin ? '\u26D4\uFE0F ' : ''}%d of %d tests failed`,
         result.numFailedTests,
         result.numTotalTests,
       );
@@ -109,12 +112,20 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        this._notifier.notify({icon, message, timeout: false, title});
+        this._notifier.notify({
+          hint: 'int:transient:1',
+          icon,
+          message,
+          timeout: false,
+          title,
+        });
       } else {
         this._notifier.notify(
           {
+            // @ts-expect-error - not all options are supported by all systems (specifically `actions` and `hint`)
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
+            hint: 'int:transient:1',
             icon,
             message,
             timeout: false,
@@ -128,8 +139,11 @@ export default class NotifyReporter extends BaseReporter {
               exit(0);
               return;
             }
-            if (metadata.activationValue === restartAnswer) {
-              this._startRun(this._globalConfig);
+            if (
+              metadata.activationValue === restartAnswer &&
+              this._context.startRun
+            ) {
+              this._context.startRun(this._globalConfig);
             }
           },
         );

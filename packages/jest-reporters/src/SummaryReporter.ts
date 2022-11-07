@@ -6,14 +6,18 @@
  */
 
 import chalk = require('chalk');
-import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  SnapshotSummary,
+  TestContext,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
-import type {Context, ReporterOnStartOptions} from './types';
-import {getSummary} from './utils';
+import getSummary from './getSummary';
+import type {ReporterOnStartOptions} from './types';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -49,7 +53,7 @@ const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
 
   static readonly filename = __filename;
 
@@ -70,7 +74,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  onRunStart(
+  override onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ): void {
@@ -78,8 +82,8 @@ export default class SummaryReporter extends BaseReporter {
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
+  override onRunComplete(
+    testContexts: Set<TestContext>,
     aggregatedResults: AggregatedResult,
   ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
@@ -102,20 +106,20 @@ export default class SummaryReporter extends BaseReporter {
         this._globalConfig,
       );
 
-      if (numTotalTestSuites) {
-        let message = getSummary(aggregatedResults, {
-          estimatedTime: this._estimatedTime,
-        });
+      let message = getSummary(aggregatedResults, {
+        estimatedTime: this._estimatedTime,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
+      });
 
-        if (!this._globalConfig.silent) {
-          message +=
-            '\n' +
-            (wasInterrupted
-              ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(contexts, this._globalConfig));
-        }
-        this.log(message);
+      if (!this._globalConfig.silent) {
+        message += `\n${
+          wasInterrupted
+            ? chalk.bold.red('Test run was interrupted.')
+            : this._getTestSummary(testContexts, this._globalConfig)
+        }`;
       }
+      this.log(message);
     }
   }
 
@@ -144,9 +148,9 @@ export default class SummaryReporter extends BaseReporter {
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
-        updateCommand = `run \`${
-          client + ' ' + prefix + event + (isYarn ? '' : ' --')
-        } -u\``;
+        updateCommand = `run \`${`${client} ${prefix}${event}${
+          isYarn ? '' : ' --'
+        }`} -u\``;
       } else {
         updateCommand = 're-run jest with `-u`';
       }
@@ -179,10 +183,7 @@ export default class SummaryReporter extends BaseReporter {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
-            getResultHeader(testResult, globalConfig) +
-              '\n' +
-              failureMessage +
-              '\n',
+            `${getResultHeader(testResult, globalConfig)}\n${failureMessage}\n`,
           );
         }
       });
@@ -191,7 +192,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _getTestSummary(
-    contexts: Set<Context>,
+    testContexts: Set<TestContext>,
     globalConfig: Config.GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {
@@ -218,16 +219,16 @@ export default class SummaryReporter extends BaseReporter {
     let nameInfo = '';
 
     if (globalConfig.runTestsByPath) {
-      nameInfo = ' ' + globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ');
+      nameInfo = ` ${globalConfig.nonFlagArgs.map(p => `"${p}"`).join(', ')}`;
     } else if (globalConfig.testNamePattern) {
-      nameInfo =
-        chalk.dim(' with tests matching ') +
-        `"${globalConfig.testNamePattern}"`;
+      nameInfo = `${chalk.dim(' with tests matching ')}"${
+        globalConfig.testNamePattern
+      }"`;
     }
 
     const contextInfo =
-      contexts.size > 1
-        ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+      testContexts.size > 1
+        ? chalk.dim(' in ') + testContexts.size + chalk.dim(' projects')
         : '';
 
     return (

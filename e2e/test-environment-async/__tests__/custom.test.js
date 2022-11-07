@@ -8,5 +8,5 @@
 'use strict';
 
 test('setup', () => {
-  expect(global.setup).toBe('setup');
+  expect(globalThis.setup).toBe('setup');
 });

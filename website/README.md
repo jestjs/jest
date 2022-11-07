@@ -1,10 +1,10 @@
 # Jest website
 
-The Jest website is based on [Docusaurus 2](http://v2.docusaurus.io/).
+The Jest website is based on [Docusaurus 2](http://docusaurus.io/).
 
 ## Run the dev server
 
-You will need Node >=10.
+You will need Node >=14.
 
 The first time, get all the dependencies loaded via
 

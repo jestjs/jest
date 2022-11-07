@@ -19,7 +19,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
   private _failedTestAssertions?: Array<AssertionLocation>;
   private readonly _manager = new FailedTestsInteractiveMode(this._stdout);
 
-  apply(hooks: JestHookSubscriber): void {
+  override apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
       this._failedTestAssertions = this.getFailedTestAssertions(results);
 
@@ -27,7 +27,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
     });
   }
 
-  getUsageInfo(): UsageData | null {
+  override getUsageInfo(): UsageData | null {
     if (this._failedTestAssertions?.length) {
       return {key: 'i', prompt: 'run failing tests interactively'};
     }
@@ -35,13 +35,13 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
     return null;
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     if (this._manager.isActive()) {
       this._manager.put(key);
     }
   }
 
-  run(
+  override run(
     _: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {

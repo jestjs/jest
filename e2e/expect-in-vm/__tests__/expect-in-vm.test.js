@@ -14,7 +14,7 @@ it('correctly expects RegExp inside a new VM context', () => {
     `(function(require, module, exports, __dirname, __filename, expect) {
   expect('ab12cd').toMatch(/ab12cd/);
 })`,
-    global,
+    globalThis,
   );
 
   const module = {

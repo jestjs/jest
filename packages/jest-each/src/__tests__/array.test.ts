@@ -12,7 +12,7 @@ import each from '../';
 const noop = () => {};
 const expectFunction = expect.any(Function);
 
-const get = (object, lensPath) =>
+const get = <T>(object: T, lensPath: Array<string>): T =>
   lensPath.reduce((acc, key) => acc[key], object);
 
 const getGlobalTestMocks = () => {
@@ -368,6 +368,52 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title containing param values when using %#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: %#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('calls global with title containing param values when using $#', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {name: 'foo'},
+          {name: 'bar'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected index: $#', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected index: 1',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   });
 
@@ -404,8 +450,9 @@ describe('jest-each', () => {
         const testFunction = get(eachObject, keyPath);
         testFunction('expected string', function (hello, done) {
           expect(hello).toBe('hello');
-          expect(arguments.length).toBe(1);
-          expect(done).toBe(undefined);
+          // eslint-disable-next-line prefer-rest-params
+          expect(arguments).toHaveLength(1);
+          expect(done).toBeUndefined();
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
       },

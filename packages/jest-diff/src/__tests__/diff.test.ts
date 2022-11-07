@@ -13,14 +13,14 @@ import {NO_DIFF_MESSAGE} from '../constants';
 import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
-import {DiffOptions} from '../types';
+import type {DiffOptions} from '../types';
 
 const optionsCounts: DiffOptions = {
   includeChangeCounts: true,
 };
 
 // Use only in toBe assertions for edge case messages.
-const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
+const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) ?? '');
 
 // Use in toBe assertions for comparison lines.
 const optionsBe: DiffOptions = {
@@ -62,7 +62,7 @@ describe('different types', () => {
     test(`'${String(a)}' and '${String(b)}'`, () => {
       expect(stripped(a, b)).toBe(
         '  Comparing two different types of values. ' +
-          `Expected ${typeA} but received ${typeB}.`,
+          `Expected ${String(typeA)} but received ${String(typeB)}.`,
       );
     });
   });
@@ -665,7 +665,7 @@ describe('outer React element (non-snapshot)', () => {
 
 describe('trailing newline in multiline string not enclosed in quotes', () => {
   const a = ['line 1', 'line 2', 'line 3'].join('\n');
-  const b = a + '\n';
+  const b = `${a}\n`;
 
   describe('from less to more', () => {
     const expected = ['  line 1', '  line 2', '  line 3', '+'].join('\n');
@@ -851,7 +851,7 @@ describe('diffLinesUnified2 edge cases', () => {
     test('a', () => {
       const aDisplay = 'MiXeD cAsE';
       const bDisplay = 'Mixed case\nUPPER CASE';
-      const aCompare = aDisplay.toLowerCase() + '\nlower case';
+      const aCompare = `${aDisplay.toLowerCase()}\nlower case`;
       const bCompare = bDisplay.toLowerCase();
 
       const received = diffLinesUnified2(
@@ -1077,7 +1077,8 @@ describe('options', () => {
     });
 
     test('diff middle dot', () => {
-      const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
+      const replaceSpacesWithMiddleDot = (string: string) =>
+        '·'.repeat(string.length);
       const options = {
         changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
         commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,

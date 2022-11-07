@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -34,7 +33,7 @@ test('exceeds the timeout', () => {
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -54,8 +53,8 @@ test('does not exceed the timeout', () => {
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
 
@@ -81,7 +80,7 @@ test('exceeds the command line testTimeout', () => {
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
 });
 
@@ -104,7 +103,7 @@ test('does not exceed the command line testTimeout', () => {
     '--testTimeout=1000',
   ]);
   const {rest, summary} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

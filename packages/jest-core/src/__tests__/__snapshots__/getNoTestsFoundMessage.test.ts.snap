@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getNoTestsFoundMessage returns correct message when monitoring only changed 1`] = `
+Object {
+  "exitWith0": true,
+  "message": "<bold>No tests found related to files changed since last commit.</intensity><dim></intensity>
+<dim>Run Jest without \`-o\` or with \`--all\` to run all tests.</intensity>",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message when monitoring only failures 1`] = `
+Object {
+  "exitWith0": false,
+  "message": "<bold>No failed test found.</intensity><dim></intensity>
+<dim>Run Jest without \`--onlyFailures\` or with \`--all\` to run all tests.</intensity>",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message with findRelatedTests 1`] = `
+Object {
+  "exitWith0": false,
+  "message": "<bold>No tests found, exiting with code 1</intensity>
+Run with \`--passWithNoTests\` to exit with code 0
+In <bold>/root/dir</intensity>
+  0 files checked across 0 projects. Run with \`--verbose\` for more details.
+Pattern: <yellow>/path/pattern</color> - 0 matches",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message with findRelatedTests 2`] = `
+Object {
+  "exitWith0": true,
+  "message": "<bold>No tests found, exiting with code 0</intensity>",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message with passWithNoTests 1`] = `
+Object {
+  "exitWith0": true,
+  "message": "<bold>No tests found, exiting with code 0</intensity>",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message with verbose option 1`] = `
+Object {
+  "exitWith0": false,
+  "message": "<bold>No tests found, exiting with code 1</intensity>
+Run with \`--passWithNoTests\` to exit with code 0
+
+Pattern: <yellow>/path/pattern</color> - 0 matches",
+}
+`;
+
+exports[`getNoTestsFoundMessage returns correct message without options 1`] = `
+Object {
+  "exitWith0": false,
+  "message": "<bold>No tests found, exiting with code 1</intensity>
+Run with \`--passWithNoTests\` to exit with code 0
+In <bold>/root/dir</intensity>
+  0 files checked across 0 projects. Run with \`--verbose\` for more details.
+Pattern: <yellow>/path/pattern</color> - 0 matches",
+}
+`;

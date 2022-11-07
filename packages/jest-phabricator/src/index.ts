@@ -38,6 +38,8 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
   return summaries;
 }
 
-export = function (results: AggregatedResult): AggregatedResult {
+export default function PhabricatorProcessor(
+  results: AggregatedResult,
+): AggregatedResult {
   return {...results, coverageMap: summarize(results.coverageMap)};
-};
+}

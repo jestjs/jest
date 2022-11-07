@@ -75,10 +75,9 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       options.clearTimeout,
       options.setTimeout,
       () => {
-        initError.message =
-          'Timeout - Async callback was not invoked within the ' +
-          formatTime(timeoutMs) +
-          ' timeout specified by jest.setTimeout.';
+        initError.message = `Timeout - Async callback was not invoked within the ${formatTime(
+          timeoutMs,
+        )} timeout specified by jest.setTimeout.`;
         initError.stack = initError.message + initError.stack;
         options.onException(initError);
       },

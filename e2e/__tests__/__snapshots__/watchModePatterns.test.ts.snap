@@ -1,82 +1,124 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`can press "p" to filter by file name 1`] = `
-
+"<hideCursor>
+<clearTerminal>
 Pattern Mode Usage
  › Press Esc to exit pattern mode.
  › Press Enter to filter by a filenames regex pattern.
 
- pattern › 
- pattern › b
- pattern › ba
- pattern › bar
+<showCursor>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › 
+<saveCursorPosition>
+<moveCursorToRow6Column12>
+<restoreCursorPosition>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › b
+<saveCursorPosition>
+<moveCursorToRow6Column13>
+<restoreCursorPosition>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › ba
+<saveCursorPosition>
+<moveCursorToRow6Column14>
+<restoreCursorPosition>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › bar
+<saveCursorPosition>
+<moveCursorToRow6Column15>
+<restoreCursorPosition>
 
-
-
+<moveCursorDownBy1Row>
+<eraseScreenDown>
+"
 `;
 
 exports[`can press "p" to filter by file name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "p" to filter by file name: test results 2`] = `
-PASS __tests__/bar.spec.js
+"PASS __tests__/bar.spec.js
   ✓ bar 1
-  ✓ bar 2
+  ✓ bar 2"
 `;
 
 exports[`can press "p" to filter by file name: test summary 1`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`can press "p" to filter by file name: test summary 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching /bar/i.
+Ran all test suites matching /bar/i."
 `;
 
 exports[`can press "t" to filter by test name 1`] = `
-
+"<hideCursor>
+<clearTerminal>
 Pattern Mode Usage
  › Press Esc to exit pattern mode.
  › Press Enter to filter by a tests regex pattern.
 
- pattern › 
- pattern › 2
+<showCursor>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › 
+<saveCursorPosition>
+<moveCursorToRow6Column12>
+<restoreCursorPosition>
+<eraseLine>
+<moveCursorToColumn1>
+<eraseScreenDown>
+ pattern › 2
+<saveCursorPosition>
+<moveCursorToRow6Column13>
+<restoreCursorPosition>
 
-
-
+<moveCursorDownBy1Row>
+<eraseScreenDown>
+"
 `;
 
 exports[`can press "t" to filter by test name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "t" to filter by test name: test results 2`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "t" to filter by test name: test summary 1`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`can press "t" to filter by test name: test summary 2`] = `
-Test Suites: 2 passed, 2 total
+"Test Suites: 2 passed, 2 total
 Tests:       2 skipped, 2 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites with tests matching "2".
+Ran all test suites with tests matching "2"."
 `;

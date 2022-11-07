@@ -1,6 +1,0 @@
-{
-  "jest": {
-    "timers": "modern",
-    "testEnvironment": "node"
-  }
-}

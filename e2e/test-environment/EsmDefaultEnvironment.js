@@ -8,12 +8,14 @@
 
 exports.__esModule = true;
 
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 
 class Env extends NodeEnvironment {
   constructor(config, options) {
     super(config, options);
     this.global.property = 'value';
+    this.global.var1 = config.globalConfig.watch;
+    this.global.var2 = config.projectConfig.cache;
   }
 }
 

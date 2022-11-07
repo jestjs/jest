@@ -16,7 +16,7 @@ for (let t = 0; t < 10; ++t) {
 
     if (current > 5) {
       current -= 1;
-      throw new Error(`Too many processes ran simultaneously`);
+      throw new Error('Too many processes ran simultaneously');
     } else {
       return sleep(20).then(() => {
         current -= 1;

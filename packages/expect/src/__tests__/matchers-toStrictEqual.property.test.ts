@@ -6,16 +6,16 @@
  *
  */
 
-import assert from 'assert';
+import {strict as assert} from 'assert';
 import fc from 'fast-check';
-import expect from '..';
+import expect from '../';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
 
 describe('toStrictEqual', () => {
-  const safeExpectStrictEqual = (a, b) => {
+  const safeExpectStrictEqual = (a: unknown, b: unknown) => {
     try {
       expect(a).toStrictEqual(b);
       return true;
@@ -23,7 +23,7 @@ describe('toStrictEqual', () => {
       return false;
     }
   };
-  const safeAssertDeepStrictEqual = (a, b) => {
+  const safeAssertDeepStrictEqual = (a: unknown, b: unknown) => {
     try {
       assert.deepStrictEqual(a, b);
       return true;
@@ -33,7 +33,7 @@ describe('toStrictEqual', () => {
   };
   it('should be reflexive', () => {
     fc.assert(
-      fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
+      fc.property(fc.clone(fc.anything(anythingSettings), 2), ([a, b]) => {
         // Given: a and b identical values
         expect(a).toStrictEqual(b);
       }),

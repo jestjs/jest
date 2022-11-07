@@ -40,17 +40,17 @@ export default class ReportDispatcher implements Reporter {
   provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
 
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   jasmineDone: (runDetails: RunDetails) => void;
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   jasmineStarted: (runDetails: RunDetails) => void;
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   specDone: (result: SpecResult) => void;
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   specStarted: (spec: SpecResult) => void;
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   suiteDone: (result: SuiteResult) => void;
-  // @ts-expect-error
+  // @ts-expect-error: confused by loop in ctor
   suiteStarted: (result: SuiteResult) => void;
 
   constructor(methods: Array<keyof Reporter>) {
@@ -89,7 +89,7 @@ export default class ReportDispatcher implements Reporter {
       for (let i = 0; i < reporters.length; i++) {
         const reporter = reporters[i];
         if (reporter[method]) {
-          // @ts-expect-error
+          // @ts-expect-error: wrong context
           reporter[method].apply(reporter, args);
         }
       }

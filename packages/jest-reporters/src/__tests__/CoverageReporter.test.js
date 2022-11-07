@@ -22,7 +22,7 @@ let libSourceMaps;
 let CoverageReporter;
 let istanbulReports;
 
-import path from 'path';
+import * as path from 'path';
 import mock from 'mock-fs';
 
 beforeEach(() => {
@@ -32,7 +32,7 @@ beforeEach(() => {
   istanbulReports = require('istanbul-reports');
 
   const fileTree = {};
-  fileTree[process.cwd() + '/path-test-files'] = {
+  fileTree[`${process.cwd()}/path-test-files`] = {
     '000pc_coverage_file.js': '',
     '050pc_coverage_file.js': '',
     '100pc_coverage_file.js': '',
@@ -44,7 +44,9 @@ beforeEach(() => {
     'non_covered_file.js': '',
     'relative_path_file.js': '',
   };
-
+  fileTree[`${process.cwd()}/path-test`] = {
+    '100pc_coverage_file.js': '',
+  };
   mock(fileTree);
 });
 
@@ -79,6 +81,10 @@ describe('onRunComplete', () => {
         statements: {covered: 5, pct: 50, skipped: 0, total: 10},
       };
       const fileCoverage = [
+        [
+          './path-test/100pc_coverage_file.js',
+          {statements: {covered: 10, pct: 100, total: 10}},
+        ],
         ['./path-test-files/covered_file_without_threshold.js'],
         ['./path-test-files/full_path_file.js'],
         ['./path-test-files/relative_path_file.js'],
@@ -309,6 +315,9 @@ describe('onRunComplete', () => {
           './path-test-files/': {
             statements: 50,
           },
+          './path-test/': {
+            statements: 100,
+          },
           global: {
             statements: 100,
           },
@@ -370,6 +379,9 @@ describe('onRunComplete', () => {
           './path-test-files/100pc_coverage_file.js': {
             statements: 100,
           },
+          './path-test/100pc_coverage_file.js': {
+            statements: 100,
+          },
           global: {
             statements: 50,
           },
@@ -389,7 +401,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that files are matched by all matching threshold groups`, () => {
+  test('that files are matched by all matching threshold groups', () => {
     const testReporter = new CoverageReporter(
       {
         collectCoverage: true,
@@ -420,7 +432,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that it passes custom options when creating reporters`, () => {
+  test('that it passes custom options when creating reporters', () => {
     const testReporter = new CoverageReporter({
       coverageReporters: ['json', ['lcov', {maxCols: 10, projectRoot: './'}]],
     });

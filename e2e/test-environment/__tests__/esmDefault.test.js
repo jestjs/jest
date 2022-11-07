@@ -10,4 +10,6 @@
 
 test('access env', () => {
   expect(property).toBe('value'); // eslint-disable-line no-undef
+  expect(var1).toBe(false); // eslint-disable-line no-undef
+  expect(var2).toBe(true); // eslint-disable-line no-undef
 });

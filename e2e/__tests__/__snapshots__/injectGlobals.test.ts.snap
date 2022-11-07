@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`globals are undefined if passed \`false\` from CLI 1`] = `
-PASS __tests__/test.js
-  ✓ no globals injected
+"PASS __tests__/test.js
+  ✓ no globals injected"
 `;
 
 exports[`globals are undefined if passed \`false\` from CLI 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;
 
 exports[`globals are undefined if passed \`false\` from config 1`] = `
-PASS __tests__/test.js
-  ✓ no globals injected
+"PASS __tests__/test.js
+  ✓ no globals injected"
 `;
 
 exports[`globals are undefined if passed \`false\` from config 2`] = `
-Test Suites: 1 passed, 1 total
+"Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites."
 `;

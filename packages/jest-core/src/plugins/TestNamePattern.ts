@@ -25,18 +25,18 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     this.isInternal = true;
   }
 
-  getUsageInfo(): UsageData {
+  override getUsageInfo(): UsageData {
     return {
       key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }
 
-  onKey(key: string): void {
+  override onKey(key: string): void {
     this._prompt.put(key);
   }
 
-  run(
+  override run(
     globalConfig: Config.GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {

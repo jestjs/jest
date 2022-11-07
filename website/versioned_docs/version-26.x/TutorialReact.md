@@ -58,7 +58,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```tsx title="Link.react.js"
+```tsx title="Link.js"
 import React, {useState} from 'react';
 
 const STATUS = {
@@ -92,14 +92,18 @@ const Link = ({page, children}) => {
 export default Link;
 ```
 
-> Note: Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
+:::note
+
+Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
+
+:::
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx title="Link.react.test.js"
+```tsx title="Link.test.js"
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
+import Link from '../Link';
 
 test('Link changes the class when hovered', () => {
   const component = renderer.create(
@@ -124,7 +128,7 @@ test('Link changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript title="__tests__/__snapshots__/Link.react.test.js.snap"
+```javascript title="__tests__/__snapshots__/Link.test.js.snap"
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
@@ -196,7 +200,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](https://enzymejs.github.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
@@ -253,7 +257,7 @@ The code for this example is available at [examples/react-testing-library](https
 
 You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
-Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](https://enzymejs.github.io/enzyme/docs/api/shallow.html) in this example.
 
 ```tsx title="__tests__/CheckboxWithLabel-test.js"
 import React from 'react';
@@ -264,11 +268,11 @@ test('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
 
-  expect(checkbox.text()).toEqual('Off');
+  expect(checkbox.text()).toBe('Off');
 
   checkbox.find('input').simulate('change');
 
-  expect(checkbox.text()).toEqual('On');
+  expect(checkbox.text()).toBe('On');
 });
 ```
 

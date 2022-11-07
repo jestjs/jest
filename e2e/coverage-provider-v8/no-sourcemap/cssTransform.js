@@ -7,5 +7,5 @@
 
 module.exports = {
   getCacheKey: () => 'cssTransform',
-  process: () => 'module.exports = {};',
+  process: () => ({code: 'module.exports = {};'}),
 };

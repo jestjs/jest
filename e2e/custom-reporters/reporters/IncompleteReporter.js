@@ -15,11 +15,11 @@
  * This only implements one method onRunComplete which should be called
  */
 class IncompleteReporter {
-  onRunComplete(contexts, results) {
+  onRunComplete(testContexts, results) {
     console.log('onRunComplete is called');
-    console.log('Passed Tests: ' + results.numPassedTests);
-    console.log('Failed Tests: ' + results.numFailedTests);
-    console.log('Total Tests: ' + results.numTotalTests);
+    console.log(`Passed Tests: ${results.numPassedTests}`);
+    console.log(`Failed Tests: ${results.numFailedTests}`);
+    console.log(`Total Tests: ${results.numTotalTests}`);
   }
 }
 

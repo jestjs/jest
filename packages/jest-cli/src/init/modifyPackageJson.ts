@@ -22,7 +22,7 @@ const modifyPackageJson = ({
 
   delete projectPackageJson.jest;
 
-  return JSON.stringify(projectPackageJson, null, 2) + '\n';
+  return `${JSON.stringify(projectPackageJson, null, 2)}\n`;
 };
 
 export default modifyPackageJson;

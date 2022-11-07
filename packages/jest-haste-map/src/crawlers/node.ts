@@ -71,30 +71,24 @@ function find(
     fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
-        callback(result);
+        if (activeCalls === 0) {
+          callback(result);
+        }
         return;
       }
-      // node < v10.10 does not support the withFileTypes option, and
-      // entry will be a string.
-      entries.forEach((entry: string | fs.Dirent) => {
-        const file = path.join(
-          directory,
-          typeof entry === 'string' ? entry : entry.name,
-        );
+      entries.forEach(entry => {
+        const file = path.join(directory, entry.name);
 
         if (ignore(file)) {
           return;
         }
 
-        if (typeof entry !== 'string') {
-          if (entry.isSymbolicLink()) {
-            return;
-          }
-
-          if (entry.isDirectory()) {
-            search(file);
-            return;
-          }
+        if (entry.isSymbolicLink()) {
+          return;
+        }
+        if (entry.isDirectory()) {
+          search(file);
+          return;
         }
 
         activeCalls++;
@@ -158,7 +152,7 @@ function findNative(
       args.push('-o');
     }
     args.push('-iname');
-    args.push('*.' + ext);
+    args.push(`*.${ext}`);
   });
   if (extensions.length) {
     args.push(')');
@@ -199,7 +193,7 @@ function findNative(
   });
 }
 
-export = async function nodeCrawl(options: CrawlerOptions): Promise<{
+export async function nodeCrawl(options: CrawlerOptions): Promise<{
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
@@ -245,4 +239,4 @@ export = async function nodeCrawl(options: CrawlerOptions): Promise<{
       find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
-};
+}

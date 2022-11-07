@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`print correct error message with nested test definitions inside describe 1`] = `
-FAIL __tests__/nestedTestWithinDescribe.js
+"FAIL __tests__/nestedTestWithinDescribe.js
   in describe
     ✕ outer test
 
@@ -17,11 +17,11 @@ FAIL __tests__/nestedTestWithinDescribe.js
       18 |     });
       19 |   });
 
-      at Object.test (__tests__/nestedTestWithinDescribe.js:16:5)
+      at Object.test (__tests__/nestedTestWithinDescribe.js:16:5)"
 `;
 
 exports[`print correct error message with nested test definitions outside describe 1`] = `
-FAIL __tests__/nestedTestOutsideDescribe.js
+"FAIL __tests__/nestedTestOutsideDescribe.js
   ✕ outer test
 
   ● outer test
@@ -32,9 +32,9 @@ FAIL __tests__/nestedTestOutsideDescribe.js
       14 |
     > 15 |   test('inner test', () => {
          |   ^
-      16 |     expect(getTruthy()).toEqual('This test should not have run');
+      16 |     expect(getTruthy()).toBe('This test should not have run');
       17 |   });
       18 | });
 
-      at Object.test (__tests__/nestedTestOutsideDescribe.js:15:3)
+      at Object.test (__tests__/nestedTestOutsideDescribe.js:15:3)"
 `;

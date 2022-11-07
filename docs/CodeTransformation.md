@@ -3,111 +3,37 @@ id: code-transformation
 title: Code Transformation
 ---
 
-Jest runs the code in your project as JavaScript, but if you use some syntax not supported by Node.js out of the box (such as JSX, types from TypeScript, Vue templates etc.) then you'll need to transform that code into plain JavaScript, similar to what you would do when building for browsers.
+Jest runs the code in your project as JavaScript, but if you use some syntax not supported by Node out of the box (such as JSX, TypeScript, Vue templates) then you'll need to transform that code into plain JavaScript, similar to what you would do when building for browsers.
 
-Jest supports this via the [`transform` configuration option](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object).
+Jest supports this via the [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) configuration option.
 
-A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by Node, you might plug in one of many compilers that compile a future version of JavaScript to a current one.
+A transformer is a module that provides a method for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by Node, you might plug in a code preprocessor that would transpile a future version of JavaScript to a current one.
 
 Jest will cache the result of a transformation and attempt to invalidate that result based on a number of factors, such as the source of the file being transformed and changing configuration.
 
 ## Defaults
 
-Jest ships with one transformer out of the box - `babel-jest`. It will automatically load your project's Babel configuration and transform any file matching the following RegEx: `/\.[jt]sx?$/` meaning any `.js`, `.jsx`, `.ts` and `.tsx` file. In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
+Jest ships with one transformer out of the box &ndash; [`babel-jest`](https://github.com/facebook/jest/tree/main/packages/babel-jest#setup). It will load your project's Babel configuration and transform any file matching the `/\.[jt]sx?$/` RegExp (in other words, any `.js`, `.jsx`, `.ts` or `.tsx` file). In addition, `babel-jest` will inject the Babel plugin necessary for mock hoisting talked about in [ES Module mocking](ManualMocks.md#using-with-es-module-imports).
 
-If you override the `transform` configuration option `babel-jest` will no longer be active, and you'll need to add it manually if you wish to use Babel.
+:::tip
+
+Remember to include the default `babel-jest` transformer explicitly, if you wish to use it alongside with additional code preprocessors:
+
+```json
+"transform": {
+  "\\.[jt]sx?$": "babel-jest",
+  "\\.css$": "some-css-transformer",
+}
+```
+
+:::
 
 ## Writing custom transformers
 
 You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
-interface SyncTransformer<OptionType = unknown> {
-  /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
-  canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
-
-  getCacheKey?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => string;
-
-  getCacheKeyAsync?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => Promise<string>;
-
-  process: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => TransformedSource;
-
-  processAsync?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => Promise<TransformedSource>;
-}
-
-interface AsyncTransformer<OptionType = unknown> {
-  /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
-  canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
-
-  getCacheKey?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => string;
-
-  getCacheKeyAsync?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => Promise<string>;
-
-  process?: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => TransformedSource;
-
-  processAsync: (
-    sourceText: string,
-    sourcePath: Config.Path,
-    options: TransformOptions<OptionType>,
-  ) => Promise<TransformedSource>;
-}
-
-type Transformer<OptionType = unknown> =
-  | SyncTransformer<OptionType>
-  | AsyncTransformer<OptionType>;
-
-interface TransformOptions<OptionType> {
-  /**
-   * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
-   * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
-   * <file path, file contents>
-   */
-  cacheFS: Map<string, string>;
-  config: Config.ProjectConfig;
-  /** A stringified version of the configuration - useful in cache busting */
-  configString: string;
-  instrument: boolean;
-  // names are copied from babel: https://babeljs.io/docs/en/options#caller
+interface TransformOptions<TransformerConfig = unknown> {
   supportsDynamicImport: boolean;
   supportsExportNamespaceFrom: boolean;
   /**
@@ -120,21 +46,121 @@ interface TransformOptions<OptionType> {
    */
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
-  /** the options passed through Jest's config by the user */
-  transformerConfig: OptionType;
+  instrument: boolean;
+  /** Cached file system which is used by `jest-runtime` to improve performance. */
+  cacheFS: Map<string, string>;
+  /** Jest configuration of currently running project. */
+  config: ProjectConfig;
+  /** Stringified version of the `config` - useful in cache busting. */
+  configString: string;
+  /** Transformer configuration passed through `transform` option by the user. */
+  transformerConfig: TransformerConfig;
 }
 
-type TransformedSource =
-  | {code: string; map?: RawSourceMap | string | null}
-  | string;
+type TransformedSource = {
+  code: string;
+  map?: RawSourceMap | string | null;
+};
 
-// Config.ProjectConfig can be seen in in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
-// RawSourceMap comes from [`source-map`](https://github.com/mozilla/source-map/blob/0.6.1/source-map.d.ts#L6-L12)
+interface SyncTransformer<TransformerConfig = unknown> {
+  canInstrument?: boolean;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<string>;
+
+  process: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<TransformedSource>;
+}
+
+interface AsyncTransformer<TransformerConfig = unknown> {
+  canInstrument?: boolean;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: string,
+    options: TransformOptions<TransformerConfig>,
+  ) => Promise<TransformedSource>;
+}
+
+type Transformer<TransformerConfig = unknown> =
+  | SyncTransformer<TransformerConfig>
+  | AsyncTransformer<TransformerConfig>;
+
+type TransformerCreator<
+  X extends Transformer<TransformerConfig>,
+  TransformerConfig = unknown,
+> = (transformerConfig?: TransformerConfig) => X;
+
+type TransformerFactory<X extends Transformer> = {
+  createTransformer: TransformerCreator<X>;
+};
 ```
 
-As can be seen, only `process` or `processAsync` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+:::note
 
-Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+The definitions above were trimmed down for brevity. Full code can be found in [Jest repo on GitHub](https://github.com/facebook/jest/blob/main/packages/jest-transform/src/types.ts) (remember to choose the right tag/commit for your version of Jest).
+
+:::
+
+There are a couple of ways you can import code into Jest - using Common JS (`require`) or ECMAScript Modules (`import` - which exists in static and dynamic versions). Jest passes files through code transformation on demand (for instance when a `require` or `import` is evaluated). This process, also known as "transpilation", might happen _synchronously_ (in the case of `require`), or _asynchronously_ (in the case of `import` or `import()`, the latter of which also works from Common JS modules). For this reason, the interface exposes both pairs of methods for asynchronous and synchronous processes: `process{Async}` and `getCacheKey{Async}`. The latter is called to figure out if we need to call `process{Async}` at all. Since async transformation can happen synchronously without issue, it's possible for the async case to "fall back" to the sync variant, but not vice versa.
+
+So if your code base is ESM only implementing the async variants is sufficient. Otherwise, if any code is loaded through `require` (including `createRequire` from within ESM), then you need to implement the synchronous variant. Be aware that `node_modules` is not transpiled with default config.
+
+Semi-related to this are the supports flags we pass (see `CallerTransformOptions` above), but those should be used within the transform to figure out if it should return ESM or CJS, and has no direct bearing on sync vs async
+
+Though not required, we _highly recommend_ implementing `getCacheKey` as well, so we do not waste resources transpiling when we could have read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
+
+Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export `createTransformer`, a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
+
+:::note
+
+[ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+
+:::
+
+:::tip
+
+Make sure `process{Async}` method returns source map alongside with transformed code, so it is possible to report line information accurately in code coverage and test errors. Inline source maps also work but are slower.
+
+During the development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete cache](Troubleshooting.md#caching-issues).
+
+:::
 
 ### Examples
 
@@ -150,8 +176,10 @@ Importing images is a way to include them in your browser bundle, but they are n
 const path = require('path');
 
 module.exports = {
-  process(src, filename, config, options) {
-    return 'module.exports = ' + JSON.stringify(path.basename(filename)) + ';';
+  process(sourceText, sourcePath, options) {
+    return {
+      code: `module.exports = ${JSON.stringify(path.basename(sourcePath))};`,
+    };
   },
 };
 ```

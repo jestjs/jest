@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import HasteMap from '../index';
 
 const rootDir = path.join(__dirname, './test_dotfiles_root');
@@ -21,15 +21,15 @@ const commonOptions = {
 };
 
 test('watchman crawler and node crawler both include dotfiles', async () => {
-  const hasteMapWithWatchman = new HasteMap({
+  const hasteMapWithWatchman = await HasteMap.create({
     ...commonOptions,
-    name: 'withWatchman',
+    id: 'withWatchman',
     useWatchman: true,
   });
 
-  const hasteMapWithNode = new HasteMap({
+  const hasteMapWithNode = await HasteMap.create({
     ...commonOptions,
-    name: 'withNode',
+    id: 'withNode',
     useWatchman: false,
   });
 

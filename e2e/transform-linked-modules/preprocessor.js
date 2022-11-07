@@ -7,6 +7,6 @@
 
 module.exports = {
   process() {
-    return 'module.exports = "transformed"';
+    return {code: 'module.exports = "transformed"'};
   },
 };

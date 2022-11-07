@@ -1,25 +1,28 @@
 {
   "name": "@jest/test-utils",
-  "version": "27.3.1",
+  "version": "29.2.1",
   "private": true,
-  "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.2.5",
-    "@types/jest": "*",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
-    "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "^27.3.1",
-    "semver": "^7.3.2"
+    "pretty-format": "workspace:^",
+    "semver": "^7.3.5"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.1.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   }
 }

@@ -1,8 +1,8 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import React, {useState} from 'react';
+import {useState} from 'react';
 
-const CheckboxWithLabel = ({labelOn, labelOff}) => {
+export default function CheckboxWithLabel({labelOn, labelOff}) {
   const [isChecked, setIsChecked] = useState(false);
 
   const onChange = () => {
@@ -15,6 +15,4 @@ const CheckboxWithLabel = ({labelOn, labelOff}) => {
       {isChecked ? labelOn : labelOff}
     </label>
   );
-};
-
-export default CheckboxWithLabel;
+}

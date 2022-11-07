@@ -8,14 +8,19 @@
 const tsc = require('typescript');
 
 module.exports = {
-  process(src, path) {
-    return tsc.transpileModule(src, {
-      compilerOptions: {
-        inlineSourceMap: true,
-        module: tsc.ModuleKind.CommonJS,
-        target: 'es5',
-      },
-      fileName: path,
-    }).outputText;
+  process(sourceText, fileName) {
+    if (fileName.endsWith('.ts') || fileName.endsWith('.tsx')) {
+      const {outputText, sourceMapText} = tsc.transpileModule(sourceText, {
+        compilerOptions: {
+          inlineSourceMap: true,
+          module: tsc.ModuleKind.CommonJS,
+          target: 'es5',
+        },
+        fileName,
+      });
+
+      return {code: outputText, map: sourceMapText};
+    }
+    return {code: sourceText};
   },
 };

@@ -64,10 +64,12 @@ test('does not require project modules from inside node_modules', () => {
           if (!threw) {
             throw new Error('It used the wrong invariant module!');
           }
-          return script.replace(
-            'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
-            ''
-          );
+          return {
+            code: script.replace(
+              'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
+              '',
+            ),
+          };
         },
       };
     `,

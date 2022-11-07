@@ -7,11 +7,10 @@
 
 import {isAbsolute} from 'path';
 import {pathToFileURL} from 'url';
-import type {Config} from '@jest/types';
 import interopRequireDefault from './interopRequireDefault';
 
 export default async function requireOrImportModule<T>(
-  filePath: Config.Path,
+  filePath: string,
   applyInteropRequireDefault = true,
 ): Promise<T> {
   if (!isAbsolute(filePath) && filePath[0] === '.') {

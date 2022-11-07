@@ -7,9 +7,9 @@ The `jest` object is automatically in scope within every test file. The methods 
 
 ## Methods
 
-import TOCInline from "@theme/TOCInline"
+import TOCInline from '@theme/TOCInline';
 
-<TOCInline toc={toc.slice(1)}/>
+<TOCInline toc={toc.slice(1)} />
 
 ---
 
@@ -55,7 +55,7 @@ test('original implementation', () => {
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, etc) and entire libraries like React.js.
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lodash, array utilities, etc) and entire libraries like React.js.
 
 Returns the `jest` object for chaining.
 
@@ -117,7 +117,7 @@ utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
 test('implementation created by jest.genMockFromModule', () => {
   expect(utils.authorize.mock).toBeTruthy();
-  expect(utils.isAuthorized('not wizard')).toEqual(true);
+  expect(utils.isAuthorized('not wizard')).toBe(true);
 });
 ```
 
@@ -180,17 +180,17 @@ const example = jest.genMockFromModule('./example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
-  expect(example.function.name).toEqual('square');
-  expect(example.function.length).toEqual(0);
+  expect(example.function.name).toBe('square');
+  expect(example.function).toHaveLength(0);
 
   // async functions get the same treatment as standard synchronous functions.
-  expect(example.asyncFunction.name).toEqual('asyncSquare');
-  expect(example.asyncFunction.length).toEqual(0);
+  expect(example.asyncFunction.name).toBe('asyncSquare');
+  expect(example.asyncFunction).toHaveLength(0);
 
   // creates a new class with the same interface, member functions and properties are mocked.
-  expect(example.class.constructor.name).toEqual('Bar');
-  expect(example.class.foo.name).toEqual('foo');
-  expect(example.class.array.length).toEqual(0);
+  expect(example.class.constructor.name).toBe('Bar');
+  expect(example.class.foo.name).toBe('foo');
+  expect(example.class.array).toHaveLength(0);
 
   // creates a deeply cloned version of the original object.
   expect(example.object).toEqual({
@@ -202,12 +202,12 @@ test('should run example code', () => {
   });
 
   // creates a new empty array, ignoring the original array.
-  expect(example.array.length).toEqual(0);
+  expect(example.array).toHaveLength(0);
 
   // creates a new property with the same primitive value as the original property.
-  expect(example.number).toEqual(123);
-  expect(example.string).toEqual('baz');
-  expect(example.boolean).toEqual(true);
+  expect(example.number).toBe(123);
+  expect(example.string).toBe('baz');
+  expect(example.boolean).toBe(true);
   expect(example.symbol).toEqual(Symbol.for('a.b.c'));
 });
 ```
@@ -302,7 +302,7 @@ test('moduleName 1', () => {
     return jest.fn(() => 1);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(1);
+  expect(moduleName()).toBe(1);
 });
 
 test('moduleName 2', () => {
@@ -310,7 +310,7 @@ test('moduleName 2', () => {
     return jest.fn(() => 2);
   });
   const moduleName = require('../moduleName');
-  expect(moduleName()).toEqual(2);
+  expect(moduleName()).toBe(2);
 });
 ```
 
@@ -334,8 +334,8 @@ test('moduleName 1', () => {
     };
   });
   return import('../moduleName').then(moduleName => {
-    expect(moduleName.default).toEqual('default1');
-    expect(moduleName.foo).toEqual('foo1');
+    expect(moduleName.default).toBe('default1');
+    expect(moduleName.foo).toBe('foo1');
   });
 });
 
@@ -348,8 +348,8 @@ test('moduleName 2', () => {
     };
   });
   return import('../moduleName').then(moduleName => {
-    expect(moduleName.default).toEqual('default2');
-    expect(moduleName.foo).toEqual('foo2');
+    expect(moduleName.default).toBe('default2');
+    expect(moduleName.foo).toBe('foo2');
   });
 });
 ```
@@ -471,7 +471,17 @@ Determines if the given function is a mocked function.
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
-_Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
+:::note
+
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+
+:::
+
+:::tip
+
+Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
 
 Example:
 
@@ -490,14 +500,17 @@ Example test:
 ```js
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 ```
 
@@ -537,14 +550,17 @@ Example test:
 const audio = require('./audio');
 const video = require('./video');
 
+afterEach(() => {
+  // restore the spy created with spyOn
+  jest.restoreAllMocks();
+});
+
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
   const isPlaying = video.play;
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
-
-  spy.mockRestore();
 });
 
 test('plays audio', () => {
@@ -553,8 +569,6 @@ test('plays audio', () => {
 
   expect(spy).toHaveBeenCalled();
   expect(audio.volume).toBe(100);
-
-  spy.mockRestore();
 });
 ```
 
@@ -642,7 +656,9 @@ Returns the number of fake timers still left to run.
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called.
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 

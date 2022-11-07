@@ -1,51 +1,52 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "27.3.1",
-  "main": "./build/jest.js",
-  "types": "./build/jest.d.ts",
+  "version": "29.2.2",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/jest.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/console": "^27.3.1",
-    "@jest/reporters": "^27.3.1",
-    "@jest/test-result": "^27.3.1",
-    "@jest/transform": "^27.3.1",
-    "@jest/types": "^27.2.5",
+    "@jest/console": "workspace:^",
+    "@jest/reporters": "workspace:^",
+    "@jest/test-result": "workspace:^",
+    "@jest/transform": "workspace:^",
+    "@jest/types": "workspace:^",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "emittery": "^0.8.1",
+    "ci-info": "^3.2.0",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.2.4",
-    "jest-changed-files": "^27.3.0",
-    "jest-config": "^27.3.1",
-    "jest-haste-map": "^27.3.1",
-    "jest-message-util": "^27.3.1",
-    "jest-regex-util": "^27.0.6",
-    "jest-resolve": "^27.3.1",
-    "jest-resolve-dependencies": "^27.3.1",
-    "jest-runner": "^27.3.1",
-    "jest-runtime": "^27.3.1",
-    "jest-snapshot": "^27.3.1",
-    "jest-util": "^27.3.1",
-    "jest-validate": "^27.3.1",
-    "jest-watcher": "^27.3.1",
+    "graceful-fs": "^4.2.9",
+    "jest-changed-files": "workspace:^",
+    "jest-config": "workspace:^",
+    "jest-haste-map": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-regex-util": "workspace:^",
+    "jest-resolve": "workspace:^",
+    "jest-resolve-dependencies": "workspace:^",
+    "jest-runner": "workspace:^",
+    "jest-runtime": "workspace:^",
+    "jest-snapshot": "workspace:^",
+    "jest-util": "workspace:^",
+    "jest-validate": "workspace:^",
+    "jest-watcher": "workspace:^",
     "micromatch": "^4.0.4",
-    "rimraf": "^3.0.0",
+    "pretty-format": "workspace:^",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"
   },
   "devDependencies": {
-    "@jest/test-sequencer": "^27.3.1",
-    "@jest/test-utils": "^27.3.1",
+    "@jest/test-sequencer": "workspace:^",
+    "@jest/test-utils": "workspace:^",
     "@types/exit": "^0.1.30",
-    "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^4.0.1",
-    "@types/rimraf": "^3.0.0",
-    "jest-snapshot-serializer-raw": "^1.1.0"
+    "@types/graceful-fs": "^4.1.3",
+    "@types/micromatch": "^4.0.1"
   },
   "peerDependencies": {
     "node-notifier": "^8.0.1 || ^9.0.0 || ^10.0.0"
@@ -56,11 +57,11 @@
     }
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest",
+    "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-core"
   },
   "bugs": {

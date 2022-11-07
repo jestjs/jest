@@ -88,6 +88,25 @@ exports[`ensureNumbers() with options promise resolves isNot true expected 1`] =
 Expected has value: <g>null</>
 `;
 
+exports[`printDiffOrStringify expected asymmetric matchers should be diffable 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<g>- ObjectContaining {</>
+<r>+ Object {</>
+<d>    "array": Array [</>
+<d>      Object {</>
+<d>        "3": "three",</>
+<d>        "four": "4",</>
+<d>        "one": 1,</>
+<g>-       "two": 2,</>
+<r>+       "two": 1,</>
+<d>      },</>
+<d>    ],</>
+<d>    "foo": "bar",</>
+<d>  }</>
+`;
+
 exports[`stringify() toJSON errors when comparing two objects 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 

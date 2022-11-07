@@ -10,9 +10,9 @@ import dns from 'dns';
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
+import prefixDns from 'node:dns';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
-import prefixDns from 'node:dns';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
@@ -26,8 +26,10 @@ test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
   expect(import.meta).toEqual({
+    jest: expect.anything(),
     url: expect.any(String),
   });
+  expect(import.meta.jest).toBe(jestObject);
   expect(
     import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
@@ -42,6 +44,10 @@ test('should support importing node core modules', () => {
   const packageJsonPath = resolve(dir, '../package.json');
 
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
+    devDependencies: {
+      'discord.js': '14.3.0',
+      yargs: '^17.5.1',
+    },
     jest: {
       testEnvironment: 'node',
       transform: {},
@@ -187,9 +193,126 @@ test('can mock module', async () => {
   const importedMock = await import('../mockedModule.mjs');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toEqual('bar');
+  expect(importedMock.foo).toBe('bar');
+});
+
+test('can mock transitive module', async () => {
+  jestObject.unstable_mockModule('../index.js', () => ({foo: 'bar'}));
+
+  const importedMock = await import('../reexport.js');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toBe('bar');
 });
 
 test('supports imports using "node:" prefix', () => {
   expect(dns).toBe(prefixDns);
+});
+
+test('supports imports from "data:text/javascript" URI with charset=utf-8 encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedEncoded = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(importedEncoded.something).toBe('some value');
+});
+
+test('supports imports from "data:text/javascript" URI with base64 encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedBase64 = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  );
+  expect(importedBase64.something).toBe('some value');
+});
+
+test('supports imports from "data:text/javascript" URI without explicit encoding', async () => {
+  const code = 'export const something = "some value"';
+  const importedEncoded = await import(
+    `data:text/javascript,${encodeURIComponent(code)}`
+  );
+  expect(importedEncoded.something).toBe('some value');
+});
+
+test('imports from "data:text/javascript" URI with invalid encoding fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(() =>
+    import(
+      `data:text/javascript;charset=badEncoding,${encodeURIComponent(code)}`
+    ),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:" URI with invalid mime type fail', async () => {
+  const code = 'export const something = "some value"';
+  await expect(() =>
+    import(`data:something/else,${encodeURIComponent(code)}`),
+  ).rejects.toThrow('Invalid data URI');
+});
+
+test('imports from "data:text/javascript" URI with invalid data fail', async () => {
+  await expect(() =>
+    import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
+  ).rejects.toThrow("Unexpected token '.'");
+});
+
+test('supports imports from "data:application/json" URI', async () => {
+  const data = await import('data:application/json,{"foo": "bar"}');
+  expect(data.default).toEqual({foo: 'bar'});
+});
+
+test('supports static "data:" URI import', async () => {
+  const module = await import('../staticDataImport.js');
+  expect(module.value()).toEqual({bar: {obj: 456}, foo: '123'});
+});
+
+test('imports from "data:" URI is properly cached', async () => {
+  const code =
+    'export const wrapper = {value: 123}\nexport const set = (value) => wrapper.value = value';
+  const data1 = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(data1.wrapper.value).toBe(123);
+  data1.set(234);
+  expect(data1.wrapper.value).toBe(234);
+  const data2 = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  );
+  expect(data2.wrapper.value).toBe(123);
+  const data3 = await import(
+    `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`
+  );
+  expect(data3.wrapper.value).toBe(234);
+});
+
+test('can mock "data:" URI module', async () => {
+  const code = 'export const something = "some value"';
+  const dataModule = `data:text/javascript;base64,${Buffer.from(code).toString(
+    'base64',
+  )}`;
+  jestObject.unstable_mockModule(dataModule, () => ({foo: 'bar'}), {
+    virtual: true,
+  });
+  const mocked = await import(dataModule);
+  expect(mocked.foo).toBe('bar');
+});
+
+test('can import with module reset', async () => {
+  const {default: yargs} = await import('yargs');
+  const {default: yargsAgain} = await import('yargs');
+
+  expect(yargs).toBe(yargsAgain);
+
+  let args = yargs().parse([]);
+
+  expect(args._).toEqual([]);
+
+  jestObject.resetModules();
+
+  const {default: yargsYetAgain} = await import('yargs');
+
+  expect(yargs).not.toBe(yargsYetAgain);
+
+  args = yargsYetAgain().parse([]);
+
+  expect(args._).toEqual([]);
 });

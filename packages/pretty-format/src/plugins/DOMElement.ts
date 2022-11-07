@@ -80,7 +80,7 @@ export const serialize: NewPlugin['serialize'] = (
   }
 
   const type = nodeIsFragment(node)
-    ? `DocumentFragment`
+    ? 'DocumentFragment'
     : node.tagName.toLowerCase();
 
   if (++depth > config.maxDepth) {

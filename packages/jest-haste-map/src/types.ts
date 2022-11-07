@@ -6,7 +6,6 @@
  */
 
 import type {Stats} from 'graceful-fs';
-import type {Config} from '@jest/types';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 
@@ -16,7 +15,7 @@ export type SerializableModuleMap = {
   duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
   map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
   mocks: ReadonlyArray<[string, ValueType<MockData>]>;
-  rootDir: Config.Path;
+  rootDir: string;
 };
 
 export interface IModuleMap<S = SerializableModuleMap> {
@@ -25,24 +24,42 @@ export interface IModuleMap<S = SerializableModuleMap> {
     platform?: string | null,
     supportsNativePlatform?: boolean | null,
     type?: HTypeValue | null,
-  ): Config.Path | null;
+  ): string | null;
 
   getPackage(
     name: string,
     platform: string | null | undefined,
     _supportsNativePlatform: boolean | null,
-  ): Config.Path | null;
+  ): string | null;
 
-  getMockModule(name: string): Config.Path | undefined;
+  getMockModule(name: string): string | undefined;
 
   getRawModuleMap(): RawModuleMap;
 
   toJSON(): S;
 }
 
+export interface IHasteFS {
+  exists(path: string): boolean;
+  getAbsoluteFileIterator(): Iterable<string>;
+  getAllFiles(): Array<string>;
+  getDependencies(file: string): Array<string> | null;
+  getSize(path: string): number | null;
+  matchFiles(pattern: RegExp | string): Array<string>;
+  matchFilesWithGlob(
+    globs: ReadonlyArray<string>,
+    root: string | null,
+  ): Set<string>;
+}
+
+export interface IHasteMap {
+  on(eventType: 'change', handler: (event: ChangeEvent) => void): void;
+  build(): Promise<{hasteFS: IHasteFS; moduleMap: IModuleMap}>;
+}
+
 export type HasteMapStatic<S = SerializableModuleMap> = {
   getCacheFilePath(
-    tmpdir: Config.Path,
+    tmpdir: string,
     name: string,
     ...extra: Array<string>
   ): string;
@@ -58,6 +75,7 @@ export type WorkerMessage = {
   rootDir: string;
   filePath: string;
   hasteImplModulePath?: string;
+  retainAllFiles?: boolean;
 };
 
 export type WorkerMetadata = {
@@ -79,24 +97,24 @@ export type CrawlerOptions = {
 };
 
 export type HasteImpl = {
-  getHasteName(filePath: Config.Path): string | undefined;
+  getHasteName(filePath: string): string | undefined;
 };
 
-export type FileData = Map<Config.Path, FileMetaData>;
+export type FileData = Map<string, FileMetaData>;
 
 export type FileMetaData = [
-  /* id */ string,
-  /* mtime */ number,
-  /* size */ number,
-  /* visited */ 0 | 1,
-  /* dependencies */ string,
-  /* sha1 */ string | null | undefined,
+  id: string,
+  mtime: number,
+  size: number,
+  visited: 0 | 1,
+  dependencies: string,
+  sha1: string | null | undefined,
 ];
 
-export type MockData = Map<string, Config.Path>;
+export type MockData = Map<string, string>;
 export type ModuleMapData = Map<string, ModuleMapItem>;
 export type WatchmanClockSpec = string | {scm: {'mergebase-with': string}};
-export type WatchmanClocks = Map<Config.Path, WatchmanClockSpec>;
+export type WatchmanClocks = Map<string, WatchmanClockSpec>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type DuplicatesSet = Map<string, /* type */ number>;
@@ -109,13 +127,6 @@ export type InternalHasteMap = {
   map: ModuleMapData;
   mocks: MockData;
 };
-
-export type IHasteMap = {
-  hasteFS: HasteFS;
-  moduleMap: IModuleMap;
-  __hasteMapForTest?: InternalHasteMap | null;
-};
-
 export type HasteMap = {
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
@@ -123,14 +134,14 @@ export type HasteMap = {
 };
 
 export type RawModuleMap = {
-  rootDir: Config.Path;
+  rootDir: string;
   duplicates: DuplicatesIndex;
   map: ModuleMapData;
   mocks: MockData;
 };
 
-type ModuleMapItem = {[platform: string]: ModuleMetaData};
-export type ModuleMetaData = [Config.Path, /* type */ number];
+export type ModuleMapItem = {[platform: string]: ModuleMetaData};
+export type ModuleMetaData = [path: string, type: number];
 
 export type HType = {
   ID: 0;
@@ -151,7 +162,7 @@ export type HType = {
 export type HTypeValue = HType[keyof HType];
 
 export type EventsQueue = Array<{
-  filePath: Config.Path;
+  filePath: string;
   stat: Stats | undefined;
   type: string;
 }>;
@@ -160,4 +171,13 @@ export type ChangeEvent = {
   eventsQueue: EventsQueue;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
+};
+
+export type DependencyExtractor = {
+  extract: (
+    code: string,
+    filePath: string,
+    defaultExtract: DependencyExtractor['extract'],
+  ) => Iterable<string>;
+  getCacheKey?: () => string;
 };

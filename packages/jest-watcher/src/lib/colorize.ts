@@ -7,7 +7,14 @@
 
 import chalk = require('chalk');
 
-export default (str: string, start: number, end: number): string =>
-  chalk.dim(str.slice(0, start)) +
-  chalk.reset(str.slice(start, end)) +
-  chalk.dim(str.slice(end));
+export default function colorize(
+  str: string,
+  start: number,
+  end: number,
+): string {
+  return (
+    chalk.dim(str.slice(0, start)) +
+    chalk.reset(str.slice(start, end)) +
+    chalk.dim(str.slice(end))
+  );
+}

@@ -8,7 +8,7 @@ exports[`complains if the value is a primitive 3`] = `"Primitives cannot leak me
 
 exports[`complains if the value is a primitive 4`] = `"Primitives cannot leak memory. You passed a number: <42>"`;
 
-exports[`complains if the value is a primitive 5`] = `"Primitives cannot leak memory. You passed a string: <\\"foo\\">"`;
+exports[`complains if the value is a primitive 5`] = `"Primitives cannot leak memory. You passed a string: <"foo">"`;
 
 exports[`complains if the value is a primitive 6`] = `"Primitives cannot leak memory. You passed a symbol: <Symbol()>"`;
 

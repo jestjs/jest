@@ -47,6 +47,8 @@ function gitCreateBranch(branchName: string, dir: string) {
   run(`git branch ${branchName}`, dir);
 }
 
+jest.retryTimes(3);
+
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
@@ -341,7 +343,7 @@ it('does not find changes in files with no diff, for git', async () => {
 test('handles a bad revision for "changedSince", for git', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
@@ -358,14 +360,6 @@ test('handles a bad revision for "changedSince", for git', async () => {
 });
 
 testIfHg('gets changed files for hg', async () => {
-  if (process.env.CI) {
-    // Circle and Travis have very old version of hg (v2, and current
-    // version is v4.2) and its API changed since then and not compatible
-    // any more. Changing the SCM version on CIs is not trivial, so we'll just
-    // skip this test and run it only locally.
-    return;
-  }
-
   // file1.txt is used to make a multi-line commit message
   // with `hg commit -l file1.txt`.
   // This is done to ensure that `changedFiles` only returns files
@@ -466,13 +460,6 @@ testIfHg('gets changed files for hg', async () => {
 });
 
 testIfHg('monitors only root paths for hg', async () => {
-  if (process.env.CI) {
-    // Circle and Travis have very old version of hg (v2, and current
-    // version is v4.2) and its API changed since then and not compatible
-    // any more. Changing the SCM version on CIs is not trivial, so we'll just
-    // skip this test and run it only locally.
-    return;
-  }
   writeFiles(DIR, {
     'file1.txt': 'file1',
     'nested-dir/file2.txt': 'file2',
@@ -494,7 +481,7 @@ testIfHg('monitors only root paths for hg', async () => {
 testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
-    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    '__tests__/file1.test.js': "require('../file1'); test('file1', () => {});",
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });

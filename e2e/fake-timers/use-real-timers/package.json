@@ -1,0 +1,8 @@
+{
+  "name": "use-real-timers",
+  "jest": {
+    "fakeTimers": {
+      "enableGlobally": true
+    }
+  }
+}

@@ -7,7 +7,27 @@
 
 'use strict';
 
-it.concurrent('one', () => Promise.resolve());
-it.concurrent.skip('two', () => Promise.resolve());
-it.concurrent('three', () => Promise.resolve());
-it.concurrent('concurrent test fails', () => Promise.reject());
+const marker = s => console.log(`[[${s}]]`);
+
+beforeAll(() => marker('beforeAll'));
+afterAll(() => marker('afterAll'));
+
+beforeEach(() => marker('beforeEach'));
+afterEach(() => marker('afterEach'));
+
+it.concurrent('one', () => {
+  marker('test');
+  return Promise.resolve();
+});
+it.concurrent.skip('two', () => {
+  marker('test');
+  return Promise.resolve();
+});
+it.concurrent('three', () => {
+  marker('test');
+  return Promise.resolve();
+});
+it.concurrent('concurrent test fails', () => {
+  marker('test');
+  return Promise.reject();
+});

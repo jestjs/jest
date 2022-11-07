@@ -20,7 +20,7 @@ jest.retryTimes(3);
 it('retries', () => {
   const tries = parseInt(fs.readFileSync(countPath, 'utf8'), 10);
   fs.writeFileSync(countPath, `${tries + 1}`, 'utf8');
-  expect(tries).toEqual(3);
+  expect(tries).toBe(3);
 });
 
 afterAll(() => {

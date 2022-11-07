@@ -13,6 +13,7 @@ import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
   Test,
+  TestContext,
   TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
@@ -21,13 +22,11 @@ import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
-import type {Context} from 'jest-runtime';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
-import {JestHook, JestHookEmitter} from 'jest-watcher';
+import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
-import type TestWatcher from './TestWatcher';
 import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
@@ -100,7 +99,7 @@ const processResults = async (
     const processor = await requireOrImportModule<TestResultsProcessor>(
       testResultsProcessor,
     );
-    runResults = processor(runResults);
+    runResults = await processor(runResults);
   }
   if (isJSON) {
     if (outputFile) {
@@ -137,7 +136,7 @@ export default async function runJest({
   filter,
 }: {
   globalConfig: Config.GlobalConfig;
-  contexts: Array<Context>;
+  contexts: Array<TestContext>;
   outputStream: NodeJS.WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
@@ -165,10 +164,9 @@ export default async function runJest({
     ).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
-        '\n' +
-          chalk.bold('--watch') +
-          ' is not supported without git/hg, please use --watchAll ' +
-          '\n',
+        `\n${chalk.bold(
+          '--watch',
+        )} is not supported without git/hg, please use --watchAll\n`,
       );
       exit(1);
     }
@@ -192,6 +190,15 @@ export default async function runJest({
       return {context, matches};
     }),
   );
+
+  if (globalConfig.shard) {
+    if (typeof sequencer.shard !== 'function') {
+      throw new Error(
+        `Shard ${globalConfig.shard.shardIndex}/${globalConfig.shard.shardCount} requested, but test sequencer ${Sequencer.name} in ${globalConfig.testSequencer} has no shard method.`,
+      );
+    }
+    allTests = await sequencer.shard(allTests, globalConfig.shard);
+  }
 
   allTests = await sequencer.sort(allTests);
 
@@ -220,17 +227,12 @@ export default async function runJest({
   const hasTests = allTests.length > 0;
 
   if (!hasTests) {
-    const noTestsFoundMessage = getNoTestsFoundMessage(
+    const {exitWith0, message: noTestsFoundMessage} = getNoTestsFoundMessage(
       testRunData,
       globalConfig,
     );
 
-    if (
-      globalConfig.passWithNoTests ||
-      globalConfig.findRelatedTests ||
-      globalConfig.lastCommit ||
-      globalConfig.onlyChanged
-    ) {
+    if (exitWith0) {
       new CustomConsole(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
       new CustomConsole(outputStream, outputStream).error(noTestsFoundMessage);
@@ -277,15 +279,14 @@ export default async function runJest({
     }
   }
 
-  const scheduler = await createTestScheduler(
-    globalConfig,
-    {startRun},
-    testSchedulerContext,
-  );
+  const scheduler = await createTestScheduler(globalConfig, {
+    startRun,
+    ...testSchedulerContext,
+  });
 
   const results = await scheduler.scheduleTests(allTests, testWatcher);
 
-  await sequencer.cacheResults(allTests, results);
+  sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});

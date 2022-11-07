@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`chai assertion errors should display properly 1`] = `
-FAIL __tests__/chai_assertion.js
+"FAIL __tests__/chai_assertion.js
   ● chai.js assertion library test › expect
 
     assert.strictEqual(received, expected)
@@ -90,5 +90,5 @@ FAIL __tests__/chai_assertion.js
       26 | });
       27 |
 
-      at Object.strictEqual (__tests__/chai_assertion.js:24:17)
+      at Object.strictEqual (__tests__/chai_assertion.js:24:17)"
 `;

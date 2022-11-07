@@ -8,7 +8,7 @@
 import type {JestEnvironment} from '@jest/environment';
 import {bind as bindEach} from 'jest-each';
 
-export default (environment: JestEnvironment): void => {
+export default function each(environment: JestEnvironment): void {
   environment.global.it.each = bindEach(environment.global.it);
   environment.global.fit.each = bindEach(environment.global.fit);
   environment.global.xit.each = bindEach(environment.global.xit);
@@ -36,4 +36,4 @@ export default (environment: JestEnvironment): void => {
     environment.global.it.concurrent.skip,
     false,
   );
-};
+}

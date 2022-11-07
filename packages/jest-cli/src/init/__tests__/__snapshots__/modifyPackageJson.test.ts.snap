@@ -2,8 +2,8 @@
 
 exports[`should add test script when there are no scripts 1`] = `
 "{
-  \\"scripts\\": {
-    \\"test\\": \\"jest\\"
+  "scripts": {
+    "test": "jest"
   }
 }
 "
@@ -11,9 +11,9 @@ exports[`should add test script when there are no scripts 1`] = `
 
 exports[`should add test script when there are scripts 1`] = `
 "{
-  \\"scripts\\": {
-    \\"lint\\": \\"eslint .\\",
-    \\"test\\": \\"jest\\"
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest"
   }
 }
 "
@@ -26,8 +26,8 @@ exports[`should not add test script when { shouldModifyScripts: false } 1`] = `
 
 exports[`should remove jest config if exists 1`] = `
 "{
-  \\"scripts\\": {
-    \\"test\\": \\"jest\\"
+  "scripts": {
+    "test": "jest"
   }
 }
 "

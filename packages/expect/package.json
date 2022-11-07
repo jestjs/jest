@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "27.3.1",
+  "version": "29.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,27 +10,31 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json",
-    "./build/utils": "./build/utils.js",
-    "./build/matchers": "./build/matchers.js"
+    "./build/matchers": "./build/matchers.js",
+    "./build/toThrowMatchers": "./build/toThrowMatchers.js"
   },
   "dependencies": {
-    "@jest/types": "^27.2.5",
-    "ansi-styles": "^5.0.0",
-    "jest-get-type": "^27.3.1",
-    "jest-matcher-utils": "^27.3.1",
-    "jest-message-util": "^27.3.1",
-    "jest-regex-util": "^27.0.6"
+    "@jest/expect-utils": "workspace:^",
+    "jest-get-type": "workspace:^",
+    "jest-matcher-utils": "workspace:^",
+    "jest-message-util": "workspace:^",
+    "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.3.1",
+    "@jest/test-utils": "workspace:^",
+    "@tsd/typescript": "~4.8.2",
     "chalk": "^4.0.0",
-    "fast-check": "^2.0.0",
-    "immutable": "^4.0.0-rc.12"
+    "fast-check": "^3.0.0",
+    "immutable": "^4.0.0",
+    "tsd-lite": "^0.6.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

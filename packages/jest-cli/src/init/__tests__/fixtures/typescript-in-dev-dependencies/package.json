@@ -1,6 +1,0 @@
-{
-  "name": "only-package-json",
-  "dependencies": {
-    "typescript": "*"
-  }
-}

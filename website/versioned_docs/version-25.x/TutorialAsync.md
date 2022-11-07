@@ -11,7 +11,7 @@ Let's implement a module that fetches user data from an API and returns the user
 import request from './request';
 
 export function getUserName(userID) {
-  return request('/users/' + userID).then(user => user.name);
+  return request(`/users/${userID}`).then(user => user.name);
 }
 ```
 
@@ -51,7 +51,7 @@ export default function request(url) {
       users[userID]
         ? resolve(users[userID])
         : reject({
-            error: 'User with ' + userID + ' not found.',
+            error: `User with ${userID} not found.`,
           }),
     );
   });
@@ -68,7 +68,7 @@ import * as user from '../user';
 // The assertion for a promise must be returned.
 it('works with promises', () => {
   expect.assertions(1);
-  return user.getUserName(4).then(data => expect(data).toEqual('Mark'));
+  return user.getUserName(4).then(data => expect(data).toBe('Mark'));
 });
 ```
 
@@ -81,7 +81,7 @@ There is a less verbose way using `resolves` to unwrap the value of a fulfilled 
 ```js
 it('works with resolves', () => {
   expect.assertions(1);
-  return expect(user.getUserName(5)).resolves.toEqual('Paul');
+  return expect(user.getUserName(5)).resolves.toBe('Paul');
 });
 ```
 
@@ -94,13 +94,13 @@ Writing tests using the `async`/`await` syntax is also possible. Here is how you
 it('works with async/await', async () => {
   expect.assertions(1);
   const data = await user.getUserName(4);
-  expect(data).toEqual('Mark');
+  expect(data).toBe('Mark');
 });
 
 // async/await can also be used with `.resolves`.
 it('works with async/await and resolves', async () => {
   expect.assertions(1);
-  await expect(user.getUserName(5)).resolves.toEqual('Paul');
+  await expect(user.getUserName(5)).resolves.toBe('Paul');
 });
 ```
 

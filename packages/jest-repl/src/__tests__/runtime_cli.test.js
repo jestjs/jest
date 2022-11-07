@@ -41,7 +41,7 @@ describe('Runtime CLI', () => {
     const output = run([
       scriptPath,
       '--no-cache',
-      '--config=' + JSON.stringify({automock: true}),
+      `--config=${JSON.stringify({automock: true})}`,
     ]);
     expect(output.stdout).toMatch('Hello, world!');
   });

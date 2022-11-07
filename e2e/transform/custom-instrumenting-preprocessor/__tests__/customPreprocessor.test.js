@@ -9,10 +9,10 @@
 
 require('../src');
 
-it('instruments by setting global.__INSTRUMENTED__', () => {
-  expect(global.__INSTRUMENTED__).toBe(true);
+it('instruments by setting globalThis.__INSTRUMENTED__', () => {
+  expect(globalThis.__INSTRUMENTED__).toBe(true);
 });
 
-it('preprocesses by setting global.__PREPROCESSED__', () => {
-  expect(global.__PREPROCESSED__).toBe(true);
+it('preprocesses by setting globalThis.__PREPROCESSED__', () => {
+  expect(globalThis.__PREPROCESSED__).toBe(true);
 });

@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-jest",
-  "version": "27.2.0",
+  "version": "29.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,14 +13,14 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "babel-plugin-jest-hoist": "^27.2.0",
+    "babel-plugin-jest-hoist": "workspace:^",
     "babel-preset-current-node-syntax": "^1.0.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
   },
   "engines": {
-    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

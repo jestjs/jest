@@ -7,4 +7,4 @@
 
 'use strict';
 
-global.Promise = require('promise');
+globalThis.Promise = require('promise');

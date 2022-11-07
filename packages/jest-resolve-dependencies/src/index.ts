@@ -6,14 +6,13 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {FS as HasteFS} from 'jest-haste-map';
+import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 export type ResolvedModule = {
-  file: Config.Path;
-  dependencies: Array<Config.Path>;
+  file: string;
+  dependencies: Array<string>;
 };
 
 /**
@@ -21,13 +20,13 @@ export type ResolvedModule = {
  * to retrieve a list of all transitive inverse dependencies.
  */
 export class DependencyResolver {
-  private _hasteFS: HasteFS;
-  private _resolver: Resolver;
-  private _snapshotResolver: SnapshotResolver;
+  private readonly _hasteFS: IHasteFS;
+  private readonly _resolver: Resolver;
+  private readonly _snapshotResolver: SnapshotResolver;
 
   constructor(
     resolver: Resolver,
-    hasteFS: HasteFS,
+    hasteFS: IHasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
     this._resolver = resolver;
@@ -35,16 +34,13 @@ export class DependencyResolver {
     this._snapshotResolver = snapshotResolver;
   }
 
-  resolve(
-    file: Config.Path,
-    options?: ResolveModuleConfig,
-  ): Array<Config.Path> {
+  resolve(file: string, options?: ResolveModuleConfig): Array<string> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
       return [];
     }
 
-    return dependencies.reduce<Array<Config.Path>>((acc, dependency) => {
+    return dependencies.reduce<Array<string>>((acc, dependency) => {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
@@ -65,7 +61,7 @@ export class DependencyResolver {
         }
       }
 
-      if (!resolvedDependency) {
+      if (resolvedDependency == null) {
         return acc;
       }
 
@@ -82,7 +78,7 @@ export class DependencyResolver {
         // leave resolvedMockDependency as undefined if nothing can be found
       }
 
-      if (resolvedMockDependency) {
+      if (resolvedMockDependency != null) {
         const dependencyMockDir = path.resolve(
           path.dirname(resolvedDependency),
           '__mocks__',
@@ -101,8 +97,8 @@ export class DependencyResolver {
   }
 
   resolveInverseModuleMap(
-    paths: Set<Config.Path>,
-    filter: (file: Config.Path) => boolean,
+    paths: Set<string>,
+    filter: (file: string) => boolean,
     options?: ResolveModuleConfig,
   ): Array<ResolvedModule> {
     if (!paths.size) {
@@ -110,15 +106,15 @@ export class DependencyResolver {
     }
 
     const collectModules = (
-      related: Set<Config.Path>,
+      related: Set<string>,
       moduleMap: Array<ResolvedModule>,
-      changed: Set<Config.Path>,
+      changed: Set<string>,
     ) => {
       const visitedModules = new Set();
       const result: Array<ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
-          moduleMap.reduce<Array<Config.Path>>((acc, module) => {
+          moduleMap.reduce<Array<string>>((acc, module) => {
             if (
               visitedModules.has(module.file) ||
               !module.dependencies.some(dep => changed.has(dep))
@@ -142,8 +138,8 @@ export class DependencyResolver {
       );
     };
 
-    const relatedPaths = new Set<Config.Path>();
-    const changed: Set<Config.Path> = new Set();
+    const relatedPaths = new Set<string>();
+    const changed: Set<string> = new Set();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)
@@ -166,10 +162,10 @@ export class DependencyResolver {
   }
 
   resolveInverse(
-    paths: Set<Config.Path>,
-    filter: (file: Config.Path) => boolean,
+    paths: Set<string>,
+    filter: (file: string) => boolean,
     options?: ResolveModuleConfig,
-  ): Array<Config.Path> {
+  ): Array<string> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,
     );
