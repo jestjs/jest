@@ -255,12 +255,6 @@ test('imports from "data:text/javascript" URI with invalid data fail', async () 
   ).rejects.toThrow("Unexpected token '.'");
 });
 
-test('imports from "data:application/wasm" URI not supported', async () => {
-  await expect(() =>
-    import('data:application/wasm,96cafe00babe'),
-  ).rejects.toThrow('WASM is currently not supported');
-});
-
 test('supports imports from "data:application/json" URI', async () => {
   const data = await import('data:application/json,{"foo": "bar"}');
   expect(data.default).toEqual({foo: 'bar'});

@@ -12,19 +12,35 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 ```js title="webpack.config.js"
 module.exports = {
   module: {
-    loaders: [
-      {exclude: ['node_modules'], loader: 'babel', test: /\.jsx?$/},
-      {loader: 'style-loader!css-loader', test: /\.css$/},
-      {loader: 'url-loader', test: /\.gif$/},
-      {loader: 'file-loader', test: /\.(ttf|eot|svg)$/},
-    ],
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: ['node_modules'],
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.gif$/,
+        type: 'asset/inline'
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        type: 'asset/resource'
+      }
+    ]
   },
   resolve: {
     alias: {
       config$: './configs/app-config.js',
       react: './vendor/react-master',
     },
-    extensions: ['', 'js', 'jsx'],
+    extensions: ['.js', '.jsx'],
     modules: [
       'node_modules',
       'bower_components',
@@ -41,13 +57,11 @@ If you have JavaScript files that are transformed by Babel, you can [enable supp
 
 Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
-```json title="package.json"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    }
+```js title="jest.config.js"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
   }
 }
 ```
@@ -72,13 +86,11 @@ npm install --save-dev identity-obj-proxy
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
-```json title="package.json (for CSS Modules)"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
-    }
+```js title="jest.config.js (for CSS Modules)"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+    "\\.(css|less)$": "identity-obj-proxy"
   }
 }
 ```
@@ -89,23 +101,19 @@ If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`tra
 const path = require('path');
 
 module.exports = {
-  process(sourceText, sourcePath, options) {
-    return {
-      code: `module.exports = ${JSON.stringify(path.basename(sourcePath))};`,
-    };
+  process(src, filename, config, options) {
+    return `module.exports = ${JSON.stringify(path.basename(filename))};`;
   },
 };
 ```
 
-```json title="package.json (for custom transformers and CSS Modules)"
-{
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
-    }
+```js title="jest.config.js (for custom transformers and CSS Modules)"
+module.exports = {
+  "moduleNameMapper": {
+    "\\.(css|less)$": "identity-obj-proxy"
+  },
+  "transform": {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
   }
 }
 ```
@@ -120,6 +128,7 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 "transform": {
   "\\.[jt]sx?$": "babel-jest",
   "\\.css$": "some-css-transformer",
+  ...
 }
 ```
 
@@ -127,18 +136,16 @@ Remember to include the default `babel-jest` transformer explicitly, if you wish
 
 ### Configuring Jest to find our files
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modules`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
-```json title="package.json"
-{
-  "jest": {
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+```js title="jest.config.js"
+module.exports = {
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
-    }
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
   }
 }
 ```
@@ -151,36 +158,32 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
-```json title="package.json"
-{
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
-    }
+```js title="jest.config.js"
+module.exports = {
+  "modulePaths": ["/shared/vendor/modules"],
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
   }
 }
 ```
 
 And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
-```json title="package.json"
-{
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+```js title="jest.config.js"
+module.exports = {
+  "modulePaths": ["/shared/vendor/modules"],
+  "moduleFileExtensions": ["js", "jsx"],
+  "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
+  "moduleNameMapper": {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
 
-      "^react(.*)$": "<rootDir>/vendor/react-master$1",
-      "^config$": "<rootDir>/configs/app-config.js"
-    }
+    "^react(.*)$": "<rootDir>/vendor/react-master$1",
+    "^config$": "<rootDir>/configs/app-config.js"
   }
 }
 ```
@@ -193,19 +196,19 @@ For more complex webpack configurations, you may also want to investigate projec
 
 :::
 
-## Using with webpack 2
+## Using with webpack
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+In addition to installing `babel-jest` as described earlier, you'll need to add `@babel/preset-env` like so:
+
+```bash npm2yarn
+	npm install --save-dev @babel/preset-env
+```
+
+Then, you'll want to configure Babel as follows:
 
 ```json title=".babelrc"
 {
-  "presets": [["env", {"modules": false}]],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  "presets": ["@babel/preset-env"]
 }
 ```
 

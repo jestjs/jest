@@ -2,13 +2,18 @@
 
 ### Features
 
+- `[jest-runtime]` Support WebAssembly (Wasm) imports in ESM modules ([#13505](https://github.com/facebook/jest/pull/13505))
+
 ### Fixes
 
+- `[jest-config]` Add config validation for `projects` option ([#13565](https://github.com/facebook/jest/pull/13565))
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+- `[jest-worker]` Throw an error instead of hanging when jest workers terminate unexpectedly ([#13566](https://github.com/facebook/jest/pull/13566))
 
 ### Chore & Maintenance
 
 - `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+- `[docs]` Mention `toStrictEqual` in UsingMatchers docs. ([#13560](https://github.com/facebook/jest/pull/13560))
 
 ### Performance
 

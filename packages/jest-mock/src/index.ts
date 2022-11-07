@@ -876,7 +876,7 @@ export class ModuleMocker {
     const boundFunctionPrefix = 'bound ';
     let bindCall = '';
     // if-do-while for perf reasons. The common case is for the if to fail.
-    if (name && name.startsWith(boundFunctionPrefix)) {
+    if (name.startsWith(boundFunctionPrefix)) {
       do {
         name = name.substring(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.

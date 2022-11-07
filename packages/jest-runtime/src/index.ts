@@ -134,6 +134,8 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
   return null;
 };
 
+const isWasm = (modulePath: string): boolean => modulePath.endsWith('.wasm');
+
 const unmockRegExpCache = new WeakMap();
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
@@ -154,6 +156,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
+  private readonly _cacheFSBuffer = new Map<string, Buffer>();
   private readonly _config: Config.ProjectConfig;
   private readonly _globalConfig?: Config.GlobalConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
@@ -397,10 +400,13 @@ export default class Runtime {
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm(path: string): boolean {
-    return Resolver.unstable_shouldLoadAsEsm(
-      path,
-      this._config.extensionsToTreatAsEsm,
+  unstable_shouldLoadAsEsm(modulePath: string): boolean {
+    return (
+      isWasm(modulePath) ||
+      Resolver.unstable_shouldLoadAsEsm(
+        modulePath,
+        this._config.extensionsToTreatAsEsm,
+      )
     );
   }
 
@@ -440,6 +446,19 @@ export default class Runtime {
         transformResolve! && transformReject!,
         'Promise initialization should be sync - please report this bug to Jest!',
       );
+
+      if (isWasm(modulePath)) {
+        const wasm = this._importWasmModule(
+          this.readFileBuffer(modulePath),
+          modulePath,
+          context,
+        );
+
+        this._esmoduleRegistry.set(cacheKey, wasm);
+
+        transformResolve();
+        return wasm;
+      }
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
@@ -567,56 +586,67 @@ export default class Runtime {
       }
 
       const mime = match.groups.mime;
-      if (mime === 'application/wasm') {
-        throw new Error('WASM is currently not supported');
-      }
-
       const encoding = match.groups.encoding;
-      let code = match.groups.code;
-      if (!encoding || encoding === 'charset=utf-8') {
-        code = decodeURIComponent(code);
-      } else if (encoding === 'base64') {
-        code = Buffer.from(code, 'base64').toString();
-      } else {
-        throw new Error(`Invalid data URI encoding: ${encoding}`);
-      }
-
       let module;
-      if (mime === 'application/json') {
-        module = new SyntheticModule(
-          ['default'],
-          function () {
-            const obj = JSON.parse(code);
-            // @ts-expect-error: TS doesn't know what `this` is
-            this.setExport('default', obj);
-          },
-          {context, identifier: specifier},
+
+      if (mime === 'application/wasm') {
+        if (!encoding) {
+          throw new Error('Missing data URI encoding');
+        }
+        if (encoding !== 'base64') {
+          throw new Error(`Invalid data URI encoding: ${encoding}`);
+        }
+        module = await this._importWasmModule(
+          Buffer.from(match.groups.code, 'base64'),
+          specifier,
+          context,
         );
       } else {
-        module = new SourceTextModule(code, {
-          context,
-          identifier: specifier,
-          importModuleDynamically: async (
-            specifier: string,
-            referencingModule: VMModule,
-          ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            const module = await this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            );
+        let code = match.groups.code;
+        if (!encoding || encoding === 'charset=utf-8') {
+          code = decodeURIComponent(code);
+        } else if (encoding === 'base64') {
+          code = Buffer.from(code, 'base64').toString();
+        } else {
+          throw new Error(`Invalid data URI encoding: ${encoding}`);
+        }
 
-            return this.linkAndEvaluateModule(module);
-          },
-          initializeImportMeta(meta: ImportMeta) {
-            // no `jest` here as it's not loaded in a file
-            meta.url = specifier;
-          },
-        });
+        if (mime === 'application/json') {
+          module = new SyntheticModule(
+            ['default'],
+            function () {
+              const obj = JSON.parse(code);
+              // @ts-expect-error: TS doesn't know what `this` is
+              this.setExport('default', obj);
+            },
+            {context, identifier: specifier},
+          );
+        } else {
+          module = new SourceTextModule(code, {
+            context,
+            identifier: specifier,
+            importModuleDynamically: async (
+              specifier: string,
+              referencingModule: VMModule,
+            ) => {
+              invariant(
+                runtimeSupportsVmModules,
+                'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+              );
+              const module = await this.resolveModule(
+                specifier,
+                referencingModule.identifier,
+                referencingModule.context,
+              );
+
+              return this.linkAndEvaluateModule(module);
+            },
+            initializeImportMeta(meta: ImportMeta) {
+              // no `jest` here as it's not loaded in a file
+              meta.url = specifier;
+            },
+          });
+        }
       }
 
       this._esmoduleRegistry.set(specifier, module);
@@ -689,7 +719,7 @@ export default class Runtime {
   async unstable_importModule(
     from: string,
     moduleName?: string,
-  ): Promise<VMModule | void> {
+  ): Promise<unknown | void> {
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
@@ -1117,6 +1147,7 @@ export default class Runtime {
     this._cjsNamedExports.clear();
     this._moduleMockRegistry.clear();
     this._cacheFS.clear();
+    this._cacheFSBuffer.clear();
 
     if (
       this._coverageOptions.collectCoverage &&
@@ -1638,6 +1669,50 @@ export default class Runtime {
     );
 
     return evaluateSyntheticModule(module);
+  }
+
+  private async _importWasmModule(
+    source: Buffer,
+    identifier: string,
+    context: VMContext,
+  ) {
+    const wasmModule = await WebAssembly.compile(source);
+
+    const exports = WebAssembly.Module.exports(wasmModule);
+    const imports = WebAssembly.Module.imports(wasmModule);
+
+    const moduleLookup: Record<string, VMModule> = {};
+    for (const {module} of imports) {
+      if (moduleLookup[module] === undefined) {
+        moduleLookup[module] = await this.loadEsmModule(
+          await this.resolveModule(module, identifier, context),
+        );
+      }
+    }
+
+    const syntheticModule = new SyntheticModule(
+      exports.map(({name}) => name),
+      function () {
+        const importsObject: WebAssembly.Imports = {};
+        for (const {module, name} of imports) {
+          if (!importsObject[module]) {
+            importsObject[module] = {};
+          }
+          importsObject[module][name] = moduleLookup[module].namespace[name];
+        }
+        const wasmInstance = new WebAssembly.Instance(
+          wasmModule,
+          importsObject,
+        );
+        for (const {name} of exports) {
+          // @ts-expect-error: TS doesn't know what `this` is
+          this.setExport(name, wasmInstance.exports[name]);
+        }
+      },
+      {context, identifier},
+    );
+
+    return syntheticModule;
   }
 
   private _getMockedNativeModule(): typeof nativeModule.Module {
@@ -2305,11 +2380,24 @@ export default class Runtime {
     };
   }
 
+  private readFileBuffer(filename: string): Buffer {
+    let source = this._cacheFSBuffer.get(filename);
+
+    if (!source) {
+      source = fs.readFileSync(filename);
+
+      this._cacheFSBuffer.set(filename, source);
+    }
+
+    return source;
+  }
+
   private readFile(filename: string): string {
     let source = this._cacheFS.get(filename);
 
     if (!source) {
-      source = fs.readFileSync(filename, 'utf8');
+      const buffer = this.readFileBuffer(filename);
+      source = buffer.toString('utf8');
 
       this._cacheFS.set(filename, source);
     }
