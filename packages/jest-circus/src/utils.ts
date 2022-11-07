@@ -127,6 +127,8 @@ export const getAllHooksForDescribe = (
     }
   }
 
+  // The afterAll hook should run in the reverse order
+  result.afterAll.reverse();
   return result;
 };
 
@@ -146,20 +148,37 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
 
   do {
     const beforeEachForCurrentBlock = [];
+    const afterEachForCurrentBlock = [];
     for (const hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
           break;
         case 'afterEach':
-          result.afterEach.push(hook);
+          afterEachForCurrentBlock.push(hook);
           break;
       }
     }
-    // 'beforeEach' hooks are executed from top to bottom, the opposite of the
-    // way we traversed it.
+    // to make it more simple, get both hook types in declaration order.
+    // Th comments below shows the repeat order:
+    //
+    // describe(() => { // <-- block.parent
+    //   beforeEach() // 3
+    //   beforeEach() // 4
+    //   describe(() => { // <-- test.parent
+    //     beforeEach() // 1
+    //     beforeEach() // 2
+    //     test() // <-- we start here
+    //   })
+    // })
     result.beforeEach = [...beforeEachForCurrentBlock, ...result.beforeEach];
+    result.afterEach = [...afterEachForCurrentBlock, ...result.afterEach];
   } while ((block = block.parent));
+
+  // The afterAll hook should run in reverse order
+
+  result.afterEach.reverse();
+
   return result;
 };
 
