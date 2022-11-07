@@ -116,7 +116,7 @@ interface TransformOptions<OptionType> {
    * - `true` if the file extension is defined in [extensionsToTreatAsEsm](Configuration.md#extensionstotreatasesm-arraystring)
    * and Jest runs with Node ESM flag `--experimental-vm-modules`
    *
-   * See more at https://jestjs.io/docs/27.0/ecmascript-modules
+   * See more at https://jestjs.io/docs/27.x/ecmascript-modules
    */
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
