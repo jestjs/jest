@@ -114,9 +114,9 @@ export type SpiedGetter<T> = MockInstance<() => T>;
 export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
-  ? MockInstance<(...args: ConstructorParameters<T>) => InstanceType<T>>
+  ? SpiedClass<T>
   : T extends FunctionLike
-  ? MockInstance<(...args: Parameters<T>) => ReturnType<T>>
+  ? SpiedFunction<T>
   : never;
 
 // TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
@@ -730,8 +730,7 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () =>
-        this._ensureMockConfig(f).mockImpl as UnknownFunction;
+      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -791,7 +790,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockImplementationOnce = (fn: UnknownFunction) => {
+      f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
@@ -827,7 +826,7 @@ export class ModuleMocker {
         }
       }
 
-      f.mockImplementation = (fn: UnknownFunction) => {
+      f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;
