@@ -101,6 +101,23 @@ it('keeps custom project id based on the projects rootDir', async () => {
   );
 });
 
+it('validation warning occurs when options not for projects is set', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true, // an option not for projects
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(1);
+});
+
 it('keeps custom ids based on the rootDir', async () => {
   const {options} = await normalize(
     {
