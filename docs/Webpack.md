@@ -56,9 +56,9 @@ Next, let's configure Jest to gracefully handle asset files such as stylesheets 
 
 ```js title="jest.config.js"
 module.exports = {
-  "moduleNameMapper": {
-    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+  'moduleNameMapper': {
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js'
   }
 }
 ```
@@ -85,9 +85,9 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 
 ```js title="jest.config.js (for CSS Modules)"
 module.exports = {
-  "moduleNameMapper": {
-    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-    "\\.(css|less)$": "identity-obj-proxy"
+  'moduleNameMapper': {
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.(css|less)$': 'identity-obj-proxy'
   }
 }
 ```
@@ -108,11 +108,11 @@ module.exports = {
 
 ```js title="jest.config.js (for custom transformers and CSS Modules)"
 module.exports = {
-  "moduleNameMapper": {
-    "\\.(css|less)$": "identity-obj-proxy"
+  'moduleNameMapper': {
+    '\\.(css|less)$': 'identity-obj-proxy'
   },
-  "transform": {
-    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
+  'transform': {
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/fileTransformer.js'
   }
 }
 ```
@@ -138,12 +138,12 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 ```js title="jest.config.js"
 module.exports = {
-  "moduleFileExtensions": ["js", "jsx"],
-  "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  'moduleFileExtensions': ['js', 'jsx'],
+  'moduleDirectories': ['node_modules', 'bower_components', 'shared'],
 
-  "moduleNameMapper": {
-    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+  'moduleNameMapper': {
+    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(gif|ttf|eot|svg)$': '<rootDir>/__mocks__/fileMock.js'
   }
 }
 ```
@@ -158,12 +158,12 @@ Similarly, Jest's counterpart for Webpack's `resolve.roots` (an alternative to s
 
 ```js title="jest.config.js"
 module.exports = {
-  "modulePaths": ["/shared/vendor/modules"],
-  "moduleFileExtensions": ["js", "jsx"],
-  "moduleDirectories": ["node_modules", "bower_components", "shared"],
-  "moduleNameMapper": {
-    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+  'modulePaths': ['/shared/vendor/modules'],
+  'moduleFileExtensions': ['js', 'jsx'],
+  'moduleDirectories': ['node_modules', 'bower_components', 'shared'],
+  'moduleNameMapper': {
+    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(gif|ttf|eot|svg)$': '<rootDir>/__mocks__/fileMock.js'
   }
 }
 ```
@@ -172,16 +172,16 @@ And finally, we have to handle the webpack `alias`. For that, we can make use of
 
 ```js title="jest.config.js"
 module.exports = {
-  "modulePaths": ["/shared/vendor/modules"],
-  "moduleFileExtensions": ["js", "jsx"],
-  "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  'modulePaths': ['/shared/vendor/modules'],
+  'moduleFileExtensions': ['js', 'jsx'],
+  'moduleDirectories': ['node_modules', 'bower_components', 'shared'],
 
-  "moduleNameMapper": {
-    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-    "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
+  'moduleNameMapper': {
+    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(gif|ttf|eot|svg)$': '<rootDir>/__mocks__/fileMock.js',
 
-    "^react(.*)$": "<rootDir>/vendor/react-master$1",
-    "^config$": "<rootDir>/configs/app-config.js"
+    '^react(.*)$': '<rootDir>/vendor/react-master$1',
+    '^config$': '<rootDir>/configs/app-config.js'
   }
 }
 ```
