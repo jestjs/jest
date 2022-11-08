@@ -261,6 +261,7 @@ export const initialProjectOptions: Config.InitialProjectOptions = {
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
+  preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   resetMocks: false,
   resetModules: false,
