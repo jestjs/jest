@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-config]` Do not warn about `preset` in `ProjectConfig`
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig` [#13583](https://github.com/facebook/jest/pull/13583)
 
 ### Chore & Maintenance
 
