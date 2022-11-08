@@ -114,9 +114,9 @@ export type SpiedGetter<T> = MockInstance<() => T>;
 export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
-  ? MockInstance<(...args: ConstructorParameters<T>) => InstanceType<T>>
+  ? SpiedClass<T>
   : T extends FunctionLike
-  ? MockInstance<(...args: Parameters<T>) => ReturnType<T>>
+  ? SpiedFunction<T>
   : never;
 
 // TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
@@ -426,7 +426,7 @@ function getType(ref?: unknown): MockMetadataType | null {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (typeName === 'Object') {
+  } else if (typeName === 'Object' || typeName === 'Module') {
     return 'object';
   } else if (
     typeName === 'Number' ||
@@ -730,8 +730,7 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () =>
-        this._ensureMockConfig(f).mockImpl as UnknownFunction;
+      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -791,7 +790,7 @@ export class ModuleMocker {
           this._environmentGlobal.Promise.reject(value),
         );
 
-      f.mockImplementationOnce = (fn: UnknownFunction) => {
+      f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
@@ -827,7 +826,7 @@ export class ModuleMocker {
         }
       }
 
-      f.mockImplementation = (fn: UnknownFunction) => {
+      f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;
@@ -876,7 +875,7 @@ export class ModuleMocker {
     const boundFunctionPrefix = 'bound ';
     let bindCall = '';
     // if-do-while for perf reasons. The common case is for the if to fail.
-    if (name && name.startsWith(boundFunctionPrefix)) {
+    if (name.startsWith(boundFunctionPrefix)) {
       do {
         name = name.substring(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
@@ -1090,12 +1089,11 @@ export class ModuleMocker {
     methodKey: K,
   ): V extends ClassLike | FunctionLike ? Spied<V> : never;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T extends object, K extends PropertyLikeKeys<T>>(
+  spyOn<T extends object>(
     object: T,
-    methodKey: K,
+    methodKey: keyof T,
     accessType?: 'get' | 'set',
-  ) {
+  ): MockInstance {
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
         `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
@@ -1169,16 +1167,16 @@ export class ModuleMocker {
       });
     }
 
-    return object[methodKey];
+    return object[methodKey] as Mock;
   }
 
-  private _spyOnProperty<T extends object, K extends PropertyLikeKeys<T>>(
-    obj: T,
-    propertyKey: K,
+  private _spyOnProperty<T extends object>(
+    object: T,
+    propertyKey: keyof T,
     accessType: 'get' | 'set',
-  ): Mock<() => T> {
-    let descriptor = Object.getOwnPropertyDescriptor(obj, propertyKey);
-    let proto = Object.getPrototypeOf(obj);
+  ): MockInstance {
+    let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
+    let proto = Object.getPrototypeOf(object);
 
     while (!descriptor && proto !== null) {
       descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
@@ -1217,10 +1215,10 @@ export class ModuleMocker {
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
         // @ts-expect-error: mock is assignable
         descriptor![accessType] = original;
-        Object.defineProperty(obj, propertyKey, descriptor!);
+        Object.defineProperty(object, propertyKey, descriptor!);
       });
 
-      (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
+      (descriptor[accessType] as Mock).mockImplementation(function (
         this: unknown,
       ) {
         // @ts-expect-error - wrong context
@@ -1228,8 +1226,8 @@ export class ModuleMocker {
       });
     }
 
-    Object.defineProperty(obj, propertyKey, descriptor);
-    return descriptor[accessType] as Mock<() => T>;
+    Object.defineProperty(object, propertyKey, descriptor);
+    return descriptor[accessType] as Mock;
   }
 
   clearAllMocks(): void {
