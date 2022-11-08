@@ -2549,13 +2549,13 @@ __metadata:
   linkType: hard
 
 "@fast-check/jest@npm:^1.3.0":
-  version: 1.3.1
-  resolution: "@fast-check/jest@npm:1.3.1"
+  version: 1.4.0
+  resolution: "@fast-check/jest@npm:1.4.0"
   dependencies:
     fast-check: ^3.0.0
   peerDependencies:
     "@jest/globals": ">=25.5.2"
-  checksum: 0df164ce9c77740a967d6865f79d51bbc3549d9f1b6aec3d989a65b6c3e44f8019c72f4b3db72080939bc58900f3781a70309359e4d9585212dbde252311e58c
+  checksum: 5dbee173b8d2845574916f8fd5c66f9ddab6c0830f874261a91fc1bfa22b4a43af0347e89c80280c7b722cebd9153ff76f9a8ac7be9ba5d08f04dd64ac878faf
   languageName: node
   linkType: hard
 
