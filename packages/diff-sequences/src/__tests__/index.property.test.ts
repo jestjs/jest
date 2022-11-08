@@ -6,7 +6,7 @@
  *
  */
 
-import {fc, itProp} from '@fast-check/jest';
+import {fc, it} from '@fast-check/jest';
 import diff from '../';
 
 const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
@@ -55,13 +55,12 @@ const isSubsequenceOf = (
   return iSub === subsequence.length;
 };
 
-itProp('should be reflexive', [fc.array(fc.char())], a => {
+it.prop([fc.array(fc.char())])('should be reflexive', a => {
   expect(findCommonItems(a, a)).toEqual(a);
 });
 
-itProp(
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   'should find the same number of common items when switching the inputs',
-  [fc.array(fc.char()), fc.array(fc.char())],
   // findCommonItems is not symmetric as:
   // > findCommonItems(["Z"," "], [" ","Z"]) = [" "]
   // > findCommonItems([" ","Z"], ["Z"," "]) = ["Z"]
@@ -72,9 +71,8 @@ itProp(
   },
 );
 
-itProp(
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   'should have at most the length of its inputs',
-  [fc.array(fc.char()), fc.array(fc.char())],
   (a, b) => {
     const commonItems = findCommonItems(a, b);
     expect(commonItems.length).toBeLessThanOrEqual(a.length);
@@ -82,9 +80,8 @@ itProp(
   },
 );
 
-itProp(
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   'should have at most the same number of each character as its inputs',
-  [fc.array(fc.char()), fc.array(fc.char())],
   (a, b) => {
     const commonItems = findCommonItems(a, b);
     const commonCount = extractCount(commonItems);
@@ -96,9 +93,8 @@ itProp(
   },
 );
 
-itProp(
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   'should be a subsequence of its inputs',
-  [fc.array(fc.char()), fc.array(fc.char())],
   (a, b) => {
     const commonItems = findCommonItems(a, b);
     expect(isSubsequenceOf(commonItems, a)).toBe(true);
@@ -106,9 +102,8 @@ itProp(
   },
 );
 
-itProp(
+it.prop([fc.array(fc.char()), fc.array(fc.char())])(
   'should be no-op when passing common items',
-  [fc.array(fc.char()), fc.array(fc.char())],
   (a, b) => {
     const commonItems = findCommonItems(a, b);
     expect(findCommonItems(a, commonItems)).toEqual(commonItems);
@@ -116,9 +111,8 @@ itProp(
   },
 );
 
-itProp(
+it.prop([fc.array(fc.array(fc.char()))])(
   'should find the exact common items when one array is subarray of the other',
-  [fc.array(fc.array(fc.char()))],
   data => {
     const allData = flatten(data); // [...data[0], ...data[1], ...data[2], ...data[3], ...]
     const partialData = flatten(data.filter((_, i) => i % 2 === 1)); // [...data[1], ...data[3], ...]

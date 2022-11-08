@@ -7,7 +7,7 @@
  */
 
 import {strict as assert} from 'assert';
-import {fc, itProp} from '@fast-check/jest';
+import {fc, it} from '@fast-check/jest';
 import expect from '../';
 import {
   anythingSettings,
@@ -32,34 +32,28 @@ describe('toStrictEqual', () => {
     }
   };
 
-  itProp(
+  it.prop([fc.clone(fc.anything(anythingSettings), 2)], assertSettings)(
     'should be reflexive',
-    [fc.clone(fc.anything(anythingSettings), 2)],
     ([a, b]) => {
       // Given: a and b identical values
       expect(a).toStrictEqual(b);
     },
-    assertSettings,
   );
 
-  itProp(
-    'should be symmetric',
+  it.prop(
     [fc.anything(anythingSettings), fc.anything(anythingSettings)],
-    (a, b) => {
-      // Given:  a and b values
-      // Assert: We expect `expect(a).toStrictEqual(b)`
-      //         to be equivalent to `expect(b).toStrictEqual(a)`
-      expect(safeExpectStrictEqual(a, b)).toBe(safeExpectStrictEqual(b, a));
-    },
     assertSettings,
-  );
+  )('should be symmetric', (a, b) => {
+    // Given:  a and b values
+    // Assert: We expect `expect(a).toStrictEqual(b)`
+    //         to be equivalent to `expect(b).toStrictEqual(a)`
+    expect(safeExpectStrictEqual(a, b)).toBe(safeExpectStrictEqual(b, a));
+  });
 
-  itProp(
-    'should be equivalent to Node deepStrictEqual',
+  it.prop(
     [fc.anything(anythingSettings), fc.anything(anythingSettings)],
-    (a, b) => {
-      expect(safeExpectStrictEqual(a, b)).toBe(safeAssertDeepStrictEqual(a, b));
-    },
     assertSettings,
-  );
+  )('should be equivalent to Node deepStrictEqual', (a, b) => {
+    expect(safeExpectStrictEqual(a, b)).toBe(safeAssertDeepStrictEqual(a, b));
+  });
 });

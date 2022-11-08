@@ -6,7 +6,7 @@
  *
  */
 
-import {fc, itProp} from '@fast-check/jest';
+import {fc, it} from '@fast-check/jest';
 import expect from '../';
 import {
   anythingSettings,
@@ -14,27 +14,30 @@ import {
 } from './__arbitraries__/sharedSettings';
 
 describe('toContain', () => {
-  itProp(
-    'should always find the value when inside the array',
+  it.prop(
     [
       fc.array(fc.anything(anythingSettings)),
       fc.array(fc.anything(anythingSettings)),
       fc.anything(anythingSettings).filter(v => !Number.isNaN(v)),
     ],
+    assertSettings,
+  )(
+    'should always find the value when inside the array',
     (startValues, endValues, v) => {
       // Given: startValues, endValues arrays and v value (not NaN)
       expect([...startValues, v, ...endValues]).toContain(v);
     },
-    assertSettings,
   );
 
-  itProp(
-    'should not find the value if it has been cloned into the array',
+  it.prop(
     [
       fc.array(fc.anything(anythingSettings)),
       fc.array(fc.anything(anythingSettings)),
       fc.clone(fc.anything(anythingSettings), 2),
     ],
+    assertSettings,
+  )(
+    'should not find the value if it has been cloned into the array',
     (startValues, endValues, [a, b]) => {
       // Given: startValues, endValues arrays
       //        and [a, b] equal, but not the same values
@@ -42,6 +45,5 @@ describe('toContain', () => {
       fc.pre(typeof a === 'object' && a !== null);
       expect([...startValues, a, ...endValues]).not.toContain(b);
     },
-    assertSettings,
   );
 });
