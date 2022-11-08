@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig`
+
 ### Chore & Maintenance
 
 ### Performance
