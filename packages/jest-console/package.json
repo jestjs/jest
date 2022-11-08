@@ -22,7 +22,7 @@
     "chalk": "^4.0.0",
     "jest-message-util": "workspace:^",
     "jest-util": "workspace:^",
-    "slash": "^3.0.0"
+    "slash": "^5.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^"

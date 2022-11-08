@@ -32,7 +32,7 @@
     "jest-message-util": "workspace:^",
     "jest-util": "workspace:^",
     "jest-worker": "workspace:^",
-    "slash": "^3.0.0",
+    "slash": "^5.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
     "v8-to-istanbul": "^9.0.1"
