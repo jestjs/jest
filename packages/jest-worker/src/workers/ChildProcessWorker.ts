@@ -343,7 +343,7 @@ export default class ChildProcessWorker
     }
   }
 
-  private _onExit(exitCode: number | null) {
+  private _onExit(exitCode: number | null, signal: NodeJS.Signals | null) {
     this._workerReadyPromise = undefined;
     this._resolveWorkerReady = undefined;
 
@@ -372,6 +372,46 @@ export default class ChildProcessWorker
         this._child.send(this._request);
       }
     } else {
+      // At this point, it's not clear why the child process exited. There could
+      // be several reasons:
+      //
+      //  1. The child process exited successfully after finishing its work.
+      //     This is the most likely case.
+      //  2. The child process crashed in a manner that wasn't caught through
+      //     any of the heuristic-based checks above.
+      //  3. The child process was killed by another process or daemon unrelated
+      //     to Jest. For example, oom-killer on Linux may have picked the child
+      //     process to kill because overall system memory is constrained.
+      //
+      // If there's a pending request to the child process in any of those
+      // situations, the request still needs to be handled in some manner before
+      // entering the shutdown phase. Otherwise the caller expecting a response
+      // from the worker will never receive indication that something unexpected
+      // happened and hang forever.
+      //
+      // In normal operation, the request is handled and cleared before the
+      // child process exits. If it's still present, it's not clear what
+      // happened and probably best to throw an error. In practice, this usually
+      // happens when the child process is killed externally.
+      //
+      // There's a reasonable argument that the child process should be retried
+      // with request re-sent in this scenario. However, if the problem was due
+      // to situations such as oom-killer attempting to free up system
+      // resources, retrying would exacerbate the problem.
+      const isRequestStillPending = !!this._request;
+      if (isRequestStillPending) {
+        // If a signal is present, we can be reasonably confident the process
+        // was killed externally. Log this fact so it's more clear to users that
+        // something went wrong externally, rather than a bug in Jest itself.
+        const error = new Error(
+          signal != null
+            ? `A jest worker process (pid=${this._child.pid}) was terminated by another process: signal=${signal}, exitCode=${exitCode}. Operating system logs may contain more information on why this occurred.`
+            : `A jest worker process (pid=${this._child.pid}) crashed for an unknown reason: exitCode=${exitCode}`,
+        );
+
+        this._onProcessEnd(error, null);
+      }
+
       this._shutdown();
     }
   }

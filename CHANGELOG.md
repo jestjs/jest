@@ -4,14 +4,38 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 29.3.1
+
+### Fixes
+
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig` [#13583](https://github.com/facebook/jest/pull/13583)
+
+### Performance
+
+- `[jest-transform]` Defer creation of cache directory [#13420](https://github.com/facebook/jest/pull/13420)
+
+## 29.3.0
+
+### Features
+
+- `[jest-runtime]` Support WebAssembly (Wasm) imports in ESM modules ([#13505](https://github.com/facebook/jest/pull/13505))
+
+### Fixes
+
+- `[jest-config]` Add config validation for `projects` option ([#13565](https://github.com/facebook/jest/pull/13565))
 - `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+- `[jest-worker]` Throw an error instead of hanging when jest workers terminate unexpectedly ([#13566](https://github.com/facebook/jest/pull/13566))
 
 ### Chore & Maintenance
 
 - `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
-- `[website]` Use Admonitions on website ([#13563](https://github.com/facebook/jest/pull/13563))
 
 ### Performance
+- `[docs]` Mention `toStrictEqual` in UsingMatchers docs. ([#13560](https://github.com/facebook/jest/pull/13560))
 
 ## 29.2.2
 

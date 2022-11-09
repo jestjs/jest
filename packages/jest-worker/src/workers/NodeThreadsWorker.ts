@@ -254,6 +254,18 @@ export default class ExperimentalWorker
         this._worker.postMessage(this._request);
       }
     } else {
+      // If the worker thread exits while a request is still pending, throw an
+      // error. This is unexpected and tests may not have run to completion.
+      const isRequestStillPending = !!this._request;
+      if (isRequestStillPending) {
+        this._onProcessEnd(
+          new Error(
+            'A Jest worker thread exited unexpectedly before finishing tests for an unknown reason. One of the ways this can happen is if process.exit() was called in testing code.',
+          ),
+          null,
+        );
+      }
+
       this._shutdown();
     }
   }

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/// <reference lib="dom" />
+
 import {
   expectAssignable,
   expectError,
@@ -476,3 +478,17 @@ expectType<SpiedSetter<typeof optionalSpiedObject.propertyD>>(
 
 expectError(spyOn(optionalSpiedObject, 'propertyA'));
 expectError(spyOn(optionalSpiedObject, 'propertyB'));
+
+// properties of `prototype`
+
+expectType<SpiedFunction<(key: string, value: string) => void>>(
+  spyOn(Storage.prototype, 'setItem').mockImplementation(
+    (key: string, value: string) => {},
+  ),
+);
+
+expectError(
+  spyOn(Storage.prototype, 'setItem').mockImplementation(
+    (key: string, value: number) => {},
+  ),
+);

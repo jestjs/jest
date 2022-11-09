@@ -53,11 +53,16 @@ export async function readConfig(
     },
   );
 
+  const packageRoot =
+    typeof packageRootOrConfig === 'string'
+      ? path.resolve(packageRootOrConfig)
+      : undefined;
   const {options, hasDeprecationWarnings} = await normalize(
     initialOptions,
     argv,
     configPath,
     projectIndex,
+    skipArgvConfigOption && !(packageRoot === parentConfigDirname),
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
