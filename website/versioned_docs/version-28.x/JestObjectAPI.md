@@ -479,7 +479,7 @@ const returnsTrue = jest.fn(() => true);
 console.log(returnsTrue()); // true;
 ```
 
-:::note
+:::tip
 
 See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 

@@ -384,7 +384,11 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
+:::info
+
+It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
+
+:::
 
 ### `jest.requireActual(moduleName)`
 
@@ -682,7 +686,7 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 Exhausts all tasks queued by `setImmediate()`.
 
-:::note
+:::info
 
 This function is not available when using modern fake timers implementation.
 

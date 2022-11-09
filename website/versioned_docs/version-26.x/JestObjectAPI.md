@@ -384,7 +384,11 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
+:::info
+
+It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.
+
+:::
 
 ### `jest.requireActual(moduleName)`
 
@@ -634,7 +638,7 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 Exhausts all tasks queued by `setImmediate()`.
 
-:::note
+:::info
 
 This function is not available when using modern fake timers implementation.
 
@@ -676,7 +680,7 @@ Returns the number of fake timers still left to run.
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
-:::note
+:::info
 
 This function is only available when using modern fake timers implementation.
 
@@ -686,7 +690,7 @@ This function is only available when using modern fake timers implementation.
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
-:::note
+:::info
 
 This function is only available when using modern fake timers implementation.
 
