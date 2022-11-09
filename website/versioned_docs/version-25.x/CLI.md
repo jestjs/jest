@@ -124,7 +124,7 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`.
 
-:::note
+:::caution
 
 The cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.
 
@@ -282,7 +282,7 @@ Allows the test suite to pass when no files are found.
 
 ### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. 
 
 :::note
 
@@ -411,7 +411,7 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. N
+Use `--watchAll=false` to explicitly disable the watch mode.
 
 :::tip
 

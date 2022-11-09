@@ -298,7 +298,7 @@ Allows the test suite to pass when no files are found.
 
 ### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. :::note
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option.
 
 :::note
 
@@ -334,7 +334,7 @@ Run only the tests that were specified with their exact paths.
 
 :::tip
 
-The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files
+The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files.
 
 :::
 
@@ -381,7 +381,7 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 ### `--testNamePattern=<regex>`
 
-Alias: -t. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
 
 :::tip
 
