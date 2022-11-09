@@ -15,7 +15,7 @@ The `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` wi
 
 :::
 
-::note
+:::note
 
 When we require that module in our tests (meaning we want to use the manual mock instead of the real implementation), explicitly calling `jest.mock('./moduleName')` is **required**.
 
