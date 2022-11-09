@@ -67,7 +67,7 @@ test('numeric ranges', () => {
 });
 ```
 
-:::note
+:::info
 
 In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
@@ -1210,7 +1210,7 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-:::note
+:::tip
 
 `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
 
@@ -1349,7 +1349,7 @@ test('throws on octopus', () => {
 });
 ```
 
-:::note
+:::tip
 
 You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 

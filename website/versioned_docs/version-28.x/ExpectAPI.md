@@ -25,7 +25,7 @@ It's easier to understand this with an example. Let's say you have a method `bes
 
 ```js
 test('the best flavor is grapefruit', () => {
-  expect(bestLaCroixFlavor()).toBe('grapefruit');
+expect(bestLaCroixFlavor()).toBe('grapefruit');
 });
 ```
 
@@ -39,35 +39,35 @@ You can use `expect.extend` to add your own matchers to Jest. For example, let's
 
 ```js
 expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
-    const pass = received >= floor && received <= ceiling;
-    if (pass) {
-      return {
-        message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
-        pass: false,
-      };
-    }
-  },
+toBeWithinRange(received, floor, ceiling) {
+  const pass = received >= floor && received <= ceiling;
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${received} not to be within range ${floor} - ${ceiling}`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () =>
+        `expected ${received} to be within range ${floor} - ${ceiling}`,
+      pass: false,
+    };
+  }
+},
 });
 
 test('numeric ranges', () => {
-  expect(100).toBeWithinRange(90, 110);
-  expect(101).not.toBeWithinRange(0, 100);
-  expect({apples: 6, bananas: 3}).toEqual({
-    apples: expect.toBeWithinRange(1, 10),
-    bananas: expect.not.toBeWithinRange(11, 20),
-  });
+expect(100).toBeWithinRange(90, 110);
+expect(101).not.toBeWithinRange(0, 100);
+expect({apples: 6, bananas: 3}).toEqual({
+  apples: expect.toBeWithinRange(1, 10),
+  bananas: expect.not.toBeWithinRange(11, 20),
+});
 });
 ```
 
-:::note
+:::info
 
 In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
@@ -75,21 +75,21 @@ In TypeScript, when using `@types/jest` for example, you can declare the new `to
 
 ```ts
 expect.extend({
-  toBeWithinRange(received, floor, ceiling) {
-    // ...
-  },
+toBeWithinRange(received, floor, ceiling) {
+  // ...
+},
 });
 
 interface CustomMatchers<R = unknown> {
-  toBeWithinRange(floor: number, ceiling: number): R;
+toBeWithinRange(floor: number, ceiling: number): R;
 }
 
 declare global {
-  namespace jest {
-    interface Expect extends CustomMatchers {}
-    interface Matchers<R> extends CustomMatchers<R> {}
-    interface InverseAsymmetricMatchers extends CustomMatchers {}
-  }
+namespace jest {
+  interface Expect extends CustomMatchers {}
+  interface Matchers<R> extends CustomMatchers<R> {}
+  interface InverseAsymmetricMatchers extends CustomMatchers {}
+}
 }
 ```
 
@@ -97,11 +97,11 @@ If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`
 
 ```ts
 declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R;
-    }
+namespace jest {
+  interface Matchers<R> {
+    toBeWithinRange(a: number, b: number): R;
   }
+}
 }
 export {};
 ```
@@ -112,28 +112,28 @@ export {};
 
 ```js
 expect.extend({
-  async toBeDivisibleByExternalValue(received) {
-    const externalValue = await getExternalValueFromRemoteSource();
-    const pass = received % externalValue == 0;
-    if (pass) {
-      return {
-        message: () =>
-          `expected ${received} not to be divisible by ${externalValue}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () =>
-          `expected ${received} to be divisible by ${externalValue}`,
-        pass: false,
-      };
-    }
-  },
+async toBeDivisibleByExternalValue(received) {
+  const externalValue = await getExternalValueFromRemoteSource();
+  const pass = received % externalValue == 0;
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${received} not to be divisible by ${externalValue}`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () =>
+        `expected ${received} to be divisible by ${externalValue}`,
+      pass: false,
+    };
+  }
+},
 });
 
 test('is divisible by external value', async () => {
-  await expect(100).toBeDivisibleByExternalValue();
-  await expect(101).not.toBeDivisibleByExternalValue();
+await expect(100).toBeDivisibleByExternalValue();
+await expect(101).not.toBeDivisibleByExternalValue();
 });
 ```
 
@@ -145,12 +145,12 @@ Matchers are called with the argument passed to `expect(x)` followed by the argu
 
 ```js
 expect.extend({
-  yourMatcher(x, y, z) {
-    return {
-      pass: true,
-      message: () => '',
-    };
-  },
+yourMatcher(x, y, z) {
+  return {
+    pass: true,
+    message: () => '',
+  };
+},
 });
 ```
 
@@ -185,51 +185,51 @@ The most useful ones are `matcherHint`, `printExpected` and `printReceived` to f
 ```js
 const {diff} = require('jest-diff');
 expect.extend({
-  toBe(received, expected) {
-    const options = {
-      comment: 'Object.is equality',
-      isNot: this.isNot,
-      promise: this.promise,
-    };
+toBe(received, expected) {
+  const options = {
+    comment: 'Object.is equality',
+    isNot: this.isNot,
+    promise: this.promise,
+  };
 
-    const pass = Object.is(received, expected);
+  const pass = Object.is(received, expected);
 
-    const message = pass
-      ? () =>
+  const message = pass
+    ? () =>
+        // eslint-disable-next-line prefer-template
+        this.utils.matcherHint('toBe', undefined, undefined, options) +
+        '\n\n' +
+        `Expected: not ${this.utils.printExpected(expected)}\n` +
+        `Received: ${this.utils.printReceived(received)}`
+    : () => {
+        const diffString = diff(expected, received, {
+          expand: this.expand,
+        });
+        return (
           // eslint-disable-next-line prefer-template
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected: not ${this.utils.printExpected(expected)}\n` +
-          `Received: ${this.utils.printReceived(received)}`
-      : () => {
-          const diffString = diff(expected, received, {
-            expand: this.expand,
-          });
-          return (
-            // eslint-disable-next-line prefer-template
-            this.utils.matcherHint('toBe', undefined, undefined, options) +
-            '\n\n' +
-            (diffString && diffString.includes('- Expect')
-              ? `Difference:\n\n${diffString}`
-              : `Expected: ${this.utils.printExpected(expected)}\n` +
-                `Received: ${this.utils.printReceived(received)}`)
-          );
-        };
+          (diffString && diffString.includes('- Expect')
+            ? `Difference:\n\n${diffString}`
+            : `Expected: ${this.utils.printExpected(expected)}\n` +
+              `Received: ${this.utils.printReceived(received)}`)
+        );
+      };
 
-    return {actual: received, message, pass};
-  },
+  return {actual: received, message, pass};
+},
 });
 ```
 
 This will print something like this:
 
 ```bash
-  expect(received).toBe(expected)
+expect(received).toBe(expected)
 
-    Expected value to be (using Object.is):
-      "banana"
-    Received:
-      "apple"
+  Expected value to be (using Object.is):
+    "banana"
+  Received:
+    "apple"
 ```
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. You should craft a precise failure message to make sure users of your custom assertions have a good developer experience.
@@ -244,17 +244,17 @@ Here's a snapshot matcher that trims a string to store for a given length, `.toM
 const {toMatchSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedSnapshot(received, length) {
-    return toMatchSnapshot.call(
-      this,
-      received.substring(0, length),
-      'toMatchTrimmedSnapshot',
-    );
-  },
+toMatchTrimmedSnapshot(received, length) {
+  return toMatchSnapshot.call(
+    this,
+    received.substring(0, length),
+    'toMatchTrimmedSnapshot',
+  );
+},
 });
 
 it('stores only 10 characters', () => {
-  expect('extra long string oh my gerd').toMatchTrimmedSnapshot(10);
+expect('extra long string oh my gerd').toMatchTrimmedSnapshot(10);
 });
 
 /*
@@ -270,19 +270,19 @@ It's also possible to create custom matchers for inline snapshots, the snapshots
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received, ...rest) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
-  },
+toMatchTrimmedInlineSnapshot(received, ...rest) {
+  return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
+},
 });
 
 it('stores only 10 characters', () => {
-  expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot();
-  /*
-  The snapshot will be added inline like
-  expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot(
-    `"extra long"`
-  );
-  */
+expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot();
+/*
+The snapshot will be added inline like
+expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot(
+  `"extra long"`
+);
+*/
 });
 ```
 
@@ -294,30 +294,30 @@ If your custom inline snapshot matcher is async i.e. uses `async`-`await` you mi
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  async toMatchObservationInlineSnapshot(fn, ...rest) {
-    // The error (and its stacktrace) must be created before any `await`
-    this.error = new Error();
+async toMatchObservationInlineSnapshot(fn, ...rest) {
+  // The error (and its stacktrace) must be created before any `await`
+  this.error = new Error();
 
-    // The implementation of `observe` doesn't matter.
-    // It only matters that the custom snapshot matcher is async.
-    const observation = await observe(async () => {
-      await fn();
-    });
+  // The implementation of `observe` doesn't matter.
+  // It only matters that the custom snapshot matcher is async.
+  const observation = await observe(async () => {
+    await fn();
+  });
 
-    return toMatchInlineSnapshot.call(this, recording, ...rest);
-  },
+  return toMatchInlineSnapshot.call(this, recording, ...rest);
+},
 });
 
 it('observes something', async () => {
-  await expect(async () => {
-    return 'async action';
-  }).toMatchTrimmedInlineSnapshot();
-  /*
-  The snapshot will be added inline like
-  await expect(async () => {
-    return 'async action';
-  }).toMatchTrimmedInlineSnapshot(`"async action"`);
-  */
+await expect(async () => {
+  return 'async action';
+}).toMatchTrimmedInlineSnapshot();
+/*
+The snapshot will be added inline like
+await expect(async () => {
+  return 'async action';
+}).toMatchTrimmedInlineSnapshot(`"async action"`);
+*/
 });
 ```
 
@@ -333,33 +333,33 @@ In that case you can implement a custom snapshot matcher that throws on the firs
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchStateInlineSnapshot(...args) {
-    this.dontThrow = () => {};
+toMatchStateInlineSnapshot(...args) {
+  this.dontThrow = () => {};
 
-    return toMatchInlineSnapshot.call(this, ...args);
-  },
+  return toMatchInlineSnapshot.call(this, ...args);
+},
 });
 
 let state = 'initial';
 
 function transition() {
-  // Typo in the implementation should cause the test to fail
-  if (state === 'INITIAL') {
-    state = 'pending';
-  } else if (state === 'pending') {
-    state = 'done';
-  }
+// Typo in the implementation should cause the test to fail
+if (state === 'INITIAL') {
+  state = 'pending';
+} else if (state === 'pending') {
+  state = 'done';
+}
 }
 
 it('transitions as expected', () => {
-  expect(state).toMatchStateInlineSnapshot(`"initial"`);
+expect(state).toMatchStateInlineSnapshot(`"initial"`);
 
-  transition();
-  // Already produces a mismatch. No point in continuing the test.
-  expect(state).toMatchStateInlineSnapshot(`"loading"`);
+transition();
+// Already produces a mismatch. No point in continuing the test.
+expect(state).toMatchStateInlineSnapshot(`"loading"`);
 
-  transition();
-  expect(state).toMatchStateInlineSnapshot(`"done"`);
+transition();
+expect(state).toMatchStateInlineSnapshot(`"done"`);
 });
 ```
 
@@ -369,9 +369,9 @@ it('transitions as expected', () => {
 
 ```js
 test('map calls its argument with a non-null argument', () => {
-  const mock = jest.fn();
-  [1].map(x => mock(x));
-  expect(mock).toHaveBeenCalledWith(expect.anything());
+const mock = jest.fn();
+[1].map(x => mock(x));
+expect(mock).toHaveBeenCalledWith(expect.anything());
 });
 ```
 
@@ -382,23 +382,23 @@ test('map calls its argument with a non-null argument', () => {
 ```js
 class Cat {}
 function getCat(fn) {
-  return fn(new Cat());
+return fn(new Cat());
 }
 
 test('randocall calls its callback with a class instance', () => {
-  const mock = jest.fn();
-  getCat(mock);
-  expect(mock).toHaveBeenCalledWith(expect.any(Cat));
+const mock = jest.fn();
+getCat(mock);
+expect(mock).toHaveBeenCalledWith(expect.any(Cat));
 });
 
 function randocall(fn) {
-  return fn(Math.floor(Math.random() * 6 + 1));
+return fn(Math.floor(Math.random() * 6 + 1));
 }
 
 test('randocall calls its callback with a number', () => {
-  const mock = jest.fn();
-  randocall(mock);
-  expect(mock).toHaveBeenCalledWith(expect.any(Number));
+const mock = jest.fn();
+randocall(mock);
+expect(mock).toHaveBeenCalledWith(expect.any(Number));
 });
 ```
 
@@ -413,29 +413,29 @@ You can use it instead of a literal value:
 
 ```js
 describe('arrayContaining', () => {
-  const expected = ['Alice', 'Bob'];
-  it('matches even if received contains additional elements', () => {
-    expect(['Alice', 'Bob', 'Eve']).toEqual(expect.arrayContaining(expected));
-  });
-  it('does not match if received does not contain expected elements', () => {
-    expect(['Bob', 'Eve']).not.toEqual(expect.arrayContaining(expected));
-  });
+const expected = ['Alice', 'Bob'];
+it('matches even if received contains additional elements', () => {
+  expect(['Alice', 'Bob', 'Eve']).toEqual(expect.arrayContaining(expected));
+});
+it('does not match if received does not contain expected elements', () => {
+  expect(['Bob', 'Eve']).not.toEqual(expect.arrayContaining(expected));
+});
 });
 ```
 
 ```js
 describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
-  const expected = [1, 2, 3, 4, 5, 6];
-  it('matches even with an unexpected number 7', () => {
-    expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6]).toEqual(
-      expect.arrayContaining(expected),
-    );
-  });
-  it('does not match without an expected number 2', () => {
-    expect([4, 1, 6, 7, 3, 5, 7, 5, 4, 6]).not.toEqual(
-      expect.arrayContaining(expected),
-    );
-  });
+const expected = [1, 2, 3, 4, 5, 6];
+it('matches even with an unexpected number 7', () => {
+  expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6]).toEqual(
+    expect.arrayContaining(expected),
+  );
+});
+it('does not match without an expected number 2', () => {
+  expect([4, 1, 6, 7, 3, 5, 7, 5, 4, 6]).not.toEqual(
+    expect.arrayContaining(expected),
+  );
+});
 });
 ```
 
@@ -447,15 +447,15 @@ For example, let's say that we have a function `doAsync` that receives two callb
 
 ```js
 test('doAsync calls both callbacks', () => {
-  expect.assertions(2);
-  function callback1(data) {
-    expect(data).toBeTruthy();
-  }
-  function callback2(data) {
-    expect(data).toBeTruthy();
-  }
+expect.assertions(2);
+function callback1(data) {
+  expect(data).toBeTruthy();
+}
+function callback2(data) {
+  expect(data).toBeTruthy();
+}
 
-  doAsync(callback1, callback2);
+doAsync(callback1, callback2);
 });
 ```
 
@@ -471,13 +471,13 @@ For example, this test passes with a precision of 5 digits:
 
 ```js
 test('compare float in object properties', () => {
-  expect({
-    title: '0.1 + 0.2',
-    sum: 0.1 + 0.2,
-  }).toEqual({
-    title: '0.1 + 0.2',
-    sum: expect.closeTo(0.3, 5),
-  });
+expect({
+  title: '0.1 + 0.2',
+  sum: 0.1 + 0.2,
+}).toEqual({
+  title: '0.1 + 0.2',
+  sum: expect.closeTo(0.3, 5),
+});
 });
 ```
 
@@ -489,11 +489,11 @@ For example, let's say that we have a few functions that all deal with state. `p
 
 ```js
 test('prepareState prepares a valid state', () => {
-  expect.hasAssertions();
-  prepareState(state => {
-    expect(validateState(state)).toBeTruthy();
-  });
-  return waitOnState();
+expect.hasAssertions();
+prepareState(state => {
+  expect(validateState(state)).toBeTruthy();
+});
+return waitOnState();
 });
 ```
 
@@ -507,13 +507,13 @@ It is the inverse of `expect.arrayContaining`.
 
 ```js
 describe('not.arrayContaining', () => {
-  const expected = ['Samantha'];
+const expected = ['Samantha'];
 
-  it('matches if the actual array does not contain the expected elements', () => {
-    expect(['Alice', 'Bob', 'Eve']).toEqual(
-      expect.not.arrayContaining(expected),
-    );
-  });
+it('matches if the actual array does not contain the expected elements', () => {
+  expect(['Alice', 'Bob', 'Eve']).toEqual(
+    expect.not.arrayContaining(expected),
+  );
+});
 });
 ```
 
@@ -525,11 +525,11 @@ It is the inverse of `expect.objectContaining`.
 
 ```js
 describe('not.objectContaining', () => {
-  const expected = {foo: 'bar'};
+const expected = {foo: 'bar'};
 
-  it('matches if the actual object does not contain expected key: value pairs', () => {
-    expect({bar: 'baz'}).toEqual(expect.not.objectContaining(expected));
-  });
+it('matches if the actual object does not contain expected key: value pairs', () => {
+  expect({bar: 'baz'}).toEqual(expect.not.objectContaining(expected));
+});
 });
 ```
 
@@ -541,11 +541,11 @@ It is the inverse of `expect.stringContaining`.
 
 ```js
 describe('not.stringContaining', () => {
-  const expected = 'Hello world!';
+const expected = 'Hello world!';
 
-  it('matches if the received value does not contain the expected substring', () => {
-    expect('How are you?').toEqual(expect.not.stringContaining(expected));
-  });
+it('matches if the received value does not contain the expected substring', () => {
+  expect('How are you?').toEqual(expect.not.stringContaining(expected));
+});
 });
 ```
 
@@ -557,11 +557,11 @@ It is the inverse of `expect.stringMatching`.
 
 ```js
 describe('not.stringMatching', () => {
-  const expected = /Hello world!/;
+const expected = /Hello world!/;
 
-  it('matches if the received value does not match the expected regex', () => {
-    expect('How are you?').toEqual(expect.not.stringMatching(expected));
-  });
+it('matches if the received value does not match the expected regex', () => {
+  expect('How are you?').toEqual(expect.not.stringMatching(expected));
+});
 });
 ```
 
@@ -575,14 +575,14 @@ For example, let's say that we expect an `onPress` function to be called with an
 
 ```js
 test('onPress gets called with the right thing', () => {
-  const onPress = jest.fn();
-  simulatePresses(onPress);
-  expect(onPress).toHaveBeenCalledWith(
-    expect.objectContaining({
-      x: expect.any(Number),
-      y: expect.any(Number),
-    }),
-  );
+const onPress = jest.fn();
+simulatePresses(onPress);
+expect(onPress).toHaveBeenCalledWith(
+  expect.objectContaining({
+    x: expect.any(Number),
+    y: expect.any(Number),
+  }),
+);
 });
 ```
 
@@ -604,20 +604,20 @@ This example also shows how you can nest multiple asymmetric matchers, with `exp
 
 ```js
 describe('stringMatching in arrayContaining', () => {
-  const expected = [
-    expect.stringMatching(/^Alic/),
-    expect.stringMatching(/^[BR]ob/),
-  ];
-  it('matches even if received contains additional elements', () => {
-    expect(['Alicia', 'Roberto', 'Evelina']).toEqual(
-      expect.arrayContaining(expected),
-    );
-  });
-  it('does not match if received does not contain expected elements', () => {
-    expect(['Roberto', 'Evelina']).not.toEqual(
-      expect.arrayContaining(expected),
-    );
-  });
+const expected = [
+  expect.stringMatching(/^Alic/),
+  expect.stringMatching(/^[BR]ob/),
+];
+it('matches even if received contains additional elements', () => {
+  expect(['Alicia', 'Roberto', 'Evelina']).toEqual(
+    expect.arrayContaining(expected),
+  );
+});
+it('does not match if received does not contain expected elements', () => {
+  expect(['Roberto', 'Evelina']).not.toEqual(
+    expect.arrayContaining(expected),
+  );
+});
 });
 ```
 
@@ -647,7 +647,7 @@ If you know how to test something, `.not` lets you test its opposite. For exampl
 
 ```js
 test('the best flavor is not coconut', () => {
-  expect(bestLaCroixFlavor()).not.toBe('coconut');
+expect(bestLaCroixFlavor()).not.toBe('coconut');
 });
 ```
 
@@ -659,8 +659,8 @@ For example, this code tests that the promise resolves and that the resulting va
 
 ```js
 test('resolves to lemon', () => {
-  // make sure to add a return statement
-  return expect(Promise.resolve('lemon')).resolves.toBe('lemon');
+// make sure to add a return statement
+return expect(Promise.resolve('lemon')).resolves.toBe('lemon');
 });
 ```
 
@@ -672,8 +672,8 @@ Alternatively, you can use `async/await` in combination with `.resolves`:
 
 ```js
 test('resolves to lemon', async () => {
-  await expect(Promise.resolve('lemon')).resolves.toBe('lemon');
-  await expect(Promise.resolve('lemon')).resolves.not.toBe('octopus');
+await expect(Promise.resolve('lemon')).resolves.toBe('lemon');
+await expect(Promise.resolve('lemon')).resolves.not.toBe('octopus');
 });
 ```
 
@@ -687,10 +687,10 @@ For example, this code tests that the promise rejects with reason `'octopus'`:
 
 ```js
 test('rejects to octopus', () => {
-  // make sure to add a return statement
-  return expect(Promise.reject(new Error('octopus'))).rejects.toThrow(
-    'octopus',
-  );
+// make sure to add a return statement
+return expect(Promise.reject(new Error('octopus'))).rejects.toThrow(
+  'octopus',
+);
 });
 ```
 
@@ -702,7 +702,7 @@ Alternatively, you can use `async/await` in combination with `.rejects`.
 
 ```js
 test('rejects to octopus', async () => {
-  await expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus');
+await expect(Promise.reject(new Error('octopus'))).rejects.toThrow('octopus');
 });
 ```
 
@@ -716,18 +716,18 @@ For example, this code will validate some properties of the `can` object:
 
 ```js
 const can = {
-  name: 'pamplemousse',
-  ounces: 12,
+name: 'pamplemousse',
+ounces: 12,
 };
 
 describe('the can', () => {
-  test('has 12 ounces', () => {
-    expect(can.ounces).toBe(12);
-  });
+test('has 12 ounces', () => {
+  expect(can.ounces).toBe(12);
+});
 
-  test('has a sophisticated name', () => {
-    expect(can.name).toBe('pamplemousse');
-  });
+test('has a sophisticated name', () => {
+  expect(can.name).toBe('pamplemousse');
+});
 });
 ```
 
@@ -748,23 +748,23 @@ For example, let's say you have a `drinkAll(drink, flavour)` function that takes
 
 ```js
 function drinkAll(callback, flavour) {
-  if (flavour !== 'octopus') {
-    callback(flavour);
-  }
+if (flavour !== 'octopus') {
+  callback(flavour);
+}
 }
 
 describe('drinkAll', () => {
-  test('drinks something lemon-flavoured', () => {
-    const drink = jest.fn();
-    drinkAll(drink, 'lemon');
-    expect(drink).toHaveBeenCalled();
-  });
+test('drinks something lemon-flavoured', () => {
+  const drink = jest.fn();
+  drinkAll(drink, 'lemon');
+  expect(drink).toHaveBeenCalled();
+});
 
-  test('does not drink something octopus-flavoured', () => {
-    const drink = jest.fn();
-    drinkAll(drink, 'octopus');
-    expect(drink).not.toHaveBeenCalled();
-  });
+test('does not drink something octopus-flavoured', () => {
+  const drink = jest.fn();
+  drinkAll(drink, 'octopus');
+  expect(drink).not.toHaveBeenCalled();
+});
 });
 ```
 
@@ -778,9 +778,9 @@ For example, let's say you have a `drinkEach(drink, Array<flavor>)` function tha
 
 ```js
 test('drinkEach drinks each drink', () => {
-  const drink = jest.fn();
-  drinkEach(drink, ['lemon', 'octopus']);
-  expect(drink).toHaveBeenCalledTimes(2);
+const drink = jest.fn();
+drinkEach(drink, ['lemon', 'octopus']);
+expect(drink).toHaveBeenCalledTimes(2);
 });
 ```
 
@@ -794,11 +794,11 @@ For example, let's say that you can register a beverage with a `register` functi
 
 ```js
 test('registration applies correctly to orange La Croix', () => {
-  const beverage = new LaCroix('orange');
-  register(beverage);
-  const f = jest.fn();
-  applyToAll(f);
-  expect(f).toHaveBeenCalledWith(beverage);
+const beverage = new LaCroix('orange');
+register(beverage);
+const f = jest.fn();
+applyToAll(f);
+expect(f).toHaveBeenCalledWith(beverage);
 });
 ```
 
@@ -810,9 +810,9 @@ If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test wha
 
 ```js
 test('applying to all flavors does mango last', () => {
-  const drink = jest.fn();
-  applyToAllFlavors(drink);
-  expect(drink).toHaveBeenLastCalledWith('mango');
+const drink = jest.fn();
+applyToAllFlavors(drink);
+expect(drink).toHaveBeenLastCalledWith('mango');
 });
 ```
 
@@ -824,10 +824,10 @@ If you have a mock function, you can use `.toHaveBeenNthCalledWith` to test what
 
 ```js
 test('drinkEach drinks each drink', () => {
-  const drink = jest.fn();
-  drinkEach(drink, ['lemon', 'octopus']);
-  expect(drink).toHaveBeenNthCalledWith(1, 'lemon');
-  expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
+const drink = jest.fn();
+drinkEach(drink, ['lemon', 'octopus']);
+expect(drink).toHaveBeenNthCalledWith(1, 'lemon');
+expect(drink).toHaveBeenNthCalledWith(2, 'octopus');
 });
 ```
 
@@ -845,11 +845,11 @@ If you have a mock function, you can use `.toHaveReturned` to test that the mock
 
 ```js
 test('drinks returns', () => {
-  const drink = jest.fn(() => true);
+const drink = jest.fn(() => true);
 
-  drink();
+drink();
 
-  expect(drink).toHaveReturned();
+expect(drink).toHaveReturned();
 });
 ```
 
@@ -863,12 +863,12 @@ For example, let's say you have a mock `drink` that returns `true`. You can writ
 
 ```js
 test('drink returns twice', () => {
-  const drink = jest.fn(() => true);
+const drink = jest.fn(() => true);
 
-  drink();
-  drink();
+drink();
+drink();
 
-  expect(drink).toHaveReturnedTimes(2);
+expect(drink).toHaveReturnedTimes(2);
 });
 ```
 
@@ -882,12 +882,12 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns La Croix', () => {
-  const beverage = {name: 'La Croix'};
-  const drink = jest.fn(beverage => beverage.name);
+const beverage = {name: 'La Croix'};
+const drink = jest.fn(beverage => beverage.name);
 
-  drink(beverage);
+drink(beverage);
 
-  expect(drink).toHaveReturnedWith('La Croix');
+expect(drink).toHaveReturnedWith('La Croix');
 });
 ```
 
@@ -901,14 +901,14 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns La Croix (Orange) last', () => {
-  const beverage1 = {name: 'La Croix (Lemon)'};
-  const beverage2 = {name: 'La Croix (Orange)'};
-  const drink = jest.fn(beverage => beverage.name);
+const beverage1 = {name: 'La Croix (Lemon)'};
+const beverage2 = {name: 'La Croix (Orange)'};
+const drink = jest.fn(beverage => beverage.name);
 
-  drink(beverage1);
-  drink(beverage2);
+drink(beverage1);
+drink(beverage2);
 
-  expect(drink).toHaveLastReturnedWith('La Croix (Orange)');
+expect(drink).toHaveLastReturnedWith('La Croix (Orange)');
 });
 ```
 
@@ -922,15 +922,15 @@ For example, let's say you have a mock `drink` that returns the name of the beve
 
 ```js
 test('drink returns expected nth calls', () => {
-  const beverage1 = {name: 'La Croix (Lemon)'};
-  const beverage2 = {name: 'La Croix (Orange)'};
-  const drink = jest.fn(beverage => beverage.name);
+const beverage1 = {name: 'La Croix (Lemon)'};
+const beverage2 = {name: 'La Croix (Orange)'};
+const drink = jest.fn(beverage => beverage.name);
 
-  drink(beverage1);
-  drink(beverage2);
+drink(beverage1);
+drink(beverage2);
 
-  expect(drink).toHaveNthReturnedWith(1, 'La Croix (Lemon)');
-  expect(drink).toHaveNthReturnedWith(2, 'La Croix (Orange)');
+expect(drink).toHaveNthReturnedWith(1, 'La Croix (Lemon)');
+expect(drink).toHaveNthReturnedWith(2, 'La Croix (Orange)');
 });
 ```
 
@@ -963,60 +963,60 @@ The following example contains a `houseForSale` object with nested properties. W
 ```js
 // Object containing house features to be tested
 const houseForSale = {
-  bath: true,
-  bedrooms: 4,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    area: 20,
-    wallColor: 'white',
-    'nice.oven': true,
-  },
-  livingroom: {
-    amenities: [
-      {
-        couch: [
-          ['large', {dimensions: [20, 20]}],
-          ['small', {dimensions: [10, 10]}],
-        ],
-      },
-    ],
-  },
-  'ceiling.height': 2,
+bath: true,
+bedrooms: 4,
+kitchen: {
+  amenities: ['oven', 'stove', 'washer'],
+  area: 20,
+  wallColor: 'white',
+  'nice.oven': true,
+},
+livingroom: {
+  amenities: [
+    {
+      couch: [
+        ['large', {dimensions: [20, 20]}],
+        ['small', {dimensions: [10, 10]}],
+      ],
+    },
+  ],
+},
+'ceiling.height': 2,
 };
 
 test('this house has my desired features', () => {
-  // Example Referencing
-  expect(houseForSale).toHaveProperty('bath');
-  expect(houseForSale).toHaveProperty('bedrooms', 4);
+// Example Referencing
+expect(houseForSale).toHaveProperty('bath');
+expect(houseForSale).toHaveProperty('bedrooms', 4);
 
-  expect(houseForSale).not.toHaveProperty('pool');
+expect(houseForSale).not.toHaveProperty('pool');
 
-  // Deep referencing using dot notation
-  expect(houseForSale).toHaveProperty('kitchen.area', 20);
-  expect(houseForSale).toHaveProperty('kitchen.amenities', [
-    'oven',
-    'stove',
-    'washer',
-  ]);
+// Deep referencing using dot notation
+expect(houseForSale).toHaveProperty('kitchen.area', 20);
+expect(houseForSale).toHaveProperty('kitchen.amenities', [
+  'oven',
+  'stove',
+  'washer',
+]);
 
-  expect(houseForSale).not.toHaveProperty('kitchen.open');
+expect(houseForSale).not.toHaveProperty('kitchen.open');
 
-  // Deep referencing using an array containing the keyPath
-  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
-  expect(houseForSale).toHaveProperty(
-    ['kitchen', 'amenities'],
-    ['oven', 'stove', 'washer'],
-  );
-  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-  expect(houseForSale).toHaveProperty(
-    'livingroom.amenities[0].couch[0][1].dimensions[0]',
-    20,
-  );
-  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
-  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+// Deep referencing using an array containing the keyPath
+expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+expect(houseForSale).toHaveProperty(
+  ['kitchen', 'amenities'],
+  ['oven', 'stove', 'washer'],
+);
+expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+expect(houseForSale).toHaveProperty(
+  'livingroom.amenities[0].couch[0][1].dimensions[0]',
+  20,
+);
+expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
+expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 
-  // Referencing keys with dot in the key itself
-  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
+// Referencing keys with dot in the key itself
+expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
@@ -1030,7 +1030,7 @@ Intuitive equality comparisons often fail, because arithmetic on decimal (base 1
 
 ```js
 test('adding works sanely with decimals', () => {
-  expect(0.2 + 0.1).toBe(0.3); // Fails!
+expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
 
@@ -1040,7 +1040,7 @@ For example, this test passes with a precision of 5 digits:
 
 ```js
 test('adding works sanely with decimals', () => {
-  expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
+expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
 
@@ -1052,7 +1052,7 @@ Use `.toBeDefined` to check that a variable is not undefined. For example, if yo
 
 ```js
 test('there is a new flavor idea', () => {
-  expect(fetchNewFlavorIdea()).toBeDefined();
+expect(fetchNewFlavorIdea()).toBeDefined();
 });
 ```
 
@@ -1065,7 +1065,7 @@ Use `.toBeFalsy` when you don't care what a value is and you want to ensure a va
 ```js
 drinkSomeLaCroix();
 if (!getErrors()) {
-  drinkMoreLaCroix();
+drinkMoreLaCroix();
 }
 ```
 
@@ -1073,8 +1073,8 @@ You may not care what `getErrors` returns, specifically - it might return `false
 
 ```js
 test('drinking La Croix does not lead to errors', () => {
-  drinkSomeLaCroix();
-  expect(getErrors()).toBeFalsy();
+drinkSomeLaCroix();
+expect(getErrors()).toBeFalsy();
 });
 ```
 
@@ -1086,7 +1086,7 @@ Use `toBeGreaterThan` to compare `received > expected` for number or big integer
 
 ```js
 test('ounces per can is more than 10', () => {
-  expect(ouncesPerCan()).toBeGreaterThan(10);
+expect(ouncesPerCan()).toBeGreaterThan(10);
 });
 ```
 
@@ -1096,7 +1096,7 @@ Use `toBeGreaterThanOrEqual` to compare `received >= expected` for number or big
 
 ```js
 test('ounces per can is at least 12', () => {
-  expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
+expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
 });
 ```
 
@@ -1106,7 +1106,7 @@ Use `toBeLessThan` to compare `received < expected` for number or big integer va
 
 ```js
 test('ounces per can is less than 20', () => {
-  expect(ouncesPerCan()).toBeLessThan(20);
+expect(ouncesPerCan()).toBeLessThan(20);
 });
 ```
 
@@ -1116,7 +1116,7 @@ Use `toBeLessThanOrEqual` to compare `received <= expected` for number or big in
 
 ```js
 test('ounces per can is at most 12', () => {
-  expect(ouncesPerCan()).toBeLessThanOrEqual(12);
+expect(ouncesPerCan()).toBeLessThanOrEqual(12);
 });
 ```
 
@@ -1138,11 +1138,11 @@ expect(new A()).toBeInstanceOf(Function); // throws
 
 ```js
 function bloop() {
-  return null;
+return null;
 }
 
 test('bloop returns null', () => {
-  expect(bloop()).toBeNull();
+expect(bloop()).toBeNull();
 });
 ```
 
@@ -1153,7 +1153,7 @@ Use `.toBeTruthy` when you don't care what a value is and you want to ensure a v
 ```js
 drinkSomeLaCroix();
 if (thirstInfo()) {
-  drinkMoreLaCroix();
+drinkMoreLaCroix();
 }
 ```
 
@@ -1161,8 +1161,8 @@ You may not care what `thirstInfo` returns, specifically - it might return `true
 
 ```js
 test('drinking La Croix leads to having thirst info', () => {
-  drinkSomeLaCroix();
-  expect(thirstInfo()).toBeTruthy();
+drinkSomeLaCroix();
+expect(thirstInfo()).toBeTruthy();
 });
 ```
 
@@ -1174,7 +1174,7 @@ Use `.toBeUndefined` to check that a variable is undefined. For example, if you 
 
 ```js
 test('the best drink for octopus flavor is undefined', () => {
-  expect(bestDrinkForFlavor('octopus')).toBeUndefined();
+expect(bestDrinkForFlavor('octopus')).toBeUndefined();
 });
 ```
 
@@ -1186,8 +1186,8 @@ Use `.toBeNaN` when checking a value is `NaN`.
 
 ```js
 test('passes when value is NaN', () => {
-  expect(NaN).toBeNaN();
-  expect(1).not.toBeNaN();
+expect(NaN).toBeNaN();
+expect(1).not.toBeNaN();
 });
 ```
 
@@ -1199,7 +1199,7 @@ For example, if `getAllFlavors()` returns an array of flavors and you want to be
 
 ```js
 test('the flavor list contains lime', () => {
-  expect(getAllFlavors()).toContain('lime');
+expect(getAllFlavors()).toContain('lime');
 });
 ```
 
@@ -1211,10 +1211,10 @@ Use `.toContainEqual` when you want to check that an item with a specific struct
 
 ```js
 describe('my beverage', () => {
-  test('is delicious and not sour', () => {
-    const myBeverage = {delicious: true, sour: false};
-    expect(myBeverages()).toContainEqual(myBeverage);
-  });
+test('is delicious and not sour', () => {
+  const myBeverage = {delicious: true, sour: false};
+  expect(myBeverages()).toContainEqual(myBeverage);
+});
 });
 ```
 
@@ -1226,21 +1226,21 @@ For example, `.toEqual` and `.toBe` behave differently in this test suite, so al
 
 ```js
 const can1 = {
-  flavor: 'grapefruit',
-  ounces: 12,
+flavor: 'grapefruit',
+ounces: 12,
 };
 const can2 = {
-  flavor: 'grapefruit',
-  ounces: 12,
+flavor: 'grapefruit',
+ounces: 12,
 };
 
 describe('the La Croix cans on my desk', () => {
-  test('have all the same properties', () => {
-    expect(can1).toEqual(can2);
-  });
-  test('are not the exact same can', () => {
-    expect(can1).not.toBe(can2);
-  });
+test('have all the same properties', () => {
+  expect(can1).toEqual(can2);
+});
+test('are not the exact same can', () => {
+  expect(can1).not.toBe(can2);
+});
 });
 ```
 
@@ -1263,10 +1263,10 @@ For example, you might not know what exactly `essayOnTheBestFlavor()` returns, b
 
 ```js
 describe('an essay on the best flavor', () => {
-  test('mentions grapefruit', () => {
-    expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
-    expect(essayOnTheBestFlavor()).toMatch(new RegExp('grapefruit'));
-  });
+test('mentions grapefruit', () => {
+  expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
+  expect(essayOnTheBestFlavor()).toMatch(new RegExp('grapefruit'));
+});
 });
 ```
 
@@ -1274,9 +1274,9 @@ This matcher also accepts a string, which it will try to match:
 
 ```js
 describe('grapefruits are healthy', () => {
-  test('grapefruits are a fruit', () => {
-    expect('grapefruits').toMatch('fruit');
-  });
+test('grapefruits are a fruit', () => {
+  expect('grapefruits').toMatch('fruit');
+});
 });
 ```
 
@@ -1290,39 +1290,39 @@ You can match properties against values or against matchers.
 
 ```js
 const houseForSale = {
-  bath: true,
-  bedrooms: 4,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    area: 20,
-    wallColor: 'white',
-  },
+bath: true,
+bedrooms: 4,
+kitchen: {
+  amenities: ['oven', 'stove', 'washer'],
+  area: 20,
+  wallColor: 'white',
+},
 };
 const desiredHouse = {
-  bath: true,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    wallColor: expect.stringMatching(/white|yellow/),
-  },
+bath: true,
+kitchen: {
+  amenities: ['oven', 'stove', 'washer'],
+  wallColor: expect.stringMatching(/white|yellow/),
+},
 };
 
 test('the house has my desired features', () => {
-  expect(houseForSale).toMatchObject(desiredHouse);
+expect(houseForSale).toMatchObject(desiredHouse);
 });
 ```
 
 ```js
 describe('toMatchObject applied to arrays', () => {
-  test('the number of elements must match exactly', () => {
-    expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
-  });
+test('the number of elements must match exactly', () => {
+  expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
+});
 
-  test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
-    expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
-      {foo: 'bar'},
-      {baz: 1},
-    ]);
-  });
+test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
+  expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
+    {foo: 'bar'},
+    {baz: 1},
+  ]);
+});
 });
 ```
 
@@ -1356,16 +1356,16 @@ Differences from `.toEqual`:
 
 ```js
 class LaCroix {
-  constructor(flavor) {
-    this.flavor = flavor;
-  }
+constructor(flavor) {
+  this.flavor = flavor;
+}
 }
 
 describe('the La Croix cans on my desk', () => {
-  test('are not semantically the same', () => {
-    expect(new LaCroix('lemon')).toEqual({flavor: 'lemon'});
-    expect(new LaCroix('lemon')).not.toStrictEqual({flavor: 'lemon'});
-  });
+test('are not semantically the same', () => {
+  expect(new LaCroix('lemon')).toEqual({flavor: 'lemon'});
+  expect(new LaCroix('lemon')).not.toStrictEqual({flavor: 'lemon'});
+});
 });
 ```
 
@@ -1377,9 +1377,9 @@ Use `.toThrow` to test that a function throws when it is called. For example, if
 
 ```js
 test('throws on octopus', () => {
-  expect(() => {
-    drinkFlavor('octopus');
-  }).toThrow();
+expect(() => {
+  drinkFlavor('octopus');
+}).toThrow();
 });
 ```
 
@@ -1400,10 +1400,10 @@ For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
-  if (flavor == 'octopus') {
-    throw new DisgustingFlavorError('yuck, octopus flavor');
-  }
-  // Do some other stuff
+if (flavor == 'octopus') {
+  throw new DisgustingFlavorError('yuck, octopus flavor');
+}
+// Do some other stuff
 }
 ```
 
@@ -1411,20 +1411,20 @@ We could test this error gets thrown in several ways:
 
 ```js
 test('throws on octopus', () => {
-  function drinkOctopus() {
-    drinkFlavor('octopus');
-  }
+function drinkOctopus() {
+  drinkFlavor('octopus');
+}
 
-  // Test that the error message says "yuck" somewhere: these are equivalent
-  expect(drinkOctopus).toThrow(/yuck/);
-  expect(drinkOctopus).toThrow('yuck');
+// Test that the error message says "yuck" somewhere: these are equivalent
+expect(drinkOctopus).toThrow(/yuck/);
+expect(drinkOctopus).toThrow('yuck');
 
-  // Test the exact error message
-  expect(drinkOctopus).toThrow(/^yuck, octopus flavor$/);
-  expect(drinkOctopus).toThrow(new Error('yuck, octopus flavor'));
+// Test the exact error message
+expect(drinkOctopus).toThrow(/^yuck, octopus flavor$/);
+expect(drinkOctopus).toThrow(new Error('yuck, octopus flavor'));
 
-  // Test that we get a DisgustingFlavorError
-  expect(drinkOctopus).toThrow(DisgustingFlavorError);
+// Test that we get a DisgustingFlavorError
+expect(drinkOctopus).toThrow(DisgustingFlavorError);
 });
 ```
 
@@ -1438,10 +1438,10 @@ For example, let's say you have a `drinkFlavor` function that throws whenever th
 
 ```js
 function drinkFlavor(flavor) {
-  if (flavor == 'octopus') {
-    throw new DisgustingFlavorError('yuck, octopus flavor');
-  }
-  // Do some other stuff
+if (flavor == 'octopus') {
+  throw new DisgustingFlavorError('yuck, octopus flavor');
+}
+// Do some other stuff
 }
 ```
 
@@ -1449,11 +1449,11 @@ The test for this function will look this way:
 
 ```js
 test('throws on octopus', () => {
-  function drinkOctopus() {
-    drinkFlavor('octopus');
-  }
+function drinkOctopus() {
+  drinkFlavor('octopus');
+}
 
-  expect(drinkOctopus).toThrowErrorMatchingSnapshot();
+expect(drinkOctopus).toThrowErrorMatchingSnapshot();
 });
 ```
 
