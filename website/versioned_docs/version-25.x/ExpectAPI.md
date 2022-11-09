@@ -67,7 +67,9 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+:::note
+
+In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
 expect.extend({
@@ -88,6 +90,8 @@ declare global {
   }
 }
 ```
+
+:::
 
 If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
 
@@ -807,7 +811,11 @@ test('drinkEach drinks each drink', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveReturned()`
 
@@ -906,7 +914,11 @@ test('drink returns expected nth calls', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveLength(number)`
 
@@ -1198,7 +1210,11 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-> Note: `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+:::note
+
+`.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+
+:::
 
 If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
 
@@ -1333,7 +1349,11 @@ test('throws on octopus', () => {
 });
 ```
 
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+:::note
+
+You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
+:::
 
 You can provide an optional argument to test that a specific error is thrown:
 
