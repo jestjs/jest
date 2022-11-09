@@ -232,13 +232,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
 
 #### 1. `describe.each(table)(name, fn, timeout)`
 
-- `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row.
-
-:::info
-
-If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
-
-:::
+- `table`: `Array` of Arrays with the arguments that are passed into the `fn` for each row. If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`.
 
 - `name`: `String` the title of the test suite.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
@@ -483,13 +477,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
 
 #### 1. `test.each(table)(name, fn, timeout)`
 
-- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
-
-:::info
-
-If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
-
-:::
+- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row. If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`.
 
 - `name`: `String` the title of the test block.
   - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
