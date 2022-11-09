@@ -40,7 +40,7 @@ If you want to keep the old behavior, you can set the `snapshotFormat` property 
 
 :::info
 
-_If_ you use `jest-environment-jsdom`, the minimum TypeScript version is set to `4.5`.
+If you use `jest-environment-jsdom`, the minimum TypeScript version is set to `4.5`.
 
 :::
 
