@@ -278,6 +278,37 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
     });
   });
 
+  describe('error message and cause', () => {
+    const errorA = new Error('A');
+    const errorB = new Error('B', {cause: errorA});
+    const expected = new Error('good', {cause: errorB});
+
+    describe('pass', () => {
+      test('isNot false', () => {
+        jestExpect(() => {
+          throw new Error('good', {cause: errorB});
+        })[toThrow](expected);
+      });
+
+      test('isNot true, incorrect message', () => {
+        jestExpect(() => {
+          throw new Error('bad', {cause: errorB});
+        }).not[toThrow](expected);
+      });
+
+      test('isNot true, incorrect cause', () => {
+        // less than v16 does not yet support Error.cause
+        if (Number(process.version.split('.')[0].slice(1)) < 16) {
+          expect(true).toBe(true);
+        } else {
+          jestExpect(() => {
+            throw new Error('good', {cause: errorA});
+          }).not[toThrow](expected);
+        }
+      });
+    });
+  });
+
   describe('asymmetric', () => {
     describe('any-Class', () => {
       describe('pass', () => {
