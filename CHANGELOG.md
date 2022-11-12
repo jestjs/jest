@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Support Wasm files that import JS resources [#13608](https://github.com/facebook/jest/pull/13608)
+
 ### Chore & Maintenance
 
 ### Performance
