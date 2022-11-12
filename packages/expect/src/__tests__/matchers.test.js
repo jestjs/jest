@@ -2316,3 +2316,42 @@ describe('toMatchObject()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+describe('Error match', () => {
+  // Issue 13604
+  class CustomError extends Error {
+    constructor(message, otherField) {
+      super(message);
+      this.otherField = otherField;
+    }
+  }
+
+  class CustomObject {
+    constructor(someField) {
+      this.someField = someField;
+    }
+  }
+
+  it('custom error strict equality', () => {
+    expect(new CustomError('message1', 'value1')).toStrictEqual(
+      new CustomError('message1', 'value1'),
+    );
+    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+      new CustomError('message2', 'value1'),
+    );
+    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+      new CustomError('message2', 'value2'),
+    );
+    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+      new CustomError('message1', 'value2'),
+    );
+  });
+
+  it('throw custom object not extending Error', () => {
+    const fn = () => {
+      throw new CustomObject('value');
+    };
+
+    expect(fn).toThrow(new CustomObject('value'));
+  });
+});

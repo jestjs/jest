@@ -83,7 +83,9 @@ function eq(
   }
 
   if (a instanceof Error && b instanceof Error) {
-    return a.message == b.message;
+    // Compare just error messages only if not strict check
+    if (!strictCheck) return a.message == b.message;
+    if (a.message != b.message) return false;
   }
 
   if (Object.is(a, b)) {

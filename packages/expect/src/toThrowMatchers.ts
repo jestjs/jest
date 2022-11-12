@@ -8,7 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import {isError} from '@jest/expect-utils';
+import {equals, isError, iterableEquality} from '@jest/expect-utils';
 import {
   EXPECTED_COLOR,
   MatcherHintOptions,
@@ -225,7 +225,9 @@ const toThrowExpectedObject = (
   thrown: Thrown | null,
   expected: Error,
 ): SyncExpectationResult => {
-  const pass = thrown !== null && thrown.message === expected.message;
+  const pass =
+    thrown !== null &&
+    equals(thrown.value, expected, [iterableEquality], !thrown.isError);
 
   const message = pass
     ? () =>
