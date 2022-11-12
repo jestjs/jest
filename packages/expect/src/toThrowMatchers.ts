@@ -225,14 +225,48 @@ const toThrowExpectedObject = (
   thrown: Thrown | null,
   expected: Error,
 ): SyncExpectationResult => {
-  const pass = thrown !== null && thrown.message === expected.message;
+  function createMessageAndCause(error: Error): string {
+    if (error.cause instanceof Error) {
+      return _createMessageAndCause(error);
+    } else {
+      return error.message;
+    }
+  }
+
+  function _createMessageAndCause(error: Error): string {
+    if (error.cause instanceof Error) {
+      return `{ message: ${error.message}, cause: ${_createMessageAndCause(
+        error.cause,
+      )}}`;
+    } else {
+      return `{ message: ${error.message} }`;
+    }
+  }
+
+  function expectedMessageAndCause(error: Error) {
+    return error.cause === undefined
+      ? error.message
+      : createMessageAndCause(error);
+  }
+
+  function messageAndCause(error: Error) {
+    return error.cause === undefined ? 'message' : 'message and cause';
+  }
+
+  const pass =
+    thrown !== null &&
+    thrown.message === expected.message &&
+    createMessageAndCause(thrown.value) === createMessageAndCause(expected);
 
   const message = pass
     ? () =>
         // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: not ', expected.message) +
+        formatExpected(
+          `Expected ${messageAndCause(expected)}: not `,
+          expectedMessageAndCause(expected),
+        ) +
         (thrown !== null && thrown.hasMessage
           ? formatStack(thrown)
           : formatReceived('Received value:       ', thrown, 'value'))
@@ -242,22 +276,27 @@ const toThrowExpectedObject = (
         '\n\n' +
         (thrown === null
           ? // eslint-disable-next-line prefer-template
-            formatExpected('Expected message: ', expected.message) +
+            formatExpected(
+              `Expected ${messageAndCause(expected)}: `,
+              expectedMessageAndCause(expected),
+            ) +
             '\n' +
             DID_NOT_THROW
           : thrown.hasMessage
           ? // eslint-disable-next-line prefer-template
             printDiffOrStringify(
-              expected.message,
-              thrown.message,
-              'Expected message',
-              'Received message',
+              createMessageAndCause(expected),
+              createMessageAndCause(thrown.value),
+              `Expected ${messageAndCause(expected)}`,
+              `Received ${messageAndCause(thrown.value)}`,
               true,
             ) +
             '\n' +
             formatStack(thrown)
-          : formatExpected('Expected message: ', expected.message) +
-            formatReceived('Received value:   ', thrown, 'value'));
+          : formatExpected(
+              `Expected ${messageAndCause}: `,
+              expectedMessageAndCause,
+            ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
