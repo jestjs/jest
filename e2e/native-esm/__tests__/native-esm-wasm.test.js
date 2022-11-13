@@ -57,7 +57,7 @@ test('imports from "data:application/wasm" URI with invalid encoding fail', asyn
 });
 
 test('supports wasm files that import js resources (wasm-bindgen)', async () => {
-  globalThis.alert = () => {};
+  globalThis.alert = jest.fn();
   jest.spyOn(globalThis, 'alert');
 
   const {greet} = await import('../wasm-bindgen/index.js');
