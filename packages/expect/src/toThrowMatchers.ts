@@ -294,8 +294,8 @@ const toThrowExpectedObject = (
             '\n' +
             formatStack(thrown)
           : formatExpected(
-              `Expected ${messageAndCause}: `,
-              expectedMessageAndCause,
+              `Expected ${messageAndCause(expected)}: `,
+              expectedMessageAndCause(expected),
             ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
