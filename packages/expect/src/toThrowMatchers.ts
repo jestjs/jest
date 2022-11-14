@@ -237,7 +237,7 @@ const toThrowExpectedObject = (
         '\n\n' +
         formatExpected(
           `Expected ${messageAndCause(expected)}: not `,
-          expectedMessageAndCause(expected),
+          createMessageAndCause(expected),
         ) +
         (thrown !== null && thrown.hasMessage
           ? formatStack(thrown)
@@ -250,7 +250,7 @@ const toThrowExpectedObject = (
           ? // eslint-disable-next-line prefer-template
             formatExpected(
               `Expected ${messageAndCause(expected)}: `,
-              expectedMessageAndCause(expected),
+              createMessageAndCause(expected),
             ) +
             '\n' +
             DID_NOT_THROW
@@ -267,7 +267,7 @@ const toThrowExpectedObject = (
             formatStack(thrown)
           : formatExpected(
               `Expected ${messageAndCause(expected)}: `,
-              expectedMessageAndCause(expected),
+              createMessageAndCause(expected),
             ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
@@ -474,12 +474,6 @@ const createMessageAndCause = (error: Error): string => {
   } else {
     return error.message;
   }
-};
-
-const expectedMessageAndCause = (error: Error) => {
-  return error.cause === undefined
-    ? error.message
-    : createMessageAndCause(error);
 };
 
 const messageAndCause = (error: Error) => {
