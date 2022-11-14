@@ -450,6 +450,7 @@ export type ProjectConfig = {
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
+  preset?: string;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;

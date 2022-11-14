@@ -973,6 +973,8 @@ test.todo('add should be associative');
 
 ## TypeScript Usage
 
+<TypeScriptExamplesNote />
+
 ### `.each`
 
 The `.each` modifier offers few different ways to define a table of the test cases. Some of the APIs have caveats related with the type inference of the arguments which are passed to `describe` or `test` callback functions. Let's take a look at each of them.
