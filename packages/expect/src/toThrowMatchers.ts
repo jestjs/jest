@@ -468,7 +468,7 @@ const _createMessageAndCause = (error: Error): string => {
   }
 };
 
-const createMessageAndCause = (error: Error): string => {
+const createMessageAndCause = (error: Error) => {
   if (error.cause instanceof Error) {
     return _createMessageAndCause(error);
   } else {
