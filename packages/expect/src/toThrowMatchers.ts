@@ -225,34 +225,6 @@ const toThrowExpectedObject = (
   thrown: Thrown | null,
   expected: Error,
 ): SyncExpectationResult => {
-  function createMessageAndCause(error: Error): string {
-    if (error.cause instanceof Error) {
-      return _createMessageAndCause(error);
-    } else {
-      return error.message;
-    }
-  }
-
-  function _createMessageAndCause(error: Error): string {
-    if (error.cause instanceof Error) {
-      return `{ message: ${error.message}, cause: ${_createMessageAndCause(
-        error.cause,
-      )}}`;
-    } else {
-      return `{ message: ${error.message} }`;
-    }
-  }
-
-  function expectedMessageAndCause(error: Error) {
-    return error.cause === undefined
-      ? error.message
-      : createMessageAndCause(error);
-  }
-
-  function messageAndCause(error: Error) {
-    return error.cause === undefined ? 'message' : 'message and cause';
-  }
-
   const pass =
     thrown !== null &&
     thrown.message === expected.message &&
@@ -485,5 +457,33 @@ const formatStack = (thrown: Thrown | null) =>
           noStackTrace: false,
         },
       );
+
+const _createMessageAndCause = (error: Error): string => {
+  if (error.cause instanceof Error) {
+    return `{ message: ${error.message}, cause: ${_createMessageAndCause(
+      error.cause,
+    )}}`;
+  } else {
+    return `{ message: ${error.message} }`;
+  }
+};
+
+const createMessageAndCause = (error: Error): string => {
+  if (error.cause instanceof Error) {
+    return _createMessageAndCause(error);
+  } else {
+    return error.message;
+  }
+};
+
+const expectedMessageAndCause = (error: Error) => {
+  return error.cause === undefined
+    ? error.message
+    : createMessageAndCause(error);
+};
+
+const messageAndCause = (error: Error) => {
+  return error.cause === undefined ? 'message' : 'message and cause';
+};
 
 export default matchers;
