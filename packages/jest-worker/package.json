@@ -23,7 +23,7 @@
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",

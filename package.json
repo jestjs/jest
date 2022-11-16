@@ -15,7 +15,7 @@
     "@lerna-lite/cli": "^1.11.3",
     "@microsoft/api-extractor": "^7.33.4",
     "@tsconfig/node14": "^1.0.3",
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.2",
