@@ -4880,7 +4880,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17, @types/react@npm:^17.0.3":
+"@types/react@npm:*, @types/react@npm:^17":
   version: 17.0.50
   resolution: "@types/react@npm:17.0.50"
   dependencies:
@@ -4888,6 +4888,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: b5629dff7c2f3e9fcba95a19b2b3bfd78d7cacc33ba5fc26413dba653d34afcac3b93ddabe563e8062382688a1eac7db68e93739bb8e712d27637a03aaafbbb8
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.0.25":
+  version: 18.0.25
+  resolution: "@types/react@npm:18.0.25"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 231d658c45abdef044a716b4502774f1585d8336d73b2f5bd68f181acbfc874b7a457686ecd29b415b43ed0922c309bab7e2cf96832d188a3f4f1b02f2af760a
   languageName: node
   linkType: hard
 
@@ -9409,7 +9420,7 @@ __metadata:
     enzyme: "*"
     enzyme-adapter-react-16: "*"
     jest: "workspace:^"
-    react: ^16.14.0
+    react: ^18.2.0
     react-dom: ^16.14.0
   languageName: unknown
   linkType: soft
@@ -9483,7 +9494,7 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 18.1.0
+    react: 18.2.0
     react-native: 0.70.3
     react-test-renderer: 18.1.0
   languageName: unknown
@@ -9499,7 +9510,7 @@ __metadata:
     "@testing-library/react": ^12.1.5
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 17.0.2
+    react: 18.2.0
     react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
@@ -9513,7 +9524,7 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 17.0.2
+    react: 18.2.0
     react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
@@ -9527,7 +9538,7 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 17.0.2
+    react: 18.2.0
     react-test-renderer: 17.0.2
   languageName: unknown
   linkType: soft
@@ -9554,7 +9565,7 @@ __metadata:
     "@jest/globals": "workspace:^"
     babel-jest: "workspace:^"
     jest: "workspace:^"
-    react: 17.0.2
+    react: 18.2.0
     react-dom: ^17.0.1
     typescript: ^4.8.2
   languageName: unknown
@@ -12973,14 +12984,14 @@ __metadata:
     "@docusaurus/preset-classic": ^2.0.0
     "@docusaurus/remark-plugin-npm2yarn": ^2.0.0
     "@tsconfig/docusaurus": ^1.0.5
-    "@types/react": ^17.0.3
+    "@types/react": ^18.0.25
     clsx: ^1.1.1
     docusaurus-remark-plugin-tab-blocks: ^1.2.0
     globby: ^11.0.1
     graphql: ^16.3.0
     graphql-request: ^5.0.0
     js-yaml: ^4.1.0
-    react: ^17.0.2
+    react: ^18.2.0
     react-dom: ^17.0.2
     react-github-btn: ^1.3.0
     react-lite-youtube-embed: ^2.2.2
@@ -16769,13 +16780,13 @@ __metadata:
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
     "@jest/schemas": "workspace:^"
-    "@types/react": ^17.0.3
+    "@types/react": ^18.0.25
     "@types/react-is": ^17.0.0
     "@types/react-test-renderer": 17.0.2
     ansi-styles: ^5.0.0
     immutable: ^4.0.0
     jest-util: "workspace:^"
-    react: 17.0.2
+    react: 18.2.0
     react-dom: ^17.0.1
     react-is: ^18.0.0
     react-test-renderer: 17.0.2
@@ -17519,33 +17530,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:17.0.2, react@npm:^17.0.2":
-  version: 17.0.2
-  resolution: "react@npm:17.0.2"
+"react@npm:18.2.0, react@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "react@npm:18.2.0"
   dependencies:
     loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
-  languageName: node
-  linkType: hard
-
-"react@npm:18.1.0":
-  version: 18.1.0
-  resolution: "react@npm:18.1.0"
-  dependencies:
-    loose-envify: ^1.1.0
-  checksum: 5bb296b561b43ef2220395da4faac86c14a087c8c80e1a7598a5740f01ee605c11eaf249985c1e2000971c4cd32ccb46d40f00479bbd9fb6b1c7cf857393b7d4
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
+  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
   languageName: node
   linkType: hard
 

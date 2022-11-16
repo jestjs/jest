@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "example-enzyme",
   "dependencies": {
-    "react": "^16.14.0",
+    "react": "^18.2.0",
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
