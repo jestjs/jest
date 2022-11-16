@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` [#13612](https://github.com/facebook/jest/pull/13612)
+
 ### Performance
 
 ## 29.3.1
