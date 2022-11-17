@@ -379,6 +379,9 @@ class ScriptTransformer {
       } else {
         const transformPath = this._getTransformPath(filename);
         invariant(transformPath);
+        if (!transformPath.includes('passthrough')) {
+          debugger;
+        }
         throw new Error(makeInvalidReturnValueError(transformPath));
       }
     }
@@ -674,15 +677,21 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (fileContent == null) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileSource
-      ? this._getCacheKey(fileSource, filename, transformOptions)
+    const transformCacheKey = fileContent
+      ? this._getCacheKey(fileContent, filename, transformOptions)
       : undefined;
     const scriptCacheKey = getScriptCacheKey(
       filename,
       instrument,
       transformCacheKey,
     );
+
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -710,9 +719,14 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (fileContent == null) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileSource
-      ? this._getCacheKey(fileSource, filename, transformOptions)
+    const transformCacheKey = fileContent
+      ? this._getCacheKey(fileContent, filename, transformOptions)
       : undefined;
     const scriptCacheKey = getScriptCacheKey(
       filename,

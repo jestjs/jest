@@ -15,6 +15,7 @@ import type {
   ReducedTransformOptions,
   ShouldInstrumentOptions,
   SyncTransformer,
+  TransformOptions,
   TransformedSource,
   Transformer,
   TransformerFactory,
@@ -74,22 +75,25 @@ jest
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
 const mockTestPreprocessorGetCacheKey = jest.fn().mockReturnValue('ab');
+const escapeStrings = (str: string) => str.replace(/'/, "'");
+const mockTestPreprocessorProcess = jest.fn();
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, "'");
-
     const transformer: Transformer = {
       getCacheKey: mockTestPreprocessorGetCacheKey,
-      process: (content, filename, config) => ({
-        code: (require('dedent') as typeof import('dedent'))`
-          const TRANSFORMED = {
-            filename: '${escapeStrings(filename)}',
-            script: '${escapeStrings(content)}',
-            config: '${escapeStrings(JSON.stringify(config))}',
-          };
-        `,
-      }),
+      process: (content, filename, config) => {
+        mockTestPreprocessorProcess(content, filename, config);
+        return {
+          code: (require('dedent') as typeof import('dedent'))`
+        const TRANSFORMED = {
+          filename: '${escapeStrings(filename)}',
+          script: '${escapeStrings(content)}',
+          config: '${escapeStrings(JSON.stringify(config))}',
+        };
+      `,
+        };
+      },
     };
 
     return transformer;
@@ -315,6 +319,9 @@ describe('ScriptTransformer', () => {
     createScriptTransformer = (
       require('../ScriptTransformer') as typeof import('../ScriptTransformer')
     ).createScriptTransformer;
+
+    mockTestPreprocessorGetCacheKey.mockReset();
+    mockTestPreprocessorProcess.mockReset();
   };
 
   beforeEach(reset);
@@ -1977,7 +1984,8 @@ describe('ScriptTransformer', () => {
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
-    expect(fs.readFileSync).toHaveBeenCalledTimes(3);
+    expect(mockTestPreprocessorProcess).toHaveBeenCalledTimes(3);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
