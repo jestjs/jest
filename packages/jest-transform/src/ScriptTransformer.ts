@@ -379,9 +379,6 @@ class ScriptTransformer {
       } else {
         const transformPath = this._getTransformPath(filename);
         invariant(transformPath);
-        if (!transformPath.includes('passthrough')) {
-          debugger;
-        }
         throw new Error(makeInvalidReturnValueError(transformPath));
       }
     }

@@ -15,7 +15,6 @@ import type {
   ReducedTransformOptions,
   ShouldInstrumentOptions,
   SyncTransformer,
-  TransformOptions,
   TransformedSource,
   Transformer,
   TransformerFactory,
@@ -74,7 +73,9 @@ jest
   }))
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
-const mockTestPreprocessorGetCacheKey = jest.fn().mockReturnValue('ab');
+const mockTestPreprocessorGetCacheKey = jest
+  .fn(() => 'ab')
+  .mockReturnValue('ab');
 const escapeStrings = (str: string) => str.replace(/'/, "'");
 const mockTestPreprocessorProcess = jest.fn();
 jest.mock(
