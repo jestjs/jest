@@ -73,9 +73,7 @@ jest
   }))
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
-const mockTestPreprocessorGetCacheKey = jest
-  .fn(() => 'ab')
-  .mockReturnValue('ab');
+const mockTestPreprocessorGetCacheKey = jest.mockReturnValue('ab');
 const escapeStrings = (str: string) => str.replace(/'/, "'");
 const mockTestPreprocessorProcess = jest.fn();
 jest.mock(
@@ -321,8 +319,8 @@ describe('ScriptTransformer', () => {
       require('../ScriptTransformer') as typeof import('../ScriptTransformer')
     ).createScriptTransformer;
 
-    mockTestPreprocessorGetCacheKey.mockReset();
-    mockTestPreprocessorProcess.mockReset();
+    mockTestPreprocessorGetCacheKey.mockClear();
+    mockTestPreprocessorProcess.mockClear();
   };
 
   beforeEach(reset);
