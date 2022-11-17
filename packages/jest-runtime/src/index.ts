@@ -1543,23 +1543,18 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined =
-      this._fileTransforms.get(filename);
-
-    if (transformedFile) {
-      return transformedFile.code;
-    }
-
-    transformedFile = this._scriptTransformer.transform(
+    const transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
       source,
     );
 
-    this._fileTransforms.set(filename, {
-      ...transformedFile,
-      wrapperLength: this.constructModuleWrapperStart().length,
-    });
+    if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
+      this._fileTransforms.set(filename, {
+        ...transformedFile,
+        wrapperLength: this.constructModuleWrapperStart().length,
+      });
+    }
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1577,23 +1572,18 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined =
-      this._fileTransforms.get(filename);
-
-    if (transformedFile) {
-      return transformedFile.code;
-    }
-
-    transformedFile = await this._scriptTransformer.transformAsync(
+    const transformedFile = await this._scriptTransformer.transformAsync(
       filename,
       this._getFullTransformationOptions(options),
       source,
     );
 
-    this._fileTransforms.set(filename, {
-      ...transformedFile,
-      wrapperLength: 0,
-    });
+    if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
+      this._fileTransforms.set(filename, {
+        ...transformedFile,
+        wrapperLength: 0,
+      });
+    }
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
