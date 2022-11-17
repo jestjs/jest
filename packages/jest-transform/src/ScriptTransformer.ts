@@ -675,8 +675,14 @@ class ScriptTransformer {
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileSource ? this._getCacheKey(fileSource, filename, transformOptions) : undefined;
-    const scriptCacheKey = getScriptCacheKey(filename, instrument, transformCacheKey);
+    const transformCacheKey = fileSource
+      ? this._getCacheKey(fileSource, filename, transformOptions)
+      : undefined;
+    const scriptCacheKey = getScriptCacheKey(
+      filename,
+      instrument,
+      transformCacheKey,
+    );
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -705,8 +711,14 @@ class ScriptTransformer {
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileSource ? this._getCacheKey(fileSource, filename, transformOptions) : undefined;
-    const scriptCacheKey = getScriptCacheKey(filename, instrument, transformCacheKey);
+    const transformCacheKey = fileSource
+      ? this._getCacheKey(fileSource, filename, transformOptions)
+      : undefined;
+    const scriptCacheKey = getScriptCacheKey(
+      filename,
+      instrument,
+      transformCacheKey,
+    );
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
@@ -980,9 +992,15 @@ const readCacheFile = (cachePath: string): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: string, instrument: boolean, transformCacheKey?: string) => {
+const getScriptCacheKey = (
+  filename: string,
+  instrument: boolean,
+  transformCacheKey?: string,
+) => {
   const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}${transformCacheKey ?? ''}`;
+  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}${
+    transformCacheKey ?? ''
+  }`;
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
