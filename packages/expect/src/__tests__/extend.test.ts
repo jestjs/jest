@@ -65,6 +65,7 @@ declare module '../types' {
 
     shouldNotError(): R;
     toFailWithoutMessage(): R;
+    insideError(received: number): R;
     toBeOne(): R;
     toAllowOverridingExistingMatcher(): R;
   }
@@ -102,6 +103,21 @@ it('exposes matcherUtils in context', () => {
       const message = pass
         ? () => 'expected this.utils to be defined in an extend call'
         : () => 'expected this.utils not to be defined in an extend call';
+
+      return {message, pass};
+    },
+  });
+
+  jestExpect('test').shouldNotError();
+});
+
+it('exposes internalMatcher inside matcher context', () => {
+  jestExpect.extend({
+    shouldNotError(_actual: unknown) {
+      const pass: boolean = this.equals(this.matchers, Object.freeze(matchers));
+      const message = pass
+        ? () => 'expected this.matchers to be defined in an extend call'
+        : () => 'expected this.matchers not to be defined in an extend call';
 
       return {message, pass};
     },
@@ -229,19 +245,4 @@ it('throws descriptive errors for invalid matchers', () => {
   ).toThrow(
     'expect.extend: `default` is not a valid matcher. Must be a function, is "string"',
   );
-});
-
-it('exposes matchers in context', () => {
-  jestExpect.extend({
-    shouldNotError(_actual: unknown) {
-      const pass: boolean = this.equals(this.matchers, matchers);
-      const message = pass
-        ? () => 'expected this.matchers to be defined in an extend call'
-        : () => 'expected this.matchers not to be defined in an extend call';
-
-      return {message, pass};
-    },
-  });
-
-  jestExpect('test').shouldNotError();
 });

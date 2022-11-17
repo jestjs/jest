@@ -40,7 +40,6 @@ import toThrowMatchers, {
 } from './toThrowMatchers';
 import type {
   AsyncExpectationResult,
-  CustomMatcherContext,
   Expect,
   ExpectationResult,
   MatcherContext,
@@ -284,6 +283,7 @@ const makeThrowingMatcher = (
       // failures in a test.
       dontThrow: () => (throws = false),
       equals,
+      matchers,
       utils,
     };
 
@@ -360,15 +360,7 @@ const makeThrowingMatcher = (
             // in the stack trace, so that it can correctly get the custom matcher
             // function call.
             (function __EXTERNAL_MATCHER_TRAP__() {
-              return matcher.call<
-                CustomMatcherContext,
-                [unknown, ...Array<unknown>],
-                ExpectationResult
-              >(
-                {...matcherContext, matchers: Object.freeze(matchers)},
-                actual,
-                ...args,
-              );
+              return matcher.call(matcherContext, actual, ...args);
             })();
 
       if (isPromise(potentialResult)) {
