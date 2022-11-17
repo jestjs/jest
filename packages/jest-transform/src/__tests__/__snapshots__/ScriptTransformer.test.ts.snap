@@ -202,11 +202,11 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
   "results": Array [
     Object {
       "type": "return",
-      "value": undefined,
+      "value": "ab",
     },
     Object {
       "type": "return",
-      "value": undefined,
+      "value": "ab",
     },
   ],
 }
@@ -431,11 +431,11 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
   "results": Array [
     Object {
       "type": "return",
-      "value": undefined,
+      "value": "ab",
     },
     Object {
       "type": "return",
-      "value": undefined,
+      "value": "ab",
     },
   ],
 }

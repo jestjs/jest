@@ -73,7 +73,9 @@ jest
   }))
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
-const mockTestPreprocessorGetCacheKey = jest.mockReturnValue('ab');
+const mockTestPreprocessorGetCacheKey = jest
+  .fn(() => 'ab')
+  .mockReturnValue('ab');
 const escapeStrings = (str: string) => str.replace(/'/, "'");
 const mockTestPreprocessorProcess = jest.fn();
 jest.mock(
@@ -2024,7 +2026,12 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(fs.readFileSync).toHaveBeenCalledTimes(4);
+    /**
+     * 4 times for fetching the file.
+     * 1 time for fetching the cached transform file created by
+     * a previous transformer that returned the same cache key for the file...
+     */
+    expect(fs.readFileSync).toHaveBeenCalledTimes(5);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
