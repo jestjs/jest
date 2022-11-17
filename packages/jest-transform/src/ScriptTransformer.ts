@@ -674,7 +674,9 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const transformOptions = {...options, instrument};
+    const transformCacheKey = fileSource ? this._getCacheKey(fileSource, filename, transformOptions) : undefined;
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, transformCacheKey);
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
       return result;
@@ -683,7 +685,7 @@ class ScriptTransformer {
     result = await this._transformAndBuildScriptAsync(
       filename,
       options,
-      {...options, instrument},
+      transformOptions,
       fileSource,
     );
 
@@ -702,7 +704,9 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    const transformOptions = {...options, instrument};
+    const transformCacheKey = fileSource ? this._getCacheKey(fileSource, filename, transformOptions) : undefined;
+    const scriptCacheKey = getScriptCacheKey(filename, instrument, transformCacheKey);
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
     if (result) {
@@ -712,7 +716,7 @@ class ScriptTransformer {
     result = this._transformAndBuildScript(
       filename,
       options,
-      {...options, instrument},
+      transformOptions,
       fileSource,
     );
 
@@ -976,9 +980,9 @@ const readCacheFile = (cachePath: string): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: string, instrument: boolean) => {
+const getScriptCacheKey = (filename: string, instrument: boolean, transformCacheKey?: string) => {
   const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}`;
+  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}${transformCacheKey ?? ''}`;
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
