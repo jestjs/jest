@@ -73,7 +73,7 @@ jest
   }))
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
-const mockTestPreprocessorGetCacheKey = jest.fn(() => 'ab');
+const mockTestPreprocessorGetCacheKey = jest.fn().mockReturnValue('ab');
 jest.mock(
   'test_preprocessor',
   () => {
