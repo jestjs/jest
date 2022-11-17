@@ -73,13 +73,14 @@ jest
   }))
   .mock('path', () => jest.requireActual<typeof import('path')>('path').posix);
 
+const testPreprocessorGetCacheKey = jest.fn(() => 'ab');
 jest.mock(
   'test_preprocessor',
   () => {
     const escapeStrings = (str: string) => str.replace(/'/, "'");
 
     const transformer: Transformer = {
-      getCacheKey: jest.fn(() => 'ab'),
+      getCacheKey: testPreprocessorGetCacheKey,
       process: (content, filename, config) => ({
         code: (require('dedent') as typeof import('dedent'))`
           const TRANSFORMED = {
@@ -1950,6 +1951,33 @@ describe('ScriptTransformer', () => {
     );
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+  });
+
+  it('regardless of sync/async, does not reuse the in-memory cache if getCacheKey changes', async () => {
+    const scriptTransformer = await createScriptTransformer({
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {}]],
+    });
+
+    testPreprocessorGetCacheKey
+      .mockReturnValueOnce('a')
+      .mockReturnValueOnce('a')
+      .mockReturnValueOnce('b')
+      .mockReturnValueOnce('c')
+      .mockReturnValueOnce('b')
+      .mockReturnValueOnce('a')
+      .mockReturnValueOnce('a');
+
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+
+    expect(fs.readFileSync).toHaveBeenCalledTimes(3);
     expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
   });
 
