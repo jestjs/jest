@@ -22,6 +22,8 @@ export const format = (value: unknown): string =>
 export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
+    : typeof value === 'undefined'
+    ? 'undefined'
     : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {

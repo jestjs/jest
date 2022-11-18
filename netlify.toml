@@ -7,7 +7,7 @@
   publish = "/website/build"
 
 [build.environment]
-  NODE_VERSION = "lts/*"
+  NODE_VERSION = "16"
   NODE_OPTIONS = "--max_old_space_size=4096"
   # default cache
   YARN_ENABLE_GLOBAL_CACHE = "true"
