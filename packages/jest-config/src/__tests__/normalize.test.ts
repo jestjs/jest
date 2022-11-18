@@ -1769,6 +1769,17 @@ describe('Defaults', () => {
   });
 });
 
+describe('colors', () => {
+  it('should pass option through', async () => {
+    const {options} = await normalize(
+      {colors: true, rootDir: '/root/'},
+      {} as Config.Argv,
+    );
+
+    expect(options.colors).toBe(true);
+  });
+});
+
 describe('displayName', () => {
   test.each<{displayName: Config.DisplayName; description: string}>`
     displayName             | description
