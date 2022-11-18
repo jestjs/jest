@@ -1,0 +1,13 @@
+{
+"jest": {
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "**/*.js"
+  ],
+  "coverageThreshold": {
+    "apple.js": {
+      "lines": 100
+    }
+  }
+}
+}

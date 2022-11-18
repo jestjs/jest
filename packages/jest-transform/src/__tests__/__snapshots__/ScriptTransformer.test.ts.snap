@@ -541,13 +541,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
   "results": Array [
     Object {
       "type": "return",
-      "value": Promise {
-        Symbol(async_id_symbol): 11159,
-        Symbol(trigger_async_id_symbol): 11147,
-        Symbol(destroyed): Object {
-          "destroyed": false,
-        },
-      },
+      "value": Promise {},
     },
   ],
 }
