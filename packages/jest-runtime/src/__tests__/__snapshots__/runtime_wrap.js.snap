@@ -6,11 +6,6 @@ exports[`Runtime wrapCodeInModuleWrapper generates the correct args for the modu
 `;
 
 exports[`Runtime wrapCodeInModuleWrapper injects "extra globals" 1`] = `
-"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){module.exports = "Hello!"
-}});"
-`;
-
-exports[`Runtime wrapCodeInModuleWrapper injects "extra globals" 2`] = `
 "({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest,Math){module.exports = "Hello!"
 }});"
 `;
