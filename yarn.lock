@@ -14932,9 +14932,9 @@ __metadata:
   linkType: hard
 
 "mock-fs@npm:^5.1.2":
-  version: 5.1.4
-  resolution: "mock-fs@npm:5.1.4"
-  checksum: e5621c9162be71f88ba264c32cbbc2df737b4e243608ca9126f05b6b1410f1ca911e155a36d3785f194b4219438df8fa33d79cd7ef0b8c7701efd0e4a11f0630
+  version: 5.2.0
+  resolution: "mock-fs@npm:5.2.0"
+  checksum: c25835247bd26fa4e0189addd61f98973f61a72741e4d2a5694b143a2069b84978443a7ac0fdb1a71aead99273ec22ff4e9c968de11bbd076db020264c5b8312
   languageName: node
   linkType: hard
 
