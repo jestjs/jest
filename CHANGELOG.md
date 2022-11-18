@@ -1,6 +1,7 @@
 ## main
 
 ### Features
+- `[jest-config]` Add colors configuration option [#13624](https://github.com/facebook/jest/pull/13624)
 
 ### Fixes
 
