@@ -297,15 +297,38 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
       });
 
       test('isNot true, incorrect cause', () => {
-        // less than v16 does not yet support Error.cause
-        if (Number(process.version.split('.')[0].slice(1)) < 16) {
-          expect(true).toBe(true);
-        } else {
+        // only v16 or higher support Error.cause
+        if (Number(process.version.split('.')[0].slice(1)) >= 16) {
           jestExpect(() => {
             throw new Error('good', {cause: errorA});
           }).not[toThrow](expected);
         }
       });
+    });
+
+    describe('fail', () => {
+      // only v16 or higher support Error.cause
+      if (Number(process.version.split('.')[0].slice(1)) >= 16) {
+        test('isNot false, incorrect message', () => {
+          expect(() =>
+            jestExpect(() => {
+              throw new Error('bad', {cause: errorB});
+            })[toThrow](expected),
+          ).toThrow(
+            /^(?=.*Expected message and cause: ).*Received message and cause: /s,
+          );
+        });
+
+        test('isNot true, incorrect cause', () => {
+          expect(() =>
+            jestExpect(() => {
+              throw new Error('good', {cause: errorA});
+            })[toThrow](expected),
+          ).toThrow(
+            /^(?=.*Expected message and cause: ).*Received message and cause: /s,
+          );
+        });
+      }
     });
   });
 
