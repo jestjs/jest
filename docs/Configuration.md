@@ -1399,6 +1399,17 @@ See the [micromatch](https://github.com/micromatch/micromatch) package for detai
 
 See also [`testRegex` [string | array&lt;string&gt;]](#testregex-string--arraystring), but note that you cannot specify both options.
 
+The following is a visualization of the default testMatch: 
+```bash
+├── __tests__
+│   └── component.spec.js # test
+│   └── anything # test
+├── package.json # not test
+├── foo.test.js # test
+├── bar.spec.jsx # test
+└── component.js # not test
+```
+
 :::tip
 
 Each glob pattern is applied in the order they are specified in the config. For example `["!**/__fixtures__/**", "**/__tests__/**/*.js"]` will not exclude `__fixtures__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/__tests__/**/*.js`.
