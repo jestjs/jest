@@ -707,3 +707,35 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
   });
 });
+
+describe('Resolver.getGlobalPaths()', () => {
+  const _path = path;
+  let moduleMap: IModuleMap;
+  beforeEach(() => {
+    moduleMap = ModuleMap.create('/');
+  });
+
+  it('return global paths with npm package', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const cwd = '/temp/project';
+    const globalPaths = resolver.getGlobalPaths(cwd, 'jest');
+    expect(globalPaths.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('return empty with relative path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const cwd = '/temp/project';
+    const globalPaths = resolver.getGlobalPaths(cwd, './module');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return empty without module name', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const cwd = '/temp/project';
+    const globalPaths = resolver.getGlobalPaths(cwd);
+    expect(globalPaths).toStrictEqual([]);
+  });
+});

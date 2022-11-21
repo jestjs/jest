@@ -59,6 +59,7 @@ export default class Resolver {
   private readonly _moduleIDCache: Map<string, string>;
   private readonly _moduleNameCache: Map<string, string>;
   private readonly _modulePathCache: Map<string, Array<string>>;
+  private readonly _globalPathCache: Map<string, Array<string>>;
   private readonly _supportsNativePlatform: boolean;
 
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
@@ -81,6 +82,7 @@ export default class Resolver {
     this._moduleIDCache = new Map();
     this._moduleNameCache = new Map();
     this._modulePathCache = new Map();
+    this._globalPathCache = new Map();
   }
 
   static ModuleNotFoundError = ModuleNotFoundError;
@@ -524,6 +526,30 @@ export default class Resolver {
     }
     this._modulePathCache.set(from, paths);
     return paths;
+  }
+
+  getGlobalPaths(from: string, moduleName?: string): Array<string> {
+    if (!moduleName || moduleName[0] === '.') return [];
+
+    const cachedGlobalPath = this._globalPathCache.get(moduleName);
+    if (cachedGlobalPath) {
+      return cachedGlobalPath;
+    }
+
+    const modulePaths = this.getModulePaths(from);
+    const globalPaths: Array<string> = [];
+
+    const paths = require.resolve.paths(moduleName);
+    if (paths) {
+      // find the rootIndex and remain the global paths
+      const rootIndex = paths.findIndex(
+        path => path === modulePaths[modulePaths.length - 1],
+      );
+      globalPaths.push(...(rootIndex > -1 ? paths.slice(rootIndex + 1) : []));
+    }
+
+    this._globalPathCache.set(moduleName, globalPaths);
+    return globalPaths;
   }
 
   getModuleID(
