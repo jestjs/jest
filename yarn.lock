@@ -2736,7 +2736,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect-utils@workspace:packages/expect-utils"
   dependencies:
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
     jest-matcher-utils: "workspace:^"
@@ -2748,7 +2748,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/expect@workspace:packages/jest-expect"
   dependencies:
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     expect: "workspace:^"
     jest-snapshot: "workspace:^"
     tsd-lite: ^0.6.0
@@ -2761,7 +2761,7 @@ __metadata:
   dependencies:
     "@jest/test-utils": "workspace:^"
     "@jest/types": "workspace:^"
-    "@sinonjs/fake-timers": ^9.1.2
+    "@sinonjs/fake-timers": ^10.0.0
     "@types/node": "*"
     "@types/sinonjs__fake-timers": ^8.1.2
     jest-message-util: "workspace:^"
@@ -2797,7 +2797,7 @@ __metadata:
     "@lerna-lite/cli": ^1.11.3
     "@microsoft/api-extractor": ^7.33.4
     "@tsconfig/node14": ^1.0.3
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/babel__core": ^7.1.14
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.2
@@ -2878,7 +2878,7 @@ __metadata:
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
     "@jridgewell/trace-mapping": ^0.3.15
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
@@ -3045,7 +3045,7 @@ __metadata:
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
     "@jest/schemas": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
@@ -3357,27 +3357,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.25.1":
-  version: 7.25.1
-  resolution: "@microsoft/api-extractor-model@npm:7.25.1"
+"@microsoft/api-extractor-model@npm:7.25.2":
+  version: 7.25.2
+  resolution: "@microsoft/api-extractor-model@npm:7.25.2"
   dependencies:
-    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.2
-  checksum: fd63f794358b92de84dda95c545ad8147ebd0c71bb4aff63d2ef4f727243d5de7251aa3301f3f917dda1e84248683d9a569a5aa884124fc1f1f6e40444ba8633
+  checksum: b91782eacbe5cc519bbb048289237bef4fdd49fcd2e5c9bd716d6ee63360d1ab4279c0b64deeb83b5df54b074372edb64631fb7d2395757980240031c83f3097
   languageName: node
   linkType: hard
 
 "@microsoft/api-extractor@npm:^7.33.4":
-  version: 7.33.4
-  resolution: "@microsoft/api-extractor@npm:7.33.4"
+  version: 7.33.6
+  resolution: "@microsoft/api-extractor@npm:7.33.6"
   dependencies:
-    "@microsoft/api-extractor-model": 7.25.1
-    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/api-extractor-model": 7.25.2
+    "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.2
     "@rushstack/rig-package": 0.3.17
-    "@rushstack/ts-command-line": 4.13.0
+    "@rushstack/ts-command-line": 4.13.1
     colors: ~1.2.1
     lodash: ~4.17.15
     resolve: ~1.17.0
@@ -3386,7 +3386,7 @@ __metadata:
     typescript: ~4.8.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: 9462c36c00b3b718ddc00a3cee98236c1ec322244a677485ccec00f7bc2d487ac0e08610870db3aa72eb18eabd7d918c9e7f9909383b4eb56eb055471895c72b
+  checksum: f279f316e9dbabb269afde1f8b06068f60d8e3bb3969185758218b8a5a54adac99f563eb5ca9dd75f4028c774613e0246fc5fb0e29ae1cb9576ef912fbae7cba
   languageName: node
   linkType: hard
 
@@ -3399,13 +3399,6 @@ __metadata:
     jju: ~1.4.0
     resolve: ~1.19.0
   checksum: 12b0d703154076bcaac75ca42e804e4fc292672396441e54346d7eadd0d6b57f90980eda2b1bab89b224af86da34a2389f9054002e282011e795ca5919a4386f
-  languageName: node
-  linkType: hard
-
-"@microsoft/tsdoc@npm:0.14.1":
-  version: 0.14.1
-  resolution: "@microsoft/tsdoc@npm:0.14.1"
-  checksum: e4ad038ccff2cd96e0d53ee42e2136f0f5a925b16cfda14261f1c2eb55ba0088a0e3b08ff819b476ddc69b2242a391925fab7f6ae2afabb19b96f87e19c114fc
   languageName: node
   linkType: hard
 
@@ -3972,15 +3965,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.13.0":
-  version: 4.13.0
-  resolution: "@rushstack/ts-command-line@npm:4.13.0"
+"@rushstack/ts-command-line@npm:4.13.1":
+  version: 4.13.1
+  resolution: "@rushstack/ts-command-line@npm:4.13.1"
   dependencies:
     "@types/argparse": 1.0.38
     argparse: ~1.0.9
     colors: ~1.2.1
     string-argv: ~0.3.1
-  checksum: a5b488d51f5d06bdb1e4aa03d6826049187adc00ddb5aad4e7559f48981d036fb5811f03572831f8026e87c262422ef9afb7c90a0d05130bdb80b239db02f415
+  checksum: fea24b2549ecb7d3409b6b485d7c58bf8af8f8d1dd19c43a6b3532c45579ffc546bc4533b5db29c91ae1716581fdee4cb725f6a81ecb300e902ef06600e59f1d
   languageName: node
   linkType: hard
 
@@ -4021,21 +4014,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/commons@npm:^1.7.0":
-  version: 1.8.3
-  resolution: "@sinonjs/commons@npm:1.8.3"
+"@sinonjs/commons@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@sinonjs/commons@npm:2.0.0"
   dependencies:
     type-detect: 4.0.8
-  checksum: 6159726db5ce6bf9f2297f8427f7ca5b3dff45b31e5cee23496f1fa6ef0bb4eab878b23fb2c5e6446381f6a66aba4968ef2fc255c1180d753d4b8c271636a2e5
+  checksum: 5023ba17edf2b85ed58262313b8e9b59e23c6860681a9af0200f239fe939e2b79736d04a260e8270ddd57196851dde3ba754d7230be5c5234e777ae2ca8af137
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^9.1.2":
-  version: 9.1.2
-  resolution: "@sinonjs/fake-timers@npm:9.1.2"
+"@sinonjs/fake-timers@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@sinonjs/fake-timers@npm:10.0.0"
   dependencies:
-    "@sinonjs/commons": ^1.7.0
-  checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
+    "@sinonjs/commons": ^2.0.0
+  checksum: bd56073c49bf4c3c133a3a44bad6ad5852ddefdad11dfd1b523b57294ecf0f605919aecc16be0db78ac4d4232a96c5b97a53b5f78abdd9ba20961fd68b168d48
   languageName: node
   linkType: hard
 
@@ -4306,10 +4299,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:~4.8.2":
-  version: 4.8.4
-  resolution: "@tsd/typescript@npm:4.8.4"
-  checksum: f820d4e382bbfb59465ff4547366ec1dba10989a115ce8f23e7ecf9db20a26f8ce371bccee0da1eb28ebeac129553ab9b0f3429a31deb4b0126bd41f7a2cb9e3
+"@tsd/typescript@npm:^4.9.0":
+  version: 4.9.3
+  resolution: "@tsd/typescript@npm:4.9.3"
+  checksum: 35d4d89583c848b1d8e02ea231d5dc8c63de6c647c2f39d3a8f055fd34b93e827a28a981455b42975f40c0696ea9ea0dc306bd25f852331719f0a92c53b38ff4
   languageName: node
   linkType: hard
 
@@ -9628,7 +9621,7 @@ __metadata:
     "@fast-check/jest": ^1.3.0
     "@jest/expect-utils": "workspace:^"
     "@jest/test-utils": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     chalk: ^4.0.0
     immutable: ^4.0.0
     jest-get-type: "workspace:^"
@@ -12614,7 +12607,7 @@ __metadata:
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/node": "*"
     jest-util: "workspace:^"
     tsd-lite: ^0.6.0
@@ -12697,7 +12690,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/graceful-fs": ^4.1.3
     "@types/pnpapi": ^0.0.2
     "@types/resolve": ^1.20.2
@@ -12737,7 +12730,7 @@ __metadata:
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
@@ -12838,7 +12831,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/babel__traverse": ^7.0.6
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
@@ -13000,7 +12993,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
@@ -13051,7 +13044,7 @@ __metadata:
   dependencies:
     "@jest/core": "workspace:^"
     "@jest/types": "workspace:^"
-    "@tsd/typescript": ~4.8.2
+    "@tsd/typescript": ^4.9.0
     import-local: ^3.0.2
     jest-cli: "workspace:^"
     tsd-lite: ^0.6.0
@@ -20052,7 +20045,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.8.2, typescript@npm:~4.8.4":
+"typescript@npm:^4.8.2":
+  version: 4.9.3
+  resolution: "typescript@npm:4.9.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
+  languageName: node
+  linkType: hard
+
+"typescript@npm:~4.8.4":
   version: 4.8.4
   resolution: "typescript@npm:4.8.4"
   bin:
@@ -20062,7 +20065,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
+  version: 4.9.3
+  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=701156"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: ef65c22622d864497d0a0c5db693523329b3284c15fe632e93ad9aa059e8dc38ef3bd767d6f26b1e5ecf9446f49bd0f6c4e5714a2eeaf352805dc002479843d1
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:
