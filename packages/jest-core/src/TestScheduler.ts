@@ -12,6 +12,7 @@ import {
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
+  GithubActionsLogsReporter,
   BaseReporter as JestReporter,
   NotifyReporter,
   Reporter,
@@ -342,9 +343,15 @@ class TestScheduler {
       switch (reporter) {
         case 'default':
           summary = true;
-          verbose
-            ? this.addReporter(new VerboseReporter(this._globalConfig))
-            : this.addReporter(new DefaultReporter(this._globalConfig));
+          if (verbose) {
+            this.addReporter(new VerboseReporter(this._globalConfig));
+          } else {
+            GITHUB_ACTIONS
+              ? this.addReporter(
+                  new GithubActionsLogsReporter(this._globalConfig),
+                )
+              : this.addReporter(new DefaultReporter(this._globalConfig));
+          }
           break;
         case 'github-actions':
           GITHUB_ACTIONS && this.addReporter(new GitHubActionsReporter());
