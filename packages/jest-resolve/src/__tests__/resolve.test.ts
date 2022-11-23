@@ -723,7 +723,15 @@ describe('Resolver.getGlobalPaths()', () => {
     expect(globalPaths.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('return empty with relative path', () => {
+  it('return empty array with builtin module', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const cwd = '/temp/project';
+    const globalPaths = resolver.getGlobalPaths(cwd, 'fs');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return empty array with relative path', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const cwd = '/temp/project';
@@ -731,7 +739,7 @@ describe('Resolver.getGlobalPaths()', () => {
     expect(globalPaths).toStrictEqual([]);
   });
 
-  it('return empty without module name', () => {
+  it('return empty array without module name', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const cwd = '/temp/project';
