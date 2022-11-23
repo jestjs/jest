@@ -65,7 +65,6 @@ declare module '../types' {
 
     shouldNotError(): R;
     toFailWithoutMessage(): R;
-    insideError(received: number): R;
     toBeOne(): R;
     toAllowOverridingExistingMatcher(): R;
   }
