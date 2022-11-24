@@ -10,6 +10,7 @@ import {
   CoverageReporter,
   DefaultReporter,
   GitHubActionsReporter,
+  GithubActionsLogsReporter,
   NotifyReporter,
   SummaryReporter,
   VerboseReporter,
@@ -59,7 +60,7 @@ beforeEach(() => {
   spyShouldRunInBand.mockClear();
 });
 
-describe('reporters', () => {
+describe('reporters with GITHUB_ACTIONS = true', () => {
   const CustomReporter = require('/custom-reporter.js');
 
   afterEach(() => {
@@ -75,7 +76,8 @@ describe('reporters', () => {
       {},
     );
 
-    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -93,6 +95,7 @@ describe('reporters', () => {
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -109,7 +112,8 @@ describe('reporters', () => {
       {},
     );
 
-    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -128,6 +132,7 @@ describe('reporters', () => {
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(1);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -147,7 +152,8 @@ describe('reporters', () => {
       {},
     );
 
-    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(1);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -165,7 +171,198 @@ describe('reporters', () => {
       {},
     );
 
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(1);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('sets up coverage reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        collectCoverage: true,
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(1);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('allows enabling summary reporter separately', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['summary', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('sets up custom reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [
+          ['default', {}],
+          ['/custom-reporter.js', {}],
+        ],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(1);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+    expect(CustomReporter).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('reporters with GITHUB_ACTIONS = false', () => {
+  const CustomReporter = require('/custom-reporter.js');
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  beforeAll(() => {
+    const ci = require('ci-info');
+    ci.GITHUB_ACTIONS = false;
+  });
+
+  afterAll(() => {
+    const ci = require('ci-info');
+    ci.GITHUB_ACTIONS = true;
+  });
+
+  test('works with default value', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: undefined,
+      }),
+      {},
+      {},
+    );
+
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('does not enable any reporters, if empty list is passed', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(0);
+  });
+
+  test('sets up default reporters', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('sets up verbose reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [['default', {}]],
+        verbose: true,
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(1);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('does not set up github actions reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        reporters: [
+          ['default', {}],
+          ['github-actions', {}],
+        ],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
+    expect(VerboseReporter).toHaveBeenCalledTimes(0);
+    expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
+    expect(NotifyReporter).toHaveBeenCalledTimes(0);
+    expect(CoverageReporter).toHaveBeenCalledTimes(0);
+    expect(SummaryReporter).toHaveBeenCalledTimes(1);
+  });
+
+  test('sets up notify reporter', async () => {
+    await createTestScheduler(
+      makeGlobalConfig({
+        notify: true,
+        reporters: [['default', {}]],
+      }),
+      {},
+      {},
+    );
+
+    expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(1);
@@ -184,6 +381,7 @@ describe('reporters', () => {
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -201,6 +399,7 @@ describe('reporters', () => {
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(0);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
@@ -221,6 +420,7 @@ describe('reporters', () => {
     );
 
     expect(DefaultReporter).toHaveBeenCalledTimes(1);
+    expect(GithubActionsLogsReporter).toHaveBeenCalledTimes(0);
     expect(VerboseReporter).toHaveBeenCalledTimes(0);
     expect(GitHubActionsReporter).toHaveBeenCalledTimes(0);
     expect(NotifyReporter).toHaveBeenCalledTimes(0);
