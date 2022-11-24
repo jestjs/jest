@@ -74,12 +74,13 @@ export default function nodeModulesPaths(
 export function findGlobalPaths(): Array<string> {
   const parsed = path.parse(process.cwd());
   const prefix = parsed.root;
+  const globalPath = path.join(prefix, 'node_modules');
   const resolvePaths = require.resolve.paths('/');
 
   if (resolvePaths) {
     // find the rootIndex and remain the global paths
     const rootIndex = resolvePaths.findIndex(
-      resolvePath => resolvePath === `${prefix}node_modules`,
+      resolvePath => resolvePath === globalPath,
     );
     return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
   }
