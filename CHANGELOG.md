@@ -11,6 +11,7 @@
 - `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 - `[jest-transform]` Support for asynchronous `createTransformer` ([#13762](https://github.com/facebook/jest/pull/13762))
+- `[@jest/reporters]` Add new reporter for Github Actions runs with automatic log folding and use it as default when in a Github Actions environment ([#13626](https://github.com/facebook/jest/pull/13626))
 
 ### Fixes
 
