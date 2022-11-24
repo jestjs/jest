@@ -50,6 +50,31 @@ export default class GithubActionsLogsReporter extends DefaultReporter {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  override onRunComplete(): void {}
+
+  override onRunStart(
+    _aggregatedResults: AggregatedResult,
+    _options: ReporterOnStartOptions,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  ): void {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  override onTestStart(_test: Test): void {}
+
+  override onTestCaseResult(
+    _test: Test,
+    _testCaseResult: AssertionResult,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  ): void {}
+
+  override testFinished(
+    _config: ProjectConfig,
+    _testResult: TestResult,
+    _aggregatedResults: AggregatedResult,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  ): void {}
+
   __isLastTestSuite(results: AggregatedResult): boolean {
     const passedTestSuites = results.numPassedTestSuites;
     const failedTestSuites = results.numFailedTestSuites;
