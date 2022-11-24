@@ -1423,7 +1423,7 @@ export default class Runtime {
       return null;
     }
     const modulePaths = this._resolver.getModulePaths(fromDir);
-    const globalPaths = this._resolver.getGlobalPaths(fromDir, moduleName);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
     return [...modulePaths, ...globalPaths];
   }
 
@@ -1464,10 +1464,10 @@ export default class Runtime {
         return moduleRegistry.get(key) || null;
       },
     });
-    module.paths = [
-      ...this._resolver.getModulePaths(module.path),
-      ...this._resolver.getGlobalPaths(module.path, moduleName),
-    ];
+    const modulePaths = this._resolver.getModulePaths(module.path);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    module.paths = [...modulePaths, ...globalPaths];
+
     Object.defineProperty(module, 'require', {
       value: this._createRequireImplementation(module, options),
     });
