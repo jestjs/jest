@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+import type {ProjectConfig} from '@jest/types/src/Config';
 import chalk = require('chalk');
 import type {
   AggregatedResult,
@@ -7,6 +15,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import DefaultReporter from './DefaultReporter';
+import type {ReporterOnStartOptions} from './types';
 
 type performaceInfo = {
   end: number;
@@ -36,6 +45,7 @@ type resultTree = {
 };
 
 export default class GithubActionsLogsReporter extends DefaultReporter {
+  // copied from https://github.com/MatteoH2O1999/github-actions-jest-reporter/blob/master/src/gha.reporter.js
   override onTestResult(
     test: Test,
     testResult: TestResult,
