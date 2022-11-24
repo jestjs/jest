@@ -61,7 +61,7 @@ export default class GithubActionsLogsReporter extends DefaultReporter {
       return true;
     } else {
       throw new Error(
-        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/MatteoH2O1999/github-actions-jest-reporter/issues`,
+        `Sum(${computedTotal}) of passed (${passedTestSuites}) and failed (${failedTestSuites}) test suites is greater than the total number of test suites (${totalTestSuites}). Please report the bug at https://github.com/facebook/jest/issues`,
       );
     }
   }
