@@ -13,7 +13,7 @@ import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver, {PackageFilter} from '../defaultResolver';
-import nodeModulesPaths from '../nodeModulesPaths';
+import nodeModulesPaths, {findGlobalPaths} from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
@@ -708,6 +708,11 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   });
 });
 
+describe('findGlobalPaths', () => {
+  const paths = findGlobalPaths();
+  expect(paths.length).toBeGreaterThanOrEqual(1);
+});
+
 describe('Resolver.getGlobalPaths()', () => {
   const _path = path;
   let moduleMap: IModuleMap;
@@ -718,32 +723,35 @@ describe('Resolver.getGlobalPaths()', () => {
   it('return global paths with npm package', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
-    const cwd = '/temp/project';
-    const globalPaths = resolver.getGlobalPaths(cwd, 'jest');
+    const globalPaths = resolver.getGlobalPaths('jest');
     expect(globalPaths.length).toBeGreaterThanOrEqual(1);
   });
 
   it('return empty array with builtin module', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
-    const cwd = '/temp/project';
-    const globalPaths = resolver.getGlobalPaths(cwd, 'fs');
+    const globalPaths = resolver.getGlobalPaths('fs');
     expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return empty array with absolute path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('/');
+    expect(globalPaths.length).toBeGreaterThanOrEqual(1);
   });
 
   it('return empty array with relative path', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
-    const cwd = '/temp/project';
-    const globalPaths = resolver.getGlobalPaths(cwd, './module');
+    const globalPaths = resolver.getGlobalPaths('./');
     expect(globalPaths).toStrictEqual([]);
   });
 
   it('return empty array without module name', () => {
     jest.doMock('path', () => _path.posix);
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
-    const cwd = '/temp/project';
-    const globalPaths = resolver.getGlobalPaths(cwd);
+    const globalPaths = resolver.getGlobalPaths();
     expect(globalPaths).toStrictEqual([]);
   });
 });
