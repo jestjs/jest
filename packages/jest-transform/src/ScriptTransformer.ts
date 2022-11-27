@@ -111,7 +111,6 @@ class ScriptTransformer {
   }
 
   private _buildCacheKeyFromFileInfo(
-    configString: string,
     fileData: string,
     filename: string,
     transformOptions: TransformOptions,
@@ -163,7 +162,6 @@ class ScriptTransformer {
     }
 
     return this._buildCacheKeyFromFileInfo(
-      configString,
       fileData,
       filename,
       transformOptions,
@@ -203,7 +201,6 @@ class ScriptTransformer {
     }
 
     return this._buildCacheKeyFromFileInfo(
-      configString,
       fileData,
       filename,
       transformOptions,
