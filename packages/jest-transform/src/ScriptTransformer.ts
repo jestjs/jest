@@ -111,6 +111,7 @@ class ScriptTransformer {
   }
 
   private _buildCacheKeyFromFileInfo(
+    configString: string,
     fileData: string,
     filename: string,
     transformOptions: TransformOptions,
@@ -119,6 +120,7 @@ class ScriptTransformer {
     if (transformerCacheKey != null) {
       return createHash('sha1')
         .update(transformerCacheKey)
+        .update(transformOptions.configString)
         .update(CACHE_VERSION)
         .digest('hex')
         .substring(0, 32);
@@ -161,6 +163,7 @@ class ScriptTransformer {
     }
 
     return this._buildCacheKeyFromFileInfo(
+      configString,
       fileData,
       filename,
       transformOptions,
@@ -200,6 +203,7 @@ class ScriptTransformer {
     }
 
     return this._buildCacheKeyFromFileInfo(
+      configString,
       fileData,
       filename,
       transformOptions,

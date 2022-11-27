@@ -2026,13 +2026,27 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    /**
-     * 4 times for fetching the file.
-     * 1 time for fetching the cached transform file created by
-     * a previous transformer that returned the same cache key for the file...
-     */
-    expect(fs.readFileSync).toHaveBeenCalledTimes(5);
-    expect(fs.readFileSync).toHaveBeenCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toHaveBeenCalledTimes(4);
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      1,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      2,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      3,
+      '/fruits/banana.js',
+      'utf8',
+    );
+    expect(fs.readFileSync).toHaveBeenNthCalledWith(
+      4,
+      '/fruits/banana.js',
+      'utf8',
+    );
   });
 
   it('preload transformer when using `createScriptTransformer`', async () => {
