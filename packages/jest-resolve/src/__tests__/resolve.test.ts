@@ -13,7 +13,7 @@ import {IModuleMap, ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
 import defaultResolver, {PackageFilter} from '../defaultResolver';
-import nodeModulesPaths, {findGlobalPaths} from '../nodeModulesPaths';
+import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 

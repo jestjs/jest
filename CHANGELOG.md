@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+
 ### Chore & Maintenance
 
 - `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))

@@ -71,20 +71,16 @@ export default function nodeModulesPaths(
   return options.paths ? dirs.concat(options.paths) : dirs;
 }
 
-export function findGlobalPaths(): Array<string> {
-  const parsed = path.parse(process.cwd());
-  const prefix = parsed.root;
-  const globalPath = path.join(prefix, 'node_modules');
+function findGlobalPaths(): Array<string> {
+  const {root} = path.parse(process.cwd());
+  const globalPath = path.join(root, 'node_modules');
   const resolvePaths = require.resolve.paths('/');
 
   if (resolvePaths) {
-    // find the rootIndex and remain the global paths
-    const rootIndex = resolvePaths.findIndex(
-      resolvePath => resolvePath === globalPath,
-    );
+    // the global paths start one after the root node_modules
+    const rootIndex = resolvePaths.indexOf(globalPath);
     return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
   }
   return [];
 }
-
 export const GlobalPaths = findGlobalPaths();
