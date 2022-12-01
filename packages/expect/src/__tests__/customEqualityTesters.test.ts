@@ -138,7 +138,7 @@ describe('without custom equality testers', () => {
   });
 
   it('spy matchers do not pass different special objects', () => {
-    const mockFn = jest.fn(() => specialReturn1);
+    const mockFn: (...args: Array<any>) => any = jest.fn(() => specialReturn1);
     mockFn(...testArgs);
 
     expect(mockFn).not.toHaveBeenCalledWith(...expectedArgs);
@@ -201,7 +201,7 @@ describe('with custom equality testers', () => {
   });
 
   it('spy matchers pass different special objects', () => {
-    const mockFn = jest.fn(() => specialReturn1);
+    const mockFn: (...args: Array<any>) => any = jest.fn(() => specialReturn1);
     mockFn(...testArgs);
 
     expect(mockFn).toHaveBeenCalledWith(...expectedArgs);
