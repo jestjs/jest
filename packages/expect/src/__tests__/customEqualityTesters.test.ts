@@ -14,10 +14,10 @@ const specialObjSymbol = Symbol('special test object type');
 
 interface SpecialObject {
   $$special: symbol;
-  value: number;
+  value: number | string;
 }
 
-function createSpecialObject(value: number) {
+function createSpecialObject(value: number | string) {
   return {
     [specialObjPropName]: specialObjSymbol,
     value,
@@ -55,6 +55,17 @@ function* toIterator<T>(array: Array<T>): Iterator<T> {
   }
 }
 
+const specialArg1 = createSpecialObject('arg1');
+const specialArg2 = createSpecialObject('arg2');
+const specialArg3 = createSpecialObject('arg3');
+const specialArg4 = createSpecialObject('arg4');
+const specialReturn1 = createSpecialObject('return1');
+const specialReturn2 = createSpecialObject('return2');
+
+const testArgs = [specialArg1, specialArg2, [specialArg3, specialArg4]];
+// Swap the order of args to assert customer tester does not affect test
+const expectedArgs = [specialArg2, specialArg1, [specialArg4, specialArg3]];
+
 it('has no custom testers as default', () => {
   const special1 = createSpecialObject(1);
   const special2 = createSpecialObject(2);
@@ -91,6 +102,18 @@ it('has no custom testers as default', () => {
   expect({a: 1, b: {c: special1}}).not.toEqual(
     expect.objectContaining({b: {c: special2}}),
   );
+
+  // Spy matchers
+  const mockFn = jest.fn(() => specialReturn1);
+  mockFn(...testArgs);
+
+  expect(mockFn).not.toHaveBeenCalledWith(...expectedArgs);
+  expect(mockFn).not.toHaveBeenLastCalledWith(...expectedArgs);
+  expect(mockFn).not.toHaveBeenNthCalledWith(1, ...expectedArgs);
+
+  expect(mockFn).not.toHaveReturnedWith(specialReturn2);
+  expect(mockFn).not.toHaveLastReturnedWith(specialReturn2);
+  expect(mockFn).not.toHaveNthReturnedWith(1, specialReturn2);
 });
 
 describe('with custom equality testers', () => {
@@ -150,7 +173,16 @@ describe('with custom equality testers', () => {
     );
   });
 
-  // TODO: Add tests for other matchers
-  // TODO: Add tests for built-in custom testers (e.g. iterableEquality, subsetObjectEquality)
-  // TODO: Add tests for extended expect matchers that use this.equal();
+  it('spy matchers with custom testers', () => {
+    const mockFn = jest.fn(() => specialReturn1);
+    mockFn(...testArgs);
+
+    expect(mockFn).toHaveBeenCalledWith(...expectedArgs);
+    expect(mockFn).toHaveBeenLastCalledWith(...expectedArgs);
+    expect(mockFn).toHaveBeenNthCalledWith(1, ...expectedArgs);
+
+    expect(mockFn).toHaveReturnedWith(specialReturn2);
+    expect(mockFn).toHaveLastReturnedWith(specialReturn2);
+    expect(mockFn).toHaveNthReturnedWith(1, specialReturn2);
+  });
 });
