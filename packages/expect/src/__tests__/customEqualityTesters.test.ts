@@ -66,6 +66,28 @@ const testArgs = [specialArg1, specialArg2, [specialArg3, specialArg4]];
 // Swap the order of args to assert customer tester does not affect test
 const expectedArgs = [specialArg2, specialArg1, [specialArg4, specialArg3]];
 
+declare module '../types' {
+  interface Matchers<R> {
+    toSpecialObjectEqual(expected: SpecialObject): R;
+  }
+}
+
+jestExpect.extend({
+  toSpecialObjectEqual(expected: SpecialObject, actual: SpecialObject) {
+    const result = this.equals(
+      expected,
+      actual,
+      jestExpect.customEqualityTesters,
+    );
+
+    return {
+      message: () =>
+        `Expected special object: ${expected.value}. Actual special object: ${actual.value}`,
+      pass: result,
+    };
+  },
+});
+
 it('has no custom testers as default', () => {
   const special1 = createSpecialObject(1);
   const special2 = createSpecialObject(2);
@@ -114,6 +136,9 @@ it('has no custom testers as default', () => {
   expect(mockFn).not.toHaveReturnedWith(specialReturn2);
   expect(mockFn).not.toHaveLastReturnedWith(specialReturn2);
   expect(mockFn).not.toHaveNthReturnedWith(1, specialReturn2);
+
+  // Custom matchers
+  expect(special1).not.toSpecialObjectEqual(special2);
 });
 
 describe('with custom equality testers', () => {
@@ -184,5 +209,9 @@ describe('with custom equality testers', () => {
     expect(mockFn).toHaveReturnedWith(specialReturn2);
     expect(mockFn).toHaveLastReturnedWith(specialReturn2);
     expect(mockFn).toHaveNthReturnedWith(1, specialReturn2);
+  });
+
+  it('custom matchers with custom testers', () => {
+    expect(createSpecialObject(1)).toSpecialObjectEqual(createSpecialObject(2));
   });
 });
