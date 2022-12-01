@@ -288,11 +288,13 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-// TODO: Update with customTesters
 export const subsetEquality = (
   object: unknown,
   subset: unknown,
+  customTesters: Array<Tester> = [],
 ): boolean | undefined => {
+  const filteredCustomTesters = customTesters.filter(t => t !== subsetEquality);
+
   // subsetEquality needs to keep track of the references
   // it has already visited to avoid infinite loops in case
   // there are circular references in the subset passed to it.
@@ -306,7 +308,7 @@ export const subsetEquality = (
       return Object.keys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
-            return equals(object[key], subset[key], [iterableEquality]);
+            return equals(object[key], subset[key], filteredCustomTesters);
           }
           seenReferences.set(subset[key], true);
         }
@@ -314,7 +316,7 @@ export const subsetEquality = (
           object != null &&
           hasPropertyInObject(object, key) &&
           equals(object[key], subset[key], [
-            iterableEquality,
+            ...filteredCustomTesters,
             subsetEqualityWithContext(seenReferences),
           ]);
         // The main goal of using seenReference is to avoid circular node on tree.

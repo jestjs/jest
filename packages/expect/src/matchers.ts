@@ -903,7 +903,11 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = equals(received, expected, [iterableEquality, subsetEquality]);
+    const pass = equals(received, expected, [
+      iterableEquality,
+      subsetEquality,
+      ...getCustomEqualityTesters(),
+    ]);
 
     const message = pass
       ? () =>

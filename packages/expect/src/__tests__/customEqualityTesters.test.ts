@@ -84,6 +84,7 @@ it('has no custom testers as default', () => {
     a: special2,
     b: undefined,
   });
+  expect({a: 1, b: {c: special1}}).not.toMatchObject({a: 1, b: {c: special2}});
 });
 
 describe('with custom equality testers', () => {
@@ -127,9 +128,11 @@ describe('with custom equality testers', () => {
       a: special2,
       b: undefined,
     });
+    expect({a: 1, b: {c: special1}}).toMatchObject({
+      a: 1,
+      b: {c: special2},
+    });
   });
-
-  // it('applies custom testers to toMatchObject', () => {});
 
   // TODO: Add tests for other matchers
   // TODO: Add tests for built-in custom testers (e.g. iterableEquality, subsetObjectEquality)
