@@ -97,13 +97,13 @@ export const getPath = (
   };
 };
 
-// TODO: Update with customTesters
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const getObjectSubset = (
   object: any,
   subset: any,
+  customTesters: Array<Tester> = [],
   seenReferences: WeakMap<object, boolean> = new WeakMap(),
 ): any => {
   /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
@@ -111,13 +111,19 @@ export const getObjectSubset = (
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
       return subset.map((sub: any, i: number) =>
-        getObjectSubset(object[i], sub),
+        getObjectSubset(object[i], sub, customTesters),
       );
     }
   } else if (object instanceof Date) {
     return object;
   } else if (isObject(object) && isObject(subset)) {
-    if (equals(object, subset, [iterableEquality, subsetEquality])) {
+    if (
+      equals(object, subset, [
+        ...customTesters,
+        iterableEquality,
+        subsetEquality,
+      ])
+    ) {
       // Avoid unnecessary copy which might return Object instead of subclass.
       return subset;
     }
@@ -130,7 +136,12 @@ export const getObjectSubset = (
       .forEach(key => {
         trimmed[key] = seenReferences.has(object[key])
           ? seenReferences.get(object[key])
-          : getObjectSubset(object[key], subset[key], seenReferences);
+          : getObjectSubset(
+              object[key],
+              subset[key],
+              customTesters,
+              seenReferences,
+            );
       });
 
     if (Object.keys(trimmed).length > 0) {

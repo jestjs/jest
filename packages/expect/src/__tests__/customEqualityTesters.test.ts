@@ -217,19 +217,25 @@ describe('with custom equality testers', () => {
     expect(special1).toSpecialObjectEqual(special2);
   });
 
-  it('toBe recommends toStrictEqual', () => {
+  it('toBe recommends toStrictEqual even with different special objects', () => {
     expect(() => expect(special1).toBe(special2)).toThrow('toStrictEqual');
   });
 
-  it('toBe recommends toEqual', () => {
+  it('toBe recommends toEqual even with different special objects', () => {
     expect(() =>
       expect({a: undefined, b: special1}).toBe({b: special2}),
     ).toThrow('toEqual');
   });
 
-  it('toContains recommends toContainEquals', () => {
+  it('toContains recommends toContainEquals even with different special objects', () => {
     expect(() => expect([special1]).toContain(special2)).toThrow(
       'toContainEqual',
     );
+  });
+
+  it('toMatchObject error shows special objects as equal', () => {
+    expect(() =>
+      expect({a: 1, b: special1}).toMatchObject({a: 2, b: special2}),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

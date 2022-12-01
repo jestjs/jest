@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with custom equality testers toMatchObject error shows special objects as equal 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).</intensity>toMatchObject<dim>(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 1</color>
+<red>+ Received  + 1</color>
+
+<dim>  Object {</intensity>
+<green>-   "a": 2,</color>
+<red>+   "a": 1,</color>
+<dim>    "b": Object {</intensity>
+<dim>      "$$special": Symbol(special test object type),</intensity>
+<dim>      "value": "2",</intensity>
+<dim>    },</intensity>
+<dim>  }</intensity>"
+`;

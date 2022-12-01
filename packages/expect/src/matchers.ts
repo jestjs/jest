@@ -939,7 +939,7 @@ const matchers: MatchersObject = {
           '\n\n' +
           printDiffOrStringify(
             expected,
-            getObjectSubset(received, expected),
+            getObjectSubset(received, expected, getCustomEqualityTesters()),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
