@@ -571,7 +571,7 @@ const matchers: MatchersObject = {
     }
 
     const index = Array.from(received).findIndex(item =>
-      equals(item, expected, [iterableEquality]),
+      equals(item, expected, [iterableEquality, ...getCustomEqualityTesters()]),
     );
     const pass = index !== -1;
 
@@ -752,7 +752,10 @@ const matchers: MatchersObject = {
 
     const pass =
       hasValue && endPropIsDefined
-        ? equals(value, expectedValue, [iterableEquality])
+        ? equals(value, expectedValue, [
+            iterableEquality,
+            ...getCustomEqualityTesters(),
+          ])
         : Boolean(hasEndProp);
 
     const message = pass

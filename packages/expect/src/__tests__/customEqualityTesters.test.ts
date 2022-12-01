@@ -59,6 +59,8 @@ it('has no custom testers as default', () => {
   const special1 = createSpecialObject(1);
   const special2 = createSpecialObject(2);
 
+  // Basic matchers passing
+  expect(special1).toBe(special1);
   expect(special1).toEqual(special1);
   expect([special1, special2]).toEqual([special1, special2]);
   expect(new Set([special1])).toEqual(new Set([special1]));
@@ -67,6 +69,8 @@ it('has no custom testers as default', () => {
     toIterator([special1, special2]),
   );
 
+  // Basic matchers not passing
+  expect(special1).not.toBe(special2);
   expect(createSpecialObject(1)).not.toEqual(createSpecialObject(2));
   expect([special1, special2]).not.toEqual([special2, special1]);
   expect(new Set([special1])).not.toEqual(new Set([special2]));
@@ -90,26 +94,39 @@ describe('with custom equality testers', () => {
     jestExpect.customEqualityTesters = originalTesters;
   });
 
-  it('does not apply custom testers to `toBe`', () => {
-    expect(createSpecialObject(1)).not.toBe(createSpecialObject(1));
-  });
-
-  it('applies custom testers to `toEqual`', () => {
-    expect(createSpecialObject(1)).toEqual(createSpecialObject(1));
-    expect(createSpecialObject(1)).toEqual(createSpecialObject(2));
-  });
-
-  it('applies custom testers to iterableEquality', () => {
+  it('basic matchers customTesters do not apply to', () => {
     const special1 = createSpecialObject(1);
     const special2 = createSpecialObject(2);
 
+    expect(special1).toBe(special1);
+    expect([special1]).toContain(special1);
+
+    expect(special1).not.toBe(special2);
+    expect([special1]).not.toContain(special2);
+  });
+
+  it('basic matchers customTesters do apply to', () => {
+    const special1 = createSpecialObject(1);
+    const special2 = createSpecialObject(2);
+
+    expect(special1).toEqual(special1);
+    expect(special1).toEqual(special2);
     expect([special1, special2]).toEqual([special2, special1]);
     expect(new Map([['key', special1]])).toEqual(new Map([['key', special2]]));
     expect(new Set([special1])).toEqual(new Set([special2]));
     expect(toIterator([special1, special2])).toEqual(
       toIterator([special2, special1]),
     );
+    expect([createSpecialObject(1)]).toContainEqual(createSpecialObject(2));
+    expect({a: createSpecialObject(1)}).toHaveProperty(
+      'a',
+      createSpecialObject(2),
+    );
   });
+
+  // it('applies custom testers to toStrictEqual', () => {});
+
+  // it('applies custom testers to toMatchObject', () => {});
 
   // TODO: Add tests for other matchers
   // TODO: Add tests for built-in custom testers (e.g. iterableEquality, subsetObjectEquality)
