@@ -76,7 +76,7 @@ function eq(
   }
 
   for (let i = 0; i < customTesters.length; i++) {
-    const customTesterResult = customTesters[i](a, b);
+    const customTesterResult = customTesters[i](a, b, customTesters);
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }

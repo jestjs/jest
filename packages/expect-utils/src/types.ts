@@ -6,4 +6,8 @@
  *
  */
 
-export type Tester = (a: any, b: any) => boolean | undefined;
+export type Tester = (
+  a: any,
+  b: any,
+  customTesters: Array<Tester>,
+) => boolean | undefined;

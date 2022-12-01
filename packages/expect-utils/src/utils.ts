@@ -16,6 +16,7 @@ import {
   isImmutableUnorderedSet,
 } from './immutableUtils';
 import {equals, isA} from './jasmineUtils';
+import type {Tester} from './types';
 
 type GetPath = {
   hasEndProp?: boolean;
@@ -96,6 +97,7 @@ export const getPath = (
   };
 };
 
+// TODO: Update with customTesters
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -147,6 +149,7 @@ const hasIterator = (object: any) =>
 export const iterableEquality = (
   a: any,
   b: any,
+  customTesters: Array<Tester> = [],
   /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   aStack: Array<any> = [],
   bStack: Array<any> = [],
@@ -178,7 +181,12 @@ export const iterableEquality = (
   bStack.push(b);
 
   const iterableEqualityWithStack = (a: any, b: any) =>
-    iterableEquality(a, b, [...aStack], [...bStack]);
+    iterableEquality(a, b, [...customTesters], [...aStack], [...bStack]);
+
+  customTesters = [
+    ...customTesters.filter(t => t !== iterableEquality),
+    iterableEqualityWithStack,
+  ];
 
   if (a.size !== undefined) {
     if (a.size !== b.size) {
@@ -189,7 +197,7 @@ export const iterableEquality = (
         if (!b.has(aValue)) {
           let has = false;
           for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, [iterableEqualityWithStack]);
+            const isEqual = equals(aValue, bValue, customTesters);
             if (isEqual === true) {
               has = true;
             }
@@ -213,19 +221,15 @@ export const iterableEquality = (
       for (const aEntry of a) {
         if (
           !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), [iterableEqualityWithStack])
+          !equals(aEntry[1], b.get(aEntry[0]), customTesters)
         ) {
           let has = false;
           for (const bEntry of b) {
-            const matchedKey = equals(aEntry[0], bEntry[0], [
-              iterableEqualityWithStack,
-            ]);
+            const matchedKey = equals(aEntry[0], bEntry[0], customTesters);
 
             let matchedValue = false;
             if (matchedKey === true) {
-              matchedValue = equals(aEntry[1], bEntry[1], [
-                iterableEqualityWithStack,
-              ]);
+              matchedValue = equals(aEntry[1], bEntry[1], customTesters);
             }
             if (matchedValue === true) {
               has = true;
@@ -249,10 +253,7 @@ export const iterableEquality = (
 
   for (const aValue of a) {
     const nextB = bIterator.next();
-    if (
-      nextB.done ||
-      !equals(aValue, nextB.value, [iterableEqualityWithStack])
-    ) {
+    if (nextB.done || !equals(aValue, nextB.value, customTesters)) {
       return false;
     }
   }
@@ -287,6 +288,7 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
+// TODO: Update with customTesters
 export const subsetEquality = (
   object: unknown,
   subset: unknown,
@@ -363,6 +365,7 @@ export const arrayBufferEquality = (
   return true;
 };
 
+// TODO: Update with customTesters
 export const sparseArrayEquality = (
   a: unknown,
   b: unknown,
