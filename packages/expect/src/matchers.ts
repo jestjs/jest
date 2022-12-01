@@ -102,15 +102,15 @@ const matchers: MatchersObject = {
               equals(
                 received,
                 expected,
-                [...toStrictEqualTesters, ...getCustomEqualityTesters()],
+                [...getCustomEqualityTesters(), ...toStrictEqualTesters],
                 true,
               )
             ) {
               deepEqualityName = 'toStrictEqual';
             } else if (
               equals(received, expected, [
-                iterableEquality,
                 ...getCustomEqualityTesters(),
+                iterableEquality,
               ])
             ) {
               deepEqualityName = 'toEqual';
@@ -554,8 +554,8 @@ const matchers: MatchersObject = {
         (!isNot &&
         indexable.findIndex(item =>
           equals(item, expected, [
-            iterableEquality,
             ...getCustomEqualityTesters(),
+            iterableEquality,
           ]),
         ) !== -1
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
@@ -586,7 +586,7 @@ const matchers: MatchersObject = {
     }
 
     const index = Array.from(received).findIndex(item =>
-      equals(item, expected, [iterableEquality, ...getCustomEqualityTesters()]),
+      equals(item, expected, [...getCustomEqualityTesters(), iterableEquality]),
     );
     const pass = index !== -1;
 
@@ -622,8 +622,8 @@ const matchers: MatchersObject = {
     };
 
     const pass = equals(received, expected, [
-      iterableEquality,
       ...getCustomEqualityTesters(),
+      iterableEquality,
     ]);
 
     const message = pass
@@ -768,8 +768,8 @@ const matchers: MatchersObject = {
     const pass =
       hasValue && endPropIsDefined
         ? equals(value, expectedValue, [
-            iterableEquality,
             ...getCustomEqualityTesters(),
+            iterableEquality,
           ])
         : Boolean(hasEndProp);
 
@@ -919,9 +919,9 @@ const matchers: MatchersObject = {
     }
 
     const pass = equals(received, expected, [
+      ...getCustomEqualityTesters(),
       iterableEquality,
       subsetEquality,
-      ...getCustomEqualityTesters(),
     ]);
 
     const message = pass
@@ -959,7 +959,7 @@ const matchers: MatchersObject = {
     const pass = equals(
       received,
       expected,
-      [...toStrictEqualTesters, ...getCustomEqualityTesters()],
+      [...getCustomEqualityTesters(), ...toStrictEqualTesters],
       true,
     );
 

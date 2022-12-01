@@ -60,7 +60,7 @@ const printReceivedArgs = (
 const printCommon = (val: unknown) => DIM_COLOR(stringify(val));
 
 const isEqualValue = (expected: unknown, received: unknown): boolean =>
-  equals(expected, received, [iterableEquality, ...getCustomEqualityTesters()]);
+  equals(expected, received, [...getCustomEqualityTesters(), iterableEquality]);
 
 const isEqualCall = (
   expected: Array<unknown>,
