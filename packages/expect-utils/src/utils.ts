@@ -365,10 +365,10 @@ export const arrayBufferEquality = (
   return true;
 };
 
-// TODO: Update with customTesters
 export const sparseArrayEquality = (
   a: unknown,
   b: unknown,
+  customTesters: Array<Tester> = [],
 ): boolean | undefined => {
   if (!Array.isArray(a) || !Array.isArray(b)) {
     return undefined;
@@ -378,7 +378,12 @@ export const sparseArrayEquality = (
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
   return (
-    equals(a, b, [iterableEquality, typeEquality], true) && equals(aKeys, bKeys)
+    equals(
+      a,
+      b,
+      customTesters.filter(t => t !== sparseArrayEquality),
+      true,
+    ) && equals(aKeys, bKeys)
   );
 };
 

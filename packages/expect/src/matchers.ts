@@ -937,7 +937,12 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, toStrictEqualTesters, true);
+    const pass = equals(
+      received,
+      expected,
+      [...toStrictEqualTesters, ...getCustomEqualityTesters()],
+      true,
+    );
 
     const message = pass
       ? () =>

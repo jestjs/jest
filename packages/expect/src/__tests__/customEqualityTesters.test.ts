@@ -59,7 +59,7 @@ it('has no custom testers as default', () => {
   const special1 = createSpecialObject(1);
   const special2 = createSpecialObject(2);
 
-  // Basic matchers passing
+  // Basic matchers passing with default settings
   expect(special1).toBe(special1);
   expect(special1).toEqual(special1);
   expect([special1, special2]).toEqual([special1, special2]);
@@ -69,7 +69,7 @@ it('has no custom testers as default', () => {
     toIterator([special1, special2]),
   );
 
-  // Basic matchers not passing
+  // Basic matchers not passing with default settings
   expect(special1).not.toBe(special2);
   expect(createSpecialObject(1)).not.toEqual(createSpecialObject(2));
   expect([special1, special2]).not.toEqual([special2, special1]);
@@ -80,6 +80,10 @@ it('has no custom testers as default', () => {
   expect(toIterator([special1, special2])).not.toEqual(
     toIterator([special2, special1]),
   );
+  expect({a: special1, b: undefined}).not.toStrictEqual({
+    a: special2,
+    b: undefined,
+  });
 });
 
 describe('with custom equality testers', () => {
@@ -117,14 +121,13 @@ describe('with custom equality testers', () => {
     expect(toIterator([special1, special2])).toEqual(
       toIterator([special2, special1]),
     );
-    expect([createSpecialObject(1)]).toContainEqual(createSpecialObject(2));
-    expect({a: createSpecialObject(1)}).toHaveProperty(
-      'a',
-      createSpecialObject(2),
-    );
+    expect([special1]).toContainEqual(special2);
+    expect({a: special1}).toHaveProperty('a', special2);
+    expect({a: special1, b: undefined}).toStrictEqual({
+      a: special2,
+      b: undefined,
+    });
   });
-
-  // it('applies custom testers to toStrictEqual', () => {});
 
   // it('applies custom testers to toMatchObject', () => {});
 
