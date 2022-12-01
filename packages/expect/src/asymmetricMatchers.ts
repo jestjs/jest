@@ -14,7 +14,7 @@ import {
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
-import {getState} from './jestMatchersObject';
+import {getCustomEqualityTesters, getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherContext,
@@ -197,7 +197,9 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
-          other.some(another => equals(item, another)),
+          other.some(another =>
+            equals(item, another, getCustomEqualityTesters()),
+          ),
         ));
 
     return this.inverse ? !result : result;
@@ -230,7 +232,11 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
     for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])
+        !equals(
+          this.sample[property],
+          other[property],
+          getCustomEqualityTesters(),
+        )
       ) {
         result = false;
         break;

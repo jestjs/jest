@@ -85,6 +85,12 @@ it('has no custom testers as default', () => {
     b: undefined,
   });
   expect({a: 1, b: {c: special1}}).not.toMatchObject({a: 1, b: {c: special2}});
+
+  // Asymmetric matchers
+  expect([special1]).not.toEqual(expect.arrayContaining([special2]));
+  expect({a: 1, b: {c: special1}}).not.toEqual(
+    expect.objectContaining({b: {c: special2}}),
+  );
 });
 
 describe('with custom equality testers', () => {
@@ -132,6 +138,16 @@ describe('with custom equality testers', () => {
       a: 1,
       b: {c: special2},
     });
+  });
+
+  it('asymmetric matchers with custom testers', () => {
+    const special1 = createSpecialObject(1);
+    const special2 = createSpecialObject(2);
+
+    expect([special1]).toEqual(expect.arrayContaining([special2]));
+    expect({a: 1, b: {c: special1}}).toEqual(
+      expect.objectContaining({b: {c: special2}}),
+    );
   });
 
   // TODO: Add tests for other matchers
