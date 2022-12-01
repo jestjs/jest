@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect, @jest/expect-utils]` Support custom equality testers
+
 ### Fixes
 
 ### Chore & Maintenance
