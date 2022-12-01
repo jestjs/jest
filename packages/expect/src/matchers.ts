@@ -38,6 +38,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
+import {getCustomEqualityTesters} from './jestMatchersObject';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -605,7 +606,10 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, [iterableEquality]);
+    const pass = equals(received, expected, [
+      iterableEquality,
+      ...getCustomEqualityTesters(),
+    ]);
 
     const message = pass
       ? () =>

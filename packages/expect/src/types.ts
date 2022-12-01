@@ -86,6 +86,7 @@ export type ExpectedAssertionsErrors = Array<{
 
 export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
+  customEqualityTesters: Array<Tester>;
   extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;

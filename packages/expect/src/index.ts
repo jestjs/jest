@@ -8,7 +8,12 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
+import {
+  Tester,
+  equals,
+  iterableEquality,
+  subsetEquality,
+} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {isPromise} from 'jest-util';
 import {
@@ -28,8 +33,10 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {
   INTERNAL_MATCHER_FLAG,
+  getCustomEqualityTesters,
   getMatchers,
   getState,
+  setCustomEqualityTesters,
   setMatchers,
   setState,
 } from './jestMatchersObject';
@@ -382,6 +389,18 @@ const makeThrowingMatcher = (
 
 expect.extend = (matchers: MatchersObject) =>
   setMatchers(matchers, false, expect);
+
+expect.customEqualityTesters = []; // To make TypeScript happy
+Object.defineProperty(expect, 'customEqualityTesters', {
+  configurable: true,
+  enumerable: true,
+  get() {
+    return getCustomEqualityTesters();
+  },
+  set(newTesters: Array<Tester>) {
+    setCustomEqualityTesters(newTesters);
+  },
+});
 
 expect.anything = anything;
 expect.any = any;
