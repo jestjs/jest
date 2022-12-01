@@ -98,9 +98,21 @@ const matchers: MatchersObject = {
           if (expectedType !== 'map' && expectedType !== 'set') {
             // If deep equality passes when referential identity fails,
             // but exclude map and set until review of their equality logic.
-            if (equals(received, expected, toStrictEqualTesters, true)) {
+            if (
+              equals(
+                received,
+                expected,
+                [...toStrictEqualTesters, ...getCustomEqualityTesters()],
+                true,
+              )
+            ) {
               deepEqualityName = 'toStrictEqual';
-            } else if (equals(received, expected, [iterableEquality])) {
+            } else if (
+              equals(received, expected, [
+                iterableEquality,
+                ...getCustomEqualityTesters(),
+              ])
+            ) {
               deepEqualityName = 'toEqual';
             }
           }
@@ -541,7 +553,10 @@ const matchers: MatchersObject = {
         }` +
         (!isNot &&
         indexable.findIndex(item =>
-          equals(item, expected, [iterableEquality]),
+          equals(item, expected, [
+            iterableEquality,
+            ...getCustomEqualityTesters(),
+          ]),
         ) !== -1
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
           : '')
