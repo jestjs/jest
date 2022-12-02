@@ -14,7 +14,7 @@ test('mock with 0 calls and default name', () => {
 });
 
 test('mock with 2 calls, 1 return, 1 throw', () => {
-  const fn = jest.fn(value => {
+  const fn = jest.fn((value: number) => {
     if (value % 2 === 0) {
       return value * 2;
     } else {
