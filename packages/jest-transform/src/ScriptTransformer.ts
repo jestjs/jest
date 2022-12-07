@@ -675,19 +675,12 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    let fileContent = fileSource ?? this._cacheFS.get(filename);
-    if (fileContent == null) {
-      fileContent = fs.readFileSync(filename, 'utf8');
-      this._cacheFS.set(filename, fileContent);
-    }
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileContent
-      ? this._getCacheKey(fileContent, filename, transformOptions)
-      : undefined;
-    const scriptCacheKey = getScriptCacheKey(
+    const scriptCacheKey = this.getScriptCacheKey(
+      fileSource,
       filename,
       instrument,
-      transformCacheKey,
+      transformOptions,
     );
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
@@ -717,19 +710,12 @@ class ScriptTransformer {
     const instrument =
       options.coverageProvider === 'babel' &&
       shouldInstrument(filename, options, this._config);
-    let fileContent = fileSource ?? this._cacheFS.get(filename);
-    if (fileContent == null) {
-      fileContent = fs.readFileSync(filename, 'utf8');
-      this._cacheFS.set(filename, fileContent);
-    }
     const transformOptions = {...options, instrument};
-    const transformCacheKey = fileContent
-      ? this._getCacheKey(fileContent, filename, transformOptions)
-      : undefined;
-    const scriptCacheKey = getScriptCacheKey(
+    const scriptCacheKey = this.getScriptCacheKey(
+      fileSource,
       filename,
       instrument,
-      transformCacheKey,
+      transformOptions,
     );
 
     let result = this._cache.transformedFiles.get(scriptCacheKey);
@@ -844,6 +830,26 @@ class ScriptTransformer {
 
     return this._config.transform.length !== 0 && !isIgnored;
   }
+
+  private getScriptCacheKey = (
+    fileSource: undefined | string | null,
+    filename: string,
+    instrument: boolean,
+    transformOptions: any,
+  ) => {
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (fileContent == null) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
+    const transformCacheKey = fileContent
+      ? this._getCacheKey(fileContent, filename, transformOptions)
+      : undefined;
+    const mtime = fs.statSync(filename).mtime;
+    return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}${
+      transformCacheKey ?? ''
+    }`;
+  };
 }
 
 // TODO: do we need to define the generics twice?
@@ -1002,17 +1008,6 @@ const readCacheFile = (cachePath: string): string | null => {
     removeFile(cachePath);
   }
   return fileData;
-};
-
-const getScriptCacheKey = (
-  filename: string,
-  instrument: boolean,
-  transformCacheKey?: string,
-) => {
-  const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}${instrument ? '_instrumented' : ''}${
-    transformCacheKey ?? ''
-  }`;
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
