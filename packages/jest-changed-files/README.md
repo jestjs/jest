@@ -67,6 +67,21 @@ getChangedFilesForRoots(['/path/to/test'], {
 ```
 
 ```javascript
+import {getChangedFilesForRoots} from 'jest-changed-files';
+
+getChangedFilesForRoots(['/path/to/test'], {
+  changedSince: 'main',
+}).then(files => {
+  /*
+  {
+    repos: [],
+    changedFiles: []
+  }
+  */
+});
+```
+
+```javascript
 import {findRepos} from 'jest-changed-files';
 
 findRepos(['/path/to/test']).then(repos => {
