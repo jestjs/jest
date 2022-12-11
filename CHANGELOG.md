@@ -5,7 +5,7 @@
 ### Fixes
 
 - `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
-- `[jest-runtime]` Support Wasm files that import JS resources [#13608](https://github.com/facebook/jest/pull/13608)
+- `[jest-runtime]` Support Wasm files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
 
 ### Chore & Maintenance
 
