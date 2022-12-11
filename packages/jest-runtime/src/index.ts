@@ -1066,7 +1066,13 @@ export default class Runtime {
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, options, moduleRegistry, fromPath);
+      this._execModule(
+        localModule,
+        options,
+        moduleRegistry,
+        fromPath,
+        moduleName,
+      );
     }
     localModule.loaded = true;
   }
@@ -1398,6 +1404,7 @@ export default class Runtime {
   }
 
   private _requireResolvePaths(from: string, moduleName?: string) {
+    const fromDir = path.resolve(from, '..');
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
@@ -1410,12 +1417,14 @@ export default class Runtime {
     }
 
     if (moduleName[0] === '.') {
-      return [path.resolve(from, '..')];
+      return [fromDir];
     }
     if (this._resolver.isCoreModule(moduleName)) {
       return null;
     }
-    return this._resolver.getModulePaths(path.resolve(from, '..'));
+    const modulePaths = this._resolver.getModulePaths(fromDir);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    return [...modulePaths, ...globalPaths];
   }
 
   private _execModule(
@@ -1423,6 +1432,7 @@ export default class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: string | null,
+    moduleName?: string,
   ) {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -1454,8 +1464,10 @@ export default class Runtime {
         return moduleRegistry.get(key) || null;
       },
     });
+    const modulePaths = this._resolver.getModulePaths(module.path);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    module.paths = [...modulePaths, ...globalPaths];
 
-    module.paths = this._resolver.getModulePaths(module.path);
     Object.defineProperty(module, 'require', {
       value: this._createRequireImplementation(module, options),
     });
