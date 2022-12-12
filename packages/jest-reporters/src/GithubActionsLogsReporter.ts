@@ -359,8 +359,4 @@ export default class GithubActionsLogsReporter extends DefaultReporter {
   __endGroup(): void {
     this.log('::endgroup::');
   }
-
-  override log(message: string): void {
-    super.log(`${message}\n`);
-  }
 }

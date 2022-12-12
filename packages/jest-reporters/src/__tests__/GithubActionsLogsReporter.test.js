@@ -220,7 +220,7 @@ describe('Result tree output', () => {
     const testContext = {};
     const expectedOutput = `  ${chalk.bold.red.inverse(
       'FAIL',
-    )} / (20 ms)\n    ${chalk.red(xSymbol)} test (10 ms)\n`;
+    )} / (20 ms)    ${chalk.red(xSymbol)} test (10 ms)`;
     const gha = new GhaReporter();
 
     gha.__printResultTree(generatedTree);
@@ -248,7 +248,7 @@ describe('Result tree output', () => {
     const testContext = {};
     const expectedOutput = `::group::${chalk.bold.green.inverse(
       'PASS',
-    )} / (20 ms)\n  ${chalk.green(ySymbol)} test (10 ms)\n::endgroup::\n`;
+    )} / (20 ms)  ${chalk.green(ySymbol)} test (10 ms)::endgroup::`;
     const gha = new GhaReporter();
 
     gha.__printResultTree(generatedTree);
@@ -281,9 +281,9 @@ describe('Result tree output', () => {
     };
     const testContext = {};
     const expectedOutput =
-      `  ${chalk.bold.red.inverse('FAIL')} / (20 ms)\n` +
-      '    Test describe\n' +
-      `      ${chalk.red(xSymbol)} test (10 ms)\n`;
+      `  ${chalk.bold.red.inverse('FAIL')} / (20 ms)` +
+      '    Test describe' +
+      `      ${chalk.red(xSymbol)} test (10 ms)`;
     const gha = new GhaReporter();
 
     gha.__printResultTree(generatedTree);
@@ -316,10 +316,10 @@ describe('Result tree output', () => {
     };
     const testContext = {};
     const expectedOutput =
-      `::group::${chalk.bold.green.inverse('PASS')} / (20 ms)\n` +
-      '  Test describe\n' +
-      `    ${chalk.green(ySymbol)} test (10 ms)\n` +
-      '::endgroup::\n';
+      `::group::${chalk.bold.green.inverse('PASS')} / (20 ms)` +
+      '  Test describe' +
+      `    ${chalk.green(ySymbol)} test (10 ms)` +
+      '::endgroup::';
     const gha = new GhaReporter();
 
     gha.__printResultTree(generatedTree);
@@ -358,9 +358,9 @@ describe('Reporter interface', () => {
       numTotalTestSuites: 3,
     };
     const expectedOutput =
-      `::group::${chalk.bold.green.inverse('PASS')} test1.js (20 ms)\n` +
-      `  ${chalk.green(ySymbol)} test1 (10 ms)\n` +
-      '::endgroup::\n';
+      `::group::${chalk.bold.green.inverse('PASS')} test1.js (20 ms)` +
+      `  ${chalk.green(ySymbol)} test1 (10 ms)` +
+      '::endgroup::';
     const gha = new GhaReporter();
 
     gha.onTestResult(mockTest, mockTestResult, mockResults);
@@ -399,14 +399,12 @@ describe('Reporter interface', () => {
       testResults: [mockTestResult],
     };
     const expectedOutput =
-      `::group::${chalk.bold.green.inverse('PASS')} test1.js (20 ms)\n` +
-      `  ${chalk.green(ySymbol)} test1 (10 ms)\n` +
-      '::endgroup::\n' +
-      '\n' +
-      '::group::Errors thrown in test1.js\n' +
-      'Failure message\n' +
-      '::endgroup::\n' +
-      '\n';
+      `::group::${chalk.bold.green.inverse('PASS')} test1.js (20 ms)` +
+      `  ${chalk.green(ySymbol)} test1 (10 ms)` +
+      '::endgroup::' +
+      '::group::Errors thrown in test1.js' +
+      'Failure message' +
+      '::endgroup::';
     const gha = new GhaReporter();
 
     gha.onTestResult(mockTest, mockTestResult, mockResults);
