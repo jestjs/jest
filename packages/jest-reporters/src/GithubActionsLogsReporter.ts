@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ProjectConfig} from '@jest/types/src/Config';
 import chalk = require('chalk');
 import type {
   AggregatedResult,
@@ -14,6 +13,7 @@ import type {
   TestContext,
   TestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import DefaultReporter from './DefaultReporter';
 import type {ReporterOnStartOptions} from './types';
 
@@ -79,7 +79,7 @@ export default class GithubActionsLogsReporter extends DefaultReporter {
   ): void {}
 
   override testFinished(
-    _config: ProjectConfig,
+    _config: Config.ProjectConfig,
     _testResult: TestResult,
     _aggregatedResults: AggregatedResult,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
