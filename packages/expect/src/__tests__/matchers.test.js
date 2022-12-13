@@ -711,6 +711,8 @@ describe('.toEqual()', () => {
     [0, Number(0)],
     [Number(0), 0],
     [new Number(0), new Number(0)],
+    [new Date(0), new Date(0)],
+    [new Date(NaN), new Date(NaN)],
     ['abc', 'abc'],
     [String('abc'), 'abc'],
     ['abc', String('abc')],

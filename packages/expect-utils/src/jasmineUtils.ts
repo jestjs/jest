@@ -112,10 +112,9 @@ function eq(
         return Object.is(a.valueOf(), b.valueOf());
       }
     case '[object Date]':
-      // Coerce dates to numeric primitive values. Dates are compared by their
-      // millisecond representations. Note that invalid dates with millisecond representations
-      // of `NaN` are not equivalent.
-      return +a == +b;
+      // Coerce dates to numeric primitive values.
+      // Dates are compared by their millisecond representations.
+      return Object.is(+a, +b);
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
       return a.source === b.source && a.flags === b.flags;

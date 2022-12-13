@@ -2956,6 +2956,20 @@ Expected: not <g>1</>
 
 `;
 
+exports[`.toEqual() {pass: true} expect(1970-01-01T00:00:00.000Z).not.toEqual(1970-01-01T00:00:00.000Z) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>1970-01-01T00:00:00.000Z</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect(Date { NaN }).not.toEqual(Date { NaN }) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>Date { NaN }</>
+
+`;
+
 exports[`.toEqual() {pass: true} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
