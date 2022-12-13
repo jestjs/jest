@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` refactor Checking Date using Object.is ([#13492](https://github.com/facebook/jest/pull/13492))
 - `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 
 ### Chore & Maintenance
