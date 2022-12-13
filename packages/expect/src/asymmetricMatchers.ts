@@ -212,6 +212,98 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
+class NumberGreaterThan extends AsymmetricMatcher<number> {
+  constructor(sample: number, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    const result = isA<number>('Number', other) && this.sample > other;
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}GreaterThan`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}
+
+class NumberGreaterThanOrEqualTo extends AsymmetricMatcher<number> {
+  constructor(sample: number, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    const result = isA<number>('Number', other) && this.sample >= other;
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}GreaterThanOrEqualTo`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}
+
+class NumberLessThan extends AsymmetricMatcher<number> {
+  constructor(sample: number, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    const result = isA<number>('Number', other) && this.sample < other;
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}LessThan`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}
+
+class NumberLessThanOrEqualTo extends AsymmetricMatcher<number> {
+  constructor(sample: number, inverse = false) {
+    if (!isA('Number', sample)) {
+      throw new Error('Expected is not a Number');
+    }
+    super(sample, inverse);
+  }
+
+  asymmetricMatch(other: unknown) {
+    const result = isA<number>('Number', other) && this.sample <= other;
+
+    return this.inverse ? !result : result;
+  }
+
+  toString() {
+    return `Number${this.inverse ? 'Not' : ''}LessThanOrEqualTo`;
+  }
+
+  override getExpectedType() {
+    return 'number';
+  }
+}
+
 class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
   constructor(sample: Record<string, unknown>, inverse = false) {
     super(sample, inverse);
@@ -369,3 +461,13 @@ export const closeTo = (expected: number, precision?: number): CloseTo =>
   new CloseTo(expected, precision);
 export const notCloseTo = (expected: number, precision?: number): CloseTo =>
   new CloseTo(expected, precision, true);
+export const numberGreaterThan = (expected: number): NumberGreaterThan =>
+  new NumberGreaterThan(expected);
+export const numberGreaterThanOrEqualTo = (
+  expected: number,
+): NumberGreaterThanOrEqualTo => new NumberGreaterThanOrEqualTo(expected);
+export const numberLessThan = (expected: number): NumberLessThan =>
+  new NumberLessThan(expected);
+export const numberLessThanOrEqualTo = (
+  expected: number,
+): NumberLessThanOrEqualTo => new NumberLessThanOrEqualTo(expected);

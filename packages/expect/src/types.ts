@@ -113,6 +113,10 @@ export interface AsymmetricMatchers {
   anything(): AsymmetricMatcher;
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
   closeTo(sample: number, precision?: number): AsymmetricMatcher;
+  numberGreaterThan(sample: number): AsymmetricMatcher;
+  numberGreaterThanOrEqualTo(sample: number): AsymmetricMatcher;
+  numberLessThan(sample: number): AsymmetricMatcher;
+  numberLessThanOrEqualTo(sample: number): AsymmetricMatcher;
   objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
   stringContaining(sample: string): AsymmetricMatcher;
   stringMatching(sample: string | RegExp): AsymmetricMatcher;

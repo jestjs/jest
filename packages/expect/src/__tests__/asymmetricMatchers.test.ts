@@ -14,6 +14,10 @@ import {
   arrayNotContaining,
   closeTo,
   notCloseTo,
+  numberGreaterThan,
+  numberGreaterThanOrEqualTo,
+  numberLessThan,
+  numberLessThanOrEqualTo,
   objectContaining,
   objectNotContaining,
   stringContaining,
@@ -178,6 +182,42 @@ test('ArrayNotContaining throws for non-arrays', () => {
     // @ts-expect-error: Testing runtime error
     arrayNotContaining('foo').asymmetricMatch([]);
   }).toThrow("You must provide an array to ArrayNotContaining, not 'string'.");
+});
+
+test('NumberGreaterThan returns true when comparing 10 against 5', () => {
+  jestExpect(numberGreaterThan(10).asymmetricMatch(5)).toBeTruthy();
+});
+
+test('NumberGreaterThan returns false when comparing 9 against 10', () => {
+  jestExpect(numberGreaterThan(9).asymmetricMatch(10)).toBeFalsy();
+});
+
+test('NumberGreaterThanOrEqualTo returns true when comparing 10 against 5', () => {
+  jestExpect(numberGreaterThanOrEqualTo(10).asymmetricMatch(5)).toBeTruthy();
+});
+
+test('NumberGreaterThanOrEqualTo returns true comparing 10 against 10', () => {
+  jestExpect(numberGreaterThanOrEqualTo(10).asymmetricMatch(10)).toBeTruthy();
+});
+
+test('NumberGreaterThanOrEqualTo returns false when comparing 2 against 10', () => {
+  jestExpect(numberGreaterThanOrEqualTo(2).asymmetricMatch(10)).toBeFalsy();
+});
+
+test('NumberLessThan returns true when comparing 3 against 5', () => {
+  jestExpect(numberLessThan(3).asymmetricMatch(5)).toBeTruthy();
+});
+
+test('NumberLessThan returns false when comparing 5 against 3', () => {
+  jestExpect(numberLessThan(5).asymmetricMatch(3)).toBeFalsy();
+});
+
+test('NumberLessThanOrEqual returns true when comparing 5 against 5', () => {
+  jestExpect(numberLessThanOrEqualTo(5).asymmetricMatch(5)).toBeTruthy();
+});
+
+test('NumberLessThanOrEqual returns false when comparing 10 against 5', () => {
+  jestExpect(numberLessThanOrEqualTo(10).asymmetricMatch(5)).toBeFalsy();
 });
 
 test('ObjectContaining matches', () => {
