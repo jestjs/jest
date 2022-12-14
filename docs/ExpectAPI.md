@@ -969,6 +969,32 @@ The nth argument must be positive integer starting from 1.
 
 :::
 
+### `.toBeNth(nthCall)`
+
+If you have a function that doesn't have any arguments, instead of `toHaveBeenNthCalledWith` you can use `toBeNth` for better readability. The goal is when someone reads your test, the person does not misurderstand the first argument of `toHaveBeenNthCalledWith` (which is the nth) and thinks that since the function that needs to be tested doens't have arguments, it shouldn't be provided.
+
+Example with nthCalledWith:
+
+```js
+bar();
+bar('foo');
+expect(bar).toHaveBeenNthCalledWith(1); //novice PR reviewer: "but bar isn't called with 1"
+expect(bar).toHaveBeenNthCalledWith(2, 'foo'); //this context makes it obvious
+```
+
+Example with toBeNth:
+
+```js
+bar();
+expect(bar).toBeNth(1);
+```
+
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
+
 ### `.toHaveReturned()`
 
 Also under the alias: `.toReturn()`

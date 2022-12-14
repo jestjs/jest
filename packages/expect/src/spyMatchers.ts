@@ -855,6 +855,78 @@ const createLastReturnedMatcher = (
     return {message, pass};
   };
 
+const createNthCalledWithSingleArgMatcher = (
+  matcherName: string,
+): MatcherFunction<[number]> =>
+  function (received: any, nth): SyncExpectationResult {
+    const expectedArgument = 'n';
+    const options: MatcherHintOptions = {
+      expectedColor: (arg: string) => arg,
+      isNot: this.isNot,
+      promise: this.promise,
+      secondArgument: '...expected',
+    };
+    ensureExpectedIsNonNegativeInteger(nth, matcherName, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
+
+    const receivedIsSpy = isSpy(received);
+    const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
+    const calls = receivedIsSpy
+      ? received.calls.all().map((x: any) => x.args)
+      : received.mock.calls;
+    const length = calls.length;
+    const iNth = nth - 1;
+    const pass = Number.isSafeInteger(nth);
+
+    const indexedCalls: Array<IndexedCall> = [];
+    if (iNth - 1 >= 0) {
+      indexedCalls.push([iNth - 1, calls[iNth - 1]]);
+    }
+    indexedCalls.push([iNth, calls[iNth]]);
+    if (iNth + 1 < length) {
+      indexedCalls.push([iNth + 1, calls[iNth + 1]]);
+    }
+
+    const message = pass
+      ? () => {
+          return (
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            (calls.length === 1
+              ? ''
+              : printReceivedCallsNegative(
+                  [],
+                  indexedCalls,
+                  calls.length === 1,
+                  iNth,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        }
+      : () => {
+          const indexedCalls: Array<IndexedCall> = [];
+
+          return (
+            // eslint-disable-next-line prefer-template
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            printExpectedReceivedCallsPositive(
+              [],
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+              iNth,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        };
+
+    return {message, pass};
+  };
+
 const createNthCalledWithMatcher = (
   matcherName: string,
 ): MatcherFunction<[number, ...Array<unknown>]> =>
@@ -1121,6 +1193,7 @@ const spyMatchers: MatchersObject = {
   toBeCalled: createToBeCalledMatcher('toBeCalled'),
   toBeCalledTimes: createToBeCalledTimesMatcher('toBeCalledTimes'),
   toBeCalledWith: createToBeCalledWithMatcher('toBeCalledWith'),
+  toBeNth: createNthCalledWithSingleArgMatcher('toBeNth'),
   toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),
   toHaveBeenCalledTimes: createToBeCalledTimesMatcher('toHaveBeenCalledTimes'),
   toHaveBeenCalledWith: createToBeCalledWithMatcher('toHaveBeenCalledWith'),

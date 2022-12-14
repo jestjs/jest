@@ -185,6 +185,85 @@ describe.each(['toBeCalledTimes', 'toHaveBeenCalledTimes'] as const)(
   },
 );
 
+describe.each(['toBeNth'] as const)('%s', calledWith => {
+  test('works only on spies or jest.fn', () => {
+    const fn = function fn() {};
+
+    expect(() => jestExpect(fn)[calledWith](3)).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with no arguments', () => {
+    const fn = jest.fn();
+    fn();
+
+    jestExpect(createSpy(fn))[calledWith];
+    jestExpect(fn)[calledWith];
+  });
+
+  test('works with arguments that match', () => {
+    const fn = jest.fn();
+    fn(1);
+
+    jestExpect(createSpy(fn))[calledWith](1);
+    jestExpect(fn)[calledWith](1);
+
+    expect(() => jestExpect(fn)[calledWith](1)).not.toThrow();
+  });
+
+  test('works with three calls', () => {
+    const fn = jest.fn();
+    fn(1);
+    fn(2);
+    fn(3);
+
+    jestExpect(fn)[calledWith](1);
+    jestExpect(fn)[calledWith](2);
+    jestExpect(fn)[calledWith](3);
+
+    expect(() => {
+      jestExpect(fn).not[calledWith](1);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('positive throw matcher error for n that is not positive integer', async () => {
+    const fn = jest.fn();
+    fn(-1);
+
+    expect(() => {
+      jestExpect(fn)[calledWith](-1);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('positive throw matcher error for n that is not integer', async () => {
+    const fn = jest.fn();
+    fn(0.1);
+
+    expect(() => {
+      jestExpect(fn)[calledWith](0.1);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('negative throw matcher error for n that is not integer', async () => {
+    const fn = jest.fn();
+    fn(Infinity);
+
+    expect(() => {
+      jestExpect(fn).not[calledWith](Infinity);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn().mockName('named-mock');
+    fn(1);
+
+    jestExpect(fn)[calledWith](1);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](1),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe.each([
   'lastCalledWith',
   'toHaveBeenLastCalledWith',

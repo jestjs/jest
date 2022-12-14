@@ -1229,6 +1229,61 @@ Received:     <r>0</>, <r>["foo", undefined]</>
 Number of calls: <r>1</>
 `;
 
+exports[`toBeNth includes the custom mock name in the error message 1`] = `
+<d>expect(</><r>named-mock</><d>).</>not<d>.</>toBeNth<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+
+Number of calls: <r>1</>
+`;
+
+exports[`toBeNth negative throw matcher error for n that is not integer 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeNth<d>(</>expected<d>, </><g>...expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <g>Infinity</>
+`;
+
+exports[`toBeNth positive throw matcher error for n that is not integer 1`] = `
+<d>expect(</><r>received</><d>).</>toBeNth<d>(</>expected<d>, </><g>...expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <g>0.1</>
+`;
+
+exports[`toBeNth positive throw matcher error for n that is not positive integer 1`] = `
+<d>expect(</><r>received</><d>).</>toBeNth<d>(</>expected<d>, </><g>...expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <g>-1</>
+`;
+
+exports[`toBeNth works only on spies or jest.fn 1`] = `
+<d>expect(</><r>received</><d>).</>toBeNth<d>(</>n<d>, </><g>...expected</><d>)</>
+
+<b>Matcher error</>: <r>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <r>[Function fn]</>
+`;
+
+exports[`toBeNth works with three calls 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>not<d>.</>toBeNth<d>(</>n<d>, </><g>...expected</><d>)</>
+
+n: 1
+Received
+->     1:     <r>1</>
+       2:     <r>2</>
+
+Number of calls: <r>3</>
+`;
+
 exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toHaveBeenCalled<d>()</>
 

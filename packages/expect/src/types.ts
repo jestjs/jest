@@ -209,6 +209,13 @@ export interface Matchers<R extends void | Promise<void>> {
    * This is the same as `.toBe(null)` but the error messages are a bit nicer.
    * So use `.toBeNull()` when you want to check that something is null.
    */
+  toBeNth(expected: number): R;
+  /**
+   * This is the same to `.nthCalledWith(number)` but easier to read when the function
+   * you want to check has no arguments. It avoids a misunderstandings of thinking
+   * that the first argument of nthCalledWith is the argument of the function you want
+   * to test
+   */
   toBeNull(): R;
   /**
    * Use when you don't care what a value is, you just want to ensure a value

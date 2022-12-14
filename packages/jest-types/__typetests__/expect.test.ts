@@ -263,6 +263,10 @@ expectType<void>(
 );
 expectError(expect(jest.fn()).nthCalledWith());
 
+expectType<void>(expect(jest.fn()).toBeNth(2));
+expectError(expect(jest.fn()).toBeNth());
+expectError(expect(jest.fn()).toBeNth('foo'));
+
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(2));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value'));
 expectType<void>(expect(jest.fn()).toHaveBeenNthCalledWith(1, 'value', 123));
