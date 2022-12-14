@@ -56,7 +56,8 @@ export default class CustomConsole extends Console {
       if (!(error instanceof AssertionError)) {
         throw error;
       }
-      this._logError('assert', error.toString());
+      // https://github.com/facebook/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 

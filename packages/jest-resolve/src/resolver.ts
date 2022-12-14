@@ -20,7 +20,7 @@ import defaultResolver, {
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
-import nodeModulesPaths from './nodeModulesPaths';
+import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
@@ -524,6 +524,14 @@ export default class Resolver {
     }
     this._modulePathCache.set(from, paths);
     return paths;
+  }
+
+  getGlobalPaths(moduleName?: string): Array<string> {
+    if (!moduleName || moduleName[0] === '.' || this.isCoreModule(moduleName)) {
+      return [];
+    }
+
+    return GlobalPaths;
   }
 
   getModuleID(

@@ -72,7 +72,7 @@ afterEach(() => {
 
 it('picks an id based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = createHash('sha256')
+  const expected = createHash('sha1')
     .update('/root/path/foo')
     .update(String(Infinity))
     .digest('hex')
@@ -99,6 +99,23 @@ it('keeps custom project id based on the projects rootDir', async () => {
   expect((options.projects as Array<Config.InitialProjectOptions>)[0].id).toBe(
     id,
   );
+});
+
+it('validation warning occurs when options not for projects is set', async () => {
+  const mockWarn = jest.mocked(console.warn).mockImplementation(() => {});
+  const rootDir = '/root/path/foo';
+  await normalize(
+    {
+      bail: true, // an option not for projects
+      rootDir,
+    },
+    {} as Config.Argv,
+    rootDir,
+    1,
+    true, // isProjectOptions
+  );
+
+  expect(mockWarn).toHaveBeenCalledTimes(1);
 });
 
 it('keeps custom ids based on the rootDir', async () => {
@@ -1082,6 +1099,10 @@ describe('preset', () => {
       jest.requireActual('./jest-preset.json'),
     );
 
+    const errorMessage = semver.satisfies(process.versions.node, '<19.0.0')
+      ? /Unexpected token } in JSON at position (104|110)[\s\S]* at /
+      : 'SyntaxError: Expected double-quoted property name in JSON at position 104';
+
     await expect(
       normalize(
         {
@@ -1090,9 +1111,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrow(
-      /Unexpected token } in JSON at position (104|110)[\s\S]* at /,
-    );
+    ).rejects.toThrow(errorMessage);
   });
 
   test('throws when preset evaluation throws type error', async () => {
@@ -1105,9 +1124,9 @@ describe('preset', () => {
       {virtual: true},
     );
 
-    const errorMessage = semver.satisfies(process.versions.node, '>=16.9.1')
-      ? "TypeError: Cannot read properties of undefined (reading 'call')"
-      : /TypeError: Cannot read property 'call' of undefined[\s\S]* at /;
+    const errorMessage = semver.satisfies(process.versions.node, '<16.9.1')
+      ? /TypeError: Cannot read property 'call' of undefined[\s\S]* at /
+      : "TypeError: Cannot read properties of undefined (reading 'call')";
 
     await expect(
       normalize(

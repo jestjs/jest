@@ -27,10 +27,12 @@ describe(convertDescriptorToString, () => {
     ['anonymous class expression', class {}],
   ])('%s', (_, input) => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime error
       return convertDescriptorToString(input);
     }).toThrow(
-      `Invalid first argument, ${input}. It must be a named class, named function, number, or string.`,
+      `Invalid first argument, ${String(
+        input,
+      )}. It must be a named class, named function, number, or string.`,
     );
   });
 });

@@ -117,14 +117,14 @@ class ScriptTransformer {
     transformerCacheKey: string | undefined,
   ): string {
     if (transformerCacheKey != null) {
-      return createHash('sha256')
+      return createHash('sha1')
         .update(transformerCacheKey)
         .update(CACHE_VERSION)
         .digest('hex')
         .substring(0, 32);
     }
 
-    return createHash('sha256')
+    return createHash('sha1')
       .update(fileData)
       .update(transformOptions.configString)
       .update(transformOptions.instrument ? 'instrument' : '')
@@ -207,10 +207,7 @@ class ScriptTransformer {
     );
   }
 
-  private _createFolderFromCacheKey(
-    filename: string,
-    cacheKey: string,
-  ): string {
+  private _createCachedFilename(filename: string, cacheKey: string): string {
     const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
@@ -223,12 +220,7 @@ class ScriptTransformer {
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
       .replace(/\W/g, '');
-    const cachePath = slash(
-      path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`),
-    );
-    createDirectory(cacheDir);
-
-    return cachePath;
+    return slash(path.join(cacheDir, `${cacheFilenamePrefix}_${cacheKey}`));
   }
 
   private _getFileCachePath(
@@ -238,7 +230,7 @@ class ScriptTransformer {
   ): string {
     const cacheKey = this._getCacheKey(content, filename, options);
 
-    return this._createFolderFromCacheKey(filename, cacheKey);
+    return this._createCachedFilename(filename, cacheKey);
   }
 
   private async _getFileCachePathAsync(
@@ -248,7 +240,7 @@ class ScriptTransformer {
   ): Promise<string> {
     const cacheKey = await this._getCacheKeyAsync(content, filename, options);
 
-    return this._createFolderFromCacheKey(filename, cacheKey);
+    return this._createCachedFilename(filename, cacheKey);
   }
 
   private _getTransformPath(filename: string) {
@@ -504,6 +496,7 @@ class ScriptTransformer {
       });
     }
 
+    createDirectory(path.dirname(cacheFilePath));
     return this._buildTransformResult(
       filename,
       cacheFilePath,
@@ -568,6 +561,7 @@ class ScriptTransformer {
       });
     }
 
+    createDirectory(path.dirname(cacheFilePath));
     return this._buildTransformResult(
       filename,
       cacheFilePath,
@@ -882,7 +876,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: string, code: string) {
-  const checksum = createHash('sha256')
+  const checksum = createHash('sha1')
     .update(code)
     .digest('hex')
     .substring(0, 32);
@@ -901,7 +895,7 @@ function readCodeCacheFile(cachePath: string): string | null {
     return null;
   }
   const code = content.substring(33);
-  const checksum = createHash('sha256')
+  const checksum = createHash('sha1')
     .update(code)
     .digest('hex')
     .substring(0, 32);

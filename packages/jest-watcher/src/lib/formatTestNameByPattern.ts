@@ -32,7 +32,7 @@ export default function formatTestNameByPattern(
     return chalk.dim(inlineTestName);
   }
 
-  const startPatternIndex = Math.max(match.index || 0, 0);
+  const startPatternIndex = Math.max(match.index ?? 0, 0);
   const endPatternIndex = startPatternIndex + match[0].length;
 
   if (inlineTestName.length <= width) {
