@@ -8,7 +8,7 @@
 import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
 import {dispatch, getState} from './state';
-import {RETRY_TIMES} from './types';
+import {RETRY_TIMES, WAIT_BEFORE_RETRY} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -28,6 +28,8 @@ const run = async (): Promise<Circus.RunResult> => {
     getState().unhandledErrors,
   );
 };
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
@@ -66,6 +68,7 @@ const _runTestsForDescribeBlock = async (
   // Tests that fail and are retried we run after other tests
   // eslint-disable-next-line no-restricted-globals
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+  const waitBeforeRetry = parseInt(global[WAIT_BEFORE_RETRY], 10) || 0;
   const deferredRetryTests = [];
 
   for (const child of describeBlock.children) {
@@ -100,6 +103,9 @@ const _runTestsForDescribeBlock = async (
 
       await _runTest(test, isSkipped);
       numRetriesAvailable--;
+      if (waitBeforeRetry > 0) {
+        await sleep(waitBeforeRetry);
+      }
     }
   }
 
