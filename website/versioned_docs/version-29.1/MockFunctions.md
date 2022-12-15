@@ -30,7 +30,7 @@ const mockCallback = jest.fn(x => 42 + x);
 test('forEach mock function', () => {
   forEach([0, 1], mockCallback);
 
-  // The mock function is called twice
+  // The mock function was called twice
   expect(mockCallback.mock.calls.length).toBe(2);
 
   // The first argument of the first call to the function was 0
