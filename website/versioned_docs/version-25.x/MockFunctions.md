@@ -27,7 +27,7 @@ const forEach = require('./foreach');
 
 const mockCallback = jest.fn(x => 42 + x);
 
-test('forEach mock function', () => {
+test('forEach function', () => {
   forEach([0, 1], mockCallback);
 
   // The mock function was called twice
