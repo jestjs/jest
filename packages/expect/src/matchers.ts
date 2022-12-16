@@ -38,7 +38,6 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {getCustomEqualityTesters} from './jestMatchersObject';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -102,14 +101,14 @@ const matchers: MatchersObject = {
               equals(
                 received,
                 expected,
-                [...getCustomEqualityTesters(), ...toStrictEqualTesters],
+                [...this.customTesters, ...toStrictEqualTesters],
                 true,
               )
             ) {
               deepEqualityName = 'toStrictEqual';
             } else if (
               equals(received, expected, [
-                ...getCustomEqualityTesters(),
+                ...this.customTesters,
                 iterableEquality,
               ])
             ) {
@@ -553,10 +552,7 @@ const matchers: MatchersObject = {
         }` +
         (!isNot &&
         indexable.findIndex(item =>
-          equals(item, expected, [
-            ...getCustomEqualityTesters(),
-            iterableEquality,
-          ]),
+          equals(item, expected, [...this.customTesters, iterableEquality]),
         ) !== -1
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
           : '')
@@ -586,7 +582,7 @@ const matchers: MatchersObject = {
     }
 
     const index = Array.from(received).findIndex(item =>
-      equals(item, expected, [...getCustomEqualityTesters(), iterableEquality]),
+      equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;
 
@@ -622,7 +618,7 @@ const matchers: MatchersObject = {
     };
 
     const pass = equals(received, expected, [
-      ...getCustomEqualityTesters(),
+      ...this.customTesters,
       iterableEquality,
     ]);
 
@@ -768,7 +764,7 @@ const matchers: MatchersObject = {
     const pass =
       hasValue && endPropIsDefined
         ? equals(value, expectedValue, [
-            ...getCustomEqualityTesters(),
+            ...this.customTesters,
             iterableEquality,
           ])
         : Boolean(hasEndProp);
@@ -919,7 +915,7 @@ const matchers: MatchersObject = {
     }
 
     const pass = equals(received, expected, [
-      ...getCustomEqualityTesters(),
+      ...this.customTesters,
       iterableEquality,
       subsetEquality,
     ]);
@@ -939,7 +935,7 @@ const matchers: MatchersObject = {
           '\n\n' +
           printDiffOrStringify(
             expected,
-            getObjectSubset(received, expected, getCustomEqualityTesters()),
+            getObjectSubset(received, expected, this.customTesters),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
@@ -959,7 +955,7 @@ const matchers: MatchersObject = {
     const pass = equals(
       received,
       expected,
-      [...getCustomEqualityTesters(), ...toStrictEqualTesters],
+      [...this.customTesters, ...toStrictEqualTesters],
       true,
     );
 

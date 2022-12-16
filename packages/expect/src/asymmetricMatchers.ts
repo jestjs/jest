@@ -194,12 +194,13 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       );
     }
 
+    const matcherContext = this.getMatcherContext();
     const result =
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
           other.some(another =>
-            equals(item, another, getCustomEqualityTesters()),
+            equals(item, another, matcherContext.customTesters),
           ),
         ));
 
@@ -230,13 +231,14 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 
     let result = true;
 
+    const matcherContext = this.getMatcherContext();
     for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
         !equals(
           this.sample[property],
           other[property],
-          getCustomEqualityTesters(),
+          matcherContext.customTesters,
         )
       ) {
         result = false;
