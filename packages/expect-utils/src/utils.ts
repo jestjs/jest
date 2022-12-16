@@ -191,10 +191,20 @@ export const iterableEquality = (
   aStack.push(a);
   bStack.push(b);
 
+  // eslint-disable-next-line prefer-const
+  let filteredCustomTesters: Array<Tester>;
   const iterableEqualityWithStack = (a: any, b: any) =>
-    iterableEquality(a, b, [...customTesters], [...aStack], [...bStack]);
+    iterableEquality(
+      a,
+      b,
+      [...filteredCustomTesters],
+      [...aStack],
+      [...bStack],
+    );
 
-  customTesters = [
+  // Replace any instance of iterableEquality with the new
+  // iterableEqualityWithStack so we can do circular detection
+  filteredCustomTesters = [
     ...customTesters.filter(t => t !== iterableEquality),
     iterableEqualityWithStack,
   ];
@@ -208,7 +218,7 @@ export const iterableEquality = (
         if (!b.has(aValue)) {
           let has = false;
           for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, customTesters);
+            const isEqual = equals(aValue, bValue, filteredCustomTesters);
             if (isEqual === true) {
               has = true;
             }
@@ -232,15 +242,23 @@ export const iterableEquality = (
       for (const aEntry of a) {
         if (
           !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), customTesters)
+          !equals(aEntry[1], b.get(aEntry[0]), filteredCustomTesters)
         ) {
           let has = false;
           for (const bEntry of b) {
-            const matchedKey = equals(aEntry[0], bEntry[0], customTesters);
+            const matchedKey = equals(
+              aEntry[0],
+              bEntry[0],
+              filteredCustomTesters,
+            );
 
             let matchedValue = false;
             if (matchedKey === true) {
-              matchedValue = equals(aEntry[1], bEntry[1], customTesters);
+              matchedValue = equals(
+                aEntry[1],
+                bEntry[1],
+                filteredCustomTesters,
+              );
             }
             if (matchedValue === true) {
               has = true;
@@ -264,7 +282,7 @@ export const iterableEquality = (
 
   for (const aValue of a) {
     const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, customTesters)) {
+    if (nextB.done || !equals(aValue, nextB.value, filteredCustomTesters)) {
       return false;
     }
   }

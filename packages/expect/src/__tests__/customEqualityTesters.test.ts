@@ -163,4 +163,16 @@ describe('with custom equality testers', () => {
       expect({a: 1, b: special1}).toMatchObject({a: 2, b: special2}),
     ).toThrowErrorMatchingSnapshot();
   });
+
+  it('iterableEquality still properly detects cycles', () => {
+    const a = new Set();
+    a.add(special1);
+    a.add(a);
+
+    const b = new Set();
+    b.add(special2);
+    b.add(b);
+
+    expect(a).toEqual(b);
+  });
 });
