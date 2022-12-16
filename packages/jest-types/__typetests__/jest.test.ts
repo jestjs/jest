@@ -98,6 +98,9 @@ expectError(jest.enableAutomock('moduleName'));
 expectType<typeof jest>(jest.isolateModules(() => {}));
 expectError(jest.isolateModules());
 
+expectType<typeof Promise>(jest.isolateModulesAsync(() => {}));
+expectError(jest.isolateModulesAsync());
+
 expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
 expectType<typeof jest>(

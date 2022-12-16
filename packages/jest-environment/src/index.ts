@@ -173,6 +173,12 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
+   * async functions to be wrapped. The caller is expected to `await` the completion of
+   * `isolateModulesAsync`.
+   */
+  isolateModulesAsync(fn: () => void): Promise<void>;
+  /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock<T = unknown>(
