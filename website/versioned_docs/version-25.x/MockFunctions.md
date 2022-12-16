@@ -48,7 +48,6 @@ test('forEach function', () => {
 All mock functions have this special `.mock` property, which is where data about how the function has been called and what the function returned is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
-const myMock1 = jest.fn();
 const myMock = jest.fn();
 const a = new myMock();
 const b = {};
