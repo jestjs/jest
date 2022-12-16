@@ -41,9 +41,9 @@ test('forEach mock function', () => {
 
   // The return value of the first call to the function was 42
   expect(mockCallback.mock.results[0].value).toBe(42);
-  }
-) 
+});
 ```
+
 ## `.mock` property
 
 All mock functions have this special `.mock` property, which is where data about how the function has been called and what the function returned is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
