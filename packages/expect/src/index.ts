@@ -8,12 +8,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import {
-  Tester,
-  equals,
-  iterableEquality,
-  subsetEquality,
-} from '@jest/expect-utils';
+import {equals, iterableEquality, subsetEquality} from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {isPromise} from 'jest-util';
 import {
@@ -33,10 +28,10 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {
   INTERNAL_MATCHER_FLAG,
+  addCustomEqualityTesters,
   getCustomEqualityTesters,
   getMatchers,
   getState,
-  setCustomEqualityTesters,
   setMatchers,
   setState,
 } from './jestMatchersObject';
@@ -284,6 +279,7 @@ const makeThrowingMatcher = (
     };
 
     const matcherUtilsThing: MatcherUtils = {
+      customTesters: getCustomEqualityTesters(),
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -390,17 +386,8 @@ const makeThrowingMatcher = (
 expect.extend = (matchers: MatchersObject) =>
   setMatchers(matchers, false, expect);
 
-expect.customEqualityTesters = []; // To make TypeScript happy
-Object.defineProperty(expect, 'customEqualityTesters', {
-  configurable: true,
-  enumerable: true,
-  get() {
-    return getCustomEqualityTesters();
-  },
-  set(newTesters: Array<Tester>) {
-    setCustomEqualityTesters(newTesters);
-  },
-});
+expect.addEqualityTesters = customTesters =>
+  addCustomEqualityTesters(customTesters);
 
 expect.anything = anything;
 expect.any = any;

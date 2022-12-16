@@ -63,11 +63,7 @@ declare module '../types' {
 
 jestExpect.extend({
   toSpecialObjectEqual(expected: SpecialObject, actual: SpecialObject) {
-    const result = this.equals(
-      expected,
-      actual,
-      jestExpect.customEqualityTesters,
-    );
+    const result = this.equals(expected, actual, this.customTesters);
 
     return {
       message: () =>
@@ -91,84 +87,9 @@ const testArgs = [specialArg1, specialArg2, [specialArg3, specialArg4]];
 // Swap the order of args to assert customer tester does not affect test
 const expectedArgs = [specialArg2, specialArg1, [specialArg4, specialArg3]];
 
-describe('without custom equality testers', () => {
-  it('basic matchers correctly match the same special objects', () => {
-    // Basic matchers passing with default settings
-    expect(special1).toBe(special1);
-    expect(special1).toEqual(special1);
-    expect([special1, special2]).toEqual([special1, special2]);
-    expect(new Set([special1])).toEqual(new Set([special1]));
-    expect(new Map([['key', special1]])).toEqual(new Map([['key', special1]]));
-    expect(toIterator([special1, special2])).toEqual(
-      toIterator([special1, special2]),
-    );
-    expect({a: special1, b: undefined}).toStrictEqual({
-      a: special1,
-      b: undefined,
-    });
-    expect({a: 1, b: {c: special1}}).toMatchObject({a: 1, b: {c: special1}});
-  });
-
-  it('basic matchers do not pass different special objects', () => {
-    expect(special1).not.toBe(special2);
-    expect(special1).not.toEqual(special2);
-    expect([special1, special2]).not.toEqual([special2, special1]);
-    expect(new Set([special1])).not.toEqual(new Set([special2]));
-    expect(new Map([['key', special1]])).not.toEqual(
-      new Map([['key', special2]]),
-    );
-    expect(toIterator([special1, special2])).not.toEqual(
-      toIterator([special2, special1]),
-    );
-    expect({a: special1, b: undefined}).not.toStrictEqual({
-      a: special2,
-      b: undefined,
-    });
-    expect({a: 1, b: {c: special1}}).not.toMatchObject({
-      a: 1,
-      b: {c: special2},
-    });
-  });
-
-  it('asymmetric matchers do not pass different special objects', () => {
-    expect([special1]).not.toEqual(expect.arrayContaining([special2]));
-    expect({a: 1, b: {c: special1}}).not.toEqual(
-      expect.objectContaining({b: {c: special2}}),
-    );
-  });
-
-  it('spy matchers do not pass different special objects', () => {
-    const mockFn = jest.fn<(...args: Array<unknown>) => unknown>(
-      () => specialReturn1,
-    );
-    mockFn(...testArgs);
-
-    expect(mockFn).not.toHaveBeenCalledWith(...expectedArgs);
-    expect(mockFn).not.toHaveBeenLastCalledWith(...expectedArgs);
-    expect(mockFn).not.toHaveBeenNthCalledWith(1, ...expectedArgs);
-
-    expect(mockFn).not.toHaveReturnedWith(specialReturn2);
-    expect(mockFn).not.toHaveLastReturnedWith(specialReturn2);
-    expect(mockFn).not.toHaveNthReturnedWith(1, specialReturn2);
-  });
-
-  it('custom matcher does not pass different special objects', () => {
-    expect(special1).not.toSpecialObjectEqual(special2);
-  });
-});
+expect.addEqualityTesters([specialObjTester]);
 
 describe('with custom equality testers', () => {
-  let originalTesters: Array<Tester>;
-
-  beforeAll(() => {
-    originalTesters = jestExpect.customEqualityTesters;
-    jestExpect.customEqualityTesters = [...originalTesters, specialObjTester];
-  });
-
-  afterAll(() => {
-    jestExpect.customEqualityTesters = originalTesters;
-  });
-
   it('basic matchers customTesters do not apply to still do not pass different special objects', () => {
     expect(special1).not.toBe(special2);
     expect([special1]).not.toContain(special2);

@@ -128,7 +128,7 @@ export const setMatchers = (
 export const getCustomEqualityTesters = (): Array<Tester> =>
   (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters;
 
-export const setCustomEqualityTesters = (newTesters: Array<Tester>): void => {
+export const addCustomEqualityTesters = (newTesters: Array<Tester>): void => {
   if (!Array.isArray(newTesters)) {
     throw new TypeError(
       `expect.customEqualityTesters: Must be set to an array of Testers. Was given "${getType(
@@ -137,5 +137,7 @@ export const setCustomEqualityTesters = (newTesters: Array<Tester>): void => {
     );
   }
 
-  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters = newTesters;
+  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters.push(
+    ...newTesters,
+  );
 };
