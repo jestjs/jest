@@ -49,16 +49,13 @@ All mock functions have this special `.mock` property, which is where data about
 
 ```javascript
 const myMock1 = jest.fn();
-const a = new myMock1();
-console.log(myMock1.mock.instances);
-// > [ <a> ]
-
-const myMock2 = jest.fn();
+const myMock = jest.fn();
+const a = new myMock();
 const b = {};
-const bound = myMock2.bind(b);
+const bound = myMock.bind(b);
 bound();
-console.log(myMock2.mock.contexts);
-// > [ <b> ]
+console.log(myMock.mock.instances);
+// > [ <a>, <b> ]
 ```
 
 These mock members are very useful in tests to assert how these functions get called, instantiated, or what they returned:
@@ -82,9 +79,6 @@ expect(someMockFunction.mock.instances.length).toBe(2);
 // The object returned by the first instantiation of this function
 // had a `name` property whose value was set to 'test'
 expect(someMockFunction.mock.instances[0].name).toBe('test');
-
-// The first argument of the last call to the function was 'test'
-expect(someMockFunction.mock.lastCall[0]).toBe('test');
 ```
 
 ## Mock Return Values
@@ -115,8 +109,8 @@ const result = [11, 12].filter(num => filterTestFn(num));
 
 console.log(result);
 // > [11]
-console.log(filterTestFn.mock.calls[0][0]); // 11
-console.log(filterTestFn.mock.calls[1][0]); // 12
+console.log(filterTestFn.mock.calls);
+ // > [ [11], [12] ]
 ```
 
 Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. In these cases, try to avoid the temptation to implement logic inside of any function that's not directly being tested.
