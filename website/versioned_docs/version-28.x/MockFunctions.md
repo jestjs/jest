@@ -66,7 +66,7 @@ These mock members are very useful in tests to assert how these functions get ca
 
 ```javascript
 // The function was called exactly once
-expect(someMockFunction.mock.calls.length).toBe(1);
+expect(someMockFunction.mock.calls).toHaveLength(1);
 
 // The first arg of the first call to the function was 'first arg'
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
@@ -76,9 +76,6 @@ expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 
 // The return value of the first call to the function was 'return value'
 expect(someMockFunction.mock.results[0].value).toBe('return value');
-
-// The function was called with a certain `this` context: the `element` object.
-expect(someMockFunction.mock.contexts[0]).toBe(element);
 
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
