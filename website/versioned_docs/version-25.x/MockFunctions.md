@@ -12,18 +12,17 @@ There are two ways to mock functions: Either by creating a mock function to use 
 Let's imagine we're testing an implementation of a function `forEach`, which invokes a callback for each item in a supplied array.
 
 ```javascript
-function forEach(items, callback) {
+export function forEach(items, callback) {
   for (let index = 0; index < items.length; index++) {
     callback(items[index]);
   }
 }
-module.exports = forEach;
 ```
 
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
 ```js title="foreach.test.js"
-const forEach = require('./foreach');
+import {forEach} from './forEach';
 
 const mockCallback = jest.fn(x => 42 + x);
 
