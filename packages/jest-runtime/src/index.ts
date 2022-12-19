@@ -1141,7 +1141,7 @@ export default class Runtime {
     }
   }
 
-  async isolateModulesAsync(fn: () => Promise<void> | void): Promise<void> {
+  async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
         'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
