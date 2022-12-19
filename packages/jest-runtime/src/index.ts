@@ -1144,7 +1144,7 @@ export default class Runtime {
   async isolateModulesAsync(fn: () => void): Promise<void> {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
-        'isolateModulesAsync cannot be nested inside another isolateModules or isolateModulesAsync.',
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
       );
     }
     this._isolatedModuleRegistry = new Map();
