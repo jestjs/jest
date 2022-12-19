@@ -179,7 +179,7 @@ export interface MockedProperty {
   mockRestore(): void;
 }
 
-type MockedPropertyRestorer<T = object> = {
+type MockedPropertyRestorer<T extends object = object> = {
   (): void;
   object: T;
   property: keyof T;
