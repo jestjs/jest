@@ -1,6 +1,6 @@
 {
   "name": "@jest/expect",
-  "version": "29.2.0",
+  "version": "29.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -21,7 +21,7 @@
     "jest-snapshot": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "tsd-lite": "^0.6.0"
   },
   "engines": {

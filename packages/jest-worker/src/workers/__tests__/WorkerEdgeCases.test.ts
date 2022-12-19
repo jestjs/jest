@@ -385,4 +385,66 @@ describe.each([
       );
     });
   });
+
+  describe('should not hang when worker is killed or unexpectedly terminated', () => {
+    let worker: ChildProcessWorker | ThreadsWorker;
+
+    beforeEach(() => {
+      const options = {
+        childWorkerPath: processChildWorkerPath,
+        maxRetries: 0,
+        silent: true,
+        workerPath: join(__dirname, '__fixtures__', 'SelfKillWorker'),
+      } as unknown as WorkerOptions;
+
+      worker = new ChildProcessWorker(options);
+    });
+
+    afterEach(async () => {
+      await new Promise<void>(resolve => {
+        setTimeout(async () => {
+          if (worker) {
+            worker.forceExit();
+            await worker.waitForExit();
+          }
+
+          resolve();
+        }, 500);
+      });
+    });
+
+    // Regression test for https://github.com/facebook/jest/issues/13183
+    test('onEnd callback is called', async () => {
+      let onEndPromiseResolve: () => void;
+      let onEndPromiseReject: (err: Error) => void;
+      const onEndPromise = new Promise<void>((resolve, reject) => {
+        onEndPromiseResolve = resolve;
+        onEndPromiseReject = reject;
+      });
+
+      const onStart = jest.fn();
+      const onEnd = jest.fn((err: Error | null) => {
+        if (err) {
+          return onEndPromiseReject(err);
+        }
+        onEndPromiseResolve();
+      });
+      const onCustom = jest.fn();
+
+      await worker.waitForWorkerReady();
+
+      // The SelfKillWorker simulates an external process calling SIGTERM on it,
+      // but just SIGTERMs itself underneath the hood to make this test easier.
+      worker.send(
+        [CHILD_MESSAGE_CALL, true, 'selfKill', []],
+        onStart,
+        onEnd,
+        onCustom,
+      );
+
+      // The onEnd callback should be called when the child process exits.
+      await expect(onEndPromise).rejects.toBeInstanceOf(Error);
+      expect(onEnd).toHaveBeenCalled();
+    });
+  });
 });

@@ -259,13 +259,23 @@ Received: <t>"received"</>
 `;
 
 exports[`printPropertiesAndReceived omit missing properties 1`] = `
-<g>- Expected properties  - 2</>
-<r>+ Received value       + 1</>
+<g>- Expected properties  - 1</>
+<r>+ Received value       + 0</>
 
 <d>  Object {</>
 <g>-   "hash": Any<String>,</>
-<g>-   "path": Any<String>,</>
-<r>+   "path": "…",</>
+<d>    "path": Any<String>,</>
+<d>  }</>
+`;
+
+exports[`printPropertiesAndReceived only highlight non passing properties 1`] = `
+<g>- Expected properties  - 1</>
+<r>+ Received value       + 1</>
+
+<d>  Object {</>
+<d>    "a": Any<Number>,</>
+<g>-   "b": Any<Number>,</>
+<r>+   "b": "some string",</>
 <d>  }</>
 `;
 

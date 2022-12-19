@@ -52,3 +52,16 @@ export default class SuperTestClass {
 }
 
 export class TestClass extends SuperTestClass {}
+
+export function testFunction1() {
+  return 'testFunction1';
+}
+
+function testFunction() {
+  return 'testFunction2';
+}
+export const testFunction2 = testFunction;
+
+export const testFunction3 = () => {
+  return 'testFunction3';
+};

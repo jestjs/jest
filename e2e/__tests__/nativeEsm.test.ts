@@ -67,3 +67,15 @@ onNodeVersions('>=16.9.0', () => {
     expect(exitCode).toBe(0);
   });
 });
+
+test('runs WebAssembly (Wasm) test with native ESM', () => {
+  const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm-wasm.test.js'], {
+    nodeOptions: '--experimental-vm-modules --no-warnings',
+  });
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+});

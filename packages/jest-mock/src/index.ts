@@ -114,9 +114,9 @@ export type SpiedGetter<T> = MockInstance<() => T>;
 export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
 
 export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
-  ? MockInstance<(...args: ConstructorParameters<T>) => InstanceType<T>>
+  ? SpiedClass<T>
   : T extends FunctionLike
-  ? MockInstance<(...args: Parameters<T>) => ReturnType<T>>
+  ? SpiedFunction<T>
   : never;
 
 // TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
@@ -448,7 +448,7 @@ function getType(ref?: unknown): MockMetadataType | null {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (typeName === 'Object') {
+  } else if (typeName === 'Object' || typeName === 'Module') {
     return 'object';
   } else if (
     typeName === 'Number' ||
@@ -557,10 +557,7 @@ export class ModuleMocker {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          if (
-            propDesc !== undefined &&
-            !(propDesc.get && prop == '__proto__')
-          ) {
+          if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
             slots.add(prop);
           }
         }
@@ -755,8 +752,7 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () =>
-        this._ensureMockConfig(f).mockImpl as UnknownFunction;
+      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -793,22 +789,30 @@ export class ModuleMocker {
         f.mockImplementationOnce(() => value);
 
       f.mockResolvedValueOnce = (value: ResolveType<T>) =>
-        f.mockImplementationOnce(() => Promise.resolve(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValueOnce = (value: unknown) =>
-        f.mockImplementationOnce(() => Promise.reject(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
       f.mockReturnValue = (value: ReturnType<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
       f.mockResolvedValue = (value: ResolveType<T>) =>
-        f.mockImplementation(() => Promise.resolve(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValue = (value: unknown) =>
-        f.mockImplementation(() => Promise.reject(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
-      f.mockImplementationOnce = (fn: UnknownFunction) => {
+      f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
@@ -844,7 +848,7 @@ export class ModuleMocker {
         }
       }
 
-      f.mockImplementation = (fn: UnknownFunction) => {
+      f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;
@@ -893,7 +897,7 @@ export class ModuleMocker {
     const boundFunctionPrefix = 'bound ';
     let bindCall = '';
     // if-do-while for perf reasons. The common case is for the if to fail.
-    if (name && name.startsWith(boundFunctionPrefix)) {
+    if (name.startsWith(boundFunctionPrefix)) {
       do {
         name = name.substring(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
@@ -950,9 +954,7 @@ export class ModuleMocker {
     }
 
     this._getSlots(metadata.members).forEach(slot => {
-      let slotMock: Mocked<T>;
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
-
       if (slotMetadata.ref != null) {
         callbacks.push(
           (function (ref) {
@@ -960,40 +962,7 @@ export class ModuleMocker {
           })(slotMetadata.ref),
         );
       } else {
-        slotMock = this._generateMock(slotMetadata, callbacks, refs);
-
-        // For superclass accessor properties the subclass metadata contains the definitions
-        // for the getter and setter methods, and the superclass refs to them.
-        // The mock implementations are not available until the callbacks have been executed.
-        // Missing getter and setter refs will be resolved as their callbacks have been
-        // stacked before the setting of the accessor definition is stacked.
-
-        // In some cases, e.g. third-party APIs, a 'prototype' ancestor to be
-        // mocked has a function property called 'get'.  In this circumstance
-        // the 'prototype' property cannot be redefined and doing so causes an
-        // exception. Checks have been added for the 'configurable' and
-        // 'enumberable' properties present on true accessor property
-        // descriptors to prevent the attempt to replace the API.
-        if (
-          (slotMetadata.members?.get?.ref !== undefined ||
-            slotMetadata.members?.set?.ref !== undefined) &&
-          slotMetadata.members?.configurable &&
-          slotMetadata.members?.enumerable
-        ) {
-          callbacks.push(
-            (function (ref) {
-              return () => Object.defineProperty(mock, slot, ref);
-            })(slotMock as PropertyDescriptor),
-          );
-        } else if (
-          (slotMetadata.members?.get || slotMetadata.members?.set) &&
-          slotMetadata.members?.configurable &&
-          slotMetadata.members?.enumerable
-        ) {
-          Object.defineProperty(mock, slot, slotMock as PropertyDescriptor);
-        } else {
-          mock[slot] = slotMock;
-        }
+        mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }
     });
 
@@ -1098,33 +1067,8 @@ export class ModuleMocker {
         ) {
           return;
         }
-
-        let descriptor = Object.getOwnPropertyDescriptor(component, slot);
-        let proto = Object.getPrototypeOf(component);
-        while (!descriptor && proto !== null) {
-          descriptor = Object.getOwnPropertyDescriptor(proto, slot);
-          proto = Object.getPrototypeOf(proto);
-        }
-
-        let slotMetadata: MockMetadata<T> | null = null;
-        if (descriptor?.get || descriptor?.set) {
-          // Specific case required for mocking class definitions imported via modules.
-          // In this case the class definitions are stored in accessor properties.
-          // All getters were previously ignored except where the containing object had __esModule == true
-          // Now getters are mocked the class definitions must still be read.
-          // @ts-expect-error ignore type mismatch
-          if (component.__esModule) {
-            // @ts-expect-error no index signature
-            slotMetadata = this.getMetadata<T>(component[slot], refs);
-          } else {
-            // @ts-expect-error ignore type mismatch
-            slotMetadata = this.getMetadata<T>(descriptor, refs);
-          }
-        } else {
-          // @ts-expect-error no index signature
-          slotMetadata = this.getMetadata<T>(component[slot], refs);
-        }
-
+        // @ts-expect-error no index signature
+        const slotMetadata = this.getMetadata<T>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
             members = {};
@@ -1188,12 +1132,17 @@ export class ModuleMocker {
     methodKey: K,
   ): V extends ClassLike | FunctionLike ? Spied<V> : never;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T extends object, K extends PropertyLikeKeys<T>>(
+  spyOn<T extends object>(
     object: T,
-    methodKey: K,
+    methodKey: keyof T,
     accessType?: 'get' | 'set',
-  ) {
+  ): MockInstance {
+    if (typeof object !== 'object' && typeof object !== 'function') {
+      throw new Error(
+        `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
+      );
+    }
+
     if (!object) {
       throw new Error(
         `spyOn could not find an object to spy upon for ${String(methodKey)}`,
@@ -1204,120 +1153,124 @@ export class ModuleMocker {
       throw new Error('No property name supplied');
     }
 
-    if (accessType && accessType != 'get' && accessType != 'set') {
-      throw new Error('Invalid accessType supplied');
-    }
-
-    if (typeof object !== 'object' && typeof object !== 'function') {
-      throw new Error(
-        `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
-      );
-    }
-
-    let descriptor = Object.getOwnPropertyDescriptor(object, methodKey);
-    let proto = Object.getPrototypeOf(object);
-    while (!descriptor && proto !== null) {
-      descriptor = Object.getOwnPropertyDescriptor(proto, methodKey);
-      proto = Object.getPrototypeOf(proto);
-    }
-    if (!descriptor) {
-      throw new Error(`${String(methodKey)} property does not exist`);
-    }
-    if (!descriptor.configurable) {
-      throw new Error(`${String(methodKey)} is not declared configurable`);
-    }
-
-    if (this.isMockFunction(descriptor.value)) {
-      return object[methodKey];
-    } else if (accessType == 'get' && this.isMockFunction(descriptor.get)) {
-      return descriptor.get;
-    } else if (accessType == 'set' && this.isMockFunction(descriptor.set)) {
-      return descriptor.set;
-    }
-
     if (accessType) {
-      if (typeof descriptor[accessType] !== 'function') {
+      return this._spyOnProperty(object, methodKey, accessType);
+    }
+
+    const original = object[methodKey];
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${String(accessType)} ${String(
+          `Cannot spy the ${String(
             methodKey,
-          )} property because it is not a function;
-          ${this._typeOf(descriptor?.[accessType])} given instead`,
+          )} property because it is not a function; ${this._typeOf(
+            original,
+          )} given instead`,
         );
       }
-    } else if (typeof descriptor.value !== 'function') {
-      throw new Error(
-        `Cannot spy the ${String(
-          methodKey,
-        )} property because it is not a function; ${this._typeOf(
-          descriptor.value,
-        )} given instead`,
-      );
-    }
 
-    let mock: Mock;
-
-    if (accessType == 'get' && descriptor.get) {
-      const originalAccessor = descriptor.get;
-      mock = this._makeComponent(
-        {
-          type: 'function',
-        },
-        () => {
-          descriptor![accessType] = originalAccessor;
-          Object.defineProperty(object, methodKey, descriptor!);
-        },
-      );
-
-      descriptor[accessType] = mock;
-      mock.mockImplementation(function (this: unknown) {
-        return originalAccessor.call(this);
-      });
-      Object.defineProperty(object, methodKey, descriptor);
-    } else if (accessType == 'set' && descriptor.set) {
-      const originalAccessor = descriptor.set;
-      mock = this._makeComponent(
-        {
-          type: 'function',
-        },
-        () => {
-          descriptor![accessType] = originalAccessor;
-          Object.defineProperty(object, methodKey, descriptor!);
-        },
-      );
-
-      descriptor[accessType] = mock;
-      mock.mockImplementation(function (this: unknown) {
-        return originalAccessor.call(this, arguments[0]);
-      });
-      Object.defineProperty(object, methodKey, descriptor);
-    } else {
       const isMethodOwner = Object.prototype.hasOwnProperty.call(
         object,
         methodKey,
       );
-      const original = descriptor;
 
-      mock = this._makeComponent(
-        {
-          type: 'function',
-        },
-        () => {
+      let descriptor = Object.getOwnPropertyDescriptor(object, methodKey);
+      let proto = Object.getPrototypeOf(object);
+
+      while (!descriptor && proto !== null) {
+        descriptor = Object.getOwnPropertyDescriptor(proto, methodKey);
+        proto = Object.getPrototypeOf(proto);
+      }
+
+      let mock: Mock;
+
+      if (descriptor && descriptor.get) {
+        const originalGet = descriptor.get;
+        mock = this._makeComponent({type: 'function'}, () => {
+          descriptor!.get = originalGet;
+          Object.defineProperty(object, methodKey, descriptor!);
+        });
+        descriptor.get = () => mock;
+        Object.defineProperty(object, methodKey, descriptor);
+      } else {
+        mock = this._makeComponent({type: 'function'}, () => {
           if (isMethodOwner) {
-            object[methodKey] = original.value;
+            object[methodKey] = original;
           } else {
             delete object[methodKey];
           }
-        },
-      );
+        });
+        // @ts-expect-error overriding original method with a Mock
+        object[methodKey] = mock;
+      }
 
-      // @ts-expect-error overriding original method with a Mock
-      object[methodKey] = mock;
       mock.mockImplementation(function (this: unknown) {
-        return original.value.apply(this, arguments);
+        return original.apply(this, arguments);
       });
     }
 
-    return mock;
+    return object[methodKey] as Mock;
+  }
+
+  private _spyOnProperty<T extends object>(
+    object: T,
+    propertyKey: keyof T,
+    accessType: 'get' | 'set',
+  ): MockInstance {
+    let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
+    let proto = Object.getPrototypeOf(object);
+
+    while (!descriptor && proto !== null) {
+      descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
+      proto = Object.getPrototypeOf(proto);
+    }
+
+    if (!descriptor) {
+      throw new Error(`${String(propertyKey)} property does not exist`);
+    }
+
+    if (!descriptor.configurable) {
+      throw new Error(`${String(propertyKey)} is not declared configurable`);
+    }
+
+    if (!descriptor[accessType]) {
+      throw new Error(
+        `Property ${String(
+          propertyKey,
+        )} does not have access type ${accessType}`,
+      );
+    }
+
+    const original = descriptor[accessType];
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
+        throw new Error(
+          `Cannot spy the ${String(
+            propertyKey,
+          )} property because it is not a function; ${this._typeOf(
+            original,
+          )} given instead`,
+        );
+      }
+
+      descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // @ts-expect-error: mock is assignable
+        descriptor![accessType] = original;
+        Object.defineProperty(object, propertyKey, descriptor!);
+      });
+
+      (descriptor[accessType] as Mock).mockImplementation(function (
+        this: unknown,
+      ) {
+        // @ts-expect-error - wrong context
+        return original.apply(this, arguments);
+      });
+    }
+
+    Object.defineProperty(object, propertyKey, descriptor);
+    return descriptor[accessType] as Mock;
   }
 
   mockProperty<
@@ -1455,7 +1408,7 @@ export class ModuleMocker {
     this._spyState = new Set();
   }
 
-  private _typeOf(value: any): string {
+  private _typeOf(value: unknown): string {
     return value == null ? `${value}` : typeof value;
   }
 

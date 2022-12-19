@@ -6,8 +6,31 @@
  *
  */
 
-import SuperTestClass, {TestClass} from './__fixtures__/class-mocks-types';
+import SuperTestClass, * as testTypes from './__fixtures__/class-mocks-types';
 jest.mock('./__fixtures__/class-mocks-types');
+
+describe('Testing the mocking of exported functions', () => {
+  it('can mock a directly exported function', () => {
+    jest.spyOn(testTypes, 'testFunction1').mockImplementation(() => {
+      return 'mockTestFunction';
+    });
+    expect(testTypes.testFunction1()).toBe('mockTestFunction');
+  });
+
+  it('can mock an indirectly exported function', () => {
+    jest.spyOn(testTypes, 'testFunction2').mockImplementation(() => {
+      return 'mockTestFunction';
+    });
+    expect(testTypes.testFunction2()).toBe('mockTestFunction');
+  });
+
+  it('can mock an indirectly exported anonymous function', () => {
+    jest.spyOn(testTypes, 'testFunction3').mockImplementation(() => {
+      return 'mockTestFunction';
+    });
+    expect(testTypes.testFunction3()).toBe('mockTestFunction');
+  });
+});
 
 describe('Testing the mocking of a class hierarchy defined in a single import', () => {
   it('can call an instance method - Auto-mocked class', () => {
@@ -25,11 +48,11 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass instance method - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass.prototype, 'testMethod')
+      .spyOn(testTypes.TestClass.prototype, 'testMethod')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    const testClassInstance = new TestClass();
+    const testClassInstance = new testTypes.TestClass();
     expect(testClassInstance.testMethod()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
@@ -49,11 +72,11 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass instance method named "get" - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass.prototype, 'get')
+      .spyOn(testTypes.TestClass.prototype, 'get')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    const testClassInstance = new TestClass();
+    const testClassInstance = new testTypes.TestClass();
     expect(testClassInstance.get()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
@@ -75,63 +98,15 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass instance method named "set" - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass.prototype, 'set')
+      .spyOn(testTypes.TestClass.prototype, 'set')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    const testClassInstance = new TestClass();
+    const testClassInstance = new testTypes.TestClass();
     expect(testClassInstance.set()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
-  });
-
-  it('can read a value from an instance getter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(SuperTestClass.prototype, 'testAccessor', 'get')
-      .mockImplementation(() => {
-        return 'mockTestAccessor';
-      });
-    const testClassInstance = new SuperTestClass();
-    expect(testClassInstance.testAccessor).toBe('mockTestAccessor');
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-
-    mockTestMethod.mockClear();
-  });
-
-  it('can read a value from a superclass instance getter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(TestClass.prototype, 'testAccessor', 'get')
-      .mockImplementation(() => {
-        return 'mockTestAccessor';
-      });
-    const testClassInstance = new TestClass();
-    expect(testClassInstance.testAccessor).toBe('mockTestAccessor');
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-  });
-
-  it('can write a value to an instance setter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(SuperTestClass.prototype, 'testAccessor', 'set')
-      .mockImplementation((_x: string) => {
-        return () => {};
-      });
-    const testClassInstance = new SuperTestClass();
-    testClassInstance.testAccessor = '';
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-
-    mockTestMethod.mockClear();
-  });
-
-  it('can write a value to a superclass instance setter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(TestClass.prototype, 'testAccessor', 'set')
-      .mockImplementation((_x: string) => {
-        return () => {};
-      });
-    const testClassInstance = new TestClass();
-    testClassInstance.testAccessor = '';
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 
   it('can call a static method - Auto-mocked class', () => {
@@ -148,11 +123,11 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass static method - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass, 'staticTestMethod')
+      .spyOn(testTypes.TestClass, 'staticTestMethod')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    expect(TestClass.staticTestMethod()).toBe('mockTestMethod');
+    expect(testTypes.TestClass.staticTestMethod()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 
@@ -170,11 +145,11 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass static method named "get" - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass, 'get')
+      .spyOn(testTypes.TestClass, 'get')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    expect(TestClass.get()).toBe('mockTestMethod');
+    expect(testTypes.TestClass.get()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
@@ -194,57 +169,13 @@ describe('Testing the mocking of a class hierarchy defined in a single import', 
 
   it('can call a superclass static method named "set" - Auto-mocked class', () => {
     const mockTestMethod = jest
-      .spyOn(TestClass, 'set')
+      .spyOn(testTypes.TestClass, 'set')
       .mockImplementation(() => {
         return 'mockTestMethod';
       });
-    expect(TestClass.set()).toBe('mockTestMethod');
+    expect(testTypes.TestClass.set()).toBe('mockTestMethod');
     expect(mockTestMethod).toHaveBeenCalledTimes(1);
 
     mockTestMethod.mockClear();
-  });
-
-  it('can read a value from a static getter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(SuperTestClass, 'staticTestAccessor', 'get')
-      .mockImplementation(() => {
-        return 'mockStaticTestAccessor';
-      });
-    expect(SuperTestClass.staticTestAccessor).toBe('mockStaticTestAccessor');
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-
-    mockTestMethod.mockClear();
-  });
-
-  it('can read a value from a superclass static getter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(TestClass, 'staticTestAccessor', 'get')
-      .mockImplementation(() => {
-        return 'mockStaticTestAccessor';
-      });
-    expect(TestClass.staticTestAccessor).toBe('mockStaticTestAccessor');
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-  });
-
-  it('can write a value to a static setter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(SuperTestClass, 'staticTestAccessor', 'set')
-      .mockImplementation((_x: string) => {
-        return () => {};
-      });
-    SuperTestClass.staticTestAccessor = '';
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
-
-    mockTestMethod.mockClear();
-  });
-
-  it('can write a value to a superclass static setter - Auto-mocked class', () => {
-    const mockTestMethod = jest
-      .spyOn(TestClass, 'staticTestAccessor', 'set')
-      .mockImplementation((_x: string) => {
-        return () => {};
-      });
-    TestClass.staticTestAccessor = '';
-    expect(mockTestMethod).toHaveBeenCalledTimes(1);
   });
 });
