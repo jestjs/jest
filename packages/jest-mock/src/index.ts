@@ -1361,7 +1361,9 @@ export class ModuleMocker {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
-        )} property because it has a getter`,
+        )} property because it has a getter. Use \`jest.spyOn(object, '${String(
+          propertyKey,
+        )}', 'get').mockReturnValue(value)\` instead.`,
       );
     }
 
@@ -1369,7 +1371,9 @@ export class ModuleMocker {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
-        )} property because it has a setter`,
+        )} property because it has a setter. Use \`jest.spyOn(object, '${String(
+          propertyKey,
+        )}', 'set').mockReturnValue(value)\` instead.`,
       );
     }
 
@@ -1387,7 +1391,9 @@ export class ModuleMocker {
       throw new Error(
         `Cannot mock the ${String(
           propertyKey,
-        )} property because it is a function; use spyOn instead`,
+        )} property because it is a function. Use \`jest.spyOn(object, '${String(
+          propertyKey,
+        )}')\` instead.`,
       );
     }
 

@@ -1661,7 +1661,7 @@ describe('moduleMocker', () => {
         expect(() => {
           moduleMocker.mockProperty({method: () => {}}, 'method', () => {});
         }).toThrow(
-          'Cannot mock the method property because it is a function; use spyOn instead',
+          "Cannot mock the method property because it is a function. Use `jest.spyOn(object, 'method')` instead.",
         );
       });
 
