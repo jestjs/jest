@@ -2181,7 +2181,8 @@ export default class Runtime {
       return jestObject;
     };
     const isolateModulesAsync = async(fn: () => void) => {
-      return this.isolateModulesAsync(fn);
+      await this.isolateModulesAsync(fn);
+      return Promise.resolve(jestObject);
     }
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
