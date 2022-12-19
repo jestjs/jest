@@ -214,7 +214,7 @@ describe('resetModules', () => {
 });
 
 describe('isolateModules', () => {
-  it("keeps its registry isolated from global one", async () => {
+  it('keeps its registry isolated from global one', async () => {
     const runtime = await createRuntime(__filename, {
       moduleNameMapper,
     });
@@ -325,7 +325,7 @@ describe('isolateModules', () => {
     beforeEach(() => {
       jest.isolateModules(() => {
         exports = require('./test_root/ModuleWithState');
-        exports.set(1);  // Ensure idempotency with the isolateModulesAsync test
+        exports.set(1); // Ensure idempotency with the isolateModulesAsync test
       });
     });
 
@@ -343,7 +343,7 @@ describe('isolateModules', () => {
 });
 
 describe('isolateModulesAsync', () => {
-  it("keeps its registry isolated from global one", async () => {
+  it('keeps its registry isolated from global one', async () => {
     const runtime = await createRuntime(__filename, {
       moduleNameMapper,
     });
@@ -396,9 +396,11 @@ describe('isolateModulesAsync', () => {
     const runtime = await createRuntime(__filename, {
       moduleNameMapper,
     });
-    await expect(runtime.isolateModulesAsync(async () => {
-      throw new Error('Error from isolated module');
-    })).rejects.toThrow('Error from isolated module');
+    await expect(
+      runtime.isolateModulesAsync(async () => {
+        throw new Error('Error from isolated module');
+      }),
+    ).rejects.toThrow('Error from isolated module');
 
     await runtime.isolateModulesAsync(async () => {
       expect(true).toBe(true);
@@ -452,7 +454,7 @@ describe('isolateModulesAsync', () => {
     beforeEach(async () => {
       await jest.isolateModulesAsync(async () => {
         exports = require('./test_root/ModuleWithState');
-        exports.set(1);  // Ensure idempotency with the isolateModules test
+        exports.set(1); // Ensure idempotency with the isolateModules test
       });
     });
 

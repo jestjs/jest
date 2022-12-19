@@ -8,7 +8,7 @@
 
 let state = 1;
 
-export const set = (i) => {
+export const set = i => {
   state = i;
 };
 
