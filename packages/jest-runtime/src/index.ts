@@ -1141,7 +1141,7 @@ export default class Runtime {
     }
   }
 
-  async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
+  async isolateModulesAsync(fn: () => Promise<void> | void): Promise<void> {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
         'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
@@ -2180,9 +2180,6 @@ export default class Runtime {
       this.isolateModules(fn);
       return jestObject;
     };
-    const isolateModulesAsync = async (fn: () => Promise<void>) => {
-      await this.isolateModulesAsync(fn);
-    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
     const mocked =
@@ -2248,7 +2245,7 @@ export default class Runtime {
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
-      isolateModulesAsync,
+      isolateModulesAsync: this.isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),

@@ -575,8 +575,20 @@ const otherCopyOfMyModule = require('myModule');
 ```js
 let myModule;
 await jest.isolateModulesAsync(async () => {
-  constmyModule = require('myModule');
+  myModule = await import('myModule');
   // do async stuff here
+});
+
+const otherCopyOfMyModule = require('myModule');
+```
+
+`jest.isolateModulesAsync()` can also run synchronous callbacks:
+
+```js
+let myModule;
+await jest.isolateModulesAsync(() => {
+  myModule = require('myModule');
+  // do sync stuff here
 });
 
 const otherCopyOfMyModule = require('myModule');

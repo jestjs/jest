@@ -99,6 +99,7 @@ expectType<typeof jest>(jest.isolateModules(() => {}));
 expectError(jest.isolateModules());
 
 expectType<Promise<void>>(jest.isolateModulesAsync(async () => {}));
+expectType<Promise<void>>(jest.isolateModulesAsync(() => {}));
 expectError(jest.isolateModulesAsync());
 
 expectType<typeof jest>(jest.mock('moduleName'));

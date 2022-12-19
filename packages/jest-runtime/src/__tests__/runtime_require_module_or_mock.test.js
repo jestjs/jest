@@ -343,97 +343,156 @@ describe('isolateModules', () => {
 });
 
 describe('isolateModulesAsync', () => {
-  it('keeps its registry isolated from global one', async () => {
-    const runtime = await createRuntime(__filename, {
-      moduleNameMapper,
-    });
-    let exports;
-    exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'ModuleWithState',
-    );
-    exports.increment();
-    expect(exports.getState()).toBe(2);
-
-    await runtime.isolateModulesAsync(async () => {
+  describe('with sync callback', () => {
+    it('keeps its registry isolated from global one', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      let exports;
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'ModuleWithState',
       );
-      expect(exports.getState()).toBe(1);
-    });
-
-    exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'ModuleWithState',
-    );
-    expect(exports.getState()).toBe(2);
-  });
-
-  it('resets all modules after the block', async () => {
-    const runtime = await createRuntime(__filename, {
-      moduleNameMapper,
-    });
-    let exports;
-    await runtime.isolateModulesAsync(async () => {
-      exports = runtime.requireModuleOrMock(
-        runtime.__mockRootPath,
-        'ModuleWithState',
-      );
-      expect(exports.getState()).toBe(1);
       exports.increment();
+      expect(exports.getState()).toBe(2);
+
+      await runtime.isolateModulesAsync(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
       expect(exports.getState()).toBe(2);
     });
 
-    exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'ModuleWithState',
-    );
-    expect(exports.getState()).toBe(1);
-  });
-
-  it('resets module after failing', async () => {
-    const runtime = await createRuntime(__filename, {
-      moduleNameMapper,
-    });
-    await expect(
-      runtime.isolateModulesAsync(async () => {
-        throw new Error('Error from isolated module');
-      }),
-    ).rejects.toThrow('Error from isolated module');
-
-    await runtime.isolateModulesAsync(async () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  it('cannot nest isolateModulesAsync blocks', async () => {
-    const runtime = await createRuntime(__filename, {
-      moduleNameMapper,
-    });
-    await expect(async () => {
-      await runtime.isolateModulesAsync(async () => {
-        await runtime.isolateModulesAsync(() => Promise.resolve());
+    it('resets all modules after the block', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
       });
-    }).rejects.toThrow(
-      'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
-    );
+      let exports;
+      await runtime.isolateModulesAsync(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    });
+
+    it('resets module after failing', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      await expect(
+        runtime.isolateModulesAsync(() => {
+          throw new Error('Error from isolated module');
+        }),
+      ).rejects.toThrow('Error from isolated module');
+
+      await runtime.isolateModulesAsync(() => {
+        expect(true).toBe(true);
+      });
+    });
+
+    it('cannot nest isolateModulesAsync blocks', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      await expect(async () => {
+        await runtime.isolateModulesAsync(async () => {
+          await runtime.isolateModulesAsync(() => {});
+        });
+      }).rejects.toThrow(
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+      );
+    });
+
+    it('can call resetModules within a isolateModules block', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      let exports;
+      await runtime.isolateModulesAsync(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+
+        exports.increment();
+        runtime.resetModules();
+
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    });
   });
 
-  it('can call resetModules within a isolateModules block', async () => {
-    const runtime = await createRuntime(__filename, {
-      moduleNameMapper,
-    });
-    let exports;
-    await runtime.isolateModulesAsync(async () => {
+  describe('with async callback', () => {
+    it('keeps its registry isolated from global one', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      let exports;
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'ModuleWithState',
       );
-      expect(exports.getState()).toBe(1);
-
       exports.increment();
-      runtime.resetModules();
+      expect(exports.getState()).toBe(2);
+
+      await runtime.isolateModulesAsync(async () => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(2);
+    });
+
+    it('resets all modules after the block', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      let exports;
+      await runtime.isolateModulesAsync(async () => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+        exports.increment();
+        expect(exports.getState()).toBe(2);
+      });
 
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
@@ -442,11 +501,62 @@ describe('isolateModulesAsync', () => {
       expect(exports.getState()).toBe(1);
     });
 
-    exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'ModuleWithState',
-    );
-    expect(exports.getState()).toBe(1);
+    it('resets module after failing', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      await expect(
+        runtime.isolateModulesAsync(async () => {
+          throw new Error('Error from isolated module');
+        }),
+      ).rejects.toThrow('Error from isolated module');
+
+      await runtime.isolateModulesAsync(async () => {
+        expect(true).toBe(true);
+      });
+    });
+
+    it('cannot nest isolateModulesAsync blocks', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      await expect(async () => {
+        await runtime.isolateModulesAsync(async () => {
+          await runtime.isolateModulesAsync(() => Promise.resolve());
+        });
+      }).rejects.toThrow(
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+      );
+    });
+
+    it('can call resetModules within a isolateModules block', async () => {
+      const runtime = await createRuntime(__filename, {
+        moduleNameMapper,
+      });
+      let exports;
+      await runtime.isolateModulesAsync(async () => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+
+        exports.increment();
+        runtime.resetModules();
+
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    });
   });
 
   describe('can use isolateModulesAsync from a beforeEach block', () => {
