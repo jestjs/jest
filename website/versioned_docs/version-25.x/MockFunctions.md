@@ -49,10 +49,12 @@ All mock functions have this special `.mock` property, which is where data about
 
 ```javascript
 const myMock = jest.fn();
+
 const a = new myMock();
 const b = {};
 const bound = myMock.bind(b);
 bound();
+
 console.log(myMock.mock.instances);
 // > [ <a>, <b> ]
 ```
