@@ -13,11 +13,13 @@ import {
 } from 'tsd-lite';
 import {
   Mock,
+  MockedProperty,
   SpiedClass,
   SpiedFunction,
   SpiedGetter,
   SpiedSetter,
   fn,
+  mockProperty,
   spyOn,
 } from 'jest-mock';
 
@@ -476,3 +478,20 @@ expectType<SpiedSetter<typeof optionalSpiedObject.propertyD>>(
 
 expectError(spyOn(optionalSpiedObject, 'propertyA'));
 expectError(spyOn(optionalSpiedObject, 'propertyB'));
+
+// mockProperty
+
+const obj = {
+  fn: () => {},
+
+  property: 1,
+};
+
+expectType<MockedProperty<number>>(mockProperty(obj, 'property', 1));
+mockProperty(obj, 'property', 1).mockValue(1).mockRestore();
+
+expectError(mockProperty(obj, 'invalid', 1));
+expectError(mockProperty(obj, 'property', 'not a number'));
+expectError(mockProperty(obj, 'fn', () => {}));
+
+expectError(mockProperty(obj, 'property', 1).mockValue('not a number'));
