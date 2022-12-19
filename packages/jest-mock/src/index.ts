@@ -172,17 +172,26 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
 
-export interface MockedProperty {
+export interface MockedProperty<T = unknown> {
   /**
    * Restore property to its original value known at the time of mocking.
    */
   mockRestore(): void;
+
+  /**
+   * Change the value of the property.
+   */
+  mockValue(value: T): this;
 }
 
-type MockedPropertyRestorer<T extends object = object> = {
+type MockedPropertyRestorer<
+  T extends object = object,
+  P = string | number | symbol,
+> = {
   (): void;
   object: T;
-  property: keyof T;
+  property: P;
+  mock: MockedProperty;
 };
 
 type MockFunctionResultIncomplete = {
@@ -1001,12 +1010,12 @@ export class ModuleMocker {
   }
 
   /**
-   * Check whether given property of an object has been already mocked.
+   * Check whether the given property of an object has been already mocked.
    */
-  private _isAlreadyMocked<T extends object>(
+  private _findMockedProperty<T extends object, K>(
     object: T,
-    propertyKey: keyof T,
-  ): boolean {
+    propertyKey: K,
+  ): MockedPropertyRestorer<T, K> | undefined {
     for (const spyState of this._spyState) {
       if (
         'object' in spyState &&
@@ -1014,11 +1023,11 @@ export class ModuleMocker {
         (spyState as MockedPropertyRestorer).object === object &&
         (spyState as MockedPropertyRestorer).property === propertyKey
       ) {
-        return true;
+        return spyState as MockedPropertyRestorer<T, K>;
       }
     }
 
-    return false;
+    return;
   }
 
   /**
@@ -1315,7 +1324,7 @@ export class ModuleMocker {
     T extends object,
     P extends PropertyLikeKeys<T>,
     V extends Required<T>[P],
-  >(object: T, propertyKey: P, value: V): MockedProperty {
+  >(object: T, propertyKey: P, value: V): MockedProperty<V> {
     if (!object) {
       throw new Error(
         `mockProperty could not find an object on which to replace ${String(
@@ -1347,14 +1356,6 @@ export class ModuleMocker {
     }
     if (!descriptor.configurable) {
       throw new Error(`${String(propertyKey)} is not declared configurable`);
-    }
-
-    if (this._isAlreadyMocked(object, propertyKey)) {
-      throw new Error(
-        `Cannot mock the ${String(
-          propertyKey,
-        )} property because it is already mocked`,
-      );
     }
 
     if (descriptor.get !== undefined) {
@@ -1397,15 +1398,19 @@ export class ModuleMocker {
       );
     }
 
+    const existingRestore = this._findMockedProperty(object, propertyKey);
+
+    if (existingRestore) {
+      return existingRestore.mock.mockValue(value);
+    }
+
     const isPropertyOwner = Object.prototype.hasOwnProperty.call(
       object,
       propertyKey,
     );
     const originalValue = descriptor.value;
 
-    object[propertyKey] = value;
-
-    const restore: MockedPropertyRestorer<typeof object> = () => {
+    const restore: MockedPropertyRestorer<T, P> = () => {
       if (isPropertyOwner) {
         object[propertyKey] = originalValue;
       } else {
@@ -1413,18 +1418,27 @@ export class ModuleMocker {
       }
     };
 
-    restore.object = object;
-    restore.property = propertyKey;
-
-    this._spyState.add(restore);
-
-    return {
-      mockRestore: (): void => {
+    const mock: MockedProperty<V> = {
+      mockRestore: () => {
         restore();
 
         this._spyState.delete(restore);
       },
+
+      mockValue: value => {
+        object[propertyKey] = value;
+
+        return mock;
+      },
     };
+
+    restore.object = object;
+    restore.property = propertyKey;
+    restore.mock = mock;
+
+    this._spyState.add(restore);
+
+    return mock.mockValue(value);
   }
 
   clearAllMocks(): void {

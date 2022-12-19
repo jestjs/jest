@@ -1602,6 +1602,26 @@ describe('moduleMocker', () => {
       expect(obj.property).toBe(1);
     });
 
+    it('should allow mocking a property multiple times', () => {
+      const obj = {
+        property: 1,
+      };
+
+      const replacedFirst = moduleMocker.mockProperty(obj, 'property', 2);
+
+      const replacedSecond = moduleMocker.mockProperty(obj, 'property', 3);
+
+      expect(obj.property).toBe(3);
+
+      replacedSecond.mockRestore();
+
+      expect(obj.property).toBe(1);
+
+      replacedFirst.mockRestore();
+
+      expect(obj.property).toBe(1);
+    });
+
     describe('should throw', () => {
       it('when object is not provided', () => {
         expect(() => {
@@ -1689,20 +1709,6 @@ describe('moduleMocker', () => {
       });
     });
 
-    it('should not replace property that has been already replaced', () => {
-      const obj = {
-        property: 1,
-      };
-
-      moduleMocker.mockProperty(obj, 'property', 2);
-
-      expect(() => {
-        moduleMocker.mockProperty(obj, 'property', 3);
-      }).toThrow(
-        'Cannot mock the property property because it is already mocked',
-      );
-    });
-
     it('should work for property from prototype chain', () => {
       const parent = {property: 'abcd'};
       const child = Object.create(parent);
@@ -1736,6 +1742,21 @@ describe('moduleMocker', () => {
       replaced.mockRestore();
 
       expect(obj.property).toBe(1);
+    });
+
+    describe('mockValue', () => {
+      it('should work', () => {
+        const obj = {
+          property: 1,
+        };
+
+        const replaced = moduleMocker.mockProperty(obj, 'property', 2);
+
+        const mockValueResult = replaced.mockValue(3);
+
+        expect(obj.property).toBe(3);
+        expect(mockValueResult).toBe(replaced);
+      });
     });
   });
 });
