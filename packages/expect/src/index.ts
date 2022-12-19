@@ -393,10 +393,6 @@ expect.any = any;
 expect.not = {
   arrayContaining: arrayNotContaining,
   closeTo: notCloseTo,
-  numberGreaterThan,
-  numberGreaterThanOrEqualTo,
-  numberLessThan,
-  numberLessThanOrEqualTo,
   objectContaining: objectNotContaining,
   stringContaining: stringNotContaining,
   stringMatching: stringNotMatching,
@@ -407,6 +403,10 @@ expect.closeTo = closeTo;
 expect.objectContaining = objectContaining;
 expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
+expect.numberGreaterThan = numberGreaterThan;
+expect.numberGreaterThanOrEqualTo = numberGreaterThanOrEqualTo;
+expect.numberLessThan = numberLessThan;
+expect.numberLessThanOrEqualTo = numberLessThanOrEqualTo;
 
 const _validateResult = (result: any) => {
   if (
