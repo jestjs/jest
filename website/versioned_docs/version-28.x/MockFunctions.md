@@ -74,6 +74,9 @@ expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 // The return value of the first call to the function was 'return value'
 expect(someMockFunction.mock.results[0].value).toBe('return value');
 
+// The function was called with a certain `this` context: the `element` object.
+expect(someMockFunction.mock.contexts[0]).toBe(element);
+
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
 
