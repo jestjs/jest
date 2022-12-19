@@ -93,18 +93,6 @@ export interface BaseExpect {
   setState(state: Partial<MatcherState>): void;
 }
 
-type InverseAsymmetricMatchers = Inverse<
-  Omit<
-    AsymmetricMatchers,
-    | 'any'
-    | 'anything'
-    | 'numberGreaterThan'
-    | 'numberGreaterThanOrEqualTo'
-    | 'numberLessThan'
-    | 'numberLessThanOrEqualTo'
-  >
->;
-
 export type Expect = {
   <T = unknown>(actual: T): Matchers<void> &
     Inverse<Matchers<void>> &
@@ -133,6 +121,18 @@ export interface AsymmetricMatchers {
   stringContaining(sample: string): AsymmetricMatcher;
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
+
+type InverseAsymmetricMatchers = Inverse<
+  Omit<
+    AsymmetricMatchers,
+    | 'any'
+    | 'anything'
+    | 'numberGreaterThan'
+    | 'numberGreaterThanOrEqualTo'
+    | 'numberLessThan'
+    | 'numberLessThanOrEqualTo'
+  >
+>;
 
 type PromiseMatchers = {
   /**
