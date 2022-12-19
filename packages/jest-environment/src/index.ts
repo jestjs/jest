@@ -177,7 +177,7 @@ export interface Jest {
    * async functions to be wrapped. The caller is expected to `await` the completion of
    * `isolateModulesAsync`.
    */
-  isolateModulesAsync(fn: () => void): Promise<Jest>;
+  isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */

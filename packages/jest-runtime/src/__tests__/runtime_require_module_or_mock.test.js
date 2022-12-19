@@ -355,7 +355,7 @@ describe('isolateModulesAsync', () => {
     exports.increment();
     expect(exports.getState()).toBe(2);
 
-    await runtime.isolateModulesAsync(() => {
+    await runtime.isolateModulesAsync(async () => {
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'ModuleWithState',
@@ -375,7 +375,7 @@ describe('isolateModulesAsync', () => {
       moduleNameMapper,
     });
     let exports;
-    await runtime.isolateModulesAsync(() => {
+    await runtime.isolateModulesAsync(async () => {
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'ModuleWithState',
@@ -411,7 +411,7 @@ describe('isolateModulesAsync', () => {
     });
     await expect(async () => {
       await runtime.isolateModulesAsync(async () => {
-        await runtime.isolateModulesAsync(() => {});
+        await runtime.isolateModulesAsync(() => Promise.resolve());
       });
     }).rejects.toThrow(
       'isolateModulesAsync cannot be nested inside another isolateModules or isolateModulesAsync.',
@@ -423,7 +423,7 @@ describe('isolateModulesAsync', () => {
       moduleNameMapper,
     });
     let exports;
-    await runtime.isolateModulesAsync(() => {
+    await runtime.isolateModulesAsync(async () => {
       exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'ModuleWithState',
