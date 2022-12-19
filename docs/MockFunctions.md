@@ -11,19 +11,18 @@ There are two ways to mock functions: Either by creating a mock function to use 
 
 Let's imagine we're testing an implementation of a function `forEach`, which invokes a callback for each item in a supplied array.
 
-```javascript
-function forEach(items, callback) {
+```js title="forEach.js"
+export function forEach(items, callback) {
   for (let index = 0; index < items.length; index++) {
     callback(items[index]);
   }
 }
-module.exports = forEach;
 ```
 
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
-```js title="foreach.test.js"
-const forEach = require('./foreach');
+```js title="forEach.test.js"
+const forEach = require('./foEach');
 
 const mockCallback = jest.fn(x => 42 + x);
 
@@ -49,24 +48,22 @@ test('forEach mock function', () => {
 All mock functions have this special `.mock` property, which is where data about how the function has been called and what the function returned is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
-const myMock1 = jest.fn();
-const a = new myMock1();
-console.log(myMock1.mock.instances);
-// > [ <a> ]
+const myMock = jest.fn();
 
-const myMock2 = jest.fn();
+const a = new myMock();
 const b = {};
-const bound = myMock2.bind(b);
+const bound = myMock.bind(b);
 bound();
-console.log(myMock2.mock.contexts);
-// > [ <b> ]
+
+console.log(myMock.mock.instances);
+// > [ <a>, <b> ]
 ```
 
 These mock members are very useful in tests to assert how these functions get called, instantiated, or what they returned:
 
 ```javascript
 // The function was called exactly once
-expect(someMockFunction.mock.calls.length).toBe(1);
+expect(someMockFunction.mock.calls).toHaveLength(1);
 
 // The first arg of the first call to the function was 'first arg'
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
@@ -119,8 +116,8 @@ const result = [11, 12].filter(num => filterTestFn(num));
 
 console.log(result);
 // > [11]
-console.log(filterTestFn.mock.calls[0][0]); // 11
-console.log(filterTestFn.mock.calls[1][0]); // 12
+console.log(filterTestFn.mock.calls);
+// > [ [11], [12] ]
 ```
 
 Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. In these cases, try to avoid the temptation to implement logic inside of any function that's not directly being tested.
