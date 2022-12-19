@@ -414,7 +414,7 @@ describe('isolateModulesAsync', () => {
         await runtime.isolateModulesAsync(() => Promise.resolve());
       });
     }).rejects.toThrow(
-      'isolateModulesAsync cannot be nested inside another isolateModules or isolateModulesAsync.',
+      'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
     );
   });
 
