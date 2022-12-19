@@ -1324,7 +1324,7 @@ export class ModuleMocker {
       );
     }
 
-    if (!propertyKey) {
+    if (propertyKey === undefined || propertyKey === null) {
       throw new Error('No property name supplied');
     }
 
