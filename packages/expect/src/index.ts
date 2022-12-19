@@ -59,6 +59,7 @@ export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
   AsyncExpectationResult,
   AsymmetricMatchers,
+  InverseAsymmetricMatchers,
   BaseExpect,
   Expect,
   ExpectationResult,

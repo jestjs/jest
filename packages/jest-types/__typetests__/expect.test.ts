@@ -40,15 +40,19 @@ expectError(expect(0.1 + 0.2).toEqual(expect.not.closeTo()));
 
 expectType<void>(expect(20).toEqual(expect.numberGreaterThan(10)));
 expectError(expect(9).toEqual(expect.numberGreaterThan('10')));
+expectError(expect(9).toEqual(expect.not.numberGreaterThan(10)));
 
 expectType<void>(expect(2).toEqual(expect.numberGreaterThanOrEqualTo(10)));
 expectError(expect(2).toEqual(expect.numberGreaterThanOrEqualTo('1')));
+expectError(expect(2).toEqual(expect.not.numberGreaterThanOrEqualTo(1)));
 
 expectType<void>(expect(5).toEqual(expect.numberLessThan(6)));
 expectError(expect(21).toEqual(expect.numberLessThan('20')));
+expectError(expect(21).toEqual(expect.not.numberLessThan(20)));
 
 expectType<void>(expect(3).toEqual(expect.numberLessThanOrEqualTo(5)));
 expectError(expect(11).toEqual(expect.numberLessThanOrEqualTo('10')));
+expectError(expect(11).toEqual(expect.not.numberLessThanOrEqualTo(10)));
 
 expectType<void>(expect({a: 1}).toEqual(expect.objectContaining({a: 1})));
 expectError(expect({a: 1}).toEqual(expect.objectContaining(1)));

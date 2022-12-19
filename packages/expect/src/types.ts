@@ -122,7 +122,7 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type InverseAsymmetricMatchers = Inverse<
+export type InverseAsymmetricMatchers = Inverse<
   Omit<
     AsymmetricMatchers,
     | 'any'

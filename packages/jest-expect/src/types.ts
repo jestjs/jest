@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AsymmetricMatchers, BaseExpect, Matchers} from 'expect';
+import type {
+  AsymmetricMatchers,
+  BaseExpect,
+  InverseAsymmetricMatchers,
+  Matchers,
+} from 'expect';
 import type {
   SnapshotMatchers,
   SnapshotState,
@@ -20,7 +25,7 @@ export type JestExpect = {
   addSnapshotSerializer: typeof addSerializer;
 } & BaseExpect &
   AsymmetricMatchers &
-  Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
+  InverseAsymmetricMatchers;
 
 type Inverse<Matchers> = {
   /**
