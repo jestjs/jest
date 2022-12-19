@@ -699,69 +699,60 @@ describe('not.stringMatching', () => {
 
 ### `expect.numberGreaterThan(number)`
 
-`expext.numberGreaterThan(number)` is equivalent to the `.toBeGreaterThan` matcher, but it is
-useful when comparing numbers inside objects or arrays.
+`expect.numberGreaterThan(number)` is equivalent to the `.toBeGreaterThan` matcher, but it is useful when comparing numbers inside objects or arrays.
 
 ```typescript
-const example = { foo: 21, bar: 42 }
+const example = {foo: 21, bar: 42};
 
 test('Foo is greater than 21', () => {
   const expected = expect.objectContaining({
-    foo: expect.numberGreaterThan(21)
+    foo: expect.numberGreaterThan(21),
   });
 
   expect(example).toEqual(expected);
 });
-
 ```
 
 ### `expect.numberGreaterThanOrEqualTo(number)`
 
-`expext.numberGreaterThanOrEqualTo(number)` is equivalent to the `.toBeGreaterThanOrEqualTo` matcher, but it is
-useful when comparing numbers inside objects or arrays.
+`expect.numberGreaterThanOrEqualTo(number)` is equivalent to the `.toBeGreaterThanOrEqualTo` matcher, but it is useful when comparing numbers inside objects or arrays.
 
 ```typescript
-
 test('Foo is greater than or equal to 10', () => {
   const expected = expect.objectContaining({
-    foo: expect.numberGreaterThanOrEqualTo(10)
+    foo: expect.numberGreaterThanOrEqualTo(10),
   });
 
-  expect({ foo: 10}).toEqual(expected);
+  expect({foo: 10}).toEqual(expected);
 });
-
 ```
 
 ### `expect.numberLessThan(number)`
 
-`expext.numberLessThan(number)` is equivalent to the `.toBeLessThan` matcher, but it is
-useful when comparing numbers inside objects or arrays.
+`expect.numberLessThan(number)` is equivalent to the `.toBeLessThan` matcher, but it is useful when comparing numbers inside objects or arrays.
 
 ```typescript
-
 test('Foo is less than 10', () => {
   const expected = expect.objectContaining({
-    foo: expect.numberGreaterThanOrEqualTo(10)
+    foo: expect.numberGreaterThanOrEqualTo(10),
   });
 
-  expect({ foo: 2}).toEqual(expected);
+  expect({foo: 2}).toEqual(expected);
 });
-
 ```
+
 ### `expect.numberLessThanOrEqualTo(number)`
 
-`expext.numberLessThanOrEqualTo(number)` is equivalent to the `.toBeLessThanOrEqualTo` matcher, but it is
-useful when comparing numbers inside objects or arrays.
-```typescript
+`expect.numberLessThanOrEqualTo(number)` is equivalent to the `.toBeLessThanOrEqualTo` matcher, but it is useful when comparing numbers inside objects or arrays.
 
+```typescript
 test('Foo is less than or equal to 10', () => {
   const expected = expect.objectContaining({
-    foo: expect.numberLessThanOrEqualTo(10)
+    foo: expect.numberLessThanOrEqualTo(10),
   });
 
-  expect({ foo: 10}).toEqual(expected);
+  expect({foo: 10}).toEqual(expected);
 });
-
 ```
 
 ### `expect.objectContaining(object)`

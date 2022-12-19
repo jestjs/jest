@@ -1,5 +1,7 @@
 ## main
+
 - `[expect]` Add new asymmetric matchers for numbers ([#12020](https://github.com/facebook/jest/issues/12020))
+
 ### Features
 
 ### Fixes
