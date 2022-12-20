@@ -185,114 +185,64 @@ describe.each(['toBeCalledTimes', 'toHaveBeenCalledTimes'] as const)(
   },
 );
 
-describe.each([
-  'lastCalledWith',
-  'toHaveBeenLastCalledWith',
-  'nthCalledWith',
-  'toHaveBeenNthCalledWith',
-  'toBeCalledWith',
-  'toHaveBeenCalledWith',
-] as const)('%s', calledWith => {
-  function isToHaveNth(
-    calledWith: string,
-  ): calledWith is 'nthCalledWith' | 'toHaveBeenNthCalledWith' {
-    return (
-      calledWith === 'nthCalledWith' || calledWith === 'toHaveBeenNthCalledWith'
-    );
-  }
+describe.each(['nthCalledWith', 'toHaveBeenNthCalledWith'] as const)(
+  '%s',
+  calledWith => {
+    test('works only on spies or jest.fn', () => {
+      const fn = function fn() {};
 
-  test('works only on spies or jest.fn', () => {
-    const fn = function fn() {};
-
-    if (isToHaveNth(calledWith)) {
       expect(() =>
         jestExpect(fn)[calledWith](3),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      expect(() => jestExpect(fn)[calledWith]()).toThrowErrorMatchingSnapshot();
-    }
-  });
+    });
 
-  test('works when not called', () => {
-    const fn = jest.fn();
+    test('works when not called', () => {
+      const fn = jest.fn();
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
-      jestExpect(fn).not[calledWith]('foo', 'bar');
+    });
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test('works with no arguments', () => {
+      const fn = jest.fn();
+      fn();
 
-  test('works with no arguments', () => {
-    const fn = jest.fn();
-    fn();
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](1);
       jestExpect(fn)[calledWith](1);
-    } else {
-      jestExpect(createSpy(fn))[calledWith]();
-      jestExpect(fn)[calledWith]();
-    }
-  });
+    });
 
-  test("works with arguments that don't match", () => {
-    const fn = jest.fn();
-    fn('foo', 'bar1');
+    test("works with arguments that don't match", () => {
+      const fn = jest.fn();
+      fn('foo', 'bar1');
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
-      jestExpect(fn).not[calledWith]('foo', 'bar');
+    });
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test("works with arguments that don't match in number of arguments", () => {
+      const fn = jest.fn();
+      fn('foo', 'bar', 'plop');
 
-  test("works with arguments that don't match in number of arguments", () => {
-    const fn = jest.fn();
-    fn('foo', 'bar', 'plop');
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](1, 'foo', 'bar');
       jestExpect(fn).not[calledWith](1, 'foo', 'bar');
 
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
-      jestExpect(fn).not[calledWith]('foo', 'bar');
+    });
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test("works with arguments that don't match with matchers", () => {
+      const fn = jest.fn();
+      fn('foo', 'bar');
 
-  test("works with arguments that don't match with matchers", () => {
-    const fn = jest.fn();
-    fn('foo', 'bar');
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](
         1,
         jestExpect.any(String),
@@ -311,30 +261,12 @@ describe.each([
           jestExpect.any(Number),
         ),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn)).not[calledWith](
-        jestExpect.any(String),
-        jestExpect.any(Number),
-      );
-      jestExpect(fn).not[calledWith](
-        jestExpect.any(String),
-        jestExpect.any(Number),
-      );
+    });
 
-      expect(() =>
-        jestExpect(fn)[calledWith](
-          jestExpect.any(String),
-          jestExpect.any(Number),
-        ),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test("works with arguments that don't match with matchers even when argument is undefined", () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
 
-  test("works with arguments that don't match with matchers even when argument is undefined", () => {
-    const fn = jest.fn();
-    fn('foo', undefined);
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn)).not[calledWith](
         1,
         'foo',
@@ -345,60 +277,35 @@ describe.each([
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', jestExpect.any(String)),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn)).not[calledWith]('foo', jestExpect.any(String));
-      jestExpect(fn).not[calledWith]('foo', jestExpect.any(String));
+    });
 
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', jestExpect.any(String)),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test("works with arguments that don't match in size even if one is an optional matcher", () => {
+      // issue 12463
+      const fn = jest.fn();
+      fn('foo');
 
-  test("works with arguments that don't match in size even if one is an optional matcher", () => {
-    // issue 12463
-    const fn = jest.fn();
-    fn('foo');
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn).not[calledWith](1, 'foo', jestExpect.optionalFn());
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo', jestExpect.optionalFn()),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn).not[calledWith]('foo', jestExpect.optionalFn());
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', jestExpect.optionalFn()),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    });
 
-  test('works with arguments that match', () => {
-    const fn = jest.fn();
-    fn('foo', 'bar');
+    test('works with arguments that match', () => {
+      const fn = jest.fn();
+      fn('foo', 'bar');
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](1, 'foo', 'bar');
       jestExpect(fn)[calledWith](1, 'foo', 'bar');
 
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn))[calledWith]('foo', 'bar');
-      jestExpect(fn)[calledWith]('foo', 'bar');
+    });
 
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test('works with arguments that match with matchers', () => {
+      const fn = jest.fn();
+      fn('foo', 'bar');
 
-  test('works with arguments that match with matchers', () => {
-    const fn = jest.fn();
-    fn('foo', 'bar');
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(createSpy(fn))[calledWith](
         1,
         jestExpect.any(String),
@@ -417,94 +324,56 @@ describe.each([
           jestExpect.any(String),
         ),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(createSpy(fn))[calledWith](
-        jestExpect.any(String),
-        jestExpect.any(String),
-      );
-      jestExpect(fn)[calledWith](
-        jestExpect.any(String),
-        jestExpect.any(String),
-      );
+    });
 
-      expect(() =>
-        jestExpect(fn).not[calledWith](
-          jestExpect.any(String),
-          jestExpect.any(String),
-        ),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test('works with trailing undefined arguments', () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
 
-  test('works with trailing undefined arguments', () => {
-    const fn = jest.fn();
-    fn('foo', undefined);
-
-    if (isToHaveNth(calledWith)) {
       expect(() =>
         jestExpect(fn)[calledWith](1, 'foo'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo'),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    });
 
-  test('works with trailing undefined arguments if requested by the match query', () => {
-    const fn = jest.fn();
-    fn('foo', undefined);
+    test('works with trailing undefined arguments if requested by the match query', () => {
+      const fn = jest.fn();
+      fn('foo', undefined);
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', undefined);
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', undefined),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith]('foo', undefined);
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', undefined),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    });
 
-  test('works with trailing undefined arguments when explicitly requested as optional by matcher', () => {
-    // issue 12463
-    const fn = jest.fn();
-    fn('foo', undefined);
+    test('works with trailing undefined arguments when explicitly requested as optional by matcher', () => {
+      // issue 12463
+      const fn = jest.fn();
+      fn('foo', undefined);
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', jestExpect.optionalFn());
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', jestExpect.optionalFn()),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith]('foo', jestExpect.optionalFn());
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', jestExpect.optionalFn()),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    });
 
-  test('works with Map', () => {
-    const fn = jest.fn();
+    test('works with Map', () => {
+      const fn = jest.fn();
 
-    const m1 = new Map([
-      [1, 2],
-      [2, 1],
-    ]);
-    const m2 = new Map([
-      [1, 2],
-      [2, 1],
-    ]);
-    const m3 = new Map([
-      ['a', 'b'],
-      ['b', 'a'],
-    ]);
+      const m1 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m2 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m3 = new Map([
+        ['a', 'b'],
+        ['b', 'a'],
+      ]);
 
-    fn(m1);
+      fn(m1);
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, m2);
       jestExpect(fn).not[calledWith](1, m3);
 
@@ -514,29 +383,17 @@ describe.each([
       expect(() =>
         jestExpect(fn)[calledWith](1, m3),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith](m2);
-      jestExpect(fn).not[calledWith](m3);
+    });
 
-      expect(() =>
-        jestExpect(fn).not[calledWith](m2),
-      ).toThrowErrorMatchingSnapshot();
-      expect(() =>
-        jestExpect(fn)[calledWith](m3),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test('works with Set', () => {
+      const fn = jest.fn();
 
-  test('works with Set', () => {
-    const fn = jest.fn();
+      const s1 = new Set([1, 2]);
+      const s2 = new Set([1, 2]);
+      const s3 = new Set([3, 4]);
 
-    const s1 = new Set([1, 2]);
-    const s2 = new Set([1, 2]);
-    const s3 = new Set([3, 4]);
+      fn(s1);
 
-    fn(s1);
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, s2);
       jestExpect(fn).not[calledWith](1, s3);
 
@@ -546,69 +403,21 @@ describe.each([
       expect(() =>
         jestExpect(fn)[calledWith](1, s3),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith](s2);
-      jestExpect(fn).not[calledWith](s3);
+    });
 
-      expect(() =>
-        jestExpect(fn).not[calledWith](s2),
-      ).toThrowErrorMatchingSnapshot();
-      expect(() =>
-        jestExpect(fn)[calledWith](s3),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
+    test('works with Immutable.js objects', () => {
+      const fn = jest.fn();
+      const directlyCreated = Immutable.Map([['a', {b: 'c'}]]);
+      const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
+      fn(directlyCreated, indirectlyCreated);
 
-  test('works with Immutable.js objects', () => {
-    const fn = jest.fn();
-    const directlyCreated = Immutable.Map([['a', {b: 'c'}]]);
-    const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
-    fn(directlyCreated, indirectlyCreated);
-
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, indirectlyCreated, directlyCreated);
 
       expect(() =>
         jestExpect(fn).not[calledWith](1, indirectlyCreated, directlyCreated),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith](indirectlyCreated, directlyCreated);
-
-      expect(() =>
-        jestExpect(fn).not[calledWith](indirectlyCreated, directlyCreated),
-      ).toThrowErrorMatchingSnapshot();
-    }
-  });
-
-  if (!isToHaveNth(calledWith)) {
-    test('works with many arguments', () => {
-      const fn = jest.fn();
-      fn('foo1', 'bar');
-      fn('foo', 'bar1');
-      fn('foo', 'bar');
-
-      jestExpect(fn)[calledWith]('foo', 'bar');
-
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
     });
 
-    test("works with many arguments that don't match", () => {
-      const fn = jest.fn();
-      fn('foo', 'bar1');
-      fn('foo', 'bar2');
-      fn('foo', 'bar3');
-
-      jestExpect(fn).not[calledWith]('foo', 'bar');
-
-      expect(() =>
-        jestExpect(fn)[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  }
-
-  if (isToHaveNth(calledWith)) {
     test('works with three calls', () => {
       const fn = jest.fn();
       fn('foo1', 'bar');
@@ -650,25 +459,272 @@ describe.each([
         jestExpect(fn).not[calledWith](Infinity, 'foo1', 'bar');
       }).toThrowErrorMatchingSnapshot();
     });
-  }
 
-  test('includes the custom mock name in the error message', () => {
-    const fn = jest.fn().mockName('named-mock');
-    fn('foo', 'bar');
+    test('includes the custom mock name in the error message', () => {
+      const fn = jest.fn().mockName('named-mock');
+      fn('foo', 'bar');
 
-    if (isToHaveNth(calledWith)) {
       jestExpect(fn)[calledWith](1, 'foo', 'bar');
 
       expect(() =>
         jestExpect(fn).not[calledWith](1, 'foo', 'bar'),
       ).toThrowErrorMatchingSnapshot();
-    } else {
-      jestExpect(fn)[calledWith]('foo', 'bar');
+    });
+  },
+);
 
-      expect(() =>
-        jestExpect(fn).not[calledWith]('foo', 'bar'),
-      ).toThrowErrorMatchingSnapshot();
-    }
+describe.each([
+  'lastCalledWith',
+  'toHaveBeenLastCalledWith',
+  'toBeCalledWith',
+  'toHaveBeenCalledWith',
+] as const)('%s', calledWith => {
+  test('works only on spies or jest.fn', () => {
+    const fn = function fn() {};
+
+    expect(() => jestExpect(fn)[calledWith]()).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works when not called', () => {
+    const fn = jest.fn();
+
+    jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
+    jestExpect(fn).not[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with no arguments', () => {
+    const fn = jest.fn();
+    fn();
+
+    jestExpect(createSpy(fn))[calledWith]();
+    jestExpect(fn)[calledWith]();
+  });
+
+  test("works with arguments that don't match", () => {
+    const fn = jest.fn();
+    fn('foo', 'bar1');
+
+    jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
+    jestExpect(fn).not[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test("works with arguments that don't match in number of arguments", () => {
+    const fn = jest.fn();
+    fn('foo', 'bar', 'plop');
+
+    jestExpect(createSpy(fn)).not[calledWith]('foo', 'bar');
+    jestExpect(fn).not[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test("works with arguments that don't match with matchers", () => {
+    const fn = jest.fn();
+    fn('foo', 'bar');
+
+    jestExpect(createSpy(fn)).not[calledWith](
+      jestExpect.any(String),
+      jestExpect.any(Number),
+    );
+    jestExpect(fn).not[calledWith](
+      jestExpect.any(String),
+      jestExpect.any(Number),
+    );
+
+    expect(() =>
+      jestExpect(fn)[calledWith](
+        jestExpect.any(String),
+        jestExpect.any(Number),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test("works with arguments that don't match with matchers even when argument is undefined", () => {
+    const fn = jest.fn();
+    fn('foo', undefined);
+
+    jestExpect(createSpy(fn)).not[calledWith]('foo', jestExpect.any(String));
+    jestExpect(fn).not[calledWith]('foo', jestExpect.any(String));
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', jestExpect.any(String)),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test("works with arguments that don't match in size even if one is an optional matcher", () => {
+    // issue 12463
+    const fn = jest.fn();
+    fn('foo');
+
+    jestExpect(fn).not[calledWith]('foo', jestExpect.optionalFn());
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', jestExpect.optionalFn()),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with arguments that match', () => {
+    const fn = jest.fn();
+    fn('foo', 'bar');
+
+    jestExpect(createSpy(fn))[calledWith]('foo', 'bar');
+    jestExpect(fn)[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn).not[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with arguments that match with matchers', () => {
+    const fn = jest.fn();
+    fn('foo', 'bar');
+
+    jestExpect(createSpy(fn))[calledWith](
+      jestExpect.any(String),
+      jestExpect.any(String),
+    );
+    jestExpect(fn)[calledWith](jestExpect.any(String), jestExpect.any(String));
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](
+        jestExpect.any(String),
+        jestExpect.any(String),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with trailing undefined arguments', () => {
+    const fn = jest.fn();
+    fn('foo', undefined);
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with trailing undefined arguments if requested by the match query', () => {
+    const fn = jest.fn();
+    fn('foo', undefined);
+
+    jestExpect(fn)[calledWith]('foo', undefined);
+    expect(() =>
+      jestExpect(fn).not[calledWith]('foo', undefined),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with trailing undefined arguments when explicitly requested as optional by matcher', () => {
+    // issue 12463
+    const fn = jest.fn();
+    fn('foo', undefined);
+
+    jestExpect(fn)[calledWith]('foo', jestExpect.optionalFn());
+    expect(() =>
+      jestExpect(fn).not[calledWith]('foo', jestExpect.optionalFn()),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with Map', () => {
+    const fn = jest.fn();
+
+    const m1 = new Map([
+      [1, 2],
+      [2, 1],
+    ]);
+    const m2 = new Map([
+      [1, 2],
+      [2, 1],
+    ]);
+    const m3 = new Map([
+      ['a', 'b'],
+      ['b', 'a'],
+    ]);
+
+    fn(m1);
+
+    jestExpect(fn)[calledWith](m2);
+    jestExpect(fn).not[calledWith](m3);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](m2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(fn)[calledWith](m3)).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with Set', () => {
+    const fn = jest.fn();
+
+    const s1 = new Set([1, 2]);
+    const s2 = new Set([1, 2]);
+    const s3 = new Set([3, 4]);
+
+    fn(s1);
+
+    jestExpect(fn)[calledWith](s2);
+    jestExpect(fn).not[calledWith](s3);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](s2),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(fn)[calledWith](s3)).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with Immutable.js objects', () => {
+    const fn = jest.fn();
+    const directlyCreated = Immutable.Map([['a', {b: 'c'}]]);
+    const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
+    fn(directlyCreated, indirectlyCreated);
+
+    jestExpect(fn)[calledWith](indirectlyCreated, directlyCreated);
+
+    expect(() =>
+      jestExpect(fn).not[calledWith](indirectlyCreated, directlyCreated),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with many arguments', () => {
+    const fn = jest.fn();
+    fn('foo1', 'bar');
+    fn('foo', 'bar1');
+    fn('foo', 'bar');
+
+    jestExpect(fn)[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn).not[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test("works with many arguments that don't match", () => {
+    const fn = jest.fn();
+    fn('foo', 'bar1');
+    fn('foo', 'bar2');
+    fn('foo', 'bar3');
+
+    jestExpect(fn).not[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn)[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('includes the custom mock name in the error message', () => {
+    const fn = jest.fn().mockName('named-mock');
+    fn('foo', 'bar');
+
+    jestExpect(fn)[calledWith]('foo', 'bar');
+
+    expect(() =>
+      jestExpect(fn).not[calledWith]('foo', 'bar'),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 
