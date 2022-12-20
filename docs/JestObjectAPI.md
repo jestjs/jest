@@ -594,13 +594,64 @@ See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details o
 
 Determines if the given function is a mocked function.
 
+### `jest.replaceProperty(object, propertyKey, value)`
+
+Replace `object[propertyKey]` with a `value`. The property must already exist on the object. The same property might be replaced multiple times.
+Returns a Jest [replaced property](MockFunctionAPI.md#replacedpropertyreplacevaluevalue).
+
+:::note
+
+To mock properties that are defined as getters or setters, use [`jest.spyOn(object, methodName, accessType)`](#jestspyonobject-methodname-accesstype) instead.
+To mock functions, use [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname) instead.
+
+:::
+
+:::tip
+
+Since `jest.replaceProperty` regi. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+
+:::
+
+Example:
+
+```js
+const utils = {
+  isLocalhost() {
+    return process.env.HOSTNAME === 'localhost';
+  },
+};
+
+module.exports = utils;
+```
+
+Example test:
+
+```js
+const utils = require('./utils');
+
+afterEach(() => {
+  // restore replaced property
+  jest.restoreAllMocks();
+});
+
+test('isLocalhost returns true when HOSTNAME is localhost', () => {
+  jest.replaceProperty(process, 'env', {HOSTNAME: 'localhost'});
+  expect(utils.isLocalhost()).toBe(true);
+});
+
+test('isLocalhost returns false when HOSTNAME is not localhost', () => {
+  jest.replaceProperty(process, 'env', {HOSTNAME: 'not-localhost'});
+  expect(utils.isLocalhost()).toBe(false);
+});
+```
+
 ### `jest.spyOn(object, methodName)`
 
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 :::note
 
-By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`
+By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `jest.replaceProperty(object, methodName, jest.fn(() => customImplementation));`
 
 :::
 
@@ -699,6 +750,11 @@ test('plays audio', () => {
 });
 ```
 
+### `jest.Replaced<Source>`
+
+// TODO: Fix this
+See [TypeScript Usage](MockFunctionAPI.md#jestreplacedsource) chapter of XXXX ?Mock Functions page for documentation.
+
 ### `jest.Spied<Source>`
 
 See [TypeScript Usage](MockFunctionAPI.md#jestspiedsource) chapter of Mock Functions page for documentation.
@@ -717,7 +773,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.restoreAllMocks()`
 
-Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+Restores all mocks and replaced properties back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function and [`.restore()`](MockFunctionAPI.md#replacedpropertyrestore) on every replaced property. Beware that `jest.restoreAllMocks()` only works for mocks created with [`jest.spyOn()`](#jestspyonobject-methodname) and properties replaced with [`jest.replaceProperty()`](#jestreplacepropertyobject-propertykey-value); other mocks will require you to manually restore them.
 
 ## Fake Timers
 

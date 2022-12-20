@@ -515,6 +515,19 @@ test('async test', async () => {
 });
 ```
 
+### `replacedProperty.replaceValue(value)`
+
+Changes the value of already replaced property. This is useful when you want to replace property and then adjust the value in specific tests.
+As an alternative, you can call [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value) multiple times on same property.
+
+### `replacedProperty.restore()`
+
+Restores object's property to the original value.
+
+Beware that `replacedProperty.restore()` only works when the property value was replaced with [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value).
+
+The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is available to restore replaced properties automatically before each test.
+
 ## TypeScript Usage
 
 <TypeScriptExamplesNote />
@@ -593,6 +606,40 @@ test('returns correct data', () => {
 ```
 
 Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
+
+### `jest.Replaced<Source>`
+
+The `jest.Replaced<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock property.
+
+```ts title="src/utils.ts"
+export function isLocalhost(): boolean {
+  return process.env['HOSTNAME'] === 'localhost';
+}
+```
+
+```ts
+import {afterEach, expect, it, jest} from '@jest/globals';
+import {isLocalhost} from '../utils';
+
+let replacedEnv: jest.Replaced<typeof process.env> | undefined = undefined;
+
+afterEach(() => {
+  replacedEnv?.restore();
+});
+
+it('isLocalhost should detect localhost environment', () => {
+  replacedEnv = jest.replaceProperty(process, 'env', {HOSTNAME: 'localhost'});
+
+  expect(isLocalhost()).toBe(true);
+});
+
+it('isLocalhost should detect non-localhost environment', () => {
+  replacedEnv = jest.replaceProperty(process, 'env', {HOSTNAME: 'example.com'});
+  
+  expect(isLocalhost()).toBe(false);
+});
+
+```
 
 ### `jest.mocked(source, options?)`
 
