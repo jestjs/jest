@@ -1605,17 +1605,17 @@ describe('moduleMocker', () => {
     });
   });
 
-  describe('mockProperty', () => {
+  describe('replaceProperty', () => {
     it('should work', () => {
       const obj = {
         property: 1,
       };
 
-      const replaced = moduleMocker.mockProperty(obj, 'property', 2);
+      const replaced = moduleMocker.replaceProperty(obj, 'property', 2);
 
       expect(obj.property).toBe(2);
 
-      replaced.mockRestore();
+      replaced.restore();
 
       expect(obj.property).toBe(1);
     });
@@ -1625,51 +1625,80 @@ describe('moduleMocker', () => {
         property: 1,
       };
 
-      const replacedFirst = moduleMocker.mockProperty(obj, 'property', 2);
+      const replacedFirst = moduleMocker.replaceProperty(obj, 'property', 2);
 
-      const replacedSecond = moduleMocker.mockProperty(obj, 'property', 3);
+      const replacedSecond = moduleMocker.replaceProperty(obj, 'property', 3);
 
       expect(obj.property).toBe(3);
 
-      replacedSecond.mockRestore();
+      replacedSecond.restore();
 
       expect(obj.property).toBe(1);
 
-      replacedFirst.mockRestore();
+      replacedFirst.restore();
+
+      expect(obj.property).toBe(1);
+    });
+
+    it('should allow mocking with value of different value', () => {
+      const obj = {
+        property: 1,
+      };
+
+      const replaced = moduleMocker.replaceProperty(obj, 'property', {
+        foo: 'bar',
+      });
+
+      expect(obj.property).toStrictEqual({foo: 'bar'});
+
+      replaced.restore();
 
       expect(obj.property).toBe(1);
     });
 
     describe('should throw', () => {
-      it('when object is not provided', () => {
+      it.each`
+        value
+        ${null}
+        ${undefined}
+      `('when $value is provided instead of an object', ({value}) => {
         expect(() => {
-          moduleMocker.mockProperty(null, 'property', 1);
+          moduleMocker.replaceProperty(value, 'property', 1);
         }).toThrow(
-          'mockProperty could not find an object on which to replace property',
+          'replaceProperty could not find an object on which to replace property',
         );
       });
 
-      it('when primitive value is provided instead of object', () => {
-        expect(() => {
-          moduleMocker.mockProperty(1, 'property', 1);
-        }).toThrow('Cannot mock property on a primitive value; number given');
-      });
-
-      it('when function is provided instead of object', () => {
-        expect(() => {
-          moduleMocker.mockProperty(() => {}, 'property', 1);
-        }).toThrow('Cannot mock property on a primitive value; function given');
-      });
+      it.each`
+        value       | type
+        ${'foo'}    | ${'string'}
+        ${1}        | ${'number'}
+        ${NaN}      | ${'number'}
+        ${1n}       | ${'bigint'}
+        ${Symbol()} | ${'symbol'}
+        ${true}     | ${'boolean'}
+        ${false}    | ${'boolean'}
+        ${() => {}} | ${'function'}
+      `(
+        'when primitive value $value is provided instead of an object',
+        ({value, type}) => {
+          expect(() => {
+            moduleMocker.replaceProperty(value, 'property', 1);
+          }).toThrow(
+            `Cannot mock property on a non-object value; ${type} given`,
+          );
+        },
+      );
 
       it('when property name is not provided', () => {
         expect(() => {
-          moduleMocker.mockProperty({}, null, 1);
+          moduleMocker.replaceProperty({}, null, 1);
         }).toThrow('No property name supplied');
       });
 
       it('when property is not defined', () => {
         expect(() => {
-          moduleMocker.mockProperty({}, 'doesNotExist', 1);
+          moduleMocker.replaceProperty({}, 'doesNotExist', 1);
         }).toThrow('doesNotExist property does not exist');
       });
 
@@ -1683,21 +1712,13 @@ describe('moduleMocker', () => {
             writable: false,
           });
 
-          moduleMocker.mockProperty(obj, 'property', 2);
+          moduleMocker.replaceProperty(obj, 'property', 2);
         }).toThrow('property is not declared configurable');
-      });
-
-      it('when mocking with value of different type', () => {
-        expect(() => {
-          moduleMocker.mockProperty({property: 1}, 'property', 'string');
-        }).toThrow(
-          'Cannot mock the property property because it is not a number; string given instead',
-        );
       });
 
       it('when trying to mock a method', () => {
         expect(() => {
-          moduleMocker.mockProperty({method: () => {}}, 'method', () => {});
+          moduleMocker.replaceProperty({method: () => {}}, 'method', () => {});
         }).toThrow(
           "Cannot mock the method property because it is a function. Use `jest.spyOn(object, 'method')` instead.",
         );
@@ -1711,7 +1732,7 @@ describe('moduleMocker', () => {
         };
 
         expect(() => {
-          moduleMocker.mockProperty(obj, 'getter', 1);
+          moduleMocker.replaceProperty(obj, 'getter', 1);
         }).toThrow('Cannot mock the getter property because it has a getter');
       });
 
@@ -1722,7 +1743,7 @@ describe('moduleMocker', () => {
         };
 
         expect(() => {
-          moduleMocker.mockProperty(obj, 'setter', 1);
+          moduleMocker.replaceProperty(obj, 'setter', 1);
         }).toThrow('Cannot mock the setter property because it has a setter');
       });
     });
@@ -1731,11 +1752,11 @@ describe('moduleMocker', () => {
       const parent = {property: 'abcd'};
       const child = Object.create(parent);
 
-      const replaced = moduleMocker.mockProperty(child, 'property', 'defg');
+      const replaced = moduleMocker.replaceProperty(child, 'property', 'defg');
 
       expect(child.property).toBe('defg');
 
-      replaced.mockRestore();
+      replaced.restore();
 
       expect(child.property).toBe('abcd');
       expect(
@@ -1743,37 +1764,73 @@ describe('moduleMocker', () => {
       ).toBeUndefined();
     });
 
-    it('should restore property as part of calling restoreAllMocks', () => {
-      const obj = {
-        property: 1,
-      };
-
-      const replaced = moduleMocker.mockProperty(obj, 'property', 2);
-
-      expect(obj.property).toBe(2);
-
-      moduleMocker.restoreAllMocks();
-
-      expect(obj.property).toBe(1);
-
-      // Just make sure that this call won't break anything while calling after the property has been already restored
-      replaced.mockRestore();
-
-      expect(obj.property).toBe(1);
-    });
-
-    describe('mockValue', () => {
+    describe('with restoreAllMocks', () => {
       it('should work', () => {
         const obj = {
           property: 1,
         };
 
-        const replaced = moduleMocker.mockProperty(obj, 'property', 2);
+        const replaced = moduleMocker.replaceProperty(obj, 'property', 2);
 
-        const mockValueResult = replaced.mockValue(3);
+        expect(obj.property).toBe(2);
+
+        moduleMocker.restoreAllMocks();
+
+        expect(obj.property).toBe(1);
+
+        // Just make sure that this call won't break anything while calling after the property has been already restored
+        replaced.restore();
+
+        expect(obj.property).toBe(1);
+      });
+
+      it('should work for property mocked multiple times', () => {
+        const obj = {
+          property: 1,
+        };
+
+        const replaced1 = moduleMocker.replaceProperty(obj, 'property', 2);
+        const replaced2 = moduleMocker.replaceProperty(obj, 'property', 3);
 
         expect(obj.property).toBe(3);
-        expect(mockValueResult).toBe(replaced);
+
+        moduleMocker.restoreAllMocks();
+
+        expect(obj.property).toBe(1);
+
+        // Just make sure that this call won't break anything while calling after the property has been already restored
+        replaced2.restore();
+        replaced1.restore();
+
+        expect(obj.property).toBe(1);
+      });
+    });
+
+    describe('replaceValue', () => {
+      it('should work', () => {
+        const obj = {
+          property: 1,
+        };
+
+        const replaced = moduleMocker.replaceProperty(obj, 'property', 2);
+
+        const result = replaced.replaceValue(3);
+
+        expect(obj.property).toBe(3);
+        expect(result).toBe(replaced);
+      });
+
+      it('should work while passing different type', () => {
+        const obj = {
+          property: 1,
+        };
+
+        const replaced = moduleMocker.replaceProperty(obj, 'property', 2);
+
+        const result = replaced.replaceValue('foo');
+
+        expect(obj.property).toBe('foo');
+        expect(result).toBe(replaced);
       });
     });
   });

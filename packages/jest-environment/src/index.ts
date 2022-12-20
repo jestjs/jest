@@ -218,6 +218,15 @@ export interface Jest {
    */
   mocked: ModuleMocker['mocked'];
   /**
+   * Replaces property on an object with another value.
+   *
+   * This method does not work on 'get' or 'set' accessors.
+   *
+   * @remarks
+   * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
+   */
+  replaceProperty: ModuleMocker['replaceProperty'];
+  /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
@@ -233,8 +242,9 @@ export interface Jest {
    */
   resetModules(): Jest;
   /**
-   * Restores all mocks back to their original value. Equivalent to calling
-   * `.mockRestore()` on every mocked function.
+   * Restores all mocks and replaced properties back to their original value.
+   * Equivalent to calling `.mockRestore()` on every mocked function
+   * and `.restore()` on every replaced property.
    *
    * Beware that `jest.restoreAllMocks()` only works when the mock was created
    * with `jest.spyOn()`; other mocks will require you to manually restore them.
@@ -319,16 +329,6 @@ export interface Jest {
    * behavior from most other test libraries.
    */
   spyOn: ModuleMocker['spyOn'];
-  /**
-   * Replaces property on object with mock value.
-   *
-   * This method does not work on 'get' or 'set' accessors, and cannot be called
-   * on already replaced value.
-   *
-   * @remarks
-   * For mocking functions, use `jest.spyOn()` instead.
-   */
-  mockProperty: ModuleMocker['mockProperty'];
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from `require()` (e.g. that it should always return the

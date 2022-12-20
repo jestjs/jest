@@ -15,13 +15,13 @@ import {
 } from 'tsd-lite';
 import {
   Mock,
-  MockedProperty,
+  Replaced,
   SpiedClass,
   SpiedFunction,
   SpiedGetter,
   SpiedSetter,
   fn,
-  mockProperty,
+  replaceProperty,
   spyOn,
 } from 'jest-mock';
 
@@ -495,7 +495,7 @@ expectError(
   ),
 );
 
-// mockProperty
+// replaceProperty + Replaced
 
 const obj = {
   fn: () => {},
@@ -503,11 +503,56 @@ const obj = {
   property: 1,
 };
 
-expectType<MockedProperty<number>>(mockProperty(obj, 'property', 1));
-mockProperty(obj, 'property', 1).mockValue(1).mockRestore();
+expectType<Replaced<number>>(replaceProperty(obj, 'property', 1));
+replaceProperty(obj, 'property', 1).replaceValue(1).restore();
 
-expectError(mockProperty(obj, 'invalid', 1));
-expectError(mockProperty(obj, 'property', 'not a number'));
-expectError(mockProperty(obj, 'fn', () => {}));
+expectError(replaceProperty(obj, 'invalid', 1));
+expectError(replaceProperty(obj, 'property', 'not a number'));
+expectError(replaceProperty(obj, 'fn', () => {}));
 
-expectError(mockProperty(obj, 'property', 1).mockValue('not a number'));
+expectError(replaceProperty(obj, 'property', 1).replaceValue('not a number'));
+
+interface ComplexObject {
+  numberOrUndefined: number | undefined;
+  optionalString?: string;
+  [key: `dynamic prop ${number}`]: boolean;
+  multipleTypes: number | string | {foo: number} | null;
+}
+const complexObject: ComplexObject = undefined as unknown as ComplexObject;
+
+// Resulting type should not be narrowed down to a type of value passed to replaceProperty, but should retain the original property type instead
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', undefined),
+);
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', 1),
+);
+
+expectError(
+  replaceProperty(
+    complexObject,
+    'numberOrUndefined',
+    'string is not valid TypeScript type',
+  ),
+);
+
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', 'foo'),
+);
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', undefined),
+);
+
+expectType<Replaced<boolean>>(
+  replaceProperty(complexObject, 'dynamic prop 1', true),
+);
+expectError(replaceProperty(complexObject, 'dynamic prop 1', undefined));
+
+expectError(replaceProperty(complexObject, 'not a property', undefined));
+
+expectType<Replaced<ComplexObject['multipleTypes']>>(
+  replaceProperty(complexObject, 'multipleTypes', 1)
+    .replaceValue('foo')
+    .replaceValue({foo: 1})
+    .replaceValue(null),
+);

@@ -2170,7 +2170,7 @@ export default class Runtime {
           'Your test environment does not support `mocked`, please update it.',
         );
       });
-    const mockProperty = this._moduleMocker.mockProperty.bind(
+    const replaceProperty = this._moduleMocker.replaceProperty.bind(
       this._moduleMocker,
     );
 
@@ -2230,9 +2230,9 @@ export default class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
-      mockProperty,
       mocked,
       now: () => _getFakeTimers().now(),
+      replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
       requireMock: moduleName => this.requireMock(from, moduleName),
       resetAllMocks,

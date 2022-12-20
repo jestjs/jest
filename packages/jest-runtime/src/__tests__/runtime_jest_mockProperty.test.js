@@ -20,11 +20,11 @@ describe('Runtime', () => {
     };
   });
 
-  describe('jest.mockProperty', () => {
+  describe('jest.replaceProperty', () => {
     it('should work', async () => {
       const runtime = await createRuntime(__filename);
       const root = runtime.requireModule(runtime.__mockRootPath);
-      const mocked = root.jest.mockProperty(obj, 'property', 2);
+      const mocked = root.jest.replaceProperty(obj, 'property', 2);
       expect(obj.property).toBe(2);
 
       mocked.mockValue(3);
