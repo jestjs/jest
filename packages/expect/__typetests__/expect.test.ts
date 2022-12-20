@@ -8,6 +8,7 @@
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
+  ExpectationResult,
   MatcherContext,
   MatcherFunction,
   MatcherFunctionWithContext,
@@ -29,6 +30,14 @@ type MatcherUtils = typeof jestMatcherUtils & {
   subsetEquality: Tester;
 };
 
+type RawMatcherFn<Context extends MatcherContext = MatcherContext> = {
+  (this: Context, actual: any, ...expected: Array<any>): ExpectationResult;
+};
+
+type MatchersObject = {
+  [name: string]: RawMatcherFn;
+};
+
 // TODO `actual` should be allowed to have only `unknown` type
 expectType<void>(
   expect.extend({
@@ -48,6 +57,7 @@ expectType<void>(
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);
+      expectType<Readonly<MatchersObject>>(this.matchers);
 
       const pass = actual >= floor && actual <= ceiling;
       if (pass) {
