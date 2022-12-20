@@ -18,7 +18,6 @@ import {getState} from './jestMatchersObject';
 import matchers from './matchers';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
-  CustomMatcherContext,
   MatcherContext,
   MatcherState,
   RawMatcherFn,
@@ -84,6 +83,7 @@ export abstract class AsymmetricMatcher<T>
       ...getState<MatcherState>(),
       equals,
       isNot: this.inverse,
+      matchers: internalMatchers,
       utils,
     };
   }
@@ -354,7 +354,7 @@ class CloseTo extends AsymmetricMatcher<number> {
 class CustomMatcher extends AsymmetricMatcher<[unknown, ...Array<unknown>]> {
   constructor(
     protected name: string,
-    private matcher: RawMatcherFn<CustomMatcherContext>,
+    private matcher: RawMatcherFn<MatcherContext>,
     inverse = false,
     ...sample: [unknown, ...Array<unknown>]
   ) {
@@ -413,7 +413,7 @@ export const notCloseTo = (expected: number, precision?: number): CloseTo =>
   new CloseTo(expected, precision, true);
 export const customMatcher = (
   name: string,
-  matcher: RawMatcherFn<CustomMatcherContext>,
+  matcher: RawMatcherFn<MatcherContext>,
   inverse: boolean,
   sample: [unknown, ...Array<unknown>],
 ): CustomMatcher => new CustomMatcher(name, matcher, inverse, ...sample);
