@@ -25,9 +25,9 @@ module.exports = config;
 ```
 
 ```ts tab
-import type {Config} from 'jest';
+import type {Config} from '@jest/types';
 
-const config: Config = {
+const config: Config.InitialOptions = {
   verbose: true,
 };
 
@@ -46,9 +46,9 @@ module.exports = async () => {
 ```
 
 ```ts tab
-import type {Config} from 'jest';
+import type {Config} from '@jest/types';
 
-export default async (): Promise<Config> => {
+export default async (): Promise<Config.InitialOptions> => {
   return {
     verbose: true,
   };
