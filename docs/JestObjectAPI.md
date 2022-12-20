@@ -752,8 +752,7 @@ test('plays audio', () => {
 
 ### `jest.Replaced<Source>`
 
-// TODO: Fix this
-See [TypeScript Usage](MockFunctionAPI.md#jestreplacedsource) chapter of XXXX ?Mock Functions page for documentation.
+See [TypeScript Usage](MockFunctionAPI.md#replacedpropertyreplacevaluevalue) chapter of Mock Functions page for documentation.
 
 ### `jest.Spied<Source>`
 
