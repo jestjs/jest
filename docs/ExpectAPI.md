@@ -495,6 +495,30 @@ it('transitions as expected', () => {
 });
 ```
 
+#### Internal matchers
+
+All the internal matchers from Jest are exposed inside `this.matchers`. So if you need to use an existent matcher like `toBe` or `toEqual` among others, you can access it directly.
+
+```js
+expect.extend({
+  toBeHttpResponse(received) {
+    const expectedObject = {
+      message: expect.any(String),
+      status: expect.any(Number),
+    };
+
+    const {pass} = this.matchers.toMatchObject(received, expectedObject);
+
+    const message = () =>
+      `${this.utils.matcherHint('toBeHttpResponse', undefined, '', {})}\n\n` +
+      `Expected: ${this.utils.printExpected(expectedObject)}\n` +
+      `Received: ${this.utils.printReceived(received)}`;
+
+    return {message, pass};
+  },
+});
+```
+
 ### `expect.anything()`
 
 `expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
