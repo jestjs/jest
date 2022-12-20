@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))
+- `[docs]` Fixed "Configuring Jest" example for `jest.config.ts` files. ([#13684](https://github.com/facebook/jest/pull/13684))
 
 ### Performance
 
