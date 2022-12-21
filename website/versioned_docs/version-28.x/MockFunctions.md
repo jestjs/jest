@@ -47,7 +47,7 @@ test('forEach mock function', () => {
 
 All mock functions have this special `.mock` property, which is where data about how the function has been called and what the function returned is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
 
-```javascript
+````javascript
  const myMock1 = jest.fn();
  const a = new myMock1();
  console.log(myMock1.mock.instances);
@@ -86,7 +86,7 @@ expect(someMockFunction.mock.instances[0].name).toBe('test');
 
 // The first argument of the last call to the function was 'test'
 expect(someMockFunction.mock.lastCall[0]).toBe('test');
-```
+````
 
 ## Mock Return Values
 
