@@ -349,7 +349,7 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toBe(1);`
+This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toBeGreaterThan(0);`
 
 ### Mocking non-default class exports
 

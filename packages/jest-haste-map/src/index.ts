@@ -217,7 +217,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   private _buildPromise: Promise<InternalHasteMapObject> | null = null;
   private _cachePath = '';
   private _changeInterval?: ReturnType<typeof setInterval>;
-  private _console: Console;
+  private readonly _console: Console;
   private _isWatchmanInstalledPromise: Promise<boolean> | null = null;
   private _options: InternalOptions;
   private _watchers: Array<Watcher> = [];
@@ -295,7 +295,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
   }
 
   private async setupCachePath(options: Options): Promise<void> {
-    const rootDirHash = createHash('sha256')
+    const rootDirHash = createHash('sha1')
       .update(options.rootDir)
       .digest('hex')
       .substring(0, 32);
@@ -344,7 +344,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     id: string,
     ...extra: Array<string>
   ): string {
-    const hash = createHash('sha256').update(extra.join(''));
+    const hash = createHash('sha1').update(extra.join(''));
     return path.join(
       tmpdir,
       `${id.replace(/\W/g, '-')}-${hash.digest('hex').substring(0, 32)}`,
@@ -797,7 +797,7 @@ class HasteMap extends EventEmitter implements IHasteMap {
     };
 
     try {
-      return crawl(crawlerOptions).catch(retry);
+      return await crawl(crawlerOptions);
     } catch (error: any) {
       return retry(error);
     }

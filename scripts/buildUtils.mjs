@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as assert from 'assert';
+import {strict as assert} from 'assert';
 import {createRequire} from 'module';
 import * as path from 'path';
 import {fileURLToPath} from 'url';
@@ -120,4 +120,10 @@ export function adjustToTerminalWidth(str) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
   return strs.slice(0, -1).concat(lastString).join('\n');
+}
+
+export function getPackagesWithTsConfig() {
+  return getPackages().filter(p =>
+    fs.existsSync(path.resolve(p.packageDir, 'tsconfig.json')),
+  );
 }

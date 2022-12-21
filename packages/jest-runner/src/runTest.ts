@@ -196,7 +196,18 @@ async function runTestInternal(
         context.sourcesRelatedToTestsInChangedFiles,
     },
     path,
+    globalConfig,
   );
+
+  let isTornDown = false;
+
+  const tearDownEnv = async () => {
+    if (!isTornDown) {
+      runtime.teardown();
+      await environment.teardown();
+      isTornDown = true;
+    }
+  };
 
   const start = Date.now();
 
@@ -270,6 +281,7 @@ async function runTestInternal(
 
   // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
+    globalConfig.collectCoverage &&
     globalConfig.coverageProvider === 'v8' &&
     typeof environment.getVmContext === 'function';
 
@@ -347,13 +359,14 @@ async function runTestInternal(
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
+    await tearDownEnv();
+
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
-    runtime.teardown();
-    await environment.teardown();
+    await tearDownEnv();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

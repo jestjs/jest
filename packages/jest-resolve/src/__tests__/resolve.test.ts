@@ -707,3 +707,50 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
   });
 });
+
+describe('Resolver.getGlobalPaths()', () => {
+  const _path = path;
+  let moduleMap: IModuleMap;
+  beforeEach(() => {
+    moduleMap = ModuleMap.create('/');
+  });
+
+  it('return global paths with npm package', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('jest');
+    globalPaths.forEach(globalPath =>
+      expect(require.resolve.paths('jest')).toContain(globalPath),
+    );
+  });
+
+  it('return empty array with builtin module', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('fs');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return global paths with absolute path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('/');
+    globalPaths.forEach(globalPath =>
+      expect(require.resolve.paths('/')).toContain(globalPath),
+    );
+  });
+
+  it('return empty array with relative path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('./');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return empty array without module name', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths();
+    expect(globalPaths).toStrictEqual([]);
+  });
+});

@@ -2,17 +2,102 @@
 
 ### Features
 
-- `[jest-core]` Enable testResultsProcessor to be async ([#13343](https://github.com/facebook/jest/pull/13343))
-- `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
 - `[expect]` Expose internal matchers inside custom matcher context ([13375](https://github.com/facebook/jest/pull/13375))
 
 ### Fixes
 
-- `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
+- `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 
 ### Chore & Maintenance
 
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))
+
 ### Performance
+
+## 29.3.1
+
+### Fixes
+
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig` ([#13583](https://github.com/facebook/jest/pull/13583))
+
+### Performance
+
+- `[jest-transform]` Defer creation of cache directory ([#13420](https://github.com/facebook/jest/pull/13420))
+
+## 29.3.0
+
+### Features
+
+- `[jest-runtime]` Support WebAssembly (Wasm) imports in ESM modules ([#13505](https://github.com/facebook/jest/pull/13505))
+
+### Fixes
+
+- `[jest-config]` Add config validation for `projects` option ([#13565](https://github.com/facebook/jest/pull/13565))
+- `[jest-mock]` Treat cjs modules as objects so they can be mocked ([#13513](https://github.com/facebook/jest/pull/13513))
+- `[jest-worker]` Throw an error instead of hanging when jest workers terminate unexpectedly ([#13566](https://github.com/facebook/jest/pull/13566))
+
+### Chore & Maintenance
+
+- `[@jest/transform]` Update `convert-source-map` ([#13509](https://github.com/facebook/jest/pull/13509))
+- `[docs]` Mention `toStrictEqual` in UsingMatchers docs. ([#13560](https://github.com/facebook/jest/pull/13560))
+
+## 29.2.2
+
+### Fixes
+
+- `[@jest/test-sequencer]` Make sure sharding does not produce empty groups ([#13476](https://github.com/facebook/jest/pull/13476))
+- `[jest-circus]` Test marked as `todo` are shown as todo when inside a focussed describe ([#13504](https://github.com/facebook/jest/pull/13504))
+- `[jest-mock]` Ensure mock resolved and rejected values are promises from correct realm ([#13503](https://github.com/facebook/jest/pull/13503))
+- `[jest-snapshot]` Don't highlight passing asymmetric property matchers in snapshot diff ([#13480](https://github.com/facebook/jest/issues/13480))
+
+### Chore & Maintenance
+
+- `[docs]` Update link to Jest 28 upgrade guide in error message ([#13483](https://github.com/facebook/jest/pull/13483))
+- `[jest-runner, jest-watcher]` Update `emittery` ([#13490](https://github.com/facebook/jest/pull/13490))
+
+## 29.2.1
+
+### Features
+
+- `[@jest/globals, jest-mock]` Add `jest.Spied*` utility types ([#13440](https://github.com/facebook/jest/pull/13440))
+
+### Fixes
+
+- `[jest-environment-node]` make `globalThis.performance` writable for Node 19 and fake timers ([#13467](https://github.com/facebook/jest/pull/13467))
+- `[jest-mock]` Revert [#13398](https://github.com/facebook/jest/pull/13398) to restore mocking of setters ([#13472](https://github.com/facebook/jest/pull/13472))
+
+### Performance
+
+- `[*]` Use sha1 instead of sha256 for hashing ([#13421](https://github.com/facebook/jest/pull/13421))
+
+## 29.2.0
+
+### Features
+
+- `[@jest/cli, jest-config]` A seed for the test run will be randomly generated, or set by a CLI option ([#13400](https://github.com/facebook/jest/pull/13400))
+- `[@jest/cli, jest-config]` `--show-seed` will display the seed value in the report, and can be set via a CLI flag or through the config file ([#13400](https://github.com/facebook/jest/pull/13400))
+- `[jest-config]` Add `readInitialConfig` utility function ([#13356](https://github.com/facebook/jest/pull/13356))
+- `[jest-core]` Allow `testResultsProcessor` to be async ([#13343](https://github.com/facebook/jest/pull/13343))
+- `[@jest/environment, jest-environment-node, jest-environment-jsdom, jest-runtime]` Add `getSeed()` to the `jest` object ([#13400](https://github.com/facebook/jest/pull/13400))
+- `[expect, @jest/expect-utils]` Allow `isA` utility to take a type argument ([#13355](https://github.com/facebook/jest/pull/13355))
+- `[expect]` Expose `AsyncExpectationResult` and `SyncExpectationResult` types ([#13411](https://github.com/facebook/jest/pull/13411))
+
+### Fixes
+
+- `[babel-plugin-jest-hoist]` Ignore `TSTypeQuery` when checking for hoisted references ([#13367](https://github.com/facebook/jest/pull/13367))
+- `[jest-core]` Fix `detectOpenHandles` false positives for some special objects such as `TLSWRAP` ([#13414](https://github.com/facebook/jest/pull/13414))
+- `[jest-mock]` Fix mocking of getters and setters on classes ([#13398](https://github.com/facebook/jest/pull/13398))
+- `[jest-reporters]` Revert: Transform file paths into hyperlinks ([#13399](https://github.com/facebook/jest/pull/13399))
+- `[@jest/types]` Infer type of `each` table correctly when the table is a tuple or array ([#13381](https://github.com/facebook/jest/pull/13381))
+- `[@jest/types]` Rework typings to allow the `*ReturnedWith` matchers to be called with no argument ([#13385](https://github.com/facebook/jest/pull/13385))
+
+### Chore & Maintenance
+
+- `[*]` Update `@babel/*` deps, resulting in slightly different stack traces for `each` ([#13422](https://github.com/facebook/jest/pull/13422))
+
+### Performance
+
+- `[jest-runner]` Do not instrument v8 coverage data if coverage should not be collected ([#13282](https://github.com/facebook/jest/pull/13282))
 
 ## 29.1.2
 
@@ -2162,7 +2247,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 
 - `[jest-jasemine2]` Add dependency on jest-each ([#6308](https://github.com/facebook/jest/pull/6308))
 - `[jest-each]` Move jest-each into core Jest ([#6278](https://github.com/facebook/jest/pull/6278))
-- `[examples]` Update typescript example to using ts-jest ([#6260](https://github.com/facebook/jest/pull/6260))
+- `[examples]` Update typescript example to using `ts-jest` ([#6260](https://github.com/facebook/jest/pull/6260))
 
 ### Fixes
 

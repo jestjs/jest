@@ -21,11 +21,13 @@ describe('numeric input', () => {
   });
 
   test('should throw when no reference supplied', () => {
-    expect(() => stringToBytes(0.3)).toThrowError();
+    expect(() => stringToBytes(0.3)).toThrow(
+      'For a percentage based memory limit a percentageReference must be supplied',
+    );
   });
 
   test('should throw on a bad input', () => {
-    expect(() => stringToBytes(-0.3, 51)).toThrowError();
+    expect(() => stringToBytes(-0.3, 51)).toThrow('Unexpected numerical input');
   });
 });
 
@@ -40,17 +42,23 @@ describe('string input', () => {
     });
 
     test('should throw when no reference supplied', () => {
-      expect(() => stringToBytes('0.3')).toThrowError();
+      expect(() => stringToBytes('0.3')).toThrow(
+        'For a percentage based memory limit a percentageReference must be supplied',
+      );
     });
 
     test('should throw on a bad input', () => {
-      expect(() => stringToBytes('-0.3', 51)).toThrowError();
+      expect(() => stringToBytes('-0.3', 51)).toThrow(
+        'Unexpected numerical input',
+      );
     });
   });
 
   describe('parsing', () => {
     test('0% should throw an error', () => {
-      expect(() => stringToBytes('0%', 51)).toThrowError();
+      expect(() => stringToBytes('0%', 51)).toThrow(
+        'Unexpected numerical input',
+      );
     });
 
     test('30%', () => {
@@ -109,7 +117,7 @@ describe('string input', () => {
     });
 
     test('unknown unit', () => {
-      expect(() => stringToBytes('50XX')).toThrowError();
+      expect(() => stringToBytes('50XX')).toThrow('Unexpected input');
     });
   });
 });

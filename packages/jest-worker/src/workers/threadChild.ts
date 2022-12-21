@@ -46,8 +46,8 @@ const messageListener = (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
-      setupArgs = request[3];
-      process.env.JEST_WORKER_ID = request[4];
+      setupArgs = init[3];
+      process.env.JEST_WORKER_ID = init[4];
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -141,7 +141,7 @@ function execMethod(method: string, args: Array<unknown>): void {
   let fn: UnknownFunction;
 
   if (method === 'default') {
-    fn = main.__esModule ? main['default'] : main;
+    fn = main.__esModule ? main.default : main;
   } else {
     fn = main[method];
   }

@@ -16,7 +16,7 @@ interface ErrorWithCodeFrame extends Error {
 export default function handlePotentialSyntaxError(
   e: ErrorWithCodeFrame,
 ): ErrorWithCodeFrame {
-  if (e.codeFrame) {
+  if (e.codeFrame != null) {
     e.stack = `${e.message}\n${e.codeFrame}`;
   }
 
@@ -64,7 +64,7 @@ ${chalk.cyan('https://jestjs.io/docs/code-transformation')}
 
 ${chalk.bold.red('Details:')}
 
-${e.stack}`;
+${e.stack ?? ''}`.trimRight();
 
   return e;
 }

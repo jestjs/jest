@@ -44,3 +44,10 @@ test('shows todo messages when in verbose mode', () => {
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
+
+test('counts todo tests when inside of a `describe.only`', () => {
+  const result = runJest(dir, ['only-todo.test.js']);
+  expect(result.exitCode).toBe(0);
+  const {rest, summary} = extractSummary(result.stderr);
+  expect(`${rest}\n\n${summary}`).toMatchSnapshot();
+});

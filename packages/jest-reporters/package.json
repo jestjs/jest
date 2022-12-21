@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "29.1.2",
+  "version": "29.3.1",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -35,12 +35,11 @@
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
-    "terminal-link": "^2.0.0",
     "v8-to-istanbul": "^9.0.1"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",

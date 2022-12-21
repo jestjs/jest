@@ -6,7 +6,7 @@
  *
  */
 
-import fc from 'fast-check';
+import {fc} from '@fast-check/jest';
 
 // settings for anything arbitrary
 export const anythingSettings = {

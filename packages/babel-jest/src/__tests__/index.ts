@@ -13,14 +13,17 @@ import {makeProjectConfig} from '@jest/test-utils';
 import type {TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
+
 jest.mock('../loadBabelConfig', () => {
   const actual =
     jest.requireActual<typeof import('@babel/core')>('@babel/core');
 
   return {
-    loadPartialConfig: jest.fn((...args) => actual.loadPartialConfig(...args)),
-    loadPartialConfigAsync: jest.fn((...args) =>
-      actual.loadPartialConfigAsync(...args),
+    loadPartialConfig: jest.fn<typeof actual.loadPartialConfig>((...args) =>
+      actual.loadPartialConfig(...args),
+    ),
+    loadPartialConfigAsync: jest.fn<typeof actual.loadPartialConfigAsync>(
+      (...args) => actual.loadPartialConfigAsync(...args),
     ),
   };
 });
@@ -69,7 +72,7 @@ test('Returns source string with inline maps when no transformOptions is passed'
 });
 
 test('Returns source string with inline maps when no transformOptions is passed async', async () => {
-  const result: any = await defaultBabelJestTransformer.processAsync!(
+  const result = await defaultBabelJestTransformer.processAsync!(
     sourceString,
     'dummy_path.js',
     {
@@ -86,8 +89,18 @@ test('Returns source string with inline maps when no transformOptions is passed 
   expect(result.map).toBeDefined();
   expect(result.code).toMatch('//# sourceMappingURL');
   expect(result.code).toMatch('customMultiply');
-  expect(result.map!.sources).toEqual(['dummy_path.js']);
-  expect(JSON.stringify(result.map!.sourcesContent)).toMatch('customMultiply');
+
+  const {map} = result;
+
+  expect(map).toBeTruthy();
+  expect(typeof map).not.toBe('string');
+
+  if (map == null || typeof map === 'string') {
+    throw new Error('dead code');
+  }
+
+  expect(map.sources).toEqual(['dummy_path.js']);
+  expect(JSON.stringify(map.sourcesContent)).toMatch('customMultiply');
 });
 
 describe('caller option correctly merges from defaults and options', () => {

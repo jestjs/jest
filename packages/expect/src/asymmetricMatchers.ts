@@ -302,7 +302,7 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
 }
 
 class CloseTo extends AsymmetricMatcher<number> {
-  private precision: number;
+  private readonly precision: number;
 
   constructor(sample: number, precision = 2, inverse = false) {
     if (!isA('Number', sample)) {

@@ -15,18 +15,24 @@ import {saveInlineSnapshots} from '../InlineSnapshots';
 jest.mock('prettier', () => {
   const realPrettier =
     jest.requireActual<typeof import('prettier')>('prettier');
-  const mockPrettier: typeof import('prettier') = {
+  const mockPrettier = {
     format: (text, opts) =>
       realPrettier.format(text, {
         pluginSearchDirs: [
-          require('path').dirname(require.resolve('prettier')),
+          (require('path') as typeof import('path')).dirname(
+            require.resolve('prettier'),
+          ),
         ],
         ...opts,
       }),
-    getFileInfo: {sync: () => ({ignored: false, inferredParser: 'babel'})},
-    resolveConfig: {sync: jest.fn()},
+    getFileInfo: {
+      sync: () => ({ignored: false, inferredParser: 'babel'}),
+    } as unknown as typeof prettier.getFileInfo,
+    resolveConfig: {
+      sync: jest.fn(),
+    } as unknown as typeof prettier.resolveConfig,
     version: realPrettier.version,
-  };
+  } as typeof prettier;
   return mockPrettier;
 });
 
@@ -359,7 +365,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
       'prettier',
     );
 
-  expect(save).toThrowError(/Couldn't locate all inline snapshots./);
+  expect(save).toThrow(/Couldn't locate all inline snapshots./);
 });
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
@@ -377,7 +383,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
       'prettier',
     );
 
-  expect(save).toThrowError(
+  expect(save).toThrow(
     /Multiple inline snapshots for the same call are not supported./,
   );
 });
@@ -719,7 +725,7 @@ test('saveInlineSnapshots() prioritize parser from project/editor configuration'
     'prettier',
   );
 
-  expect(prettierSpy).not.toBeCalled();
+  expect(prettierSpy).not.toHaveBeenCalled();
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'const foo = {\n' +
       '  "1": "Some value",\n' +

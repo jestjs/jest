@@ -24,7 +24,7 @@ describe('calc - mocks', () => {
     const result = calc('Sub', [2, 2]);
 
     expect(result).toBe(0);
-    expect(mockSub).toBeCalledWith(2, 2);
+    expect(mockSub).toHaveBeenCalledWith(2, 2);
   });
 
   it('returns result from sum', () => {
@@ -34,7 +34,7 @@ describe('calc - mocks', () => {
     const result = calc('Sum', [1, 1]);
 
     expect(result).toBe(2);
-    expect(mockSum).toBeCalledWith(1, 1);
+    expect(mockSum).toHaveBeenCalledWith(1, 1);
   });
 
   it('adds last result to memory', () => {
@@ -47,7 +47,7 @@ describe('calc - mocks', () => {
 
     expect(sumResult).toBe(2);
     expect(memoryResult).toBe(2);
-    expect(MockMemory.prototype.add).toBeCalledWith(2);
+    expect(MockMemory.prototype.add).toHaveBeenCalledWith(2);
   });
 
   it('subtracts last result to memory', () => {
@@ -60,7 +60,7 @@ describe('calc - mocks', () => {
 
     expect(sumResult).toBe(2);
     expect(memoryResult).toBe(2);
-    expect(MockMemory.prototype.subtract).toBeCalledWith(2);
+    expect(MockMemory.prototype.subtract).toHaveBeenCalledWith(2);
   });
 
   it('clears the memory', () => {
@@ -77,15 +77,13 @@ describe('calc - mocks', () => {
     expect(memoryResult).toBe(2);
     expect(sumResult2).toBe(4);
     expect(clearResult).toBe(4);
-    expect(MockMemory.prototype.reset).toBeCalledTimes(1);
+    expect(MockMemory.prototype.reset).toHaveBeenCalledTimes(1);
   });
 
   it('throws an error when invalid Op is passed', () => {
     const calc = makeCalc(memory);
 
     // @ts-expect-error
-    expect(() => calc('Multiply', [2, 3])).toThrowError(
-      new Error('Invalid op'),
-    );
+    expect(() => calc('Multiply', [2, 3])).toThrow(new Error('Invalid op'));
   });
 });

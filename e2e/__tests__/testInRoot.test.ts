@@ -19,7 +19,7 @@ it('runs tests in only test.js and spec.js', () => {
     .map(name => path.basename(name))
     .sort();
 
-  expect(testNames.length).toBe(2);
+  expect(testNames).toHaveLength(2);
   expect(testNames[0]).toBe('spec.js');
   expect(testNames[1]).toBe('test.js');
 });

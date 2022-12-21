@@ -51,7 +51,7 @@ function addIstanbulInstrumentation(
     const copiedBabelOptions: TransformOptions = {...babelOptions};
     copiedBabelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
     // Copied from jest-runtime transform.js
-    copiedBabelOptions.plugins = (copiedBabelOptions.plugins || []).concat([
+    copiedBabelOptions.plugins = (copiedBabelOptions.plugins ?? []).concat([
       [
         babelIstanbulPlugin,
         {
@@ -76,9 +76,9 @@ function getCacheKeyFromConfig(
 ): string {
   const {config, configString, instrument} = transformOptions;
 
-  const configPath = [babelOptions.config || '', babelOptions.babelrc || ''];
+  const configPath = [babelOptions.config ?? '', babelOptions.babelrc ?? ''];
 
-  return createHash('sha256')
+  return createHash('sha1')
     .update(THIS_FILE)
     .update('\0', 'utf8')
     .update(JSON.stringify(babelOptions.options))
@@ -93,9 +93,9 @@ function getCacheKeyFromConfig(
     .update('\0', 'utf8')
     .update(instrument ? 'instrument' : '')
     .update('\0', 'utf8')
-    .update(process.env.NODE_ENV || '')
+    .update(process.env.NODE_ENV ?? '')
     .update('\0', 'utf8')
-    .update(process.env.BABEL_ENV || '')
+    .update(process.env.BABEL_ENV ?? '')
     .update('\0', 'utf8')
     .update(process.version)
     .digest('hex')

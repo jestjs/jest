@@ -160,19 +160,19 @@ test('that the failureDetails property is set', () => {
           Object {
             "actual": "",
             "error": Object {
-              "message": "expect(received).rejects.toThrowError()
+              "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             },
             "expected": "",
             "matcherName": "",
-            "message": "Error: expect(received).rejects.toThrowError()
+            "message": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",
             "passed": false,
-            "stack": "Error: expect(received).rejects.toThrowError()
+            "stack": "Error: expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1
@@ -245,7 +245,7 @@ test('that the failureDetails property is set', () => {
         ],
         Array [
           Object {
-            "message": "expect(received).rejects.toThrowError()
+            "message": "expect(received).rejects.toThrow()
 
       Received promise resolved instead of rejected
       Resolved to value: 1",

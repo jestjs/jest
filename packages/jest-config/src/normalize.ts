@@ -31,7 +31,10 @@ import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
-import VALID_CONFIG from './ValidConfig';
+import {
+  initialOptions as VALID_CONFIG,
+  initialProjectOptions as VALID_PROJECT_CONFIG,
+} from './ValidConfig';
 import {getDisplayNameColor} from './color';
 import {DEFAULT_JS_PATTERN} from './constants';
 import getMaxWorkers from './getMaxWorkers';
@@ -108,8 +111,8 @@ const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
 ) => {
-  if (options['globals'] && preset['globals']) {
-    options['globals'] = merge(preset['globals'], options['globals']);
+  if (options.globals && preset.globals) {
+    options.globals = merge(preset.globals, options.globals);
   }
 };
 
@@ -301,7 +304,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptionsWithRootDir => {
   if (!options.id) {
-    options.id = createHash('sha256')
+    options.id = createHash('sha1')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -487,6 +490,7 @@ export default async function normalize(
   argv: Config.Argv,
   configPath?: string | null,
   projectIndex = Infinity,
+  isProjectOptions?: boolean,
 ): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
@@ -494,7 +498,7 @@ export default async function normalize(
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
-    exampleConfig: VALID_CONFIG,
+    exampleConfig: isProjectOptions ? VALID_PROJECT_CONFIG : VALID_CONFIG,
     recursiveDenylist: [
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
@@ -918,6 +922,7 @@ export default async function normalize(
       case 'runTestsByPath':
       case 'sandboxInjectedGlobals':
       case 'silent':
+      case 'showSeed':
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
@@ -1021,6 +1026,24 @@ export default async function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  newOptions.showSeed = newOptions.showSeed || argv.showSeed;
+
+  const upperBoundSeedValue = 2 ** 31;
+
+  // xoroshiro128plus is used in v8 and is used here (at time of writing)
+  newOptions.seed =
+    argv.seed ??
+    Math.floor((2 ** 32 - 1) * Math.random() - upperBoundSeedValue);
+  if (
+    newOptions.seed < -upperBoundSeedValue ||
+    newOptions.seed > upperBoundSeedValue - 1
+  ) {
+    throw new ValidationError(
+      'Validation Error',
+      `seed value must be between \`-0x80000000\` and \`0x7fffffff\` inclusive - is ${newOptions.seed}`,
+    );
+  }
+
   if (!newOptions.onlyChanged) {
     newOptions.onlyChanged = false;
   }
@@ -1061,14 +1084,14 @@ export default async function normalize(
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);
 
-  if (newOptions.testRegex!.length && options.testMatch) {
+  if (newOptions.testRegex.length > 0 && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (newOptions.testRegex!.length && !options.testMatch) {
+  if (newOptions.testRegex.length > 0 && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
@@ -1101,7 +1124,7 @@ export default async function normalize(
         if (
           micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
-            newOptions.collectCoverageFrom!,
+            newOptions.collectCoverageFrom,
           ).length === 0
         ) {
           return patterns;

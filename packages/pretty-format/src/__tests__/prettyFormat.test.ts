@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import prettyFormat from '../';
+import prettyFormat, {PrettyFormatOptions} from '../';
 
 function returnArguments(..._args: Array<unknown>) {
   return arguments;
@@ -667,8 +667,9 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
+      // @ts-expect-error: Testing runtime error
       prettyFormat({}, {invalidOption: true});
-    }).toThrow();
+    }).toThrow('Unknown option "invalidOption".');
   });
 
   it('supports plugins', () => {
@@ -709,9 +710,10 @@ describe('prettyFormat()', () => {
 
   it('throws if plugin does not return a string', () => {
     const val = 123;
-    const options = {
+    const options: PrettyFormatOptions = {
       plugins: [
         {
+          // @ts-expect-error: Testing runtime error
           print(val: unknown) {
             return val;
           },
@@ -723,7 +725,9 @@ describe('prettyFormat()', () => {
     };
     expect(() => {
       prettyFormat(val, options);
-    }).toThrow();
+    }).toThrow(
+      'Plugin must return type "string" but instead returned "number".',
+    );
   });
 
   it('throws PrettyFormatPluginError if test throws an error', () => {
@@ -795,8 +799,10 @@ describe('prettyFormat()', () => {
       prettyFormat(val, {
         plugins: [
           {
-            print(val: Array<unknown>, print: any) {
-              return val.map(item => print(item)).join(' - ');
+            print(val: unknown, print: any) {
+              return (val as Array<unknown>)
+                .map(item => print(item))
+                .join(' - ');
             },
             test(val: unknown) {
               return Array.isArray(val);
@@ -894,8 +900,8 @@ describe('prettyFormat()', () => {
     ).toBe(
       `Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ${name}],\n  },\n}`,
     );
-    expect((set as any).toJSON).not.toBeCalled();
-    expect(value.toJSON).not.toBeCalled();
+    expect((set as any).toJSON).not.toHaveBeenCalled();
+    expect(value.toJSON).not.toHaveBeenCalled();
   });
 
   describe('min', () => {
@@ -965,7 +971,7 @@ describe('prettyFormat()', () => {
     it('does not allow indent !== 0 in min mode', () => {
       expect(() => {
         prettyFormat(1, {indent: 1, min: true});
-      }).toThrow();
+      }).toThrow('Options "min" and "indent" cannot be used together.');
     });
   });
 });

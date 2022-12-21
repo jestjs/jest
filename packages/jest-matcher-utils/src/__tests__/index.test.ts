@@ -310,7 +310,7 @@ describe('getLabelPrinter', () => {
     expect(printLabel(stringConsistent)).toBe('Expected:       ');
     expect(() => {
       printLabel(stringInconsistentLonger);
-    }).toThrow();
+    }).toThrow('Invalid count value');
   });
 });
 

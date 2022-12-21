@@ -93,7 +93,7 @@ describe('Runtime', () => {
         error = e;
       } finally {
         expect(error.message).toMatch(
-          /NativeModule.node: file too short|not a valid Win\d+ application/,
+          /NativeModule.node: file too short|NativeModule.node, 0x0001|not a valid Win\d+ application/,
         );
       }
     });
@@ -132,7 +132,7 @@ describe('Runtime', () => {
       const runtime = await createRuntime(__filename);
       expect(() => {
         runtime.requireMock(runtime.__mockRootPath, 'DoesntExist');
-      }).toThrow();
+      }).toThrow("Cannot find module 'DoesntExist' from 'root.js'");
     });
 
     it('uses manual mocks when using a custom resolver', async () => {
