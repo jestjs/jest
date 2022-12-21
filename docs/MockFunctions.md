@@ -59,7 +59,7 @@ const bound = myMock2.bind(b);
 bound();
 console.log(myMock2.mock.contexts);
 // > [ <b> ]
- ```
+```
 
 These mock members are very useful in tests to assert how these functions get called, instantiated, or what they returned:
 
