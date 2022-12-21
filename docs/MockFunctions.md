@@ -52,12 +52,14 @@ All mock functions have this special `.mock` property, which is where data about
  const a = new myMock1();
  console.log(myMock1.mock.instances);
  // > [ <a> ]
+
  const myMock2 = jest.fn();
  const b = {};
  const bound = myMock2.bind(b);
  bound();
  console.log(myMock2.mock.contexts);
  // > [ <b> ]
+ ```
 
 These mock members are very useful in tests to assert how these functions get called, instantiated, or what they returned:
 
