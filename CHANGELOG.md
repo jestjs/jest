@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+- `[jest-environment-node]` fix non-configurable globals ([#13687](https://github.com/facebook/jest/pull/13687))
 
 ### Chore & Maintenance
 
