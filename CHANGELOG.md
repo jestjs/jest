@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+- `[website]` add guide how to avoid temporal dead zone with manual mock ([#13691](https://github.com/facebook/jest/pull/13691))
 
 ### Chore & Maintenance
 
