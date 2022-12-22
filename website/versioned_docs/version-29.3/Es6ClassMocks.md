@@ -180,7 +180,7 @@ jest.mock('./sound-player', () => {
 
 When mocking classes or objects which are initialized during static
 initialization, solution provided in [Calling `jest.mock()` with the module factory parameter​](#calling-jestmock-with-the-module-factory-parameter)
-may not work due to hoisting, temporal dead zone - a need for variable
+may not work due to hoisting and *temporal dead zone* - a need for variable
 to be initialized before it is used.
 
 Consider slightly changed file `sound-player-consumer.js`. Now `SoundPlayer` is a singleton initialized at the very beginning:
@@ -198,8 +198,8 @@ export default class SoundPlayerConsumer {
 }
 ```
 
-This code will produce error, because Jest mocking will be hoisted 
-before following statement.
+This code will produce error, because `jest.mock('./sound-player', /*...*/)`
+is hoisted before following statement:
 ```javascript
 const mockSoundPlayer = jest.fn().mockImplementation(() => {
   return {playSoundFile: mockPlaySoundFile};
@@ -209,7 +209,7 @@ const mockSoundPlayer = jest.fn().mockImplementation(() => {
 In order to fix mocking two things have to be done:
 1. Avoid [Temporal Dead Zone](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz)
 trap by replacing `const` or `let` with **`var`**.
-2. Assign mock, when it's used in module mocking block.
+2. Assign mocks when are going to be used, in module mocking block.
 
 ```javascript
 // `var` is hoisted by specification
@@ -221,7 +221,7 @@ jest.mock('./sound-player', () => {
 
   return jest.fn().mockImplementation(() => {
       return {playSoundFile: mockPlaySoundFile};
-    })
+  })
 });
 ```
 
