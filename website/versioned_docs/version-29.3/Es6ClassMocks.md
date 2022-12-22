@@ -176,6 +176,55 @@ jest.mock('./sound-player', () => {
 });
 ```
 
+### Manual mocking statically initialized objects and temporal dead zone
+
+When mocking classes or objects which are initialized during static
+initialization, solution provided in [Calling `jest.mock()` with the module factory parameter​](#calling-jestmock-with-the-module-factory-parameter)
+may not work due to hoisting, temporal dead zone - a need for variable
+to be initialized before it is used.
+
+Consider slightly changed file `sound-player-consumer.js`. Now `SoundPlayer` is a singleton initialized at the very beginning:
+
+```javascript
+import SoundPlayer from './sound-player'
+
+const soundPlayer = new SoundPlayer();
+
+export default class SoundPlayerConsumer {
+  playSomethingCool() {
+    const coolSoundFileName = 'song.mp3';
+    soundPlayer.playSoundFile(coolSoundFileName);
+  }
+}
+```
+
+This code will produce error, because Jest mocking will be hoisted 
+before following statement.
+```javascript
+const mockSoundPlayer = jest.fn().mockImplementation(() => {
+  return {playSoundFile: mockPlaySoundFile};
+});
+```
+
+In order to fix mocking two things have to be done:
+1. Avoid [Temporal Dead Zone](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#temporal_dead_zone_tdz)
+trap by replacing `const` or `let` with **`var`**.
+2. Assign mock, when it's used in module mocking block.
+
+```javascript
+// `var` is hoisted by specification
+var mockPlaySoundFile;
+
+jest.mock('./sound-player', () => {
+  // assign value when mock is constructed
+  mockPlaySoundFile = jest.fn();
+
+  return jest.fn().mockImplementation(() => {
+      return {playSoundFile: mockPlaySoundFile};
+    })
+});
+```
+
 ### Replacing the mock using [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn) or [`mockImplementationOnce()`](MockFunctionAPI.md#mockfnmockimplementationoncefn)
 
 You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling `mockImplementation()` on the existing mock.
