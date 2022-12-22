@@ -183,7 +183,7 @@ initialization, solution provided in [Calling `jest.mock()` with the module fact
 may not work due to hoisting and *temporal dead zone* - a need for variable
 to be initialized before it is used.
 
-Consider slightly changed file `sound-player-consumer.js`. Now `SoundPlayer` is a singleton initialized at the very beginning:
+Consider slightly changed file `sound-player-consumer.js`. Now `soundPlayer` is initialized at the very beginning:
 
 ```javascript
 import SoundPlayer from './sound-player'
