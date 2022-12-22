@@ -220,7 +220,7 @@ jest.mock('./sound-player', () => {
   mockPlaySoundFile = jest.fn();
 
   return jest.fn().mockImplementation(() => {
-      return {playSoundFile: mockPlaySoundFile};
+    return {playSoundFile: mockPlaySoundFile};
   })
 });
 ```
