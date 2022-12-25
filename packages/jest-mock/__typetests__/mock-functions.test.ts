@@ -504,7 +504,7 @@ const obj = {
 };
 
 expectType<Replaced<number>>(replaceProperty(obj, 'property', 1));
-replaceProperty(obj, 'property', 1).replaceValue(1).restore();
+expectType<void>(replaceProperty(obj, 'property', 1).replaceValue(1).restore());
 
 expectError(replaceProperty(obj, 'invalid', 1));
 expectError(replaceProperty(obj, 'property', 'not a number'));
@@ -518,9 +518,9 @@ interface ComplexObject {
   [key: `dynamic prop ${number}`]: boolean;
   multipleTypes: number | string | {foo: number} | null;
 }
-const complexObject: ComplexObject = undefined as unknown as ComplexObject;
+declare const complexObject: ComplexObject;
 
-// Resulting type should not be narrowed down to a type of value passed to replaceProperty, but should retain the original property type instead
+// Resulting type should retain the original property type
 expectType<Replaced<number | undefined>>(
   replaceProperty(complexObject, 'numberOrUndefined', undefined),
 );
