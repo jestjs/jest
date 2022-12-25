@@ -65,7 +65,7 @@ declare namespace jest {
    */
   export type MockedObject<T extends object> = JestMockedObject<T>;
   /**
-   * Constructs the type of a replaced object's property.
+   * Constructs the type of a replaced property.
    */
   export type Replaced<T> = JestReplaced<T>;
   /**

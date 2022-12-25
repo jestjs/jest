@@ -220,8 +220,6 @@ export interface Jest {
   /**
    * Replaces property on an object with another value.
    *
-   * This method does not work on 'get' or 'set' accessors.
-   *
    * @remarks
    * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
    */
