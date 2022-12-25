@@ -17,7 +17,7 @@ import TOCInline from '@theme/TOCInline';
 
 ---
 
-## Reference
+## Mock Functions
 
 ### `mockFn.getMockName()`
 
@@ -515,10 +515,11 @@ test('async test', async () => {
 });
 ```
 
+## Replaced Properties
+
 ### `replacedProperty.replaceValue(value)`
 
-Changes the value of already replaced property. This is useful when you want to replace property and then adjust the value in specific tests.
-As an alternative, you can call [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value) multiple times on same property.
+Changes the value of already replaced property. This is useful when you want to replace property and then adjust the value in specific tests. As an alternative, you can call [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value) multiple times on same property.
 
 ### `replacedProperty.restore()`
 
@@ -609,7 +610,7 @@ Types of classes, functions or objects can be passed as type argument to `jest.M
 
 ### `jest.Replaced<Source>`
 
-The `jest.Replaced<Source>` utility type returns the `Source` type wrapped with type definitions of Jest mock property.
+The `jest.Replaced<Source>` utility type returns the `Source` type wrapped with type definitions of Jest [replaced property](#replaced-properties).
 
 ```ts title="src/utils.ts"
 export function isLocalhost(): boolean {
@@ -635,10 +636,9 @@ it('isLocalhost should detect localhost environment', () => {
 
 it('isLocalhost should detect non-localhost environment', () => {
   replacedEnv = jest.replaceProperty(process, 'env', {HOSTNAME: 'example.com'});
-  
+
   expect(isLocalhost()).toBe(false);
 });
-
 ```
 
 ### `jest.mocked(source, options?)`

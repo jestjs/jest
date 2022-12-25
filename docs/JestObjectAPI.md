@@ -596,19 +596,17 @@ Determines if the given function is a mocked function.
 
 ### `jest.replaceProperty(object, propertyKey, value)`
 
-Replace `object[propertyKey]` with a `value`. The property must already exist on the object. The same property might be replaced multiple times.
-Returns a Jest [replaced property](MockFunctionAPI.md#replacedpropertyreplacevaluevalue).
+Replace `object[propertyKey]` with a `value`. The property must already exist on the object. The same property might be replaced multiple times. Returns a Jest [replaced property](MockFunctionAPI.md#replaced-properties).
 
 :::note
 
-To mock properties that are defined as getters or setters, use [`jest.spyOn(object, methodName, accessType)`](#jestspyonobject-methodname-accesstype) instead.
-To mock functions, use [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname) instead.
+To mock properties that are defined as getters or setters, use [`jest.spyOn(object, methodName, accessType)`](#jestspyonobject-methodname-accesstype) instead. To mock functions, use [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname) instead.
 
 :::
 
 :::tip
 
-Since `jest.replaceProperty` regi. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+All properties replaced with `jest.replaceProperty` could be restored to the original value by calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
 
 :::
 
