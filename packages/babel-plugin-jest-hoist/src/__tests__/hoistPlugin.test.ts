@@ -151,6 +151,20 @@ pluginTester({
       formatResult,
       snapshot: true,
     },
+    'static imports converted to dynamic await imports': {
+      babelOptions: {
+        filename: path.resolve(__dirname, '../file.mjs'),
+      },
+      code: formatResult(`
+      import SoundPlayer, {SoundPlayerHelper as Helper} from './some-module';
+      import SoundPlayerConsumer, * as spc from './sound-player-consumer';
+      jest.unstable_mockModule('some-module', () => {
+        return jest.fn();
+      });
+      `),
+      formatResult,
+      snapshot: true,
+    },
   },
   /* eslint-enable */
 });

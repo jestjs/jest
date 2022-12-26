@@ -6,8 +6,8 @@
  *
  */
 
-import type {PluginObj} from '@babel/core';
-import {statement} from '@babel/template';
+import type {PluginObj, PluginPass} from '@babel/core';
+import {statement, statements} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
 import {
   BlockStatement,
@@ -17,14 +17,21 @@ import {
   ImportDeclaration,
   MemberExpression,
   Node,
+  ObjectProperty,
   Program,
   Super,
   VariableDeclaration,
   VariableDeclarator,
+  import as _import,
+  awaitExpression,
   callExpression,
   emptyStatement,
+  identifier,
   isIdentifier,
+  objectPattern,
+  objectProperty,
   variableDeclaration,
+  variableDeclarator,
 } from '@babel/types';
 
 const JEST_GLOBAL_NAME = 'jest';
@@ -32,6 +39,10 @@ const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
 
 const hoistedVariables = new WeakSet<VariableDeclarator>();
+
+/* Flag indicating if output code should be ES modules. */
+let shouldUseModulesSupport = false;
+const hoistedModulesImport = new WeakSet<ImportDeclaration>();
 const hoistedJestExpressions = new WeakSet<Expression>();
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
@@ -210,12 +221,21 @@ FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
+FUNCTIONS.unstable_mockModule = FUNCTIONS.mock;
 
-const createJestObjectGetter = statement`
+const createJestObjectGetterForCJs = statement`
 function GETTER_NAME() {
   const { JEST_GLOBALS_MODULE_JEST_EXPORT_NAME } = require("JEST_GLOBALS_MODULE_NAME");
   GETTER_NAME = () => JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
   return JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
+}
+`;
+
+const createJestObjectGetterForModules = statements`
+import {JEST_GLOBALS_MODULE_JEST_EXPORT_NAME as IMPORT_ALIAS} from 'JEST_GLOBALS_MODULE_NAME';
+
+function GETTER_NAME() {
+  return IMPORT_ALIAS;
 }
 `;
 
@@ -306,13 +326,56 @@ const extractJestObjExprIfHoistable = (
   return null;
 };
 
+const convertStaticImportToDynamic = (
+  importNode: ImportDeclaration,
+): VariableDeclaration => {
+  const specifiers = importNode.specifiers;
+
+  const destructuredImports = specifiers
+    .filter(s => s.type !== 'ImportNamespaceSpecifier')
+    .map<ObjectProperty>(s => {
+      switch (s.type) {
+        case 'ImportDefaultSpecifier':
+          return objectProperty(identifier('default'), s.local);
+        case 'ImportSpecifier':
+          return objectProperty(s.imported, s.local);
+        default:
+          throw new Error(`Unexpected import type ${s.type}`);
+      }
+    });
+
+  const namespaceImports = specifiers
+    .filter(s => s.type === 'ImportNamespaceSpecifier')
+    .map<VariableDeclarator>(s =>
+      variableDeclarator(
+        s.local,
+        awaitExpression(callExpression(_import(), [importNode.source])),
+      ),
+    );
+
+  const asAwaitDynamicImport = awaitExpression(
+    callExpression(_import(), [importNode.source]),
+  );
+
+  return variableDeclaration('const', [
+    variableDeclarator(
+      objectPattern(destructuredImports),
+      asAwaitDynamicImport,
+    ),
+    ...namespaceImports,
+  ]);
+};
+
 /* eslint-disable sort-keys */
-export default function jestHoist(): PluginObj<{
-  declareJestObjGetterIdentifier: () => Identifier;
-  jestObjGetterIdentifier?: Identifier;
-}> {
+export default function jestHoist(): PluginObj<
+  {
+    declareJestObjGetterIdentifier: () => Identifier;
+    jestObjGetterIdentifier?: Identifier;
+  } & PluginPass
+> {
   return {
     pre({path: program}) {
+      shouldUseModulesSupport = true === this.filename?.endsWith('.mjs');
       this.declareJestObjGetterIdentifier = () => {
         if (this.jestObjGetterIdentifier) {
           return this.jestObjGetterIdentifier;
@@ -321,18 +384,19 @@ export default function jestHoist(): PluginObj<{
         this.jestObjGetterIdentifier =
           program.scope.generateUidIdentifier('getJestObj');
 
-        program.unshiftContainer('body', [
-          createJestObjectGetter({
-            GETTER_NAME: this.jestObjGetterIdentifier.name,
-            JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
-            JEST_GLOBALS_MODULE_NAME,
-          }),
-        ]);
-
         return this.jestObjGetterIdentifier;
       };
     },
     visitor: {
+      ImportDeclaration(stmt) {
+        // Don't transform @jest imports as are used in hoisting
+        // mock statements (see `isJestObject`)
+        if (stmt.node.source.value.startsWith('@jest/')) {
+          return;
+        } else {
+          hoistedModulesImport.add(stmt.node);
+        }
+      },
       ExpressionStatement(exprStmt) {
         const jestObjExpr = extractJestObjExprIfHoistable(
           exprStmt.get('expression'),
@@ -349,22 +413,48 @@ export default function jestHoist(): PluginObj<{
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const self = this;
 
+      if (this.jestObjGetterIdentifier != null) {
+        if (shouldUseModulesSupport) {
+          program.unshiftContainer(
+            'body',
+            createJestObjectGetterForModules({
+              GETTER_NAME: this.jestObjGetterIdentifier.name,
+              IMPORT_ALIAS:
+                program.scope.generateUidIdentifier('_jest_import_alias'),
+              JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
+              JEST_GLOBALS_MODULE_NAME,
+            }),
+          );
+        } else {
+          program.unshiftContainer('body', [
+            createJestObjectGetterForCJs({
+              GETTER_NAME: this.jestObjGetterIdentifier.name,
+              JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
+              JEST_GLOBALS_MODULE_NAME,
+            }),
+          ]);
+        }
+      }
       visitBlock(program);
       program.traverse({BlockStatement: visitBlock});
 
       function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
         // use a temporary empty statement instead of the real first statement, which may itself be hoisted
-        const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer(
-          'body',
-          [emptyStatement(), emptyStatement()],
-        );
+        const [varsHoistPoint, callsHoistPoint, importsHoistPoint] =
+          block.unshiftContainer('body', [
+            emptyStatement(),
+            emptyStatement(),
+            emptyStatement(),
+          ]);
         block.traverse({
           CallExpression: visitCallExpr,
+          ImportDeclaration: visitImportDeclaration,
           VariableDeclarator: visitVariableDeclarator,
           // do not traverse into nested blocks, or we'll hoist calls in there out to this block
           blacklist: ['BlockStatement'],
         });
         callsHoistPoint.remove();
+        importsHoistPoint.remove();
         varsHoistPoint.remove();
 
         function visitCallExpr(callExpr: NodePath<CallExpression>) {
@@ -385,6 +475,20 @@ export default function jestHoist(): PluginObj<{
                 callsHoistPoint.insertBefore(mockStmtNode);
               }
             }
+          }
+        }
+
+        function visitImportDeclaration(
+          importDecl: NodePath<ImportDeclaration>,
+        ) {
+          if (
+            shouldUseModulesSupport &&
+            hoistedModulesImport.has(importDecl.node)
+          ) {
+            importsHoistPoint.insertBefore(
+              convertStaticImportToDynamic(importDecl.node),
+            );
+            importDecl.remove();
           }
         }
 

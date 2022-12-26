@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "discord.js": "14.3.0",
+    "yargs": "^17.5.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.(m)[jt]s?(x)",
+      "**/?(*.)+(spec|test).(m)?[tj]s?(x)"
+    ]
+  }
+}
