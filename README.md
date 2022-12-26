@@ -1,4 +1,4 @@
-<p align="center">
+ <p align="center">
   <a href="https://badge.fury.io/js/jest">
     <img src="https://badge.fury.io/js/jest.svg" alt="npm version">
   </a>
