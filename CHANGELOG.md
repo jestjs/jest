@@ -12,6 +12,12 @@
 
 ### Performance
 
+## 29.3.2
+
+### Features
+
+- `[jest-runtime]` Expose `isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
+
 ## 29.3.1
 
 ### Fixes

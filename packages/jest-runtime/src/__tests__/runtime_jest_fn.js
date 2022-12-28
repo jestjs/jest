@@ -66,4 +66,21 @@ describe('Runtime', () => {
       expect(mock2).not.toHaveBeenCalled();
     });
   });
+
+  describe('jest.isEnvironmentTornDown()', () => {
+    it('should be set to false when the environment is not torn down', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      runtime['isTornDown'] = false;
+      expect(root.jest.isEnvironmentTornDown()).toBe(false);
+    });
+
+    it('should be set to true when the environment is torn down', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      expect(root.jest.isEnvironmentTornDown()).toBe(false);
+      runtime.teardown();
+      expect(root.jest.isEnvironmentTornDown()).toBe(true);
+    });
+  });
 });

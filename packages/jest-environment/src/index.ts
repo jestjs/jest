@@ -173,6 +173,15 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * A flag that indicates whether the Jest environment has been torn down.
+   * @example
+   * if (jest.isEnvironmentTornDown()) {
+   *   // The Jest environment has been torn down, so stop doing work
+   *   return;
+   * }
+   */
+  isEnvironmentTornDown(): boolean;
+  /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock<T = unknown>(
