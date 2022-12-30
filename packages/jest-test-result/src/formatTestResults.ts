@@ -59,11 +59,11 @@ const formatTestResult = (
     message: testResult.failureMessage ?? '',
     name: testResult.testFilePath,
     startTime: testResult.perfStats.start,
-    status: allTestsExecuted
-      ? allTestsPassed
+    status: allTestsPassed
+      ? allTestsExecuted
         ? 'passed'
-        : 'failed'
-      : 'focused',
+        : 'focused'
+      : 'failed',
     summary: '',
   };
 };
