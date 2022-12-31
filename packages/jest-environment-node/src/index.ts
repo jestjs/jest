@@ -112,15 +112,15 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
           Object.defineProperty(global, nodeGlobalsKey, {
             configurable: false,
             enumerable: descriptor.enumerable,
+            value: descriptor.value,
             writable: descriptor.writable,
-            value: descriptor.value
           });
         } else {
           Object.defineProperty(global, nodeGlobalsKey, {
             configurable: false,
             enumerable: descriptor.enumerable,
             get: descriptor.get,
-            set: descriptor.set
+            set: descriptor.set,
           });
         }
       }
