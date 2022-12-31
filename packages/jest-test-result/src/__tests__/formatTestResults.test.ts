@@ -6,7 +6,7 @@
  */
 
 import formatTestResults from '../formatTestResults';
-import {AggregatedResult} from '../types';
+import type {AggregatedResult} from '../types';
 
 describe('formatTestResults', () => {
   const assertion = {
@@ -25,6 +25,13 @@ describe('formatTestResults', () => {
       },
     ],
   };
+
+  it('includes test full name', () => {
+    const result = formatTestResults(results, undefined, null);
+    expect(result.testResults[0].assertionResults[0].fullName).toEqual(
+      assertion.fullName,
+    );
+  });
 
   const skippedAssertion = {
     fullName: 'Pending test',
