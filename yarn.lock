@@ -19900,6 +19900,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-node@patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 10.9.1
+  resolution: "ts-node@patch:ts-node@npm%3A10.9.1#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::version=10.9.1&hash=4855ba&locator=%40jest%2Fmonorepo%40workspace%3A."
+  dependencies:
+    "@cspotcode/source-map-support": ^0.8.0
+    "@tsconfig/node10": ^1.0.7
+    "@tsconfig/node12": ^1.0.7
+    "@tsconfig/node14": ^1.0.0
+    "@tsconfig/node16": ^1.0.2
+    acorn: ^8.4.1
+    acorn-walk: ^8.1.1
+    arg: ^4.1.0
+    create-require: ^1.1.0
+    diff: ^4.0.1
+    make-error: ^1.1.1
+    v8-compile-cache-lib: ^3.0.1
+    yn: 3.1.1
+  peerDependencies:
+    "@swc/core": ">=1.2.50"
+    "@swc/wasm": ">=1.2.50"
+    "@types/node": "*"
+    typescript: ">=2.7"
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    "@swc/wasm":
+      optional: true
+  bin:
+    ts-node: dist/bin.js
+    ts-node-cwd: dist/bin-cwd.js
+    ts-node-esm: dist/bin-esm.js
+    ts-node-script: dist/bin-script.js
+    ts-node-transpile-only: dist/bin-transpile.js
+    ts-script: dist/bin-script-deprecated.js
+  checksum: d1ecd831ce5d10e37a6b34ed0d26957b989cc3ca723f68b0ca128e76c8626ee28047ec1c7a77f7c3943c544f8341519f0d51ab51aa0d921a67e3042dd4896f60
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
