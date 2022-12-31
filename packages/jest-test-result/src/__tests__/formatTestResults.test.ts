@@ -6,14 +6,14 @@
  */
 
 import formatTestResults from '../formatTestResults';
-import type {AggregatedResult, AssertionResult} from '../types';
+import type {AggregatedResult} from '../types';
 
 describe('formatTestResults', () => {
   const assertion = {
     fullName: 'TestedModule#aMethod when some condition is met returns true',
     status: 'passed',
     title: 'returns true',
-  } as AssertionResult;
+  };
 
   const results = {
     testResults: [
@@ -36,7 +36,7 @@ describe('formatTestResults', () => {
     fullName: 'Pending test',
     status: 'pending',
     title: 'is still pending',
-  } as AssertionResult;
+  };
 
   const skippedResults = {
     testResults: [
@@ -62,7 +62,7 @@ describe('formatTestResults', () => {
     fullName: 'Focused test',
     status: 'focused',
     title: 'focused test',
-  } as AssertionResult;
+  };
 
   const focusedResults = {
     testResults: [
