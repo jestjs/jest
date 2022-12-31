@@ -6,7 +6,7 @@
  */
 
 import formatTestResults from '../formatTestResults';
-import type {AggregatedResult, AssertionResult} from '../types';
+import type {AggregatedResult} from '../types';
 
 describe('formatTestResults', () => {
   const assertion = {
@@ -36,7 +36,7 @@ describe('formatTestResults', () => {
     fullName: 'Pending test',
     status: 'pending',
     title: 'is still pending',
-  } as AssertionResult;
+  };
 
   const skippedResults = {
     testResults: [
