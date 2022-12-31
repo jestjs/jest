@@ -4,7 +4,11 @@
 
 ### Fixes
 
+- `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+
 ### Chore & Maintenance
+
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))
 
 ### Performance
 
@@ -12,11 +16,11 @@
 
 ### Fixes
 
-- `[jest-config]` Do not warn about `preset` in `ProjectConfig` [#13583](https://github.com/facebook/jest/pull/13583)
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig` ([#13583](https://github.com/facebook/jest/pull/13583))
 
 ### Performance
 
-- `[jest-transform]` Defer creation of cache directory [#13420](https://github.com/facebook/jest/pull/13420)
+- `[jest-transform]` Defer creation of cache directory ([#13420](https://github.com/facebook/jest/pull/13420))
 
 ## 29.3.0
 
