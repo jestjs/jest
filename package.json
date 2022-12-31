@@ -178,7 +178,7 @@
     "enzyme/cheerio": "=1.0.0-rc.3",
     "jest": "workspace:^",
     "jest-environment-node": "workspace:^",
-    "ts-node@^10.5.0": "patch:ts-node@npm%3A10.9.1#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
+    "ts-node@^10.5.0": "patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch"
   },
   "packageManager": "yarn@3.3.1"
 }

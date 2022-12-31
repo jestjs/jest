@@ -19854,7 +19854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:10.9.1":
+"ts-node@npm:^10.5.0":
   version: 10.9.1
   resolution: "ts-node@npm:10.9.1"
   dependencies:
@@ -19892,7 +19892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@patch:ts-node@npm%3A10.9.1#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+"ts-node@patch:ts-node@npm:^10.5.0#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 10.9.1
   resolution: "ts-node@patch:ts-node@npm%3A10.9.1#./.yarn/patches/ts-node-npm-10.9.1-6c268be7f4.patch::version=10.9.1&hash=4855ba&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
