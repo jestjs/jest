@@ -2333,16 +2333,16 @@ describe('Error match', () => {
   }
 
   it('custom error strict equality', () => {
-    expect(new CustomError('message1', 'value1')).toStrictEqual(
+    jestExpect(new CustomError('message1', 'value1')).toStrictEqual(
       new CustomError('message1', 'value1'),
     );
-    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+    jestExpect(new CustomError('message1', 'value1')).not.toStrictEqual(
       new CustomError('message2', 'value1'),
     );
-    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+    jestExpect(new CustomError('message1', 'value1')).not.toStrictEqual(
       new CustomError('message2', 'value2'),
     );
-    expect(new CustomError('message1', 'value1')).not.toStrictEqual(
+    jestExpect(new CustomError('message1', 'value1')).not.toStrictEqual(
       new CustomError('message1', 'value2'),
     );
   });
@@ -2352,6 +2352,6 @@ describe('Error match', () => {
       throw new CustomObject('value');
     };
 
-    expect(fn).toThrow(new CustomObject('value'));
+    jestExpect(fn).toThrow(new CustomObject('value'));
   });
 });
