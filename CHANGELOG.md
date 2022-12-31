@@ -2,9 +2,12 @@
 
 ### Features
 
+- `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
+
 ### Fixes
 
 - `[expect, @jest/expect-utils]` `toThrow` should handle custom `Error` classes ([#13607](https://github.com/facebook/jest/pull/13607))
+- `[@jest/expect-utils]` `toMatchObject` should handle `Symbol` properties ([#13639](https://github.com/facebook/jest/pull/13639))
 - `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 
 ### Chore & Maintenance
