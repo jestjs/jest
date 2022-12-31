@@ -4,7 +4,8 @@
 
 ### Fixes
 
-- `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+- `[expect, @jest/expect-utils]` `toThrow` should handle custom `Error` classes ([#13607](https://github.com/facebook/jest/pull/13607))
+- `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 
 ### Chore & Maintenance
 
