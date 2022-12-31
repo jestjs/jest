@@ -2205,7 +2205,10 @@ const config = {
   transformIgnorePatterns: [
     '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
     /* if config file is under '~/packages/lib-a/' */
-    `${path.join(__dirname, '../..')}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
     /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
     'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
@@ -2221,7 +2224,10 @@ const config: Config = {
   transformIgnorePatterns: [
     '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
     /* if config file is under '~/packages/lib-a/' */
-    `${path.join(__dirname, '../..')}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
     /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
     'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
