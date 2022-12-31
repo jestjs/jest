@@ -2320,15 +2320,15 @@ describe('toMatchObject()', () => {
     // issue 13638
     const sym = Symbol('foo');
     const sym2 = Symbol('foo2');
-    expect({}).not.toMatchObject({[sym]: true});
-    expect({[sym]: true}).not.toMatchObject({[sym2]: true});
-    expect({[sym]: true}).not.toMatchObject({[sym]: false});
-    expect({example: 10, [sym]: true}).not.toMatchObject({
+    jestExpect({}).not.toMatchObject({[sym]: true});
+    jestExpect({[sym]: true}).not.toMatchObject({[sym2]: true});
+    jestExpect({[sym]: true}).not.toMatchObject({[sym]: false});
+    jestExpect({example: 10, [sym]: true}).not.toMatchObject({
       example: 12,
       [sym]: true,
     });
-    expect({[sym]: true}).toMatchObject({[sym]: true});
-    expect({example: 10, [sym]: true}).toMatchObject({
+    jestExpect({[sym]: true}).toMatchObject({[sym]: true});
+    jestExpect({example: 10, [sym]: true}).toMatchObject({
       example: 10,
       [sym]: true,
     });
