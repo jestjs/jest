@@ -4,7 +4,8 @@
 
 ### Fixes
 
-- `[jest-resolve]` add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+- `[@jest/expect-utils]` `toMatchObject` should handle `Symbol` properties ([#13639](https://github.com/facebook/jest/pull/13639))
+- `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 
 ### Chore & Maintenance
 
