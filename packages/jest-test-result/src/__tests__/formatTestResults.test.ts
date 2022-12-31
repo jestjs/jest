@@ -6,25 +6,24 @@
  */
 
 import formatTestResults from '../formatTestResults';
-import type {AggregatedResult} from '../types';
+import type {AggregatedResult, AssertionResult} from '../types';
 
 describe('formatTestResults', () => {
   const assertion = {
     fullName: 'TestedModule#aMethod when some condition is met returns true',
     status: 'passed',
     title: 'returns true',
-  };
+  } as AssertionResult;
 
-  const results: AggregatedResult = {
+  const results = {
     testResults: [
       {
         numFailingTests: 0,
         perfStats: {end: 2, runtime: 1, slow: false, start: 1},
-        // @ts-expect-error
         testResults: [assertion],
       },
     ],
-  };
+  } as AggregatedResult;
 
   it('includes test full name', () => {
     const result = formatTestResults(results, undefined, null);
@@ -37,9 +36,9 @@ describe('formatTestResults', () => {
     fullName: 'Pending test',
     status: 'pending',
     title: 'is still pending',
-  };
+  } as AssertionResult;
 
-  const skippedResults: AggregatedResult = {
+  const skippedResults = {
     testResults: [
       {
         numFailingTests: 0,
@@ -47,11 +46,10 @@ describe('formatTestResults', () => {
         numPendingTests: 2,
         numTodoTests: 2,
         perfStats: {end: 2, runtime: 1, slow: false, start: 1},
-        // @ts-expect-error
         testResults: [skippedAssertion],
       },
     ],
-  };
+  } as AggregatedResult;
 
   it('should mark result status to skipped', () => {
     const result = formatTestResults(skippedResults, undefined, null);
@@ -64,9 +62,9 @@ describe('formatTestResults', () => {
     fullName: 'Focused test',
     status: 'focused',
     title: 'focused test',
-  };
+  } as AssertionResult;
 
-  const focusedResults: AggregatedResult = {
+  const focusedResults = {
     testResults: [
       {
         numFailingTests: 0,
@@ -74,11 +72,10 @@ describe('formatTestResults', () => {
         numPendingTests: 1,
         numTodoTests: 2,
         perfStats: {end: 2, runtime: 1, slow: false, start: 1},
-        // @ts-expect-error
         testResults: [focusedAssertion],
       },
     ],
-  };
+  } as AggregatedResult;
 
   it('should mark result status to focused', () => {
     const result = formatTestResults(focusedResults, undefined, null);
