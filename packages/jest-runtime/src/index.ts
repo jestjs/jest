@@ -1125,13 +1125,32 @@ export default class Runtime {
   isolateModules(fn: () => void): void {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
-        'isolateModules cannot be nested inside another isolateModules.',
+        'isolateModules cannot be nested inside another isolateModules or isolateModulesAsync.',
       );
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
     try {
       fn();
+    } finally {
+      // might be cleared within the callback
+      this._isolatedModuleRegistry?.clear();
+      this._isolatedMockRegistry?.clear();
+      this._isolatedModuleRegistry = null;
+      this._isolatedMockRegistry = null;
+    }
+  }
+
+  async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = new Map();
+    this._isolatedMockRegistry = new Map();
+    try {
+      await fn();
     } finally {
       // might be cleared within the callback
       this._isolatedModuleRegistry?.clear();
@@ -1696,9 +1715,13 @@ export default class Runtime {
     const moduleLookup: Record<string, VMModule> = {};
     for (const {module} of imports) {
       if (moduleLookup[module] === undefined) {
-        moduleLookup[module] = await this.loadEsmModule(
-          await this.resolveModule(module, identifier, context),
+        const resolvedModule = await this.resolveModule(
+          module,
+          identifier,
+          context,
         );
+
+        moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
       }
     }
 
@@ -2226,6 +2249,7 @@ export default class Runtime {
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
+      isolateModulesAsync: this.isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),

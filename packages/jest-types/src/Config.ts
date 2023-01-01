@@ -155,6 +155,7 @@ export type DefaultOptions = {
   ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
@@ -228,6 +229,7 @@ export type InitialOptions = Partial<{
   cacheDirectory: string;
   ci: boolean;
   clearMocks: boolean;
+  colors: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
   collectCoverage: boolean;
@@ -426,6 +428,7 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   cwd: string;
   dependencyExtractor?: string;

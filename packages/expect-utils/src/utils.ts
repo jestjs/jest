@@ -28,7 +28,7 @@ type GetPath = {
 /**
  * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.
  */
-const hasPropertyInObject = (object: object, key: string): boolean => {
+const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
   const shouldTerminate =
     !object || typeof object !== 'object' || object === Object.prototype;
 
@@ -301,7 +301,7 @@ export const subsetEquality = (
         return undefined;
       }
 
-      return Object.keys(subset).every(key => {
+      return Reflect.ownKeys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
             return equals(object[key], subset[key], [iterableEquality]);

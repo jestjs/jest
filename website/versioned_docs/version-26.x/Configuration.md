@@ -1360,7 +1360,7 @@ If you use `pnpm` and need to convert some packages under `node_modules`, you ne
 
 It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
 
-Also note that you need using '\`${path.join(__dirname, '../..')}/node_modules/.pnpm/...\`' instead of `<rootDir>/node_modules/.pnpm/...` when the config file is under `~/packages/lib-a/`, or using relative pattern `node_modules/(?!.pnpm|package-a|@scope/pkg-b)` to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@xxx/node_modules/@scope/pkg-b/'
+Also note that you need using '\`${path.join(\_\_dirname, '../..')}/node_modules/.pnpm/...\`' instead of `<rootDir>/node_modules/.pnpm/...` when the config file is under `~/packages/lib-a/`, or using relative pattern `node_modules/(?!.pnpm|package-a|@scope/pkg-b)` to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@xxx/node_modules/@scope/pkg-b/'
 
 :::
 
