@@ -316,6 +316,44 @@ describe('findNodeModule', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('imports', () => {
+    const importsRoot = path.resolve(__dirname, '../__mocks__/imports');
+
+    test('supports internal reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.cjs'),
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './foo-import/internal.cjs'),
+      );
+    });
+
+    test('supports external reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          importsRoot,
+          './foo-import/node_modules/external-foo/main.js',
+        ),
+      );
+    });
+
+    test('fails for non-existent mapping', () => {
+      expect(() => {
+        Resolver.findNodeModule('#something-else', {
+          basedir: path.resolve(importsRoot, './foo-import/index.js'),
+          conditions: [],
+        });
+      }).toThrow('Missing "#something-else" import in "foo-import" package');
+    });
+  });
 });
 
 describe('findNodeModuleAsync', () => {
@@ -705,5 +743,52 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     ];
     const dirs_actual = resolver.getModulePaths(cwd);
     expect(dirs_actual).toEqual(expect.arrayContaining(dirs_expected));
+  });
+});
+
+describe('Resolver.getGlobalPaths()', () => {
+  const _path = path;
+  let moduleMap: IModuleMap;
+  beforeEach(() => {
+    moduleMap = ModuleMap.create('/');
+  });
+
+  it('return global paths with npm package', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('jest');
+    globalPaths.forEach(globalPath =>
+      expect(require.resolve.paths('jest')).toContain(globalPath),
+    );
+  });
+
+  it('return empty array with builtin module', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('fs');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return global paths with absolute path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('/');
+    globalPaths.forEach(globalPath =>
+      expect(require.resolve.paths('/')).toContain(globalPath),
+    );
+  });
+
+  it('return empty array with relative path', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths('./');
+    expect(globalPaths).toStrictEqual([]);
+  });
+
+  it('return empty array without module name', () => {
+    jest.doMock('path', () => _path.posix);
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const globalPaths = resolver.getGlobalPaths();
+    expect(globalPaths).toStrictEqual([]);
   });
 });

@@ -194,6 +194,12 @@ The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/*
 
 :::
 
+### `colors` \[boolean]
+
+Default: `false`
+
+Indicates whether to force test results output highlighting even if stdout is not a TTY.
+
 ### `collectCoverageFrom` \[array]
 
 Default: `undefined`
@@ -2203,13 +2209,20 @@ export default config;
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative pattern to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2221,7 +2234,14 @@ import type {Config} from 'jest';
 
 const config: Config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2256,7 +2276,7 @@ An array of RegExp patterns that are matched against all source file paths befor
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
 
-Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
+Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg, .sl). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
 
 ```js tab
 /** @type {import('jest').Config} */

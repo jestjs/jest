@@ -568,6 +568,20 @@ jest.isolateModules(() => {
 const otherCopyOfMyModule = require('myModule');
 ```
 
+### `jest.isolateModulesAsync(fn)`
+
+`jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for async callbacks. The caller is expected to `await` the completion of `isolateModulesAsync`.
+
+```js
+let myModule;
+await jest.isolateModulesAsync(async () => {
+  myModule = await import('myModule');
+  // do async stuff here
+});
+
+const otherCopyOfMyModule = await import('myModule');
+```
+
 ## Mock Functions
 
 ### `jest.fn(implementation?)`
