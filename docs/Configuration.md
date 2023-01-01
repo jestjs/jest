@@ -194,6 +194,12 @@ The `babel` and `v8` coverage providers use `/* istanbul ignore next */` and `/*
 
 :::
 
+### `colors` \[boolean]
+
+Default: `false`
+
+Indicates whether to force test results output highlighting even if stdout is not a TTY.
+
 ### `collectCoverageFrom` \[array]
 
 Default: `undefined`
