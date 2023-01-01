@@ -2934,6 +2934,8 @@ __metadata:
     "@jest/types": "workspace:^"
     "@types/istanbul-lib-coverage": ^2.0.0
     collect-v8-coverage: ^1.0.0
+    jest-haste-map: "workspace:^"
+    jest-resolve: "workspace:^"
   languageName: unknown
   linkType: soft
 
@@ -12580,6 +12582,7 @@ __metadata:
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
+    "@types/parse-json": ^4.0.0
     babel-jest: "workspace:^"
     chalk: ^4.0.0
     ci-info: ^3.2.0
@@ -12762,6 +12765,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-leak-detector@workspace:packages/jest-leak-detector"
   dependencies:
+    "@types/node": "*"
     jest-get-type: "workspace:^"
     pretty-format: "workspace:^"
   languageName: unknown
@@ -13030,6 +13034,7 @@ __metadata:
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
     "@tsd/typescript": ^4.9.0
+    "@types/babel__core": ^7.1.14
     "@types/babel__traverse": ^7.0.6
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0

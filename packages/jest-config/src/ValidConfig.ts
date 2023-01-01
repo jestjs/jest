@@ -24,7 +24,6 @@ export const initialOptions: Config.InitialOptions = {
   clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
-  colors: false,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'v8',
