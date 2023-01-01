@@ -1,5 +1,5 @@
 {
-  "name": "foo",
+  "name": "foo-import",
   "imports": {
     "#nested": {
       "require": "./internal.cjs",
