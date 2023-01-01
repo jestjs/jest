@@ -78,35 +78,51 @@ export default class NodeEnvironment implements JestEnvironment<Timer> {
     const contextGlobals = new Set(Object.getOwnPropertyNames(global));
     for (const [nodeGlobalsKey, descriptor] of nodeGlobals) {
       if (!contextGlobals.has(nodeGlobalsKey)) {
-        Object.defineProperty(global, nodeGlobalsKey, {
-          configurable: descriptor.configurable,
-          enumerable: descriptor.enumerable,
-          get() {
-            // @ts-expect-error: no index signature
-            const val = globalThis[nodeGlobalsKey] as unknown;
+        if (descriptor.configurable) {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: true,
+            enumerable: descriptor.enumerable,
+            get() {
+              // @ts-expect-error: no index signature
+              const val = globalThis[nodeGlobalsKey] as unknown;
 
-            // override lazy getter
-            Object.defineProperty(global, nodeGlobalsKey, {
-              configurable: descriptor.configurable,
-              enumerable: descriptor.enumerable,
-              value: val,
-              writable:
-                descriptor.writable === true ||
-                // Node 19 makes performance non-readable. This is probably not the correct solution.
-                nodeGlobalsKey === 'performance',
-            });
-            return val;
-          },
-          set(val: unknown) {
-            // override lazy getter
-            Object.defineProperty(global, nodeGlobalsKey, {
-              configurable: descriptor.configurable,
-              enumerable: descriptor.enumerable,
-              value: val,
-              writable: true,
-            });
-          },
-        });
+              // override lazy getter
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value: val,
+                writable:
+                  descriptor.writable === true ||
+                  // Node 19 makes performance non-readable. This is probably not the correct solution.
+                  nodeGlobalsKey === 'performance',
+              });
+              return val;
+            },
+            set(val: unknown) {
+              // override lazy getter
+              Object.defineProperty(global, nodeGlobalsKey, {
+                configurable: true,
+                enumerable: descriptor.enumerable,
+                value: val,
+                writable: true,
+              });
+            },
+          });
+        } else if ('value' in descriptor) {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: false,
+            enumerable: descriptor.enumerable,
+            value: descriptor.value,
+            writable: descriptor.writable,
+          });
+        } else {
+          Object.defineProperty(global, nodeGlobalsKey, {
+            configurable: false,
+            enumerable: descriptor.enumerable,
+            get: descriptor.get,
+            set: descriptor.set,
+          });
+        }
       }
     }
 
