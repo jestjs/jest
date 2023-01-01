@@ -48,12 +48,12 @@ _getJestObj().mock(
       this,
     ),
 );
-import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
 function _getJestObj() {
   const {jest} = require('@jest/globals');
   _getJestObj = () => jest;
   return jest;
 }
+import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
 
 
 `;
