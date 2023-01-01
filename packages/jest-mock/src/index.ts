@@ -100,6 +100,29 @@ export type MockedShallow<T> = T extends ClassLike
   : T;
 
 export type UnknownFunction = (...args: Array<unknown>) => unknown;
+export type UnknownClass = {new (...args: Array<unknown>): unknown};
+
+export type SpiedClass<T extends ClassLike = UnknownClass> = MockInstance<
+  (...args: ConstructorParameters<T>) => InstanceType<T>
+>;
+
+export type SpiedFunction<T extends FunctionLike = UnknownFunction> =
+  MockInstance<(...args: Parameters<T>) => ReturnType<T>>;
+
+export type SpiedGetter<T> = MockInstance<() => T>;
+
+export type SpiedSetter<T> = MockInstance<(arg: T) => void>;
+
+export type Spied<T extends ClassLike | FunctionLike> = T extends ClassLike
+  ? SpiedClass<T>
+  : T extends FunctionLike
+  ? SpiedFunction<T>
+  : never;
+
+// TODO in Jest 30 remove `SpyInstance` in favour of `Spied`
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface SpyInstance<T extends FunctionLike = UnknownFunction>
+  extends MockInstance<T> {}
 
 /**
  * All what the internal typings need is to be sure that we have any-function.
@@ -148,10 +171,6 @@ export interface MockInstance<T extends FunctionLike = UnknownFunction> {
   mockRejectedValue(value: RejectType<T>): this;
   mockRejectedValueOnce(value: RejectType<T>): this;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SpyInstance<T extends FunctionLike = UnknownFunction>
-  extends MockInstance<T> {}
 
 type MockFunctionResultIncomplete = {
   type: 'incomplete';
@@ -407,7 +426,7 @@ function getType(ref?: unknown): MockMetadataType | null {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (typeName === 'Object') {
+  } else if (typeName === 'Object' || typeName === 'Module') {
     return 'object';
   } else if (
     typeName === 'Number' ||
@@ -463,7 +482,7 @@ function isReadonlyProp(object: unknown, prop: string): boolean {
 }
 
 export class ModuleMocker {
-  private _environmentGlobal: typeof globalThis;
+  private readonly _environmentGlobal: typeof globalThis;
   private _mockState: WeakMap<Mock, MockFunctionState>;
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   private _spyState: Set<() => void>;
@@ -711,8 +730,7 @@ export class ModuleMocker {
 
       const f = this._createMockFunction(metadata, mockConstructor) as Mock;
       f._isMockFunction = true;
-      f.getMockImplementation = () =>
-        this._ensureMockConfig(f).mockImpl as UnknownFunction;
+      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
 
       if (typeof restore === 'function') {
         this._spyState.add(restore);
@@ -749,22 +767,30 @@ export class ModuleMocker {
         f.mockImplementationOnce(() => value);
 
       f.mockResolvedValueOnce = (value: ResolveType<T>) =>
-        f.mockImplementationOnce(() => Promise.resolve(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValueOnce = (value: unknown) =>
-        f.mockImplementationOnce(() => Promise.reject(value));
+        f.mockImplementationOnce(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
       f.mockReturnValue = (value: ReturnType<T>) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
       f.mockResolvedValue = (value: ResolveType<T>) =>
-        f.mockImplementation(() => Promise.resolve(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.resolve(value),
+        );
 
       f.mockRejectedValue = (value: unknown) =>
-        f.mockImplementation(() => Promise.reject(value));
+        f.mockImplementation(() =>
+          this._environmentGlobal.Promise.reject(value),
+        );
 
-      f.mockImplementationOnce = (fn: UnknownFunction) => {
+      f.mockImplementationOnce = (fn: T) => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
@@ -800,7 +826,7 @@ export class ModuleMocker {
         }
       }
 
-      f.mockImplementation = (fn: UnknownFunction) => {
+      f.mockImplementation = (fn: T) => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
         mockConfig.mockImpl = fn;
@@ -849,7 +875,7 @@ export class ModuleMocker {
     const boundFunctionPrefix = 'bound ';
     let bindCall = '';
     // if-do-while for perf reasons. The common case is for the if to fail.
-    if (name && name.startsWith(boundFunctionPrefix)) {
+    if (name.startsWith(boundFunctionPrefix)) {
       do {
         name = name.substring(boundFunctionPrefix.length);
         // Call bind() just to alter the function name.
@@ -1017,10 +1043,9 @@ export class ModuleMocker {
   }
 
   isMockFunction<T extends FunctionLike = UnknownFunction>(
-    fn: SpyInstance<T>,
-  ): fn is SpyInstance<T>;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-  isMockFunction<P extends Array<unknown>, R extends unknown>(
+    fn: MockInstance<T>,
+  ): fn is MockInstance<T>;
+  isMockFunction<P extends Array<unknown>, R>(
     fn: (...args: P) => R,
   ): fn is Mock<(...args: P) => R>;
   isMockFunction(fn: unknown): fn is Mock<UnknownFunction>;
@@ -1044,50 +1069,49 @@ export class ModuleMocker {
     T extends object,
     K extends PropertyLikeKeys<T>,
     V extends Required<T>[K],
-  >(object: T, methodKey: K, accessType: 'get'): SpyInstance<() => V>;
-
-  spyOn<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-    V extends Required<T>[K],
-  >(object: T, methodKey: K, accessType: 'set'): SpyInstance<(arg: V) => void>;
-
-  spyOn<
-    T extends object,
-    K extends ConstructorLikeKeys<T>,
-    V extends Required<T>[K],
+    A extends 'get' | 'set',
   >(
     object: T,
     methodKey: K,
-  ): V extends ClassLike
-    ? SpyInstance<(...args: ConstructorParameters<V>) => InstanceType<V>>
+    accessType: A,
+  ): A extends 'get'
+    ? SpiedGetter<V>
+    : A extends 'set'
+    ? SpiedSetter<V>
     : never;
 
   spyOn<
     T extends object,
-    K extends MethodLikeKeys<T>,
+    K extends ConstructorLikeKeys<T> | MethodLikeKeys<T>,
     V extends Required<T>[K],
   >(
     object: T,
     methodKey: K,
-  ): V extends FunctionLike
-    ? SpyInstance<(...args: Parameters<V>) => ReturnType<V>>
-    : never;
+  ): V extends ClassLike | FunctionLike ? Spied<V> : never;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  spyOn<T extends object, K extends PropertyLikeKeys<T>>(
+  spyOn<T extends object>(
     object: T,
-    methodKey: K,
+    methodKey: keyof T,
     accessType?: 'get' | 'set',
-  ) {
-    if (accessType) {
-      return this._spyOnProperty(object, methodKey, accessType);
-    }
-
+  ): MockInstance {
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
         `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
       );
+    }
+
+    if (!object) {
+      throw new Error(
+        `spyOn could not find an object to spy upon for ${String(methodKey)}`,
+      );
+    }
+
+    if (!methodKey) {
+      throw new Error('No property name supplied');
+    }
+
+    if (accessType) {
+      return this._spyOnProperty(object, methodKey, accessType);
     }
 
     const original = object[methodKey];
@@ -1143,32 +1167,16 @@ export class ModuleMocker {
       });
     }
 
-    return object[methodKey];
+    return object[methodKey] as Mock;
   }
 
-  private _spyOnProperty<T extends object, K extends PropertyLikeKeys<T>>(
-    obj: T,
-    propertyKey: K,
+  private _spyOnProperty<T extends object>(
+    object: T,
+    propertyKey: keyof T,
     accessType: 'get' | 'set',
-  ): Mock<() => T> {
-    if (typeof obj !== 'object' && typeof obj !== 'function') {
-      throw new Error(
-        `Cannot spyOn on a primitive value; ${this._typeOf(obj)} given`,
-      );
-    }
-
-    if (!obj) {
-      throw new Error(
-        `spyOn could not find an object to spy upon for ${String(propertyKey)}`,
-      );
-    }
-
-    if (!propertyKey) {
-      throw new Error('No property name supplied');
-    }
-
-    let descriptor = Object.getOwnPropertyDescriptor(obj, propertyKey);
-    let proto = Object.getPrototypeOf(obj);
+  ): MockInstance {
+    let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
+    let proto = Object.getPrototypeOf(object);
 
     while (!descriptor && proto !== null) {
       descriptor = Object.getOwnPropertyDescriptor(proto, propertyKey);
@@ -1207,10 +1215,10 @@ export class ModuleMocker {
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
         // @ts-expect-error: mock is assignable
         descriptor![accessType] = original;
-        Object.defineProperty(obj, propertyKey, descriptor!);
+        Object.defineProperty(object, propertyKey, descriptor!);
       });
 
-      (descriptor[accessType] as Mock<() => T>).mockImplementation(function (
+      (descriptor[accessType] as Mock).mockImplementation(function (
         this: unknown,
       ) {
         // @ts-expect-error - wrong context
@@ -1218,8 +1226,8 @@ export class ModuleMocker {
       });
     }
 
-    Object.defineProperty(obj, propertyKey, descriptor);
-    return descriptor[accessType] as Mock<() => T>;
+    Object.defineProperty(object, propertyKey, descriptor);
+    return descriptor[accessType] as Mock;
   }
 
   clearAllMocks(): void {
@@ -1236,7 +1244,7 @@ export class ModuleMocker {
     this._spyState = new Set();
   }
 
-  private _typeOf(value: any): string {
+  private _typeOf(value: unknown): string {
     return value == null ? `${value}` : typeof value;
   }
 

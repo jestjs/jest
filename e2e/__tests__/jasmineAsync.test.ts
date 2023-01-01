@@ -47,7 +47,7 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(0);
     expect(json.testResults[0].message).toBe('');
 
-    expect((result.stderr.match(/unset flag/g) || []).length).toBe(1);
+    expect(result.stderr.match(/unset flag/g) || []).toHaveLength(1);
   });
 
   it('works with afterEach', () => {

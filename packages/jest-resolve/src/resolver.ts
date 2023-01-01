@@ -20,7 +20,7 @@ import defaultResolver, {
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
-import nodeModulesPaths from './nodeModulesPaths';
+import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
@@ -89,7 +89,7 @@ export default class Resolver {
     error: unknown,
   ): ModuleNotFoundError | null {
     if (error instanceof ModuleNotFoundError) {
-      return error as ModuleNotFoundError;
+      return error;
     }
 
     const casted = error as ModuleNotFoundError;
@@ -131,7 +131,8 @@ export default class Resolver {
         rootDir: options.rootDir,
       });
     } catch (e) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
@@ -174,7 +175,8 @@ export default class Resolver {
       });
       return result;
     } catch (e: unknown) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
@@ -295,7 +297,7 @@ export default class Resolver {
         return name;
       }
 
-      return await Resolver.findNodeModuleAsync(name, {
+      return Resolver.findNodeModuleAsync(name, {
         basedir: dirname,
         conditions: options?.conditions,
         extensions,
@@ -526,6 +528,14 @@ export default class Resolver {
     return paths;
   }
 
+  getGlobalPaths(moduleName?: string): Array<string> {
+    if (!moduleName || moduleName[0] === '.' || this.isCoreModule(moduleName)) {
+      return [];
+    }
+
+    return GlobalPaths;
+  }
+
   getModuleID(
     virtualMocks: Map<string, boolean>,
     from: string,
@@ -636,12 +646,7 @@ export default class Resolver {
     );
     return isModuleResolved
       ? this.getModule(moduleName)
-      : await this._getVirtualMockPathAsync(
-          virtualMocks,
-          from,
-          moduleName,
-          options,
-        );
+      : this._getVirtualMockPathAsync(virtualMocks, from, moduleName, options);
   }
 
   private _getMockPath(from: string, moduleName: string): string | null {
@@ -655,7 +660,7 @@ export default class Resolver {
     moduleName: string,
   ): Promise<string | null> {
     return !this.isCoreModule(moduleName)
-      ? await this.getMockModuleAsync(from, moduleName)
+      ? this.getMockModuleAsync(from, moduleName)
       : null;
   }
 
@@ -683,7 +688,7 @@ export default class Resolver {
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-      ? await this.resolveModuleAsync(from, moduleName, options)
+      ? this.resolveModuleAsync(from, moduleName, options)
       : from;
   }
 

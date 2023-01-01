@@ -31,7 +31,7 @@ interface Result extends ExecaSyncReturnValue {
 }
 
 export const runTest = (source: string) => {
-  const filename = createHash('sha256')
+  const filename = createHash('sha1')
     .update(source)
     .digest('hex')
     .substring(0, 32);

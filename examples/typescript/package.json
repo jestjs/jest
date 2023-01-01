@@ -12,7 +12,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.0.0",
-    "@types/jest": "^27.4.0",
+    "@jest/globals": "workspace:^",
     "babel-jest": "workspace:^",
     "jest": "workspace:^"
   },

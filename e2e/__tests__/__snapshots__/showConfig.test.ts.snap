@@ -8,6 +8,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
+      "colors": false,
       "coveragePathIgnorePatterns": [
         "/node_modules/"
       ],
@@ -125,6 +126,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
+    "seed": <<RANDOM_SEED>>,
     "skipFilter": false,
     "snapshotFormat": {
       "escapeString": false,

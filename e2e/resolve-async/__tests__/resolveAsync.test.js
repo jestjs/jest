@@ -8,5 +8,5 @@
 import greeting from '../some-file';
 
 test('async resolver resolves to correct file', () => {
-  expect(greeting).toEqual('Hello from mapped file!!');
+  expect(greeting).toBe('Hello from mapped file!!');
 });

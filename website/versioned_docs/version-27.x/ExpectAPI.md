@@ -348,7 +348,7 @@ it('transitions as expected', () => {
 test('map calls its argument with a non-null argument', () => {
   const mock = jest.fn();
   [1].map(x => mock(x));
-  expect(mock).toBeCalledWith(expect.anything());
+  expect(mock).toHaveBeenCalledWith(expect.anything());
 });
 ```
 
@@ -365,7 +365,7 @@ function getCat(fn) {
 test('randocall calls its callback with a class instance', () => {
   const mock = jest.fn();
   getCat(mock);
-  expect(mock).toBeCalledWith(expect.any(Cat));
+  expect(mock).toHaveBeenCalledWith(expect.any(Cat));
 });
 
 function randocall(fn) {
@@ -375,7 +375,7 @@ function randocall(fn) {
 test('randocall calls its callback with a number', () => {
   const mock = jest.fn();
   randocall(mock);
-  expect(mock).toBeCalledWith(expect.any(Number));
+  expect(mock).toHaveBeenCalledWith(expect.any(Number));
 });
 ```
 
@@ -554,7 +554,7 @@ For example, let's say that we expect an `onPress` function to be called with an
 test('onPress gets called with the right thing', () => {
   const onPress = jest.fn();
   simulatePresses(onPress);
-  expect(onPress).toBeCalledWith(
+  expect(onPress).toHaveBeenCalledWith(
     expect.objectContaining({
       x: expect.any(Number),
       y: expect.any(Number),
@@ -1377,15 +1377,15 @@ test('throws on octopus', () => {
   }
 
   // Test that the error message says "yuck" somewhere: these are equivalent
-  expect(drinkOctopus).toThrowError(/yuck/);
-  expect(drinkOctopus).toThrowError('yuck');
+  expect(drinkOctopus).toThrow(/yuck/);
+  expect(drinkOctopus).toThrow('yuck');
 
   // Test the exact error message
-  expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
-  expect(drinkOctopus).toThrowError(new Error('yuck, octopus flavor'));
+  expect(drinkOctopus).toThrow(/^yuck, octopus flavor$/);
+  expect(drinkOctopus).toThrow(new Error('yuck, octopus flavor'));
 
   // Test that we get a DisgustingFlavorError
-  expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+  expect(drinkOctopus).toThrow(DisgustingFlavorError);
 });
 ```
 

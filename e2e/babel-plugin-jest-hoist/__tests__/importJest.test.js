@@ -32,21 +32,21 @@ JestGlobals.jest.unmock('../__test_modules__/c');
 // tests
 
 test('named import', () => {
-  expect(a._isMockFunction).toBe(undefined);
+  expect(a._isMockFunction).toBeUndefined();
   expect(a()).toBe('unmocked');
 });
 
 test('aliased named import', () => {
-  expect(b._isMockFunction).toBe(undefined);
+  expect(b._isMockFunction).toBeUndefined();
   expect(b()).toBe('unmocked');
 });
 
 test('namespace import', () => {
-  expect(c._isMockFunction).toBe(undefined);
+  expect(c._isMockFunction).toBeUndefined();
   expect(c()).toBe('unmocked');
 });
 
 test('fake jest, shadowed import', () => {
   expect(d._isMockFunction).toBe(true);
-  expect(d()).toBe(undefined);
+  expect(d()).toBeUndefined();
 });

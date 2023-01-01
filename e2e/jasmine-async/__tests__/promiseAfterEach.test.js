@@ -22,12 +22,12 @@ describe('promise afterEach', () => {
 
   // passing tests
   it('runs afterEach after each test', () => {
-    expect(this.flag).toBe(undefined);
+    expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(true);
   });
 
   it('waits for afterEach to asynchronously complete before each test', () => {
-    expect(this.flag).toBe(undefined);
+    expect(this.flag).toBeUndefined();
     expect(localFlag).toBe(false);
   });
 });

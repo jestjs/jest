@@ -248,7 +248,7 @@ describe('node-notifier is an optional dependency', () => {
     const mockNodeNotifier = {notify: jest.fn()};
     jest.doMock('node-notifier', () => mockNodeNotifier);
     const result = ctor();
-    expect(result['_notifier']).toBe(mockNodeNotifier);
+    expect(result._notifier).toBe(mockNodeNotifier);
   });
 });
 

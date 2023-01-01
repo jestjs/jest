@@ -222,7 +222,11 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+:::note
+
+Using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
+
+:::
 
 ### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
@@ -456,7 +460,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) object as a parameter.
 
 _Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -485,7 +489,7 @@ module.exports = async function () {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) object as a parameter.
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -744,7 +748,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+Custom reporter modules must define a class that takes a [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) and reporter options as constructor arguments:
 
 Example reporter:
 
@@ -911,7 +915,7 @@ This option allows you to use a custom runner instead of Jest's default test run
 
 _Note: The `runner` property value can omit the `jest-runner-` prefix of the package name._
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1413,17 +1417,19 @@ Example:
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/pakcage-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```json
 {
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+    "<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)"
   ]
 }
 ```
 
 It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+Also note that you need using '\`${path.join(\_\_dirname, '../..')}/node_modules/.pnpm/...\`' instead of `<rootDir>/node_modules/.pnpm/...` when the config file is under `~/packages/lib-a/`, or using relative pattern `node_modules/(?!.pnpm|package-a|@scope/pkg-b)` to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@xxx/node_modules/@scope/pkg-b/'
 
 :::
 
@@ -1439,9 +1445,9 @@ It is possible to override this setting in individual tests by explicitly callin
 
 ### `verbose` \[boolean]
 
-Default: `false`
+Default: `false` or `true` if there is only one test file to run
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
 ### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 

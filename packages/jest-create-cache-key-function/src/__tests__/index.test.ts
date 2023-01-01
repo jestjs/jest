@@ -40,7 +40,7 @@ test('creation of a cache key', () => {
     instrument: true,
   });
 
-  expect(hashA.length).toEqual(32);
+  expect(hashA).toHaveLength(32);
   expect(hashA).not.toEqual(hashB);
   expect(hashA).not.toEqual(hashC);
 });

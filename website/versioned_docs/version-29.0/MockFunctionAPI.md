@@ -480,11 +480,7 @@ test('async test', async () => {
 
 ## TypeScript Usage
 
-:::tip
-
-Please consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
-
-:::
+<TypeScriptExamplesNote />
 
 ### `jest.fn(implementation?)`
 
@@ -511,8 +507,8 @@ test('calculate calls add', () => {
   // requiring `add`.
   calculate(mockAdd, 1, 2);
 
-  expect(mockAdd).toBeCalledTimes(1);
-  expect(mockAdd).toBeCalledWith(1, 2);
+  expect(mockAdd).toHaveBeenCalledTimes(1);
+  expect(mockAdd).toHaveBeenCalledWith(1, 2);
 });
 ```
 

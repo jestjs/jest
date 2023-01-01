@@ -36,7 +36,7 @@ describe('Runtime', () => {
       const mock = module.jest.createMockFromModule('ModuleWithSideEffects');
 
       // Make sure we get a mock.
-      expect(mock.fn()).toBe(undefined);
+      expect(mock.fn()).toBeUndefined();
       expect(module.getModuleStateValue()).toBe(origModuleStateValue);
     });
 

@@ -84,7 +84,7 @@ const {readFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
 const puppeteer = require('puppeteer');
-const NodeEnvironment = require('jest-environment-node').default;
+const NodeEnvironment = require('jest-environment-node').TestEnvironment;
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
@@ -108,6 +108,9 @@ class PuppeteerEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
+    if (this.global.__BROWSER_GLOBAL__) {
+      this.global.__BROWSER_GLOBAL__.disconnect();
+    }
     await super.teardown();
   }
 

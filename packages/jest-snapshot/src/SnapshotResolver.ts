@@ -52,7 +52,7 @@ async function createSnapshotResolver(
   snapshotResolverPath?: string | null,
 ): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
-    ? await createCustomSnapshotResolver(snapshotResolverPath, localRequire)
+    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
     : createDefaultSnapshotResolver();
 }
 

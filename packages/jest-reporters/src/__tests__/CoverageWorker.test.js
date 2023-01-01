@@ -36,7 +36,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
 
   const result = await worker(workerOptions);
 
-  expect(generateEmptyCoverage).toBeCalledWith(
+  expect(generateEmptyCoverage).toHaveBeenCalledWith(
     validJS,
     'banana.js',
     globalConfig,
@@ -45,7 +45,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     undefined,
   );
 
-  expect(result).toEqual(42);
+  expect(result).toBe(42);
 });
 
 test('throws errors on invalid JavaScript', async () => {

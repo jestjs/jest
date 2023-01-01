@@ -63,14 +63,13 @@ const logDeprecatedOptions = (
 
 export default function validateCLIOptions(
   argv: Config.Argv,
-  options: {
-    deprecationEntries: DeprecatedOptions;
-    [s: string]: Options;
-  },
+  options: Record<string, Options> & {
+    deprecationEntries?: DeprecatedOptions;
+  } = {},
   rawArgv: Array<string> = [],
 ): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const deprecationEntries = options.deprecationEntries || {};
+  const deprecationEntries = options.deprecationEntries ?? {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) =>
       acc.add(option).add((options[option].alias as string) || option),

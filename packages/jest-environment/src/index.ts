@@ -149,6 +149,11 @@ export interface Jest {
    */
   getRealSystemTime(): number;
   /**
+   * Retrieves the seed value. It will be randomly generated for each test run
+   * or can be manually set via the `--seed` CLI argument.
+   */
+  getSeed(): number;
+  /**
    * Returns the number of fake timers still left to run.
    */
   getTimerCount(): number;
@@ -168,6 +173,12 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
+   * async functions to be wrapped. The caller is expected to `await` the completion of
+   * `isolateModulesAsync`.
+   */
+  isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
+  /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock<T = unknown>(
@@ -184,27 +195,27 @@ export interface Jest {
     options?: {virtual?: boolean},
   ): Jest;
   /**
-    * Returns the actual module instead of a mock, bypassing all checks on
-    * whether the module should receive a mock implementation or not.
-    *
-    * @example
-    ```js
-     jest.mock('../myModule', () => {
-     // Require the original module to not be mocked...
-     const originalModule = jest.requireActual('../myModule');
-
-       return {
-         __esModule: true, // Use it when dealing with esModules
-         ...originalModule,
-         getRandom: jest.fn().mockReturnValue(10),
-       };
-     });
-
-     const getRandom = require('../myModule').getRandom;
-
-     getRandom(); // Always returns 10
-     ```
-    */
+   * Returns the actual module instead of a mock, bypassing all checks on
+   * whether the module should receive a mock implementation or not.
+   *
+   * @example
+   * ```js
+   * jest.mock('../myModule', () => {
+   *   // Require the original module to not be mocked...
+   *   const originalModule = jest.requireActual('../myModule');
+   *
+   *   return {
+   *     __esModule: true, // Use it when dealing with esModules
+   *     ...originalModule,
+   *     getRandom: jest.fn().mockReturnValue(10),
+   *   };
+   * });
+   *
+   * const getRandom = require('../myModule').getRandom;
+   *
+   * getRandom(); // Always returns 10
+   * ```
+   */
   requireActual<T = unknown>(moduleName: string): T;
   /**
    * Wraps types of the `source` object and its deep members with type definitions

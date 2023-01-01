@@ -7,9 +7,9 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import Immutable from 'immutable';
-import React from 'react';
-import {plugins} from '..';
+import * as Immutable from 'immutable';
+import * as React from 'react';
+import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
 const {Immutable: ImmutablePlugin, ReactElement} = plugins;
@@ -17,7 +17,7 @@ const {Immutable: ImmutablePlugin, ReactElement} = plugins;
 setPrettyPrint([ReactElement, ImmutablePlugin]);
 
 it('does not incorrectly match identity-obj-proxy as Immutable object', () => {
-  // SENTINEL constant is from https://github.com/facebook/immutable-js
+  // SENTINEL constant is from https://github.com/immutable-js/immutable-js
   const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
   const val: any = {};
   val[IS_ITERABLE_SENTINEL] = IS_ITERABLE_SENTINEL; // mock the mock object :)
@@ -957,13 +957,13 @@ describe('Immutable.Seq lazy values', () => {
 
   // undefined size confirms correct criteria for lazy Seq
   test('from iterator', () => {
-    function returnIterator(values: Array<string>) {
+    function returnIterator<T>(values: Array<T>): IterableIterator<T> {
       let i = 0;
       return {
         next() {
           return i < values.length
             ? {done: false, value: values[i++]}
-            : {done: true};
+            : {done: true, value: undefined};
         },
         [Symbol.iterator]() {
           return this;

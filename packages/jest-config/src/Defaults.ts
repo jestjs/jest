@@ -23,6 +23,7 @@ const defaultOptions: Config.DefaultOptions = {
   ci: isCI,
   clearMocks: false,
   collectCoverage: false,
+  colors: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageProvider: 'babel',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],

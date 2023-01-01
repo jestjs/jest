@@ -193,7 +193,7 @@ test('can mock module', async () => {
   const importedMock = await import('../mockedModule.mjs');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toEqual('bar');
+  expect(importedMock.foo).toBe('bar');
 });
 
 test('can mock transitive module', async () => {
@@ -202,7 +202,7 @@ test('can mock transitive module', async () => {
   const importedMock = await import('../reexport.js');
 
   expect(Object.keys(importedMock)).toEqual(['foo']);
-  expect(importedMock.foo).toEqual('bar');
+  expect(importedMock.foo).toBe('bar');
 });
 
 test('supports imports using "node:" prefix', () => {
@@ -253,12 +253,6 @@ test('imports from "data:text/javascript" URI with invalid data fail', async () 
   await expect(() =>
     import('data:text/javascript;charset=utf-8,so(me)+.-gibberish'),
   ).rejects.toThrow("Unexpected token '.'");
-});
-
-test('imports from "data:application/wasm" URI not supported', async () => {
-  await expect(() =>
-    import('data:application/wasm,96cafe00babe'),
-  ).rejects.toThrow('WASM is currently not supported');
 });
 
 test('supports imports from "data:application/json" URI', async () => {

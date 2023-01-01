@@ -8,15 +8,14 @@
 
 import {isPrimitive} from 'jest-get-type';
 import {
-  equals,
-  isA,
   isImmutableList,
   isImmutableOrderedKeyed,
   isImmutableOrderedSet,
   isImmutableRecord,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
-} from './jasmineUtils';
+} from './immutableUtils';
+import {equals, isA} from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean;
@@ -29,7 +28,7 @@ type GetPath = {
 /**
  * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.
  */
-const hasPropertyInObject = (object: object, key: string): boolean => {
+const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
   const shouldTerminate =
     !object || typeof object !== 'object' || object === Object.prototype;
 
@@ -184,7 +183,7 @@ export const iterableEquality = (
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
-    } else if (isA('Set', a) || isImmutableUnorderedSet(a)) {
+    } else if (isA<Set<unknown>>('Set', a) || isImmutableUnorderedSet(a)) {
       let allFound = true;
       for (const aValue of a) {
         if (!b.has(aValue)) {
@@ -206,7 +205,10 @@ export const iterableEquality = (
       aStack.pop();
       bStack.pop();
       return allFound;
-    } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
+    } else if (
+      isA<Map<unknown, unknown>>('Map', a) ||
+      isImmutableUnorderedKeyed(a)
+    ) {
       let allFound = true;
       for (const aEntry of a) {
         if (
@@ -299,7 +301,7 @@ export const subsetEquality = (
         return undefined;
       }
 
-      return Object.keys(subset).every(key => {
+      return Reflect.ownKeys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
             return equals(object[key], subset[key], [iterableEquality]);

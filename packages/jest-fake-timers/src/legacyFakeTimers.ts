@@ -66,20 +66,20 @@ const MS_IN_A_YEAR = 31536000000;
 
 export default class FakeTimers<TimerRef = unknown> {
   private _cancelledTicks!: Record<string, boolean>;
-  private _config: StackTraceConfig;
-  private _disposed?: boolean;
+  private readonly _config: StackTraceConfig;
+  private _disposed: boolean;
   private _fakeTimerAPIs!: FakeTimerAPI;
   private _fakingTime = false;
   private _global: typeof globalThis;
   private _immediates!: Array<Tick>;
-  private _maxLoops: number;
-  private _moduleMocker: ModuleMocker;
+  private readonly _maxLoops: number;
+  private readonly _moduleMocker: ModuleMocker;
   private _now!: number;
   private _ticks!: Array<Tick>;
-  private _timerAPIs: TimerAPI;
+  private readonly _timerAPIs: TimerAPI;
   private _timers!: Map<string, Timer>;
   private _uuidCounter: number;
-  private _timerConfig: TimerConfig<TimerRef>;
+  private readonly _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
     global,
@@ -113,6 +113,8 @@ export default class FakeTimers<TimerRef = unknown> {
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
+
+    this._disposed = false;
 
     this.reset();
   }
@@ -510,11 +512,13 @@ export default class FakeTimers<TimerRef = unknown> {
     });
 
     this._timerAPIs.setImmediate(() => {
-      if (this._immediates.find(x => x.uuid === uuid)) {
-        try {
-          callback.apply(null, args);
-        } finally {
-          this._fakeClearImmediate(uuid);
+      if (!this._disposed) {
+        if (this._immediates.find(x => x.uuid === uuid)) {
+          try {
+            callback.apply(null, args);
+          } finally {
+            this._fakeClearImmediate(uuid);
+          }
         }
       }
     });

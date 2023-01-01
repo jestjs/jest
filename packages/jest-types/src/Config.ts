@@ -35,7 +35,7 @@ export type GlobalFakeTimersConfig = {
    *
    * @defaultValue
    * The default is `false`.
-   * */
+   */
   enableGlobally?: boolean;
 };
 
@@ -55,7 +55,7 @@ export type FakeTimersConfig = {
    *
    * @defaultValue
    * The default is `[]`, meaning all APIs are faked.
-   * */
+   */
   doNotFake?: Array<FakeableAPI>;
   /**
    * Sets current system time to be used by fake timers.
@@ -155,6 +155,7 @@ export type DefaultOptions = {
   ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
@@ -228,6 +229,7 @@ export type InitialOptions = Partial<{
   cacheDirectory: string;
   ci: boolean;
   clearMocks: boolean;
+  colors: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
   collectCoverage: boolean;
@@ -291,6 +293,7 @@ export type InitialOptions = Partial<{
   sandboxInjectedGlobals: Array<string>;
   setupFiles: Array<string>;
   setupFilesAfterEnv: Array<string>;
+  showSeed: boolean;
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
@@ -394,6 +397,8 @@ export type GlobalConfig = {
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
   rootDir: string;
+  seed: number;
+  showSeed?: boolean;
   shard?: ShardConfig;
   silent?: boolean;
   skipFilter: boolean;
@@ -423,6 +428,7 @@ export type ProjectConfig = {
   cache: boolean;
   cacheDirectory: string;
   clearMocks: boolean;
+  colors: boolean;
   coveragePathIgnorePatterns: Array<string>;
   cwd: string;
   dependencyExtractor?: string;
@@ -445,6 +451,7 @@ export type ProjectConfig = {
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
+  preset?: string;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;
@@ -537,6 +544,8 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    seed: number;
+    showSeed: boolean;
     selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;

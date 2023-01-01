@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 jest.mock('jest-util', () => ({
-  ...jest.requireActual('jest-util'),
+  ...jest.requireActual<typeof import('jest-util')>('jest-util'),
   isInteractive: true,
 }));
 
