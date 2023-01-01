@@ -316,6 +316,44 @@ describe('findNodeModule', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('imports', () => {
+    const importsRoot = path.resolve(__dirname, '../__mocks__/imports');
+
+    test('supports internal reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.cjs'),
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './foo-import/internal.cjs'),
+      );
+    });
+
+    test('supports external reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          importsRoot,
+          './foo-import/node_modules/external-foo/main.js',
+        ),
+      );
+    });
+
+    test('fails for non-existent mapping', () => {
+      expect(() => {
+        Resolver.findNodeModule('#something-else', {
+          basedir: path.resolve(importsRoot, './foo-import/index.js'),
+          conditions: [],
+        });
+      }).toThrow('Missing "#something-else" import in "foo-import" package');
+    });
+  });
 });
 
 describe('findNodeModuleAsync', () => {

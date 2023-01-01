@@ -125,7 +125,7 @@ export type FormattedTestResult = {
   message: string;
   name: string;
   summary: string;
-  status: 'failed' | 'passed';
+  status: 'failed' | 'passed' | 'skipped' | 'focused';
   startTime: number;
   endTime: number;
   coverage: unknown;
