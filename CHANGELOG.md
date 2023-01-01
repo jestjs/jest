@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config, @jest/core]` Correct `testRegex` on Windows ([#12837](https://github.com/facebook/jest/pull/12837))
+
 ### Chore & Maintenance
 
 ### Performance
