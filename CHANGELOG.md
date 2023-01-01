@@ -15,6 +15,7 @@
 ### Chore & Maintenance
 
 - `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))
+- `[docs]` Improve custom puppeteer example to prevent worker warnings ([#13619](https://github.com/facebook/jest/pull/13619))
 
 ### Performance
 
