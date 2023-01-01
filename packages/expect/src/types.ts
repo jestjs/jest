@@ -48,11 +48,11 @@ export type PromiseMatcherFn = (actual: any) => Promise<void>;
 export interface MatcherUtils {
   dontThrow(): void;
   equals: EqualsFunction;
+  matchers: Readonly<MatchersObject>;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
-  matchers: Readonly<MatchersObject>;
 }
 
 export interface MatcherState {
