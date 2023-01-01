@@ -1066,7 +1066,13 @@ export default class Runtime {
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, options, moduleRegistry, fromPath);
+      this._execModule(
+        localModule,
+        options,
+        moduleRegistry,
+        fromPath,
+        moduleName,
+      );
     }
     localModule.loaded = true;
   }
@@ -1119,13 +1125,32 @@ export default class Runtime {
   isolateModules(fn: () => void): void {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
-        'isolateModules cannot be nested inside another isolateModules.',
+        'isolateModules cannot be nested inside another isolateModules or isolateModulesAsync.',
       );
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
     try {
       fn();
+    } finally {
+      // might be cleared within the callback
+      this._isolatedModuleRegistry?.clear();
+      this._isolatedMockRegistry?.clear();
+      this._isolatedModuleRegistry = null;
+      this._isolatedMockRegistry = null;
+    }
+  }
+
+  async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = new Map();
+    this._isolatedMockRegistry = new Map();
+    try {
+      await fn();
     } finally {
       // might be cleared within the callback
       this._isolatedModuleRegistry?.clear();
@@ -1398,6 +1423,7 @@ export default class Runtime {
   }
 
   private _requireResolvePaths(from: string, moduleName?: string) {
+    const fromDir = path.resolve(from, '..');
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
@@ -1410,12 +1436,14 @@ export default class Runtime {
     }
 
     if (moduleName[0] === '.') {
-      return [path.resolve(from, '..')];
+      return [fromDir];
     }
     if (this._resolver.isCoreModule(moduleName)) {
       return null;
     }
-    return this._resolver.getModulePaths(path.resolve(from, '..'));
+    const modulePaths = this._resolver.getModulePaths(fromDir);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    return [...modulePaths, ...globalPaths];
   }
 
   private _execModule(
@@ -1423,6 +1451,7 @@ export default class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: string | null,
+    moduleName?: string,
   ) {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -1454,8 +1483,10 @@ export default class Runtime {
         return moduleRegistry.get(key) || null;
       },
     });
+    const modulePaths = this._resolver.getModulePaths(module.path);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    module.paths = [...modulePaths, ...globalPaths];
 
-    module.paths = this._resolver.getModulePaths(module.path);
     Object.defineProperty(module, 'require', {
       value: this._createRequireImplementation(module, options),
     });
@@ -2214,6 +2245,7 @@ export default class Runtime {
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
+      isolateModulesAsync: this.isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),

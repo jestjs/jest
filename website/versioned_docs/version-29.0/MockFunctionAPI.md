@@ -480,11 +480,7 @@ test('async test', async () => {
 
 ## TypeScript Usage
 
-:::tip
-
-Please consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
-
-:::
+<TypeScriptExamplesNote />
 
 ### `jest.fn(implementation?)`
 
