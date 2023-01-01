@@ -19,14 +19,14 @@ import type {Reporter, RunDetails} from './types';
 type Microseconds = number;
 
 export default class Jasmine2Reporter implements Reporter {
-  private _testResults: Array<AssertionResult>;
-  private _globalConfig: Config.GlobalConfig;
-  private _config: Config.ProjectConfig;
-  private _currentSuites: Array<string>;
+  private readonly _testResults: Array<AssertionResult>;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _currentSuites: Array<string>;
   private _resolve: any;
-  private _resultsPromise: Promise<TestResult>;
-  private _startTimes: Map<string, Microseconds>;
-  private _testPath: string;
+  private readonly _resultsPromise: Promise<TestResult>;
+  private readonly _startTimes: Map<string, Microseconds>;
+  private readonly _testPath: string;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -43,6 +43,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   jasmineStarted(_runDetails: RunDetails): void {}
 
   specStarted(spec: SpecResult): void {

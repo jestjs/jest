@@ -44,7 +44,7 @@ We made a number of additions and improvements to the testing APIs which will he
 
 Here is an example of all how all the new APIs together will make testing more delightful:
 
-```
+```js
 /**
  * @jest-environment node
  */

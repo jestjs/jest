@@ -8,7 +8,7 @@
 import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
-import type {ModuleMocker} from 'jest-mock';
+import type {Mocked, ModuleMocker} from 'jest-mock';
 
 export type EnvironmentContext = {
   console: Console;
@@ -92,7 +92,7 @@ export interface Jest {
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
    */
-  createMockFromModule(moduleName: string): unknown;
+  createMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module and its dependencies.
@@ -110,9 +110,9 @@ export interface Jest {
    * to the top of the code block. Use this method if you want to explicitly
    * avoid this behavior.
    */
-  doMock(
+  doMock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -129,6 +129,7 @@ export interface Jest {
    * Creates a mock function. Optionally takes a mock implementation.
    */
   fn: ModuleMocker['fn'];
+  // TODO remove `genMockFromModule()` in Jest 30
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -138,7 +139,7 @@ export interface Jest {
    *
    * @deprecated Use `jest.createMockFromModule()` instead
    */
-  genMockFromModule(moduleName: string): unknown;
+  genMockFromModule<T = unknown>(moduleName: string): Mocked<T>;
   /**
    * When mocking time, `Date.now()` will also be mocked. If you for some reason
    * need access to the real current time, you can invoke this function.
@@ -148,9 +149,18 @@ export interface Jest {
    */
   getRealSystemTime(): number;
   /**
+   * Retrieves the seed value. It will be randomly generated for each test run
+   * or can be manually set via the `--seed` CLI argument.
+   */
+  getSeed(): number;
+  /**
    * Returns the number of fake timers still left to run.
    */
   getTimerCount(): number;
+  /**
+   * Returns the current time in ms of the fake timer clock.
+   */
+  now(): number;
   /**
    * Determines if the given function is a mocked function.
    */
@@ -163,11 +173,17 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
+   * async functions to be wrapped. The caller is expected to `await` the completion of
+   * `isolateModulesAsync`.
+   */
+  isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
+  /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
-  mock(
+  mock<T = unknown>(
     moduleName: string,
-    moduleFactory?: () => unknown,
+    moduleFactory?: () => T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -175,37 +191,43 @@ export interface Jest {
    */
   unstable_mockModule<T = unknown>(
     moduleName: string,
-    moduleFactory: () => Promise<T> | T,
+    moduleFactory: () => T | Promise<T>,
     options?: {virtual?: boolean},
   ): Jest;
   /**
-    * Returns the actual module instead of a mock, bypassing all checks on
-    * whether the module should receive a mock implementation or not.
-    *
-    * @example
-    ```js
-     jest.mock('../myModule', () => {
-     // Require the original module to not be mocked...
-     const originalModule = jest.requireActual('../myModule');
-
-       return {
-         __esModule: true, // Use it when dealing with esModules
-         ...originalModule,
-         getRandom: jest.fn().mockReturnValue(10),
-       };
-     });
-
-     const getRandom = require('../myModule').getRandom;
-
-     getRandom(); // Always returns 10
-     ```
-    */
-  requireActual: (moduleName: string) => unknown;
+   * Returns the actual module instead of a mock, bypassing all checks on
+   * whether the module should receive a mock implementation or not.
+   *
+   * @example
+   * ```js
+   * jest.mock('../myModule', () => {
+   *   // Require the original module to not be mocked...
+   *   const originalModule = jest.requireActual('../myModule');
+   *
+   *   return {
+   *     __esModule: true, // Use it when dealing with esModules
+   *     ...originalModule,
+   *     getRandom: jest.fn().mockReturnValue(10),
+   *   };
+   * });
+   *
+   * const getRandom = require('../myModule').getRandom;
+   *
+   * getRandom(); // Always returns 10
+   * ```
+   */
+  requireActual<T = unknown>(moduleName: string): T;
+  /**
+   * Wraps types of the `source` object and its deep members with type definitions
+   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
+   * mocked behavior.
+   */
+  mocked: ModuleMocker['mocked'];
   /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
-  requireMock: (moduleName: string) => unknown;
+  requireMock<T = unknown>(moduleName: string): T;
   /**
    * Resets the state of all mocks. Equivalent to calling `.mockReset()` on
    * every mocked function.
@@ -224,10 +246,6 @@ export interface Jest {
    * with `jest.spyOn()`; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
-  /**
-   * Wraps an object or a module with mock type definitions.
-   */
-  mocked: ModuleMocker['mocked'];
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted.

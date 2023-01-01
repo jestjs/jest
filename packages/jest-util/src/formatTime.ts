@@ -7,8 +7,8 @@
 
 export default function formatTime(
   time: number,
-  prefixPower: number = -3,
-  padLeftLength: number = 0,
+  prefixPower = -3,
+  padLeftLength = 0,
 ): string {
   const prefixes = ['n', 'μ', 'm', ''];
   const prefixIndex = Math.max(

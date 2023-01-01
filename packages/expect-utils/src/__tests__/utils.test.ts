@@ -6,6 +6,7 @@
  *
  */
 
+import {List, OrderedMap, OrderedSet, Record} from 'immutable';
 import {stringify} from 'jest-matcher-utils';
 import {
   arrayBufferEquality,
@@ -268,7 +269,7 @@ describe('subsetEquality()', () => {
   });
 
   test('object without keys is undefined', () => {
-    expect(subsetEquality('foo', 'bar')).toBe(undefined);
+    expect(subsetEquality('foo', 'bar')).toBeUndefined();
   });
 
   test('objects to not match', () => {
@@ -515,6 +516,32 @@ describe('iterableEquality', () => {
     const b = new Map();
     b.set('a', b);
 
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable Lists without an OwnerID', () => {
+    const a = List([1, 2, 3]);
+    const b = a.filter(v => v > 0);
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable OrderedMaps without an OwnerID', () => {
+    const a = OrderedMap().set('saving', true);
+    const b = OrderedMap().merge({saving: true});
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable OrderedSets without an OwnerID', () => {
+    const a = OrderedSet().add('newValue');
+    const b = List(['newValue']).toOrderedSet();
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given Immutable Record without an OwnerID', () => {
+    class TestRecord extends Record({dummy: ''}) {}
+    const a = new TestRecord().merge({dummy: 'data'});
+    const b = new TestRecord().set('dummy', 'data');
     expect(iterableEquality(a, b)).toBe(true);
   });
 });

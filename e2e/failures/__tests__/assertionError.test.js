@@ -76,6 +76,23 @@ test('assert.throws', () => {
   assert.throws(() => {});
 });
 
+test('assert.throws with different error messages', () => {
+  assert.throws(
+    () => {
+      throw new Error('message 1');
+    },
+    {
+      message: 'message 2',
+    },
+  );
+});
+
+test('assert.throws with different error types', () => {
+  assert.throws(() => {
+    throw new SyntaxError('message 1');
+  }, TypeError);
+});
+
 test('async', async () => {
   assert.equal('hello\ngoodbye', 'hello', 'hmmm');
 });

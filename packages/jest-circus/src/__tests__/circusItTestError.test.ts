@@ -7,14 +7,12 @@
 
 import type {Global} from '@jest/types';
 
+// Aliases of `it` and `test` to avoid collision with global testing APIs.
 let circusIt: Global.It;
 let circusTest: Global.It;
 
-// using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
-// the two with this alias.
-
 const aliasCircusIt = () => {
-  const {it, test} = require('../');
+  const {it, test} = require('../') as typeof import('../');
   circusIt = it;
   circusTest = test;
 };
@@ -25,13 +23,13 @@ describe('test/it error throwing', () => {
   it("it doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusIt('test1', () => {});
-    }).not.toThrowError();
+    }).not.toThrow();
   });
   it('it throws error with missing callback function', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt('test2');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -39,7 +37,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -47,20 +45,20 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusIt('test4', 'test4b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test4b. It must be a callback function.',
     );
   });
   it("test doesn't throw an error with valid arguments", () => {
     expect(() => {
       circusTest('test5', () => {});
-    }).not.toThrowError();
+    }).not.toThrow();
   });
   it('test throws error with missing callback function', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest('test6');
-    }).toThrowError(
+    }).toThrow(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
     );
   });
@@ -68,7 +66,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest(() => {});
-    }).toThrowError(
+    }).toThrow(
       'Invalid first argument, () => {}. It must be a named class, named function, number, or string.',
     );
   });
@@ -76,7 +74,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       // @ts-expect-error: Easy, we're testing runtime errors here
       circusTest('test8', 'test8b');
-    }).toThrowError(
+    }).toThrow(
       'Invalid second argument, test8b. It must be a callback function.',
     );
   });

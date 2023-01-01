@@ -22,7 +22,7 @@ describe('Runtime', () => {
       const mock = root.jest.fn();
       expect(mock._isMockFunction).toBe(true);
       mock();
-      expect(mock).toBeCalled();
+      expect(mock).toHaveBeenCalled();
     });
 
     it('creates mock functions with mock implementations', async () => {
@@ -31,8 +31,8 @@ describe('Runtime', () => {
       const mock = root.jest.fn(string => `${string} implementation`);
       expect(mock._isMockFunction).toBe(true);
       const value = mock('mock');
-      expect(value).toEqual('mock implementation');
-      expect(mock).toBeCalled();
+      expect(value).toBe('mock implementation');
+      expect(mock).toHaveBeenCalled();
     });
   });
 
@@ -57,13 +57,13 @@ describe('Runtime', () => {
       const mock2 = root.jest.fn();
       mock2();
 
-      expect(mock1).toBeCalled();
-      expect(mock2).toBeCalled();
+      expect(mock1).toHaveBeenCalled();
+      expect(mock2).toHaveBeenCalled();
 
       runtime.clearAllMocks();
 
-      expect(mock1).not.toBeCalled();
-      expect(mock2).not.toBeCalled();
+      expect(mock1).not.toHaveBeenCalled();
+      expect(mock2).not.toHaveBeenCalled();
     });
   });
 });

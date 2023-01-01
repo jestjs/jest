@@ -31,6 +31,7 @@ export default class BaseReporter implements Reporter {
     preRunMessageRemove(process.stderr);
   }
 
+  /* eslint-disable @typescript-eslint/no-empty-function */
   onTestCaseResult(_test: Test, _testCaseResult: TestCaseResult): void {}
 
   onTestResult(
@@ -45,6 +46,7 @@ export default class BaseReporter implements Reporter {
     _testContexts?: Set<TestContext>,
     _aggregatedResults?: AggregatedResult,
   ): Promise<void> | void {}
+  /* eslint-enable */
 
   protected _setError(error: Error): void {
     this._error = error;

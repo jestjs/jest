@@ -9,5 +9,5 @@
  */
 
 test('docblock pragmas', () => {
-  expect(myCustomPragma).toEqual('pragma-value'); // eslint-disable-line no-undef
+  expect(myCustomPragma).toBe('pragma-value'); // eslint-disable-line no-undef
 });

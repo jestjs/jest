@@ -16,11 +16,6 @@ const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-expect.addSnapshotSerializer({
-  print: val => (val as string).replace(/\[s\[u/g, '\n'),
-  test: val => typeof val === 'string' && val.includes('[s[u'),
-});
-
 const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
     '__tests__/bar.spec.js': `

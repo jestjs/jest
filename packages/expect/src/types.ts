@@ -19,17 +19,21 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type MatcherFunctionWithState<
-  State extends MatcherState = MatcherState,
+export type MatcherFunctionWithContext<
+  Context extends MatcherContext = MatcherContext,
   Expected extends Array<any> = [] /** TODO should be: extends Array<unknown> = [] */,
-> = (this: State, actual: unknown, ...expected: Expected) => ExpectationResult;
+> = (
+  this: Context,
+  actual: unknown,
+  ...expected: Expected
+) => ExpectationResult;
 
 export type MatcherFunction<Expected extends Array<unknown> = []> =
-  MatcherFunctionWithState<MatcherState, Expected>;
+  MatcherFunctionWithContext<MatcherContext, Expected>;
 
 // TODO should be replaced with `MatcherFunctionWithContext`
-export type RawMatcherFn<State extends MatcherState = MatcherState> = {
-  (this: State, actual: any, ...expected: Array<any>): ExpectationResult;
+export type RawMatcherFn<Context extends MatcherContext = MatcherContext> = {
+  (this: Context, actual: any, ...expected: Array<any>): ExpectationResult;
   /** @internal */
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
@@ -41,26 +45,31 @@ export type MatchersObject = {
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-export interface MatcherState {
-  assertionCalls: number;
-  currentTestName?: string;
-  dontThrow?(): void;
-  error?: Error;
+export interface MatcherUtils {
+  dontThrow(): void;
   equals: EqualsFunction;
-  expand?: boolean;
-  expectedAssertionsNumber?: number | null;
-  expectedAssertionsNumberError?: Error;
-  isExpectingAssertions?: boolean;
-  isExpectingAssertionsError?: Error;
-  isNot: boolean;
-  promise: string;
-  suppressedErrors: Array<Error>;
-  testPath?: string;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };
 }
+
+export interface MatcherState {
+  assertionCalls: number;
+  currentTestName?: string;
+  error?: Error;
+  expand?: boolean;
+  expectedAssertionsNumber: number | null;
+  expectedAssertionsNumberError?: Error;
+  isExpectingAssertions: boolean;
+  isExpectingAssertionsError?: Error;
+  isNot?: boolean;
+  promise?: string;
+  suppressedErrors: Array<Error>;
+  testPath?: string;
+}
+
+export type MatcherContext = MatcherUtils & Readonly<MatcherState>;
 
 export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
@@ -122,26 +131,25 @@ type PromiseMatchers = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
-// This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
 export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  lastCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(expected: unknown): R;
+  lastReturnedWith(expected?: unknown): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nth: number, ...expected: [unknown, ...Array<unknown>]): R;
+  nthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(nth: number, expected: unknown): R;
+  nthReturnedWith(nth: number, expected?: unknown): R;
   /**
-   * Checks that a value is what you expect. It uses `===` to check strict equality.
+   * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
    */
   toBe(expected: unknown): R;
@@ -156,7 +164,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toBeCalledWith(...expected: Array<unknown>): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
@@ -239,25 +247,22 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toHaveBeenCalledWith(...expected: Array<unknown>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(
-    nth: number,
-    ...expected: [unknown, ...Array<unknown>]
-  ): R;
+  toHaveBeenNthCalledWith(nth: number, ...expected: Array<unknown>): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
+  toHaveBeenLastCalledWith(...expected: Array<unknown>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith(expected: unknown): R;
+  toHaveLastReturnedWith(expected?: unknown): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -268,7 +273,7 @@ export interface Matchers<R extends void | Promise<void>> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(nth: number, expected: unknown): R;
+  toHaveNthReturnedWith(nth: number, expected?: unknown): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -298,7 +303,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith(expected: unknown): R;
+  toHaveReturnedWith(expected?: unknown): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -320,7 +325,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(expected: unknown): R;
+  toReturnWith(expected?: unknown): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */

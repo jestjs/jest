@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {run} from './cli';
+export {run} from './run';

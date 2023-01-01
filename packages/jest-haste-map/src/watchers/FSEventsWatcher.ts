@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import {EventEmitter} from 'events';
 import * as path from 'path';
 import anymatch, {Matcher} from 'anymatch';
@@ -16,7 +14,7 @@ import micromatch = require('micromatch');
 // @ts-expect-error no types
 import walker from 'walker';
 
-// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
 // @ts-ignore: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {
@@ -41,14 +39,14 @@ type FsEventsWatcherEvent =
  * Watches `dir`.
  */
 export class FSEventsWatcher extends EventEmitter {
-  public readonly root: string;
-  public readonly ignored?: Matcher;
-  public readonly glob: Array<string>;
-  public readonly dot: boolean;
-  public readonly hasIgnore: boolean;
-  public readonly doIgnore: (path: string) => boolean;
-  public readonly fsEventsWatchStopper: () => Promise<void>;
-  private _tracked: Set<string>;
+  readonly root: string;
+  readonly ignored?: Matcher;
+  readonly glob: Array<string>;
+  readonly dot: boolean;
+  readonly hasIgnore: boolean;
+  readonly doIgnore: (path: string) => boolean;
+  readonly fsEventsWatchStopper: () => Promise<void>;
+  private readonly _tracked: Set<string>;
 
   static isSupported(): boolean {
     return fsevents !== null;
@@ -65,8 +63,8 @@ export class FSEventsWatcher extends EventEmitter {
     dir: string,
     dirCallback: (normalizedPath: string, stats: fs.Stats) => void,
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
-    endCallback: Function,
-    errorCallback: Function,
+    endCallback: () => void,
+    errorCallback: () => void,
     ignored?: Matcher,
   ) {
     walker(dir)

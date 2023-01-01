@@ -6,7 +6,7 @@
  */
 
 import {tmpdir} from 'os';
-import path from 'path';
+import * as path from 'path';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {createScriptTransformer} from '@jest/transform';
 import NodeEnvironment from 'jest-environment-node';
@@ -55,6 +55,8 @@ module.exports = async function createRuntime(filename, projectConfig) {
   const moduleNameMapper = setupModuleNameMapper(projectConfig, rootDir);
   const transform = setupTransform(projectConfig, rootDir, cwd);
 
+  const globalConfig = makeGlobalConfig();
+
   projectConfig = makeProjectConfig({
     cacheDirectory: getCacheDirectory(),
     cwd,
@@ -77,7 +79,7 @@ module.exports = async function createRuntime(filename, projectConfig) {
   }
 
   const environment = new NodeEnvironment({
-    globalConfig: makeGlobalConfig(),
+    globalConfig,
     projectConfig,
   });
   environment.global.console = console;
@@ -105,11 +107,11 @@ module.exports = async function createRuntime(filename, projectConfig) {
       changedFiles: undefined,
       collectCoverage: false,
       collectCoverageFrom: [],
-      collectCoverageOnlyFrom: undefined,
       coverageProvider: 'v8',
       sourcesRelatedToTestsInChangedFiles: undefined,
     },
     filename,
+    globalConfig,
   );
 
   for (const path of projectConfig.setupFiles) {

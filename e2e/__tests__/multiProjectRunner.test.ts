@@ -49,7 +49,7 @@ test('can pass projects or global config', () => {
         getHasteName(filename) {
           return filename
             .substr(filename.lastIndexOf(path.sep) + 1)
-            .replace(/\.js$/, '');
+            .replace(/\\.js$/, '');
         },
       };
     `,
@@ -200,8 +200,8 @@ test.each([{projectPath: 'packages/somepackage'}, {projectPath: 'packages/*'}])(
     const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
     expect(stderr).toContain('PASS somepackage packages/somepackage/test.js');
     expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-    expect(stdout).toEqual('');
-    expect(exitCode).toEqual(0);
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
   },
 );
 
@@ -250,8 +250,8 @@ test.each([
     const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
     expect(stderr).toContain(`PASS ${displayName} ${projectPath}/test.js`);
     expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-    expect(stdout).toEqual('');
-    expect(exitCode).toEqual(0);
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
   },
 );
 
@@ -284,8 +284,8 @@ test('projects can be workspaces with non-JS/JSON files', () => {
   expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
   expect(stderr).toContain('PASS packages/project2/__tests__/file2.test.js');
   expect(stderr).toContain('Ran all test suites in 2 projects.');
-  expect(stdout).toEqual('');
-  expect(exitCode).toEqual(0);
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
 });
 
 test('objects in project configuration', () => {
@@ -310,8 +310,8 @@ test('objects in project configuration', () => {
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('PASS __tests__/file2.test.js');
   expect(stderr).toContain('Ran all test suites in 2 projects.');
-  expect(stdout).toEqual('');
-  expect(exitCode).toEqual(0);
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
 });
 
 test('allows a single project', () => {
@@ -330,8 +330,8 @@ test('allows a single project', () => {
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-  expect(stdout).toEqual('');
-  expect(exitCode).toEqual(0);
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
 });
 
 test('resolves projects and their <rootDir> properly', () => {
@@ -446,7 +446,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project1/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project1/transformer.js': `
       module.exports = {
@@ -461,7 +461,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project2/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file\.js': './transformer.js'},
+        transform: {'file\\.js': './transformer.js'},
       };`,
     'project2/transformer.js': `
       module.exports = {

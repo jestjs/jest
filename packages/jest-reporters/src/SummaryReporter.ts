@@ -16,8 +16,8 @@ import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
+import getSummary from './getSummary';
 import type {ReporterOnStartOptions} from './types';
-import {getSummary} from './utils';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -53,7 +53,7 @@ const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
-  private _globalConfig: Config.GlobalConfig;
+  private readonly _globalConfig: Config.GlobalConfig;
 
   static readonly filename = __filename;
 
@@ -106,20 +106,20 @@ export default class SummaryReporter extends BaseReporter {
         this._globalConfig,
       );
 
-      if (numTotalTestSuites) {
-        let message = getSummary(aggregatedResults, {
-          estimatedTime: this._estimatedTime,
-        });
+      let message = getSummary(aggregatedResults, {
+        estimatedTime: this._estimatedTime,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
+      });
 
-        if (!this._globalConfig.silent) {
-          message += `\n${
-            wasInterrupted
-              ? chalk.bold.red('Test run was interrupted.')
-              : this._getTestSummary(testContexts, this._globalConfig)
-          }`;
-        }
-        this.log(message);
+      if (!this._globalConfig.silent) {
+        message += `\n${
+          wasInterrupted
+            ? chalk.bold.red('Test run was interrupted.')
+            : this._getTestSummary(testContexts, this._globalConfig)
+        }`;
       }
+      this.log(message);
     }
   }
 

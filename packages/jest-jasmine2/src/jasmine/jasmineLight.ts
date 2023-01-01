@@ -43,6 +43,7 @@ import SpyRegistry from './spyRegistry';
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
       [testTimeoutSymbol]: number;

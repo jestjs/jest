@@ -6,11 +6,11 @@
  */
 
 import chalk = require('chalk');
-import terminalLink = require('terminal-link');
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {formatTime} from 'jest-util';
-import {formatTestPath, printDisplayName} from './utils';
+import formatTestPath from './formatTestPath';
+import printDisplayName from './printDisplayName';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
@@ -32,13 +32,6 @@ export default function getResultHeader(
   projectConfig?: Config.ProjectConfig,
 ): string {
   const testPath = result.testFilePath;
-  const formattedTestPath = formatTestPath(
-    projectConfig ? projectConfig : globalConfig,
-    testPath,
-  );
-  const fileLink = terminalLink(formattedTestPath, `file://${testPath}`, {
-    fallback: () => formattedTestPath,
-  });
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
@@ -60,7 +53,8 @@ export default function getResultHeader(
       ? `${printDisplayName(projectConfig)} `
       : '';
 
-  return `${status} ${projectDisplayName}${fileLink}${
-    testDetail.length ? ` (${testDetail.join(', ')})` : ''
-  }`;
+  return `${status} ${projectDisplayName}${formatTestPath(
+    projectConfig ?? globalConfig,
+    testPath,
+  )}${testDetail.length ? ` (${testDetail.join(', ')})` : ''}`;
 }

@@ -70,3 +70,17 @@ export default function nodeModulesPaths(
 
   return options.paths ? dirs.concat(options.paths) : dirs;
 }
+
+function findGlobalPaths(): Array<string> {
+  const {root} = path.parse(process.cwd());
+  const globalPath = path.join(root, 'node_modules');
+  const resolvePaths = require.resolve.paths('/');
+
+  if (resolvePaths) {
+    // the global paths start one after the root node_modules
+    const rootIndex = resolvePaths.indexOf(globalPath);
+    return rootIndex > -1 ? resolvePaths.slice(rootIndex + 1) : [];
+  }
+  return [];
+}
+export const GlobalPaths = findGlobalPaths();

@@ -14,13 +14,11 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
+import getSummary from './getSummary';
+import printDisplayName from './printDisplayName';
+import trimAndFormatPath from './trimAndFormatPath';
 import type {ReporterOnStartOptions} from './types';
-import {
-  getSummary,
-  printDisplayName,
-  trimAndFormatPath,
-  wrapAnsiString,
-} from './utils';
+import wrapAnsiString from './wrapAnsiString';
 
 const RUNNING_TEXT = ' RUNS ';
 const RUNNING = `${chalk.reset.inverse.yellow.bold(RUNNING_TEXT)} `;
@@ -75,7 +73,7 @@ type Cache = {
 export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
-  private _currentTests: CurrentTestList;
+  private readonly _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
     testCaseResult: TestCaseResult;
@@ -87,7 +85,7 @@ export default class Status {
   private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
-  constructor() {
+  constructor(private readonly _globalConfig: Config.GlobalConfig) {
     this._cache = null;
     this._currentTests = new CurrentTestList();
     this._currentTestCases = [];
@@ -162,7 +160,7 @@ export default class Status {
       return {clear: '', content: ''};
     }
 
-    const width: number = process.stdout.columns!;
+    const width = process.stdout.columns;
     let content = '\n';
     this._currentTests.get().forEach(record => {
       if (record) {
@@ -186,6 +184,8 @@ export default class Status {
         currentTestCases: this._currentTestCases,
         estimatedTime: this._estimatedTime,
         roundTime: true,
+        seed: this._globalConfig.seed,
+        showSeed: this._globalConfig.showSeed,
         width,
       })}`;
     }

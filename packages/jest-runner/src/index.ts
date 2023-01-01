@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import Emittery = require('emittery');
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {
   Test,
   TestEvents,
@@ -47,14 +47,14 @@ export default class TestRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    return await (options.serial
+    return options.serial
       ? this.#createInBandTestRun(tests, watcher)
-      : this.#createParallelTestRun(tests, watcher));
+      : this.#createParallelTestRun(tests, watcher);
   }
 
   async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
-    const mutex = throat(1);
+    const mutex = pLimit(1);
     return tests.reduce(
       (promise, test) =>
         mutex(() =>
@@ -106,8 +106,13 @@ export default class TestRunner extends EmittingTestRunner {
 
     const worker = new Worker(require.resolve('./testWorker'), {
       exposedMethods: ['worker'],
-      // @ts-expect-error: option does not exist on the node 12 types
       forkOptions: {serialization: 'json', stdio: 'pipe'},
+      // The workerIdleMemoryLimit should've been converted to a number during
+      // the normalization phase.
+      idleMemoryLimit:
+        typeof this._globalConfig.workerIdleMemoryLimit === 'number'
+          ? this._globalConfig.workerIdleMemoryLimit
+          : undefined,
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [{serializableResolvers: Array.from(resolvers.values())}],
@@ -116,7 +121,7 @@ export default class TestRunner extends EmittingTestRunner {
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
     if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
 
-    const mutex = throat(this._globalConfig.maxWorkers);
+    const mutex = pLimit(this._globalConfig.maxWorkers);
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.

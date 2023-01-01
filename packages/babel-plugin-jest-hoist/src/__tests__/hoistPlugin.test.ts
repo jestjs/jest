@@ -90,6 +90,67 @@ pluginTester({
       formatResult,
       snapshot: true,
     },
+    'imported jest.mock within jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.mock within jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.mock('some-module');
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'imported jest.requireActual in jest.mock': {
+      code: formatResult(`
+        import {jest} from '@jest/globals';
+
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'global jest.requireActual in jest.mock': {
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          jest.requireActual('some-module');
+        });
+
+        jest.requireActual('some-module');
+      `),
+      formatResult,
+      snapshot: true,
+    },
+    'TS typeof usage in jest.mock': {
+      babelOptions: {
+        babelrc: false,
+        configFile: false,
+        filename: path.resolve(__dirname, '../file.ts'),
+        presets: [[require.resolve('@babel/preset-typescript')]],
+      },
+      code: formatResult(`
+        jest.mock('some-module', () => {
+          const actual = jest.requireActual('some-module');
+
+          return jest.fn<typeof actual.method>();
+        });
+      `),
+      formatResult,
+      snapshot: true,
+    },
   },
   /* eslint-enable */
 });

@@ -6,9 +6,11 @@
  *
  */
 
+import * as crypto from 'crypto';
 import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
+import {TLSSocket} from 'tls';
 import zlib from 'zlib';
 import collectHandles from '../collectHandles';
 
@@ -67,6 +69,22 @@ describe('collectHandles', () => {
     );
   });
 
+  it('should not collect the SIGNREQUEST open handle', async () => {
+    const handleCollector = collectHandles();
+
+    const key =
+      '-----BEGIN PRIVATE KEY-----\r\nMC4CAQAwBQYDK2VwBCIEIHKj+sVa9WcD' +
+      '/q2DJUJaf43Kptc8xYuUQA4bOFj9vC8T\r\n-----END PRIVATE KEY-----';
+    const data = Buffer.from('a');
+    crypto.sign(null, data, key);
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'SIGNREQUEST'}),
+    );
+  });
+
   it('should collect handles opened in test functions with `done` callbacks', done => {
     const handleCollector = collectHandles();
     const server = http.createServer((_, response) => response.end('ok'));
@@ -116,5 +134,16 @@ describe('collectHandles', () => {
     expect(openHandles).toContainEqual(
       expect.objectContaining({message: 'TCPSERVERWRAP'}),
     );
+  });
+
+  it('should not be false positives for some special objects such as `TLSWRAP`', async () => {
+    const handleCollector = collectHandles();
+
+    const socket = new TLSSocket();
+    socket.destroy();
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).toHaveLength(0);
   });
 });

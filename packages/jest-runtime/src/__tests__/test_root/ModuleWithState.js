@@ -8,6 +8,10 @@
 
 let state = 1;
 
+export const set = i => {
+  state = i;
+};
+
 export const increment = () => {
   state += 1;
 };

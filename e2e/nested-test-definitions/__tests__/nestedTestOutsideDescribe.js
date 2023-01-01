@@ -13,6 +13,6 @@ test('outer test', () => {
   expect(getTruthy()).toBeTruthy();
 
   test('inner test', () => {
-    expect(getTruthy()).toEqual('This test should not have run');
+    expect(getTruthy()).toBe('This test should not have run');
   });
 });

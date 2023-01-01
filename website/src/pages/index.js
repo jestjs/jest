@@ -511,7 +511,7 @@ class Index extends React.Component {
             className="section-container bottom-margin docs"
           >
             <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent ">
+              <div className="blockContent">
                 <div className="video">
                   <LiteYouTubeEmbed id="cAKYQpTC7MA" />
                 </div>
@@ -542,7 +542,7 @@ class Index extends React.Component {
             className="section-container bottom-margin docs"
           >
             <div className="blockElement imageAlignSide gridBlock video-block">
-              <div className="blockContent ">
+              <div className="blockContent">
                 <div className="video">
                   <LiteYouTubeEmbed id="SyHzgcFefBk" />
                 </div>

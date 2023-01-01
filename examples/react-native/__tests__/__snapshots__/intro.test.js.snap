@@ -3,7 +3,7 @@
 exports[`renders correctly 1`] = `
 <View
   style={
-    Object {
+    {
       "alignItems": "center",
       "backgroundColor": "#F5FCFF",
       "flex": 1,
@@ -13,7 +13,7 @@ exports[`renders correctly 1`] = `
 >
   <Text
     style={
-      Object {
+      {
         "fontSize": 20,
         "margin": 10,
         "textAlign": "center",
@@ -24,7 +24,7 @@ exports[`renders correctly 1`] = `
   </Text>
   <Text
     style={
-      Object {
+      {
         "color": "#333333",
         "marginBottom": 5,
         "textAlign": "center",
@@ -46,7 +46,7 @@ exports[`renders the ActivityIndicator component 1`] = `
 exports[`renders the FlatList component 1`] = `
 <RCTScrollView
   data={
-    Array [
+    [
       "apple",
       "banana",
       "kiwi",
@@ -65,8 +65,8 @@ exports[`renders the FlatList component 1`] = `
   removeClippedSubviews={false}
   renderItem={[Function]}
   scrollEventThrottle={50}
-  stickyHeaderIndices={Array []}
-  viewabilityConfigCallbackPairs={Array []}
+  stickyHeaderIndices={[]}
+  viewabilityConfigCallbackPairs={[]}
 >
   <View>
     <View

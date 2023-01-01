@@ -10,7 +10,7 @@
  */
 
 import {execSync} from 'child_process';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import chokidar from 'chokidar';
@@ -37,7 +37,7 @@ chokidar
     getPackages().map(p => path.resolve(p.packageDir, 'src')),
     {
       ignoreInitial: true,
-      ignored: /(^|[\/\\])\../, // ignore dotfiles
+      ignored: /(^|[/\\])\../, // ignore dotfiles
     },
   )
   .on('all', (event, filePath) => {

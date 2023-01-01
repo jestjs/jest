@@ -20,7 +20,7 @@ type Print = (arg0: unknown) => string;
 
 export type Theme = Options['theme'];
 
-export type CompareKeys = ((a: string, b: string) => number) | undefined;
+export type CompareKeys = ((a: string, b: string) => number) | null | undefined;
 
 type RequiredOptions = Required<PrettyFormatOptions>;
 
@@ -30,7 +30,8 @@ export interface Options
   theme: Required<RequiredOptions['theme']>;
 }
 
-export interface PrettyFormatOptions extends SnapshotFormat {
+export interface PrettyFormatOptions
+  extends Omit<SnapshotFormat, 'compareKeys'> {
   compareKeys?: CompareKeys;
   plugins?: Plugins;
 }

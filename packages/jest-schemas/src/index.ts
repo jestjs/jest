@@ -10,6 +10,7 @@ import {Static, Type} from '@sinclair/typebox';
 const RawSnapshotFormat = Type.Partial(
   Type.Object({
     callToJSON: Type.Readonly(Type.Boolean()),
+    compareKeys: Type.Readonly(Type.Null()),
     escapeRegex: Type.Readonly(Type.Boolean()),
     escapeString: Type.Readonly(Type.Boolean()),
     highlight: Type.Readonly(Type.Boolean()),

@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "28.0.2",
+  "version": "29.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,33 +18,32 @@
   },
   "dependencies": {
     "@babel/core": "^7.11.6",
-    "@jest/types": "^28.0.2",
-    "@jridgewell/trace-mapping": "^0.3.7",
+    "@jest/types": "workspace:^",
+    "@jridgewell/trace-mapping": "^0.3.15",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^4.0.0",
-    "convert-source-map": "^1.4.0",
-    "fast-json-stable-stringify": "^2.0.0",
+    "convert-source-map": "^2.0.0",
+    "fast-json-stable-stringify": "^2.1.0",
     "graceful-fs": "^4.2.9",
-    "jest-haste-map": "^28.0.2",
-    "jest-regex-util": "^28.0.2",
-    "jest-util": "^28.0.2",
+    "jest-haste-map": "workspace:^",
+    "jest-regex-util": "workspace:^",
+    "jest-util": "workspace:^",
     "micromatch": "^4.0.4",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
-    "write-file-atomic": "^4.0.1"
+    "write-file-atomic": "^5.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^28.0.2",
+    "@jest/test-utils": "workspace:^",
     "@types/babel__core": "^7.1.14",
-    "@types/convert-source-map": "^1.5.1",
-    "@types/fast-json-stable-stringify": "^2.0.0",
+    "@types/convert-source-map": "^2.0.0",
     "@types/graceful-fs": "^4.1.3",
     "@types/micromatch": "^4.0.1",
     "@types/write-file-atomic": "^4.0.0",
     "dedent": "^0.7.0"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "publishConfig": {
     "access": "public"

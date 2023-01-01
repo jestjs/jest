@@ -13,7 +13,12 @@ import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
-import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
+import {
+  ErrorWithStack,
+  convertDescriptorToString,
+  formatTime,
+  isPromise,
+} from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
@@ -61,12 +66,14 @@ export const makeTest = (
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
   asyncError: Circus.Exception,
+  failing: boolean,
 ): Circus.TestEntry => ({
   type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
   concurrent,
   duration: null,
   errors: [],
+  failing,
   fn,
   invocations: 0,
   mode,
@@ -264,13 +271,7 @@ export const callAsyncCircusFn = (
       }
     }
 
-    // If it's a Promise, return it. Test for an object with a `then` function
-    // to support custom Promise implementations.
-    if (
-      typeof returnedValue === 'object' &&
-      returnedValue !== null &&
-      typeof returnedValue.then === 'function'
-    ) {
+    if (isPromise(returnedValue)) {
       returnedValue.then(() => resolve(), reject);
       return;
     }

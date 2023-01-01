@@ -12,23 +12,6 @@ import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
 
-jest
-  .mock('ansi-escapes', () => ({
-    cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
-    cursorHide: '[MOCK - cursorHide]',
-    cursorRestorePosition: '[MOCK - cursorRestorePosition]',
-    cursorSavePosition: '[MOCK - cursorSavePosition]',
-    cursorShow: '[MOCK - cursorShow]',
-    cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
-  }))
-  .mock('jest-util', () => {
-    const {specialChars, ...util} = jest.requireActual('jest-util');
-    return {
-      ...util,
-      specialChars: {...specialChars, CLEAR: '[MOCK - clear]'},
-    };
-  });
-
 jest.mock(
   '../SearchSource',
   () =>
@@ -124,7 +107,7 @@ describe('Watch mode flows', () => {
 
     // Write a enter pattern mode
     stdin.emit('t');
-    expect(pipe.write).toBeCalledWith(' pattern › ');
+    expect(pipe.write).toHaveBeenCalledWith(' pattern › ');
 
     const assertPattern = hex => {
       pipe.write.mockReset();
@@ -142,7 +125,7 @@ describe('Watch mode flows', () => {
     // Runs Jest again
     runJestMock.mockReset();
     stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
+    expect(runJestMock).toHaveBeenCalled();
 
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchObject({

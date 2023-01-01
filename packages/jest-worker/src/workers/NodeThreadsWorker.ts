@@ -5,60 +5,87 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PassThrough} from 'stream';
+import {totalmem} from 'os';
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
+  CHILD_MESSAGE_MEM_USAGE,
   ChildMessage,
   OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_MEM_USAGE,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
   WorkerInterface,
   WorkerOptions,
+  WorkerStates,
 } from '../types';
+import WorkerAbstract from './WorkerAbstract';
 
-export default class ExperimentalWorker implements WorkerInterface {
+export default class ExperimentalWorker
+  extends WorkerAbstract
+  implements WorkerInterface
+{
   private _worker!: Worker;
-  private _options: WorkerOptions;
+  private readonly _options: WorkerOptions;
 
   private _request: ChildMessage | null;
   private _retries!: number;
   private _onProcessEnd!: OnEnd;
   private _onCustomMessage!: OnCustomMessage;
 
-  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
   private _stderr: ReturnType<typeof mergeStream> | null;
 
-  private _exitPromise: Promise<void>;
-  private _resolveExitPromise!: () => void;
-  private _forceExited: boolean;
+  private _memoryUsagePromise: Promise<number> | undefined;
+  private _resolveMemoryUsage: ((arg0: number) => void) | undefined;
+
+  private readonly _childWorkerPath: string;
+
+  private _childIdleMemoryUsage: number | null;
+  private readonly _childIdleMemoryUsageLimit: number | null;
+  private _memoryUsageCheck = false;
 
   constructor(options: WorkerOptions) {
+    super(options);
+
     this._options = options;
 
     this._request = null;
 
-    this._fakeStream = null;
     this._stdout = null;
     this._stderr = null;
 
-    this._exitPromise = new Promise(resolve => {
-      this._resolveExitPromise = resolve;
-    });
-    this._forceExited = false;
+    this._childWorkerPath =
+      options.childWorkerPath || require.resolve('./threadChild');
+
+    this._childIdleMemoryUsage = null;
+    this._childIdleMemoryUsageLimit = options.idleMemoryLimit || null;
 
     this.initialize();
   }
 
   initialize(): void {
-    this._worker = new Worker(require.resolve('./threadChild'), {
+    if (
+      this.state === WorkerStates.OUT_OF_MEMORY ||
+      this.state === WorkerStates.SHUTTING_DOWN ||
+      this.state === WorkerStates.SHUT_DOWN
+    ) {
+      return;
+    }
+
+    if (this._worker) {
+      this._worker.terminate();
+    }
+
+    this.state = WorkerStates.STARTING;
+
+    this._worker = new Worker(this._childWorkerPath, {
       eval: false,
       resourceLimits: this._options.resourceLimits,
       stderr: true,
@@ -87,8 +114,18 @@ export default class ExperimentalWorker implements WorkerInterface {
       this._stderr.add(this._worker.stderr);
     }
 
+    // This can be useful for debugging.
+    if (!(this._options.silent ?? true)) {
+      this._worker.stdout.setEncoding('utf8');
+      // eslint-disable-next-line no-console
+      this._worker.stdout.on('data', console.log);
+      this._worker.stderr.setEncoding('utf8');
+      this._worker.stderr.on('data', console.error);
+    }
+
     this._worker.on('message', this._onMessage.bind(this));
     this._worker.on('exit', this._onExit.bind(this));
+    this._worker.on('error', this._onError.bind(this));
 
     this._worker.postMessage([
       CHILD_MESSAGE_INITIALIZE,
@@ -114,16 +151,22 @@ export default class ExperimentalWorker implements WorkerInterface {
         {type: 'WorkerError'},
       ]);
     }
+
+    this.state = WorkerStates.OK;
+    if (this._resolveWorkerReady) {
+      this._resolveWorkerReady();
+    }
   }
 
-  private _shutdown() {
-    // End the permanent stream so the merged stream end too
-    if (this._fakeStream) {
-      this._fakeStream.end();
-      this._fakeStream = null;
-    }
+  private _onError(error: Error) {
+    if (error.message.includes('heap out of memory')) {
+      this.state = WorkerStates.OUT_OF_MEMORY;
 
-    this._resolveExitPromise();
+      // Threads don't behave like processes, they don't crash when they run out of
+      // memory. But for consistency we want them to behave like processes so we call
+      // terminate to simulate a crash happening that was not planned
+      this._worker.terminate();
+    }
   }
 
   private _onMessage(response: ParentMessage) {
@@ -155,6 +198,7 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error(`Error when calling setup: ${response[2]}`);
 
@@ -164,22 +208,64 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+
       case PARENT_MESSAGE_CUSTOM:
         this._onCustomMessage(response[1]);
         break;
+
+      case PARENT_MESSAGE_MEM_USAGE:
+        this._childIdleMemoryUsage = response[1];
+
+        if (this._resolveMemoryUsage) {
+          this._resolveMemoryUsage(response[1]);
+
+          this._resolveMemoryUsage = undefined;
+          this._memoryUsagePromise = undefined;
+        }
+
+        this._performRestartIfRequired();
+        break;
+
       default:
         throw new TypeError(`Unexpected response from worker: ${response[0]}`);
     }
   }
 
   private _onExit(exitCode: number) {
-    if (exitCode !== 0 && !this._forceExited) {
+    this._workerReadyPromise = undefined;
+    this._resolveWorkerReady = undefined;
+
+    if (exitCode !== 0 && this.state === WorkerStates.OUT_OF_MEMORY) {
+      this._onProcessEnd(
+        new Error('Jest worker ran out of memory and crashed'),
+        null,
+      );
+
+      this._shutdown();
+    } else if (
+      (exitCode !== 0 &&
+        this.state !== WorkerStates.SHUTTING_DOWN &&
+        this.state !== WorkerStates.SHUT_DOWN) ||
+      this.state === WorkerStates.RESTARTING
+    ) {
       this.initialize();
 
       if (this._request) {
         this._worker.postMessage(this._request);
       }
     } else {
+      // If the worker thread exits while a request is still pending, throw an
+      // error. This is unexpected and tests may not have run to completion.
+      const isRequestStillPending = !!this._request;
+      if (isRequestStillPending) {
+        this._onProcessEnd(
+          new Error(
+            'A Jest worker thread exited unexpectedly before finishing tests for an unknown reason. One of the ways this can happen is if process.exit() was called in testing code.',
+          ),
+          null,
+        );
+      }
+
       this._shutdown();
     }
   }
@@ -189,7 +275,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   forceExit(): void {
-    this._forceExited = true;
+    this.state = WorkerStates.SHUTTING_DOWN;
     this._worker.terminate();
   }
 
@@ -201,9 +287,15 @@ export default class ExperimentalWorker implements WorkerInterface {
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
+      const hasRequest = !!this._request;
+
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
+
+      if (this._childIdleMemoryUsageLimit && hasRequest) {
+        this.checkMemoryUsage();
+      }
 
       const res = onProcessEnd?.(...args);
 
@@ -233,10 +325,97 @@ export default class ExperimentalWorker implements WorkerInterface {
     return this._stderr;
   }
 
-  private _getFakeStream() {
-    if (!this._fakeStream) {
-      this._fakeStream = new PassThrough();
+  private _performRestartIfRequired(): void {
+    if (this._memoryUsageCheck) {
+      this._memoryUsageCheck = false;
+
+      let limit = this._childIdleMemoryUsageLimit;
+
+      // TODO: At some point it would make sense to make use of
+      // stringToBytes found in jest-config, however as this
+      // package does not have any dependencies on an other jest
+      // packages that can wait until some other time.
+      if (limit && limit > 0 && limit <= 1) {
+        limit = Math.floor(totalmem() * limit);
+      } else if (limit) {
+        limit = Math.floor(limit);
+      }
+
+      if (
+        limit &&
+        this._childIdleMemoryUsage &&
+        this._childIdleMemoryUsage > limit
+      ) {
+        this.state = WorkerStates.RESTARTING;
+
+        this._worker.terminate();
+      }
     }
-    return this._fakeStream;
+  }
+
+  /**
+   * Gets the last reported memory usage.
+   *
+   * @returns Memory usage in bytes.
+   */
+  getMemoryUsage(): Promise<number | null> {
+    if (!this._memoryUsagePromise) {
+      let rejectCallback!: (err: Error) => void;
+
+      const promise = new Promise<number>((resolve, reject) => {
+        this._resolveMemoryUsage = resolve;
+        rejectCallback = reject;
+      });
+      this._memoryUsagePromise = promise;
+
+      if (!this._worker.threadId) {
+        rejectCallback(new Error('Child process is not running.'));
+
+        this._memoryUsagePromise = undefined;
+        this._resolveMemoryUsage = undefined;
+
+        return promise;
+      }
+
+      try {
+        this._worker.postMessage([CHILD_MESSAGE_MEM_USAGE]);
+      } catch (err: any) {
+        this._memoryUsagePromise = undefined;
+        this._resolveMemoryUsage = undefined;
+
+        rejectCallback(err);
+      }
+
+      return promise;
+    }
+
+    return this._memoryUsagePromise;
+  }
+
+  /**
+   * Gets updated memory usage and restarts if required
+   */
+  checkMemoryUsage(): void {
+    if (this._childIdleMemoryUsageLimit) {
+      this._memoryUsageCheck = true;
+      this._worker.postMessage([CHILD_MESSAGE_MEM_USAGE]);
+    } else {
+      console.warn(
+        'Memory usage of workers can only be checked if a limit is set',
+      );
+    }
+  }
+
+  /**
+   * Gets the thread id of the worker.
+   *
+   * @returns Thread id.
+   */
+  getWorkerSystemId(): number {
+    return this._worker.threadId;
+  }
+
+  isWorkerRunning(): boolean {
+    return this._worker.threadId >= 0;
   }
 }

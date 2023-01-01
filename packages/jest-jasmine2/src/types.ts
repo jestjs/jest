@@ -72,6 +72,7 @@ export type Jasmine = {
 } & AsymmetricMatchers & {process: NodeJS.Process};
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
       expect: JestExpect;
@@ -81,6 +82,7 @@ declare global {
 }
 
 declare module '@jest/types' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Global {
     interface GlobalAdditions {
       jasmine: Jasmine;

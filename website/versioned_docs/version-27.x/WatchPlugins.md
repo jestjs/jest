@@ -130,13 +130,17 @@ Watch Usage
  › Press Enter to trigger a test run.
 ```
 
-**Note**: If the key for your plugin already exists as a default key, your plugin will override that key.
+:::note
+
+If the key for your plugin already exists as a default key, your plugin will override that key.
+
+:::
 
 ### `run(globalConfig, updateConfigAndRun)`
 
 To handle key press events from the key returned by `getUsageInfo`, you can implement the `run` method. This method returns a `Promise<boolean>` that can be resolved when the plugin wants to return control to Jest. The `boolean` specifies if Jest should rerun the tests after it gets the control back.
 
-- `globalConfig`: A representation of Jest's current global configuration
+- [`globalConfig`](https://github.com/facebook/jest/blob/v27.5.1/packages/jest-types/src/Config.ts#L288-L350): A representation of Jest's current global configuration
 - `updateConfigAndRun`: Allows you to trigger a test run while the interactive plugin is running.
 
 ```javascript
@@ -147,7 +151,11 @@ class MyWatchPlugin {
 }
 ```
 
-**Note**: If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+:::note
+
+If you do call `updateConfigAndRun`, your `run` method should not resolve to a truthy value, as that would trigger a double-run.
+
+:::
 
 #### Authorized configuration keys
 
@@ -157,7 +165,6 @@ For stability and safety reasons, only part of the global configuration keys can
 - [`changedSince`](cli#--changedsince)
 - [`collectCoverage`](configuration#collectcoverage-boolean)
 - [`collectCoverageFrom`](configuration#collectcoveragefrom-array)
-- [`collectCoverageOnlyFrom`](configuration#collectcoverageonlyfrom-array)
 - [`coverageDirectory`](configuration#coveragedirectory-string)
 - [`coverageReporters`](configuration#coveragereporters-arraystring)
 - [`notify`](configuration#notify-boolean)
@@ -222,8 +229,16 @@ Any key not used by built-in functionality can be claimed, as you would expect. 
 
 Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
 
-> Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+```bash
+
+Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+
+```
 
 Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (`watchPlugins` array setting). When this happens, you’ll also get an error message that tries to help you fix that:
 
-> Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+```bash
+
+Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+
+```

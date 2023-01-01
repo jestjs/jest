@@ -9,35 +9,35 @@ import {tmpdir} from 'os';
 import {join} from 'path';
 import {writeFileSync} from 'graceful-fs';
 import LeakDetector from 'jest-leak-detector';
-import {Worker} from '../../build/index';
+import {JestWorkerFarm, Worker} from '../../build';
 
 describe('WorkerThreads leaks', () => {
-  let workerFile!: string;
+  let workerFile: string;
   beforeAll(() => {
     workerFile = join(tmpdir(), 'baz.js');
     writeFileSync(workerFile, 'module.exports.fn = () => {};');
   });
 
-  let worker!: Worker;
+  let worker: JestWorkerFarm<{fn(a: unknown): void}>;
   beforeEach(() => {
     worker = new Worker(workerFile, {
       enableWorkerThreads: true,
       exposedMethods: ['fn'],
-    });
+    }) as JestWorkerFarm<{fn(a: unknown): void}>;
   });
   afterEach(async () => {
     await worker.end();
   });
 
   it('does not retain arguments after a task finished', async () => {
-    let leakDetector!: LeakDetector;
+    let leakDetector: LeakDetector;
     await new Promise((resolve, reject) => {
       const obj = {};
       leakDetector = new LeakDetector(obj);
-      (worker as any).fn(obj).then(resolve, reject);
+      worker.fn(obj).then(resolve, reject);
     });
 
-    expect(await leakDetector.isLeaking()).toBe(false);
+    expect(await leakDetector!.isLeaking()).toBe(false);
   });
 });
 
@@ -48,24 +48,23 @@ describe('Worker leaks', () => {
     writeFileSync(workerFile, 'module.exports.fn = (obj) => [obj];');
   });
 
-  let worker!: Worker;
+  let worker: JestWorkerFarm<{fn(a: unknown): void}>;
   beforeEach(() => {
     worker = new Worker(workerFile, {
       enableWorkerThreads: false,
       exposedMethods: ['fn'],
-      // @ts-expect-error: option does not exist on the node 12 types
       forkOptions: {serialization: 'json'},
-    });
+    }) as JestWorkerFarm<{fn(a: unknown): void}>;
   });
   afterEach(async () => {
     await worker.end();
   });
 
   it('does not retain result after next task call', async () => {
-    let leakDetector!: LeakDetector;
+    let leakDetector: LeakDetector;
     await new Promise((resolve, reject) => {
       const obj = {};
-      (worker as any)
+      worker
         .fn(obj)
         .then((result: unknown) => {
           leakDetector = new LeakDetector(result);
@@ -75,9 +74,9 @@ describe('Worker leaks', () => {
     });
     await new Promise((resolve, reject) => {
       const obj = {};
-      (worker as any).fn(obj).then(resolve, reject);
+      worker.fn(obj).then(resolve, reject);
     });
 
-    expect(await leakDetector.isLeaking()).toBe(false);
+    expect(await leakDetector!.isLeaking()).toBe(false);
   });
 });

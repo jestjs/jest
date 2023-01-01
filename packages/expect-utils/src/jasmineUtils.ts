@@ -22,8 +22,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-/* eslint-disable */
-
 import type {Tester} from './types';
 
 export type EqualsFunction = (
@@ -44,8 +42,8 @@ function isAsymmetric(obj: any) {
 }
 
 function asymmetricMatch(a: any, b: any) {
-  var asymmetricA = isAsymmetric(a),
-    asymmetricB = isAsymmetric(b);
+  const asymmetricA = isAsymmetric(a);
+  const asymmetricB = isAsymmetric(b);
 
   if (asymmetricA && asymmetricB) {
     return undefined;
@@ -70,15 +68,15 @@ function eq(
   customTesters: Array<Tester>,
   strictCheck: boolean | undefined,
 ): boolean {
-  var result = true;
+  let result = true;
 
-  var asymmetricResult = asymmetricMatch(a, b);
+  const asymmetricResult = asymmetricMatch(a, b);
   if (asymmetricResult !== undefined) {
     return asymmetricResult;
   }
 
-  for (var i = 0; i < customTesters.length; i++) {
-    var customTesterResult = customTesters[i](a, b);
+  for (let i = 0; i < customTesters.length; i++) {
+    const customTesterResult = customTesters[i](a, b);
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }
@@ -95,7 +93,7 @@ function eq(
   if (a === null || b === null) {
     return a === b;
   }
-  var className = Object.prototype.toString.call(a);
+  const className = Object.prototype.toString.call(a);
   if (className != Object.prototype.toString.call(b)) {
     return false;
   }
@@ -132,7 +130,7 @@ function eq(
   }
 
   // Used to detect circular references.
-  var length = aStack.length;
+  let length = aStack.length;
   while (length--) {
     // Linear search. Performance is inversely proportional to the number of
     // unique nested structures.
@@ -154,19 +152,19 @@ function eq(
   }
 
   // Deep compare objects.
-  var aKeys = keys(a, hasKey),
-    key;
+  const aKeys = keys(a, hasKey);
+  let key;
 
-  var bKeys = keys(b, hasKey);
+  const bKeys = keys(b, hasKey);
   // Add keys corresponding to asymmetric matchers if they miss in non strict check mode
   if (!strictCheck) {
-    for (var index = 0; index !== bKeys.length; ++index) {
+    for (let index = 0; index !== bKeys.length; ++index) {
       key = bKeys[index];
       if ((isAsymmetric(b[key]) || b[key] === undefined) && !hasKey(a, key)) {
         aKeys.push(key);
       }
     }
-    for (var index = 0; index !== aKeys.length; ++index) {
+    for (let index = 0; index !== aKeys.length; ++index) {
       key = aKeys[index];
       if ((isAsymmetric(a[key]) || a[key] === undefined) && !hasKey(b, key)) {
         bKeys.push(key);
@@ -175,7 +173,7 @@ function eq(
   }
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  var size = aKeys.length;
+  let size = aKeys.length;
   if (bKeys.length !== size) {
     return false;
   }
@@ -205,17 +203,15 @@ function eq(
 }
 
 function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
-  var keys = [];
-  for (var key in obj) {
+  const keys = [];
+  for (const key in obj) {
     if (hasKey(obj, key)) {
       keys.push(key);
     }
   }
   return keys.concat(
     (Object.getOwnPropertySymbols(obj) as Array<any>).filter(
-      symbol =>
-        (Object.getOwnPropertyDescriptor(obj, symbol) as PropertyDescriptor)
-          .enumerable,
+      symbol => Object.getOwnPropertyDescriptor(obj, symbol)!.enumerable,
     ),
   );
 }
@@ -224,8 +220,8 @@ function hasKey(obj: any, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
-export function isA(typeName: string, value: unknown) {
-  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
+export function isA<T>(typeName: string, value: unknown): value is T {
+  return Object.prototype.toString.apply(value) === `[object ${typeName}]`;
 }
 
 function isDomNode(obj: any): boolean {
@@ -235,26 +231,5 @@ function isDomNode(obj: any): boolean {
     typeof obj.nodeType === 'number' &&
     typeof obj.nodeName === 'string' &&
     typeof obj.isEqualNode === 'function'
-  );
-}
-
-// SENTINEL constants are from https://github.com/facebook/immutable-js
-const IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
-const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
-const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
-
-export function isImmutableUnorderedKeyed(maybeKeyed: any) {
-  return !!(
-    maybeKeyed &&
-    maybeKeyed[IS_KEYED_SENTINEL] &&
-    !maybeKeyed[IS_ORDERED_SENTINEL]
-  );
-}
-
-export function isImmutableUnorderedSet(maybeSet: any) {
-  return !!(
-    maybeSet &&
-    maybeSet[IS_SET_SENTINEL] &&
-    !maybeSet[IS_ORDERED_SENTINEL]
   );
 }

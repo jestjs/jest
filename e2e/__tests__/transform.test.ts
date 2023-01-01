@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   copyDir,
@@ -278,74 +277,69 @@ describe('transform-testrunner', () => {
   });
 });
 
-onNodeVersions('>=12.17.0', () => {
-  describe('esm-transformer', () => {
-    const dir = path.resolve(__dirname, '../transform/esm-transformer');
+describe('esm-transformer', () => {
+  const dir = path.resolve(__dirname, '../transform/esm-transformer');
 
-    it('should transform with transformer written in ESM', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache']);
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
+  it('should transform with transformer written in ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('async-transformer', () => {
+  const dir = path.resolve(__dirname, '../transform/async-transformer');
+
+  it('should transform with transformer with only async transforms', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(2);
+  });
+});
+
+describe('babel-jest-async', () => {
+  const dir = path.resolve(__dirname, '../transform/babel-jest-async');
+
+  beforeAll(() => {
+    runYarnInstall(dir);
   });
 
-  describe('async-transformer', () => {
-    const dir = path.resolve(__dirname, '../transform/async-transformer');
-
-    it('should transform with transformer with only async transforms', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
-      });
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(2);
+  it("should use babel-jest's async transforms", () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
   });
+});
 
-  describe('babel-jest-async', () => {
-    const dir = path.resolve(__dirname, '../transform/babel-jest-async');
-
-    beforeAll(() => {
-      runYarnInstall(dir);
+describe('transform-esm-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
+  test('runs test with native ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 
-    it("should use babel-jest's async transforms", () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
-      });
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
-    });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
   });
+});
 
-  describe('transform-esm-runner', () => {
-    const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
-    test('runs test with native ESM', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
-      });
-
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
+describe('transform-esm-testrunner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-esm-testrunner');
+  test('runs test with native ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
-  });
 
-  describe('transform-esm-testrunner', () => {
-    const dir = path.resolve(
-      __dirname,
-      '../transform/transform-esm-testrunner',
-    );
-    test('runs test with native ESM', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules --no-warnings',
-      });
-
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
-    });
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
   });
 });

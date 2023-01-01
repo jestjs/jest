@@ -9,7 +9,7 @@ import m, {exportedSymbol} from '../module-under-test';
 import symbol from '../some-symbol';
 
 test('ESM transformer intercepts', () => {
-  expect(m).toEqual(42);
+  expect(m).toBe(42);
 });
 
 test('reexported symbol is same instance', () => {

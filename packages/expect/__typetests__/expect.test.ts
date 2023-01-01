@@ -8,9 +8,9 @@
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
 import {
+  MatcherContext,
   MatcherFunction,
-  MatcherFunctionWithState,
-  MatcherState,
+  MatcherFunctionWithContext,
   Matchers,
   expect,
 } from 'expect';
@@ -35,16 +35,16 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
-      expectType<(() => void) | undefined>(this.dontThrow);
+      expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
       expectType<boolean | undefined>(this.expand);
-      expectType<number | null | undefined>(this.expectedAssertionsNumber);
+      expectType<number | null>(this.expectedAssertionsNumber);
       expectType<Error | undefined>(this.expectedAssertionsNumberError);
-      expectType<boolean | undefined>(this.isExpectingAssertions);
+      expectType<boolean>(this.isExpectingAssertions);
       expectType<Error | undefined>(this.isExpectingAssertionsError);
-      expectType<boolean>(this.isNot);
-      expectType<string>(this.promise);
+      expectType<boolean | undefined>(this.isNot);
+      expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);
@@ -114,7 +114,7 @@ expectError(() => {
 });
 
 type ToBeWithinRange = (
-  this: MatcherState,
+  this: MatcherContext,
   actual: unknown,
   floor: number,
   ceiling: number,
@@ -133,7 +133,7 @@ const toBeWithinRange: MatcherFunction<[floor: number, ceiling: number]> = (
 
 expectAssignable<ToBeWithinRange>(toBeWithinRange);
 
-type AllowOmittingExpected = (this: MatcherState, actual: unknown) => any;
+type AllowOmittingExpected = (this: MatcherContext, actual: unknown) => any;
 
 const allowOmittingExpected: MatcherFunction = (
   actual: unknown,
@@ -151,13 +151,13 @@ const allowOmittingExpected: MatcherFunction = (
 
 expectAssignable<AllowOmittingExpected>(allowOmittingExpected);
 
-// MatcherState
+// MatcherContext
 
 const toHaveContext: MatcherFunction = function (
   actual: unknown,
   ...expect: Array<unknown>
 ) {
-  expectType<MatcherState>(this);
+  expectType<MatcherContext>(this);
 
   if (expect.length !== 0) {
     throw new Error('This matcher does not take any expected argument.');
@@ -169,15 +169,15 @@ const toHaveContext: MatcherFunction = function (
   };
 };
 
-interface CustomState extends MatcherState {
+interface CustomContext extends MatcherContext {
   customMethod(): void;
 }
 
-const customContext: MatcherFunctionWithState<CustomState> = function (
+const customContext: MatcherFunctionWithContext<CustomContext> = function (
   actual: unknown,
   ...expect: Array<unknown>
 ) {
-  expectType<CustomState>(this);
+  expectType<CustomContext>(this);
   expectType<void>(this.customMethod());
 
   if (expect.length !== 0) {
@@ -191,16 +191,16 @@ const customContext: MatcherFunctionWithState<CustomState> = function (
 };
 
 type CustomStateAndExpected = (
-  this: CustomState,
+  this: CustomContext,
   actual: unknown,
   count: number,
 ) => any;
 
-const customStateAndExpected: MatcherFunctionWithState<
-  CustomState,
+const customStateAndExpected: MatcherFunctionWithContext<
+  CustomContext,
   [count: number]
 > = function (actual: unknown, count: unknown) {
-  expectType<CustomState>(this);
+  expectType<CustomContext>(this);
   expectType<void>(this.customMethod());
 
   return {

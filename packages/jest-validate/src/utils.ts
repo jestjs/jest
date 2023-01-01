@@ -22,6 +22,8 @@ export const format = (value: unknown): string =>
 export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
+    : typeof value === 'undefined'
+    ? 'undefined'
     : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
@@ -33,6 +35,7 @@ export class ValidationError extends Error {
     comment = comment ? `\n\n${comment}` : '\n';
     this.name = '';
     this.message = chalk.red(`${chalk.bold(name)}:\n\n${message}${comment}`);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     Error.captureStackTrace(this, () => {});
   }
 }

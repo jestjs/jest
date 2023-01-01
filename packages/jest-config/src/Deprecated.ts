@@ -14,6 +14,14 @@ const deprecatedOptions: DeprecatedOptions = {
       '"browser"',
     )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
+  collectCoverageOnlyFrom: (_options: {
+    collectCoverageOnlyFrom?: Record<string, boolean>;
+  }) => `  Option ${chalk.bold(
+    '"collectCoverageOnlyFrom"',
+  )} was replaced by ${chalk.bold('"collectCoverageFrom"')}.
+
+    Please update your configuration.`,
+
   extraGlobals: (_options: {extraGlobals?: string}) => `  Option ${chalk.bold(
     '"extraGlobals"',
   )} was replaced by ${chalk.bold('"sandboxInjectedGlobals"')}.

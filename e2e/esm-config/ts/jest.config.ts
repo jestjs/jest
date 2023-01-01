@@ -5,9 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
+// allows to make sure that `ts-node` compiles the config file without a need to build Jest types
+// integration tests of Jest types run in a separate CI job through `jest.config.ts.mjs`
+type DummyConfig = {
+  displayName: string;
+  testEnvironment: string;
+};
 
-const config: Config.InitialOptions = {
+const config: DummyConfig = {
   displayName: 'Config from ts file',
   testEnvironment: 'node',
 };

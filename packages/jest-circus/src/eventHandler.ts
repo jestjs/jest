@@ -122,7 +122,15 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'add_test': {
       const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
-      const {asyncError, fn, mode, testName: name, timeout, concurrent} = event;
+      const {
+        asyncError,
+        fn,
+        mode,
+        testName: name,
+        timeout,
+        concurrent,
+        failing,
+      } = event;
 
       if (currentlyRunningTest) {
         currentlyRunningTest.errors.push(
@@ -148,6 +156,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         currentDescribeBlock,
         timeout,
         asyncError,
+        failing,
       );
       if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;

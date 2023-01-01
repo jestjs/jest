@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import throat from 'throat';
+import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
@@ -46,12 +46,13 @@ const _runTestsForDescribeBlock = async (
 
   if (isRootBlock) {
     const concurrentTests = collectConcurrentTests(describeBlock);
-    const mutex = throat(getState().maxConcurrency);
+    const mutex = pLimit(getState().maxConcurrency);
     for (const test of concurrentTests) {
       try {
         const promise = mutex(test.fn);
         // Avoid triggering the uncaught promise rejection handler in case the
         // test errors before being awaited on.
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         promise.catch(() => {});
         test.fn = () => promise;
       } catch (err) {
@@ -146,7 +147,7 @@ const _runTest = async (
   const isSkipped =
     parentSkipped ||
     test.mode === 'skip' ||
-    (hasFocusedTests && test.mode !== 'only') ||
+    (hasFocusedTests && test.mode === undefined) ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));
 
   if (isSkipped) {
@@ -224,9 +225,23 @@ const _callCircusTest = async (
       isHook: false,
       timeout,
     });
-    await dispatch({name: 'test_fn_success', test});
+    if (test.failing) {
+      test.asyncError.message =
+        'Failing test passed even though it was supposed to fail. Remove `.failing` to remove error.';
+      await dispatch({
+        error: test.asyncError,
+        name: 'test_fn_failure',
+        test,
+      });
+    } else {
+      await dispatch({name: 'test_fn_success', test});
+    }
   } catch (error) {
-    await dispatch({error, name: 'test_fn_failure', test});
+    if (test.failing) {
+      await dispatch({name: 'test_fn_success', test});
+    } else {
+      await dispatch({error, name: 'test_fn_failure', test});
+    }
   }
 };
 

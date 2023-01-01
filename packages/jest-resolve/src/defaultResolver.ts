@@ -6,6 +6,7 @@
  */
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
+import {resolve as resolveImports} from '@okikio/resolve.imports';
 import pnpResolver from 'jest-pnp-resolver';
 import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
@@ -83,7 +84,7 @@ export type ResolverOptions = {
 };
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
-  Pick<ResolverOptions, 'basedir' | 'conditions'>;
+  ResolverOptions;
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
 export type AsyncResolver = (
@@ -92,15 +93,6 @@ export type AsyncResolver = (
 ) => Promise<string>;
 
 export type Resolver = SyncResolver | AsyncResolver;
-
-// https://github.com/facebook/jest/pull/10617
-declare global {
-  namespace NodeJS {
-    export interface ProcessVersions {
-      pnp?: any;
-    }
-  }
-}
 
 const defaultResolver: SyncResolver = (path, options) => {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
@@ -120,11 +112,7 @@ const defaultResolver: SyncResolver = (path, options) => {
 
   const pathToResolve = getPathInModule(path, resolveOptions);
 
-  const result =
-    // if `getPathInModule` doesn't change the path, attempt to resolve it
-    pathToResolve === path
-      ? resolveSync(pathToResolve, resolveOptions)
-      : pathToResolve;
+  const result = resolveSync(pathToResolve, resolveOptions);
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
@@ -149,12 +137,42 @@ function getPathInModule(
     return path;
   }
 
+  if (path.startsWith('#')) {
+    const closestPackageJson = findClosestPackageJson(options.basedir);
+
+    if (!closestPackageJson) {
+      throw new Error(
+        `Jest: unable to locate closest package.json from ${options.basedir} when resolving import "${path}"`,
+      );
+    }
+
+    const pkg = readPackageCached(closestPackageJson);
+
+    const resolved = resolveImports(
+      pkg,
+      path,
+      createResolveOptions(options.conditions),
+    );
+
+    if (!resolved) {
+      throw new Error(
+        '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
+      );
+    }
+
+    if (resolved.startsWith('.')) {
+      return pathResolve(dirname(closestPackageJson), resolved);
+    }
+
+    // this is an external module, re-resolve it
+    return defaultResolver(resolved, options);
+  }
+
   const segments = path.split('/');
 
   let moduleName = segments.shift();
 
   if (moduleName) {
-    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
     if (moduleName.startsWith('@')) {
       moduleName = `${moduleName}/${segments.shift()}`;
     }
@@ -226,6 +244,6 @@ function createResolveOptions(
       {browser: false, require: true};
 }
 
-// if it's a relative import or an absolute path, exports are ignored
+// if it's a relative import or an absolute path, imports/exports are ignored
 const shouldIgnoreRequestForExports = (path: string) =>
   path.startsWith('.') || isAbsolute(path);

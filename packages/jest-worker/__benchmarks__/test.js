@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable no-async-promise-executor */
+
 /**
  * To start the test, build the repo and run:
  *   node --expose-gc test.js empty 100000

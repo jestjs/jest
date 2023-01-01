@@ -4,10 +4,10 @@
     "@babel/preset-flow": "^7.0.0"
   },
   "jest": {
-    "collectCoverageOnlyFrom": {
-      "<rootDir>/this-directory-is-covered/Covered.js": true,
-      "<rootDir>/this-directory-is-covered/ExcludedFromCoverage.js": true
-    },
+    "collectCoverageFrom": [
+      "<rootDir>/this-directory-is-covered/Covered.js",
+      "<rootDir>/this-directory-is-covered/ExcludedFromCoverage.js"
+    ],
     "coveragePathIgnorePatterns": [
       "ExcludedFromCoverage"
     ],

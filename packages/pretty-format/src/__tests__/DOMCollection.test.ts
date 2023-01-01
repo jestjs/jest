@@ -6,6 +6,9 @@
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
 
 import {plugins} from '../';
@@ -126,7 +129,7 @@ describe('DOMCollection plugin for list items', () => {
   });
 
   const expectedHTMLFormControlsCollection = [
-    'HTMLCollection [',
+    'HTMLFormControlsCollection [',
     '  <select>',
     '    <option',
     '      value="1"',

@@ -27,6 +27,7 @@ import {
   RECEIVED_COLOR,
   getLabelPrinter,
   matcherHint,
+  replaceMatchedToAsymmetricMatcher,
 } from 'jest-matcher-utils';
 import {format as prettyFormat} from 'pretty-format';
 import {
@@ -40,7 +41,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import type {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig, SnapshotFormat} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
@@ -205,9 +206,13 @@ export const printPropertiesAndReceived = (
   const bAnnotation = 'Received value';
 
   if (isLineDiffable(properties) && isLineDiffable(received)) {
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(properties, received, [], []);
     return diffLinesUnified(
-      serialize(properties).split('\n'),
-      serialize(getObjectSubset(received, properties)).split('\n'),
+      serialize(replacedExpected).split('\n'),
+      serialize(getObjectSubset(replacedReceived, replacedExpected)).split(
+        '\n',
+      ),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,
@@ -235,6 +240,7 @@ export const printSnapshotAndReceived = (
   b: string, // received serialized but without extra line breaks
   received: unknown,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  snapshotFormat?: SnapshotFormat,
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
@@ -303,7 +309,7 @@ export const printSnapshotAndReceived = (
 
     // Fall through to fix a regression for custom serializers
     // like jest-snapshot-serializer-raw that ignore the indent option.
-    const b0 = serialize(received, 0);
+    const b0 = serialize(received, 0, snapshotFormat);
     if (b0 !== b) {
       const aLines0 = dedentLines(aLines2);
 

@@ -11,5 +11,5 @@ import runJest from '../runJest';
 skipSuiteOnJasmine();
 test('`done()` works properly in hooks', () => {
   const {exitCode} = runJest('done-in-hooks');
-  expect(exitCode).toEqual(0);
+  expect(exitCode).toBe(0);
 });

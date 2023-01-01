@@ -8,8 +8,12 @@
 
 import type {Global} from '@jest/types';
 import type {EachTests} from '../bind';
-import type {Headings, Template, Templates} from './interpolation';
-import {interpolateVariables} from './interpolation';
+import {
+  Headings,
+  Template,
+  Templates,
+  interpolateVariables,
+} from './interpolation';
 
 export default function template(
   title: string,

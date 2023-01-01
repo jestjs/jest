@@ -53,7 +53,7 @@ describe('JSDomEnvironment', () => {
       {console, docblockPragmas: {}, testPath: __filename},
     );
 
-    expect(env.dom.window.navigator.userAgent).toEqual('foo');
+    expect(env.dom.window.navigator.userAgent).toBe('foo');
   });
 
   it('should respect url option', () => {
@@ -65,7 +65,7 @@ describe('JSDomEnvironment', () => {
       {console, docblockPragmas: {}, testPath: __filename},
     );
 
-    expect(env.dom.window.location.href).toEqual('http://localhost/');
+    expect(env.dom.window.location.href).toBe('http://localhost/');
 
     const envWithUrl = new JSDomEnvironment(
       {
@@ -79,7 +79,7 @@ describe('JSDomEnvironment', () => {
       {console, docblockPragmas: {}, testPath: __filename},
     );
 
-    expect(envWithUrl.dom.window.location.href).toEqual('https://jestjs.io/');
+    expect(envWithUrl.dom.window.location.href).toBe('https://jestjs.io/');
   });
 
   /**

@@ -11,33 +11,23 @@ constraints_min_version(1).
 % This rule will enforce that a workspace MUST depend on the same version of a dependency as the one used by the other workspaces
 gen_enforced_dependency(WorkspaceCwd, DependencyIdent, DependencyRange2, DependencyType) :-
   % Iterates over all dependencies from all workspaces
-    workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
+  workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   % Iterates over similarly-named dependencies from all workspaces (again)
-    workspace_has_dependency(OtherWorkspaceCwd, DependencyIdent, DependencyRange2, DependencyType2),
+  workspace_has_dependency(OtherWorkspaceCwd, DependencyIdent, DependencyRange2, DependencyType2),
   % Ignore peer dependencies
-    DependencyType \= 'peerDependencies',
-    DependencyType2 \= 'peerDependencies',
-  % Ignore workspace:*: we use both `workspace:*` and real version such as `^28.0.0-alpha.8` to reference package in monorepo
-  % TODO: in the future we should make it consistent and remove this ignore
-    DependencyRange \= 'workspace:*',
-    DependencyRange2 \= 'workspace:*',
-  % Get the workspace name
-    workspace_ident(WorkspaceCwd, WorkspaceIdent),
-    workspace_ident(OtherWorkspaceCwd, OtherWorkspaceIdent),
-  % @types/node in the root need to stay on ~12.12.0
-    (
-      (WorkspaceIdent = '@jest/monorepo'; OtherWorkspaceIdent = '@jest/monorepo') ->
-        DependencyIdent \= '@types/node'
-      ;
-        true
-    ),
-  % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
-    (
-      (WorkspaceIdent = 'example-enzyme'; OtherWorkspaceIdent = 'example-enzyme') ->
-        \+ member(DependencyIdent, ['react', 'react-dom'])
-      ;
-        true
-    ).
+  DependencyType \= 'peerDependencies',
+  DependencyType2 \= 'peerDependencies',
+  % A list of exception to same version rule
+  \+ member(DependencyIdent, [
+    % Allow enzyme example workspace use a older version react and react-dom, because enzyme don't support react 17
+    'react', 'react-dom',
+    % Only RN should be bumped to react 18
+    'react-test-renderer',
+    % @types/node in the root need to stay on ~14.14.45
+    '@types/node',
+    % upgrading the entire repository is a breaking change
+    'glob'
+  ]).
 
 % Enforces that a dependency doesn't appear in both `dependencies` and `devDependencies`
 gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, 'devDependencies') :-
@@ -67,7 +57,7 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.access', null) :-
   workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the engines.node field for public workspace
-gen_enforced_field(WorkspaceCwd, 'engines.node', '^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0') :-
+gen_enforced_field(WorkspaceCwd, 'engines.node', '^14.15.0 || ^16.10.0 || >=18.0.0') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 
 % Enforces the main and types field to start with ./

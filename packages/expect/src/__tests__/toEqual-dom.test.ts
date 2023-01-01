@@ -6,7 +6,12 @@
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
+
+import {expect} from '@jest/globals';
 
 describe('toEqual', () => {
   describe('duck type', () => {

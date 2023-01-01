@@ -47,9 +47,7 @@ function gitCreateBranch(branchName: string, dir: string) {
   run(`git branch ${branchName}`, dir);
 }
 
-beforeAll(() => {
-  jest.retryTimes(3);
-});
+jest.retryTimes(3);
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

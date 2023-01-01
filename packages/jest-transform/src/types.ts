@@ -11,10 +11,7 @@ import type {Config, TransformTypes} from '@jest/types';
 export interface ShouldInstrumentOptions
   extends Pick<
     Config.GlobalConfig,
-    | 'collectCoverage'
-    | 'collectCoverageFrom'
-    | 'collectCoverageOnlyFrom'
-    | 'coverageProvider'
+    'collectCoverage' | 'collectCoverageFrom' | 'coverageProvider'
   > {
   changedFiles?: Set<string>;
   sourcesRelatedToTestsInChangedFiles?: Set<string>;
@@ -27,7 +24,7 @@ export interface Options
 }
 
 // `babel` and `@jridgewell/trace-mapping` disagrees - `number` vs `3`
-interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
+export interface FixedRawSourceMap extends Omit<EncodedSourceMap, 'version'> {
   version: number;
 }
 

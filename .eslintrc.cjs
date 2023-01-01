@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable sort-keys */
+
 const fs = require('fs');
 const path = require('path');
 const {sync: readPkg} = require('read-pkg');
@@ -14,7 +16,8 @@ function getPackages() {
   const packages = fs
     .readdirSync(PACKAGES_DIR)
     .map(file => path.resolve(PACKAGES_DIR, file))
-    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
+    .filter(f => fs.lstatSync(path.resolve(f)).isDirectory())
+    .filter(f => fs.existsSync(path.join(path.resolve(f), 'package.json')));
   return packages.map(packageDir => {
     const pkg = readPkg({cwd: packageDir});
     return pkg.name;
@@ -24,9 +27,9 @@ function getPackages() {
 module.exports = {
   env: {
     es2020: true,
-    'jest/globals': true,
   },
   extends: [
+    'eslint:recommended',
     'plugin:markdown/recommended',
     'plugin:import/errors',
     'plugin:eslint-comments/recommended',
@@ -38,6 +41,7 @@ module.exports = {
   overrides: [
     {
       extends: [
+        'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:import/typescript',
       ],
@@ -46,15 +50,20 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
+        '@typescript-eslint/no-var-requires': 'off',
         // TS verifies these
         'consistent-return': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        // TODO: enable at some point
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
       },
     },
     {
@@ -103,8 +112,6 @@ module.exports = {
         'packages/expect-utils/src/utils.ts',
         'packages/jest-core/src/collectHandles.ts',
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
-        'packages/jest-haste-map/src/index.ts',
-        'packages/jest-haste-map/src/watchers/FSEventsWatcher.ts',
         'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
         'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
@@ -140,23 +147,95 @@ module.exports = {
       },
     },
 
+    // 'eslint-plugin-jest' rules for test and test related files
+    {
+      files: [
+        '**/__mocks__/**',
+        '**/__tests__/**',
+        '**/*.md/**',
+        '**/*.test.*',
+        'e2e/babel-plugin-jest-hoist/mockFile.js',
+        'e2e/failures/macros.js',
+        'e2e/test-in-root/*.js',
+        'e2e/test-match/test-suites/*',
+        'packages/test-utils/src/ConditionalTest.ts',
+      ],
+      env: {'jest/globals': true},
+      excludedFiles: ['**/__typetests__/**'],
+      extends: ['plugin:jest/style'],
+      plugins: ['jest'],
+      rules: {
+        'jest/no-alias-methods': 'error',
+        'jest/no-focused-tests': 'error',
+        'jest/no-identical-title': 'error',
+        'jest/require-to-throw-message': 'error',
+        'jest/valid-expect': 'error',
+      },
+    },
+
+    {
+      files: ['e2e/__tests__/*'],
+      rules: {
+        'jest/no-restricted-jest-methods': [
+          'error',
+          {
+            fn: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            mock: 'Please use fixtures instead of mocks in the end-to-end tests.',
+            doMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            setMock:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+            spyOn:
+              'Please use fixtures instead of mocks in the end-to-end tests.',
+          },
+        ],
+      },
+    },
+
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['**/*.md/**'],
       rules: {
         '@typescript-eslint/no-unused-vars': 'off',
-        'arrow-body-style': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
         'consistent-return': 'off',
         'import/export': 'off',
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': 'off',
+        'jest/no-focused-tests': 'off',
+        'jest/require-to-throw-message': 'off',
         'no-console': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'off',
-        'prettier/prettier': 'off',
         'sort-keys': 'off',
       },
     },
+    // demonstration of matchers usage
+    {
+      files: ['**/UsingMatchers.md/**'],
+      rules: {
+        'jest/prefer-to-be': 'off',
+      },
+    },
+    // demonstration of 'jest/valid-expect' rule
+    {
+      files: [
+        '**/2017-05-06-jest-20-delightful-testing-multi-project-runner.md/**',
+      ],
+      rules: {
+        'jest/valid-expect': 'off',
+      },
+    },
+    // Jest 11 did not had `toHaveLength` matcher
+    {
+      files: ['**/2016-04-12-jest-11.md/**'],
+      rules: {
+        'jest/prefer-to-have-length': 'off',
+      },
+    },
+
     // snapshots in examples plus inline snapshots need to keep backtick
     {
       files: ['**/*.md/**', 'e2e/custom-inline-snapshot-matchers/__tests__/*'],
@@ -169,8 +248,9 @@ module.exports = {
       },
     },
     {
-      files: ['website/**/*'],
+      files: ['docs/**/*', 'website/**/*'],
       rules: {
+        'no-redeclare': 'off',
         'import/order': 'off',
         'import/sort-keys': 'off',
         'no-restricted-globals': ['off'],
@@ -180,8 +260,7 @@ module.exports = {
     {
       files: ['examples/**/*'],
       rules: {
-        'import/no-unresolved': ['error', {ignore: ['^react-native$']}],
-        'import/order': 'off',
+        'no-restricted-imports': 'off',
       },
     },
     {
@@ -200,6 +279,13 @@ module.exports = {
             allowObject: true,
           },
         ],
+      },
+    },
+    {
+      files: ['**/__tests__/**', '**/__mocks__/**'],
+      rules: {
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
       },
     },
     {
@@ -249,11 +335,9 @@ module.exports = {
       },
     },
     {
-      files: ['**/__typetests__/**', '**/*.md/**'],
+      files: ['**/__typetests__/**'],
       rules: {
-        'jest/no-focused-tests': 'off',
-        'jest/no-identical-title': 'off',
-        'jest/valid-expect': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
       },
     },
     {
@@ -292,7 +376,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['import', 'jest'],
+  plugins: ['import', 'jsdoc'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -314,7 +398,6 @@ module.exports = {
     'handle-callback-err': 'off',
     'id-length': 'off',
     'id-match': 'off',
-    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -350,9 +433,7 @@ module.exports = {
       },
     ],
     'init-declarations': 'off',
-    'jest/no-focused-tests': 'error',
-    'jest/no-identical-title': 'error',
-    'jest/valid-expect': 'error',
+    'jsdoc/check-alignment': 'error',
     'lines-around-comment': 'off',
     'max-depth': 'off',
     'max-nested-callbacks': 'off',
@@ -383,7 +464,8 @@ module.exports = {
     'no-dupe-args': 'error',
     'no-dupe-class-members': 'error',
     'no-dupe-keys': 'error',
-    'no-duplicate-case': 'warn',
+    'no-duplicate-case': 'error',
+    'no-duplicate-imports': 'error',
     'no-else-return': 'off',
     'no-empty': 'off',
     'no-empty-character-class': 'warn',
@@ -436,10 +518,7 @@ module.exports = {
     'no-regex-spaces': 'warn',
     'no-restricted-globals': [
       'error',
-      {
-        message: 'Use `globalThis` instead.',
-        name: 'global',
-      },
+      {message: 'Use `globalThis` instead.', name: 'global'},
     ],
     'no-restricted-imports': [
       'error',

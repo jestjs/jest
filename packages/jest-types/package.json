@@ -1,13 +1,13 @@
 {
   "name": "@jest/types",
-  "version": "28.0.2",
+  "version": "29.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-types"
   },
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"
+    "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "license": "MIT",
   "main": "./build/index.js",
@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/schemas": "^28.0.2",
+    "@jest/schemas": "workspace:^",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
@@ -28,8 +28,8 @@
     "chalk": "^4.0.0"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.6.2",
-    "tsd-lite": "^0.5.1"
+    "@tsd/typescript": "^4.9.0",
+    "tsd-lite": "^0.6.0"
   },
   "publishConfig": {
     "access": "public"

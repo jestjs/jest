@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import type {FS as HasteFS} from 'jest-haste-map';
+import type {IHasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
@@ -20,13 +20,13 @@ export type ResolvedModule = {
  * to retrieve a list of all transitive inverse dependencies.
  */
 export class DependencyResolver {
-  private _hasteFS: HasteFS;
-  private _resolver: Resolver;
-  private _snapshotResolver: SnapshotResolver;
+  private readonly _hasteFS: IHasteFS;
+  private readonly _resolver: Resolver;
+  private readonly _snapshotResolver: SnapshotResolver;
 
   constructor(
     resolver: Resolver,
-    hasteFS: HasteFS,
+    hasteFS: IHasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
     this._resolver = resolver;
@@ -61,7 +61,7 @@ export class DependencyResolver {
         }
       }
 
-      if (!resolvedDependency) {
+      if (resolvedDependency == null) {
         return acc;
       }
 
@@ -78,7 +78,7 @@ export class DependencyResolver {
         // leave resolvedMockDependency as undefined if nothing can be found
       }
 
-      if (resolvedMockDependency) {
+      if (resolvedMockDependency != null) {
         const dependencyMockDir = path.resolve(
           path.dirname(resolvedDependency),
           '__mocks__',

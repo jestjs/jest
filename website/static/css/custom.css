@@ -48,14 +48,6 @@ div.bottom-margin {
   padding-right: 80px;
 }
 
-div.video iframe {
-  display: block;
-  margin: 0 auto 10px;
-  min-height: 280px;
-  width: 100%;
-  height: auto;
-}
-
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   div.video {
     display: none;

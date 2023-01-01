@@ -9,7 +9,7 @@ import type {V8Coverage} from 'collect-v8-coverage';
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
-import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type {IHasteFS, IModuleMap} from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
 export interface RuntimeTransformResult extends TransformTypes.TransformResult {
@@ -42,10 +42,6 @@ export type AssertionLocation = {
 
 export type Status = AssertionResult['status'];
 
-export type Bytes = number;
-
-export type Milliseconds = TestResult.Milliseconds;
-
 export type AssertionResult = TestResult.AssertionResult;
 
 export type FormattedAssertionResult = Pick<
@@ -72,6 +68,7 @@ export type AggregatedResultWithoutCoverage = {
   success: boolean;
   testResults: Array<TestResult>;
   wasInterrupted: boolean;
+  runExecError?: SerializableError;
 };
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
@@ -96,17 +93,17 @@ export type TestResult = {
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
-  memoryUsage?: Bytes;
+  memoryUsage?: number;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
   numTodoTests: number;
   openHandles: Array<Error>;
   perfStats: {
-    end: Milliseconds;
-    runtime: Milliseconds;
+    end: number;
+    runtime: number;
     slow: boolean;
-    start: Milliseconds;
+    start: number;
   };
   skipped: boolean;
   snapshot: {
@@ -128,7 +125,7 @@ export type FormattedTestResult = {
   message: string;
   name: string;
   summary: string;
-  status: 'failed' | 'passed';
+  status: 'failed' | 'passed' | 'skipped' | 'focused';
   startTime: number;
   endTime: number;
   coverage: unknown;
@@ -190,8 +187,8 @@ export type Test = {
 
 export type TestContext = {
   config: Config.ProjectConfig;
-  hasteFS: HasteFS;
-  moduleMap: ModuleMap;
+  hasteFS: IHasteFS;
+  moduleMap: IModuleMap;
   resolver: Resolver;
 };
 

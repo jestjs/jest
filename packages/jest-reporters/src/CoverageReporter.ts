@@ -37,11 +37,11 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
-  private _context: ReporterContext;
-  private _coverageMap: istanbulCoverage.CoverageMap;
-  private _globalConfig: Config.GlobalConfig;
-  private _sourceMapStore: libSourceMaps.MapStore;
-  private _v8CoverageResults: Array<V8CoverageResult>;
+  private readonly _context: ReporterContext;
+  private readonly _coverageMap: istanbulCoverage.CoverageMap;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _sourceMapStore: libSourceMaps.MapStore;
+  private readonly _v8CoverageResults: Array<V8CoverageResult>;
 
   static readonly filename = __filename;
 
@@ -148,7 +148,6 @@ export default class CoverageReporter extends BaseReporter {
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
-        // @ts-expect-error: option does not exist on the node 12 types
         forkOptions: {serialization: 'json'},
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,
@@ -273,7 +272,16 @@ export default class CoverageReporter extends BaseReporter {
         const pathOrGlobMatches = thresholdGroups.reduce<
           Array<[string, string]>
         >((agg, thresholdGroup) => {
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+          // Preserve trailing slash, but not required if root dir
+          // See https://github.com/facebook/jest/issues/12703
+          const resolvedThresholdGroup = path.resolve(thresholdGroup);
+          const suffix =
+            (thresholdGroup.endsWith(path.sep) ||
+              (process.platform === 'win32' && thresholdGroup.endsWith('/'))) &&
+            !resolvedThresholdGroup.endsWith(path.sep)
+              ? path.sep
+              : '';
+          const absoluteThresholdGroup = `${resolvedThresholdGroup}${suffix}`;
 
           // The threshold group might be a path:
 

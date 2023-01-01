@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import throat from 'throat';
+import pLimit from 'p-limit';
 import {Test, TestResult, createEmptyTestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {
@@ -32,7 +32,7 @@ export default class BaseTestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ): Promise<void> {
-    const mutex = throat(1);
+    const mutex = pLimit(1);
     return tests.reduce(
       (promise, test) =>
         mutex(() =>

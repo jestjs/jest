@@ -6,12 +6,11 @@
  */
 
 import {createRequire} from 'module';
-import path from 'path';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import chalk from 'chalk';
 import execa from 'execa';
 import fs from 'graceful-fs';
-import rimraf from 'rimraf';
 import stripJsonComments from 'strip-json-comments';
 import tempy from 'tempy';
 const require = createRequire(import.meta.url);
@@ -51,7 +50,7 @@ function smoketest() {
     execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
     execa.sync(
       'yarn',
-      ['add', `typescript@~${tsVersion}`, '@tsconfig/node12'],
+      ['add', `typescript@~${tsVersion}`, '@tsconfig/node14'],
       {cwd, stdio: 'inherit'},
     );
     fs.writeFileSync(
@@ -70,7 +69,7 @@ function smoketest() {
       ),
     );
   } finally {
-    rimraf.sync(cwd);
+    fs.rmSync(cwd, {force: true, recursive: true});
   }
 }
 

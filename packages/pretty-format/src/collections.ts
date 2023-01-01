@@ -12,7 +12,9 @@ const getKeysOfEnumerableProperties = (
   object: Record<string, unknown>,
   compareKeys: CompareKeys,
 ) => {
-  const keys: Array<string | symbol> = Object.keys(object).sort(compareKeys);
+  const rawKeys = Object.keys(object);
+  const keys: Array<string | symbol> =
+    compareKeys !== null ? rawKeys.sort(compareKeys) : rawKeys;
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
@@ -40,7 +42,7 @@ export function printIteratorEntries(
   // Too bad, so sad that separator for ECMAScript Map has been ' => '
   // What a distracting diff if you change a data structure to/from
   // ECMAScript Object or Immutable.Map/OrderedMap which use the default.
-  separator: string = ': ',
+  separator = ': ',
 ): string {
   let result = '';
   let width = 0;

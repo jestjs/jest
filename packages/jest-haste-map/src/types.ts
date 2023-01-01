@@ -39,6 +39,24 @@ export interface IModuleMap<S = SerializableModuleMap> {
   toJSON(): S;
 }
 
+export interface IHasteFS {
+  exists(path: string): boolean;
+  getAbsoluteFileIterator(): Iterable<string>;
+  getAllFiles(): Array<string>;
+  getDependencies(file: string): Array<string> | null;
+  getSize(path: string): number | null;
+  matchFiles(pattern: RegExp | string): Array<string>;
+  matchFilesWithGlob(
+    globs: ReadonlyArray<string>,
+    root: string | null,
+  ): Set<string>;
+}
+
+export interface IHasteMap {
+  on(eventType: 'change', handler: (event: ChangeEvent) => void): void;
+  build(): Promise<{hasteFS: IHasteFS; moduleMap: IModuleMap}>;
+}
+
 export type HasteMapStatic<S = SerializableModuleMap> = {
   getCacheFilePath(
     tmpdir: string,
@@ -122,7 +140,7 @@ export type RawModuleMap = {
   mocks: MockData;
 };
 
-type ModuleMapItem = {[platform: string]: ModuleMetaData};
+export type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [path: string, type: number];
 
 export type HType = {

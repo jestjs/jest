@@ -18,9 +18,11 @@ import type {JestExpect} from './types';
 export type {
   AsymmetricMatchers,
   Matchers,
+  MatcherContext,
   MatcherFunction,
-  MatcherFunctionWithState,
+  MatcherFunctionWithContext,
   MatcherState,
+  MatcherUtils,
 } from 'expect';
 export type {JestExpect} from './types';
 

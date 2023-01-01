@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert = require('assert');
+import {AssertionError, strict as assert} from 'assert';
 import {Console} from 'console';
 import {InspectOptions, format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
@@ -15,9 +15,9 @@ import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WriteStream;
-  private _stderr: NodeJS.WriteStream;
-  private _formatBuffer: Formatter;
+  private readonly _stdout: NodeJS.WriteStream;
+  private readonly _stderr: NodeJS.WriteStream;
+  private readonly _formatBuffer: Formatter;
   private _counters: LogCounters = {};
   private _timers: LogTimers = {};
   private _groupDepth = 0;
@@ -52,12 +52,16 @@ export default class CustomConsole extends Console {
   override assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
-    } catch (error: any) {
-      this._logError('assert', error.toString());
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+      // https://github.com/facebook/jest/pull/13422#issuecomment-1273396392
+      this._logError('assert', error.toString().replace(/:\n\n.*\n/gs, ''));
     }
   }
 
-  override count(label: string = 'default'): void {
+  override count(label = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -65,7 +69,7 @@ export default class CustomConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  override countReset(label: string = 'default'): void {
+  override countReset(label = 'default'): void {
     this._counters[label] = 0;
   }
 
@@ -89,7 +93,7 @@ export default class CustomConsole extends Console {
   override group(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('group', chalk.bold(format(title, ...args)));
     }
   }
@@ -97,7 +101,7 @@ export default class CustomConsole extends Console {
   override groupCollapsed(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
-    if (title || args.length > 0) {
+    if (title != null || args.length > 0) {
       this._log('groupCollapsed', chalk.bold(format(title, ...args)));
     }
   }
@@ -116,18 +120,18 @@ export default class CustomConsole extends Console {
     this._log('log', format(firstArg, ...args));
   }
 
-  override time(label: string = 'default'): void {
-    if (this._timers[label]) {
+  override time(label = 'default'): void {
+    if (this._timers[label] != null) {
       return;
     }
 
     this._timers[label] = new Date();
   }
 
-  override timeEnd(label: string = 'default'): void {
+  override timeEnd(label = 'default'): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`));
@@ -138,7 +142,7 @@ export default class CustomConsole extends Console {
   override timeLog(label = 'default', ...data: Array<unknown>): void {
     const startTime = this._timers[label];
 
-    if (startTime) {
+    if (startTime != null) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
       this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
