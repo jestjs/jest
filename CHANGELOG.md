@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-haste-map]` ignore Sapling vcs directories (`.sl/`) ([#13674](https://github.com/facebook/jest/pull/13674))
 - `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705))
 - `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
