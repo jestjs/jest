@@ -495,9 +495,9 @@ it('transitions as expected', () => {
 });
 ```
 
-#### Internal matchers
+#### `this.matchers`
 
-All the internal matchers from Jest are exposed inside `this.matchers`. So if you need to use an existent matcher like `toBe` or `toEqual` among others, you can access it directly.
+The Jest built-in matchers are exposed on `this.matchers`. This allows usage of matchers like `toBe` or `toEqual` in your custom matcher.
 
 ```js
 expect.extend({

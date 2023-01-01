@@ -43,7 +43,7 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-const internalMatchers = Object.freeze(matchers);
+const builtInMatchers = Object.freeze(matchers);
 
 function getPrototype(obj: object) {
   if (Object.getPrototypeOf) {
@@ -83,7 +83,7 @@ export abstract class AsymmetricMatcher<T>
       ...getState<MatcherState>(),
       equals,
       isNot: this.inverse,
-      matchers: internalMatchers,
+      matchers: builtInMatchers,
       utils,
     };
   }
