@@ -345,8 +345,6 @@ describe('findNodeModule', () => {
         Resolver.findNodeModule('#something-else', {
           basedir: path.resolve(importsRoot, './foo/index.js'),
           conditions: [],
-          // this is not the default behaviour (which is to return `null`)
-          throwIfNotFound: true,
         });
       }).toThrow('Missing "#something-else" import in "foo" package');
     });
