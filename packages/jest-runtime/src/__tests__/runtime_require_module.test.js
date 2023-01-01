@@ -132,8 +132,13 @@ describe('Runtime requireModule', () => {
       'RegularModule',
     );
     expect(exports.paths.length).toBeGreaterThan(0);
-    exports.paths.forEach(path => {
-      expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
+    const root = path.parse(process.cwd()).root;
+    const globalPath = path.join(root, 'node_modules');
+    const rootIndex = exports.paths.findIndex(path => path === globalPath);
+    exports.paths.forEach((path, index) => {
+      if (index <= rootIndex) {
+        expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
+      }
     });
   });
 

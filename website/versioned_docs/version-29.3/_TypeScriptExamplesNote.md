@@ -6,4 +6,6 @@ The TypeScript examples from this page will only work as documented if you expli
 import {expect, jest, test} from '@jest/globals';
 ```
 
+Consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
+
 :::
