@@ -346,6 +346,14 @@ describe('HasteMap', () => {
     expect(hasteFS.matchFiles('.git')).toEqual([]);
   });
 
+  it('ignores sapling vcs directories without ignore pattern', async () => {
+    mockFs[path.join('/', 'project', 'fruits', '.sl', 'package.json')] = `
+      invalid}{
+    `;
+    const {hasteFS} = await (await HasteMap.create(defaultConfig)).build();
+    expect(hasteFS.matchFiles('.sl')).toEqual([]);
+  });
+
   it('ignores vcs directories with ignore pattern regex', async () => {
     const config = {...defaultConfig, ignorePattern: /Kiwi/};
     mockFs[path.join('/', 'project', 'fruits', 'Kiwi.js')] = `

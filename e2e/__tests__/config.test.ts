@@ -75,3 +75,17 @@ test('negated flags override previous flags', () => {
 
   expect(globalConfig.silent).toBe(true);
 });
+
+test('colors is true when it is specified in package.json', () => {
+  const {configs} = getConfig('colors/with-colors');
+
+  expect(configs).toHaveLength(1);
+  expect(configs[0].colors).toBe(true);
+});
+
+test('colors is false when it is not specified in package.json', () => {
+  const {configs} = getConfig('colors/without-colors');
+
+  expect(configs).toHaveLength(1);
+  expect(configs[0].colors).toBe(false);
+});

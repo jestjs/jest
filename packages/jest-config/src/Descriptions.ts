@@ -18,6 +18,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'Indicates whether the coverage information should be collected while executing the test',
   collectCoverageFrom:
     'An array of glob patterns indicating a set of files for which coverage information should be collected',
+  colors:
+    'Forces test results output highlighting even if stdout is not a TTY.',
   coverageDirectory:
     'The directory where Jest should output its coverage files',
   coveragePathIgnorePatterns:
