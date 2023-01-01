@@ -1,0 +1,9 @@
+{
+  "name": "foo",
+  "imports": {
+    "#nested": {
+      "require": "./internal.cjs",
+      "default": "external-foo"
+    }
+  }
+}
