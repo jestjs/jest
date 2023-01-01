@@ -12762,6 +12762,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-leak-detector@workspace:packages/jest-leak-detector"
   dependencies:
+    "@types/node": "*"
     jest-get-type: "workspace:^"
     pretty-format: "workspace:^"
   languageName: unknown
