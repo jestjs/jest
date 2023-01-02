@@ -628,13 +628,47 @@ Custom matchers are good to use when you want to provide a custom assertion that
 
 Custom equality testers are good to use for globally extending Jest matchers to apply custom equality logic for all equality comparisons. Test authors can't turn on custom testers for certain assertions and turn off for others (a custom matcher should be used instead if that behavior is desired). For example, defining how to check if two `Volume` objects are equal for all matchers would be a good custom equality tester.
 
-#### Using custom testers in custom matchers
+#### Recursive custom equality testers
 
-TODO
+If you custom equality testers is testing objects with properties you'd like to do deep equality with, you should use the `equals` helper from the `@jest/expect-utils` package. This `equals` method is the same deep equals method Jest uses internally for all of its deep equality comparisons. Its the method that invokes your custom equality tester. It accepts an array of custom equality testers as a third argument. Custom equality testers are also given an array of custom testers as their third argument. Pass this argument into the third argument of `equals` so that any further equality checks deeper in your object can also take advantage of custom equality testers.
 
-#### Recursive custom testers
+For example, let's say you have a `Book` class that contains an array of `Author` classes and both of these classes have custom testers. The `Book` custom tester would want to do a deep equality check on the array of `Author`s and pass in the custom testers so the `Author`s custom equality tester is applied:
 
-TODO
+```js title="customEqualityTesters.js"
+import {equals} from '@jest/expect-utils';
+
+const areAuthorsEqual = (a, b) => {
+  const isAAuthor = a instanceof Author;
+  const isBAuthor = b instanceof Author;
+
+  if (isAAuthor && isBAuthor) {
+    // Authors are equal if they have the same name
+    return a.name === b.name;
+  } else if (isAAuthor !== isBAuthor) {
+    return false;
+  } else {
+    return undefined;
+  }
+};
+
+const areBooksEqual = (a, b, customTesters) => {
+  const isABook = a instanceof Book;
+  const isBBook = b instanceof Book;
+
+  if (isABook && isBBook) {
+    // Books are the same if they have the same name and author array. We need
+    // to pass customTesters to equals here so the Author custom tester will be
+    // used when comparing Authors
+    return a.name === b.name && equals(a.authors, b.authors, customTesters);
+  } else if (isABook !== isBBook) {
+    return false;
+  } else {
+    return undefined;
+  }
+};
+
+expect.addEqualityTesters([areAuthorsEqual, areBooksEqual]);
+```
 
 ### `expect.anything()`
 

@@ -81,6 +81,10 @@ jestExpect.extend({
   },
 });
 
+// Create Volumes with different specifications but the same value for use in
+// tests. Without the custom tester, these volumes would not be equal because
+// their properties have different values. However, with our custom tester they
+// are equal.
 const volume1 = createVolume(1, 'L');
 const volume2 = createVolume(1000, 'mL');
 
@@ -93,7 +97,7 @@ const volumeReturn1 = createVolume(2, 'L');
 const volumeReturn2 = createVolume(2000, 'mL');
 
 const testArgs = [volumeArg1, volumeArg2, [volumeArg3, volumeArg4]];
-// Swap the order of args to assert custom tester does not affect test
+// Swap the order of args to assert custom tester sees these volumes as equal
 const expectedArgs = [volumeArg2, volumeArg1, [volumeArg4, volumeArg3]];
 
 expect.addEqualityTesters([areVolumesEqual]);
