@@ -9,40 +9,48 @@
 import type {Tester} from '@jest/expect-utils';
 import jestExpect from '../';
 
-const specialObjPropName = '$$special';
-const specialObjSymbol = Symbol('special test object type');
+class Volume {
+  public amount: number;
+  public unit: 'L' | 'mL';
 
-interface SpecialObject {
-  $$special: symbol;
-  value: string;
+  constructor(amount: number, unit: 'L' | 'mL') {
+    this.amount = amount;
+    this.unit = unit;
+  }
+
+  toString(): string {
+    return `[Volume ${this.amount}${this.unit}]`;
+  }
+
+  equals(other: Volume): boolean {
+    if (this.unit === other.unit) {
+      return this.amount === other.amount;
+    } else if (this.unit === 'L' && other.unit === 'mL') {
+      return this.amount * 1000 === other.amount;
+    } else {
+      return this.amount === other.amount * 1000;
+    }
+  }
 }
 
-function createSpecialObject(value: string) {
-  return {
-    [specialObjPropName]: specialObjSymbol,
-    value,
-  };
+function createVolume(amount: number, unit: 'L' | 'mL' = 'L') {
+  return new Volume(amount, unit);
 }
 
-function isSpecialObject(a: unknown): a is SpecialObject {
-  return (
-    a != null &&
-    typeof a === 'object' &&
-    specialObjPropName in a &&
-    (a as any)[specialObjPropName] === specialObjSymbol
-  );
+function isVolume(a: unknown): a is Volume {
+  return a instanceof Volume;
 }
 
-const specialObjTester: Tester = (
+const areVolumesEqual: Tester = (
   a: unknown,
   b: unknown,
 ): boolean | undefined => {
-  const isASpecial = isSpecialObject(a);
-  const isBSpecial = isSpecialObject(b);
+  const isAVolume = isVolume(a);
+  const isBVolume = isVolume(b);
 
-  if (isASpecial && isBSpecial) {
-    return true;
-  } else if ((isASpecial && !isBSpecial) || (!isASpecial && isBSpecial)) {
+  if (isAVolume && isBVolume) {
+    return a.equals(b);
+  } else if (isAVolume !== isBVolume) {
     return false;
   } else {
     return undefined;
@@ -57,75 +65,76 @@ function* toIterator<T>(array: Array<T>): Iterator<T> {
 
 declare module '../types' {
   interface Matchers<R> {
-    toSpecialObjectEqual(expected: SpecialObject): R;
+    toEqualVolume(expected: Volume): R;
   }
 }
 
 jestExpect.extend({
-  toSpecialObjectEqual(expected: SpecialObject, actual: SpecialObject) {
+  toEqualVolume(expected: Volume, actual: Volume) {
     const result = this.equals(expected, actual, this.customTesters);
 
     return {
       message: () =>
-        `Expected special object: ${expected.value}. Actual special object: ${actual.value}`,
+        `Expected Volume object: ${expected.toString()}. Actual Volume object: ${actual.toString()}`,
       pass: result,
     };
   },
 });
 
-const special1 = createSpecialObject('1');
-const special2 = createSpecialObject('2');
+const volume1 = createVolume(1, 'L');
+const volume2 = createVolume(1000, 'mL');
 
-const specialArg1 = createSpecialObject('arg1');
-const specialArg2 = createSpecialObject('arg2');
-const specialArg3 = createSpecialObject('arg3');
-const specialArg4 = createSpecialObject('arg4');
-const specialReturn1 = createSpecialObject('return1');
-const specialReturn2 = createSpecialObject('return2');
+const volumeArg1 = createVolume(1, 'L');
+const volumeArg2 = createVolume(1000, 'mL');
+const volumeArg3 = createVolume(2, 'L');
+const volumeArg4 = createVolume(2000, 'mL');
 
-const testArgs = [specialArg1, specialArg2, [specialArg3, specialArg4]];
-// Swap the order of args to assert customer tester does not affect test
-const expectedArgs = [specialArg2, specialArg1, [specialArg4, specialArg3]];
+const volumeReturn1 = createVolume(2, 'L');
+const volumeReturn2 = createVolume(2000, 'mL');
 
-expect.addEqualityTesters([specialObjTester]);
+const testArgs = [volumeArg1, volumeArg2, [volumeArg3, volumeArg4]];
+// Swap the order of args to assert custom tester does not affect test
+const expectedArgs = [volumeArg2, volumeArg1, [volumeArg4, volumeArg3]];
+
+expect.addEqualityTesters([areVolumesEqual]);
 
 describe('with custom equality testers', () => {
-  it('basic matchers customTesters do not apply to still do not pass different special objects', () => {
-    expect(special1).not.toBe(special2);
-    expect([special1]).not.toContain(special2);
+  it('basic matchers customTesters do not apply to still do not pass different Volume objects', () => {
+    expect(volume1).not.toBe(volume2);
+    expect([volume1]).not.toContain(volume2);
   });
 
-  it('basic matchers pass different special objects', () => {
-    expect(special1).toEqual(special1);
-    expect(special1).toEqual(special2);
-    expect([special1, special2]).toEqual([special2, special1]);
-    expect(new Map([['key', special1]])).toEqual(new Map([['key', special2]]));
-    expect(new Set([special1])).toEqual(new Set([special2]));
-    expect(toIterator([special1, special2])).toEqual(
-      toIterator([special2, special1]),
+  it('basic matchers pass different Volume objects', () => {
+    expect(volume1).toEqual(volume1);
+    expect(volume1).toEqual(volume2);
+    expect([volume1, volume2]).toEqual([volume2, volume1]);
+    expect(new Map([['key', volume1]])).toEqual(new Map([['key', volume2]]));
+    expect(new Set([volume1])).toEqual(new Set([volume2]));
+    expect(toIterator([volume1, volume2])).toEqual(
+      toIterator([volume2, volume1]),
     );
-    expect([special1]).toContainEqual(special2);
-    expect({a: special1}).toHaveProperty('a', special2);
-    expect({a: special1, b: undefined}).toStrictEqual({
-      a: special2,
+    expect([volume1]).toContainEqual(volume2);
+    expect({a: volume1}).toHaveProperty('a', volume2);
+    expect({a: volume1, b: undefined}).toStrictEqual({
+      a: volume2,
       b: undefined,
     });
-    expect({a: 1, b: {c: special1}}).toMatchObject({
+    expect({a: 1, b: {c: volume1}}).toMatchObject({
       a: 1,
-      b: {c: special2},
+      b: {c: volume2},
     });
   });
 
-  it('asymmetric matchers pass different special objects', () => {
-    expect([special1]).toEqual(expect.arrayContaining([special2]));
-    expect({a: 1, b: {c: special1}}).toEqual(
-      expect.objectContaining({b: {c: special2}}),
+  it('asymmetric matchers pass different Volume objects', () => {
+    expect([volume1]).toEqual(expect.arrayContaining([volume2]));
+    expect({a: 1, b: {c: volume1}}).toEqual(
+      expect.objectContaining({b: {c: volume2}}),
     );
   });
 
-  it('spy matchers pass different special objects', () => {
+  it('spy matchers pass different Volume objects', () => {
     const mockFn = jest.fn<(...args: Array<unknown>) => unknown>(
-      () => specialReturn1,
+      () => volumeReturn1,
     );
     mockFn(...testArgs);
 
@@ -133,44 +142,44 @@ describe('with custom equality testers', () => {
     expect(mockFn).toHaveBeenLastCalledWith(...expectedArgs);
     expect(mockFn).toHaveBeenNthCalledWith(1, ...expectedArgs);
 
-    expect(mockFn).toHaveReturnedWith(specialReturn2);
-    expect(mockFn).toHaveLastReturnedWith(specialReturn2);
-    expect(mockFn).toHaveNthReturnedWith(1, specialReturn2);
+    expect(mockFn).toHaveReturnedWith(volumeReturn2);
+    expect(mockFn).toHaveLastReturnedWith(volumeReturn2);
+    expect(mockFn).toHaveNthReturnedWith(1, volumeReturn2);
   });
 
-  it('custom matchers pass different special objects', () => {
-    expect(special1).toSpecialObjectEqual(special2);
+  it('custom matchers pass different Volume objects', () => {
+    expect(volume1).toEqualVolume(volume2);
   });
 
-  it('toBe recommends toStrictEqual even with different special objects', () => {
-    expect(() => expect(special1).toBe(special2)).toThrow('toStrictEqual');
+  it('toBe recommends toStrictEqual even with different Volume objects', () => {
+    expect(() => expect(volume1).toBe(volume2)).toThrow('toStrictEqual');
   });
 
-  it('toBe recommends toEqual even with different special objects', () => {
-    expect(() =>
-      expect({a: undefined, b: special1}).toBe({b: special2}),
-    ).toThrow('toEqual');
+  it('toBe recommends toEqual even with different Volume objects', () => {
+    expect(() => expect({a: undefined, b: volume1}).toBe({b: volume2})).toThrow(
+      'toEqual',
+    );
   });
 
-  it('toContains recommends toContainEquals even with different special objects', () => {
-    expect(() => expect([special1]).toContain(special2)).toThrow(
+  it('toContains recommends toContainEquals even with different Volume objects', () => {
+    expect(() => expect([volume1]).toContain(volume2)).toThrow(
       'toContainEqual',
     );
   });
 
-  it('toMatchObject error shows special objects as equal', () => {
+  it('toMatchObject error shows Volume objects as equal', () => {
     expect(() =>
-      expect({a: 1, b: special1}).toMatchObject({a: 2, b: special2}),
+      expect({a: 1, b: volume1}).toMatchObject({a: 2, b: volume2}),
     ).toThrowErrorMatchingSnapshot();
   });
 
   it('iterableEquality still properly detects cycles', () => {
     const a = new Set();
-    a.add(special1);
+    a.add(volume1);
     a.add(a);
 
     const b = new Set();
-    b.add(special2);
+    b.add(volume2);
     b.add(b);
 
     expect(a).toEqual(b);
