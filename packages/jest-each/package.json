@@ -26,7 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@jest/types": "workspace:^",
-    "chalk": "^4.0.0",
+    "chalk": "^5.2.0",
     "jest-get-type": "workspace:^",
     "jest-util": "workspace:^",
     "pretty-format": "workspace:^"

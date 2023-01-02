@@ -23,7 +23,7 @@
     "@jest/environment": "workspace:^",
     "@jest/transform": "workspace:^",
     "@jest/types": "workspace:^",
-    "chalk": "^4.0.0",
+    "chalk": "^5.2.0",
     "jest-config": "workspace:^",
     "jest-runtime": "workspace:^",
     "jest-util": "workspace:^",

@@ -25,7 +25,7 @@
     "@types/istanbul-reports": "^3.0.0",
     "@types/node": "*",
     "@types/yargs": "^17.0.8",
-    "chalk": "^4.0.0"
+    "chalk": "^5.2.0"
   },
   "devDependencies": {
     "@tsd/typescript": "^4.9.0",

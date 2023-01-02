@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@okikio/resolve.imports": "^1.0.0",
-    "chalk": "^4.0.0",
+    "chalk": "^5.2.0",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "workspace:^",
     "jest-pnp-resolver": "^1.2.2",
