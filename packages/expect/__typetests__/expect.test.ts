@@ -22,6 +22,17 @@ expectError(() => {
   type E = Matchers;
 });
 
+expectType<void>(
+  expect.addEqualityTesters([
+    (a, b, customTesters) => {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      return true;
+    },
+  ]),
+);
+
 // extend
 
 type MatcherUtils = typeof jestMatcherUtils & {
@@ -35,6 +46,7 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
+      expectType<Array<Tester>>(this.customTesters);
       expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);
@@ -48,7 +60,6 @@ expectType<void>(
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
       expectType<MatcherUtils>(this.utils);
-      expectType<Array<Tester>>(this.customTesters);
 
       const pass = actual >= floor && actual <= ceiling;
       if (pass) {
@@ -79,17 +90,6 @@ declare module 'expect' {
 
 expectType<void>(expect(100).toBeWithinRange(90, 110));
 expectType<void>(expect(101).not.toBeWithinRange(0, 100));
-
-expectType<void>(
-  expect.addEqualityTesters([
-    (a, b, customTesters) => {
-      expectType<any>(a);
-      expectType<any>(b);
-      expectType<Array<Tester>>(customTesters);
-      return true;
-    },
-  ]),
-);
 
 expectType<void>(
   expect({apples: 6, bananas: 3}).toEqual({
