@@ -624,7 +624,7 @@ Custom testers are called with 3 arguments: the two objects to compare and the a
 
 Matchers are methods available on `expect`, for example `expect().toEqual()`. `toEqual` is a matcher. A tester is a method used by matchers that do equality checks to determine if objects are the same.
 
-Custom matchers are good to use when you want to provide a custom assertion that test authors can use in their tests. For example, the `toBeWithinRange` example in the `expect.extend` section is a good example of a custom matcher. Sometimes a test author may want to assert two numbers are exactly equal and should use `toBe`. Other times however, a test author may want to allow for some flexibility in their test and `toBeWithinRange` may be a more appropriate assertion.
+Custom matchers are good to use when you want to provide a custom assertion that test authors can use in their tests. For example, the `toBeWithinRange` example in the [`expect.extend`](#expectextendmatchers) section is a good example of a custom matcher. Sometimes a test author may want to assert two numbers are exactly equal and should use `toBe`. Other times however, a test author may want to allow for some flexibility in their test and `toBeWithinRange` may be a more appropriate assertion.
 
 Custom equality testers are good to use for globally extending Jest matchers to apply custom equality logic for all equality comparisons. Test authors can't turn on custom testers for certain assertions and turn off for others (a custom matcher should be used instead if that behavior is desired). For example, defining how to check if two `Volume` objects are equal for all matchers would be a good custom equality tester.
 
