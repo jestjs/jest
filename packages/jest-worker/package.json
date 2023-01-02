@@ -20,7 +20,7 @@
     "@types/node": "*",
     "jest-util": "workspace:^",
     "merge-stream": "^2.0.0",
-    "supports-color": "^8.0.0"
+    "supports-color": "^9.3.1"
   },
   "devDependencies": {
     "@tsd/typescript": "^4.9.0",
