@@ -5726,7 +5726,7 @@ __metadata:
     rxjs: ^7.5.5
     tslib: ^2.0.0
     typescript: ^4.8.2
-    zone.js: ~0.11.3
+    zone.js: ~0.12.0
   languageName: unknown
   linkType: soft
 
@@ -22155,12 +22155,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zone.js@npm:~0.11.3":
-  version: 0.11.8
-  resolution: "zone.js@npm:0.11.8"
+"zone.js@npm:~0.12.0":
+  version: 0.12.0
+  resolution: "zone.js@npm:0.12.0"
   dependencies:
     tslib: ^2.3.0
-  checksum: ad4a2f4aafce10f5bc3f60213384bb6ee4727de09d87fb77cb8089eecdb44dd5838fd9fa43ac4c351afec142b0e5477a22093928260a486804f70b8cace6c7d3
+  checksum: 8efd980442dd11a79837e94de17baef45b27acb82061ac9e204b02b4290379a861c03cc332c5220a94e38f1402e89b306cb6a9e91de77dc7407e88f893abcd25
   languageName: node
   linkType: hard
 
