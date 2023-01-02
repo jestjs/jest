@@ -191,8 +191,6 @@ export const iterableEquality = (
   aStack.push(a);
   bStack.push(b);
 
-  // eslint-disable-next-line prefer-const
-  let filteredCustomTesters: Array<Tester>;
   const iterableEqualityWithStack = (a: any, b: any) =>
     iterableEquality(
       a,
@@ -204,7 +202,7 @@ export const iterableEquality = (
 
   // Replace any instance of iterableEquality with the new
   // iterableEqualityWithStack so we can do circular detection
-  filteredCustomTesters = [
+  const filteredCustomTesters: Array<Tester> = [
     ...customTesters.filter(t => t !== iterableEquality),
     iterableEqualityWithStack,
   ];
