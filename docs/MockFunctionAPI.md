@@ -17,7 +17,7 @@ import TOCInline from '@theme/TOCInline';
 
 ---
 
-## Mock Functions
+## Reference
 
 ### `mockFn.getMockName()`
 
