@@ -131,7 +131,8 @@ export default class Resolver {
         rootDir: options.rootDir,
       });
     } catch (e) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
@@ -174,7 +175,8 @@ export default class Resolver {
       });
       return result;
     } catch (e: unknown) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
