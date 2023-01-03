@@ -6,7 +6,7 @@
  */
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
-import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {EqualsFunction, Tester, TesterContext} from '@jest/expect-utils';
 import {
   MatcherContext,
   MatcherFunction,
@@ -28,7 +28,16 @@ expectType<void>(
       expectType<any>(a);
       expectType<any>(b);
       expectType<Array<Tester>>(customTesters);
+      expectType<undefined>(this);
       return true;
+    },
+    function anotherTester(a, b, customTesters) {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      expectType<TesterContext>(this);
+      expectType<EqualsFunction>(this.equals);
+      return undefined;
     },
   ]),
 );

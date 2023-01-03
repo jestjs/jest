@@ -69,6 +69,8 @@ export type {
   SyncExpectationResult,
 } from './types';
 
+// TODO: Re-export Tester and TestContext?
+
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }

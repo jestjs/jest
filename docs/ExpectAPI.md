@@ -620,6 +620,12 @@ Custom testers are functions that return either the result (`true` or `false`) o
 
 Custom testers are called with 3 arguments: the two objects to compare and the array of custom testers (used for recursive testers, see section below).
 
+These helper functions and properties can be found on `this` inside a custom tester:
+
+#### `this.equals(a, b, customTesters?)`
+
+This is a deep-equality function that will return `true` if two objects have the same values (recursively). It optionally takes a list of custom equality testers to apply to the deep equality checks. If you use this function, pass through the custom testers your tester is given so further equality checks `equals` applies can also use custom testers the test author may have configured. See the example in the [Recursive custom equality testers][#recursivecustomequalitytesters] section for more details.
+
 #### Matchers vs Testers
 
 Matchers are methods available on `expect`, for example `expect().toEqual()`. `toEqual` is a matcher. A tester is a method used by matchers that do equality checks to determine if objects are the same.
@@ -630,14 +636,12 @@ Custom equality testers are good to use for globally extending Jest matchers to 
 
 #### Recursive custom equality testers
 
-If you custom equality testers is testing objects with properties you'd like to do deep equality with, you should use the `equals` helper from the `@jest/expect-utils` package. This `equals` method is the same deep equals method Jest uses internally for all of its deep equality comparisons. Its the method that invokes your custom equality tester. It accepts an array of custom equality testers as a third argument. Custom equality testers are also given an array of custom testers as their third argument. Pass this argument into the third argument of `equals` so that any further equality checks deeper in your object can also take advantage of custom equality testers.
+If you custom equality testers is testing objects with properties you'd like to do deep equality with, you should use the `this.equals` helper available to equality testers. This `equals` method is the same deep equals method Jest uses internally for all of its deep equality comparisons. Its the method that invokes your custom equality tester. It accepts an array of custom equality testers as a third argument. Custom equality testers are also given an array of custom testers as their third argument. Pass this argument into the third argument of `equals` so that any further equality checks deeper in your object can also take advantage of custom equality testers.
 
-For example, let's say you have a `Book` class that contains an array of `Author` classes and both of these classes have custom testers. The `Book` custom tester would want to do a deep equality check on the array of `Author`s and pass in the custom testers so the `Author`s custom equality tester is applied:
+For example, let's say you have a `Book` class that contains an array of `Author` classes and both of these classes have custom testers. The `Book` custom tester would want to do a deep equality check on the array of `Author`s and pass in the custom testers given to it so the `Author`s custom equality tester is applied:
 
 ```js title="customEqualityTesters.js"
-import {equals} from '@jest/expect-utils';
-
-const areAuthorsEqual = (a, b) => {
+function areAuthorEqual(a, b) {
   const isAAuthor = a instanceof Author;
   const isBAuthor = b instanceof Author;
 
@@ -649,9 +653,9 @@ const areAuthorsEqual = (a, b) => {
   } else {
     return undefined;
   }
-};
+}
 
-const areBooksEqual = (a, b, customTesters) => {
+function areBooksEqual(a, b, customTesters) {
   const isABook = a instanceof Book;
   const isBBook = b instanceof Book;
 
@@ -659,16 +663,24 @@ const areBooksEqual = (a, b, customTesters) => {
     // Books are the same if they have the same name and author array. We need
     // to pass customTesters to equals here so the Author custom tester will be
     // used when comparing Authors
-    return a.name === b.name && equals(a.authors, b.authors, customTesters);
+    return (
+      a.name === b.name && this.equals(a.authors, b.authors, customTesters)
+    );
   } else if (isABook !== isBBook) {
     return false;
   } else {
     return undefined;
   }
-};
+}
 
 expect.addEqualityTesters([areAuthorsEqual, areBooksEqual]);
 ```
+
+:::note
+
+Remember to define your equality testers as regular functions and **not** arrow functions in order to access the tester context helpers (e.g. `this.equals`).
+
+:::
 
 ### `expect.anything()`
 

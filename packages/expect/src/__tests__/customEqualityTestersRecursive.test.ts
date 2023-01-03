@@ -52,16 +52,18 @@ const areAuthorsEqual: Tester = (a: unknown, b: unknown) => {
   }
 };
 
-const areBooksEqual: Tester = (
+const areBooksEqual: Tester = function (
   a: unknown,
   b: unknown,
   customTesters: Array<Tester>,
-) => {
+) {
   const isABook = a instanceof Book;
   const isBBook = b instanceof Book;
 
   if (isABook && isBBook) {
-    return a.name === b.name && equals(a.authors, b.authors, customTesters);
+    return (
+      a.name === b.name && this.equals(a.authors, b.authors, customTesters)
+    );
   } else if (isABook !== isBBook) {
     return false;
   } else {
@@ -139,6 +141,28 @@ const expectedArgs = [bookArg1b, bookArg1a, [bookArg2b, bookArg2a]];
 expect.addEqualityTesters([areAuthorsEqual, areBooksEqual]);
 
 describe('with custom equality testers', () => {
+  it('exposes an equality function to custom testers', () => {
+    const runTestSymbol = Symbol('run this test');
+
+    // jestExpect and expect share the same global state
+    expect.assertions(3);
+    jestExpect.addEqualityTesters([
+      function dummyTester(a) {
+        // Equality testers are globally added. Only run this assertion for this test
+        if (a === runTestSymbol) {
+          expect(this.equals).toBe(equals);
+          return true;
+        }
+
+        return undefined;
+      },
+    ]);
+
+    expect(() =>
+      jestExpect(runTestSymbol).toEqual(runTestSymbol),
+    ).not.toThrow();
+  });
+
   it('basic matchers customTesters do not apply to still do not pass different Book objects', () => {
     expect(book1).not.toBe(book1b);
     expect([book1]).not.toContain(book1b);
