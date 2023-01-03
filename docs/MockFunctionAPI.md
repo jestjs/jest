@@ -618,7 +618,7 @@ export function isLocalhost(): boolean {
 }
 ```
 
-```ts
+```ts title="src/__tests__/utils.test.ts"
 import {afterEach, expect, it, jest} from '@jest/globals';
 import {isLocalhost} from '../utils';
 
