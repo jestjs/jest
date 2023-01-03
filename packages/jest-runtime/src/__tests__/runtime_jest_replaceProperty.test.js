@@ -27,10 +27,10 @@ describe('Runtime', () => {
       const mocked = root.jest.replaceProperty(obj, 'property', 2);
       expect(obj.property).toBe(2);
 
-      mocked.mockValue(3);
+      mocked.replaceValue(3);
       expect(obj.property).toBe(3);
 
-      mocked.mockRestore();
+      mocked.restore();
       expect(obj.property).toBe(1);
     });
   });
