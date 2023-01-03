@@ -1,0 +1,10 @@
+{
+  "name": "array-import",
+  "imports": {
+    "#nested": {
+      "import": ["./node.mjs", "./node-2.mjs"],
+      "browser": ["./not-exist.cjs", "./browser.cjs"],
+      "require": ["not-exist-package", "./node.cjs"]
+    }
+  }
+}

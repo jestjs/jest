@@ -6,13 +6,13 @@
  */
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
-import {resolve as resolveImports} from '@okikio/resolve.imports';
 import pnpResolver from 'jest-pnp-resolver';
 import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
+import {resolve as resolveImports} from 'resolve.imports';
 import {
   findClosestPackageJson,
   isDirectory,
@@ -110,9 +110,7 @@ const defaultResolver: SyncResolver = (path, options) => {
     realpathSync,
   };
 
-  const pathToResolve = getPathInModule(path, resolveOptions);
-
-  const result = resolveSync(pathToResolve, resolveOptions);
+  const result = resolveByPathInModule(path, resolveOptions);
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
@@ -129,7 +127,7 @@ function readPackageSync(_: unknown, file: string): PackageJSON {
   return readPackageCached(file);
 }
 
-function getPathInModule(
+function resolveByPathInModule(
   path: string,
   options: UpstreamResolveOptionsWithConditions,
 ): string {
@@ -149,7 +147,11 @@ function getPathInModule(
     const pkg = readPackageCached(closestPackageJson);
 
     const resolved = resolveImports(
-      pkg,
+      {
+        base: options.basedir,
+        content: pkg,
+        path: closestPackageJson,
+      },
       path,
       createResolveOptions(options.conditions),
     );
@@ -160,12 +162,25 @@ function getPathInModule(
       );
     }
 
-    if (resolved.startsWith('.')) {
-      return pathResolve(dirname(closestPackageJson), resolved);
+    const resolvedValues = Array.isArray(resolved) ? resolved : [resolved];
+
+    for (const resolved of resolvedValues) {
+      const resolvedPath = resolveByPath(resolved);
+      try {
+        return resolveSync(resolvedPath, options);
+      } catch (e) {
+        continue;
+      }
     }
 
-    // this is an external module, re-resolve it
-    return defaultResolver(resolved, options);
+    function resolveByPath(resolved: string) {
+      if (resolved.startsWith('.')) {
+        return pathResolve(dirname(closestPackageJson!), resolved);
+      }
+
+      // this is an external module, re-resolve it
+      return defaultResolver(resolved, options);
+    }
   }
 
   const segments = path.split('/');

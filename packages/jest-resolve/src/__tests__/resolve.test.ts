@@ -345,6 +345,51 @@ describe('findNodeModule', () => {
       );
     });
 
+    test('supports nested pattern', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './nested-import/index.cjs'),
+        conditions: ['node', 'require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './nested-import/node.cjs'),
+      );
+    });
+
+    test('supports array pattern - resolve to first found', () => {
+      const result = Resolver.findNodeModule('#array-import', {
+        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+        conditions: ['import'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './array-import/node.mjs'),
+      );
+    });
+
+    test('supports array pattern - ignore not exist internal file', () => {
+      const result = Resolver.findNodeModule('#array-import', {
+        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+        conditions: ['browser'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './array-import/browser.cjs'),
+      );
+    });
+
+    test('supports array pattern - ignore not exist external module', () => {
+      // this is for optional dependency
+      const result = Resolver.findNodeModule('#array-import', {
+        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './array-import/node.cjs'),
+      );
+    });
+
     test('fails for non-existent mapping', () => {
       expect(() => {
         Resolver.findNodeModule('#something-else', {

@@ -3721,13 +3721,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@okikio/resolve.imports@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@okikio/resolve.imports@npm:1.0.0"
-  checksum: a06d347731b3c47e79125d346dd0172fda3cf20d138249f4ed23c5cc60b32f668f9bbab49698fc061ef5782d236622ff4cd0ce2b2520550273e863f55b687350
-  languageName: node
-  linkType: hard
-
 "@pkgr/utils@npm:^2.3.1":
   version: 2.3.1
   resolution: "@pkgr/utils@npm:2.3.1"
@@ -12891,7 +12884,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
-    "@okikio/resolve.imports": ^1.0.0
     "@tsd/typescript": ^4.9.0
     "@types/graceful-fs": ^4.1.3
     "@types/pnpapi": ^0.0.2
@@ -12904,6 +12896,7 @@ __metadata:
     jest-validate: "workspace:^"
     resolve: ^1.20.0
     resolve.exports: ^1.1.0
+    resolve.imports: ^2.0.0
     slash: ^3.0.0
     tsd-lite: ^0.6.0
   languageName: unknown
@@ -16422,6 +16415,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pattern-key-compare@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "pattern-key-compare@npm:2.0.0"
+  checksum: cded15070cddbc5ef7b97c1b91371bcf59ff931f8afe383d2323f935891e6c4517bd76154f5edc2b1ab53c6fbeeb0711b9db43af592064482d0a9ccf03dd507c
+  languageName: node
+  linkType: hard
+
 "pend@npm:~1.2.0":
   version: 1.2.0
   resolution: "pend@npm:1.2.0"
@@ -18363,6 +18363,15 @@ __metadata:
   version: 1.1.0
   resolution: "resolve.exports@npm:1.1.0"
   checksum: 52865af8edb088f6c7759a328584a5de6b226754f004b742523adcfe398cfbc4559515104bc2ae87b8e78b1e4de46c9baec400b3fb1f7d517b86d2d48a098a2d
+  languageName: node
+  linkType: hard
+
+"resolve.imports@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "resolve.imports@npm:2.0.0"
+  dependencies:
+    pattern-key-compare: ^2.0.0
+  checksum: ad914fcd84f656888ada484a45f4ff09429b99cd896a4a4a28bbc0676a795a528a7760125e297951d8b314584fb72da428a09d0e7f1d60d4d48bfb093d996609
   languageName: node
   linkType: hard
 
