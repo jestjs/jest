@@ -2826,7 +2826,7 @@ __metadata:
     mock-fs: ^5.1.2
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
-    p-limit: ^3.1.0
+    p-limit: ^4.0.0
     pkg-dir: ^5.0.0
     prettier: ^2.1.1
     progress: ^2.0.0
@@ -12504,7 +12504,7 @@ __metadata:
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
     execa: ^5.0.0
-    p-limit: ^3.1.0
+    p-limit: ^4.0.0
   languageName: unknown
   linkType: soft
 
@@ -12535,7 +12535,7 @@ __metadata:
     jest-runtime: "workspace:^"
     jest-snapshot: "workspace:^"
     jest-util: "workspace:^"
-    p-limit: ^3.1.0
+    p-limit: ^4.0.0
     pretty-format: "workspace:^"
     slash: ^3.0.0
     stack-utils: ^2.0.3
@@ -12744,7 +12744,7 @@ __metadata:
     jest-runtime: "workspace:^"
     jest-snapshot: "workspace:^"
     jest-util: "workspace:^"
-    p-limit: ^3.1.0
+    p-limit: ^4.0.0
     pretty-format: "workspace:^"
   languageName: unknown
   linkType: soft
@@ -12951,7 +12951,7 @@ __metadata:
     jest-util: "workspace:^"
     jest-watcher: "workspace:^"
     jest-worker: "workspace:^"
-    p-limit: ^3.1.0
+    p-limit: ^4.0.0
     source-map-support: 0.5.13
     tsd-lite: ^0.6.0
   languageName: unknown
@@ -16030,6 +16030,15 @@ __metadata:
   dependencies:
     yocto-queue: ^0.1.0
   checksum: 7c3690c4dbf62ef625671e20b7bdf1cbc9534e83352a2780f165b0d3ceba21907e77ad63401708145ca4e25bfc51636588d89a8c0aeb715e6c37d1c066430360
+  languageName: node
+  linkType: hard
+
+"p-limit@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "p-limit@npm:4.0.0"
+  dependencies:
+    yocto-queue: ^1.0.0
+  checksum: 01d9d70695187788f984226e16c903475ec6a947ee7b21948d6f597bed788e3112cc7ec2e171c1d37125057a5f45f3da21d8653e04a3a793589e12e9e80e756b
   languageName: node
   linkType: hard
 
@@ -22135,6 +22144,13 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"yocto-queue@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "yocto-queue@npm:1.0.0"
+  checksum: 2cac84540f65c64ccc1683c267edce396b26b1e931aa429660aefac8fbe0188167b7aee815a3c22fa59a28a58d898d1a2b1825048f834d8d629f4c2a5d443801
   languageName: node
   linkType: hard
 
