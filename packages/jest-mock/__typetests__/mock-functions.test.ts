@@ -515,10 +515,14 @@ expectError(replaceProperty(obj, 'property', 1).replaceValue('not a number'));
 interface ComplexObject {
   numberOrUndefined: number | undefined;
   optionalString?: string;
-  [key: `dynamic prop ${number}`]: boolean;
   multipleTypes: number | string | {foo: number} | null;
 }
 declare const complexObject: ComplexObject;
+
+interface ObjectWithDynamicProperties {
+  [key: string]: boolean;
+}
+declare const objectWithDynamicProperties: ObjectWithDynamicProperties;
 
 // Resulting type should retain the original property type
 expectType<Replaced<number | undefined>>(
@@ -544,9 +548,11 @@ expectType<Replaced<string | undefined>>(
 );
 
 expectType<Replaced<boolean>>(
-  replaceProperty(complexObject, 'dynamic prop 1', true),
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', true),
 );
-expectError(replaceProperty(complexObject, 'dynamic prop 1', undefined));
+expectError(
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', undefined),
+);
 
 expectError(replaceProperty(complexObject, 'not a property', undefined));
 
