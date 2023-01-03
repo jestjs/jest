@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with custom equality testers toMatchObject error shows Volume objects as equal 1`] = `
+"<dim>expect(</intensity><red>received</color><dim>).</intensity>toMatchObject<dim>(</intensity><green>expected</color><dim>)</intensity>
+
+<green>- Expected  - 1</color>
+<red>+ Received  + 1</color>
+
+<dim>  Object {</intensity>
+<green>-   "a": 2,</color>
+<red>+   "a": 1,</color>
+<dim>    "b": Volume {</intensity>
+<dim>      "amount": 1000,</intensity>
+<dim>      "unit": "mL",</intensity>
+<dim>    },</intensity>
+<dim>  }</intensity>"
+`;
