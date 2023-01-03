@@ -1279,12 +1279,12 @@ describe('moduleMocker', () => {
       expect(() => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow(
-        'Cannot spy the method property because it is not a function; undefined given instead',
+        "Cannot spy the method property because it is not a function; undefined given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
       );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(
-        'Cannot spy the method property because it is not a function; number given instead',
+        "Cannot spy the method property because it is not a function; number given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
       );
     });
 
@@ -1449,12 +1449,12 @@ describe('moduleMocker', () => {
       expect(() => {
         moduleMocker.spyOn({}, 'method');
       }).toThrow(
-        'Cannot spy the method property because it is not a function; undefined given instead',
+        "Cannot spy the method property because it is not a function; undefined given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
       );
       expect(() => {
         moduleMocker.spyOn({method: 10}, 'method');
       }).toThrow(
-        'Cannot spy the method property because it is not a function; number given instead',
+        "Cannot spy the method property because it is not a function; number given instead. If you are trying to mock a property, use `jest.replaceProperty(object, 'method', value)` instead.",
       );
     });
 

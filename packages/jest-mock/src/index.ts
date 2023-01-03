@@ -1166,7 +1166,13 @@ export class ModuleMocker {
             methodKey,
           )} property because it is not a function; ${this._typeOf(
             original,
-          )} given instead`,
+          )} given instead.${
+            typeof original !== 'object'
+              ? ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
+                  methodKey,
+                )}', value)\` instead.`
+              : ''
+          }`,
         );
       }
 
@@ -1251,7 +1257,13 @@ export class ModuleMocker {
             propertyKey,
           )} property because it is not a function; ${this._typeOf(
             original,
-          )} given instead`,
+          )} given instead.${
+            typeof original !== 'object'
+              ? ` If you are trying to mock a property, use \`jest.replaceProperty(object, '${String(
+                  propertyKey,
+                )}', value)\` instead.`
+              : ''
+          }`,
         );
       }
 
