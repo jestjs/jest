@@ -10,6 +10,7 @@
 
 ### Fixes
 
+- `[jest-mock]` fix mockReset and resetAllMocks undefined return ([#13692](https://github.com/facebook/jest/pull/13692))
 - `[jest-environment-node]` fix non-configurable globals ([#13687](https://github.com/facebook/jest/pull/13687))
 - `[@jest/expect-utils]` `toMatchObject` should handle `Symbol` properties ([#13639](https://github.com/facebook/jest/pull/13639))
 - `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
