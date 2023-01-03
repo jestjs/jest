@@ -6,6 +6,7 @@
  *
  */
 
+import type {Tester} from '@jest/expect-utils';
 import {getType} from 'jest-get-type';
 import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
@@ -32,6 +33,7 @@ if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
   };
   Object.defineProperty(globalThis, JEST_MATCHERS_OBJECT, {
     value: {
+      customEqualityTesters: [],
       matchers: Object.create(null),
       state: defaultState,
     },
@@ -121,4 +123,21 @@ export const setMatchers = (
   });
 
   Object.assign((globalThis as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
+};
+
+export const getCustomEqualityTesters = (): Array<Tester> =>
+  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters;
+
+export const addCustomEqualityTesters = (newTesters: Array<Tester>): void => {
+  if (!Array.isArray(newTesters)) {
+    throw new TypeError(
+      `expect.customEqualityTesters: Must be set to an array of Testers. Was given "${getType(
+        newTesters,
+      )}"`,
+    );
+  }
+
+  (globalThis as any)[JEST_MATCHERS_OBJECT].customEqualityTesters.push(
+    ...newTesters,
+  );
 };
