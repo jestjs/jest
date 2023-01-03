@@ -356,38 +356,40 @@ describe('findNodeModule', () => {
       );
     });
 
-    test('supports array pattern - resolve to first found', () => {
-      const result = Resolver.findNodeModule('#array-import', {
-        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
-        conditions: ['import'],
+    describe('supports array pattern', () => {
+      test('resolve to first found', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['import'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/node.mjs'),
+        );
       });
 
-      expect(result).toEqual(
-        path.resolve(importsRoot, './array-import/node.mjs'),
-      );
-    });
+      test('ignore not exist internal file', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['browser'],
+        });
 
-    test('supports array pattern - ignore not exist internal file', () => {
-      const result = Resolver.findNodeModule('#array-import', {
-        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
-        conditions: ['browser'],
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/browser.cjs'),
+        );
       });
 
-      expect(result).toEqual(
-        path.resolve(importsRoot, './array-import/browser.cjs'),
-      );
-    });
+      test('ignore not exist external module', () => {
+        // this is for optional dependency
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['require'],
+        });
 
-    test('supports array pattern - ignore not exist external module', () => {
-      // this is for optional dependency
-      const result = Resolver.findNodeModule('#array-import', {
-        basedir: path.resolve(importsRoot, './array-import/index.cjs'),
-        conditions: ['require'],
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/node.cjs'),
+        );
       });
-
-      expect(result).toEqual(
-        path.resolve(importsRoot, './array-import/node.cjs'),
-      );
     });
 
     test('fails for non-existent mapping', () => {
