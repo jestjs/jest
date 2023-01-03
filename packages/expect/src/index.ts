@@ -53,6 +53,7 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
+export type {Tester, TesterContext} from '@jest/expect-utils';
 export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
   AsyncExpectationResult,
@@ -68,8 +69,6 @@ export type {
   Matchers,
   SyncExpectationResult,
 } from './types';
-
-// TODO: Re-export Tester and TestContext?
 
 export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
