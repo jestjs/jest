@@ -164,14 +164,19 @@ function resolveByPathInModule(
 
     const resolvedValues = Array.isArray(resolved) ? resolved : [resolved];
 
+    let lastError: Error;
     for (const resolved of resolvedValues) {
       const resolvedPath = resolveByPath(resolved);
+
       try {
         return resolveSync(resolvedPath, options);
-      } catch (e) {
+      } catch (e: any) {
+        lastError = e;
         continue;
       }
     }
+    // eslint-disable-next-line no-throw-literal
+    throw lastError!;
 
     function resolveByPath(resolved: string) {
       if (resolved.startsWith('.')) {
