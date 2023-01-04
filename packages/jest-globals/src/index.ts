@@ -16,6 +16,7 @@ import type {
   MockedClass as JestMockedClass,
   MockedFunction as JestMockedFunction,
   MockedObject as JestMockedObject,
+  Replaced as JestReplaced,
   Spied as JestSpied,
   SpiedClass as JestSpiedClass,
   SpiedFunction as JestSpiedFunction,
@@ -63,6 +64,10 @@ declare namespace jest {
    * Wraps an object type with Jest mock type definitions.
    */
   export type MockedObject<T extends object> = JestMockedObject<T>;
+  /**
+   * Constructs the type of a replaced property.
+   */
+  export type Replaced<T> = JestReplaced<T>;
   /**
    * Constructs the type of a spied class or function.
    */

@@ -2193,6 +2193,9 @@ export default class Runtime {
           'Your test environment does not support `mocked`, please update it.',
         );
       });
+    const replaceProperty = this._moduleMocker.replaceProperty.bind(
+      this._moduleMocker,
+    );
 
     const setTimeout = (timeout: number) => {
       this._environment.global[testTimeoutSymbol] = timeout;
@@ -2253,6 +2256,7 @@ export default class Runtime {
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
+      replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
       requireMock: moduleName => this.requireMock(from, moduleName),
       resetAllMocks,
