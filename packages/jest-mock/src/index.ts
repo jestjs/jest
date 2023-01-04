@@ -1222,7 +1222,7 @@ export class ModuleMocker {
         return original.apply(this, arguments);
       });
     }
-    this._originalFn.set(object[methodKey], original);
+    this._originalFn.set(object[methodKey] as Mock, original);
     return object[methodKey] as Mock;
   }
 
