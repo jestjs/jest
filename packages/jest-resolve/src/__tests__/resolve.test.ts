@@ -392,12 +392,12 @@ describe('findNodeModule', () => {
     });
 
     test('fails for non-existent mapping', () => {
-      expect(() =>
+      expect(() => {
         Resolver.findNodeModule('#something-else', {
           basedir: path.resolve(importsRoot, './foo-import/index.js'),
           conditions: [],
-        }),
-      ).toThrow(
+        });
+      }).toThrow(
         expect.objectContaining({
           code: 'ERR_PACKAGE_IMPORT_NOT_DEFINED',
           message: expect.stringMatching(
