@@ -66,8 +66,7 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         ...projectConfig.testEnvironmentOptions,
       },
     );
-    const global = (this.global = this.dom.window.document
-      .defaultView as unknown as Win);
+    const global = (this.global = this.dom.window as unknown as Win);
 
     if (global == null) {
       throw new Error('JSDOM did not return a Window object');
