@@ -168,7 +168,7 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 :::note
 
-Alternatively you set the environment variable `FORCE_COLOR='true'` to forcefully enable or `FORCE_COLOR='false'` to disable colorized output. The use of `FORCE_COLOR` overrides all other color support checks.
+Alternatively you can set the environment variable `FORCE_COLOR=true` to forcefully enable or `FORCE_COLOR=false` to disable colorized output. The use of `FORCE_COLOR` overrides all other color support checks.
 
 :::
 
