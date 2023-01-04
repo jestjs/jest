@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "@angular/common": "^12.0.0",
-    "@angular/compiler": "^12.0.0",
+    "@angular/compiler": "^15.0.4",
     "@angular/core": "^12.0.0",
     "@angular/forms": "^12.0.0",
     "@angular/platform-browser": "^12.0.0",
