@@ -266,6 +266,8 @@ expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
 
+expectType<ModuleMocker['replaceProperty']>(jest.replaceProperty);
+
 // Mock<T>
 
 expectType<Mock<() => boolean>>({} as jest.Mock<() => boolean>);
@@ -446,6 +448,12 @@ expectError(
 );
 
 expectAssignable<typeof someObject>(mockObjectB);
+
+// Replaced
+
+expectAssignable<jest.Replaced<number>>(
+  jest.replaceProperty(someObject, 'propertyA', 123),
+);
 
 // Spied
 

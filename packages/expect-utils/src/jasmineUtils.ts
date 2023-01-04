@@ -22,7 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-import type {Tester} from './types';
+import type {Tester, TesterContext} from './types';
 
 export type EqualsFunction = (
   a: unknown,
@@ -75,8 +75,14 @@ function eq(
     return asymmetricResult;
   }
 
+  const testerContext: TesterContext = {equals};
   for (let i = 0; i < customTesters.length; i++) {
-    const customTesterResult = customTesters[i](a, b);
+    const customTesterResult = customTesters[i].call(
+      testerContext,
+      a,
+      b,
+      customTesters,
+    );
     if (customTesterResult !== undefined) {
       return customTesterResult;
     }

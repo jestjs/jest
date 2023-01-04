@@ -2,8 +2,9 @@
 
 ### Features
 
+- `[@jest/globals, jest-mock]` Add `jest.replaceProperty()` that replaces property value ([#13496](https://github.com/facebook/jest/pull/13496))
 - `[expect]` Expose internal matchers inside custom matcher context ([13375](https://github.com/facebook/jest/pull/13375))
-- `[jest-config]` Add colors configuration option [#13624](https://github.com/facebook/jest/pull/13624)
+- `[expect, @jest/expect-utils]` Support custom equality testers ([#13654](https://github.com/facebook/jest/pull/13654))
 - `[jest-haste-map]` ignore Sapling vcs directories (`.sl/`) ([#13674](https://github.com/facebook/jest/pull/13674))
 - `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705))
 - `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))

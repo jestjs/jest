@@ -30,14 +30,8 @@ const generateConfigFile = (
   results: Record<string, unknown>,
   generateEsm = false,
 ): string => {
-  const {
-    useTypescript,
-    coverage,
-    coverageProvider,
-    clearMocks,
-    environment,
-    colors,
-  } = results;
+  const {useTypescript, coverage, coverageProvider, clearMocks, environment} =
+    results;
 
   const overrides: Record<string, unknown> = {};
 
@@ -63,12 +57,6 @@ const generateConfigFile = (
   if (clearMocks) {
     Object.assign(overrides, {
       clearMocks: true,
-    });
-  }
-
-  if (colors) {
-    Object.assign(overrides, {
-      colors: true,
     });
   }
 
