@@ -6,7 +6,6 @@
  *
  */
 
-import {fail} from 'assert';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
@@ -393,19 +392,19 @@ describe('findNodeModule', () => {
     });
 
     test('fails for non-existent mapping', () => {
-      // jest `toThrow()` does not take a validator,
-      // so can't use msg.startWith() test.
-      try {
+      expect(() =>
         Resolver.findNodeModule('#something-else', {
           basedir: path.resolve(importsRoot, './foo-import/index.js'),
           conditions: [],
-        });
-        fail('Expected to throw');
-      } catch (e: any) {
-        expect(e.message).toMatch(
-          /^Package import specifier "#something-else" is not defined in package/,
-        );
-      }
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          code: 'ERR_PACKAGE_IMPORT_NOT_DEFINED',
+          message: expect.stringMatching(
+            /^Package import specifier "#something-else" is not defined in package/,
+          ),
+        }),
+      );
     });
   });
 });
