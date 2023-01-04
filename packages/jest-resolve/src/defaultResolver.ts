@@ -110,7 +110,9 @@ const defaultResolver: SyncResolver = (path, options) => {
     realpathSync,
   };
 
-  const result = resolveByPathInModule(path, resolveOptions);
+  const pathToResolve = getPathInModule(path, resolveOptions);
+
+  const result = resolveSync(pathToResolve, resolveOptions);
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
@@ -127,7 +129,7 @@ function readPackageSync(_: unknown, file: string): PackageJSON {
   return readPackageCached(file);
 }
 
-function resolveByPathInModule(
+function getPathInModule(
   path: string,
   options: UpstreamResolveOptionsWithConditions,
 ): string {
@@ -150,10 +152,10 @@ function resolveByPathInModule(
       {
         base: options.basedir,
         content: pkg,
-        path: closestPackageJson,
+        path: dirname(closestPackageJson),
       },
       path,
-      createResolveOptions(options.conditions),
+      createImportsResolveOptions(options.conditions),
     );
 
     if (!resolved) {
@@ -162,30 +164,12 @@ function resolveByPathInModule(
       );
     }
 
-    const resolvedValues = Array.isArray(resolved) ? resolved : [resolved];
-
-    let lastError: Error;
-    for (const resolved of resolvedValues) {
-      const resolvedPath = resolveByPath(resolved);
-
-      try {
-        return resolveSync(resolvedPath, options);
-      } catch (e: any) {
-        lastError = e;
-        continue;
-      }
+    if (resolved.startsWith('.')) {
+      return pathResolve(dirname(closestPackageJson), resolved);
     }
-    // eslint-disable-next-line no-throw-literal
-    throw lastError!;
 
-    function resolveByPath(resolved: string) {
-      if (resolved.startsWith('.')) {
-        return pathResolve(dirname(closestPackageJson!), resolved);
-      }
-
-      // this is an external module, re-resolve it
-      return defaultResolver(resolved, options);
-    }
+    // this is an external module, re-resolve it
+    return defaultResolver(resolved, options);
   }
 
   const segments = path.split('/');
@@ -262,6 +246,14 @@ function createResolveOptions(
     ? {conditions, unsafe: true}
     : // no conditions were passed - let's assume this is Jest internal and it should be `require`
       {browser: false, require: true};
+}
+
+function createImportsResolveOptions(conditions: Array<string> | undefined) {
+  return {
+    conditions: conditions
+      ? [...conditions, 'default']
+      : ['node', 'require', 'default'],
+  };
 }
 
 // if it's a relative import or an absolute path, imports/exports are ignored

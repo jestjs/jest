@@ -6,6 +6,7 @@
  *
  */
 
+import {fail} from 'assert';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
@@ -368,7 +369,7 @@ describe('findNodeModule', () => {
         );
       });
 
-      test('ignore not exist internal file', () => {
+      test('skip over not met nested condition', () => {
         const result = Resolver.findNodeModule('#array-import', {
           basedir: path.resolve(importsRoot, './array-import/index.cjs'),
           conditions: ['browser'],
@@ -379,26 +380,32 @@ describe('findNodeModule', () => {
         );
       });
 
-      test('ignore not exist external module', () => {
-        // this is for optional dependency
+      test('match nested condition', () => {
         const result = Resolver.findNodeModule('#array-import', {
           basedir: path.resolve(importsRoot, './array-import/index.cjs'),
-          conditions: ['require'],
+          conditions: ['chrome', 'browser'],
         });
 
         expect(result).toEqual(
-          path.resolve(importsRoot, './array-import/node.cjs'),
+          path.resolve(importsRoot, './array-import/chrome.cjs'),
         );
       });
     });
 
     test('fails for non-existent mapping', () => {
-      expect(() => {
+      // jest `toThrow()` does not take a validator,
+      // so can't use msg.startWith() test.
+      try {
         Resolver.findNodeModule('#something-else', {
           basedir: path.resolve(importsRoot, './foo-import/index.js'),
           conditions: [],
         });
-      }).toThrow('Missing "#something-else" import in "foo-import" package');
+        fail('Expected to throw');
+      } catch (e: any) {
+        expect(e.message).toMatch(
+          /^Package import specifier "#something-else" is not defined in package/,
+        );
+      }
     });
   });
 });

@@ -3,7 +3,7 @@
   "imports": {
     "#nested": {
       "node": {
-        "import": "./node.mjs",
+        "import": "./esm.mjs",
         "require": "./node.cjs"
       },
       "default": "./browser.cjs"
