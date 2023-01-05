@@ -42,7 +42,6 @@ import {
   CallerTransformOptions,
   ScriptTransformer,
   ShouldInstrumentOptions,
-  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
