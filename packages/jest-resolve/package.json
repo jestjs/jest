@@ -17,7 +17,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@okikio/resolve.imports": "^1.0.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.9",
     "jest-haste-map": "workspace:^",
@@ -26,6 +25,7 @@
     "jest-validate": "workspace:^",
     "resolve": "^1.20.0",
     "resolve.exports": "^1.1.0",
+    "resolve.imports": "^2.0.3",
     "slash": "^3.0.0"
   },
   "devDependencies": {

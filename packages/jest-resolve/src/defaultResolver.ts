@@ -6,13 +6,13 @@
  */
 
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
-import {resolve as resolveImports} from '@okikio/resolve.imports';
 import pnpResolver from 'jest-pnp-resolver';
 import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
+import {resolve as resolveImports} from 'resolve.imports';
 import {
   findClosestPackageJson,
   isDirectory,
@@ -149,9 +149,13 @@ function getPathInModule(
     const pkg = readPackageCached(closestPackageJson);
 
     const resolved = resolveImports(
-      pkg,
+      {
+        base: options.basedir,
+        content: pkg,
+        path: dirname(closestPackageJson),
+      },
       path,
-      createResolveOptions(options.conditions),
+      createImportsResolveOptions(options.conditions),
     );
 
     if (!resolved) {
@@ -242,6 +246,14 @@ function createResolveOptions(
     ? {conditions, unsafe: true}
     : // no conditions were passed - let's assume this is Jest internal and it should be `require`
       {browser: false, require: true};
+}
+
+function createImportsResolveOptions(conditions: Array<string> | undefined) {
+  return {
+    conditions: conditions
+      ? [...conditions, 'default']
+      : ['node', 'require', 'default'],
+  };
 }
 
 // if it's a relative import or an absolute path, imports/exports are ignored
