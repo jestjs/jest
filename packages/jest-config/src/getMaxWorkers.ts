@@ -12,6 +12,12 @@ import {
 } from 'os';
 import type {Config} from '@jest/types';
 
+function getNumCpus(): number {
+  return typeof availableParallelism === 'function'
+    ? availableParallelism()
+    : cpus()?.length ?? 1;
+}
+
 export default function getMaxWorkers(
   argv: Partial<
     Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>
@@ -26,10 +32,7 @@ export default function getMaxWorkers(
     return parseWorkers(defaultOptions.maxWorkers);
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
-    const numCpus: number =
-      typeof availableParallelism === 'function'
-        ? availableParallelism()
-        : cpus().length;
+    const numCpus = getNumCpus();
     const isWatchModeEnabled = argv.watch || argv.watchAll;
     return Math.max(
       isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1,
@@ -47,7 +50,7 @@ const parseWorkers = (maxWorkers: string | number): number => {
     parsed > 0 &&
     parsed <= 100
   ) {
-    const numCpus = cpus().length;
+    const numCpus = getNumCpus();
     const workers = Math.floor((parsed / 100) * numCpus);
     return Math.max(workers, 1);
   }
