@@ -374,7 +374,7 @@ class CustomMatcher extends AsymmetricMatcher<[unknown, ...Array<unknown>]> {
     const {pass} = this.matcher.call(
       {
         ...this.getMatcherContext(),
-        matchers: internalMatchers,
+        matchers: builtInMatchers,
       },
       other,
       ...this.sample,
