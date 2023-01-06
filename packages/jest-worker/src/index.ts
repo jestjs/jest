@@ -59,7 +59,7 @@ function getExposedMethods(
 }
 
 function getNumberOfCpus(): number {
-  return availableParallelism === 'function'
+  return typeof availableParallelism === 'function'
     ? availableParallelism()
     : cpus().length;
 }
