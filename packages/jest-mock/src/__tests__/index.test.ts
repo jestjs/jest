@@ -1218,7 +1218,7 @@ describe('moduleMocker', () => {
   test('after mock reset, the object should return to its original value', () => {
     const myObject = {bar: () => 'bar'};
 
-    const barStub = jest.spyOn(myObject, 'bar');
+    const barStub = moduleMocker.spyOn(myObject, 'bar');
 
     barStub.mockReturnValue('POTATO!');
     expect(myObject.bar()).toBe('POTATO!');
@@ -1230,11 +1230,11 @@ describe('moduleMocker', () => {
   test('after resetAllMocks, the object should return to its original value', () => {
     const myObject = {bar: () => 'bar'};
 
-    const barStub = jest.spyOn(myObject, 'bar');
+    const barStub = moduleMocker.spyOn(myObject, 'bar');
 
     barStub.mockReturnValue('POTATO!');
     expect(myObject.bar()).toBe('POTATO!');
-    jest.resetAllMocks();
+    moduleMocker.resetAllMocks();
 
     expect(myObject.bar()).toBe('bar');
   });
