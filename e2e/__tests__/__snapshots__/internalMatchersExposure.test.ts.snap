@@ -9,12 +9,12 @@ exports[`error when internal matcher inside a custom matcher fails 1`] = `
 
     expected 1 to be equal to 2
 
-      22 |
-      23 | it('internal match should not pass', () => {
-    > 24 |   expect(1).toPass(2);
+      29 |
+      30 | it('internal match should not pass', () => {
+    > 31 |   expect(1).toPass(2);
          |             ^
-      25 | });
-      26 |
+      32 | });
+      33 |
 
-      at Object.toPass (__tests__/index.test.js:24:13)"
+      at Object.toPass (__tests__/index.test.js:31:13)"
 `;
