@@ -17,4 +17,8 @@ function __setCpus(newCpus) {
 os.__setCpus = __setCpus;
 os.cpus = jest.fn(() => cpus);
 
+if (typeof os.availableParallelism === 'function') {
+  os.availableParallelism = jest.fn(() => cpus?.length ?? 0);
+}
+
 module.exports = os;

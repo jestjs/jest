@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {cpus} from 'os';
+import {
+  // @ts-expect-error - added in Node 19.4.0
+  availableParallelism,
+  cpus,
+} from 'os';
 import * as path from 'path';
 import * as util from 'util';
 import chalk = require('chalk');
@@ -70,8 +74,13 @@ export async function run(
   };
 
   try {
+    const numCpus: number =
+      typeof availableParallelism === 'function'
+        ? availableParallelism()
+        : cpus().length;
+
     const hasteMap = await Runtime.createContext(projectConfig, {
-      maxWorkers: Math.max(cpus().length - 1, 1),
+      maxWorkers: Math.max(numCpus - 1, 1),
       watchman: globalConfig.watchman,
     });
 

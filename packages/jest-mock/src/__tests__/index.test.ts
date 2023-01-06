@@ -1215,6 +1215,30 @@ describe('moduleMocker', () => {
     expect(fn.getMockName()).toBe('jest.fn()');
   });
 
+  test('after mock reset, the object should return to its original value', () => {
+    const myObject = {bar: () => 'bar'};
+
+    const barStub = moduleMocker.spyOn(myObject, 'bar');
+
+    barStub.mockReturnValue('POTATO!');
+    expect(myObject.bar()).toBe('POTATO!');
+    barStub.mockReset();
+
+    expect(myObject.bar()).toBe('bar');
+  });
+
+  test('after resetAllMocks, the object should return to its original value', () => {
+    const myObject = {bar: () => 'bar'};
+
+    const barStub = moduleMocker.spyOn(myObject, 'bar');
+
+    barStub.mockReturnValue('POTATO!');
+    expect(myObject.bar()).toBe('POTATO!');
+    moduleMocker.resetAllMocks();
+
+    expect(myObject.bar()).toBe('bar');
+  });
+
   test('mockName gets reset by mockRestore', () => {
     const fn = jest.fn();
     expect(fn.getMockName()).toBe('jest.fn()');
