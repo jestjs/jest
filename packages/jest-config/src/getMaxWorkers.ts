@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {cpus} from 'os';
+import {
+  // @ts-expect-error - added in Node 19.4.0
+  availableParallelism,
+  cpus,
+} from 'os';
 import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(
@@ -22,8 +26,10 @@ export default function getMaxWorkers(
     return parseWorkers(defaultOptions.maxWorkers);
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
-    const cpusInfo = cpus();
-    const numCpus = cpusInfo?.length ?? 1;
+    const numCpus: number =
+      typeof availableParallelism === 'function'
+        ? availableParallelism()
+        : cpus().length;
     const isWatchModeEnabled = argv.watch || argv.watchAll;
     return Math.max(
       isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1,
