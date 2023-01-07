@@ -2226,6 +2226,7 @@ export default class Runtime {
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
+      isTornDown: this.isTornDown,
       isolateModules,
       mock,
       mocked,
