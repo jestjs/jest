@@ -17,6 +17,7 @@
 - `[jest-mock]` fix mockReset and resetAllMocks undefined return ([#13692](https://github.com/facebook/jest/pull/13692))
 - `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 - `[jest-runtime]` Support Wasm files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
+- `[jest-runtime]` Using the scriptTransformer cache in jest-runner ([#13735](https://github.com/facebook/jest/pull/13735))
 - `[jest-snapshot]` Make sure to import `babel` outside of the sandbox ([#13694](https://github.com/facebook/jest/pull/13694))
 
 ### Chore & Maintenance
