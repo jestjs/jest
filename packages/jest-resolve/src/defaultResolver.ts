@@ -12,6 +12,7 @@ import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
 } from 'resolve.exports';
+import {resolve as resolveImports} from 'resolve.imports';
 import {
   findClosestPackageJson,
   isDirectory,
@@ -83,7 +84,7 @@ export type ResolverOptions = {
 };
 
 type UpstreamResolveOptionsWithConditions = UpstreamResolveOptions &
-  Pick<ResolverOptions, 'basedir' | 'conditions'>;
+  ResolverOptions;
 
 export type SyncResolver = (path: string, options: ResolverOptions) => string;
 export type AsyncResolver = (
@@ -136,12 +137,46 @@ function getPathInModule(
     return path;
   }
 
+  if (path.startsWith('#')) {
+    const closestPackageJson = findClosestPackageJson(options.basedir);
+
+    if (!closestPackageJson) {
+      throw new Error(
+        `Jest: unable to locate closest package.json from ${options.basedir} when resolving import "${path}"`,
+      );
+    }
+
+    const pkg = readPackageCached(closestPackageJson);
+
+    const resolved = resolveImports(
+      {
+        base: options.basedir,
+        content: pkg,
+        path: dirname(closestPackageJson),
+      },
+      path,
+      createImportsResolveOptions(options.conditions),
+    );
+
+    if (!resolved) {
+      throw new Error(
+        '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
+      );
+    }
+
+    if (resolved.startsWith('.')) {
+      return pathResolve(dirname(closestPackageJson), resolved);
+    }
+
+    // this is an external module, re-resolve it
+    return defaultResolver(resolved, options);
+  }
+
   const segments = path.split('/');
 
   let moduleName = segments.shift();
 
   if (moduleName) {
-    // TODO: handle `#` here: https://github.com/facebook/jest/issues/12270
     if (moduleName.startsWith('@')) {
       moduleName = `${moduleName}/${segments.shift()}`;
     }
@@ -213,6 +248,14 @@ function createResolveOptions(
       {browser: false, require: true};
 }
 
-// if it's a relative import or an absolute path, exports are ignored
+function createImportsResolveOptions(conditions: Array<string> | undefined) {
+  return {
+    conditions: conditions
+      ? [...conditions, 'default']
+      : ['node', 'require', 'default'],
+  };
+}
+
+// if it's a relative import or an absolute path, imports/exports are ignored
 const shouldIgnoreRequestForExports = (path: string) =>
   path.startsWith('.') || isAbsolute(path);

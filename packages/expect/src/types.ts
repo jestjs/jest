@@ -46,6 +46,7 @@ export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
 export interface MatcherUtils {
+  customTesters: Array<Tester>;
   dontThrow(): void;
   equals: EqualsFunction;
   utils: typeof jestMatcherUtils & {
@@ -86,6 +87,7 @@ export type ExpectedAssertionsErrors = Array<{
 
 export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
+  addEqualityTesters(testers: Array<Tester>): void;
   extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;

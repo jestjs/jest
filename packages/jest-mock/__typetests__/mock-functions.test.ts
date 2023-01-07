@@ -15,11 +15,13 @@ import {
 } from 'tsd-lite';
 import {
   Mock,
+  Replaced,
   SpiedClass,
   SpiedFunction,
   SpiedGetter,
   SpiedSetter,
   fn,
+  replaceProperty,
   spyOn,
 } from 'jest-mock';
 
@@ -491,4 +493,72 @@ expectError(
   spyOn(Storage.prototype, 'setItem').mockImplementation(
     (key: string, value: number) => {},
   ),
+);
+
+// replaceProperty + Replaced
+
+const obj = {
+  fn: () => {},
+
+  property: 1,
+};
+
+expectType<Replaced<number>>(replaceProperty(obj, 'property', 1));
+expectType<void>(replaceProperty(obj, 'property', 1).replaceValue(1).restore());
+
+expectError(replaceProperty(obj, 'invalid', 1));
+expectError(replaceProperty(obj, 'property', 'not a number'));
+expectError(replaceProperty(obj, 'fn', () => {}));
+
+expectError(replaceProperty(obj, 'property', 1).replaceValue('not a number'));
+
+interface ComplexObject {
+  numberOrUndefined: number | undefined;
+  optionalString?: string;
+  multipleTypes: number | string | {foo: number} | null;
+}
+declare const complexObject: ComplexObject;
+
+interface ObjectWithDynamicProperties {
+  [key: string]: boolean;
+}
+declare const objectWithDynamicProperties: ObjectWithDynamicProperties;
+
+// Resulting type should retain the original property type
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', undefined),
+);
+expectType<Replaced<number | undefined>>(
+  replaceProperty(complexObject, 'numberOrUndefined', 1),
+);
+
+expectError(
+  replaceProperty(
+    complexObject,
+    'numberOrUndefined',
+    'string is not valid TypeScript type',
+  ),
+);
+
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', 'foo'),
+);
+expectType<Replaced<string | undefined>>(
+  replaceProperty(complexObject, 'optionalString', undefined),
+);
+
+expectType<Replaced<boolean>>(
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', true),
+);
+expectError(
+  replaceProperty(objectWithDynamicProperties, 'dynamic prop 1', undefined),
+);
+
+expectError(replaceProperty(complexObject, 'not a property', undefined));
+
+expectType<Replaced<ComplexObject['multipleTypes']>>(
+  replaceProperty(complexObject, 'multipleTypes', 1)
+    .replaceValue('foo')
+    .replaceValue({foo: 1})
+    .replaceValue(null),
 );

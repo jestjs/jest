@@ -316,6 +316,97 @@ describe('findNodeModule', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('imports', () => {
+    const importsRoot = path.resolve(__dirname, '../__mocks__/imports');
+
+    test('supports internal reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.cjs'),
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './foo-import/internal.cjs'),
+      );
+    });
+
+    test('supports external reference', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './foo-import/index.js'),
+        conditions: [],
+      });
+
+      expect(result).toEqual(
+        path.resolve(
+          importsRoot,
+          './foo-import/node_modules/external-foo/main.js',
+        ),
+      );
+    });
+
+    test('supports nested pattern', () => {
+      const result = Resolver.findNodeModule('#nested', {
+        basedir: path.resolve(importsRoot, './nested-import/index.cjs'),
+        conditions: ['node', 'require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(importsRoot, './nested-import/node.cjs'),
+      );
+    });
+
+    describe('supports array pattern', () => {
+      test('resolve to first found', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['import'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/node.mjs'),
+        );
+      });
+
+      test('skip over not met nested condition', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['browser'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/browser.cjs'),
+        );
+      });
+
+      test('match nested condition', () => {
+        const result = Resolver.findNodeModule('#array-import', {
+          basedir: path.resolve(importsRoot, './array-import/index.cjs'),
+          conditions: ['chrome', 'browser'],
+        });
+
+        expect(result).toEqual(
+          path.resolve(importsRoot, './array-import/chrome.cjs'),
+        );
+      });
+    });
+
+    test('fails for non-existent mapping', () => {
+      expect(() => {
+        Resolver.findNodeModule('#something-else', {
+          basedir: path.resolve(importsRoot, './foo-import/index.js'),
+          conditions: [],
+        });
+      }).toThrow(
+        expect.objectContaining({
+          code: 'ERR_PACKAGE_IMPORT_NOT_DEFINED',
+          message: expect.stringMatching(
+            /^Package import specifier "#something-else" is not defined in package/,
+          ),
+        }),
+      );
+    });
+  });
 });
 
 describe('findNodeModuleAsync', () => {

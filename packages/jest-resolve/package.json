@@ -25,6 +25,7 @@
     "jest-validate": "workspace:^",
     "resolve": "^1.20.0",
     "resolve.exports": "^1.1.0",
+    "resolve.imports": "^2.0.3",
     "slash": "^3.0.0"
   },
   "devDependencies": {
