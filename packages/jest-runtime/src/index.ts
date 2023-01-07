@@ -1579,12 +1579,10 @@ export default class Runtime {
       source,
     );
 
-    if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
-      this._fileTransforms.set(filename, {
-        ...transformedFile,
-        wrapperLength: this.constructModuleWrapperStart().length,
-      });
-    }
+    this._fileTransforms.set(filename, {
+      ...transformedFile,
+      wrapperLength: this.constructModuleWrapperStart().length,
+    });
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
