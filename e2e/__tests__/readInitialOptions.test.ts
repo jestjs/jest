@@ -64,9 +64,21 @@ describe('readInitialOptions', () => {
     expect(config).toEqual({jestConfig: 'package.json', rootDir});
     expect(configPath).toEqual(configFile);
   });
-  test('should read a jest.config.ts file', async () => {
-    const configFile = resolveFixture('ts-config', 'jest.config.ts');
-    const rootDir = resolveFixture('ts-config');
+  test('should read a jest.config.ts file with ts-node', async () => {
+    const configFile = resolveFixture('ts-node-config', 'jest.config.ts');
+    const rootDir = resolveFixture('ts-node-config');
+    const {config, configPath} = await proxyReadInitialOptions(undefined, {
+      cwd: rootDir,
+    });
+    expect(config).toEqual({jestConfig: 'jest.config.ts', rootDir});
+    expect(configPath).toEqual(configFile);
+  });
+  test('should read a jest.config.ts file with esbuild-register', async () => {
+    const configFile = resolveFixture(
+      'ts-esbuild-register-config',
+      'jest.config.ts',
+    );
+    const rootDir = resolveFixture('ts-esbuild-register-config');
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });

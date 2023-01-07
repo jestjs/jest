@@ -57,7 +57,7 @@ export default async (): Promise<Config> => {
 
 :::tip
 
-To read TypeScript configuration files Jest requires [`ts-node`](https://npmjs.com/package/ts-node). Make sure it is installed in your project.
+To read TypeScript configuration files Jest by default requires [`ts-node`](https://npmjs.com/package/ts-node). You can override this behavior by adding a `@jest-config-loader` docblock at the top of the file. Currently, [`ts-node`](https://npmjs.com/package/ts-node) and [`esbuild-register`](https://npmjs.com/package/esbuild-register) is supported. Make sure `ts-node` or the loader you specify is installed.
 
 :::
 
