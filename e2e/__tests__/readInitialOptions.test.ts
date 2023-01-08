@@ -46,70 +46,21 @@ describe('readInitialOptions', () => {
     expect(config).toEqual({jestConfig: 'jest.config.js', rootDir});
     expect(configPath).toEqual(configFile);
   });
-  test('should read a jest.config.js file', async () => {
-    const configFile = resolveFixture('js-config', 'jest.config.js');
-    const rootDir = resolveFixture('js-config');
+  test.each([
+    ['js-config', 'jest.config.js'],
+    ['pkg-config', 'package.json'],
+    ['ts-node-config', 'jest.config.ts'],
+    ['ts-esbuild-register-config', 'jest.config.ts'],
+    ['mjs-config', 'jest.config.mjs'],
+    ['json-config', 'jest.config.json'],
+    ['async-config', 'jest.config.js'],
+  ])('should read %s/%s file', async (directory: string, filename: string) => {
+    const configFile = resolveFixture(directory, filename);
+    const rootDir = resolveFixture(directory);
     const {config, configPath} = await proxyReadInitialOptions(undefined, {
       cwd: rootDir,
     });
-    expect(config).toEqual({jestConfig: 'jest.config.js', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a package.json file', async () => {
-    const configFile = resolveFixture('pkg-config', 'package.json');
-    const rootDir = resolveFixture('pkg-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'package.json', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest.config.ts file with ts-node', async () => {
-    const configFile = resolveFixture('ts-node-config', 'jest.config.ts');
-    const rootDir = resolveFixture('ts-node-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'jest.config.ts', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest.config.ts file with esbuild-register', async () => {
-    const configFile = resolveFixture(
-      'ts-esbuild-register-config',
-      'jest.config.ts',
-    );
-    const rootDir = resolveFixture('ts-esbuild-register-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'jest.config.ts', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest.config.mjs file', async () => {
-    const configFile = resolveFixture('mjs-config', 'jest.config.mjs');
-    const rootDir = resolveFixture('mjs-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'jest.config.mjs', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest.config.json file', async () => {
-    const configFile = resolveFixture('json-config', 'jest.config.json');
-    const rootDir = resolveFixture('json-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'jest.config.json', rootDir});
-    expect(configPath).toEqual(configFile);
-  });
-  test('should read a jest config exporting an async function', async () => {
-    const configFile = resolveFixture('async-config', 'jest.config.js');
-    const rootDir = resolveFixture('async-config');
-    const {config, configPath} = await proxyReadInitialOptions(undefined, {
-      cwd: rootDir,
-    });
-    expect(config).toEqual({jestConfig: 'async-config', rootDir});
+    expect(config).toEqual({jestConfig: filename, rootDir});
     expect(configPath).toEqual(configFile);
   });
 
