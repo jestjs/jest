@@ -6,8 +6,10 @@
  *
  * @jest-config-loader esbuild-register
  */
-import type {Config} from '@jest/types';
+interface Config {
+  jestConfig: string;
+}
 
 export default {
   jestConfig: 'jest.config.ts',
-} as Config.InitialOptions;
+} as Config;
