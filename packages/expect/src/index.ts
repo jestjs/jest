@@ -300,6 +300,8 @@ const makeThrowingMatcher = (
       promise,
     };
 
+    matcherContext.matchers = bindBuiltInMatcherContext(matcherContext);
+
     const processResult = (
       result: SyncExpectationResult,
       asyncError?: JestAssertionError,
@@ -462,3 +464,13 @@ expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 export default expect;
+
+function bindBuiltInMatcherContext(matcherContext: MatcherContext) {
+  const boundMatchers: MatchersObject = {};
+  const matchers = getMatchers();
+  Object.keys(matchers).forEach(
+    matcherKey =>
+      (boundMatchers[matcherKey] = matchers[matcherKey].bind(matcherContext)),
+  );
+  return boundMatchers;
+}
