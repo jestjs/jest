@@ -26,7 +26,7 @@
     "@typescript-eslint/parser": "^5.14.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "camelcase": "^6.2.0",
+    "camelcase": "^7.0.1",
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
     "debug": "^4.0.1",
