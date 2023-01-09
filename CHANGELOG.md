@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-runtime]` Expose `isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
+
 - `[expect, @jest/expect-utils]` Support custom equality testers ([#13654](https://github.com/facebook/jest/pull/13654))
 - `[jest-config, jest-worker]` Use `os.availableParallelism` if available to calculate number of workers to spawn ([#13738](https://github.com/facebook/jest/pull/13738))
 - `[@jest/globals, jest-mock]` Add `jest.replaceProperty()` that replaces property value ([#13496](https://github.com/facebook/jest/pull/13496))
@@ -26,12 +28,6 @@
 - `[docs]` Improve custom puppeteer example to prevent worker warnings ([#13619](https://github.com/facebook/jest/pull/13619))
 
 ### Performance
-
-## 29.3.2
-
-### Features
-
-- `[jest-runtime]` Expose `isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
 
 ## 29.3.1
 
