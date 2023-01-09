@@ -74,6 +74,15 @@ export class JestAssertionError extends Error {
   matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
+const bindBuiltInMatcherContext = (matcherContext: MatcherContext) => {
+  const boundMatchers: MatchersObject = {};
+  Object.keys(matchers).forEach(
+    matcherKey =>
+      (boundMatchers[matcherKey] = matchers[matcherKey].bind(matcherContext)),
+  );
+  return boundMatchers;
+};
+
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
@@ -464,13 +473,3 @@ expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 export default expect;
-
-function bindBuiltInMatcherContext(matcherContext: MatcherContext) {
-  const boundMatchers: MatchersObject = {};
-  const matchers = getMatchers();
-  Object.keys(matchers).forEach(
-    matcherKey =>
-      (boundMatchers[matcherKey] = matchers[matcherKey].bind(matcherContext)),
-  );
-  return boundMatchers;
-}
