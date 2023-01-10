@@ -194,12 +194,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:^12.0.0":
-  version: 12.2.17
-  resolution: "@angular/compiler@npm:12.2.17"
+"@angular/compiler@npm:^14.2.12":
+  version: 14.2.12
+  resolution: "@angular/compiler@npm:14.2.12"
   dependencies:
-    tslib: ^2.2.0
-  checksum: cf77aec9bf0113e11f956b1724082ec6afc30c2ca4d735db8f21346b4bfee9da2cc1206a5d5330f80a19ecc9ed5787dfe20efdd226a896c4052220e7ba74dedb
+    tslib: ^2.3.0
+  peerDependencies:
+    "@angular/core": 14.2.12
+  peerDependenciesMeta:
+    "@angular/core":
+      optional: true
+  checksum: becadd62bcdad5a95b566093d4da8d00bbf478089ea249e4db81166169ecea0335ee1f8702920aee53dfe3a319bb7eb357ab681b236b630e5b633e99f36df2b0
   languageName: node
   linkType: hard
 
@@ -5701,7 +5706,7 @@ __metadata:
   resolution: "angular@workspace:examples/angular"
   dependencies:
     "@angular/common": ^12.0.0
-    "@angular/compiler": ^12.0.0
+    "@angular/compiler": ^14.2.12
     "@angular/core": ^12.0.0
     "@angular/forms": ^12.0.0
     "@angular/platform-browser": ^12.0.0
