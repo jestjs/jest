@@ -62,19 +62,14 @@ type ResultTree = {
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
-  private readonly silent: boolean;
+  private readonly options: {silent: boolean};
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: Record<string, unknown> = {silent: false},
+    reporterOptions: {silent?: boolean} = {silent: false},
   ) {
     super();
-    const silentOption = reporterOptions.silent;
-    if (silentOption !== null && silentOption !== undefined) {
-      this.silent = silentOption as boolean;
-    } else {
-      this.silent = false;
-    }
+    this.options = {silent: reporterOptions.silent || false};
   }
 
   override onTestResult(
@@ -83,19 +78,18 @@ export default class GitHubActionsReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ): void {
     this.generateAnnotations(test, testResult);
-    if (this.silent) {
-      return;
+    if (!this.options.silent) {
+      this.printFullResult(test.context, testResult);
     }
-    this.printFullResult(test.context, testResult);
     if (this.isLastTestSuite(aggregatedResults)) {
-      this.log('');
-      if (this.printFailedTestLogs(test, aggregatedResults)) {
-        this.log('');
-      }
+      this.printFailedTestLogs(test, aggregatedResults);
     }
   }
 
-  generateAnnotations({context}: Test, {testResults}: TestResult): void {
+  private generateAnnotations(
+    {context}: Test,
+    {testResults}: TestResult,
+  ): void {
     testResults.forEach(result => {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
@@ -402,7 +396,10 @@ export default class GitHubActionsReporter extends BaseReporter {
       testDir = testDir.replace(rootDir, '');
       testDir = testDir.slice(1, testDir.length);
       if (result.failureMessage) {
-        written = true;
+        if (!written) {
+          this.log('');
+          written = true;
+        }
         this.startGroup(`Errors thrown in ${testDir}`);
         this.log(result.failureMessage);
         this.endGroup();
