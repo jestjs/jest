@@ -66,7 +66,7 @@ describe('Result tree generation', () => {
     };
     const gha = new GhaReporter();
 
-    const generated = gha.__getResultTree(testResults, '/', suitePerf);
+    const generated = gha.getResultTree(testResults, '/', suitePerf);
 
     expect(consoleLog).toBe('');
     expect(generated).toEqual(expectedResults);
@@ -104,7 +104,7 @@ describe('Result tree generation', () => {
     };
     const gha = new GhaReporter();
 
-    const generated = gha.__getResultTree(testResults, '/', suitePerf);
+    const generated = gha.getResultTree(testResults, '/', suitePerf);
 
     expect(consoleLog).toBe('');
     expect(generated).toEqual(expectedResults);
@@ -148,7 +148,7 @@ describe('Result tree generation', () => {
     };
     const gha = new GhaReporter();
 
-    const generated = gha.__getResultTree(testResults, '/', suitePerf);
+    const generated = gha.getResultTree(testResults, '/', suitePerf);
 
     expect(consoleLog).toBe('');
     expect(generated).toEqual(expectedResults);
@@ -192,7 +192,7 @@ describe('Result tree generation', () => {
     };
     const gha = new GhaReporter();
 
-    const generated = gha.__getResultTree(testResults, '/', suitePerf);
+    const generated = gha.getResultTree(testResults, '/', suitePerf);
 
     expect(consoleLog).toBe('');
     expect(generated).toEqual(expectedResults);
@@ -223,7 +223,7 @@ describe('Result tree output', () => {
     )} / (20 ms)    ${chalk.red(xSymbol)} test (10 ms)`;
     const gha = new GhaReporter();
 
-    gha.__printResultTree(generatedTree);
+    gha.printResultTree(generatedTree);
 
     expect(consoleLog).toEqual(expectedOutput);
   });
@@ -251,7 +251,7 @@ describe('Result tree output', () => {
     )} / (20 ms)  ${chalk.green(ySymbol)} test (10 ms)::endgroup::`;
     const gha = new GhaReporter();
 
-    gha.__printResultTree(generatedTree);
+    gha.printResultTree(generatedTree);
 
     expect(consoleLog).toEqual(expectedOutput);
   });
@@ -286,7 +286,7 @@ describe('Result tree output', () => {
       `      ${chalk.red(xSymbol)} test (10 ms)`;
     const gha = new GhaReporter();
 
-    gha.__printResultTree(generatedTree);
+    gha.printResultTree(generatedTree);
 
     expect(consoleLog).toEqual(expectedOutput);
   });
@@ -322,7 +322,7 @@ describe('Result tree output', () => {
       '::endgroup::';
     const gha = new GhaReporter();
 
-    gha.__printResultTree(generatedTree);
+    gha.printResultTree(generatedTree);
 
     expect(consoleLog).toEqual(expectedOutput);
   });

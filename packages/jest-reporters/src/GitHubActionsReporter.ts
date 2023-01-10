@@ -62,16 +62,40 @@ type resultTree = {
 
 export default class GitHubActionsReporter extends BaseReporter {
   static readonly filename = __filename;
+  private readonly silent: boolean;
+
+  constructor(
+    _globalConfig: Config.GlobalConfig,
+    reporterOptions: Config.ReporterConfig,
+  ) {
+    super();
+    if (reporterOptions === null || reporterOptions === undefined) {
+      reporterOptions = ['github-actions', {silent: false}];
+    }
+    let options = reporterOptions[1];
+    if (options === null || options === undefined) {
+      options = {silent: false};
+    }
+    const silentOption = options.silent;
+    if (silentOption !== null && silentOption !== undefined) {
+      this.silent = silentOption as boolean;
+    } else {
+      this.silent = false;
+    }
+  }
 
   override onTestResult(
     test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ): void {
-    this.__printFullResult(test.context, testResult);
-    if (this.__isLastTestSuite(aggregatedResults)) {
+    if (this.silent) {
+      return;
+    }
+    this.printFullResult(test.context, testResult);
+    if (this.isLastTestSuite(aggregatedResults)) {
       this.log('');
-      if (this.__printFailedTestLogs(test, aggregatedResults)) {
+      if (this.printFailedTestLogs(test, aggregatedResults)) {
         this.log('');
       }
     }
@@ -130,7 +154,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     );
   }
 
-  __isLastTestSuite(results: AggregatedResult): boolean {
+  private isLastTestSuite(results: AggregatedResult): boolean {
     const passedTestSuites = results.numPassedTestSuites;
     const failedTestSuites = results.numFailedTestSuites;
     const totalTestSuites = results.numTotalTestSuites;
@@ -146,19 +170,19 @@ export default class GitHubActionsReporter extends BaseReporter {
     }
   }
 
-  __printFullResult(context: TestContext, results: TestResult): void {
+  private printFullResult(context: TestContext, results: TestResult): void {
     const rootDir = context.config.rootDir;
     let testDir = results.testFilePath.replace(rootDir, '');
     testDir = testDir.slice(1, testDir.length);
-    const resultTree = this.__getResultTree(
+    const resultTree = this.getResultTree(
       results.testResults,
       testDir,
       results.perfStats,
     );
-    this.__printResultTree(resultTree);
+    this.printResultTree(resultTree);
   }
 
-  __arrayEqual(a1: Array<any>, a2: Array<any>): boolean {
+  private arrayEqual(a1: Array<any>, a2: Array<any>): boolean {
     if (a1.length !== a2.length) {
       return false;
     }
@@ -171,7 +195,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     return true;
   }
 
-  __arrayChild(a1: Array<any>, a2: Array<any>): boolean {
+  private arrayChild(a1: Array<any>, a2: Array<any>): boolean {
     if (a1.length - a2.length !== 1) {
       return false;
     }
@@ -184,7 +208,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     return true;
   }
 
-  __getResultTree(
+  private getResultTree(
     suiteResult: Array<AssertionResult>,
     testPath: string,
     suitePerf: performaceInfo,
@@ -216,10 +240,7 @@ export default class GitHubActionsReporter extends BaseReporter {
         let alreadyInserted = false;
         for (let index = 0; index < branches.length; index++) {
           if (
-            this.__arrayEqual(
-              branches[index],
-              element.ancestorTitles.slice(0, 1),
-            )
+            this.arrayEqual(branches[index], element.ancestorTitles.slice(0, 1))
           ) {
             alreadyInserted = true;
             break;
@@ -231,7 +252,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       }
     });
     branches.forEach(element => {
-      const newChild = this.__getResultChildren(suiteResult, element);
+      const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         root.passed = false;
       }
@@ -240,7 +261,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     return root;
   }
 
-  __getResultChildren(
+  private getResultChildren(
     suiteResult: Array<AssertionResult>,
     ancestors: Array<string>,
   ): resultTreeNode {
@@ -256,7 +277,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       if (!duration || isNaN(duration)) {
         duration = 1;
       }
-      if (this.__arrayEqual(element.ancestorTitles, ancestors)) {
+      if (this.arrayEqual(element.ancestorTitles, ancestors)) {
         if (element.status !== 'passed') {
           node.passed = false;
           passed = false;
@@ -268,7 +289,7 @@ export default class GitHubActionsReporter extends BaseReporter {
           passed,
         });
       } else if (
-        this.__arrayChild(
+        this.arrayChild(
           element.ancestorTitles.slice(0, ancestors.length + 1),
           ancestors,
         )
@@ -276,7 +297,7 @@ export default class GitHubActionsReporter extends BaseReporter {
         let alreadyInserted = false;
         for (let index = 0; index < branches.length; index++) {
           if (
-            this.__arrayEqual(
+            this.arrayEqual(
               branches[index],
               element.ancestorTitles.slice(0, ancestors.length + 1),
             )
@@ -291,7 +312,7 @@ export default class GitHubActionsReporter extends BaseReporter {
       }
     });
     branches.forEach(element => {
-      const newChild = this.__getResultChildren(suiteResult, element);
+      const newChild = this.getResultChildren(suiteResult, element);
       if (!newChild.passed) {
         node.passed = false;
       }
@@ -300,7 +321,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     return node;
   }
 
-  __printResultTree(resultTree: resultTree): void {
+  private printResultTree(resultTree: resultTree): void {
     let perfMs;
     if (resultTree.performanceInfo.slow) {
       perfMs = ` (${chalk.red.inverse(
@@ -310,24 +331,24 @@ export default class GitHubActionsReporter extends BaseReporter {
       perfMs = ` (${resultTree.performanceInfo.runtime} ms)`;
     }
     if (resultTree.passed) {
-      this.__startGroup(
+      this.startGroup(
         `${chalk.bold.green.inverse('PASS')} ${resultTree.name}${perfMs}`,
       );
       resultTree.children.forEach(child => {
-        this.__recursivePrintResultTree(child, true, 1);
+        this.recursivePrintResultTree(child, true, 1);
       });
-      this.__endGroup();
+      this.endGroup();
     } else {
       this.log(
         `  ${chalk.bold.red.inverse('FAIL')} ${resultTree.name}${perfMs}`,
       );
       resultTree.children.forEach(child => {
-        this.__recursivePrintResultTree(child, false, 1);
+        this.recursivePrintResultTree(child, false, 1);
       });
     }
   }
 
-  __recursivePrintResultTree(
+  private recursivePrintResultTree(
     resultTree: resultTreeNode | resultTreeLeaf,
     alreadyGrouped: boolean,
     depth: number,
@@ -357,25 +378,28 @@ export default class GitHubActionsReporter extends BaseReporter {
         if (alreadyGrouped) {
           this.log('  '.repeat(depth) + resultTree.name);
           resultTree.children.forEach(child => {
-            this.__recursivePrintResultTree(child, true, depth + 1);
+            this.recursivePrintResultTree(child, true, depth + 1);
           });
         } else {
-          this.__startGroup('  '.repeat(depth) + resultTree.name);
+          this.startGroup('  '.repeat(depth) + resultTree.name);
           resultTree.children.forEach(child => {
-            this.__recursivePrintResultTree(child, true, depth + 1);
+            this.recursivePrintResultTree(child, true, depth + 1);
           });
-          this.__endGroup();
+          this.endGroup();
         }
       } else {
         this.log('  '.repeat(depth + 1) + resultTree.name);
         resultTree.children.forEach(child => {
-          this.__recursivePrintResultTree(child, false, depth + 1);
+          this.recursivePrintResultTree(child, false, depth + 1);
         });
       }
     }
   }
 
-  __printFailedTestLogs(context: Test, testResults: AggregatedResult): boolean {
+  private printFailedTestLogs(
+    context: Test,
+    testResults: AggregatedResult,
+  ): boolean {
     const rootDir = context.context.config.rootDir;
     const results = testResults.testResults;
     let written = false;
@@ -385,19 +409,19 @@ export default class GitHubActionsReporter extends BaseReporter {
       testDir = testDir.slice(1, testDir.length);
       if (result.failureMessage) {
         written = true;
-        this.__startGroup(`Errors thrown in ${testDir}`);
+        this.startGroup(`Errors thrown in ${testDir}`);
         this.log(result.failureMessage);
-        this.__endGroup();
+        this.endGroup();
       }
     });
     return written;
   }
 
-  __startGroup(title: string): void {
+  private startGroup(title: string): void {
     this.log(`::group::${title}`);
   }
 
-  __endGroup(): void {
+  private endGroup(): void {
     this.log('::endgroup::');
   }
 }

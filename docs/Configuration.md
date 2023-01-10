@@ -1278,12 +1278,12 @@ export default config;
 
 #### GitHub Actions Reporter
 
-If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages and print logs with github group features for easy navigation. Note that `'default'` should not be used in this case as `'github-actions'` will handle that already, so remember to also include `'summary'`:
+If included in the list, the built-in GitHub Actions Reporter will annotate changed files with test failure messages and print logs with github group features for easy navigation. Note that `'default'` should not be used in this case as `'github-actions'` will handle that already, so remember to also include `'summary'`. If you wish to use it only for annotations simply pass `'silent: true'` as option (default is `false`):
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
-  reporters: ['github-actions', 'summary'],
+  reporters: [['github-actions', {silent: false}], 'summary'],
 };
 
 module.exports = config;
@@ -1293,7 +1293,7 @@ module.exports = config;
 import type {Config} from 'jest';
 
 const config: Config = {
-  reporters: ['github-actions', 'summary'],
+  reporters: [['github-actions', {silent: false}], 'summary'],
 };
 
 export default config;
