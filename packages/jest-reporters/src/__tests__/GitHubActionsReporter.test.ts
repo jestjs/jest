@@ -6,6 +6,7 @@
  */
 
 import type {Test, TestCaseResult, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import GitHubActionsReporter from '../GitHubActionsReporter';
 
 const mockedStderrWrite = jest
@@ -16,7 +17,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-const reporter = new GitHubActionsReporter();
+const reporter = new GitHubActionsReporter({} as Config.GlobalConfig);
 
 const testMeta = {
   context: {config: {rootDir: '/user/project'}},
@@ -74,7 +75,7 @@ const testCaseResult = {
 
 describe('logs error annotation', () => {
   test('when an expectation fails to pass', () => {
-    reporter.onTestFileResult(testMeta, {
+    reporter.generateAnnotations(testMeta, {
       testResults: [
         {
           ...testCaseResult,
@@ -88,7 +89,7 @@ describe('logs error annotation', () => {
   });
 
   test('when a test has reference error', () => {
-    reporter.onTestFileResult(
+    reporter.generateAnnotations(
       {...testMeta, path: '/user/project/__tests__/example.test.js:25:12'},
       {
         testResults: [
@@ -105,7 +106,7 @@ describe('logs error annotation', () => {
   });
 
   test('when test is wrapped in describe block', () => {
-    reporter.onTestFileResult(testMeta, {
+    reporter.generateAnnotations(testMeta, {
       testResults: [
         {
           ...testCaseResult,
@@ -121,7 +122,7 @@ describe('logs error annotation', () => {
 
 describe('logs warning annotation before logging errors', () => {
   test('when test result includes retry reasons', () => {
-    reporter.onTestFileResult(testMeta, {
+    reporter.generateAnnotations(testMeta, {
       testResults: [
         {
           ...testCaseResult,

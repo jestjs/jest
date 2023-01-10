@@ -362,6 +362,7 @@ describe('Reporter interface', () => {
       `  ${chalk.green(ySymbol)} test1 (10 ms)` +
       '::endgroup::';
     const gha = new GhaReporter();
+    gha.generateAnnotations = jest.fn();
 
     gha.onTestResult(mockTest, mockTestResult, mockResults);
 
@@ -406,6 +407,7 @@ describe('Reporter interface', () => {
       'Failure message' +
       '::endgroup::';
     const gha = new GhaReporter();
+    gha.generateAnnotations = jest.fn();
 
     gha.onTestResult(mockTest, mockTestResult, mockResults);
 

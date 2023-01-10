@@ -33,31 +33,31 @@ type AnnotationOptions = {
 
 const titleSeparator = ' \u203A ';
 
-type performaceInfo = {
+type PerformanceInfo = {
   end: number;
   runtime: number;
   slow: boolean;
   start: number;
 };
 
-type resultTreeLeaf = {
+type ResultTreeLeaf = {
   name: string;
   passed: boolean;
   duration: number;
   children: Array<never>;
 };
 
-type resultTreeNode = {
+type ResultTreeNode = {
   name: string;
   passed: boolean;
-  children: Array<resultTreeNode | resultTreeLeaf>;
+  children: Array<ResultTreeNode | ResultTreeLeaf>;
 };
 
-type resultTree = {
-  children: Array<resultTreeLeaf | resultTreeNode>;
+type ResultTree = {
+  children: Array<ResultTreeLeaf | ResultTreeNode>;
   name: string;
   passed: boolean;
-  performanceInfo: performaceInfo;
+  performanceInfo: PerformanceInfo;
 };
 
 export default class GitHubActionsReporter extends BaseReporter {
@@ -66,17 +66,10 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: Config.ReporterConfig,
+    reporterOptions: Record<string, unknown> = {silent: false},
   ) {
     super();
-    if (reporterOptions === null || reporterOptions === undefined) {
-      reporterOptions = ['github-actions', {silent: false}];
-    }
-    let options = reporterOptions[1];
-    if (options === null || options === undefined) {
-      options = {silent: false};
-    }
-    const silentOption = options.silent;
+    const silentOption = reporterOptions.silent;
     if (silentOption !== null && silentOption !== undefined) {
       this.silent = silentOption as boolean;
     } else {
@@ -89,6 +82,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ): void {
+    this.generateAnnotations(test, testResult);
     if (this.silent) {
       return;
     }
@@ -101,7 +95,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     }
   }
 
-  onTestFileResult({context}: Test, {testResults}: TestResult): void {
+  generateAnnotations({context}: Test, {testResults}: TestResult): void {
     testResults.forEach(result => {
       const title = [...result.ancestorTitles, result.title].join(
         titleSeparator,
@@ -211,9 +205,9 @@ export default class GitHubActionsReporter extends BaseReporter {
   private getResultTree(
     suiteResult: Array<AssertionResult>,
     testPath: string,
-    suitePerf: performaceInfo,
-  ): resultTree {
-    const root: resultTree = {
+    suitePerf: PerformanceInfo,
+  ): ResultTree {
+    const root: ResultTree = {
       children: [],
       name: testPath,
       passed: true,
@@ -264,8 +258,8 @@ export default class GitHubActionsReporter extends BaseReporter {
   private getResultChildren(
     suiteResult: Array<AssertionResult>,
     ancestors: Array<string>,
-  ): resultTreeNode {
-    const node: resultTreeNode = {
+  ): ResultTreeNode {
+    const node: ResultTreeNode = {
       children: [],
       name: ancestors[ancestors.length - 1],
       passed: true,
@@ -321,7 +315,7 @@ export default class GitHubActionsReporter extends BaseReporter {
     return node;
   }
 
-  private printResultTree(resultTree: resultTree): void {
+  private printResultTree(resultTree: ResultTree): void {
     let perfMs;
     if (resultTree.performanceInfo.slow) {
       perfMs = ` (${chalk.red.inverse(
@@ -349,7 +343,7 @@ export default class GitHubActionsReporter extends BaseReporter {
   }
 
   private recursivePrintResultTree(
-    resultTree: resultTreeNode | resultTreeLeaf,
+    resultTree: ResultTreeNode | ResultTreeLeaf,
     alreadyGrouped: boolean,
     depth: number,
   ): void {
