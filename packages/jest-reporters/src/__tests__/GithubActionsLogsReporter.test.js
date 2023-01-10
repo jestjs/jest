@@ -11,7 +11,7 @@ import util from 'util';
 import chalk from 'chalk';
 import {beforeEach, describe, expect, jest, test} from '@jest/globals';
 import BaseReporter from '../BaseReporter';
-import GhaReporter from '../GithubActionsLogsReporter';
+import GhaReporter from '../GitHubActionsReporter';
 
 const xSymbol = '\u00D7';
 const ySymbol = '\u2713';
