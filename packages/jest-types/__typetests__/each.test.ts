@@ -33,14 +33,20 @@ expectType<void>(
   }),
 );
 expectType<void>(
-  test.each(list)('some test', a => {
-    expectType<number>(a);
-  }),
+  test.each(list)(
+    'some test',
+    a => {
+      expectType<number>(a);
+    },
+    1000,
+  ),
 );
 
 expectType<void>(
-  test.each(tupleList)('some test', b => {
+  test.each(tupleList)('some test', (b, done) => {
     expectType<'one' | 'two' | 'three'>(b);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -54,8 +60,10 @@ expectType<void>(
 );
 
 expectType<void>(
-  test.each([3, 4, 'seven'])('some test', c => {
+  test.each([3, 4, 'seven'])('some test', (c, done) => {
     expectType<string | number>(c);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -88,11 +96,13 @@ expectType<void>(
 );
 
 expectType<void>(
-  test.each(tupleTable)('some test', (a, b, expected, extra) => {
+  test.each(tupleTable)('some test', (a, b, expected, extra, done) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<string>(expected);
     expectType<boolean | undefined>(extra);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -112,10 +122,12 @@ expectType<void>(
   test.each([
     [1, 2, 'three'],
     [3, 4, 'seven'],
-  ])('some test', (a, b, expected) => {
+  ])('some test', (a, b, expected, done) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<string>(expected);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -134,11 +146,13 @@ expectType<void>(
 );
 
 expectType<void>(
-  test.each(objectTable)('some test', ({a, b, expected, extra}) => {
+  test.each(objectTable)('some test', ({a, b, expected, extra}, done) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<string>(expected);
     expectType<boolean | undefined>(extra);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -164,10 +178,12 @@ expectType<void>(
     ${1} | ${1} | ${2}
     ${1} | ${2} | ${3}
     ${2} | ${1} | ${3}
-  `('some test', ({a, b, expected}) => {
+  `('some test', ({a, b, expected}, done) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<number>(expected);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -185,9 +201,11 @@ expectType<void>(
     item   | expected
     ${'a'} | ${true}
     ${'b'} | ${false}
-  `('some test', ({item, expected}) => {
+  `('some test', ({item, expected}, done) => {
     expectType<string>(item);
     expectType<boolean>(expected);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
