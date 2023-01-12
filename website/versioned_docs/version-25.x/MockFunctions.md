@@ -11,8 +11,8 @@ There are two ways to mock functions: Either by creating a mock function to use 
 
 Let's imagine we're testing an implementation of a function `forEach`, which invokes a callback for each item in a supplied array.
 
-```javascript
-function forEach(items, callback) {
+```js title="forEach.js"
+export function forEach(items, callback) {
   for (let index = 0; index < items.length; index++) {
     callback(items[index]);
   }
@@ -21,21 +21,26 @@ function forEach(items, callback) {
 
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
-```javascript
+```js title="forEach.test.js"
+import {forEach} from './forEach';
+
 const mockCallback = jest.fn(x => 42 + x);
-forEach([0, 1], mockCallback);
 
-// The mock function is called twice
-expect(mockCallback.mock.calls.length).toBe(2);
+test('forEach function', () => {
+  forEach([0, 1], mockCallback);
 
-// The first argument of the first call to the function was 0
-expect(mockCallback.mock.calls[0][0]).toBe(0);
+  // The mock function was called twice
+  expect(mockCallback.mock.calls).toHaveLength(2);
 
-// The first argument of the second call to the function was 1
-expect(mockCallback.mock.calls[1][0]).toBe(1);
+  // The first argument of the first call to the function was 0
+  expect(mockCallback.mock.calls[0][0]).toBe(0);
 
-// The return value of the first call to the function was 42
-expect(mockCallback.mock.results[0].value).toBe(42);
+  // The first argument of the second call to the function was 1
+  expect(mockCallback.mock.calls[1][0]).toBe(1);
+
+  // The return value of the first call to the function was 42
+  expect(mockCallback.mock.results[0].value).toBe(42);
+});
 ```
 
 ## `.mock` property
@@ -58,7 +63,7 @@ These mock members are very useful in tests to assert how these functions get ca
 
 ```javascript
 // The function was called exactly once
-expect(someMockFunction.mock.calls.length).toBe(1);
+expect(someMockFunction.mock.calls).toHaveLength(1);
 
 // The first arg of the first call to the function was 'first arg'
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');

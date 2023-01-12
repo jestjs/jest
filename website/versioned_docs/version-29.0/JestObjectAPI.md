@@ -533,7 +533,7 @@ By default, `jest.spyOn` also calls the **spied** method. This is different beha
 
 :::tip
 
-Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+Since `jest.spyOn` is a mock, you could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
 
 :::
 
@@ -611,7 +611,7 @@ afterEach(() => {
 
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
-  const isPlaying = video.play;
+  const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);

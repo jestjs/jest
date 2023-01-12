@@ -173,6 +173,12 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
+   * async functions to be wrapped. The caller is expected to `await` the completion of
+   * `isolateModulesAsync`.
+   */
+  isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
+  /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock<T = unknown>(
@@ -218,6 +224,13 @@ export interface Jest {
    */
   mocked: ModuleMocker['mocked'];
   /**
+   * Replaces property on an object with another value.
+   *
+   * @remarks
+   * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
+   */
+  replaceProperty: ModuleMocker['replaceProperty'];
+  /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
@@ -233,8 +246,9 @@ export interface Jest {
    */
   resetModules(): Jest;
   /**
-   * Restores all mocks back to their original value. Equivalent to calling
-   * `.mockRestore()` on every mocked function.
+   * Restores all mocks and replaced properties back to their original value.
+   * Equivalent to calling `.mockRestore()` on every mocked function
+   * and `.restore()` on every replaced property.
    *
    * Beware that `jest.restoreAllMocks()` only works when the mock was created
    * with `jest.spyOn()`; other mocks will require you to manually restore them.

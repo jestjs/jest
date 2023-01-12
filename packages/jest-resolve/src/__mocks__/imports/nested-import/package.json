@@ -1,0 +1,12 @@
+{
+  "name": "nested-import",
+  "imports": {
+    "#nested": {
+      "node": {
+        "import": "./esm.mjs",
+        "require": "./node.cjs"
+      },
+      "default": "./browser.cjs"
+    }
+  }
+}

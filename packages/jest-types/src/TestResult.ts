@@ -5,7 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled';
+type Status =
+  | 'passed'
+  | 'failed'
+  | 'skipped'
+  | 'pending'
+  | 'todo'
+  | 'disabled'
+  | 'focused';
 
 type Callsite = {
   column: number;

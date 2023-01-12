@@ -14,7 +14,7 @@ import {
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
-import {getState} from './jestMatchersObject';
+import {getCustomEqualityTesters, getState} from './jestMatchersObject';
 import type {
   AsymmetricMatcher as AsymmetricMatcherInterface,
   MatcherContext,
@@ -73,6 +73,7 @@ export abstract class AsymmetricMatcher<T>
 
   protected getMatcherContext(): MatcherContext {
     return {
+      customTesters: getCustomEqualityTesters(),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       dontThrow: () => {},
       ...getState<MatcherState>(),
@@ -193,11 +194,14 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
       );
     }
 
+    const matcherContext = this.getMatcherContext();
     const result =
       this.sample.length === 0 ||
       (Array.isArray(other) &&
         this.sample.every(item =>
-          other.some(another => equals(item, another)),
+          other.some(another =>
+            equals(item, another, matcherContext.customTesters),
+          ),
         ));
 
     return this.inverse ? !result : result;
@@ -227,10 +231,15 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 
     let result = true;
 
+    const matcherContext = this.getMatcherContext();
     for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])
+        !equals(
+          this.sample[property],
+          other[property],
+          matcherContext.customTesters,
+        )
       ) {
         result = false;
         break;

@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {cpus} from 'os';
+import {
+  // @ts-expect-error - added in Node 19.4.0
+  availableParallelism,
+  cpus,
+} from 'os';
 import {isAbsolute} from 'path';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
@@ -54,6 +58,12 @@ function getExposedMethods(
   return exposedMethods;
 }
 
+function getNumberOfCpus(): number {
+  return typeof availableParallelism === 'function'
+    ? availableParallelism()
+    : cpus().length;
+}
+
 /**
  * The Jest farm (publicly called "Worker") is a class that allows you to queue
  * methods across multiple child processes, in order to parallelize work. This
@@ -98,7 +108,8 @@ export class Worker {
       forkOptions: this._options.forkOptions ?? {},
       idleMemoryLimit: this._options.idleMemoryLimit,
       maxRetries: this._options.maxRetries ?? 3,
-      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      numWorkers:
+        this._options.numWorkers ?? Math.max(getNumberOfCpus() - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
     };

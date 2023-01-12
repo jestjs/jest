@@ -20,7 +20,7 @@
     "jest-get-type": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "immutable": "^4.0.0",
     "jest-matcher-utils": "workspace:^",
     "tsd-lite": "^0.6.0"

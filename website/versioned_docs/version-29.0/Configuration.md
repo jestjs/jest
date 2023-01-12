@@ -2189,13 +2189,20 @@ export default config;
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 
@@ -2207,7 +2214,14 @@ import type {Config} from 'jest';
 
 const config: Config = {
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)',
+    '<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)',
+    /* if config file is under '~/packages/lib-a/' */
+    `${path.join(
+      __dirname,
+      '../..',
+    )}/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)`,
+    /* or using relative path to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@x.x.x/node_modules/@scope/pkg-b/' */
+    'node_modules/(?!.pnpm|package-a|@scope/pkg-b)',
   ],
 };
 

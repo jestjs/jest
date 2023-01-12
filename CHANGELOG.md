@@ -3,10 +3,28 @@
 ### Features
 
 - `[jest-circus, @jest/cli, jest-config]` Add feature to randomize order of tests via CLI flag or through the config file([#12922](https://github.com/facebook/jest/pull/12922))
+- `[expect, @jest/expect-utils]` Support custom equality testers ([#13654](https://github.com/facebook/jest/pull/13654))
+- `[jest-config, jest-worker]` Use `os.availableParallelism` if available to calculate number of workers to spawn ([#13738](https://github.com/facebook/jest/pull/13738))
+- `[@jest/globals, jest-mock]` Add `jest.replaceProperty()` that replaces property value ([#13496](https://github.com/facebook/jest/pull/13496))
+- `[jest-haste-map]` ignore Sapling vcs directories (`.sl/`) ([#13674](https://github.com/facebook/jest/pull/13674))
+- `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705), [#13723](https://github.com/facebook/jest/pull/13723))
+- `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))
+- `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 
 ### Fixes
 
+- `[jest-environment-node]` fix non-configurable globals ([#13687](https://github.com/facebook/jest/pull/13687))
+- `[@jest/expect-utils]` `toMatchObject` should handle `Symbol` properties ([#13639](https://github.com/facebook/jest/pull/13639))
+- `[jest-mock]` fix mockReset and resetAllMocks undefined return ([#13692](https://github.com/facebook/jest/pull/13692))
+- `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
+- `[jest-runtime]` Support Wasm files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
+- `[jest-runtime]` Using the scriptTransformer cache in jest-runner ([#13735](https://github.com/facebook/jest/pull/13735))
+- `[jest-snapshot]` Make sure to import `babel` outside of the sandbox ([#13694](https://github.com/facebook/jest/pull/13694))
+
 ### Chore & Maintenance
+
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` ([#13612](https://github.com/facebook/jest/pull/13612))
+- `[docs]` Improve custom puppeteer example to prevent worker warnings ([#13619](https://github.com/facebook/jest/pull/13619))
 
 ### Performance
 
@@ -14,11 +32,11 @@
 
 ### Fixes
 
-- `[jest-config]` Do not warn about `preset` in `ProjectConfig` [#13583](https://github.com/facebook/jest/pull/13583)
+- `[jest-config]` Do not warn about `preset` in `ProjectConfig` ([#13583](https://github.com/facebook/jest/pull/13583))
 
 ### Performance
 
-- `[jest-transform]` Defer creation of cache directory [#13420](https://github.com/facebook/jest/pull/13420)
+- `[jest-transform]` Defer creation of cache directory ([#13420](https://github.com/facebook/jest/pull/13420))
 
 ## 29.3.0
 

@@ -10,7 +10,7 @@ Ran all test suites matching /native-esm-deep-cjs-reexport.test.js/i."
 
 exports[`runs WebAssembly (Wasm) test with native ESM 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       5 passed, 5 total
+Tests:       6 passed, 6 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /native-esm-wasm.test.js/i."

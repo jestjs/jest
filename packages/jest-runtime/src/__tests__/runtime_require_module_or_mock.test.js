@@ -214,7 +214,7 @@ describe('resetModules', () => {
 });
 
 describe('isolateModules', () => {
-  it("keeps it's registry isolated from global one", async () => {
+  it('keeps its registry isolated from global one', async () => {
     const runtime = await createRuntime(__filename, {
       moduleNameMapper,
     });
@@ -287,7 +287,7 @@ describe('isolateModules', () => {
         runtime.isolateModules(() => {});
       });
     }).toThrow(
-      'isolateModules cannot be nested inside another isolateModules.',
+      'isolateModules cannot be nested inside another isolateModules or isolateModulesAsync.',
     );
   });
 
@@ -325,6 +325,7 @@ describe('isolateModules', () => {
     beforeEach(() => {
       jest.isolateModules(() => {
         exports = require('./test_root/ModuleWithState');
+        exports.set(1); // Ensure idempotency with the isolateModulesAsync test
       });
     });
 
@@ -337,6 +338,135 @@ describe('isolateModules', () => {
       expect(exports.getState()).toBe(1);
       exports.increment();
       expect(exports.getState()).toBe(2);
+    });
+  });
+});
+
+describe('isolateModulesAsync', () => {
+  it('keeps its registry isolated from global one', async () => {
+    const runtime = await createRuntime(__filename, {
+      moduleNameMapper,
+    });
+    let exports;
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'ModuleWithState',
+    );
+    exports.increment();
+    expect(exports.getState()).toBe(2);
+
+    await runtime.isolateModulesAsync(async () => {
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    });
+
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'ModuleWithState',
+    );
+    expect(exports.getState()).toBe(2);
+  });
+
+  it('resets all modules after the block', async () => {
+    const runtime = await createRuntime(__filename, {
+      moduleNameMapper,
+    });
+    let exports;
+    await runtime.isolateModulesAsync(async () => {
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+    });
+
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'ModuleWithState',
+    );
+    expect(exports.getState()).toBe(1);
+  });
+
+  it('resets module after failing', async () => {
+    const runtime = await createRuntime(__filename, {
+      moduleNameMapper,
+    });
+    await expect(
+      runtime.isolateModulesAsync(async () => {
+        throw new Error('Error from isolated module');
+      }),
+    ).rejects.toThrow('Error from isolated module');
+
+    await runtime.isolateModulesAsync(async () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  it('cannot nest isolateModulesAsync blocks', async () => {
+    const runtime = await createRuntime(__filename, {
+      moduleNameMapper,
+    });
+    await expect(async () => {
+      await runtime.isolateModulesAsync(async () => {
+        await runtime.isolateModulesAsync(() => Promise.resolve());
+      });
+    }).rejects.toThrow(
+      'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+    );
+  });
+
+  it('can call resetModules within a isolateModules block', async () => {
+    const runtime = await createRuntime(__filename, {
+      moduleNameMapper,
+    });
+    let exports;
+    await runtime.isolateModulesAsync(async () => {
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+
+      exports.increment();
+      runtime.resetModules();
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(1);
+    });
+
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'ModuleWithState',
+    );
+    expect(exports.getState()).toBe(1);
+  });
+
+  describe('can use isolateModulesAsync from a beforeEach block', () => {
+    let exports;
+    beforeEach(async () => {
+      await jest.isolateModulesAsync(async () => {
+        exports = require('./test_root/ModuleWithState');
+        exports.set(1); // Ensure idempotency with the isolateModules test
+      });
+    });
+
+    it('can use the required module from beforeEach and re-require it', () => {
+      expect(exports.getState()).toBe(1);
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+
+      exports = require('./test_root/ModuleWithState');
+      expect(exports.getState()).toBe(2);
+      exports.increment();
+      expect(exports.getState()).toBe(3);
     });
   });
 });

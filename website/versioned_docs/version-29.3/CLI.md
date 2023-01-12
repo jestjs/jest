@@ -168,6 +168,12 @@ A glob pattern relative to `rootDir` matching the files that coverage info needs
 
 Forces test results output highlighting even if stdout is not a TTY.
 
+:::note
+
+Alternatively you can set the environment variable `FORCE_COLOR=true` to forcefully enable or `FORCE_COLOR=false` to disable colorized output. The use of `FORCE_COLOR` overrides all other color support checks.
+
+:::
+
 ### `--config=<path>`
 
 Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
@@ -431,7 +437,7 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 ### `--testNamePattern=<regex>`
 
-Alias: -t. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
 
 :::tip
 
