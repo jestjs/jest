@@ -1146,7 +1146,7 @@ export class ModuleMocker {
   ): MockInstance {
     if (typeof object !== 'object' && typeof object !== 'function') {
       throw new Error(
-        `Cannot spyOn on a primitive value; ${this._typeOf(object)} given`,
+        `Cannot use spyOn on a primitive value; ${this._typeOf(object)} given`,
       );
     }
 
