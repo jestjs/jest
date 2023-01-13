@@ -1152,7 +1152,7 @@ export class ModuleMocker {
 
     if (!object) {
       throw new Error(
-        `spyOn could not find an object to spy upon for ${String(methodKey)}`,
+        `spyOn could not find an object to spy on for ${String(methodKey)}`,
       );
     }
 
@@ -1169,7 +1169,7 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${String(
+          `Cannot spy on the ${String(
             methodKey,
           )} property because it is not a function; ${this._typeOf(
             original,
@@ -1260,7 +1260,7 @@ export class ModuleMocker {
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy the ${String(
+          `Cannot spy on the ${String(
             propertyKey,
           )} property because it is not a function; ${this._typeOf(
             original,
