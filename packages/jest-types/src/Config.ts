@@ -126,6 +126,8 @@ export type HasteConfig = {
   retainAllFiles?: boolean;
 };
 
+export type ExtToTreatAsESM = Exclude<string, '.js' | '.cjs' | '.mjs'>;
+
 export type CoverageReporterName = keyof ReportOptions;
 
 export type CoverageReporterWithOptions<K = CoverageReporterName> =
@@ -162,7 +164,7 @@ export type DefaultOptions = {
   detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
   expand: boolean;
-  extensionsToTreatAsEsm: Array<string>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   fakeTimers: FakeTimers;
   forceCoverageMatch: Array<string>;
   globals: ConfigGlobals;
@@ -242,7 +244,7 @@ export type InitialOptions = Partial<{
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
-  extensionsToTreatAsEsm: Array<string>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   fakeTimers: FakeTimers;
   filter: string;
   findRelatedTests: boolean;
@@ -433,7 +435,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
-  extensionsToTreatAsEsm: Array<string>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   fakeTimers: FakeTimers;
   filter?: string;
   forceCoverageMatch: Array<string>;
