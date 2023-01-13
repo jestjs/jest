@@ -12530,7 +12530,7 @@ __metadata:
     jest-util: "workspace:^"
     p-limit: ^3.1.0
     pretty-format: "workspace:^"
-    pure-rand: ^5.0.3
+    pure-rand: ^6.0.0
     slash: ^3.0.0
     stack-utils: ^2.0.3
   languageName: unknown
@@ -17304,10 +17304,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^5.0.2, pure-rand@npm:^5.0.3":
+"pure-rand@npm:^5.0.2":
   version: 5.0.5
   resolution: "pure-rand@npm:5.0.5"
   checksum: 824b906f7f66695c15ed9a898ff650e925723515e999de0360b0726ebad924ce41a74cc2ac60409dc6c55f5781008855f32ecd0fe0a1f40fbce293d48bd11dd1
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "pure-rand@npm:6.0.0"
+  checksum: ad1378d0a4859482d053a5264b2b485b445ece4bbc56f8959c233ea678b81ac2d613737925d496ded134eff5f29cc5546bf7492b6bce319ee27bebbad8a0c612
   languageName: node
   linkType: hard
 
