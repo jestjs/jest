@@ -96,13 +96,11 @@ expectType<void>(
 );
 
 expectType<void>(
-  test.each(tupleTable)('some test', (a, b, expected, extra, done) => {
+  test.each(tupleTable)('some test', (a, b, expected, extra) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<string>(expected);
     expectType<boolean | undefined>(extra);
-
-    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -122,12 +120,10 @@ expectType<void>(
   test.each([
     [1, 2, 'three'],
     [3, 4, 'seven'],
-  ])('some test', (a, b, expected, done) => {
+  ])('some test', (a, b, expected) => {
     expectType<number>(a);
     expectType<number>(b);
     expectType<string>(expected);
-
-    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(

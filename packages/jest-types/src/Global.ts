@@ -66,12 +66,11 @@ interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is an array of tuples
   <T extends readonly [unknown, ...Array<unknown>]>(table: ReadonlyArray<T>): (
     name: string | NameLike,
-    fn: (...args: [...T, DoneFn]) => ReturnType<EachFn>,
+    fn: (...args: T) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
   // when the table is an array of arrays
-  // impossible to implement `done` callback, because arguments would be of type `number | string | DoneFn`
   <T extends ReadonlyArray<unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
     fn: (...args: T) => ReturnType<EachFn>,
