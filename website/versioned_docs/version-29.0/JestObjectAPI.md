@@ -533,7 +533,7 @@ By default, `jest.spyOn` also calls the **spied** method. This is different beha
 
 :::tip
 
-Since `jest.spyOn` is a mock, you could restore the initial state by passing [jest.restoreAllMocks](#jestrestoreallmocks) to the [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+Since `jest.spyOn` is a mock, you could restore the initial state by calling [`jest.restoreAllMocks`](#jestrestoreallmocks) in the body of the callback passed to the [afterEach](GlobalAPI.md#aftereachfn-timeout) hook.
 
 :::
 
