@@ -293,9 +293,8 @@ class ScriptTransformer {
           }
           const res = {transformer, transformerConfig};
           const transformCacheKey = this._buildTransformCacheKey(
-            this._cache.transformRegExp && this._cache.transformRegExp[i]
-              ? this._cache.transformRegExp[i][0].source
-              : new RegExp(transformPattern).source,
+            this._cache.transformRegExp?.[i]?.[0].source ??
+              new RegExp(transformPattern).source,
             transformPath,
           );
           this._transformCache.set(transformCacheKey, res);
