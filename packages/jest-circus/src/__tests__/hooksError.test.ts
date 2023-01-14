@@ -10,16 +10,7 @@ import circus from '../';
 describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'] as const)(
   '%s hooks error throwing',
   fn => {
-    test.each([
-      ['String'],
-      [1],
-      [[]],
-      [{}],
-      [Symbol('hello')],
-      [true],
-      [null],
-      [undefined],
-    ])(
+    test.each(['String', 1, [], {}, Symbol('hello'), true, null, undefined])(
       `${fn} throws an error when %p is provided as a first argument to it`,
       el => {
         expect(() => {
