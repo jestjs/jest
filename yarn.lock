@@ -12895,7 +12895,7 @@ __metadata:
     jest-util: "workspace:^"
     jest-validate: "workspace:^"
     resolve: ^1.20.0
-    resolve.exports: ^1.1.0
+    resolve.exports: ^1.1.1
     resolve.imports: ^2.0.3
     slash: ^3.0.0
     tsd-lite: ^0.6.0
@@ -18359,10 +18359,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve.exports@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "resolve.exports@npm:1.1.0"
-  checksum: 52865af8edb088f6c7759a328584a5de6b226754f004b742523adcfe398cfbc4559515104bc2ae87b8e78b1e4de46c9baec400b3fb1f7d517b86d2d48a098a2d
+"resolve.exports@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "resolve.exports@npm:1.1.1"
+  checksum: 485aa10082eb388a569d696e17ad7b16f4186efc97dd34eadd029d95b811f21ffee13b1b733198bb4584dbb3cb296aa6f141835221fb7613b9606b84f1386655
   languageName: node
   linkType: hard
 
