@@ -3949,7 +3949,7 @@ Received has value: <r>undefined</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", []] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has type:  array
 Expected has value: <g>[]</>
@@ -3958,7 +3958,7 @@ Expected has value: <g>[]</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", [Function anonymous]] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has type:  function
 Expected has value: <g>[Function anonymous]</>
@@ -3967,7 +3967,7 @@ Expected has value: <g>[Function anonymous]</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", {}] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has type:  object
 Expected has value: <g>{}</>
@@ -3976,7 +3976,7 @@ Expected has value: <g>{}</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", 1] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has type:  number
 Expected has value: <g>1</>
@@ -3985,7 +3985,7 @@ Expected has value: <g>1</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", true] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has type:  boolean
 Expected has value: <g>true</>
@@ -3994,7 +3994,7 @@ Expected has value: <g>true</>
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", undefined] 1`] = `
 expect([35mreceived</>).toMatch(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a string or regular expression
+<b>Matcher error</>: <y>expected</> value must be a string or regular expression
 
 Expected has value: <g>undefined</>
 `;
@@ -4741,7 +4741,7 @@ Received has value: <r>"44"</>
 exports[`toMatchObject() throws expect({}).toMatchObject("some string") 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a non-null object
+<b>Matcher error</>: <y>expected</> value must be a non-null object
 
 Expected has type:  string
 Expected has value: <g>"some string"</>
@@ -4750,7 +4750,7 @@ Expected has value: <g>"some string"</>
 exports[`toMatchObject() throws expect({}).toMatchObject(4) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a non-null object
+<b>Matcher error</>: <y>expected</> value must be a non-null object
 
 Expected has type:  number
 Expected has value: <g>4</>
@@ -4759,7 +4759,7 @@ Expected has value: <g>4</>
 exports[`toMatchObject() throws expect({}).toMatchObject(null) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a non-null object
+<b>Matcher error</>: <y>expected</> value must be a non-null object
 
 Expected has value: <g>null</>
 `;
@@ -4767,7 +4767,7 @@ Expected has value: <g>null</>
 exports[`toMatchObject() throws expect({}).toMatchObject(true) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a non-null object
+<b>Matcher error</>: <y>expected</> value must be a non-null object
 
 Expected has type:  boolean
 Expected has value: <g>true</>
@@ -4776,7 +4776,7 @@ Expected has value: <g>true</>
 exports[`toMatchObject() throws expect({}).toMatchObject(undefined) 1`] = `
 expect([35mreceived</>).toMatchObject(<y>expected</>)
 
-<b>Matcher error</>: [35mexpected</> value must be a non-null object
+<b>Matcher error</>: <y>expected</> value must be a non-null object
 
 Expected has value: <g>undefined</>
 `;

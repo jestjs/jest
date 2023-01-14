@@ -23,9 +23,7 @@ import {noColor} from 'jest-diff';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
-  EXPECTED_COLOR,
   MatcherHintOptions,
-  RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
@@ -157,14 +155,12 @@ const matchers: MatchersObject = {
       secondArgument,
       secondArgumentColor: (arg: string) => arg,
     };
-    const hintExpectedColor = options.expectedColor ?? EXPECTED_COLOR;
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
 
     if (typeof expected !== 'number') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintExpectedColor('expected')} value must be a number`,
+          `${this.utils.hintExpectedColor('expected')} value must be a number`,
           printWithType('Expected', expected, printExpected),
         ),
       );
@@ -174,7 +170,7 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor('received')} value must be a number`,
+          `${this.utils.hintReceivedColor('received')} value must be a number`,
           printWithType('Received', received, printReceived),
         ),
       );
@@ -326,13 +322,13 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintExpectedColor = options.expectedColor ?? EXPECTED_COLOR;
-
     if (typeof expected !== 'function') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintExpectedColor('expected')} value must be a function`,
+          `${this.utils.hintExpectedColor(
+            'expected',
+          )} value must be a function`,
           printWithType('Expected', expected, printExpected),
         ),
       );
@@ -523,14 +519,11 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-    const hintExpectedColor = options.expectedColor ?? EXPECTED_COLOR;
-
     if (received == null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor(
+          `${this.utils.hintReceivedColor(
             'received',
           )} value must not be null nor undefined`,
           printWithType('Received', received, printReceived),
@@ -539,9 +532,9 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received === 'string') {
-      const wrongTypeErrorMessage = `${hintExpectedColor(
+      const wrongTypeErrorMessage = `${this.utils.hintExpectedColor(
         'expected',
-      )} value must be a string if ${hintReceivedColor(
+      )} value must be a string if ${this.utils.hintReceivedColor(
         'received',
       )} value is a string`;
 
@@ -635,13 +628,11 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-
     if (received == null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor(
+          `${this.utils.hintReceivedColor(
             'received',
           )} value must not be null nor undefined`,
           printWithType('Received', received, printReceived),
@@ -735,13 +726,11 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-
     if (typeof received?.length !== 'number') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor(
+          `${this.utils.hintReceivedColor(
             'received',
           )} value must have a length property whose value must be a number`,
           printWithType('Received', received, printReceived),
@@ -802,14 +791,11 @@ const matchers: MatchersObject = {
       secondArgument: hasValue ? 'value' : '',
     };
 
-    const hintExpectedColor = options.expectedColor ?? EXPECTED_COLOR;
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-
     if (received === null || received === undefined) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, expectedArgument, options),
-          `${hintReceivedColor(
+          `${this.utils.hintReceivedColor(
             'received',
           )} value must not be null nor undefined`,
           printWithType('Received', received, printReceived),
@@ -823,7 +809,9 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, expectedArgument, options),
-          `${hintExpectedColor('expected')} path must be a string or array`,
+          `${this.utils.hintExpectedColor(
+            'expected',
+          )} path must be a string or array`,
           printWithType('Expected', expectedPath, printExpected),
         ),
       );
@@ -838,7 +826,9 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, expectedArgument, options),
-          `${hintExpectedColor('expected')} path must not be an empty array`,
+          `${this.utils.hintExpectedColor(
+            'expected',
+          )} path must not be an empty array`,
           printWithType('Expected', expectedPath, printExpected),
         ),
       );
@@ -929,14 +919,11 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintExpectedColor = options.receivedColor ?? EXPECTED_COLOR;
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-
     if (typeof received !== 'string') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor('received')} value must be a string`,
+          `${this.utils.hintReceivedColor('received')} value must be a string`,
           printWithType('Received', received, printReceived),
         ),
       );
@@ -949,7 +936,7 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintExpectedColor(
+          `${this.utils.hintExpectedColor(
             'expected',
           )} value must be a string or regular expression`,
           printWithType('Expected', expected, printExpected),
@@ -1023,14 +1010,13 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const hintReceivedColor = options.receivedColor ?? RECEIVED_COLOR;
-    const hintExpectedColor = options.receivedColor ?? EXPECTED_COLOR;
-
     if (typeof received !== 'object' || received === null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintReceivedColor('received')} value must be a non-null object`,
+          `${this.utils.hintReceivedColor(
+            'received',
+          )} value must be a non-null object`,
           printWithType('Received', received, printReceived),
         ),
       );
@@ -1040,7 +1026,9 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${hintExpectedColor('expected')} value must be a non-null object`,
+          `${this.utils.hintExpectedColor(
+            'expected',
+          )} value must be a non-null object`,
           printWithType('Expected', expected, printExpected),
         ),
       );

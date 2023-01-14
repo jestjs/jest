@@ -287,8 +287,22 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
+    const state = getState<MatcherState>();
+    const hintExpectedColor =
+      state.matcherHintOptions?.expectedColor ?? matcherUtils.EXPECTED_COLOR;
+    const hintReceivedColor =
+      state.matcherHintOptions?.receivedColor ?? matcherUtils.RECEIVED_COLOR;
+    const diffExpectedColor =
+      state.diffOptions?.aColor ?? matcherUtils.EXPECTED_COLOR;
+    const diffReceivedColor =
+      state.diffOptions?.bColor ?? matcherUtils.RECEIVED_COLOR;
+
     const utils: MatcherUtils['utils'] = {
       ...matcherUtils,
+      diffExpectedColor,
+      diffReceivedColor,
+      hintExpectedColor,
+      hintReceivedColor,
       iterableEquality,
       subsetEquality,
     };

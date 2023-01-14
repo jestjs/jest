@@ -7,9 +7,9 @@
  */
 
 import type {EqualsFunction, Tester} from '@jest/expect-utils';
-import type {DiffOptions} from 'jest-diff';
+import type {DiffOptions, DiffOptionsColor} from 'jest-diff';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
-import type {MatcherHintOptions} from 'jest-matcher-utils';
+import type {MatcherHintColor, MatcherHintOptions} from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
@@ -54,6 +54,10 @@ export interface MatcherUtils {
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
+    hintExpectedColor: MatcherHintColor;
+    hintReceivedColor: MatcherHintColor;
+    diffExpectedColor: DiffOptionsColor;
+    diffReceivedColor: DiffOptionsColor;
   };
 }
 

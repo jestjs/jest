@@ -10,9 +10,7 @@
 
 import {isError} from '@jest/expect-utils';
 import {
-  EXPECTED_COLOR,
   MatcherHintOptions,
-  RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
   printDiffOrStringify,
@@ -84,9 +82,6 @@ export const createMatcher = (
       promise: this.promise,
     };
 
-    const receivedColor = options.receivedColor ?? RECEIVED_COLOR;
-    const expectedColor = options.receivedColor ?? EXPECTED_COLOR;
-
     let thrown = null;
 
     if (fromPromise && isError(received)) {
@@ -98,7 +93,9 @@ export const createMatcher = (
           throw new Error(
             matcherErrorMessage(
               matcherHint(matcherName, undefined, placeholder, options),
-              `${receivedColor('received')} value must be a function`,
+              `${this.utils.hintReceivedColor(
+                'received',
+              )} value must be a function`,
               printWithType('Received', received, printReceived),
             ),
           );
@@ -131,7 +128,7 @@ export const createMatcher = (
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
-          `${expectedColor(
+          `${this.utils.hintExpectedColor(
             'expected',
           )} value must be a string or regular expression or class or error`,
           printWithType('Expected', expected, printExpected),

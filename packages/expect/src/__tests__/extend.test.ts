@@ -94,6 +94,10 @@ it('exposes matcherUtils in context', () => {
       const pass: boolean = this.equals(
         this.utils,
         Object.assign(matcherUtils, {
+          diffExpectedColor: matcherUtils.EXPECTED_COLOR,
+          diffReceivedColor: matcherUtils.RECEIVED_COLOR,
+          hintExpectedColor: matcherUtils.EXPECTED_COLOR,
+          hintReceivedColor: matcherUtils.RECEIVED_COLOR,
           iterableEquality,
           subsetEquality,
         }),

@@ -14,6 +14,7 @@ import {
   subsetEquality,
 } from '@jest/expect-utils';
 import * as matcherUtils from 'jest-matcher-utils';
+import {EXPECTED_COLOR, RECEIVED_COLOR} from 'jest-matcher-utils';
 import {pluralize} from 'jest-util';
 import {getCustomEqualityTesters, getState} from './jestMatchersObject';
 import type {
@@ -35,11 +36,25 @@ function fnNameFor(func: () => unknown) {
   return matches ? matches[1] : '<anonymous>';
 }
 
-const utils = Object.freeze({
-  ...matcherUtils,
-  iterableEquality,
-  subsetEquality,
-});
+const utils = (function () {
+  const state = getState<MatcherState>();
+  const hintExpectedColor =
+    state.matcherHintOptions?.expectedColor ?? EXPECTED_COLOR;
+  const hintReceivedColor =
+    state.matcherHintOptions?.receivedColor ?? RECEIVED_COLOR;
+  const diffExpectedColor = state.diffOptions?.aColor ?? EXPECTED_COLOR;
+  const diffReceivedColor = state.diffOptions?.bColor ?? RECEIVED_COLOR;
+
+  return Object.freeze({
+    ...matcherUtils,
+    diffExpectedColor,
+    diffReceivedColor,
+    hintExpectedColor,
+    hintReceivedColor,
+    iterableEquality,
+    subsetEquality,
+  });
+})();
 
 function getPrototype(obj: object) {
   if (Object.getPrototypeOf) {
