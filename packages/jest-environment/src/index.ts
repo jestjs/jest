@@ -166,13 +166,6 @@ export interface Jest {
    */
   isMockFunction: ModuleMocker['isMockFunction'];
   /**
-   * `jest.isolateModules()` goes a step further than `jest.resetModules()` and
-   * creates a sandbox registry for the modules that are loaded inside the callback
-   * function. This is useful to isolate specific modules for every test so that
-   * local module state doesn't conflict between tests.
-   */
-  isolateModules(fn: () => void): Jest;
-  /**
    * Returns `true` if test environment has been torn down.
    * @example
    * if (jest.isEnvironmentTornDown()) {
@@ -181,6 +174,13 @@ export interface Jest {
    * }
    */
   isEnvironmentTornDown(): boolean;
+  /**
+   * `jest.isolateModules()` goes a step further than `jest.resetModules()` and
+   * creates a sandbox registry for the modules that are loaded inside the callback
+   * function. This is useful to isolate specific modules for every test so that
+   * local module state doesn't conflict between tests.
+   */
+  isolateModules(fn: () => void): Jest;
   /**
    * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
    * async functions to be wrapped. The caller is expected to `await` the completion of
