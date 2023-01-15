@@ -589,4 +589,4 @@ expectType<number>(jest.getSeed());
 expectError(jest.getSeed(123));
 
 expectType<boolean>(jest.isEnvironmentTornDown());
-expectError<boolean>(jest.isEnvironmentTornDown(123));
+expectError(jest.isEnvironmentTornDown(123));
