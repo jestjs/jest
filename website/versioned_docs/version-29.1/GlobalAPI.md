@@ -387,7 +387,7 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
@@ -456,7 +456,7 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('will not be run', () => {
     expect(a + b).toBe(expected); // will not be run
   });
@@ -525,7 +525,7 @@ test.concurrent('subtraction 2 numbers', async () => {
 
 :::tip
 
-Use [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
+Use the [`maxConcurrency`](Configuration.md/#maxconcurrency-number) configuration option to prevent Jest from executing more than the specified amount of tests at the same time.
 
 :::
 
@@ -584,7 +584,7 @@ test.concurrent.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -621,7 +621,7 @@ test.concurrent.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
@@ -662,7 +662,7 @@ test.concurrent.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected); // will not be run
 });
 
@@ -740,7 +740,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -759,7 +759,7 @@ Use `test.failing` when you are writing a test and expecting it to fail. These t
 
 :::tip
 
-You can use this type of tests i.e. when writing code in a BDD way. In that case the tests will not show up as failing until they pass. Then you can just remove the `failing` modifier to make them pass.
+You can use this type of test i.e. when writing code in a BDD way. In that case the tests will not show up as failing until they pass. Then you can just remove the `failing` modifier to make them pass.
 
 It can also be a nice way to contribute failing tests to a project, even if you don't know how to fix the bug.
 
@@ -881,7 +881,7 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
@@ -944,7 +944,7 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected); // will not be run
 });
 
@@ -967,7 +967,7 @@ test.todo('add should be associative');
 
 :::tip
 
-`test.todo` will throw an error, if you will pass it a test callback function. Use [`test.skip`](#testskipname-fn) instead, if you already implemented the test, but do not want it to run.
+`test.todo` will throw an error if you pass it a test callback function. Use [`test.skip`](#testskipname-fn) instead, if you already implemented the test, but do not want it to run.
 
 :::
 

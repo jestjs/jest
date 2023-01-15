@@ -8,6 +8,7 @@
 - `[jest-haste-map]` ignore Sapling vcs directories (`.sl/`) ([#13674](https://github.com/facebook/jest/pull/13674))
 - `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705), [#13723](https://github.com/facebook/jest/pull/13723))
 - `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))
+- `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 
 ### Fixes
@@ -19,6 +20,7 @@
 - `[jest-runtime]` Support Wasm files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
 - `[jest-runtime]` Using the scriptTransformer cache in jest-runner ([#13735](https://github.com/facebook/jest/pull/13735))
 - `[jest-snapshot]` Make sure to import `babel` outside of the sandbox ([#13694](https://github.com/facebook/jest/pull/13694))
+- `[jest-transform]` Ensure the correct configuration is passed to preprocessors specified multiple times in the `transform` option ([#13770](https://github.com/facebook/jest/pull/13770))
 - `[@jest/types]` Add partial support for `done` callbacks in typings of `each` ([#13756](https://github.com/facebook/jest/pull/13756))
 
 ### Chore & Maintenance

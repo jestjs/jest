@@ -2237,6 +2237,7 @@ export default class Runtime {
         return this._globalConfig.seed;
       },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
+      isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       isolateModulesAsync: this.isolateModulesAsync,

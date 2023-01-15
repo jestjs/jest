@@ -166,6 +166,15 @@ export interface Jest {
    */
   isMockFunction: ModuleMocker['isMockFunction'];
   /**
+   * Returns `true` if test environment has been torn down.
+   * @example
+   * if (jest.isEnvironmentTornDown()) {
+   *   // The Jest environment has been torn down, so stop doing work
+   *   return;
+   * }
+   */
+  isEnvironmentTornDown(): boolean;
+  /**
    * `jest.isolateModules()` goes a step further than `jest.resetModules()` and
    * creates a sandbox registry for the modules that are loaded inside the callback
    * function. This is useful to isolate specific modules for every test so that
