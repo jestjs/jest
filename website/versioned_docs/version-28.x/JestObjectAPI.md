@@ -469,7 +469,7 @@ console.log(returnsTrue()); // true;
 
 :::note
 
-See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
+See the [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
 :::
 
@@ -489,7 +489,7 @@ By default, `jest.spyOn` also calls the **spied** method. This is different beha
 
 :::tip
 
-Since `jest.spyOn` is a mock, you could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+Since `jest.spyOn` is a mock, you could restore the initial state by calling [`jest.restoreAllMocks`](#jestrestoreallmocks) in the body of the callback passed to the [afterEach](GlobalAPI.md#aftereachfn-timeout) hook.
 
 :::
 
