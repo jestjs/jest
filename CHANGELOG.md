@@ -20,6 +20,7 @@
 - `[jest-runtime]` Support Wasm files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
 - `[jest-runtime]` Using the scriptTransformer cache in jest-runner ([#13735](https://github.com/facebook/jest/pull/13735))
 - `[jest-snapshot]` Make sure to import `babel` outside of the sandbox ([#13694](https://github.com/facebook/jest/pull/13694))
+- `[jest-transform]` Ensure the correct configuration is passed to preprocessors specified multiple times in the `transform` option ([#13770](https://github.com/facebook/jest/pull/13770))
 
 ### Chore & Maintenance
 
