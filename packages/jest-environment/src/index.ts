@@ -173,6 +173,15 @@ export interface Jest {
    */
   isolateModules(fn: () => void): Jest;
   /**
+   * Returns `true` if test environment has been torn down.
+   * @example
+   * if (jest.isEnvironmentTornDown()) {
+   *   // The Jest environment has been torn down, so stop doing work
+   *   return;
+   * }
+   */
+  isEnvironmentTornDown(): boolean;
+  /**
    * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
    * async functions to be wrapped. The caller is expected to `await` the completion of
    * `isolateModulesAsync`.

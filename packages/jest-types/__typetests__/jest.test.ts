@@ -587,3 +587,6 @@ expectError(jest.setTimeout());
 
 expectType<number>(jest.getSeed());
 expectError(jest.getSeed(123));
+
+expectType<boolean>(jest.isEnvironmentTornDown());
+expectError(jest.isEnvironmentTornDown(123));
