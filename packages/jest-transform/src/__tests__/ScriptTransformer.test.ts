@@ -235,6 +235,18 @@ jest.mock(
 );
 
 jest.mock(
+  'async-factory',
+  () => ({
+    createTransformer() {
+      return Promise.resolve({
+        process: jest.fn().mockReturnValue({code: 'code'}),
+      });
+    },
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'factory-for-async-preprocessor',
   () => {
     const transformer: AsyncTransformer = {
@@ -540,6 +552,21 @@ describe('ScriptTransformer', () => {
       transform: [
         ['\\.js$', 'skipped-required-props-preprocessor-only-sync', {}],
       ],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+    expect(
+      await scriptTransformer.transformSourceAsync(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
+    ).toBeDefined();
+  });
+
+  it('handle async createTransformer', async () => {
+    config = {
+      ...config,
+      transform: [['\\.js$', 'async-factory', {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(

@@ -9,6 +9,7 @@
 - `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705), [#13723](https://github.com/facebook/jest/pull/13723))
 - `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
+- `[jest-transform]` Support for asynchronous `createTransformer` ([#13762](https://github.com/facebook/jest/pull/13762))
 
 ### Fixes
 
