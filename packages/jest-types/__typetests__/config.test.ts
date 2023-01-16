@@ -117,3 +117,25 @@ expectError<Config.InitialOptions>({
     timerLimit: 1000,
   },
 });
+
+expectAssignable<Config.InitialOptions>({
+  extensionsToTreatAsEsm: ['.ts'],
+});
+
+expectError<Config.InitialOptions>({
+  extensionsToTreatAsEsm'.ts',
+});
+
+expectError<Config.InitialOptions>({
+  extensionsToTreatAsEsm: ['.js'], 
+});
+
+
+expectError<Config.InitialOptions>({
+  extensionsToTreatAsEsm: ['.cjs'], 
+});
+
+
+expectError<Config.InitialOptions>({
+  extensionsToTreatAsEsm: ['.mjs'], 
+});
