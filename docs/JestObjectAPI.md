@@ -555,7 +555,7 @@ test('works too', () => {
 
 Returns the `jest` object for chaining.
 
-### `jest.isEnvironmentTornDown(fn)`
+### `jest.isEnvironmentTornDown()`
 
 Returns `true` if test environment has been torn down.
 
