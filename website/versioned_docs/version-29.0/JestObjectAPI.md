@@ -332,6 +332,12 @@ The most common use of this API is for specifying the module a given test intend
 
 Returns the `jest` object for chaining.
 
+### `jest.deepUnmock(moduleName)`
+
+Indicates that the module system should never return a mocked version of the specified module and its dependencies.
+
+Returns the `jest` object for chaining.
+
 ### `jest.doMock(moduleName, factory, options)`
 
 When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use this method if you want to explicitly avoid this behavior.
