@@ -153,10 +153,10 @@ function getPathInModule(
     if (resolved) {
       const target = resolved[0];
       return target.startsWith('.')
-        // internal relative filepath
-        ? pathResolve(dirname(closestPackageJson), target)
-        // this is an external module, re-resolve it
-        : defaultResolver(target, options);
+        ? // internal relative filepath
+          pathResolve(dirname(closestPackageJson), target)
+        : // this is an external module, re-resolve it
+          defaultResolver(target, options);
     }
 
     if (pkg.imports) {
@@ -240,11 +240,10 @@ function createResolveOptions(
       {browser: false, require: true};
 }
 
-function createImportsResolveOptions(conditions: Array<string> | undefined): resolve.Options {
-  return {
-    unsafe: true,
-    conditions: conditions || ['node', 'require']
-  };
+function createImportsResolveOptions(
+  conditions = ['node', 'require'],
+): resolve.Options {
+  return {conditions, unsafe: true};
 }
 
 // if it's a relative import or an absolute path, imports/exports are ignored
