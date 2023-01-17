@@ -147,7 +147,7 @@ function getPathInModule(
     const resolved = resolve.imports(
       pkg,
       path as resolve.Imports.Entry,
-      createImportsResolveOptions(options.conditions),
+      createResolveOptions(options.conditions),
     );
 
     if (resolved) {
@@ -238,12 +238,6 @@ function createResolveOptions(
     ? {conditions, unsafe: true}
     : // no conditions were passed - let's assume this is Jest internal and it should be `require`
       {browser: false, require: true};
-}
-
-function createImportsResolveOptions(
-  conditions = ['node', 'require'],
-): resolve.Options {
-  return {conditions, unsafe: true};
 }
 
 // if it's a relative import or an absolute path, imports/exports are ignored
