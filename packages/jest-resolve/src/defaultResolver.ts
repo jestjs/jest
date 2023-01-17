@@ -8,11 +8,7 @@
 import {dirname, isAbsolute, resolve as pathResolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import {SyncOpts as UpstreamResolveOptions, sync as resolveSync} from 'resolve';
-import {
-  Options as ResolveExportsOptions,
-  resolve as resolveExports,
-} from 'resolve.exports';
-import {resolve as resolveImports} from 'resolve.imports';
+import * as resolve from 'resolve.exports';
 import {
   findClosestPackageJson,
   isDirectory,
@@ -148,28 +144,26 @@ function getPathInModule(
 
     const pkg = readPackageCached(closestPackageJson);
 
-    const resolved = resolveImports(
-      {
-        base: options.basedir,
-        content: pkg,
-        path: dirname(closestPackageJson),
-      },
-      path,
-      createImportsResolveOptions(options.conditions),
+    const resolved = resolve.imports(
+      pkg,
+      path as resolve.Imports.Entry,
+      createResolveOptions(options.conditions),
     );
 
-    if (!resolved) {
+    if (resolved) {
+      const target = resolved[0];
+      return target.startsWith('.')
+        ? // internal relative filepath
+          pathResolve(dirname(closestPackageJson), target)
+        : // this is an external module, re-resolve it
+          defaultResolver(target, options);
+    }
+
+    if (pkg.imports) {
       throw new Error(
         '`imports` exists, but no results - this is a bug in Jest. Please report an issue',
       );
     }
-
-    if (resolved.startsWith('.')) {
-      return pathResolve(dirname(closestPackageJson), resolved);
-    }
-
-    // this is an external module, re-resolve it
-    return defaultResolver(resolved, options);
   }
 
   const segments = path.split('/');
@@ -186,22 +180,22 @@ function getPathInModule(
     if (closestPackageJson) {
       const pkg = readPackageCached(closestPackageJson);
 
-      if (pkg.name === moduleName && pkg.exports) {
-        const subpath = segments.join('/') || '.';
-
-        const resolved = resolveExports(
+      if (pkg.name === moduleName) {
+        const resolved = resolve.exports(
           pkg,
-          subpath,
+          (segments.join('/') || '.') as resolve.Exports.Entry,
           createResolveOptions(options.conditions),
         );
 
-        if (!resolved) {
+        if (resolved) {
+          return pathResolve(dirname(closestPackageJson), resolved[0]);
+        }
+
+        if (pkg.exports) {
           throw new Error(
             '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
           );
         }
-
-        return pathResolve(dirname(closestPackageJson), resolved);
       }
     }
 
@@ -216,22 +210,20 @@ function getPathInModule(
     if (packageJsonPath && isFile(packageJsonPath)) {
       const pkg = readPackageCached(packageJsonPath);
 
+      const resolved = resolve.exports(
+        pkg,
+        (segments.join('/') || '.') as resolve.Exports.Entry,
+        createResolveOptions(options.conditions),
+      );
+
+      if (resolved) {
+        return pathResolve(dirname(packageJsonPath), resolved[0]);
+      }
+
       if (pkg.exports) {
-        const subpath = segments.join('/') || '.';
-
-        const resolved = resolveExports(
-          pkg,
-          subpath,
-          createResolveOptions(options.conditions),
+        throw new Error(
+          '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
         );
-
-        if (!resolved) {
-          throw new Error(
-            '`exports` exists, but no results - this is a bug in Jest. Please report an issue',
-          );
-        }
-
-        return pathResolve(dirname(packageJsonPath), resolved);
       }
     }
   }
@@ -241,19 +233,11 @@ function getPathInModule(
 
 function createResolveOptions(
   conditions: Array<string> | undefined,
-): ResolveExportsOptions {
+): resolve.Options {
   return conditions
     ? {conditions, unsafe: true}
     : // no conditions were passed - let's assume this is Jest internal and it should be `require`
       {browser: false, require: true};
-}
-
-function createImportsResolveOptions(conditions: Array<string> | undefined) {
-  return {
-    conditions: conditions
-      ? [...conditions, 'default']
-      : ['node', 'require', 'default'],
-  };
 }
 
 // if it's a relative import or an absolute path, imports/exports are ignored

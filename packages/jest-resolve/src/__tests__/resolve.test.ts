@@ -397,14 +397,7 @@ describe('findNodeModule', () => {
           basedir: path.resolve(importsRoot, './foo-import/index.js'),
           conditions: [],
         });
-      }).toThrow(
-        expect.objectContaining({
-          code: 'ERR_PACKAGE_IMPORT_NOT_DEFINED',
-          message: expect.stringMatching(
-            /^Package import specifier "#something-else" is not defined in package/,
-          ),
-        }),
-      );
+      }).toThrow('Missing "#something-else" specifier in "foo-import" package');
     });
   });
 });

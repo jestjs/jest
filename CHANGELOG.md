@@ -6,7 +6,7 @@
 - `[jest-config, jest-worker]` Use `os.availableParallelism` if available to calculate number of workers to spawn ([#13738](https://github.com/facebook/jest/pull/13738))
 - `[@jest/globals, jest-mock]` Add `jest.replaceProperty()` that replaces property value ([#13496](https://github.com/facebook/jest/pull/13496))
 - `[jest-haste-map]` ignore Sapling vcs directories (`.sl/`) ([#13674](https://github.com/facebook/jest/pull/13674))
-- `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705), [#13723](https://github.com/facebook/jest/pull/13723))
+- `[jest-resolve]` Support subpath imports ([#13705](https://github.com/facebook/jest/pull/13705), [#13723](https://github.com/facebook/jest/pull/13723)), [#13777](https://github.com/facebook/jest/pull/13777))
 - `[jest-runtime]` Add `jest.isolateModulesAsync` for scoped module initialization of asynchronous functions ([#13680](https://github.com/facebook/jest/pull/13680))
 - `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
