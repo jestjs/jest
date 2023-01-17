@@ -30,6 +30,8 @@
 
 ### Performance
 
+- `[jest-config]` Use `transpileOnly` option for `ts-node`
+
 ## 29.3.1
 
 ### Fixes

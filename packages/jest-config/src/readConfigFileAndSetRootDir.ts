@@ -117,6 +117,7 @@ async function registerTsNode(): Promise<Service> {
       moduleTypes: {
         '**': 'cjs',
       },
+      transpileOnly: true,
     });
   } catch (e: any) {
     if (e.code === 'ERR_MODULE_NOT_FOUND') {
