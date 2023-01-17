@@ -555,10 +555,6 @@ test('works too', () => {
 
 Returns the `jest` object for chaining.
 
-### `jest.isEnvironmentTornDown(fn)`
-
-Returns `true` if test environment has been torn down.
-
 ### `jest.isolateModules(fn)`
 
 `jest.isolateModules(fn)` goes a step further than `jest.resetModules()` and creates a sandbox registry for the modules that are loaded inside the callback function. This is useful to isolate specific modules for every test so that local module state doesn't conflict between tests.
@@ -993,23 +989,9 @@ Use the [`--showSeed`](CLI.md#--showseed) flag to print the seed in the test rep
 
 :::
 
-### `jest.setTimeout(timeout)`
+### `jest.isEnvironmentTornDown()`
 
-Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
-
-Example:
-
-```js
-jest.setTimeout(1000); // 1 second
-```
-
-:::tip
-
-To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
-
-If you want to set the timeout for all test files, use [`testTimeout`](Configuration.md#testtimeout-number) configuration option.
-
-:::
+Returns `true` if test environment has been torn down.
 
 ### `jest.retryTimes(numRetries, options)`
 
@@ -1034,3 +1016,21 @@ test('will fail', () => {
 ```
 
 Returns the `jest` object for chaining.
+
+### `jest.setTimeout(timeout)`
+
+Set the default timeout interval (in milliseconds) for all tests and before/after hooks in the test file. This only affects the test file from which this function is called. The default timeout interval is 5 seconds if this method is not called.
+
+Example:
+
+```js
+jest.setTimeout(1000); // 1 second
+```
+
+:::tip
+
+To set timeout intervals on different tests in the same file, use the [`timeout` option on each individual test](GlobalAPI.md#testname-fn-timeout).
+
+If you want to set the timeout for all test files, use [`testTimeout`](Configuration.md#testtimeout-number) configuration option.
+
+:::
