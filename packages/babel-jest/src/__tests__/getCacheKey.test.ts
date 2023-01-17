@@ -6,10 +6,11 @@
  */
 
 import type {TransformOptions as BabelTransformOptions} from '@babel/core';
-import type {TransformOptions} from '@jest/transform';
+import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest from '../index';
 
-const {getCacheKey} = babelJest.createTransformer();
+const {getCacheKey} =
+  babelJest.createTransformer() as SyncTransformer<BabelTransformOptions>;
 
 const processVersion = process.version;
 const nodeEnv = process.env.NODE_ENV;
@@ -47,7 +48,7 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).toHaveLength(32);
   });
 
-  test('if `THIS_FILE` value is changing', () => {
+  test('if `THIS_FILE` value is changing', async () => {
     jest.doMock('graceful-fs', () => ({
       readFileSync: () => 'new this file',
     }));
@@ -55,7 +56,7 @@ describe('getCacheKey', () => {
     const {createTransformer} =
       require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey!(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -64,7 +65,7 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.options` value is changing', () => {
+  test('if `babelOptions.options` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
       const babel = require('@babel/core') as typeof import('@babel/core');
 
@@ -79,7 +80,7 @@ describe('getCacheKey', () => {
     const {createTransformer} =
       require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey!(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -117,7 +118,7 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.config` value is changing', () => {
+  test('if `babelOptions.config` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
       const babel = require('@babel/core') as typeof import('@babel/core');
 
@@ -132,7 +133,7 @@ describe('getCacheKey', () => {
     const {createTransformer} =
       require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey!(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,
@@ -141,7 +142,7 @@ describe('getCacheKey', () => {
     expect(oldCacheKey).not.toEqual(newCacheKey);
   });
 
-  test('if `babelOptions.babelrc` value is changing', () => {
+  test('if `babelOptions.babelrc` value is changing', async () => {
     jest.doMock('../loadBabelConfig', () => {
       const babel = require('@babel/core') as typeof import('@babel/core');
 
@@ -156,7 +157,7 @@ describe('getCacheKey', () => {
     const {createTransformer} =
       require('../index') as typeof import('../index');
 
-    const newCacheKey = createTransformer().getCacheKey!(
+    const newCacheKey = (await createTransformer()).getCacheKey!(
       sourceText,
       sourcePath,
       transformOptions,

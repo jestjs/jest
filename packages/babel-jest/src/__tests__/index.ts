@@ -10,7 +10,7 @@ import type {
   TransformOptions as BabelTransformOptions,
 } from '@babel/core';
 import {makeProjectConfig} from '@jest/test-utils';
-import type {TransformOptions} from '@jest/transform';
+import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
 
@@ -28,7 +28,8 @@ jest.mock('../loadBabelConfig', () => {
   };
 });
 
-const defaultBabelJestTransformer = babelJest.createTransformer();
+const defaultBabelJestTransformer =
+  babelJest.createTransformer() as SyncTransformer<BabelTransformOptions>;
 
 //Mock data for all the tests
 const sourceString = `
@@ -163,8 +164,8 @@ describe('caller option correctly merges from defaults and options', () => {
   });
 });
 
-test('can pass null to createTransformer', () => {
-  const transformer = createTransformer();
+test('can pass null to createTransformer', async () => {
+  const transformer = await createTransformer();
   transformer.process(sourceString, 'dummy_path.js', {
     cacheFS: new Map<string, string>(),
     config: makeProjectConfig(),
