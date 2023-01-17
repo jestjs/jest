@@ -186,7 +186,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       const generated = gha['getResultTree'](testResults, '/', suitePerf);
 
@@ -227,7 +229,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       const generated = gha['getResultTree'](testResults, '/', suitePerf);
 
@@ -274,7 +278,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       const generated = gha['getResultTree'](testResults, '/', suitePerf);
 
@@ -321,7 +327,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       const generated = gha['getResultTree'](testResults, '/', suitePerf);
 
@@ -350,7 +358,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       gha['printResultTree'](generatedTree);
 
@@ -376,7 +386,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       gha['printResultTree'](generatedTree);
 
@@ -408,7 +420,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       gha['printResultTree'](generatedTree);
 
@@ -440,7 +454,9 @@ describe('logs', () => {
           start: 10,
         },
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
 
       gha['printResultTree'](generatedTree);
 
@@ -477,7 +493,9 @@ describe('logs', () => {
         numPassedTestSuites: 1,
         numTotalTestSuites: 3,
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
       gha['generateAnnotations'] = jest.fn();
 
       gha.onTestResult(
@@ -519,7 +537,9 @@ describe('logs', () => {
         numTotalTestSuites: 3,
         testResults: [mockTestResult],
       };
-      const gha = new GitHubActionsReporter({} as Config.GlobalConfig);
+      const gha = new GitHubActionsReporter({} as Config.GlobalConfig, {
+        silent: false,
+      });
       gha['generateAnnotations'] = jest.fn();
 
       gha.onTestResult(

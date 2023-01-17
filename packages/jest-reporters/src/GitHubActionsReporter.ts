@@ -66,10 +66,15 @@ export default class GitHubActionsReporter extends BaseReporter {
 
   constructor(
     _globalConfig: Config.GlobalConfig,
-    reporterOptions: {silent?: boolean} = {silent: false},
+    reporterOptions: {silent?: boolean} = {silent: true},
   ) {
     super();
-    this.options = {silent: reporterOptions.silent || false};
+    this.options = {
+      silent:
+        typeof reporterOptions.silent === 'boolean'
+          ? reporterOptions.silent
+          : true,
+    };
   }
 
   override onTestResult(
@@ -215,12 +220,10 @@ export default class GitHubActionsReporter extends BaseReporter {
           root.passed = false;
           passed = false;
         }
-        if (!element.duration || isNaN(element.duration)) {
-          throw new Error('Expected duration to be a number, got NaN');
-        }
+        const duration = element.duration || 1;
         root.children.push({
           children: [],
-          duration: Math.max(element.duration, 1),
+          duration,
           name: element.title,
           passed,
         });
