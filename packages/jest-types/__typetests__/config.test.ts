@@ -123,19 +123,17 @@ expectAssignable<Config.InitialOptions>({
 });
 
 expectError<Config.InitialOptions>({
-  extensionsToTreatAsEsm'.ts',
+  extensionsToTreatAsEsm: '.ts',
 });
 
 expectError<Config.InitialOptions>({
-  extensionsToTreatAsEsm: ['.js'], 
+  extensionsToTreatAsEsm: ['.js'],
 });
 
-
 expectError<Config.InitialOptions>({
-  extensionsToTreatAsEsm: ['.cjs'], 
+  extensionsToTreatAsEsm: ['.cjs'],
 });
 
-
 expectError<Config.InitialOptions>({
-  extensionsToTreatAsEsm: ['.mjs'], 
+  extensionsToTreatAsEsm: ['.mjs'],
 });
