@@ -1124,15 +1124,15 @@ test('registration applies correctly to orange La Croix', () => {
 Note that you can use any asymmetric matchers to validate specific arguments, combining it with literal values:
 
 ```
-  expect(func).toHaveBeenCalledWith(
-    expect.anything(),
-    expect.any(MyClass1),
-    42,
-    expect.objectContaining({
-      name: expect.stringContaining('John')
-    }),
-    false
-  );
+expect(func).toHaveBeenCalledWith(
+  expect.anything(),
+  expect.any(MyClass1),
+  42,
+  expect.objectContaining({
+    name: expect.stringContaining('John')
+  }),
+  false
+);
 ```
 
 ### `.toHaveBeenLastCalledWith(arg1, arg2, ...)`
