@@ -243,19 +243,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser@npm:^12.0.0":
-  version: 12.2.17
-  resolution: "@angular/platform-browser@npm:12.2.17"
+"@angular/platform-browser@npm:^15.1.0":
+  version: 15.1.0
+  resolution: "@angular/platform-browser@npm:15.1.0"
   dependencies:
-    tslib: ^2.2.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/animations": 12.2.17
-    "@angular/common": 12.2.17
-    "@angular/core": 12.2.17
+    "@angular/animations": 15.1.0
+    "@angular/common": 15.1.0
+    "@angular/core": 15.1.0
   peerDependenciesMeta:
     "@angular/animations":
       optional: true
-  checksum: fdc2aaade5c323b570aa8095f24db696c2948982ecfd184af6f409507c3574190fde25ed2ed4435cb459564e4d888aa37841d5be858f246e42852ab1d9d617c6
+  checksum: d2074db1ea512f66af358e65777bfff51b46b297122037b4c365e62a5889b91c767716191f0ec766d1f805a4069de40fb28679f82dbcbd24d77624c351a1f458
   languageName: node
   linkType: hard
 
@@ -5704,7 +5704,7 @@ __metadata:
     "@angular/compiler": ^12.0.0
     "@angular/core": ^12.0.0
     "@angular/forms": ^12.0.0
-    "@angular/platform-browser": ^12.0.0
+    "@angular/platform-browser": ^15.1.0
     "@angular/platform-browser-dynamic": ^12.0.0
     "@babel/core": ^7.11.6
     "@babel/plugin-proposal-decorators": "*"
