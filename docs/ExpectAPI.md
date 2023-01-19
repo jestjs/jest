@@ -1141,7 +1141,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 You can use `expect.addEqualityTesters` to add your own methods to test if two objects are equal. For example, let's say you have a class in your code that represents volume and it supports determining if two volumes using different units are equal or not. You may want `toEqual` (and other equality matchers) to use this custom equality method when comparing to Volume classes. You can add a custom equality tester to have `toEqual` detect and apply custom logic when comparing Volume classes:
 
-```js title="Volume.js"
+```js tab={"span":3} title="Volume.js"
 // For simplicity in this example, we'll just support the units 'L' and 'mL'
 export class Volume {
   constructor(amount, unit) {
@@ -1195,7 +1195,7 @@ test('are equal with different units', () => {
 });
 ```
 
-```ts title="Volume.ts"
+```ts tab={"span":3} title="Volume.ts"
 // For simplicity in this example, we'll just support the units 'L' and 'mL'
 export class Volume {
   public amount: number;
