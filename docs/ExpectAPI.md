@@ -1093,7 +1093,7 @@ describe('not.stringMatching', () => {
 });
 ```
 
-## Assertions
+## Assertion Count
 
 ### `expect.assertions(number)`
 
@@ -1135,7 +1135,7 @@ test('prepareState prepares a valid state', () => {
 
 The `expect.hasAssertions()` call ensures that the `prepareState` callback actually gets called.
 
-## Utilities
+## Extend Utilities
 
 ### `expect.addEqualityTesters(testers)`
 
