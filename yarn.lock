@@ -5128,29 +5128,29 @@ __metadata:
   linkType: hard
 
 "@types/yargs@npm:^15.0.0":
-  version: 15.0.14
-  resolution: "@types/yargs@npm:15.0.14"
+  version: 15.0.15
+  resolution: "@types/yargs@npm:15.0.15"
   dependencies:
     "@types/yargs-parser": "*"
-  checksum: 8e358aeb8f0c3758e59e2b8fcfdee5627ab2fe3d92f50f380503d966c7f33287be3322155516a50d27727fde1ad3878f48f60cd6648439126d4b0bbb1a1153ed
+  checksum: 3420f6bcc508a895ef91858f8e6de975c710e4498cf6ed293f1174d3f1ad56edb4ab8481219bf6190f64a3d4115fab1d13ab3edc90acd54fba7983144040e446
   languageName: node
   linkType: hard
 
 "@types/yargs@npm:^16.0.0":
-  version: 16.0.4
-  resolution: "@types/yargs@npm:16.0.4"
+  version: 16.0.5
+  resolution: "@types/yargs@npm:16.0.5"
   dependencies:
     "@types/yargs-parser": "*"
-  checksum: caa21d2c957592fe2184a8368c8cbe5a82a6c2e2f2893722e489f842dc5963293d2f3120bc06fe3933d60a3a0d1e2eb269649fd6b1947fe1820f8841ba611dd9
+  checksum: 22697f7cc8aa32dcc10981a87f035e183303a58351c537c81fb450270d5c494b1d918186210e445b0eb2e4a8b34a8bda2a595f346bdb1c9ed2b63d193cb00430
   languageName: node
   linkType: hard
 
 "@types/yargs@npm:^17.0.8":
-  version: 17.0.18
-  resolution: "@types/yargs@npm:17.0.18"
+  version: 17.0.20
+  resolution: "@types/yargs@npm:17.0.20"
   dependencies:
     "@types/yargs-parser": "*"
-  checksum: 9b6143730e1e12c0b871b5abfb0fcd5409fd498379b7a043b54a1d6168a754cb1058fe4b98251fa6e220a90e5a5e57ce252b8d2e2db026b6e3ea8257d354830b
+  checksum: dc2edbb0e4b6bfe5189b86c057bb6991139af02372b1d3591083e4ce8f9605b19d598e56413e30f41453733f7a048f732f899cb637f3938f90ed3eb13f23cc90
   languageName: node
   linkType: hard
 
