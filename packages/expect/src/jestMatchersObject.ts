@@ -29,6 +29,7 @@ if (!Object.prototype.hasOwnProperty.call(globalThis, JEST_MATCHERS_OBJECT)) {
     assertionCalls: 0,
     expectedAssertionsNumber: null,
     isExpectingAssertions: false,
+    numPassingAsserts: 0,
     suppressedErrors: [], // errors that are not thrown immediately.
   };
   Object.defineProperty(globalThis, JEST_MATCHERS_OBJECT, {
