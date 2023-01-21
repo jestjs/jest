@@ -337,6 +337,8 @@ const makeThrowingMatcher = (
         } else {
           getState().suppressedErrors.push(error);
         }
+      } else {
+        getState().numPassingAsserts++;
       }
     };
 
