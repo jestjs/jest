@@ -364,6 +364,7 @@ export const makeSingleTestResult = (
     invocations: test.invocations,
     location,
     retryReasons: test.retryReasons.map(_getError).map(getErrorStack),
+    numPassingAsserts: test.numPassingAsserts,
     status,
     testPath: Array.from(testPath),
   };
@@ -484,7 +485,7 @@ export const parseSingleTestResult = (
       : ancestorTitles.join(' '),
     invocations: testResult.invocations,
     location: testResult.location,
-    numPassingAsserts: 0,
+    numPassingAsserts: testResult.numPassingAsserts,
     retryReasons: Array.from(testResult.retryReasons),
     status,
     title: testResult.testPath[testResult.testPath.length - 1],
