@@ -11,6 +11,7 @@
 - `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13698](https://github.com/facebook/jest/pull/13698))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 - `[jest-transform]` Support for asynchronous `createTransformer` ([#13762](https://github.com/facebook/jest/pull/13762))
+- `[expect, jest-circus, @jest/types]` Implement `numPassingAsserts` to track the number of passing asserts in a test ([#13795](https://github.com/facebook/jest/pull/13795))
 
 ### Fixes
 
