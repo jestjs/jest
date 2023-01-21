@@ -185,6 +185,7 @@ export type TestResult = {
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
+  numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
   testPath: Array<TestName | BlockName>;
 };

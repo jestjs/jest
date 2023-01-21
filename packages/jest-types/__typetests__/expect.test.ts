@@ -446,6 +446,7 @@ expectType<void>(
       expectType<boolean>(this.isExpectingAssertions);
       expectType<Error | undefined>(this.isExpectingAssertionsError);
       expectType<boolean | undefined>(this.isNot);
+      expectType<number>(this.numPassingAsserts);
       expectType<string | undefined>(this.promise);
       expectType<Array<Error>>(this.suppressedErrors);
       expectType<string | undefined>(this.testPath);
