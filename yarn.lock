@@ -4384,6 +4384,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/babel-plugin-tester@npm:^9.0.0":
+  version: 9.0.5
+  resolution: "@types/babel-plugin-tester@npm:9.0.5"
+  dependencies:
+    "@types/babel__core": "*"
+    "@types/prettier": "*"
+  checksum: 0acd981c01fc20231c75a839be8806b7a865c0e4e9ee2c986d9d6706941cdc8e250c76ad5b755c501f016b208218514abfc94499a5b542330ad0a3a3b8b88ee0
+  languageName: node
+  linkType: hard
+
 "@types/babel-types@npm:*":
   version: 7.0.11
   resolution: "@types/babel-types@npm:7.0.11"
@@ -4398,7 +4408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:*, @types/babel__core@npm:^7.1.14":
   version: 7.20.0
   resolution: "@types/babel__core@npm:7.20.0"
   dependencies:
@@ -4838,7 +4848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^2.1.5":
+"@types/prettier@npm:*, @types/prettier@npm:^2.1.5":
   version: 2.7.2
   resolution: "@types/prettier@npm:2.7.2"
   checksum: b47d76a5252265f8d25dd2fe2a5a61dc43ba0e6a96ffdd00c594cb4fd74c1982c2e346497e3472805d97915407a09423804cc2110a0b8e1b22cffcab246479b7
@@ -6224,7 +6234,7 @@ __metadata:
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
     "@types/prettier": ^2.1.5
-    babel-plugin-tester: ^11.0.1
+    babel-plugin-tester: ^10.0.0
     prettier: ^2.1.1
   languageName: unknown
   linkType: soft
@@ -6272,17 +6282,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-tester@npm:^11.0.1":
-  version: 11.0.1
-  resolution: "babel-plugin-tester@npm:11.0.1"
+"babel-plugin-tester@npm:^10.0.0":
+  version: 10.1.0
+  resolution: "babel-plugin-tester@npm:10.1.0"
   dependencies:
-    debug: ^4.3.4
+    "@types/babel-plugin-tester": ^9.0.0
     lodash.mergewith: ^4.6.2
-    prettier: ^2.8.3
+    prettier: ^2.0.1
     strip-indent: ^3.0.0
   peerDependencies:
-    "@babel/core": ">=7.11.6"
-  checksum: d69bbb6ec64b8ec1ca779f388b8489378d5904ec3893e26df85fe4bd294451bec5af539127e816debcc66781373c1dd67fc68d11dee5638f32a40383482e83ab
+    "@babel/core": ^7.11.6
+  checksum: 4472e4fbd6a6c9f1c1f9feb40997d9bfbe43ba7ac1318570c5d4981141e717ef518ab3b3827cc94cff4710bdfa710f303eaf1590242f23b62a0d4fca54e81a80
   languageName: node
   linkType: hard
 
@@ -17024,7 +17034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.1.1, prettier@npm:^2.8.3":
+"prettier@npm:^2.0.1, prettier@npm:^2.1.1":
   version: 2.8.3
   resolution: "prettier@npm:2.8.3"
   bin:
