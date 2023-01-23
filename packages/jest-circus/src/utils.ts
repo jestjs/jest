@@ -78,6 +78,7 @@ export const makeTest = (
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
+  numPassingAsserts: 0,
   parent,
   retryReasons: [],
   seenDone: false,
