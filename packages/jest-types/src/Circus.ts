@@ -246,6 +246,7 @@ export type TestEntry = {
   mode: TestMode;
   concurrent: boolean;
   name: TestName;
+  numPassingAsserts: number;
   parent: DescribeBlock;
   startedAt?: number | null;
   duration?: number | null;
