@@ -48,12 +48,12 @@ _getJestObj().mock(
       this,
     ),
 );
-import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
 function _getJestObj() {
   const {jest} = require('@jest/globals');
   _getJestObj = () => jest;
   return jest;
 }
+import {jsxDEV as _jsxDEV} from 'react/jsx-dev-runtime';
 
 
 `;
@@ -164,6 +164,32 @@ const {jest} = require('@jest/globals');
 jest.mock('some-module', () => {
   jest.requireActual('some-module');
 });
+
+
+`;
+
+exports[`babel-plugin-jest-hoist static imports converted to dynamic await imports: static imports converted to dynamic await imports 1`] = `
+
+import SoundPlayer, {SoundPlayerHelper as Helper} from './some-module';
+import SoundPlayerConsumer, * as spc from './sound-player-consumer';
+jest.unstable_mockModule('some-module', () => {
+  return jest.fn();
+});
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+_getJestObj().unstable_mockModule('some-module', () => {
+  return jest.fn();
+});
+const {default: SoundPlayer, SoundPlayerHelper: Helper} = await import(
+  './some-module'
+);
+const {default: SoundPlayerConsumer} = await import('./sound-player-consumer'),
+  spc = await import('./sound-player-consumer');
+import {jest as _jest_import_alias} from '@jest/globals';
+function _getJestObj() {
+  return _jest_import_alias;
+}
 
 
 `;
