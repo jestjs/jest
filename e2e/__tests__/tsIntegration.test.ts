@@ -158,7 +158,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
           const config: Config.InitialOptions = {verbose: true};
           export default get config;
           `,
-      'package.json': '{}',
+      'package.json': '{"type": "module"}',
     });
 
     const {stderr, exitCode} = runJest(DIR);
@@ -314,7 +314,7 @@ describe('when `Config` type is imported from "jest"', () => {
           const config: Config = {verbose: true};
           export default get config;
           `,
-      'package.json': '{}',
+      'package.json': '{"type": "module"}',
     });
 
     const {stderr, exitCode} = runJest(DIR);

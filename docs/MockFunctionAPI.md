@@ -126,7 +126,7 @@ The [`clearMocks`](configuration#clearmocks-boolean) configuration option is ava
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
+This is useful when you want to completely reset a _mock_ back to its initial state.
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
 
@@ -163,6 +163,8 @@ mockFn(3); // 39
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42
@@ -207,12 +209,13 @@ export class SomeClass {
 ```
 
 ```ts title="SomeClass.test.ts"
+import {jest} from '@jest/globals';
 import {SomeClass} from './SomeClass';
 
 jest.mock('./SomeClass'); // this happens automatically with automocking
 
 const mockMethod = jest.fn<(a: string, b: string) => void>();
-SomeClass.mockImplementation(() => {
+jest.mocked(SomeClass).mockImplementation(() => {
   return {
     method: mockMethod,
   };
@@ -239,6 +242,8 @@ mockFn((err, val) => console.log(val)); // false
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<(cb: (a: null, b: boolean) => void) => void>()
   .mockImplementationOnce(cb => cb(null, true))
@@ -296,6 +301,12 @@ jest.fn(function () {
 
 ### `mockFn.mockReturnValue(value)`
 
+Shorthand for:
+
+```js
+jest.fn().mockImplementation(() => value);
+```
+
 Accepts a value that will be returned whenever the mock function is called.
 
 ```js tab
@@ -309,6 +320,8 @@ mock(); // 43
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mock = jest.fn<() => number>();
 
 mock.mockReturnValue(42);
@@ -319,6 +332,12 @@ mock(); // 43
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementationOnce(() => value);
+```
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
@@ -336,6 +355,8 @@ mockFn(); // 'default'
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<() => string>()
   .mockReturnValue('default')
@@ -367,6 +388,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest.fn<() => Promise<number>>().mockResolvedValue(43);
 
@@ -400,6 +423,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -435,6 +460,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<never>>()
@@ -467,6 +494,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -515,13 +544,23 @@ test('async test', async () => {
 });
 ```
 
+## Replaced Properties
+
+### `replacedProperty.replaceValue(value)`
+
+Changes the value of already replaced property. This is useful when you want to replace property and then adjust the value in specific tests. As an alternative, you can call [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value) multiple times on same property.
+
+### `replacedProperty.restore()`
+
+Restores object's property to the original value.
+
+Beware that `replacedProperty.restore()` only works when the property value was replaced with [`jest.replaceProperty()`](JestObjectAPI.md#jestreplacepropertyobject-propertykey-value).
+
+The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is available to restore replaced properties automatically before each test.
+
 ## TypeScript Usage
 
-:::tip
-
-Please consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
-
-:::
+<TypeScriptExamplesNote />
 
 ### `jest.fn(implementation?)`
 
@@ -597,6 +636,39 @@ test('returns correct data', () => {
 ```
 
 Types of classes, functions or objects can be passed as type argument to `jest.Mocked<Source>`. If you prefer to constrain the input type, use: `jest.MockedClass<Source>`, `jest.MockedFunction<Source>` or `jest.MockedObject<Source>`.
+
+### `jest.Replaced<Source>`
+
+The `jest.Replaced<Source>` utility type returns the `Source` type wrapped with type definitions of Jest [replaced property](#replaced-properties).
+
+```ts title="src/utils.ts"
+export function isLocalhost(): boolean {
+  return process.env['HOSTNAME'] === 'localhost';
+}
+```
+
+```ts title="src/__tests__/utils.test.ts"
+import {afterEach, expect, it, jest} from '@jest/globals';
+import {isLocalhost} from '../utils';
+
+let replacedEnv: jest.Replaced<typeof process.env> | undefined = undefined;
+
+afterEach(() => {
+  replacedEnv?.restore();
+});
+
+it('isLocalhost should detect localhost environment', () => {
+  replacedEnv = jest.replaceProperty(process, 'env', {HOSTNAME: 'localhost'});
+
+  expect(isLocalhost()).toBe(true);
+});
+
+it('isLocalhost should detect non-localhost environment', () => {
+  replacedEnv = jest.replaceProperty(process, 'env', {HOSTNAME: 'example.com'});
+
+  expect(isLocalhost()).toBe(false);
+});
+```
 
 ### `jest.mocked(source, options?)`
 

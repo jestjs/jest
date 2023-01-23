@@ -158,9 +158,17 @@ export interface Jest {
    */
   getTimerCount(): number;
   /**
-   * Returns the current time in ms of the fake timer clock.
+   * Returns `true` if test environment has been torn down.
+   *
+   * @example
+   * ```js
+   * if (jest.isEnvironmentTornDown()) {
+   *   // The Jest environment has been torn down, so stop doing work
+   *   return;
+   * }
+   * ```
    */
-  now(): number;
+  isEnvironmentTornDown(): boolean;
   /**
    * Determines if the given function is a mocked function.
    */
@@ -172,6 +180,12 @@ export interface Jest {
    * local module state doesn't conflict between tests.
    */
   isolateModules(fn: () => void): Jest;
+  /**
+   * `jest.isolateModulesAsync()` is the equivalent of `jest.isolateModules()`, but for
+   * async functions to be wrapped. The caller is expected to `await` the completion of
+   * `isolateModulesAsync`.
+   */
+  isolateModulesAsync(fn: () => Promise<void>): Promise<void>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
@@ -188,6 +202,23 @@ export interface Jest {
     moduleFactory: () => T | Promise<T>,
     options?: {virtual?: boolean},
   ): Jest;
+  /**
+   * Wraps types of the `source` object and its deep members with type definitions
+   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
+   * mocked behavior.
+   */
+  mocked: ModuleMocker['mocked'];
+  /**
+   * Returns the current time in ms of the fake timer clock.
+   */
+  now(): number;
+  /**
+   * Replaces property on an object with another value.
+   *
+   * @remarks
+   * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
+   */
+  replaceProperty: ModuleMocker['replaceProperty'];
   /**
    * Returns the actual module instead of a mock, bypassing all checks on
    * whether the module should receive a mock implementation or not.
@@ -212,12 +243,6 @@ export interface Jest {
    */
   requireActual<T = unknown>(moduleName: string): T;
   /**
-   * Wraps types of the `source` object and its deep members with type definitions
-   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
-   * mocked behavior.
-   */
-  mocked: ModuleMocker['mocked'];
-  /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
    */
@@ -233,8 +258,9 @@ export interface Jest {
    */
   resetModules(): Jest;
   /**
-   * Restores all mocks back to their original value. Equivalent to calling
-   * `.mockRestore()` on every mocked function.
+   * Restores all mocks and replaced properties back to their original value.
+   * Equivalent to calling `.mockRestore()` on every mocked function
+   * and `.restore()` on every replaced property.
    *
    * Beware that `jest.restoreAllMocks()` only works when the mock was created
    * with `jest.spyOn()`; other mocks will require you to manually restore them.
@@ -255,7 +281,6 @@ export interface Jest {
     numRetries: number,
     options?: {logErrorsBeforeRetry?: boolean},
   ): Jest;
-
   /**
    * Exhausts tasks queued by `setImmediate()`.
    *

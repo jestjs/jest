@@ -6,6 +6,7 @@
  */
 
 import {readFileSync} from 'node:fs';
+import {jest} from '@jest/globals';
 // file origin: https://github.com/mdn/webassembly-examples/blob/2f2163287f86fe29deb162335bccca7d5d95ca4f/understanding-text-format/add.wasm
 // source code: https://github.com/mdn/webassembly-examples/blob/2f2163287f86fe29deb162335bccca7d5d95ca4f/understanding-text-format/add.was
 import {add} from '../add.wasm';
@@ -53,4 +54,13 @@ test('imports from "data:application/wasm" URI with invalid encoding fail', asyn
   await expect(() =>
     import('data:application/wasm;charset=utf-8,oops'),
   ).rejects.toThrow('Invalid data URI encoding: charset=utf-8');
+});
+
+test('supports wasm files that import js resources (wasm-bindgen)', async () => {
+  globalThis.alert = jest.fn();
+
+  const {greet} = await import('../wasm-bindgen/index.js');
+  greet('World');
+
+  expect(globalThis.alert).toHaveBeenCalledWith('Hello, World!');
 });

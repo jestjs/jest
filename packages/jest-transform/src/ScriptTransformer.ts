@@ -134,6 +134,10 @@ class ScriptTransformer {
       .substring(0, 32);
   }
 
+  private _buildTransformCacheKey(pattern: string, filepath: string) {
+    return pattern + filepath;
+  }
+
   private _getCacheKey(
     fileData: string,
     filename: string,
@@ -243,25 +247,35 @@ class ScriptTransformer {
     return this._createCachedFilename(filename, cacheKey);
   }
 
-  private _getTransformPath(filename: string) {
-    const transformRegExp = this._cache.transformRegExp;
-    if (!transformRegExp) {
+  private _getTransformPatternAndPath(filename: string) {
+    const transformEntry = this._cache.transformRegExp;
+    if (transformEntry == null) {
       return undefined;
     }
 
-    for (let i = 0; i < transformRegExp.length; i++) {
-      if (transformRegExp[i][0].test(filename)) {
-        return transformRegExp[i][1];
+    for (let i = 0; i < transformEntry.length; i++) {
+      const [transformRegExp, transformPath] = transformEntry[i];
+      if (transformRegExp.test(filename)) {
+        return [transformRegExp.source, transformPath];
       }
     }
 
     return undefined;
   }
 
+  private _getTransformPath(filename: string) {
+    const transformInfo = this._getTransformPatternAndPath(filename);
+    if (!Array.isArray(transformInfo)) {
+      return undefined;
+    }
+
+    return transformInfo[1];
+  }
+
   async loadTransformers(): Promise<void> {
     await Promise.all(
       this._config.transform.map(
-        async ([, transformPath, transformerConfig]) => {
+        async ([transformPattern, transformPath, transformerConfig], i) => {
           let transformer: Transformer | TransformerFactory<Transformer> =
             await requireOrImportModule(transformPath);
 
@@ -269,7 +283,9 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (isTransformerFactory(transformer)) {
-            transformer = transformer.createTransformer(transformerConfig);
+            transformer = await transformer.createTransformer(
+              transformerConfig,
+            );
           }
           if (
             typeof transformer.process !== 'function' &&
@@ -278,7 +294,12 @@ class ScriptTransformer {
             throw new Error(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
-          this._transformCache.set(transformPath, res);
+          const transformCacheKey = this._buildTransformCacheKey(
+            this._cache.transformRegExp?.[i]?.[0].source ??
+              new RegExp(transformPattern).source,
+            transformPath,
+          );
+          this._transformCache.set(transformCacheKey, res);
         },
       ),
     );
@@ -297,15 +318,19 @@ class ScriptTransformer {
       return null;
     }
 
-    const transformPath = this._getTransformPath(filename);
-
-    if (transformPath == null) {
+    const transformPatternAndPath = this._getTransformPatternAndPath(filename);
+    if (!Array.isArray(transformPatternAndPath)) {
       return null;
     }
 
-    const cached = this._transformCache.get(transformPath);
-    if (cached != null) {
-      return cached;
+    const [transformPattern, transformPath] = transformPatternAndPath;
+    const transformCacheKey = this._buildTransformCacheKey(
+      transformPattern,
+      transformPath,
+    );
+    const transformer = this._transformCache.get(transformCacheKey);
+    if (transformer !== undefined) {
+      return transformer;
     }
 
     throw new Error(

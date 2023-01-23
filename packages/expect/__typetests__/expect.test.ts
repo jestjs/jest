@@ -6,12 +6,14 @@
  */
 
 import {expectAssignable, expectError, expectType} from 'tsd-lite';
-import type {EqualsFunction, Tester} from '@jest/expect-utils';
+import type {EqualsFunction} from '@jest/expect-utils';
 import {
   MatcherContext,
   MatcherFunction,
   MatcherFunctionWithContext,
   Matchers,
+  Tester,
+  TesterContext,
   expect,
 } from 'expect';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
@@ -21,6 +23,36 @@ type M = Matchers<void>;
 expectError(() => {
   type E = Matchers;
 });
+
+const tester1: Tester = function (a, b, customTesters) {
+  expectType<any>(a);
+  expectType<any>(b);
+  expectType<Array<Tester>>(customTesters);
+  expectType<TesterContext>(this);
+  expectType<EqualsFunction>(this.equals);
+  return undefined;
+};
+
+expectType<void>(
+  expect.addEqualityTesters([
+    tester1,
+    (a, b, customTesters) => {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      expectType<undefined>(this);
+      return true;
+    },
+    function anotherTester(a, b, customTesters) {
+      expectType<any>(a);
+      expectType<any>(b);
+      expectType<Array<Tester>>(customTesters);
+      expectType<TesterContext>(this);
+      expectType<EqualsFunction>(this.equals);
+      return undefined;
+    },
+  ]),
+);
 
 // extend
 
@@ -35,6 +67,7 @@ expectType<void>(
     toBeWithinRange(actual: number, floor: number, ceiling: number) {
       expectType<number>(this.assertionCalls);
       expectType<string | undefined>(this.currentTestName);
+      expectType<Array<Tester>>(this.customTesters);
       expectType<() => void>(this.dontThrow);
       expectType<Error | undefined>(this.error);
       expectType<EqualsFunction>(this.equals);

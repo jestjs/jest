@@ -70,6 +70,7 @@ exports[`renders the FlatList component 1`] = `
 >
   <View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >
@@ -78,6 +79,7 @@ exports[`renders the FlatList component 1`] = `
       </Text>
     </View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >
@@ -86,6 +88,7 @@ exports[`renders the FlatList component 1`] = `
       </Text>
     </View>
     <View
+      onFocusCapture={[Function]}
       onLayout={[Function]}
       style={null}
     >

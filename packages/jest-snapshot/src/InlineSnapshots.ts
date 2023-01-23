@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type {ParseResult, PluginItem} from '@babel/core';
-import {Expression, File, Program, isAwaitExpression} from '@babel/types';
+import type {Expression, File, Program} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
   CustomParser as PrettierCustomParser,
@@ -27,10 +27,9 @@ const generate = (
   // @ts-expect-error requireOutside Babel transform
   requireOutside('@babel/generator') as typeof import('@babel/generator')
 ).default;
-// @ts-expect-error requireOutside Babel transform
-const {file, templateElement, templateLiteral} = requireOutside(
-  '@babel/types',
-) as typeof import('@babel/types');
+const {file, isAwaitExpression, templateElement, templateLiteral} =
+  // @ts-expect-error requireOutside Babel transform
+  requireOutside('@babel/types') as typeof import('@babel/types');
 // @ts-expect-error requireOutside Babel transform
 const {parseSync} = requireOutside(
   '@babel/core',

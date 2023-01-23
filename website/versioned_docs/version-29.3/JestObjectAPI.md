@@ -344,7 +344,7 @@ Returns the `jest` object for chaining.
 
 :::tip
 
-Writing tests in TypeScript? Use [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
+Writing tests in TypeScript? Use the [`jest.Mocked`](MockFunctionAPI.md/#jestmockedsource) utility type or the [`jest.mocked()`](MockFunctionAPI.md/#jestmockedsource-options) helper method to have your mocked modules typed.
 
 :::
 
@@ -361,6 +361,12 @@ See [TypeScript Usage](MockFunctionAPI.md/#jestmockedsource-options) chapter of 
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
 
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
+
+Returns the `jest` object for chaining.
+
+### `jest.deepUnmock(moduleName)`
+
+Indicates that the module system should never return a mocked version of the specified module and its dependencies.
 
 Returns the `jest` object for chaining.
 
@@ -586,7 +592,7 @@ console.log(returnsTrue()); // true;
 
 :::tip
 
-See [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
+See the [Mock Functions](MockFunctionAPI.md#jestfnimplementation) page for details on TypeScript usage.
 
 :::
 
@@ -606,7 +612,7 @@ By default, `jest.spyOn` also calls the **spied** method. This is different beha
 
 :::tip
 
-Since `jest.spyOn` is a mock. You could restore the initial state calling [jest.restoreAllMocks](#jestrestoreallmocks) on [afterEach](GlobalAPI.md#aftereachfn-timeout) method.
+Since `jest.spyOn` is a mock, you could restore the initial state by calling [`jest.restoreAllMocks`](#jestrestoreallmocks) in the body of the callback passed to the [afterEach](GlobalAPI.md#aftereachfn-timeout) hook.
 
 :::
 
@@ -684,7 +690,7 @@ afterEach(() => {
 
 test('plays video', () => {
   const spy = jest.spyOn(video, 'play', 'get'); // we pass 'get'
-  const isPlaying = video.play;
+  const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
