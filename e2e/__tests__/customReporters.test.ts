@@ -181,17 +181,26 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('valid assertion counts for adding reporters', () => {
-    const {stdout} = runJest('custom-reporters', [
-      '--config',
-      JSON.stringify({
-        reporters: [
-          'default',
-          '<rootDir>/reporters/AssertionCountsReporter.js',
-        ],
-      }),
-      'add.test.js',
-      'addFail.test.js',
-    ]);
+    // just implement for jest-circus
+    const {stdout} = runJest(
+      'custom-reporters',
+      [
+        '--config',
+        JSON.stringify({
+          reporters: [
+            'default',
+            '<rootDir>/reporters/AssertionCountsReporter.js',
+          ],
+        }),
+        'add.test.js',
+        'addFail.test.js',
+      ],
+      {
+        env: {
+          JEST_JASMINE: '0',
+        },
+      },
+    );
 
     expect(stdout).toMatchSnapshot();
   });
