@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {onNotJestJasmine} from '@jest/test-utils';
+import {skipTestOnJasmine} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -181,7 +181,7 @@ describe('Custom Reporters Integration', () => {
     expect(exitCode).toBe(1);
   });
 
-  onNotJestJasmine(() => {
+  skipTestOnJasmine(() => {
     test('valid assertion counts for adding reporters', () => {
       const {stdout} = runJest('custom-reporters', [
         '--config',
