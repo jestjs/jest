@@ -16,7 +16,7 @@
 
 - `[jest-environment-node]` Fix non-configurable globals ([#13687](https://github.com/facebook/jest/pull/13687))
 - `[@jest/expect-utils]` `toMatchObject` should handle `Symbol` properties ([#13639](https://github.com/facebook/jest/pull/13639))
-- `[jest-mock]` Fix `mockReset` and `resetAllMocks` `undefined` return  value([#13692](https://github.com/facebook/jest/pull/13692))
+- `[jest-mock]` Fix `mockReset` and `resetAllMocks` `undefined` return value([#13692](https://github.com/facebook/jest/pull/13692))
 - `[jest-resolve]` Add global paths to `require.resolve.paths` ([#13633](https://github.com/facebook/jest/pull/13633))
 - `[jest-runtime]` Support WASM files that import JS resources ([#13608](https://github.com/facebook/jest/pull/13608))
 - `[jest-runtime]` Use the `scriptTransformer` cache in `jest-runner` ([#13735](https://github.com/facebook/jest/pull/13735))
