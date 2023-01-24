@@ -46,3 +46,9 @@ export function onNodeVersions(
     });
   }
 }
+
+export function onNotJestJasmine(testBody: () => void): void {
+  if (!isJestJasmineRun()) {
+    testBody();
+  }
+}

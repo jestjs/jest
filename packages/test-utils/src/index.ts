@@ -12,6 +12,7 @@ export {
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
   onNodeVersions,
+  onNotJestJasmine,
 } from './ConditionalTest';
 
 export {makeGlobalConfig, makeProjectConfig} from './config';
