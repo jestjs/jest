@@ -5,15 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import json from '../package.json' assert {type: 'json'};
+import json from '../package.json';
 
 test('supports static import', () => {
   expect(json).toHaveProperty('jest.testEnvironment', 'node');
 });
 
 test('supports dynamic import', async () => {
-  const {default: json} = await import('../package.json', {
-    assert: {type: 'json'},
-  });
+  const {default: json} = await import('../package.json');
   expect(json).toHaveProperty('jest.testEnvironment', 'node');
 });

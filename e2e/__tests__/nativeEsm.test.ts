@@ -85,7 +85,7 @@ onNodeVersions('>=16.12.0', () => {
   test('enforces import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
-      ['native-esm-import-assertions.test'],
+      ['native-esm-missing-import-assertions.test'],
       {nodeOptions: '--experimental-vm-modules --no-warnings'},
     );
 
@@ -97,9 +97,8 @@ onNodeVersions('>=16.12.0', () => {
     expect(stdout).toBe('');
     expect(exitCode).toBe(1);
   });
-});
-onNodeVersions('<16.12.0', () => {
-  test('does not enforce import assertions', () => {
+
+  test('supports import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
       ['native-esm-import-assertions.test'],
@@ -111,5 +110,35 @@ onNodeVersions('<16.12.0', () => {
     expect(summary).toMatchSnapshot();
     expect(stdout).toBe('');
     expect(exitCode).toBe(0);
+  });
+});
+
+onNodeVersions('<16.12.0', () => {
+  test('does not enforce import assertions', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-missing-import-assertions.test'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {summary} = extractSummary(stderr);
+
+    expect(summary).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+
+  test('syntax error for import assertions', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm-import-assertions.test'],
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
+    );
+
+    const {rest} = extractSummary(stderr);
+
+    expect(rest).toContain('SyntaxError: Unexpected identifier');
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(1);
   });
 });
