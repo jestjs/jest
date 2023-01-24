@@ -195,7 +195,12 @@ describe('Custom Reporters Integration', () => {
         'addFail.test.js',
       ]);
 
-      expect(stdout).toMatchSnapshot();
+      expect(stdout).toMatchInlineSnapshot(`
+      "onTestCaseResult: adds fail, status: failed, numExpectations: 0
+      onTestFileResult testCaseResult 0: adds fail, status: failed, numExpectations: 0
+      onTestCaseResult: adds ok, status: passed, numExpectations: 3
+      onTestFileResult testCaseResult 0: adds ok, status: passed, numExpectations: 3"
+      `);
     });
   });
 });
