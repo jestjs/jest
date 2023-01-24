@@ -418,21 +418,10 @@ export default class Runtime {
   private async loadEsmModule(
     modulePath: string,
     query = '',
-    importAssertions: ImportAssertions = {},
+    importAssertions?: ImportAssertions,
   ): Promise<VMModule> {
-    if (
-      runtimeSupportsImportAssertions &&
-      modulePath.endsWith('.json') &&
-      importAssertions.type !== 'json'
-    ) {
-      const error: NodeJS.ErrnoException = new Error(
-        `Module "${
-          modulePath + (query ? `?${query}` : '')
-        }" needs an import assertion of type "json"`,
-      );
-      error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
-
-      throw error;
+    if (runtimeSupportsImportAssertions) {
+      this.validateImportAssertions(modulePath, query, importAssertions);
     }
 
     const cacheKey = modulePath + query;
@@ -570,6 +559,53 @@ export default class Runtime {
     );
 
     return module;
+  }
+
+  private validateImportAssertions(
+    modulePath: string,
+    query: string,
+    importAssertions: ImportAssertions | undefined,
+  ) {
+    const assertionType = importAssertions?.type;
+
+    if (importAssertions) {
+      if (typeof assertionType !== 'string') {
+        throw new TypeError('Import assertion value must be a string');
+      }
+
+      // Only `json` is supported
+      // https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#L20-L32
+      if (assertionType !== 'json') {
+        const error: NodeJS.ErrnoException = new Error(
+          `Import assertion type "${assertionType}" is unsupported`,
+        );
+
+        error.code = 'ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED';
+
+        throw error;
+      }
+
+      if (!modulePath.endsWith('.json')) {
+        const error: NodeJS.ErrnoException = new Error(
+          `Module "${modulePath}" is not of type "${assertionType}"`,
+        );
+
+        error.code = 'ERR_IMPORT_ASSERTION_TYPE_FAILED';
+
+        throw error;
+      }
+    }
+
+    if (modulePath.endsWith('.json') && assertionType !== 'json') {
+      const error: NodeJS.ErrnoException = new Error(
+        `Module "${
+          modulePath + (query ? `?${query}` : '')
+        }" needs an import assertion of type "json"`,
+      );
+      error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
+
+      throw error;
+    }
   }
 
   private async resolveModule<T = unknown>(
