@@ -7,7 +7,6 @@
 
 import nativeModule = require('module');
 import * as path from 'path';
-import {extname} from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
   Script,
@@ -642,7 +641,7 @@ export default class Runtime {
       return 'wasm';
     }
 
-    const fileExtension = extname(modulePath);
+    const fileExtension = path.extname(modulePath);
 
     if (fileExtension === '.json') {
       return 'json';
