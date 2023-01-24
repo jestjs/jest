@@ -167,3 +167,10 @@ exports[`Custom Reporters Integration valid array format for adding reporters 1`
     }
 }"
 `;
+
+exports[`Custom Reporters Integration valid assertion counts for adding reporters 1`] = `
+"onTestCaseResult: adds fail, status: failed, numExpectations: 0
+onTestFileResult onTestCaseResult 0: adds fail, status: failed, numExpectations: 0
+onTestCaseResult: adds ok, status: passed, numExpectations: 3
+onTestFileResult onTestCaseResult 0: adds ok, status: passed, numExpectations: 3"
+`;

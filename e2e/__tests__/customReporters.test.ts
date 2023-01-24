@@ -179,4 +179,20 @@ describe('Custom Reporters Integration', () => {
     expect(stderr).toMatch(/ON_RUN_START_ERROR/);
     expect(exitCode).toBe(1);
   });
+
+  test('valid assertion counts for adding reporters', () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: [
+          'default',
+          '<rootDir>/reporters/AssertionCountsReporter.js',
+        ],
+      }),
+      'add.test.js',
+      'addFail.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
 });
