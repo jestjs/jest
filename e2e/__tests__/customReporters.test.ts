@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {onNotJestJasmine} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -180,11 +181,9 @@ describe('Custom Reporters Integration', () => {
     expect(exitCode).toBe(1);
   });
 
-  test('valid assertion counts for adding reporters', () => {
-    // just implement for jest-circus
-    const {stdout} = runJest(
-      'custom-reporters',
-      [
+  onNotJestJasmine(() => {
+    test('valid assertion counts for adding reporters', () => {
+      const {stdout} = runJest('custom-reporters', [
         '--config',
         JSON.stringify({
           reporters: [
@@ -194,14 +193,9 @@ describe('Custom Reporters Integration', () => {
         }),
         'add.test.js',
         'addFail.test.js',
-      ],
-      {
-        env: {
-          JEST_JASMINE: '0',
-        },
-      },
-    );
+      ]);
 
-    expect(stdout).toMatchSnapshot();
+      expect(stdout).toMatchSnapshot();
+    });
   });
 });
