@@ -32,7 +32,7 @@
     "@types/babel__template": "^7.0.2",
     "@types/node": "*",
     "@types/prettier": "^2.1.5",
-    "babel-plugin-tester": "^10.0.0",
+    "babel-plugin-tester": "^11.0.2",
     "prettier": "^2.1.1"
   },
   "publishConfig": {
