@@ -7,6 +7,7 @@
 
 import nativeModule = require('module');
 import * as path from 'path';
+import {extname} from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
   Script,
@@ -158,6 +159,23 @@ const supportsNodeColonModulePrefixInRequire = (() => {
     return false;
   }
 })();
+
+const kImplicitAssertType = Symbol('kImplicitAssertType');
+
+// copied from https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#L20-L32
+const formatTypeMap: {[type: string]: string | typeof kImplicitAssertType} = {
+  // @ts-expect-error - copied
+  __proto__: null,
+  builtin: kImplicitAssertType,
+  commonjs: kImplicitAssertType,
+  json: 'json',
+  module: kImplicitAssertType,
+  wasm: kImplicitAssertType,
+};
+
+const supportedAssertionTypes = new Set(
+  Object.values(formatTypeMap).filter(type => type !== kImplicitAssertType),
+);
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
@@ -564,48 +582,78 @@ export default class Runtime {
   private validateImportAssertions(
     modulePath: string,
     query: string,
-    importAssertions: ImportAssertions | undefined,
+    importAssertions: ImportAssertions = {
+      // @ts-expect-error - copy https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#LL55C50-L55C65
+      __proto__: null,
+    },
   ) {
-    const assertionType = importAssertions?.type;
+    const format = this.getModuleFormat(modulePath);
+    const validType = formatTypeMap[format];
+    const url = pathToFileURL(modulePath);
 
-    if (importAssertions) {
-      if (typeof assertionType !== 'string') {
-        throw new TypeError('Import assertion value must be a string');
-      }
-
-      // Only `json` is supported
-      // https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#L20-L32
-      if (assertionType !== 'json') {
-        const error: NodeJS.ErrnoException = new Error(
-          `Import assertion type "${assertionType}" is unsupported`,
-        );
-
-        error.code = 'ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED';
-
-        throw error;
-      }
-
-      if (!modulePath.endsWith('.json')) {
-        const error: NodeJS.ErrnoException = new Error(
-          `Module "${modulePath}" is not of type "${assertionType}"`,
-        );
-
-        error.code = 'ERR_IMPORT_ASSERTION_TYPE_FAILED';
-
-        throw error;
-      }
+    if (query) {
+      url.search = query;
     }
 
-    if (modulePath.endsWith('.json') && assertionType !== 'json') {
-      const error: NodeJS.ErrnoException = new Error(
-        `Module "${
-          modulePath + (query ? `?${query}` : '')
-        }" needs an import assertion of type "json"`,
-      );
-      error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
+    const urlString = url.href;
 
-      throw error;
+    const assertionType = importAssertions.type;
+
+    switch (validType) {
+      case undefined:
+        // Ignore assertions for module formats we don't recognize, to allow new
+        // formats in the future.
+        return;
+
+      case kImplicitAssertType:
+        // This format doesn't allow an import assertion type, so the property
+        // must not be set on the import assertions object.
+        if (Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
+          handleInvalidAssertionType(urlString, assertionType);
+        }
+        return;
+
+      case assertionType:
+        // The asserted type is the valid type for this format.
+        return;
+
+      default:
+        // There is an expected type for this format, but the value of
+        // `importAssertions.type` might not have been it.
+        if (!Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
+          // `type` wasn't specified at all.
+          const error: NodeJS.ErrnoException = new Error(
+            `Module "${urlString}" needs an import assertion of type "json"`,
+          );
+          error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
+
+          throw error;
+        }
+        handleInvalidAssertionType(urlString, assertionType);
     }
+  }
+
+  private getModuleFormat(modulePath: string) {
+    if (this._resolver.isCoreModule(modulePath)) {
+      return 'builtin';
+    }
+
+    if (isWasm(modulePath)) {
+      return 'wasm';
+    }
+
+    const fileExtension = extname(modulePath);
+
+    if (fileExtension === '.json') {
+      return 'json';
+    }
+
+    if (this.unstable_shouldLoadAsEsm(modulePath)) {
+      return 'module';
+    }
+
+    // any unknown format should be treated as JS
+    return 'commonjs';
   }
 
   private async resolveModule<T = unknown>(
@@ -2548,4 +2596,30 @@ async function evaluateSyntheticModule(module: SyntheticModule) {
   await module.evaluate();
 
   return module;
+}
+
+function handleInvalidAssertionType(url: string, type: unknown) {
+  if (typeof type !== 'string') {
+    throw new TypeError('Import assertion value must be a string');
+  }
+
+  // `type` might not have been one of the types we understand.
+  if (!supportedAssertionTypes.has(type)) {
+    const error: NodeJS.ErrnoException = new Error(
+      `Import assertion type "${type}" is unsupported`,
+    );
+
+    error.code = 'ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED';
+
+    throw error;
+  }
+
+  // `type` was the wrong value for this format.
+  const error: NodeJS.ErrnoException = new Error(
+    `Module "${url}" is not of type "${type}"`,
+  );
+
+  error.code = 'ERR_IMPORT_ASSERTION_TYPE_FAILED';
+
+  throw error;
 }
