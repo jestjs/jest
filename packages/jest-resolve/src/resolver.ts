@@ -456,9 +456,7 @@ export default class Resolver {
   isCoreModule(moduleName: string): boolean {
     return (
       this._options.hasCoreModules &&
-      (isBuiltinModule(moduleName) ||
-        (moduleName.startsWith('node:') &&
-          isBuiltinModule(moduleName.slice('node:'.length)))) &&
+      (isBuiltinModule(moduleName) || moduleName.startsWith('node:')) &&
       !this._isAliasModule(moduleName)
     );
   }

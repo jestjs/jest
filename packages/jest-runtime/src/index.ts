@@ -1803,7 +1803,7 @@ export default class Runtime {
       return this._getMockedNativeModule();
     }
 
-    return require(moduleWithoutNodePrefix);
+    return require(moduleName);
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
