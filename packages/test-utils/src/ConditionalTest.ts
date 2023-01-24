@@ -47,7 +47,7 @@ export function onNodeVersions(
   }
 }
 
-export function onNotJestJasmine(testBody: () => void): void {
+export function skipTestOnJasmine(testBody: () => void): void {
   if (!isJestJasmineRun()) {
     testBody();
   }
