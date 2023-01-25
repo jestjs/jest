@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-core]` Add newlines to Json output ([#13817](https://github.com/facebook/jest/pull/13817))
+
 ### Fixes
 
 - `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
