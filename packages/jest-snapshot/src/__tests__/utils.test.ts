@@ -56,6 +56,22 @@ test('saveSnapshotFile() works with \r\n', () => {
   );
 });
 
+test('Uses SNAPSHOT_GUIDE_LINK environment', () => {
+  const filename = path.join(__dirname, 'remove-newlines.snap');
+  process.env.SNAPSHOT_GUIDE_LINK = '--- disabled ---';
+  const data = {
+    myKey: '',
+  };
+
+  saveSnapshotFile(data, filename);
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    '// Jest Snapshot v1, --- disabled ---\n\nexports[`myKey`] = ``;\n',
+  );
+
+  delete process.env.SNAPSHOT_GUIDE_LINK;
+});
+
 test('saveSnapshotFile() works with \r', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
   const data = {

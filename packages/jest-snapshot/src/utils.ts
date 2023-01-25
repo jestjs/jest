@@ -27,7 +27,9 @@ export const SNAPSHOT_VERSION_WARNING = chalk.yellow(
 );
 
 const writeSnapshotVersion = () =>
-  `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
+  `// Jest Snapshot v${SNAPSHOT_VERSION}, ${
+    process.env.SNAPSHOT_GUIDE_LINK || SNAPSHOT_GUIDE_LINK
+  }`;
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
