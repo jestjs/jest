@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-core]` Add newlines to Json output ([#13817](https://github.com/facebook/jest/pull/13817))
+- `[jest-core]` Add newlines to JSON output ([#13817](https://github.com/facebook/jest/pull/13817))
 
 ### Fixes
 
