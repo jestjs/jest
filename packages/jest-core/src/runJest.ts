@@ -106,12 +106,17 @@ const processResults = async (
       const cwd = tryRealpath(process.cwd());
       const filePath = path.resolve(cwd, outputFile);
 
-      fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
+      fs.writeFileSync(
+        filePath,
+        `${JSON.stringify(formatTestResults(runResults))}\n`,
+      );
       outputStream.write(
         `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
-      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+      process.stdout.write(
+        `${JSON.stringify(formatTestResults(runResults))}\n`,
+      );
     }
   }
 
