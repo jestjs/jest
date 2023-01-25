@@ -25,6 +25,7 @@ jobs:
           days-before-pr-close: 30
           exempt-all-milestones: true
           exempt-issue-labels: Pinned
+          exempt-pr-labels: Pinned
           exempt-draft-pr: true
           operations-per-run: 1750
   stale-legacy:
@@ -43,4 +44,5 @@ jobs:
           days-before-pr-close: 30
           exempt-all-milestones: true
           exempt-issue-labels: Pinned
+          exempt-pr-labels: Pinned
           operations-per-run: 1750

@@ -359,7 +359,7 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
@@ -428,7 +428,7 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('will not be run', () => {
     expect(a + b).toBe(expected); // will not be run
   });
@@ -523,7 +523,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -584,7 +584,7 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
@@ -647,7 +647,7 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected); // will not be run
 });
 

@@ -149,7 +149,7 @@ export type Transformer<TransformerConfig = unknown> =
 export type TransformerCreator<
   X extends Transformer<TransformerConfig>,
   TransformerConfig = unknown,
-> = (transformerConfig?: TransformerConfig) => X;
+> = (transformerConfig?: TransformerConfig) => X | Promise<X>;
 
 /**
  * Instead of having your custom transformer implement the Transformer interface

@@ -235,6 +235,18 @@ jest.mock(
 );
 
 jest.mock(
+  'async-factory',
+  () => ({
+    createTransformer() {
+      return Promise.resolve({
+        process: jest.fn().mockReturnValue({code: 'code'}),
+      });
+    },
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'factory-for-async-preprocessor',
   () => {
     const transformer: AsyncTransformer = {
@@ -540,6 +552,21 @@ describe('ScriptTransformer', () => {
       transform: [
         ['\\.js$', 'skipped-required-props-preprocessor-only-sync', {}],
       ],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+    expect(
+      await scriptTransformer.transformSourceAsync(
+        'sample.js',
+        '',
+        getTransformOptions(false),
+      ),
+    ).toBeDefined();
+  });
+
+  it('handle async createTransformer', async () => {
+    config = {
+      ...config,
+      transform: [['\\.js$', 'async-factory', {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(
@@ -1558,6 +1585,45 @@ describe('ScriptTransformer', () => {
     ).toHaveBeenCalledWith(transformerConfig);
   });
 
+  it('passes correct config to a preprocessor used multiple times', async () => {
+    const transformerConfig1 = {};
+    const transformerConfig2 = {};
+
+    config = Object.assign(config, {
+      transform: [
+        // same preprocessor
+        [
+          // *only* /fruits/banana.js
+          '/fruits/banana\\.js$',
+          'configureable-preprocessor',
+          transformerConfig1,
+        ],
+        [
+          // *not* /fruits/banana.js
+          '/fruits/(?!banana)\\w+\\.js$',
+          'configureable-preprocessor',
+          transformerConfig2,
+        ],
+      ],
+    });
+
+    const scriptTransformer = await createScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    expect(
+      (
+        require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
+      ).createTransformer,
+    ).toHaveBeenLastCalledWith(transformerConfig1);
+
+    scriptTransformer.transform('/fruits/kiwi.js', getCoverageOptions());
+    expect(
+      (
+        require('configureable-preprocessor') as TransformerFactory<SyncTransformer>
+      ).createTransformer,
+    ).toHaveBeenLastCalledWith(transformerConfig2);
+  });
+
   it('reads values from the cache', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
@@ -2001,7 +2067,7 @@ describe('ScriptTransformer', () => {
 
     // @ts-expect-error - private property
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
-      ['test_preprocessor', expect.any(Object)],
+      ['\\.js$test_preprocessor', expect.any(Object)],
     ]);
   });
 });

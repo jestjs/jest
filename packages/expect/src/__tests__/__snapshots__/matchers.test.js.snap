@@ -4140,13 +4140,13 @@ exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObjec
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "c", Symbol(jest): Any<String>}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected  - 2</>
+<g>- Expected  - 1</>
 <r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "c",</>
-<g>-   Symbol(jest): Any<String>,</>
 <r>+   "a": "b",</>
+<d>    Symbol(jest): Any<String>,</>
 <d>  }</>
 `;
 

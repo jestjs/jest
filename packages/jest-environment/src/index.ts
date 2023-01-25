@@ -158,9 +158,17 @@ export interface Jest {
    */
   getTimerCount(): number;
   /**
-   * Returns the current time in ms of the fake timer clock.
+   * Returns `true` if test environment has been torn down.
+   *
+   * @example
+   * ```js
+   * if (jest.isEnvironmentTornDown()) {
+   *   // The Jest environment has been torn down, so stop doing work
+   *   return;
+   * }
+   * ```
    */
-  now(): number;
+  isEnvironmentTornDown(): boolean;
   /**
    * Determines if the given function is a mocked function.
    */
@@ -195,6 +203,23 @@ export interface Jest {
     options?: {virtual?: boolean},
   ): Jest;
   /**
+   * Wraps types of the `source` object and its deep members with type definitions
+   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
+   * mocked behavior.
+   */
+  mocked: ModuleMocker['mocked'];
+  /**
+   * Returns the current time in ms of the fake timer clock.
+   */
+  now(): number;
+  /**
+   * Replaces property on an object with another value.
+   *
+   * @remarks
+   * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
+   */
+  replaceProperty: ModuleMocker['replaceProperty'];
+  /**
    * Returns the actual module instead of a mock, bypassing all checks on
    * whether the module should receive a mock implementation or not.
    *
@@ -217,19 +242,6 @@ export interface Jest {
    * ```
    */
   requireActual<T = unknown>(moduleName: string): T;
-  /**
-   * Wraps types of the `source` object and its deep members with type definitions
-   * of Jest mock function. Pass `{shallow: true}` option to disable the deeply
-   * mocked behavior.
-   */
-  mocked: ModuleMocker['mocked'];
-  /**
-   * Replaces property on an object with another value.
-   *
-   * @remarks
-   * For mocking functions or 'get' or 'set' accessors, use `jest.spyOn()` instead.
-   */
-  replaceProperty: ModuleMocker['replaceProperty'];
   /**
    * Returns a mock module instead of the actual module, bypassing all checks
    * on whether the module should be required normally or not.
@@ -269,7 +281,6 @@ export interface Jest {
     numRetries: number,
     options?: {logErrorsBeforeRetry?: boolean},
   ): Jest;
-
   /**
    * Exhausts tasks queued by `setImmediate()`.
    *

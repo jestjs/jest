@@ -10,11 +10,11 @@ import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
 export type Options = {
-  clearTimeout: typeof globalThis['clearTimeout'];
+  clearTimeout: (typeof globalThis)['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: typeof globalThis['setTimeout'];
+  setTimeout: (typeof globalThis)['setTimeout'];
   userContext: unknown;
 };
 
