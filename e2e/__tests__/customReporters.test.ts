@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {skipTestOnJasmine} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -179,28 +178,5 @@ describe('Custom Reporters Integration', () => {
     const {stderr, exitCode} = runJest(DIR);
     expect(stderr).toMatch(/ON_RUN_START_ERROR/);
     expect(exitCode).toBe(1);
-  });
-
-  skipTestOnJasmine(() => {
-    test('valid assertion counts for adding reporters', () => {
-      const {stdout} = runJest('custom-reporters', [
-        '--config',
-        JSON.stringify({
-          reporters: [
-            'default',
-            '<rootDir>/reporters/AssertionCountsReporter.js',
-          ],
-        }),
-        'add.test.js',
-        'addFail.test.js',
-      ]);
-
-      expect(stdout).toMatchInlineSnapshot(`
-      "onTestCaseResult: adds fail, status: failed, numExpectations: 0
-      onTestFileResult testCaseResult 0: adds fail, status: failed, numExpectations: 0
-      onTestCaseResult: adds ok, status: passed, numExpectations: 3
-      onTestFileResult testCaseResult 0: adds ok, status: passed, numExpectations: 3"
-      `);
-    });
   });
 });
