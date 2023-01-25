@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect, jest-circus, @jest/types]` Implement `numPassingAsserts` of testResults to track the number of passing asserts in a test ([#13795](https://github.com/facebook/jest/pull/13795))
+
 ### Fixes
 
 - `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
@@ -23,7 +25,6 @@
 - `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13741](https://github.com/facebook/jest/pull/13741))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 - `[jest-transform]` Support for asynchronous `createTransformer` ([#13762](https://github.com/facebook/jest/pull/13762))
-- `[expect, jest-circus, @jest/types]` Implement `numPassingAsserts` of testResults to track the number of passing asserts in a test ([#13795](https://github.com/facebook/jest/pull/13795))
 
 ### Fixes
 
