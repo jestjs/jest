@@ -10,7 +10,7 @@ import runJest from '../runJest';
 skipSuiteOnJasmine();
 
 describe('Custom Reporters Integration on jest-circus', () => {
-  test('valid assertion counts for adding reporters', () => {
+  test('valid passing assertion counts for adding reporters', () => {
     const {stdout} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
@@ -20,6 +20,20 @@ describe('Custom Reporters Integration on jest-circus', () => {
         ],
       }),
       'add.test.js',
+    ]);
+
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test('valid failing assertion counts for adding reporters', () => {
+    const {stdout} = runJest('custom-reporters', [
+      '--config',
+      JSON.stringify({
+        reporters: [
+          'default',
+          '<rootDir>/reporters/AssertionCountsReporter.js',
+        ],
+      }),
       'addFail.test.js',
     ]);
 
