@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
+
 ### Chore & Maintenance
 
 ### Performance
