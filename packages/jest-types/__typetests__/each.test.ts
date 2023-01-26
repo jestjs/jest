@@ -28,8 +28,10 @@ const objectTable = [
 // test.each
 
 expectType<void>(
-  test.each(list)('some test', a => {
+  test.each(list)('some test', (a, done) => {
     expectType<number>(a);
+
+    expectType<(reason?: string | Error) => void>(done);
   }),
 );
 expectType<void>(
@@ -158,11 +160,13 @@ expectType<void>(
     {a: 5, b: 6, expected: 'eleven'},
   ])(
     'some test',
-    ({a, b, expected, extra}) => {
+    ({a, b, expected, extra}, done) => {
       expectType<number>(a);
       expectType<number>(b);
       expectType<string>(expected);
       expectType<boolean | undefined>(extra);
+
+      expectType<(reason?: string | Error) => void>(done);
     },
     1000,
   ),
