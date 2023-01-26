@@ -59,7 +59,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is an array of object literals
   <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
     name: string | NameLike,
-    fn: (arg: T) => ReturnType<EachFn>,
+    fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
@@ -80,14 +80,14 @@ interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is a tuple or array
   <T>(table: ReadonlyArray<T>): (
     name: string | NameLike,
-    fn: (arg: T) => ReturnType<EachFn>,
+    fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
   // when the table is a template literal
   <T = unknown>(strings: TemplateStringsArray, ...expressions: Array<T>): (
     name: string | NameLike,
-    fn: (arg: Record<string, T>) => ReturnType<EachFn>,
+    fn: (arg: Record<string, T>, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 
@@ -97,7 +97,7 @@ interface Each<EachFn extends TestFn | BlockFn> {
     ...expressions: Array<unknown>
   ): (
     name: string | NameLike,
-    fn: (arg: T) => ReturnType<EachFn>,
+    fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 }

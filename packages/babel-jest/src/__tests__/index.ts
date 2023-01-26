@@ -107,38 +107,20 @@ test('Returns source string with inline maps when no transformOptions is passed 
 describe('caller option correctly merges from defaults and options', () => {
   test.each([
     [
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: true,
-      },
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: true,
-      },
+      {supportsDynamicImport: true, supportsStaticESM: true},
+      {supportsDynamicImport: true, supportsStaticESM: true},
     ],
     [
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: false, supportsStaticESM: false},
+      {supportsDynamicImport: false, supportsStaticESM: false},
     ],
     [
       {supportsStaticESM: false},
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: false, supportsStaticESM: false},
     ],
     [
       {supportsDynamicImport: true},
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: true, supportsStaticESM: false},
     ],
   ])('%j -> %j', (input, output) => {
     defaultBabelJestTransformer.process(sourceString, 'dummy_path.js', {
