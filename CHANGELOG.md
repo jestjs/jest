@@ -4,6 +4,7 @@
 
 - `[expect, jest-circus, @jest/types]` Implement `numPassingAsserts` of testResults to track the number of passing asserts in a test ([#13795](https://github.com/facebook/jest/pull/13795))
 - `[jest-core]` Add newlines to JSON output ([#13817](https://github.com/facebook/jest/pull/13817))
+- `[@jest/reporters]` New functionality for Github Actions Reporter: automatic log folding ([#13626](https://github.com/facebook/jest/pull/13626))
 
 ### Fixes
 
@@ -27,7 +28,6 @@
 - `[jest-runtime]` Add `jest.isEnvironmentTornDown` function ([#13741](https://github.com/facebook/jest/pull/13741))
 - `[jest-test-result]` Added `skipped` and `focused` status to `FormattedTestResult` ([#13700](https://github.com/facebook/jest/pull/13700))
 - `[jest-transform]` Support for asynchronous `createTransformer` ([#13762](https://github.com/facebook/jest/pull/13762))
-- `[@jest/reporters]` New functionality for Github Actions Reporter: automatic log folding ([#13626](https://github.com/facebook/jest/pull/13626))
 
 ### Fixes
 
