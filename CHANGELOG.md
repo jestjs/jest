@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
+- `[@jest/types]` Add partial support for `done` callbacks in typings of `each` ([#13756](https://github.com/facebook/jest/pull/13756))
 
 ### Chore & Maintenance
 
@@ -38,7 +39,6 @@
 - `[jest-runtime]` Enforce import assertions when importing JSON in ESM ([#12755](https://github.com/facebook/jest/pull/12755) & [#13805](https://github.com/facebook/jest/pull/13805))
 - `[jest-snapshot]` Make sure to import `babel` outside of the sandbox ([#13694](https://github.com/facebook/jest/pull/13694))
 - `[jest-transform]` Ensure the correct configuration is passed to preprocessors specified multiple times in the `transform` option ([#13770](https://github.com/facebook/jest/pull/13770))
-- `[@jest/types]` Add partial support for `done` callbacks in typings of `each` ([#13756](https://github.com/facebook/jest/pull/13756))
 
 ### Chore & Maintenance
 
