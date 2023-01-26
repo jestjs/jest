@@ -2,19 +2,25 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.4.1
+
+### Features
+
 - `[expect, jest-circus, @jest/types]` Implement `numPassingAsserts` of testResults to track the number of passing asserts in a test ([#13795](https://github.com/facebook/jest/pull/13795))
 - `[jest-core]` Add newlines to JSON output ([#13817](https://github.com/facebook/jest/pull/13817))
-- `[@jest/reporters]` New functionality for Github Actions Reporter: automatic log folding ([#13626](https://github.com/facebook/jest/pull/13626))
+- `[@jest/reporters]` Automatic log folding in GitHub Actions Reporter ([#13626](https://github.com/facebook/jest/pull/13626))
 
 ### Fixes
 
 - `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
 - `[jest-runtime]` Handle missing `replaceProperty` ([#13823](https://github.com/facebook/jest/pull/13823))
 - `[@jest/types]` Add partial support for `done` callbacks in typings of `each` ([#13756](https://github.com/facebook/jest/pull/13756))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 29.4.0
 
