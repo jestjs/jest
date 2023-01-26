@@ -1,6 +1,7 @@
 ## main
 
 ### Features
+- `[jest-snapshot]` Add `process.env.SNAPSHOT_GUIDE_LINK` to allow snapshot description URL to be customized ([#13821](https://github.com/facebook/jest/pull/13821))
 
 ### Fixes
 
