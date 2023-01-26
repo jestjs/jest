@@ -44,3 +44,35 @@ describe('.hasAssertions()', () => {
 
   it('hasAssertions not leaking to global state', () => {});
 });
+
+describe('numPassingAsserts', () => {
+  it('verify the default value of numPassingAsserts', () => {
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(0);
+  });
+
+  it('verify the resetting of numPassingAsserts after a test', () => {
+    expect('a').toBe('a');
+    expect('a').toBe('a');
+    // reset state
+    jestExpect.extractExpectedAssertionsErrors();
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(0);
+  });
+
+  it('verify the correctness of numPassingAsserts count for passing test', () => {
+    expect('a').toBe('a');
+    expect('a').toBe('a');
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(2);
+  });
+
+  it('verify the correctness of numPassingAsserts count for failing test', () => {
+    expect('a').toBe('a');
+    try {
+      expect('a').toBe('b');
+    } catch (error) {}
+    const {numPassingAsserts} = jestExpect.getState();
+    expect(numPassingAsserts).toBe(1);
+  });
+});
