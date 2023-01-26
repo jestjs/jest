@@ -40,7 +40,15 @@ type NewGetCacheKeyFunction = (
 
 type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
-function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
+/**
+ * Computes the global cache key given  a collection of files and values.  This limits
+ * the output with a provided length.
+ * @param files list of files to read
+ * @param values list of values to add to the computation
+ * @param length length of the resulting key defaults to 16
+ * @returns {string} the global cache key
+ */
+function getGlobalCacheKey(files: Array<string>, values: Array<string>, length = 16) {
   return [
     process.env.NODE_ENV,
     process.env.BABEL_ENV,
@@ -52,7 +60,7 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
       createHash('sha1'),
     )
     .digest('hex')
-    .substring(0, 32);
+    .substring(0, length);
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
