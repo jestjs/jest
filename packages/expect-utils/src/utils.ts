@@ -43,6 +43,17 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
   );
 };
 
+// Retrieves an object's keys for evaluation by getObjectSubset.  This evaluates
+// the prototype chain for string keys but not for symbols.  (Otherwise, it
+// could find values such as a Set or Map's Symbol.toStringTag, with unexpected
+// results.)
+//
+// Compare with subsetEquality's use of Reflect.ownKeys.
+const getObjectKeys = (object: object) => [
+  ...Object.keys(object),
+  ...Object.getOwnPropertySymbols(object),
+];
+
 export const getPath = (
   object: Record<string, any>,
   propertyPath: string | Array<string>,
@@ -131,7 +142,7 @@ export const getObjectSubset = (
     const trimmed: any = {};
     seenReferences.set(object, trimmed);
 
-    Object.keys(object)
+    getObjectKeys(object)
       .filter(key => hasPropertyInObject(subset, key))
       .forEach(key => {
         trimmed[key] = seenReferences.has(object[key])
@@ -144,7 +155,7 @@ export const getObjectSubset = (
             );
       });
 
-    if (Object.keys(trimmed).length > 0) {
+    if (getObjectKeys(trimmed).length > 0) {
       return trimmed;
     }
   }

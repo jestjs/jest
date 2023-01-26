@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "29.3.1",
+  "version": "29.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -24,8 +24,7 @@
     "jest-util": "workspace:^",
     "jest-validate": "workspace:^",
     "resolve": "^1.20.0",
-    "resolve.exports": "^1.1.1",
-    "resolve.imports": "^2.0.3",
+    "resolve.exports": "^2.0.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {
