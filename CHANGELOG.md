@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- getCacheKey reduces size of global cache key portion to 16 characters.  ([#13826](https://github.com/facebook/jest/pull/13827))
+- `[@jest/create-cache-key-function]` Allow passing `length` argument to `createCacheKey()` function and set its default value to `16` on Windows ([#13827](https://github.com/facebook/jest/pull/13827))
 
 ### Chore & Maintenance
 
