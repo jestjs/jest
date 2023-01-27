@@ -174,7 +174,7 @@ export const describeBlockHasTests = (
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
-  }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
+  }.\nAdd a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
 // the original values in the variables before we require any files.
