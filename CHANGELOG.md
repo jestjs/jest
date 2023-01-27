@@ -4,9 +4,9 @@
 
 ### Fixes
 
-### Chore & Maintenance
-
 - getCacheKey reduces size of global cache key portion to 16 characters.  ([#13826](https://github.com/facebook/jest/pull/13827))
+
+### Chore & Maintenance
 
 ### Performance
 
