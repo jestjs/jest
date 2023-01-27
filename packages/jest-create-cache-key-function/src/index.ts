@@ -92,13 +92,14 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
  * the output with a provided length.
  * @param files list of files to read
  * @param values list of values to add to the computation
- * @param length length of the resulting key defaults to 16
+ * @param length length of the resulting key defaults to 16 on win32 and 32 elsewhere
  * @returns {string} the global cache key
  */
 export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
-  length = 16,
+  length?: number,
 ): GetCacheKeyFunction {
-  return getCacheKeyFunction(getGlobalCacheKey(files, values, length));
+  let theLength = length ?? (process.platform === 'win32' ? 16 : 32);
+  return getCacheKeyFunction(getGlobalCacheKey(files, values, theLength));
 }
