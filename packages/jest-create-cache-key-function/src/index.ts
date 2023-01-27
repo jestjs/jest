@@ -51,7 +51,7 @@ type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 function getGlobalCacheKey(
   files: Array<string>,
   values: Array<string>,
-  length,
+  length: number,
 ) {
   return [
     process.env.NODE_ENV,
