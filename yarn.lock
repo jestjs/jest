@@ -3313,22 +3313,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.25.3":
-  version: 7.25.3
-  resolution: "@microsoft/api-extractor-model@npm:7.25.3"
+"@microsoft/api-extractor-model@npm:7.26.0":
+  version: 7.26.0
+  resolution: "@microsoft/api-extractor-model@npm:7.26.0"
   dependencies:
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.3
-  checksum: 532ca30606b5649e90035ef70ff46868f6ccc63181e10b783bc5092e580bcb133112b300799b8f71a19da2b79f685a55f7ddbe84c8fe7ad93d71359c1763c521
+  checksum: 81933c6f88d453b718fbacc152e9d2367a5189197cc9c5359e566103793c00ba0ecd27de85c1ad696a8f1b5db28c8036758b225bd3c017b004991c316609aea8
   languageName: node
   linkType: hard
 
 "@microsoft/api-extractor@npm:^7.33.4":
-  version: 7.33.8
-  resolution: "@microsoft/api-extractor@npm:7.33.8"
+  version: 7.34.0
+  resolution: "@microsoft/api-extractor@npm:7.34.0"
   dependencies:
-    "@microsoft/api-extractor-model": 7.25.3
+    "@microsoft/api-extractor-model": 7.26.0
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.3
@@ -3342,7 +3342,7 @@ __metadata:
     typescript: ~4.8.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: 977f0938ef31e5c76a433245150802fd1f98b755124d3718d44c5806baba5c4b52955ece66a227c611088fa688339649b7d4e73fff721cb8210d3af0284e2680
+  checksum: c9a51c7e1c303127f3873d609be9e9fc3f60b380a83f28d89017857eb66b0ff09340458ca389b4879cc2f952e3787147845d386bbc0aaa47a29b501c38748e1a
   languageName: node
   linkType: hard
 
