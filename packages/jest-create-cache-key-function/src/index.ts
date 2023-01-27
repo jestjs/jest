@@ -48,7 +48,11 @@ type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
  * @param length length of the resulting key defaults to 16
  * @returns {string} the global cache key
  */
-function getGlobalCacheKey(files: Array<string>, values: Array<string>, length = 16) {
+function getGlobalCacheKey(
+  files: Array<string>,
+  values: Array<string>,
+  length = 16,
+) {
   return [
     process.env.NODE_ENV,
     process.env.BABEL_ENV,
