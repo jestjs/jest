@@ -45,13 +45,13 @@ type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
  * the output with a provided length.
  * @param files list of files to read
  * @param values list of values to add to the computation
- * @param length length of the resulting key defaults to 16
+ * @param length length of the resulting key
  * @returns {string} the global cache key
  */
 function getGlobalCacheKey(
   files: Array<string>,
   values: Array<string>,
-  length = 16,
+  length,
 ) {
   return [
     process.env.NODE_ENV,
@@ -87,9 +87,18 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
   };
 }
 
+/**
+ * Computes the cache key given  a collection of files and values.  This limits
+ * the output with a provided length.
+ * @param files list of files to read
+ * @param values list of values to add to the computation
+ * @param length length of the resulting key defaults to 16
+ * @returns {string} the global cache key
+ */
 export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
+  length = 16,
 ): GetCacheKeyFunction {
-  return getCacheKeyFunction(getGlobalCacheKey(files, values));
+  return getCacheKeyFunction(getGlobalCacheKey(files, values, length));
 }
