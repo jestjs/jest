@@ -100,6 +100,6 @@ export default function createCacheKey(
   values: Array<string> = [],
   length?: number,
 ): GetCacheKeyFunction {
-  let theLength = length ?? (process.platform === 'win32' ? 16 : 32);
+  const theLength = length ?? (process.platform === 'win32' ? 16 : 32);
   return getCacheKeyFunction(getGlobalCacheKey(files, values, theLength));
 }
