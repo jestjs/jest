@@ -251,12 +251,7 @@ class Card extends React.Component {
 class Hand extends React.Component {
   render() {
     const cards = [0, 1, 2, 3, 4].map(i => <Card key={i} index={i} />);
-    return (
-      <div className="jest-hand">
-        {cards}
-        <script src="/landing.js" />
-      </div>
-    );
+    return <div className="jest-hand">{cards}</div>;
   }
 }
 
