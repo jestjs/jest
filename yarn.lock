@@ -2812,7 +2812,7 @@ __metadata:
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^27.1.0
     eslint-plugin-jsdoc: ^39.3.6
-    eslint-plugin-local: ^1.0.0
+    eslint-plugin-local: "link:./.eslintplugin"
     eslint-plugin-markdown: ^3.0.0
     eslint-plugin-prettier: ^4.0.0
     execa: ^5.0.0
@@ -9347,12 +9347,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-local@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "eslint-plugin-local@npm:1.0.0"
-  checksum: fe0c11e55f3c99ed816c88bbf3160a6d27b71dfb6a7b1f03878131cd765dce70d39e7def8d50617a410a8697994b435a654d50fa396223a38af1274eb2d3c92f
+"eslint-plugin-local@link:./.eslintplugin::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "eslint-plugin-local@link:./.eslintplugin::locator=%40jest%2Fmonorepo%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "eslint-plugin-markdown@npm:^3.0.0":
   version: 3.0.0

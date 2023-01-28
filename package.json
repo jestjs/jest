@@ -38,7 +38,7 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^27.1.0",
     "eslint-plugin-jsdoc": "^39.3.6",
-    "eslint-plugin-local": "^1.0.0",
+    "eslint-plugin-local": "link:./.eslintplugin",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "execa": "^5.0.0",
