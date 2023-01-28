@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` make sure to exclude `.eslintcache` from published module ([#13832](https://github.com/facebook/jest/pull/13832))
+
 ### Performance
 
 ## 29.4.1
