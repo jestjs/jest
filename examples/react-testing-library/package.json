@@ -12,7 +12,8 @@
     "@babel/preset-react": "^7.12.1",
     "@testing-library/react": "^13.4.0",
     "babel-jest": "workspace:^",
-    "jest": "workspace:^"
+    "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^"
   },
   "scripts": {
     "test": "jest"
