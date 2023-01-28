@@ -2800,6 +2800,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.14.0
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
+    babel-jest: "workspace:^"
     camelcase: ^6.2.0
     chalk: ^4.0.0
     chokidar: ^3.3.0
@@ -2832,6 +2833,7 @@ __metadata:
     jest-serializer-ansi-escapes: ^2.0.1
     jest-silent-reporter: ^0.5.0
     jest-snapshot: "workspace:^"
+    jest-util: "workspace:^"
     jest-watch-typeahead: ^2.2.0
     jquery: ^3.2.1
     js-yaml: ^4.1.0
@@ -2896,6 +2898,7 @@ __metadata:
     jest-util: "workspace:^"
     jest-worker: "workspace:^"
     mock-fs: ^5.1.2
+    node-notifier: ^10.0.0
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
@@ -5718,6 +5721,7 @@ __metadata:
     babel-plugin-transform-typescript-metadata: "*"
     core-js: ^3.2.1
     jest: "workspace:^"
+    jest-environment-jsdom: "workspace:^"
     jest-zone-patch: "*"
     rxjs: ^7.5.5
     tslib: ^2.0.0
@@ -9657,6 +9661,7 @@ __metadata:
     "@babel/preset-env": ^7.1.0
     babel-jest: "workspace:^"
     jest: "workspace:^"
+    jest-environment-jsdom: "workspace:^"
     jquery: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -9708,6 +9713,7 @@ __metadata:
     "@testing-library/react": ^13.4.0
     babel-jest: "workspace:^"
     jest: "workspace:^"
+    jest-environment-jsdom: "workspace:^"
     react: 18.2.0
     react-dom: ^18.2.0
   languageName: unknown
@@ -9722,6 +9728,7 @@ __metadata:
     "@babel/preset-react": ^7.12.1
     babel-jest: "workspace:^"
     jest: "workspace:^"
+    jest-environment-jsdom: "workspace:^"
     react: 18.2.0
     react-dom: ^18.2.0
   languageName: unknown
@@ -9763,6 +9770,7 @@ __metadata:
     "@jest/globals": "workspace:^"
     babel-jest: "workspace:^"
     jest: "workspace:^"
+    jest-environment-jsdom: "workspace:^"
     react: 18.2.0
     react-dom: ^18.2.0
     typescript: ^4.8.2
@@ -12710,7 +12718,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-environment-jsdom@workspace:packages/jest-environment-jsdom":
+"jest-environment-jsdom@workspace:^, jest-environment-jsdom@workspace:packages/jest-environment-jsdom":
   version: 0.0.0-use.local
   resolution: "jest-environment-jsdom@workspace:packages/jest-environment-jsdom"
   dependencies:
@@ -12860,6 +12868,7 @@ __metadata:
     pretty-format: "workspace:^"
     slash: ^3.0.0
     stack-utils: ^2.0.3
+    tempy: ^1.0.0
   languageName: unknown
   linkType: soft
 
@@ -13257,6 +13266,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
+    "@babel/core": ^7.11.6
     "@tsd/typescript": ^4.9.0
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
