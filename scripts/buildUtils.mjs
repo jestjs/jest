@@ -267,6 +267,7 @@ export function createWebpackConfigs() {
           ],
         },
         optimization: {
+          minimize: false,
           moduleIds: 'named',
         },
         output: {
