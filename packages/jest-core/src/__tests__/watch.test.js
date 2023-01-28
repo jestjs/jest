@@ -115,6 +115,7 @@ describe('Watch mode flows', () => {
       const original = jest.requireActual('jest-util');
       return {...original, isInteractive};
     });
+    jest.resetModules();
     watch = require('../watch').default;
     const config = {
       rootDir: __dirname,

@@ -49,7 +49,7 @@ describe('init', () => {
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
         expect(
-          writtenJestConfig.replace(
+          (writtenJestConfig as string).replace(
             /\/\/ cacheDirectory: .*,/,
             '// cacheDirectory: "/tmp/jest",',
           ),
