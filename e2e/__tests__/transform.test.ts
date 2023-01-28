@@ -21,7 +21,7 @@ import runJest, {json as runWithJson} from '../runJest';
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
-  beforeAllw(() => {
+  beforeAll(() => {
     runYarnInstall(dir);
   });
 
