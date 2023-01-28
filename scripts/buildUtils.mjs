@@ -325,6 +325,9 @@ class IgnoreDynamicRequire {
           parser.hooks.call
             .for('require.resolve')
             .tap('IgnoreDynamicRequire', () => true);
+          parser.hooks.call
+            .for('require.resolve.paths')
+            .tap('IgnoreDynamicRequire', () => true);
         });
     });
   }
