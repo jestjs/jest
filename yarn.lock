@@ -2063,26 +2063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/module-type-aliases@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@docusaurus/module-type-aliases@npm:2.2.0"
-  dependencies:
-    "@docusaurus/react-loadable": 5.5.2
-    "@docusaurus/types": 2.2.0
-    "@types/history": ^4.7.11
-    "@types/react": "*"
-    "@types/react-router-config": "*"
-    "@types/react-router-dom": "*"
-    react-helmet-async: "*"
-    react-loadable: "npm:@docusaurus/react-loadable@5.5.2"
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-  checksum: ebcb9dff2f88b5962cd34aaa78b1a48531da4776229ef507665e3f053cccb185aadcc16c3703f21031e14ccb6c8312662a6eec1a2a06bc0a423221ad200e1e9e
-  languageName: node
-  linkType: hard
-
-"@docusaurus/module-type-aliases@npm:2.3.0":
+"@docusaurus/module-type-aliases@npm:2.3.0, @docusaurus/module-type-aliases@npm:^2.0.0":
   version: 2.3.0
   resolution: "@docusaurus/module-type-aliases@npm:2.3.0"
   dependencies:
@@ -2448,25 +2429,6 @@ __metadata:
     fs-extra: ^10.1.0
     tslib: ^2.4.0
   checksum: df11b8a0b569a5adaec505d52cccffef1d903404232c776354035a387b56fcc7aa7d742aa0df622ccc052b61443ba134b6dcc6d3a4076aced4cd253d6cf957f6
-  languageName: node
-  linkType: hard
-
-"@docusaurus/types@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@docusaurus/types@npm:2.2.0"
-  dependencies:
-    "@types/history": ^4.7.11
-    "@types/react": "*"
-    commander: ^5.1.0
-    joi: ^17.6.0
-    react-helmet-async: ^1.3.0
-    utility-types: ^3.10.0
-    webpack: ^5.73.0
-    webpack-merge: ^5.8.0
-  peerDependencies:
-    react: ^16.8.4 || ^17.0.0
-    react-dom: ^16.8.4 || ^17.0.0
-  checksum: 5166ca49bb9333e4d733e4bf8d49d65e11ea6b39e4d8eecc24e1de24d61d2459c52dd8bd27362b66b03e41df96acf1a449145211b3bf0c5a59a987c77102e8f1
   languageName: node
   linkType: hard
 
@@ -13270,7 +13232,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@crowdin/cli": ^3.5.2
     "@docusaurus/core": ^2.0.0
-    "@docusaurus/module-type-aliases": 2.2.0
+    "@docusaurus/module-type-aliases": ^2.0.0
     "@docusaurus/plugin-client-redirects": ^2.0.0
     "@docusaurus/plugin-pwa": ^2.0.0
     "@docusaurus/preset-classic": ^2.0.0
