@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-environment-jsdom]` Bump `JSDOM` to 21.1.0. `JSDOM`'s API had no breaking changes. ([]())
+
 ### Fixes
 
 ### Chore & Maintenance
