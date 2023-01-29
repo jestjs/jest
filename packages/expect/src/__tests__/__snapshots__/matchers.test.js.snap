@@ -1596,6 +1596,36 @@ exports[`.toBeNull() fails for null with .not 1`] = `
 Received: <r>null</>
 `;
 
+exports[`.toBeTrue(), .toBeFalse does not accept arguments 1`] = `
+<d>expect(</><r>received</><d>).</>toBeTrue<d>()</>
+
+<b>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  boolean
+Expected has value: <g>true</>
+`;
+
+exports[`.toBeTrue(), .toBeFalse does not accept arguments 2`] = `
+<d>expect(</><r>received</><d>).</>toBeFalse<d>()</>
+
+<b>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  boolean
+Expected has value: <g>false</>
+`;
+
+exports[`.toBeTrue(), .toBeFalse fails for false with .not 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeFalse<d>()</>
+
+Received: <r>false</>
+`;
+
+exports[`.toBeTrue(), .toBeFalse fails for true with .not 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeTrue<d>()</>
+
+Received: <r>true</>
+`;
+
 exports[`.toBeTruthy(), .toBeFalsy() '""' is falsy 1`] = `
 <d>expect(</><r>received</><d>).</>toBeTruthy<d>()</>
 
@@ -1618,6 +1648,18 @@ exports[`.toBeTruthy(), .toBeFalsy() '"a"' is truthy 2`] = `
 <d>expect(</><r>received</><d>).</>toBeFalsy<d>()</>
 
 Received: <r>"a"</>
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"teste"' is truthy 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeTruthy<d>()</>
+
+Received: <r>"teste"</>
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"teste"' is truthy 2`] = `
+<d>expect(</><r>received</><d>).</>toBeFalsy<d>()</>
+
+Received: <r>"teste"</>
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '[]' is truthy 1`] = `

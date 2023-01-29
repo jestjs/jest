@@ -1138,6 +1138,36 @@ describe('.toBeInstanceOf()', () => {
   });
 });
 
+describe('.toBeTrue(), .toBeFalse', () => {
+  it('does not accept arguments', () => {
+    expect(() => jestExpect(0).toBeTrue(true)).toThrowErrorMatchingSnapshot();
+
+    expect(() => jestExpect(0).toBeFalse(false)).toThrowErrorMatchingSnapshot();
+  });
+
+  it(`${stringify(true)} is true`, () => {
+    jestExpect(true).toBeTrue();
+    jestExpect(true).not.toBeFalse();
+  });
+
+  it(`${stringify(false)} is false`, () => {
+    jestExpect(false).toBeFalse();
+    jestExpect(false).not.toBeTrue();
+  });
+
+  it('fails for true with .not', () => {
+    expect(() =>
+      jestExpect(true).not.toBeTrue(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('fails for false with .not', () => {
+    expect(() =>
+      jestExpect(false).not.toBeFalse(),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
     expect(() => jestExpect(0).toBeTruthy(null)).toThrowErrorMatchingSnapshot();

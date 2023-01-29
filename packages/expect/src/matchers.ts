@@ -227,6 +227,25 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toBeFalse(received: unknown, expected: unknown) {
+    const matcherName = 'toBeFalse';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, matcherName, options);
+
+    const pass = received === false;
+
+    const message = () =>
+      // eslint-disable-next-line prefer-template
+      matcherHint(matcherName, undefined, '', options) +
+      '\n\n' +
+      `Received: ${printReceived(received)}`;
+
+    return {message, pass};
+  },
+
   toBeFalsy(received: unknown, expected: void) {
     const matcherName = 'toBeFalsy';
     const options: MatcherHintOptions = {
@@ -410,6 +429,25 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, matcherName, options);
 
     const pass = received === null;
+
+    const message = () =>
+      // eslint-disable-next-line prefer-template
+      matcherHint(matcherName, undefined, '', options) +
+      '\n\n' +
+      `Received: ${printReceived(received)}`;
+
+    return {message, pass};
+  },
+
+  toBeTrue(received: unknown, expected: unknown) {
+    const matcherName = 'toBeTrue';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, matcherName, options);
+
+    const pass = received === true;
 
     const message = () =>
       // eslint-disable-next-line prefer-template

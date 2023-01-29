@@ -458,6 +458,24 @@ test('there is a new flavor idea', () => {
 
 You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
 
+### `.toBeFalse()`
+
+Use `.toBeFalse` when you need to verify if some value is false (deep equality). For example, let's say you have some application code that looks like:
+
+```js
+function isGreatherThanEleven(a, b) {
+  return a + b > 11;
+}
+```
+
+You could write the test like this:
+
+```js
+test('4 + 8 is not greather than eleven', () => {
+  expect(isGreatherThanEleven(4, 4)).toBeFalse();
+});
+```
+
 ### `.toBeFalsy()`
 
 Use `.toBeFalsy` when you don't care what a value is and you want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
@@ -543,6 +561,24 @@ function bloop() {
 
 test('bloop returns null', () => {
   expect(bloop()).toBeNull();
+});
+```
+
+### `.toBeTrue()`
+
+Use `.toBeTrue` when you need to verify if some value is true (deep equality). For example, let's say you have some application code that looks like:
+
+```js
+function isGreatherThanEleven(a, b) {
+  return a + b > 11;
+}
+```
+
+You could write the test like this:
+
+```js
+test('4 + 8 is greather than eleven', () => {
+  expect(isGreatherThanEleven(4, 8)).toBeTrue();
 });
 ```
 
