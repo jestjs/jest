@@ -1138,7 +1138,7 @@ describe('.toBeInstanceOf()', () => {
   });
 });
 
-describe('.toBeTrue(), .toBeFalse', () => {
+describe('.toBeTrue(), .toBeFalse()', () => {
   it('does not accept arguments', () => {
     expect(() => jestExpect(0).toBeTrue(true)).toThrowErrorMatchingSnapshot();
 
