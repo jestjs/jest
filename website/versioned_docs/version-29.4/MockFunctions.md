@@ -145,6 +145,10 @@ Now, in order to test this method without actually hitting the API (and thus cre
 Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want `axios.get('/users.json')` to return a fake response.
 
 ```js title="users.test.js"
+// this example can't be used purely,
+// because Jest doesn't support ES6 modules fully
+// To run this example, it needs additional configuration
+
 import axios from 'axios';
 import Users from './users';
 
