@@ -90,7 +90,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
 export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
-  length?: number,
+  length = process.platform === 'win32' ? 16 : 32,
 ): GetCacheKeyFunction {
   return getCacheKeyFunction(getGlobalCacheKey(files, values, length));
 }
