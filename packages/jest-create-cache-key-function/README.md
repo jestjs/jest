@@ -18,7 +18,7 @@ Returns a function that can be used to generate cache keys based on source code 
 
 - `files`: [Optional] Array of absolute paths to files whose code should be accounted for when generating cache key
 - `values`: [Optional] Array of string values that should be accounted for when generating cache key
-- `length`: [Optional] length of the resulting key defaults to 16 on win32 and 32 elsewhere
+- `length`: [Optional] Length of the resulting key. The default is `32`, or `16` on Windows.
 
 **Note:**
 
