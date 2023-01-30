@@ -2844,7 +2844,6 @@ __metadata:
     p-limit: ^3.1.0
     pkg-dir: ^5.0.0
     prettier: ^2.1.1
-    progress: ^2.0.0
     promise: ^8.0.2
     read-pkg: ^5.2.0
     resolve: ^1.20.0
@@ -17164,13 +17163,6 @@ __metadata:
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
-  languageName: node
-  linkType: hard
-
-"progress@npm:^2.0.0":
-  version: 2.0.3
-  resolution: "progress@npm:2.0.3"
-  checksum: f67403fe7b34912148d9252cb7481266a354bd99ce82c835f79070643bb3c6583d10dbcfda4d41e04bbc1d8437e9af0fb1e1f2135727878f5308682a579429b7
   languageName: node
   linkType: hard
 
