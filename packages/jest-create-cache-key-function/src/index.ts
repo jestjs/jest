@@ -80,7 +80,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
 }
 
 /**
- * Provides a function that computes the cache key given  a collection of files and values.
+ * Provides a function that computes the cache key given a collection of files and values.
  * This limits the output with a provided length.
  * @param files Array of absolute paths to files whose code should be accounted for when generating cache key
  * @param values Array of string values that should be accounted for when generating cache key
