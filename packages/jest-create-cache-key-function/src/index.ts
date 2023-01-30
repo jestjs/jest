@@ -80,8 +80,8 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
 }
 
 /**
- * Computes the cache key given  a collection of files and values.  This limits
- * the output with a provided length.
+ * Provides a function that computes the cache key given  a collection of files and values.
+ * This limits the output with a provided length.
  * @param files list of files to read
  * @param values list of values to add to the computation
  * @param length length of the resulting key defaults to 16 on win32 and 32 elsewhere
