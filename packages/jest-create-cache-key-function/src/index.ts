@@ -40,14 +40,6 @@ type NewGetCacheKeyFunction = (
 
 type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
-/**
- * Computes the global cache key given  a collection of files and values.  This limits
- * the output with a provided length.
- * @param files list of files to read
- * @param values list of values to add to the computation
- * @param length length of the resulting key
- * @returns {string} the global cache key
- */
 function getGlobalCacheKey(
   files: Array<string>,
   values: Array<string>,
