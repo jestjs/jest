@@ -80,13 +80,13 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
 }
 
 /**
- * Provides a function that computes the cache key given a collection of files and values.
- * This limits the output with a provided length.
- * @param files Array of absolute paths to files whose code should be accounted for when generating cache key
- * @param values Array of string values that should be accounted for when generating cache key
- * @param length length of the resulting key defaults to 16 on win32 and 32 elsewhere
- * @returns a function that is used to create the cache key.
- */
+  * Returns a function that can be used to generate cache keys based on source code of provided files and provided values.
+  * 
+  * @param files - Array of absolute paths to files whose code should be accounted for when generating cache key
+  * @param values - Array of string values that should be accounted for when generating cache key
+  * @param length - Length of the resulting key. The default is `32`, or `16` on Windows.
+  * @returns A function that can be used to generate cache keys.
+  */
 export default function createCacheKey(
   files: Array<string> = [],
   values: Array<string> = [],
