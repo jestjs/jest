@@ -92,6 +92,5 @@ export default function createCacheKey(
   values: Array<string> = [],
   length?: number,
 ): GetCacheKeyFunction {
-  const theLength = length ?? (process.platform === 'win32' ? 16 : 32);
-  return getCacheKeyFunction(getGlobalCacheKey(files, values, theLength));
+  return getCacheKeyFunction(getGlobalCacheKey(files, values, length));
 }
