@@ -170,9 +170,15 @@ export const describeBlockHasTests = (
     child => child.type === 'test' || describeBlockHasTests(child),
   );
 
-const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
+const _makeTimeoutMessage = (
+  timeout: number,
+  isHook: boolean,
+  takesDoneCallback: boolean,
+) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
+  }${
+    takesDoneCallback && ' while waiting for done to be called'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
@@ -195,7 +201,7 @@ export const callAsyncCircusFn = (
 
   return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook, takesDoneCallback(fn))),
       timeout,
     );
 
