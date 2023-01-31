@@ -134,7 +134,7 @@ type PromiseMatchers = {
   resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
 };
 
-export interface Matchers<R extends void | Promise<void>> {
+export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
