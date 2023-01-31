@@ -1,5 +1,7 @@
 ## main
+
 - `[jest-circus]` Added explicit mention of test failing because `done()` is not being called in error message ([#13847](https://github.com/facebook/jest/pull/13847))
+
 ### Features
 
 ### Fixes
