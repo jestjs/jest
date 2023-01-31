@@ -178,7 +178,7 @@ const _makeTimeoutMessage = (
   `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
   }${
-    takesDoneCallback && ' while waiting for done to be called'
+    takesDoneCallback && ' while waiting for `done()` to be called'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
 // Global values can be overwritten by mocks or tests. We'll capture
@@ -198,16 +198,17 @@ export const callAsyncCircusFn = (
   let completed = false;
 
   const {fn, asyncError} = testOrHook;
+  const doneCallback = takesDoneCallback(fn);
 
   return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook, takesDoneCallback(fn))),
+      () => reject(_makeTimeoutMessage(timeout, isHook, doneCallback)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (takesDoneCallback(fn)) {
+    if (doneCallback) {
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {

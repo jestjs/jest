@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* build-hook-start *//*00001*/try { require('/Users/luca/.vscode/extensions/wallabyjs.console-ninja-0.0.71/out/buildHook/index.js').default({tool: 'jest'}); } catch(e) { try { import('file:///Users/luca/.vscode/extensions/wallabyjs.console-ninja-0.0.71/out/buildHook/index.js').then(m => m.default.default({tool: 'jest'})).catch(p => {}) } catch(e) { }}/* build-hook-end */
+
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *

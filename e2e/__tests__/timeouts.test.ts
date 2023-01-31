@@ -123,7 +123,7 @@ test('exceeds the timeout specifying that `done` has not been called', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
   expect(rest).toMatch(
-    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout\.while waiting for done to be called)/,
+    /(jest\.setTimeout|Exceeded timeout\.while waiting for `done()` to be called)/,
   );
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(1);
