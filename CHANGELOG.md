@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-core]` allow to use workerIdleMemoryLimit with only 1 worker or runInBand option ([#13846](https://github.com/facebook/jest/pull/13846))
+
 ### Fixes
 
 ### Chore & Maintenance
