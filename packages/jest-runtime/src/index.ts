@@ -2319,9 +2319,14 @@ export default class Runtime {
           'Your test environment does not support `mocked`, please update it.',
         );
       });
-    const replaceProperty = this._moduleMocker.replaceProperty.bind(
-      this._moduleMocker,
-    );
+    const replaceProperty =
+      typeof this._moduleMocker.replaceProperty === 'function'
+        ? this._moduleMocker.replaceProperty.bind(this._moduleMocker)
+        : () => {
+            throw new Error(
+              'Your test environment does not support `jest.replaceProperty` - please ensure its Jest dependencies are updated to version 29.4 or later',
+            );
+          };
 
     const setTimeout = (timeout: number) => {
       this._environment.global[testTimeoutSymbol] = timeout;

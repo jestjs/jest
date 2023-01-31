@@ -11,7 +11,8 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.12.1",
     "babel-jest": "workspace:^",
-    "jest": "workspace:^"
+    "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^"
   },
   "scripts": {
     "test": "jest"
