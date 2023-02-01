@@ -134,9 +134,16 @@ type PromiseMatchers<T = unknown> = {
   resolves: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
 };
 
-// @ts-expect-error unused variable T (can't use _T since users redeclare Matchers)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
+  /**
+   * T is a type param for the benefit of users who extend Matchers. It's
+   * intentionally unused and needs to be named T, not _T, for those users.
+   * This makes sure Typescript agrees.
+   *
+   * @internal
+   */
+  _unusedT(expected: T): R;
+
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
