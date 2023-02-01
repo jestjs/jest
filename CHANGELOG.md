@@ -5,7 +5,6 @@
 ### Fixes
 
 - `[expect, @jest/expect]` Provide type of `actual` as a generic argument to `Matchers` to allow better-typed extensions ([#13848](https://github.com/facebook/jest/pull/13848))
-- ```
 
 ### Chore & Maintenance
 
