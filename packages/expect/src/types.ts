@@ -138,7 +138,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * T is a type param for the benefit of users who extend Matchers. It's
    * intentionally unused and needs to be named T, not _T, for those users.
-   * This makes sure Typescript agrees.
+   * This makes sure TypeScript agrees.
    *
    * @internal
    */
