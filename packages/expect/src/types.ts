@@ -143,7 +143,6 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    * @internal
    */
   _unusedT(expected: T): R;
-
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
