@@ -2,9 +2,9 @@
 
 ### Features
 
-- `[@jest/expect]` provide type of `actual` as a generic argument to `Matchers` to allow better-typed extensions (#TBD)
-
 ### Fixes
+
+- `[@jest/expect]` provide type of `actual` as a generic argument to `Matchers` to allow better-typed extensions (#TBD)
 
 ### Chore & Maintenance
 

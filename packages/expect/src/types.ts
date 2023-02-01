@@ -97,9 +97,9 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void> &
-    Inverse<Matchers<void>> &
-    PromiseMatchers;
+  <T = unknown>(actual: T): Matchers<void, T> &
+    Inverse<Matchers<void, T>> &
+    PromiseMatchers<T>;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
@@ -121,19 +121,21 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type PromiseMatchers = {
+type PromiseMatchers<T = unknown> = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  rejects: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  resolves: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
 };
 
+// @ts-expect-error unused variable T (can't use _T since users redeclare Matchers)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Matchers<R extends void | Promise<void>, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
