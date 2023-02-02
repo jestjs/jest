@@ -10,7 +10,7 @@ import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
-import globby from 'globby';
+import glob from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
@@ -125,12 +125,13 @@ try {
   await Promise.all(
     packagesWithTs.map(({packageDir, pkg}) =>
       mutex(async () => {
-        const buildDir = path.resolve(packageDir, 'build/**/*.d.ts');
-
-        const globbed = await globby([buildDir]);
+        const matched = glob.sync('build/**/*.d.ts', {
+          absolute: true,
+          cwd: packageDir,
+        });
 
         const files = await Promise.all(
-          globbed.map(file =>
+          matched.map(file =>
             Promise.all([file, fs.promises.readFile(file, 'utf8')]),
           ),
         );
