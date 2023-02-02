@@ -10,6 +10,7 @@
 ### Chore & Maintenance
 
 - `[*]` make sure to exclude `.eslintcache` from published module ([#13832](https://github.com/facebook/jest/pull/13832))
+- `[jest-transform]` Downgrade `write-file-atomic` to v4
 
 ### Performance
 
