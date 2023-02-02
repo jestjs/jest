@@ -125,7 +125,7 @@ try {
   await Promise.all(
     packagesWithTs.map(({packageDir, pkg}) =>
       mutex(async () => {
-        const matched = await glob.sync('build/**/*.d.ts', {
+        const matched = glob.sync('build/**/*.d.ts', {
           absolute: true,
           cwd: packageDir,
         });
