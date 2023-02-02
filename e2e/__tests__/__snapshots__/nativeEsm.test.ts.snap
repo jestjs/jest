@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`on node <16.12.0 does not enforce import assertions 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /native-esm-missing-import-assertions.test/i."
+`;
+
 exports[`on node >=16.9.0 support re-exports from CJS of dual packages 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
@@ -8,9 +16,17 @@ Time:        <<REPLACED>>
 Ran all test suites matching /native-esm-deep-cjs-reexport.test.js/i."
 `;
 
+exports[`on node >=16.12.0 supports import assertions 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /native-esm-import-assertions.test/i."
+`;
+
 exports[`runs WebAssembly (Wasm) test with native ESM 1`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       5 passed, 5 total
+Tests:       6 passed, 6 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /native-esm-wasm.test.js/i."

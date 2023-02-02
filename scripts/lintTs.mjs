@@ -14,7 +14,13 @@ import pLimit from 'p-limit';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 // we want to limit the number of processes we spawn
-const cpus = Math.max(1, os.cpus().length - 1);
+const cpus = Math.max(
+  1,
+  (typeof os.availableParallelism === 'function'
+    ? os.availableParallelism()
+    : os.cpus().length) - 1,
+);
+
 const mutex = pLimit(cpus);
 
 const fix = process.argv.slice(2).some(arg => arg === '--fix');

@@ -1,7 +1,7 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "29.3.0",
+  "version": "29.4.1",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -19,7 +19,7 @@
     "jest-cli": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "tsd-lite": "^0.6.0"
   },
   "peerDependencies": {

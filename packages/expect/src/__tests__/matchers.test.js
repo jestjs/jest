@@ -2315,4 +2315,22 @@ describe('toMatchObject()', () => {
       jestExpect(b).toMatchObject(matcher),
     ).toThrowErrorMatchingSnapshot();
   });
+
+  it('toMatchObject ignores symbol key properties', () => {
+    // issue 13638
+    const sym = Symbol('foo');
+    const sym2 = Symbol('foo2');
+    jestExpect({}).not.toMatchObject({[sym]: true});
+    jestExpect({[sym]: true}).not.toMatchObject({[sym2]: true});
+    jestExpect({[sym]: true}).not.toMatchObject({[sym]: false});
+    jestExpect({example: 10, [sym]: true}).not.toMatchObject({
+      example: 12,
+      [sym]: true,
+    });
+    jestExpect({[sym]: true}).toMatchObject({[sym]: true});
+    jestExpect({example: 10, [sym]: true}).toMatchObject({
+      example: 10,
+      [sym]: true,
+    });
+  });
 });

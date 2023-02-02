@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "29.3.0",
+  "version": "29.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,7 +22,7 @@
     "jest-util": "workspace:^"
   },
   "devDependencies": {
-    "@tsd/typescript": "~4.8.2",
+    "@tsd/typescript": "^4.9.0",
     "tsd-lite": "^0.6.0"
   },
   "engines": {

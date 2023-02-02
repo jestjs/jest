@@ -98,6 +98,10 @@ expectError(jest.enableAutomock('moduleName'));
 expectType<typeof jest>(jest.isolateModules(() => {}));
 expectError(jest.isolateModules());
 
+expectType<Promise<void>>(jest.isolateModulesAsync(async () => {}));
+expectError(jest.isolateModulesAsync(() => {}));
+expectError(jest.isolateModulesAsync());
+
 expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
 expectType<typeof jest>(
@@ -261,6 +265,8 @@ if (!jest.isMockFunction(unknownMaybeMock)) {
 expectType<ModuleMocker['fn']>(jest.fn);
 
 expectType<ModuleMocker['spyOn']>(jest.spyOn);
+
+expectType<ModuleMocker['replaceProperty']>(jest.replaceProperty);
 
 // Mock<T>
 
@@ -443,6 +449,12 @@ expectError(
 
 expectAssignable<typeof someObject>(mockObjectB);
 
+// Replaced
+
+expectAssignable<jest.Replaced<number>>(
+  jest.replaceProperty(someObject, 'propertyA', 123),
+);
+
 // Spied
 
 expectAssignable<jest.Spied<typeof someObject.methodA>>(
@@ -575,3 +587,6 @@ expectError(jest.setTimeout());
 
 expectType<number>(jest.getSeed());
 expectError(jest.getSeed(123));
+
+expectType<boolean>(jest.isEnvironmentTornDown());
+expectError(jest.isEnvironmentTornDown(123));

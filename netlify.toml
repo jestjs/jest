@@ -12,6 +12,8 @@
   # default cache
   YARN_ENABLE_GLOBAL_CACHE = "true"
   YARN_GLOBAL_FOLDER = "/opt/buildhome/.yarn_cache"
+  YARN_CACHE_FOLDER = "/opt/buildhome/.yarn_cache"
+  YARN_VERSION = "3.3.1"
 
 [context.production]
   # Do not build the site if there's no site-related changes

@@ -107,3 +107,24 @@ test('does not exceed the command line testTimeout', () => {
   expect(summary).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
+
+test('exceeds the timeout specifying that `done` has not been called', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      jest.setTimeout(20);
+
+      test('banana', (done) => {
+        expect(1 + 1).toBe(2);
+      });
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  expect(rest).toMatch(
+    /(jest\.setTimeout|Exceeded timeout\.while waiting for `done()` to be called)/,
+  );
+  expect(summary).toMatchSnapshot();
+  expect(exitCode).toBe(1);
+});

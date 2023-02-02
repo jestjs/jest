@@ -1,6 +1,6 @@
 {
   "name": "@jest/schemas",
-  "version": "29.0.0",
+  "version": "29.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.24.1"
+    "@sinclair/typebox": "^0.25.16"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

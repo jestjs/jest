@@ -125,7 +125,7 @@ type Transformer<TransformerConfig = unknown> =
 type TransformerCreator<
   X extends Transformer<TransformerConfig>,
   TransformerConfig = unknown,
-> = (transformerConfig?: TransformerConfig) => X;
+> = (transformerConfig?: TransformerConfig) => X | Promise<X>;
 
 type TransformerFactory<X extends Transformer> = {
   createTransformer: TransformerCreator<X>;
@@ -146,7 +146,7 @@ Semi-related to this are the supports flags we pass (see `CallerTransformOptions
 
 Though not required, we _highly recommend_ implementing `getCacheKey` as well, so we do not waste resources transpiling when we could have read its previous result from disk. You can use [`@jest/create-cache-key-function`](https://www.npmjs.com/package/@jest/create-cache-key-function) to help implement it.
 
-Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export `createTransformer`, a factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
+Instead of having your custom transformer implement the `Transformer` interface directly, you can choose to export `createTransformer`, a possibly asynchronous factory function to dynamically create transformers. This is to allow having a transformer config in your jest config.
 
 :::note
 

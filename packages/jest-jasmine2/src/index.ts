@@ -144,7 +144,7 @@ export default async function jasmine2(
 
   runtime
     .requireInternalModule<typeof import('./jestExpect')>(
-      path.resolve(__dirname, './jestExpect.js'),
+      require.resolve('./jestExpect.js'),
     )
     .default({expand: globalConfig.expand});
 
@@ -165,7 +165,7 @@ export default async function jasmine2(
 
   const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
-      path.resolve(__dirname, './setup_jest_globals.js'),
+      require.resolve('./setup_jest_globals.js'),
     )
     .default({
       config,

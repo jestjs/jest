@@ -21,6 +21,7 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
+import {satisfies as semverSatisfies} from 'semver';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
@@ -42,7 +43,6 @@ import {
   CallerTransformOptions,
   ScriptTransformer,
   ShouldInstrumentOptions,
-  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
@@ -62,6 +62,11 @@ import {
 } from './helpers';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
+
+const runtimeSupportsImportAssertions = semverSatisfies(
+  process.versions.node,
+  '^16.12.0 || >=17.0.0',
+);
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -153,6 +158,23 @@ const supportsNodeColonModulePrefixInRequire = (() => {
     return false;
   }
 })();
+
+const kImplicitAssertType = Symbol('kImplicitAssertType');
+
+// copied from https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#L20-L32
+const formatTypeMap: {[type: string]: string | typeof kImplicitAssertType} = {
+  // @ts-expect-error - copied
+  __proto__: null,
+  builtin: kImplicitAssertType,
+  commonjs: kImplicitAssertType,
+  json: 'json',
+  module: kImplicitAssertType,
+  wasm: kImplicitAssertType,
+};
+
+const supportedAssertionTypes = new Set(
+  Object.values(formatTypeMap).filter(type => type !== kImplicitAssertType),
+);
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
@@ -410,11 +432,15 @@ export default class Runtime {
     );
   }
 
-  // not async _now_, but transform will be
   private async loadEsmModule(
     modulePath: string,
     query = '',
+    importAssertions?: ImportAssertions,
   ): Promise<VMModule> {
+    if (runtimeSupportsImportAssertions) {
+      this.validateImportAssertions(modulePath, query, importAssertions);
+    }
+
     const cacheKey = modulePath + query;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
@@ -452,6 +478,7 @@ export default class Runtime {
           this.readFileBuffer(modulePath),
           modulePath,
           context,
+          importAssertions,
         );
 
         this._esmoduleRegistry.set(cacheKey, wasm);
@@ -478,39 +505,54 @@ export default class Runtime {
       });
 
       try {
-        const module = new SourceTextModule(transformedCode, {
-          context,
-          identifier: modulePath,
-          importModuleDynamically: async (
-            specifier: string,
-            referencingModule: VMModule,
-          ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            const module = await this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            );
+        let module;
+        if (modulePath.endsWith('.json')) {
+          module = new SyntheticModule(
+            ['default'],
+            function () {
+              const obj = JSON.parse(transformedCode);
+              // @ts-expect-error: TS doesn't know what `this` is
+              this.setExport('default', obj);
+            },
+            {context, identifier: modulePath},
+          );
+        } else {
+          module = new SourceTextModule(transformedCode, {
+            context,
+            identifier: modulePath,
+            importModuleDynamically: async (
+              specifier: string,
+              referencingModule: VMModule,
+              importAssertions?: ImportAssertions,
+            ) => {
+              invariant(
+                runtimeSupportsVmModules,
+                'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+              );
+              const module = await this.resolveModule(
+                specifier,
+                referencingModule.identifier,
+                referencingModule.context,
+                importAssertions,
+              );
 
-            return this.linkAndEvaluateModule(module);
-          },
-          initializeImportMeta: (meta: JestImportMeta) => {
-            meta.url = pathToFileURL(modulePath).href;
+              return this.linkAndEvaluateModule(module);
+            },
+            initializeImportMeta: (meta: JestImportMeta) => {
+              meta.url = pathToFileURL(modulePath).href;
 
-            let jest = this.jestObjectCaches.get(modulePath);
+              let jest = this.jestObjectCaches.get(modulePath);
 
-            if (!jest) {
-              jest = this._createJestObjectFor(modulePath);
+              if (!jest) {
+                jest = this._createJestObjectFor(modulePath);
 
-              this.jestObjectCaches.set(modulePath, jest);
-            }
+                this.jestObjectCaches.set(modulePath, jest);
+              }
 
-            meta.jest = jest;
-          },
-        });
+              meta.jest = jest;
+            },
+          });
+        }
 
         invariant(
           !this._esmoduleRegistry.has(cacheKey),
@@ -536,10 +578,88 @@ export default class Runtime {
     return module;
   }
 
+  private validateImportAssertions(
+    modulePath: string,
+    query: string,
+    importAssertions: ImportAssertions = {
+      // @ts-expect-error - copy https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#LL55C50-L55C65
+      __proto__: null,
+    },
+  ) {
+    const format = this.getModuleFormat(modulePath);
+    const validType = formatTypeMap[format];
+    const url = pathToFileURL(modulePath);
+
+    if (query) {
+      url.search = query;
+    }
+
+    const urlString = url.href;
+
+    const assertionType = importAssertions.type;
+
+    switch (validType) {
+      case undefined:
+        // Ignore assertions for module formats we don't recognize, to allow new
+        // formats in the future.
+        return;
+
+      case kImplicitAssertType:
+        // This format doesn't allow an import assertion type, so the property
+        // must not be set on the import assertions object.
+        if (Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
+          handleInvalidAssertionType(urlString, assertionType);
+        }
+        return;
+
+      case assertionType:
+        // The asserted type is the valid type for this format.
+        return;
+
+      default:
+        // There is an expected type for this format, but the value of
+        // `importAssertions.type` might not have been it.
+        if (!Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
+          // `type` wasn't specified at all.
+          const error: NodeJS.ErrnoException = new Error(
+            `Module "${urlString}" needs an import assertion of type "json"`,
+          );
+          error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
+
+          throw error;
+        }
+        handleInvalidAssertionType(urlString, assertionType);
+    }
+  }
+
+  private getModuleFormat(modulePath: string) {
+    if (this._resolver.isCoreModule(modulePath)) {
+      return 'builtin';
+    }
+
+    if (isWasm(modulePath)) {
+      return 'wasm';
+    }
+
+    const fileExtension = path.extname(modulePath);
+
+    if (fileExtension === '.json') {
+      return 'json';
+    }
+
+    if (this.unstable_shouldLoadAsEsm(modulePath)) {
+      return 'module';
+    }
+
+    // any unknown format should be treated as JS
+    return 'commonjs';
+  }
+
   private async resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
+    importAssertions: ImportAssertions = {},
   ): Promise<T> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -600,6 +720,7 @@ export default class Runtime {
           Buffer.from(match.groups.code, 'base64'),
           specifier,
           context,
+          importAssertions,
         );
       } else {
         let code = match.groups.code;
@@ -628,6 +749,7 @@ export default class Runtime {
             importModuleDynamically: async (
               specifier: string,
               referencingModule: VMModule,
+              importAssertions?: ImportAssertions,
             ) => {
               invariant(
                 runtimeSupportsVmModules,
@@ -637,6 +759,7 @@ export default class Runtime {
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
+                importAssertions,
               );
 
               return this.linkAndEvaluateModule(module);
@@ -673,9 +796,11 @@ export default class Runtime {
 
     if (
       this._resolver.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(resolved)
+      this.unstable_shouldLoadAsEsm(resolved) ||
+      // json files are modules when imported in modules
+      resolved.endsWith('.json')
     ) {
-      return this.loadEsmModule(resolved, query);
+      return this.loadEsmModule(resolved, query, importAssertions);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
@@ -697,12 +822,18 @@ export default class Runtime {
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
-        module.link((specifier: string, referencingModule: VMModule) =>
-          this.resolveModule(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          ),
+        module.link(
+          (
+            specifier: string,
+            referencingModule: VMModule,
+            importCallOptions?: ImportCallOptions,
+          ) =>
+            this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+              importCallOptions?.assert,
+            ),
         ),
       );
     }
@@ -1066,7 +1197,13 @@ export default class Runtime {
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, options, moduleRegistry, fromPath);
+      this._execModule(
+        localModule,
+        options,
+        moduleRegistry,
+        fromPath,
+        moduleName,
+      );
     }
     localModule.loaded = true;
   }
@@ -1119,13 +1256,32 @@ export default class Runtime {
   isolateModules(fn: () => void): void {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
-        'isolateModules cannot be nested inside another isolateModules.',
+        'isolateModules cannot be nested inside another isolateModules or isolateModulesAsync.',
       );
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
     try {
       fn();
+    } finally {
+      // might be cleared within the callback
+      this._isolatedModuleRegistry?.clear();
+      this._isolatedMockRegistry?.clear();
+      this._isolatedModuleRegistry = null;
+      this._isolatedMockRegistry = null;
+    }
+  }
+
+  async isolateModulesAsync(fn: () => Promise<void>): Promise<void> {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModulesAsync cannot be nested inside another isolateModulesAsync or isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = new Map();
+    this._isolatedMockRegistry = new Map();
+    try {
+      await fn();
     } finally {
       // might be cleared within the callback
       this._isolatedModuleRegistry?.clear();
@@ -1398,6 +1554,7 @@ export default class Runtime {
   }
 
   private _requireResolvePaths(from: string, moduleName?: string) {
+    const fromDir = path.resolve(from, '..');
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
@@ -1410,12 +1567,14 @@ export default class Runtime {
     }
 
     if (moduleName[0] === '.') {
-      return [path.resolve(from, '..')];
+      return [fromDir];
     }
     if (this._resolver.isCoreModule(moduleName)) {
       return null;
     }
-    return this._resolver.getModulePaths(path.resolve(from, '..'));
+    const modulePaths = this._resolver.getModulePaths(fromDir);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    return [...modulePaths, ...globalPaths];
   }
 
   private _execModule(
@@ -1423,6 +1582,7 @@ export default class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: string | null,
+    moduleName?: string,
   ) {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -1454,8 +1614,10 @@ export default class Runtime {
         return moduleRegistry.get(key) || null;
       },
     });
+    const modulePaths = this._resolver.getModulePaths(module.path);
+    const globalPaths = this._resolver.getGlobalPaths(moduleName);
+    module.paths = [...modulePaths, ...globalPaths];
 
-    module.paths = this._resolver.getModulePaths(module.path);
     Object.defineProperty(module, 'require', {
       value: this._createRequireImplementation(module, options),
     });
@@ -1543,14 +1705,7 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined =
-      this._fileTransforms.get(filename);
-
-    if (transformedFile) {
-      return transformedFile.code;
-    }
-
-    transformedFile = this._scriptTransformer.transform(
+    const transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
       source,
@@ -1577,23 +1732,18 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined =
-      this._fileTransforms.get(filename);
-
-    if (transformedFile) {
-      return transformedFile.code;
-    }
-
-    transformedFile = await this._scriptTransformer.transformAsync(
+    const transformedFile = await this._scriptTransformer.transformAsync(
       filename,
       this._getFullTransformationOptions(options),
       source,
     );
 
-    this._fileTransforms.set(filename, {
-      ...transformedFile,
-      wrapperLength: 0,
-    });
+    if (this._fileTransforms.get(filename)?.code !== transformedFile.code) {
+      this._fileTransforms.set(filename, {
+        ...transformedFile,
+        wrapperLength: 0,
+      });
+    }
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1610,7 +1760,11 @@ export default class Runtime {
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: async (specifier: string) => {
+        importModuleDynamically: async (
+          specifier: string,
+          _script: Script,
+          importAssertions?: ImportAssertions,
+        ) => {
           invariant(
             runtimeSupportsVmModules,
             'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
@@ -1624,6 +1778,7 @@ export default class Runtime {
             specifier,
             scriptFilename,
             context,
+            importAssertions,
           );
 
           return this.linkAndEvaluateModule(module);
@@ -1648,7 +1803,7 @@ export default class Runtime {
       return this._getMockedNativeModule();
     }
 
-    return require(moduleWithoutNodePrefix);
+    return require(moduleName);
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
@@ -1675,6 +1830,7 @@ export default class Runtime {
     source: Buffer,
     identifier: string,
     context: VMContext,
+    importAssertions: ImportAssertions | undefined,
   ) {
     const wasmModule = await WebAssembly.compile(source);
 
@@ -1684,9 +1840,14 @@ export default class Runtime {
     const moduleLookup: Record<string, VMModule> = {};
     for (const {module} of imports) {
       if (moduleLookup[module] === undefined) {
-        moduleLookup[module] = await this.loadEsmModule(
-          await this.resolveModule(module, identifier, context),
+        const resolvedModule = await this.resolveModule(
+          module,
+          identifier,
+          context,
+          importAssertions,
         );
+
+        moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
       }
     }
 
@@ -2009,7 +2170,7 @@ export default class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
-      return new Proxy<typeof moduleRequire['cache']>(Object.create(null), {
+      return new Proxy<(typeof moduleRequire)['cache']>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
         get: (_target, key) =>
@@ -2158,6 +2319,14 @@ export default class Runtime {
           'Your test environment does not support `mocked`, please update it.',
         );
       });
+    const replaceProperty =
+      typeof this._moduleMocker.replaceProperty === 'function'
+        ? this._moduleMocker.replaceProperty.bind(this._moduleMocker)
+        : () => {
+            throw new Error(
+              'Your test environment does not support `jest.replaceProperty` - please ensure its Jest dependencies are updated to version 29.4 or later',
+            );
+          };
 
     const setTimeout = (timeout: number) => {
       this._environment.global[testTimeoutSymbol] = timeout;
@@ -2212,11 +2381,14 @@ export default class Runtime {
         return this._globalConfig.seed;
       },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
+      isEnvironmentTornDown: () => this.isTornDown,
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
+      isolateModulesAsync: this.isolateModulesAsync,
       mock,
       mocked,
       now: () => _getFakeTimers().now(),
+      replaceProperty,
       requireActual: moduleName => this.requireActual(from, moduleName),
       requireMock: moduleName => this.requireMock(from, moduleName),
       resetAllMocks,
@@ -2428,4 +2600,30 @@ async function evaluateSyntheticModule(module: SyntheticModule) {
   await module.evaluate();
 
   return module;
+}
+
+function handleInvalidAssertionType(url: string, type: unknown) {
+  if (typeof type !== 'string') {
+    throw new TypeError('Import assertion value must be a string');
+  }
+
+  // `type` might not have been one of the types we understand.
+  if (!supportedAssertionTypes.has(type)) {
+    const error: NodeJS.ErrnoException = new Error(
+      `Import assertion type "${type}" is unsupported`,
+    );
+
+    error.code = 'ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED';
+
+    throw error;
+  }
+
+  // `type` was the wrong value for this format.
+  const error: NodeJS.ErrnoException = new Error(
+    `Module "${url}" is not of type "${type}"`,
+  );
+
+  error.code = 'ERR_IMPORT_ASSERTION_TYPE_FAILED';
+
+  throw error;
 }
