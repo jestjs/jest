@@ -15,10 +15,6 @@ import init from '../';
 const {JEST_CONFIG_EXT_ORDER} = constants;
 
 jest.mock('prompts');
-jest.mock(
-  '../../../../jest-config/build/getCacheDirectory',
-  () => () => '/tmp/jest',
-);
 jest.mock('path', () => ({
   ...jest.requireActual<typeof import('path')>('path'),
   sep: '/',
@@ -52,7 +48,12 @@ describe('init', () => {
 
         const writtenJestConfig = jest.mocked(writeFileSync).mock.calls[0][1];
 
-        expect(writtenJestConfig).toMatchSnapshot();
+        expect(
+          (writtenJestConfig as string).replace(
+            /\/\/ cacheDirectory: .*,/,
+            '// cacheDirectory: "/tmp/jest",',
+          ),
+        ).toMatchSnapshot();
 
         const evaluatedConfig = eval(writtenJestConfig as string) as Record<
           string,

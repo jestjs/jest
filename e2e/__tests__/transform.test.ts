@@ -21,7 +21,7 @@ import runJest, {json as runWithJson} from '../runJest';
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
-  beforeEach(() => {
+  beforeAll(() => {
     runYarnInstall(dir);
   });
 
@@ -270,6 +270,7 @@ describe('transform-testrunner', () => {
   const dir = path.resolve(__dirname, '../transform/transform-testrunner');
 
   it('should transform testRunner', () => {
+    runYarnInstall(dir);
     const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/PASS/);
     expect(json.success).toBe(true);
@@ -333,6 +334,7 @@ describe('transform-esm-runner', () => {
 
 describe('transform-esm-testrunner', () => {
   const dir = path.resolve(__dirname, '../transform/transform-esm-testrunner');
+  runYarnInstall(dir);
   test('runs test with native ESM', () => {
     const {json, stderr} = runWithJson(dir, ['--no-cache'], {
       nodeOptions: '--experimental-vm-modules --no-warnings',
