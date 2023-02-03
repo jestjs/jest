@@ -11,6 +11,7 @@
 ### Chore & Maintenance
 
 - `[*]` make sure to exclude `.eslintcache` from published module ([#13832](https://github.com/facebook/jest/pull/13832))
+- `[docs]` Cleanup incorrect URLs in CHANGELOG.md ([#13857](https://github.com/facebook/jest/pull/13857))
 
 ### Performance
 
