@@ -57,8 +57,8 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
         }
       }
 
-      // Only test files depend on `@jest/test-utils`, i.e. it is always a dev dependency.
-      // There is no need to include it as a project reference, because it is not needed to build the packages.
+      // only test files depend on '@jest/test-utils', i.e. it is always a dev dependency
+      // see additional checks below
       if (dep === '@jest/test-utils') {
         return false;
       }
@@ -88,6 +88,60 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
       }. Got:\n\n${references.join(
         '\n',
       )}\nExpected:\n\n${jestDependenciesOfPackage.join('\n')}`,
+    );
+  }
+
+  let hasJestTestUtils = Object.keys(pkg.dependencies || {}).includes(
+    '@jest/test-utils',
+  );
+
+  if (hasJestTestUtils) {
+    throw new Error(
+      chalk.red(
+        `Package '${pkg.name}' declares '@jest/test-utils' as dependency, but it must be declared as dev dependency`,
+      ),
+    );
+  }
+
+  hasJestTestUtils = Object.keys(pkg.devDependencies || {}).includes(
+    '@jest/test-utils',
+  );
+
+  const tsConfigPaths = glob.sync('src/**/tsconfig.json', {
+    absolute: true,
+    cwd: packageDir,
+  });
+
+  const testUtilsReferences = tsConfigPaths.filter(tsConfigPath => {
+    const tsConfig = JSON.parse(
+      stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
+    );
+    const references = tsConfig.references.map(({path}) => path);
+
+    return references.some(reference => /test-utils$/.test(reference));
+  });
+
+  if (hasJestTestUtils && !testUtilsReferences.length) {
+    throw new Error(
+      chalk.red(
+        `Package '${
+          pkg.name
+        }' declares '@jest/test-utils' as dev dependency, but it is not referenced in:\n\n${tsConfigPaths.join(
+          '\n',
+        )}`,
+      ),
+    );
+  }
+
+  if (!hasJestTestUtils && testUtilsReferences.length) {
+    throw new Error(
+      chalk.red(
+        `Package '${
+          pkg.name
+        }' does not declare '@jest/test-utils' as dev dependency, but it is referenced in:\n\n${testUtilsReferences.join(
+          '\n',
+        )}`,
+      ),
     );
   }
 });
