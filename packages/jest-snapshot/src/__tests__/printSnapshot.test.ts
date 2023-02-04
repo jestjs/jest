@@ -809,6 +809,21 @@ describe('printPropertiesAndReceived', () => {
       printPropertiesAndReceived(properties, received, false),
     ).toMatchSnapshot();
   });
+
+  test('only highlight non passing properties', () => {
+    const received = {
+      a: 1,
+      b: 'some string',
+      c: 'another string',
+    };
+    const properties = {
+      a: expect.any(Number),
+      b: expect.any(Number),
+    };
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
+  });
 });
 
 describe('printSnapshotAndReceived', () => {

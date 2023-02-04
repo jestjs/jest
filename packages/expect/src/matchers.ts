@@ -97,9 +97,21 @@ const matchers: MatchersObject = {
           if (expectedType !== 'map' && expectedType !== 'set') {
             // If deep equality passes when referential identity fails,
             // but exclude map and set until review of their equality logic.
-            if (equals(received, expected, toStrictEqualTesters, true)) {
+            if (
+              equals(
+                received,
+                expected,
+                [...this.customTesters, ...toStrictEqualTesters],
+                true,
+              )
+            ) {
               deepEqualityName = 'toStrictEqual';
-            } else if (equals(received, expected, [iterableEquality])) {
+            } else if (
+              equals(received, expected, [
+                ...this.customTesters,
+                iterableEquality,
+              ])
+            ) {
               deepEqualityName = 'toEqual';
             }
           }
@@ -540,7 +552,7 @@ const matchers: MatchersObject = {
         }` +
         (!isNot &&
         indexable.findIndex(item =>
-          equals(item, expected, [iterableEquality]),
+          equals(item, expected, [...this.customTesters, iterableEquality]),
         ) !== -1
           ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
           : '')
@@ -570,7 +582,7 @@ const matchers: MatchersObject = {
     }
 
     const index = Array.from(received).findIndex(item =>
-      equals(item, expected, [iterableEquality]),
+      equals(item, expected, [...this.customTesters, iterableEquality]),
     );
     const pass = index !== -1;
 
@@ -605,7 +617,10 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, [iterableEquality]);
+    const pass = equals(received, expected, [
+      ...this.customTesters,
+      iterableEquality,
+    ]);
 
     const message = pass
       ? () =>
@@ -748,7 +763,10 @@ const matchers: MatchersObject = {
 
     const pass =
       hasValue && endPropIsDefined
-        ? equals(value, expectedValue, [iterableEquality])
+        ? equals(value, expectedValue, [
+            ...this.customTesters,
+            iterableEquality,
+          ])
         : Boolean(hasEndProp);
 
     const message = pass
@@ -896,7 +914,11 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = equals(received, expected, [iterableEquality, subsetEquality]);
+    const pass = equals(received, expected, [
+      ...this.customTesters,
+      iterableEquality,
+      subsetEquality,
+    ]);
 
     const message = pass
       ? () =>
@@ -913,7 +935,7 @@ const matchers: MatchersObject = {
           '\n\n' +
           printDiffOrStringify(
             expected,
-            getObjectSubset(received, expected),
+            getObjectSubset(received, expected, this.customTesters),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
@@ -930,7 +952,12 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    const pass = equals(received, expected, toStrictEqualTesters, true);
+    const pass = equals(
+      received,
+      expected,
+      [...this.customTesters, ...toStrictEqualTesters],
+      true,
+    );
 
     const message = pass
       ? () =>

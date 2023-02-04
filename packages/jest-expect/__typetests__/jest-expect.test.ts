@@ -29,3 +29,16 @@ expectError(() => {
 
 expectAssignable<typeof expect>(jestExpect);
 expectNotAssignable<typeof jestExpect>(expect);
+
+declare module 'expect' {
+  interface Matchers<R, T> {
+    toTypedEqual(expected: T): void;
+  }
+}
+
+expectType<void>(jestExpect(100).toTypedEqual(100));
+expectType<void>(jestExpect(101).not.toTypedEqual(101));
+
+expectError(() => {
+  jestExpect(100).toTypedEqual('three');
+});

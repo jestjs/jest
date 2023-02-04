@@ -163,6 +163,8 @@ mockFn(3); // 39
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest.fn((scalar: number) => 42 + scalar);
 
 mockFn(0); // 42
@@ -207,12 +209,13 @@ export class SomeClass {
 ```
 
 ```ts title="SomeClass.test.ts"
+import {jest} from '@jest/globals';
 import {SomeClass} from './SomeClass';
 
 jest.mock('./SomeClass'); // this happens automatically with automocking
 
 const mockMethod = jest.fn<(a: string, b: string) => void>();
-SomeClass.mockImplementation(() => {
+jest.mocked(SomeClass).mockImplementation(() => {
   return {
     method: mockMethod,
   };
@@ -239,6 +242,8 @@ mockFn((err, val) => console.log(val)); // false
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<(cb: (a: null, b: boolean) => void) => void>()
   .mockImplementationOnce(cb => cb(null, true))
@@ -296,6 +301,12 @@ jest.fn(function () {
 
 ### `mockFn.mockReturnValue(value)`
 
+Shorthand for:
+
+```js
+jest.fn().mockImplementation(() => value);
+```
+
 Accepts a value that will be returned whenever the mock function is called.
 
 ```js tab
@@ -309,6 +320,8 @@ mock(); // 43
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mock = jest.fn<() => number>();
 
 mock.mockReturnValue(42);
@@ -319,6 +332,12 @@ mock(); // 43
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementationOnce(() => value);
+```
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
@@ -336,6 +355,8 @@ mockFn(); // 'default'
 ```
 
 ```ts tab
+import {jest} from '@jest/globals';
+
 const mockFn = jest
   .fn<() => string>()
   .mockReturnValue('default')
@@ -367,6 +388,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest.fn<() => Promise<number>>().mockResolvedValue(43);
 
@@ -400,6 +423,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -435,6 +460,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<never>>()
@@ -467,6 +494,8 @@ test('async test', async () => {
 ```
 
 ```ts tab
+import {jest, test} from '@jest/globals';
+
 test('async test', async () => {
   const asyncMock = jest
     .fn<() => Promise<string>>()
@@ -517,11 +546,7 @@ test('async test', async () => {
 
 ## TypeScript Usage
 
-:::tip
-
-Please consult the [Getting Started](GettingStarted.md#using-typescript) guide for details on how to setup Jest with TypeScript.
-
-:::
+<TypeScriptExamplesNote />
 
 ### `jest.fn(implementation?)`
 

@@ -210,6 +210,12 @@ jest.fn(function () {
 
 ### `mockFn.mockReturnValue(value)`
 
+Shorthand for:
+
+```js
+jest.fn().mockImplementation(() => value);
+```
+
 Accepts a value that will be returned whenever the mock function is called.
 
 ```js
@@ -221,6 +227,12 @@ mock(); // 43
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
+
+Shorthand for:
+
+```js
+jest.fn().mockImplementationOnce(() => value);
+```
 
 Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 

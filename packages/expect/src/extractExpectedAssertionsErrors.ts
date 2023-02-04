@@ -20,6 +20,7 @@ const resetAssertionsLocalState = () => {
     assertionCalls: 0,
     expectedAssertionsNumber: null,
     isExpectingAssertions: false,
+    numPassingAsserts: 0,
   });
 };
 

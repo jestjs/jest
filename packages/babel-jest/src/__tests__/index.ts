@@ -10,7 +10,7 @@ import type {
   TransformOptions as BabelTransformOptions,
 } from '@babel/core';
 import {makeProjectConfig} from '@jest/test-utils';
-import type {TransformOptions} from '@jest/transform';
+import type {SyncTransformer, TransformOptions} from '@jest/transform';
 import babelJest, {createTransformer} from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
 
@@ -28,7 +28,8 @@ jest.mock('../loadBabelConfig', () => {
   };
 });
 
-const defaultBabelJestTransformer = babelJest.createTransformer();
+const defaultBabelJestTransformer =
+  babelJest.createTransformer() as SyncTransformer<BabelTransformOptions>;
 
 //Mock data for all the tests
 const sourceString = `
@@ -106,38 +107,20 @@ test('Returns source string with inline maps when no transformOptions is passed 
 describe('caller option correctly merges from defaults and options', () => {
   test.each([
     [
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: true,
-      },
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: true,
-      },
+      {supportsDynamicImport: true, supportsStaticESM: true},
+      {supportsDynamicImport: true, supportsStaticESM: true},
     ],
     [
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: false, supportsStaticESM: false},
+      {supportsDynamicImport: false, supportsStaticESM: false},
     ],
     [
       {supportsStaticESM: false},
-      {
-        supportsDynamicImport: false,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: false, supportsStaticESM: false},
     ],
     [
       {supportsDynamicImport: true},
-      {
-        supportsDynamicImport: true,
-        supportsStaticESM: false,
-      },
+      {supportsDynamicImport: true, supportsStaticESM: false},
     ],
   ])('%j -> %j', (input, output) => {
     defaultBabelJestTransformer.process(sourceString, 'dummy_path.js', {
@@ -163,8 +146,8 @@ describe('caller option correctly merges from defaults and options', () => {
   });
 });
 
-test('can pass null to createTransformer', () => {
-  const transformer = createTransformer();
+test('can pass null to createTransformer', async () => {
+  const transformer = await createTransformer();
   transformer.process(sourceString, 'dummy_path.js', {
     cacheFS: new Map<string, string>(),
     config: makeProjectConfig(),

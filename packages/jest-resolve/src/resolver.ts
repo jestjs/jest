@@ -20,7 +20,7 @@ import defaultResolver, {
 } from './defaultResolver';
 import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
-import nodeModulesPaths from './nodeModulesPaths';
+import nodeModulesPaths, {GlobalPaths} from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
 
@@ -131,7 +131,8 @@ export default class Resolver {
         rootDir: options.rootDir,
       });
     } catch (e) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
@@ -174,7 +175,8 @@ export default class Resolver {
       });
       return result;
     } catch (e: unknown) {
-      if (options.throwIfNotFound) {
+      // we always wanna throw if it's an internal import
+      if (options.throwIfNotFound || path.startsWith('#')) {
         throw e;
       }
     }
@@ -454,9 +456,7 @@ export default class Resolver {
   isCoreModule(moduleName: string): boolean {
     return (
       this._options.hasCoreModules &&
-      (isBuiltinModule(moduleName) ||
-        (moduleName.startsWith('node:') &&
-          isBuiltinModule(moduleName.slice('node:'.length)))) &&
+      (isBuiltinModule(moduleName) || moduleName.startsWith('node:')) &&
       !this._isAliasModule(moduleName)
     );
   }
@@ -524,6 +524,14 @@ export default class Resolver {
     }
     this._modulePathCache.set(from, paths);
     return paths;
+  }
+
+  getGlobalPaths(moduleName?: string): Array<string> {
+    if (!moduleName || moduleName[0] === '.' || this.isCoreModule(moduleName)) {
+      return [];
+    }
+
+    return GlobalPaths;
   }
 
   getModuleID(

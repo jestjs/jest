@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-result",
-  "version": "29.2.0",
+  "version": "29.4.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -21,6 +21,10 @@
     "@jest/types": "workspace:^",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "collect-v8-coverage": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest-haste-map": "workspace:^",
+    "jest-resolve": "workspace:^"
   },
   "engines": {
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"

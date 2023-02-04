@@ -9,57 +9,53 @@
 import validateCLIOptions from '../validateCLIOptions';
 
 test('validates yargs special options', () => {
-  const options = ['$0', '_', 'help', 'h'];
   const argv = {
-    $0: true,
-    _: true,
+    $0: 'foo',
+    _: ['bar'],
     h: false,
     help: false,
   };
-  expect(validateCLIOptions(argv, options)).toBe(true);
+
+  expect(validateCLIOptions(argv)).toBe(true);
 });
 
 test('fails for unknown option', () => {
-  const options = ['$0', '_', 'help', 'h'];
   const argv = {
-    $0: true,
+    $0: 'foo',
+    _: ['bar'],
     unknown: 'unknown',
   };
-  expect(() =>
-    validateCLIOptions(argv, options),
-  ).toThrowErrorMatchingSnapshot();
+
+  expect(() => validateCLIOptions(argv)).toThrowErrorMatchingSnapshot();
 });
 
 test('fails for multiple unknown options', () => {
-  const options = ['$0', '_', 'help', 'h'];
   const argv = {
-    $0: true,
+    $0: 'foo',
+    _: ['bar'],
     jest: 'cool',
     test: 'unknown',
   };
-  expect(() =>
-    validateCLIOptions(argv, options),
-  ).toThrowErrorMatchingSnapshot();
+
+  expect(() => validateCLIOptions(argv)).toThrowErrorMatchingSnapshot();
 });
 
 test('does not show suggestion when unrecognized cli param length <= 1', () => {
-  const options = ['$0', '_', 'help', 'h'];
   const argv = {
-    $0: true,
+    $0: 'foo',
+    _: ['bar'],
     l: true,
   };
-  expect(() =>
-    validateCLIOptions(argv, options),
-  ).toThrowErrorMatchingSnapshot();
+
+  expect(() => validateCLIOptions(argv)).toThrowErrorMatchingSnapshot();
 });
 
 test('shows suggestion when unrecognized cli param length > 1', () => {
-  const options = ['$0', '_', 'help', 'h'];
   const argv = {
-    $0: true,
+    $0: 'foo',
+    _: ['bar'],
     hell: true,
   };
-  expect(() =>
-    validateCLIOptions(argv, options),
-  ).toThrowErrorMatchingSnapshot();
+
+  expect(() => validateCLIOptions(argv)).toThrowErrorMatchingSnapshot();
 });

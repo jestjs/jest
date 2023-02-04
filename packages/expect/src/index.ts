@@ -28,6 +28,8 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {
   INTERNAL_MATCHER_FLAG,
+  addCustomEqualityTesters,
+  getCustomEqualityTesters,
   getMatchers,
   getState,
   setMatchers,
@@ -51,6 +53,7 @@ import type {
   ThrowingMatcherFn,
 } from './types';
 
+export type {Tester, TesterContext} from '@jest/expect-utils';
 export {AsymmetricMatcher} from './asymmetricMatchers';
 export type {
   AsyncExpectationResult,
@@ -277,6 +280,7 @@ const makeThrowingMatcher = (
     };
 
     const matcherUtilsThing: MatcherUtils = {
+      customTesters: getCustomEqualityTesters(),
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -333,6 +337,8 @@ const makeThrowingMatcher = (
         } else {
           getState().suppressedErrors.push(error);
         }
+      } else {
+        getState().numPassingAsserts++;
       }
     };
 
@@ -382,6 +388,9 @@ const makeThrowingMatcher = (
 
 expect.extend = (matchers: MatchersObject) =>
   setMatchers(matchers, false, expect);
+
+expect.addEqualityTesters = customTesters =>
+  addCustomEqualityTesters(customTesters);
 
 expect.anything = anything;
 expect.any = any;

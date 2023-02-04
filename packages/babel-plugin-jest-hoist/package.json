@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "29.2.0",
+  "version": "29.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -32,7 +32,7 @@
     "@types/babel__template": "^7.0.2",
     "@types/node": "*",
     "@types/prettier": "^2.1.5",
-    "babel-plugin-tester": "^10.0.0",
+    "babel-plugin-tester": "^11.0.2",
     "prettier": "^2.1.1"
   },
   "publishConfig": {

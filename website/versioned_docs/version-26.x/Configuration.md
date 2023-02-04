@@ -443,7 +443,7 @@ Note that, if you specify a global reference value (like an object or array) her
 
 Default: `undefined`
 
-This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
 
 _Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -472,7 +472,7 @@ module.exports = async function () {
 
 Default: `undefined`
 
-This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) object as a parameter.
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
@@ -721,7 +721,7 @@ Additionally, custom reporters can be configured by passing an `options` object 
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+Custom reporter modules must define a class that takes a [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) and reporter options as constructor arguments:
 
 Example reporter:
 
@@ -884,7 +884,7 @@ This option allows you to use a custom runner instead of Jest's default test run
 
 _Note: The `runner` property value can omit the `jest-runner-` prefix of the package name._
 
-To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
+To write a test-runner, export a class with which accepts [`globalConfig`](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L255-L321) in the constructor, and has a `runTests` method with the signature:
 
 ```ts
 async function runTests(
@@ -1348,17 +1348,19 @@ Example:
 
 :::tip
 
-If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|package-b)/)` directly will not be recognized, while is to use:
+If you use `pnpm` and need to convert some packages under `node_modules`, you need to note that the packages in this folder (e.g. `node_modules/package-a/`) have been symlinked to the path under `.pnpm` (e.g. `node_modules/.pnpm/package-a@x.x.x/node_modules/package-a/`), so using `<rootDir>/node_modules/(?!(package-a|@scope/pkg-b)/)` directly will not be recognized, while is to use:
 
 ```json
 {
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/.pnpm/(?!(package-a|package-b)@)"
+    "<rootDir>/node_modules/.pnpm/(?!(package-a|@scope\\+pkg-b)@)"
   ]
 }
 ```
 
 It should be noted that the folder name of pnpm under `.pnpm` is the package name plus `@` and version number, so writing `/` will not be recognized, but using `@` can.
+
+Also note that you need using '\`${path.join(\_\_dirname, '../..')}/node_modules/.pnpm/...\`' instead of `<rootDir>/node_modules/.pnpm/...` when the config file is under `~/packages/lib-a/`, or using relative pattern `node_modules/(?!.pnpm|package-a|@scope/pkg-b)` to match the second 'node_modules/' in 'node_modules/.pnpm/@scope+pkg-b@xxx/node_modules/@scope/pkg-b/'
 
 :::
 
