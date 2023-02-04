@@ -107,7 +107,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     '@jest/test-utils',
   );
 
-  const tsConfigPaths = glob.sync('src/**/tsconfig.json', {
+  const tsConfigPaths = glob.sync('**/__tests__/tsconfig.json', {
     absolute: true,
     cwd: packageDir,
   });
