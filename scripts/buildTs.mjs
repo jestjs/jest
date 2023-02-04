@@ -121,7 +121,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     return references.some(reference => /test-utils$/.test(reference));
   });
 
-  if (hasJestTestUtils && !testUtilsReferences.length) {
+  if (hasJestTestUtils && testUtilsReferences.length === 0) {
     throw new Error(
       chalk.red(
         `Package '${
@@ -133,7 +133,7 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     );
   }
 
-  if (!hasJestTestUtils && testUtilsReferences.length) {
+  if (!hasJestTestUtils && testUtilsReferences.length > 0) {
     throw new Error(
       chalk.red(
         `Package '${
