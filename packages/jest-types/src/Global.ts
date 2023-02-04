@@ -55,6 +55,61 @@ export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: ReadonlyArray<any>
 ) => ReturnType<EachCallback>;
 
+type TTimesNRecursive<
+  T,
+  N extends number,
+  Result extends Array<T>,
+> = Result['length'] extends N
+  ? Result
+  : TTimesNRecursive<T, N, [...Result, T]>;
+
+// TTimesN<string, 3> = [string, string, string]
+type TTimesN<T, N extends number> = TTimesNRecursive<T, N, []>;
+
+/*
+ * Flat2DTuple<[[string, boolean], [number, undefined]]> =
+ * [string, boolean, number, undefined]
+ */
+type Flat2DTuple<S extends Array<Array<unknown>>> = S['length'] extends 0
+  ? []
+  : S extends [
+      infer T extends Array<unknown>,
+      ...infer Remaining extends Array<Array<unknown>>,
+    ]
+  ? [...T, ...Flat2DTuple<Remaining>]
+  : never;
+
+/*
+ * TupleTimesN<[string, number], 3> =
+ * [string, number, string, number, string, number]
+ */
+type TupleTimesN<T extends Array<unknown>, N extends number> = Flat2DTuple<
+  TTimesN<T, N>
+>;
+
+type KeyTypePair = [string, unknown];
+
+// EachArg<[['a', string], ['b', number]]> = {a: string, b: number}
+type EachArg<T extends Array<KeyTypePair>> = {
+  readonly [key in T[number][0]]: Extract<T[number], [key, unknown]>[1];
+};
+
+/*
+ * KeyTypePairsToTypeTuple<[['a', string], ['b', number], ['c', boolean]]> =
+ * [string, number, boolean]
+ */
+type KeyTypePairsToTypeTuple<T extends Array<KeyTypePair>> = {
+  [i in keyof T]: T[i][1];
+};
+
+/* EachExpressions<[['a', string], ['b', number]], 3> =
+ * [string, number, string, number, string, number]
+ */
+type EachExpressions<
+  T extends Array<KeyTypePair>,
+  N extends number,
+> = TupleTimesN<KeyTypePairsToTypeTuple<T>, N>;
+
 interface Each<EachFn extends TestFn | BlockFn> {
   // when the table is an array of object literals
   <T extends Record<string, unknown>>(table: ReadonlyArray<T>): (
@@ -98,6 +153,16 @@ interface Each<EachFn extends TestFn | BlockFn> {
   ): (
     name: string | NameLike,
     fn: (arg: T, done: DoneFn) => ReturnType<EachFn>,
+    timeout?: number,
+  ) => void;
+
+  // when the table is a template literal with types for table and test function
+  <T extends Array<KeyTypePair>, N extends number>(
+    strings: TemplateStringsArray,
+    ...expressions: EachExpressions<T, N>
+  ): (
+    name: string | NameLike,
+    fn: (arg: EachArg<T>, done: DoneFn) => ReturnType<EachFn>,
     timeout?: number,
   ) => void;
 }

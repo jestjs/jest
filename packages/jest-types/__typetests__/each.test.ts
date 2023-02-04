@@ -252,6 +252,28 @@ expectType<void>(
     1000,
   ),
 );
+expectType<void>(
+  test.each<[['a', string], ['b', number], ['expected', boolean]], 2>`
+    a      | b    | expected
+    ${'1'} | ${1} | ${true}
+    ${'1'} | ${2} | ${false}
+  `(
+    'some test',
+    ({a, b, expected}) => {
+      expectType<string>(a);
+      expectType<number>(b);
+      expectType<boolean>(expected);
+    },
+    1000,
+  ),
+);
+
+expectError(
+  test.each<[['a', string]], 1>`
+    a
+    ${1}
+  `('some test', () => {}, 1000),
+);
 
 expectError(test.each());
 expectError(test.each('abc'));
@@ -426,6 +448,31 @@ expectType<void>(
     },
     1000,
   ),
+);
+expectType<void>(
+  test.concurrent.each<
+    [['a', string], ['b', number], ['expected', boolean]],
+    2
+  >`
+    a      | b    | expected
+    ${'1'} | ${1} | ${true}
+    ${'1'} | ${2} | ${false}
+  `(
+    'some test',
+    async ({a, b, expected}) => {
+      expectType<string>(a);
+      expectType<number>(b);
+      expectType<boolean>(expected);
+    },
+    1000,
+  ),
+);
+
+expectError(
+  test.concurrent.each<[['a', string]], 1>`
+    a
+    ${1}
+  `('some test', async () => {}, 1000),
 );
 
 expectError(test.concurrent.each());
@@ -635,6 +682,28 @@ expectType<void>(
     },
     1000,
   ),
+);
+expectType<void>(
+  describe.each<[['a', string], ['b', number], ['expected', boolean]], 2>`
+    a      | b    | expected
+    ${'1'} | ${1} | ${true}
+    ${'1'} | ${2} | ${false}
+  `(
+    'some test',
+    ({a, b, expected}) => {
+      expectType<string>(a);
+      expectType<number>(b);
+      expectType<boolean>(expected);
+    },
+    1000,
+  ),
+);
+
+expectError(
+  describe.each<[['a', string]], 1>`
+    a
+    ${1}
+  `('some test', () => {}, 1000),
 );
 
 expectError(describe.each());
