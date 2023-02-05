@@ -28,4 +28,4 @@ for (const line of data.split('\n')) {
   ++lineNumber;
 }
 
-process.exit(+error);
+process.exit(error ? 1 : 0);
