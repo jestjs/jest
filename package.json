@@ -89,6 +89,7 @@
     "build:js": "node ./scripts/build.mjs",
     "build:ts": "node ./scripts/buildTs.mjs",
     "bundle:ts": "node ./scripts/bundleTs.mjs",
+    "check-changelog": "node ./scripts/checkChangelog.mjs",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.mjs",
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
     "clean-e2e": "node ./scripts/cleanE2e.mjs",
