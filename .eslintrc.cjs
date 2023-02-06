@@ -235,6 +235,15 @@ module.exports = {
         'jest/prefer-to-have-length': 'off',
       },
     },
+    // snapshot in an example needs to keep escapes
+    {
+      files: [
+        '**/2017-02-21-jest-19-immersive-watch-mode-test-platform-improvements.md/**',
+      ],
+      rules: {
+        'no-useless-escape': 'off',
+      },
+    },
 
     // snapshots in examples plus inline snapshots need to keep backtick
     {
