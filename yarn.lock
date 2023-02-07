@@ -3006,7 +3006,7 @@ __metadata:
     micromatch: ^4.0.4
     pirates: ^4.0.4
     slash: ^3.0.0
-    write-file-atomic: ^4.0.1
+    write-file-atomic: ^4.0.2
   languageName: unknown
   linkType: soft
 
@@ -21942,7 +21942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"write-file-atomic@npm:^4.0.1":
+"write-file-atomic@npm:^4.0.2":
   version: 4.0.2
   resolution: "write-file-atomic@npm:4.0.2"
   dependencies:
