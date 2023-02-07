@@ -787,7 +787,7 @@ export class ModuleMocker {
       };
 
       f.mockRestore = () => {
-        f.mockReset();
+        f.mockClear();
 
         if (spyState != null) {
           spyState.restore();
@@ -1439,12 +1439,13 @@ export class ModuleMocker {
   }
 
   resetAllMocks(): void {
-    this._mockConfigRegistry = new WeakMap();
     this._mockState = new WeakMap();
+    this._mockConfigRegistry = new WeakMap();
     this._spyState.forEach(spyState => spyState.reset?.());
   }
 
   restoreAllMocks(): void {
+    this._mockState = new WeakMap();
     this._spyState.forEach(spyState => spyState.restore());
     this._spyState = new Set();
   }
