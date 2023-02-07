@@ -1756,7 +1756,7 @@ describe('moduleMocker', () => {
       expect(obj.property).toBe(1);
     });
 
-    it('should allow mocking with value of different value', () => {
+    it('should allow mocking with value of different type', () => {
       const obj = {
         property: 1,
       };
