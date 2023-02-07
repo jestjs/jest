@@ -1227,18 +1227,6 @@ describe('moduleMocker', () => {
     expect(myObject.bar()).toBe('bar');
   });
 
-  test('after resetAllMocks, the object should return to its original value', () => {
-    const myObject = {bar: () => 'bar'};
-
-    const barStub = moduleMocker.spyOn(myObject, 'bar');
-
-    barStub.mockReturnValue('POTATO!');
-    expect(myObject.bar()).toBe('POTATO!');
-    moduleMocker.resetAllMocks();
-
-    expect(myObject.bar()).toBe('bar');
-  });
-
   test('mockName gets reset by mockRestore', () => {
     const fn = jest.fn();
     expect(fn.getMockName()).toBe('jest.fn()');
@@ -1312,6 +1300,45 @@ describe('moduleMocker', () => {
       );
     });
 
+    it('supports resetting all spies', () => {
+      const methodOneReturn = 0;
+      const methodTwoReturn = 0;
+      const obj = {
+        methodOne() {
+          return methodOneReturn;
+        },
+        methodTwo() {
+          return methodTwoReturn;
+        },
+      };
+
+      moduleMocker.spyOn(obj, 'methodOne').mockReturnValue(10);
+      moduleMocker.spyOn(obj, 'methodTwo').mockReturnValue(20);
+
+      expect(methodOneReturn).toBe(0);
+      expect(methodTwoReturn).toBe(0);
+
+      // Return values are mocked.
+      expect(obj.methodOne()).toBe(10);
+      expect(obj.methodTwo()).toBe(20);
+
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
+
+      moduleMocker.resetAllMocks();
+
+      // The methods are still mock functions.
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
+
+      expect(methodOneReturn).toBe(0);
+      expect(methodTwoReturn).toBe(0);
+
+      // The methods return the original return value.
+      expect(obj.methodOne()).toBe(0);
+      expect(obj.methodTwo()).toBe(0);
+    });
+
     it('supports restoring all spies', () => {
       let methodOneCalls = 0;
       let methodTwoCalls = 0;
@@ -1336,9 +1363,15 @@ describe('moduleMocker', () => {
       expect(spy1.mock.calls).toHaveLength(1);
       expect(spy2.mock.calls).toHaveLength(1);
 
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
+
       moduleMocker.restoreAllMocks();
 
-      // Then, after resetting all mocks, we call methods again. Only the real
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(false);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(false);
+
+      // Then, after restoring all mocks, we call methods again. Only the real
       // methods should bump their count, not the spies.
       obj.methodOne();
       obj.methodTwo();
