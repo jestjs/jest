@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.4.2
+
+### Features
+
 - `[@jest/core]` Instrument significant lifecycle events with [`performance.mark()`](https://nodejs.org/docs/latest-v16.x/api/perf_hooks.html#performancemarkname-options) ([#13859](https://github.com/facebook/jest/pull/13859))
 
 ### Fixes
@@ -16,8 +26,6 @@
 
 - `[*]` make sure to exclude `.eslintcache` from published module ([#13832](https://github.com/facebook/jest/pull/13832))
 - `[docs]` Cleanup incorrect links in CHANGELOG.md ([#13857](https://github.com/facebook/jest/pull/13857))
-
-### Performance
 
 ## 29.4.1
 
