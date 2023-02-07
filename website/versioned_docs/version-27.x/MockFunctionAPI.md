@@ -93,17 +93,27 @@ For example: A mock function `f` that has been called twice, with the arguments 
 
 Clears all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.
 
+The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
+
+:::warning
+
 Beware that `mockClear` will replace `mockFn.mock`, not just these three properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
-The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically before each tests.
+:::
 
 ### `mockFn.mockReset()`
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
+This is useful when you want to completely reset a _mock_ back to its initial state.
 
 The [`resetMocks`](configuration#resetmocks-boolean) configuration option is available to reset mocks automatically before each test.
+
+:::info
+
+Resetting a mock created with `jest.spyOn()` will result in a function with no return value.
+
+:::
 
 ### `mockFn.mockRestore()`
 
@@ -111,15 +121,23 @@ Does everything that [`mockFn.mockReset()`](#mockfnmockreset) does, and also res
 
 This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
 
-Beware that `mockFn.mockRestore` only works when the mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
-
 The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is available to restore mocks automatically before each test.
+
+:::info
+
+`mockFn.mockRestore` only works when the mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
+
+:::
 
 ### `mockFn.mockImplementation(fn)`
 
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-_Note: `jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`._
+:::tip
+
+`jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`.
+
+:::
 
 For example:
 
