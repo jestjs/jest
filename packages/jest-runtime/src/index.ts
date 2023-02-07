@@ -951,11 +951,18 @@ export default class Runtime {
     const namedExports = new Set(exports);
 
     reexports.forEach(reexport => {
-      const resolved = this._resolveCjsModule(modulePath, reexport);
+      if (this._resolver.isCoreModule(reexport)) {
+        const exports = this.requireModule(modulePath, reexport);
+        if (exports !== null && typeof exports === 'object') {
+          Object.keys(exports).forEach(namedExports.add, namedExports);
+        }
+      } else {
+        const resolved = this._resolveCjsModule(modulePath, reexport);
 
-      const exports = this.getExportsOfCjs(resolved);
+        const exports = this.getExportsOfCjs(resolved);
 
-      exports.forEach(namedExports.add, namedExports);
+        exports.forEach(namedExports.add, namedExports);
+      }
     });
 
     this._cjsNamedExports.set(modulePath, namedExports);
