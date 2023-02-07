@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/core]` Instrument significant lifecycle events with [`performance.mark()`](https://nodejs.org/docs/latest-v16.x/api/perf_hooks.html#performancemarkname-options) ([#13859](https://github.com/facebook/jest/pull/13859))
+- `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
 
 ### Fixes
 
