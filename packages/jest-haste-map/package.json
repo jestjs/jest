@@ -30,7 +30,6 @@
     "walker": "^1.0.8"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
     "@types/fb-watchman": "^2.0.0",
     "@types/micromatch": "^4.0.1",
     "slash": "^3.0.0"
