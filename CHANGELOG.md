@@ -18,7 +18,7 @@
 
 - `[expect, @jest/expect]` Provide type of `actual` as a generic argument to `Matchers` to allow better-typed extensions ([#13848](https://github.com/facebook/jest/pull/13848))
 - `[jest-circus]` Added explicit mention of test failing because `done()` is not being called in error message ([#13847](https://github.com/facebook/jest/pull/13847))
-- `[jest-runtime]` Handle CJS re-exports of node core modules from ESM ([#13853](https://github.com/facebook/jest/pull/13853))
+- `[jest-runtime]` Handle CJS re-exports of node core modules from ESM ([#13856](https://github.com/facebook/jest/pull/13856))
 - `[jest-transform]` Downgrade `write-file-atomic` to v4 ([#13853](https://github.com/facebook/jest/pull/13853))
 - `[jest-worker]` Ignore IPC messages not intended for Jest ([#13543](https://github.com/facebook/jest/pull/13543))
 
