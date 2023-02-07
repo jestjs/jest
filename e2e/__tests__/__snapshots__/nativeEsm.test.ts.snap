@@ -40,6 +40,14 @@ Time:        <<REPLACED>>
 Ran all test suites matching /native-esm.test.js/i."
 `;
 
+exports[`support re-exports from CJS of core module 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /native-esm-core-cjs-reexport.test.js/i."
+`;
+
 exports[`supports top-level await 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
