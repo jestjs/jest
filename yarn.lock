@@ -2970,6 +2970,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
+    "@jest/globals": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/node": "*"
     "@types/semver": ^7.1.0
@@ -12768,7 +12769,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-haste-map@workspace:packages/jest-haste-map"
   dependencies:
-    "@jest/test-utils": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/fb-watchman": ^2.0.0
     "@types/graceful-fs": ^4.1.3
@@ -12996,6 +12996,7 @@ __metadata:
     "@jest/console": "workspace:^"
     "@jest/environment": "workspace:^"
     "@jest/test-result": "workspace:^"
+    "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
     "@tsd/typescript": ^4.9.0

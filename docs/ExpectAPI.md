@@ -1262,7 +1262,7 @@ These helper functions and properties can be found on `this` inside a custom tes
 
 #### `this.equals(a, b, customTesters?)`
 
-This is a deep-equality function that will return `true` if two objects have the same values (recursively). It optionally takes a list of custom equality testers to apply to the deep equality checks. If you use this function, pass through the custom testers your tester is given so further equality checks `equals` applies can also use custom testers the test author may have configured. See the example in the [Recursive custom equality testers][#recursivecustomequalitytesters] section for more details.
+This is a deep-equality function that will return `true` if two objects have the same values (recursively). It optionally takes a list of custom equality testers to apply to the deep equality checks. If you use this function, pass through the custom testers your tester is given so further equality checks `equals` applies can also use custom testers the test author may have configured. See the example in the [Recursive custom equality testers](#recursive-custom-equality-testers) section for more details.
 
 #### Matchers vs Testers
 

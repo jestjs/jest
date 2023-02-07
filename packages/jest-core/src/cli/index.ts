@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {performance} from 'perf_hooks';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -41,6 +42,7 @@ export async function runCLI(
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> {
+  performance.mark('jest/runCLI:start');
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -133,6 +135,7 @@ export async function runCLI(
     console.error(message);
   }
 
+  performance.mark('jest/runCLI:end');
   return {globalConfig, results};
 }
 
@@ -173,6 +176,12 @@ const _run10000 = async (
   // Queries to hg/git can take a while, so we need to start the process
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+  if (changedFilesPromise) {
+    performance.mark('jest/getChangedFiles:start');
+    changedFilesPromise.finally(() => {
+      performance.mark('jest/getChangedFiles:end');
+    });
+  }
 
   // Filter may need to do an HTTP call or something similar to setup.
   // We will wait on an async response from this before using the filter.
@@ -204,11 +213,13 @@ const _run10000 = async (
     };
   }
 
+  performance.mark('jest/buildContextsAndHasteMaps:start');
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
     outputStream,
   );
+  performance.mark('jest/buildContextsAndHasteMaps:end');
 
   globalConfig.watch || globalConfig.watchAll
     ? await runWatch(
