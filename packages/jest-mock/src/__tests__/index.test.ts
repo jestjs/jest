@@ -1215,18 +1215,6 @@ describe('moduleMocker', () => {
     expect(fn.getMockName()).toBe('jest.fn()');
   });
 
-  test('after mock reset, the object should return to its original value', () => {
-    const myObject = {bar: () => 'bar'};
-
-    const barStub = moduleMocker.spyOn(myObject, 'bar');
-
-    barStub.mockReturnValue('POTATO!');
-    expect(myObject.bar()).toBe('POTATO!');
-    barStub.mockReset();
-
-    expect(myObject.bar()).toBe('bar');
-  });
-
   test('mockName gets reset by mockRestore', () => {
     const fn = jest.fn();
     expect(fn.getMockName()).toBe('jest.fn()');
@@ -1300,6 +1288,97 @@ describe('moduleMocker', () => {
       );
     });
 
+    it('supports clearing a spy', () => {
+      let methodOneCalls = 0;
+      const obj = {
+        methodOne() {
+          methodOneCalls++;
+        },
+      };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne');
+
+      obj.methodOne();
+
+      // The spy and the original function are called.
+      expect(methodOneCalls).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+
+      spy1.mockClear();
+
+      // After clearing the spy, the method is still mock function.
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+
+      // After clearing the spy, call count is reset.
+      expect(spy1.mock.calls).toHaveLength(0);
+    });
+
+    it('supports clearing all spies', () => {
+      let methodOneCalls = 0;
+      let methodTwoCalls = 0;
+      const obj = {
+        methodOne() {
+          methodOneCalls++;
+        },
+        methodTwo() {
+          methodTwoCalls++;
+        },
+      };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne');
+      const spy2 = moduleMocker.spyOn(obj, 'methodTwo');
+
+      obj.methodOne();
+      obj.methodTwo();
+
+      // Both spies and both original functions are called.
+      expect(methodOneCalls).toBe(1);
+      expect(methodTwoCalls).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+      expect(spy2.mock.calls).toHaveLength(1);
+
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
+
+      moduleMocker.clearAllMocks();
+
+      // After clearing all mocks, the methods are still mock functions.
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+      expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
+
+      // After clearing all mocks, call counts are reset.
+      expect(spy1.mock.calls).toHaveLength(0);
+      expect(spy2.mock.calls).toHaveLength(0);
+    });
+
+    it('supports resetting a spy', () => {
+      const methodOneReturn = 0;
+      const obj = {
+        methodOne() {
+          return methodOneReturn;
+        },
+      };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne').mockReturnValue(10);
+
+      // Return value is mocked.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne()).toBe(10);
+
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+
+      spy1.mockReset();
+
+      // After resetting the spy, the method is still mock functions.
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+
+      // After resetting the spy, the method returns the original return value.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne()).toBe(0);
+    });
+
     it('supports resetting all spies', () => {
       const methodOneReturn = 0;
       const methodTwoReturn = 0;
@@ -1315,10 +1394,9 @@ describe('moduleMocker', () => {
       moduleMocker.spyOn(obj, 'methodOne').mockReturnValue(10);
       moduleMocker.spyOn(obj, 'methodTwo').mockReturnValue(20);
 
+      // Return values are mocked.
       expect(methodOneReturn).toBe(0);
       expect(methodTwoReturn).toBe(0);
-
-      // Return values are mocked.
       expect(obj.methodOne()).toBe(10);
       expect(obj.methodTwo()).toBe(20);
 
@@ -1327,16 +1405,45 @@ describe('moduleMocker', () => {
 
       moduleMocker.resetAllMocks();
 
-      // The methods are still mock functions.
+      // After resetting all mocks, the methods are still mock functions.
       expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
       expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
 
+      // After resetting all mocks, the methods return the original return value.
       expect(methodOneReturn).toBe(0);
       expect(methodTwoReturn).toBe(0);
-
-      // The methods return the original return value.
       expect(obj.methodOne()).toBe(0);
       expect(obj.methodTwo()).toBe(0);
+    });
+
+    it('supports restoring a spy', () => {
+      let methodOneCalls = 0;
+      const obj = {
+        methodOne() {
+          methodOneCalls++;
+        },
+      };
+
+      const spy1 = moduleMocker.spyOn(obj, 'methodOne');
+
+      obj.methodOne();
+
+      // The spy and the original function are called.
+      expect(methodOneCalls).toBe(1);
+      expect(spy1.mock.calls).toHaveLength(1);
+
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
+
+      spy1.mockRestore();
+
+      // After restoring the spy, the method is not mock function.
+      expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(false);
+
+      obj.methodOne();
+
+      // After restoring the spy only the real method bumps its call count, not the spy.
+      expect(methodOneCalls).toBe(2);
+      expect(spy1.mock.calls).toHaveLength(0);
     });
 
     it('supports restoring all spies', () => {
@@ -1354,10 +1461,10 @@ describe('moduleMocker', () => {
       const spy1 = moduleMocker.spyOn(obj, 'methodOne');
       const spy2 = moduleMocker.spyOn(obj, 'methodTwo');
 
-      // First, we call with the spies: both spies and both original functions
-      // should be called.
       obj.methodOne();
       obj.methodTwo();
+
+      // Both spies and both original functions are called.
       expect(methodOneCalls).toBe(1);
       expect(methodTwoCalls).toBe(1);
       expect(spy1.mock.calls).toHaveLength(1);
@@ -1368,17 +1475,18 @@ describe('moduleMocker', () => {
 
       moduleMocker.restoreAllMocks();
 
+      // After restoring all mocks, the methods are not mock functions.
       expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(false);
       expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(false);
 
-      // Then, after restoring all mocks, we call methods again. Only the real
-      // methods should bump their count, not the spies.
       obj.methodOne();
       obj.methodTwo();
+
+      // After restoring all mocks only the real methods bump their count, not the spies.
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls).toHaveLength(1);
-      expect(spy2.mock.calls).toHaveLength(1);
+      expect(spy1.mock.calls).toHaveLength(0);
+      expect(spy2.mock.calls).toHaveLength(0);
     });
 
     it('should work with getters', () => {
@@ -1551,8 +1659,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls).toHaveLength(1);
-      expect(spy2.mock.calls).toHaveLength(1);
+      expect(spy1.mock.calls).toHaveLength(0);
+      expect(spy2.mock.calls).toHaveLength(0);
     });
 
     it('should work with getters on the prototype chain', () => {
@@ -1657,8 +1765,8 @@ describe('moduleMocker', () => {
       obj.methodTwo();
       expect(methodOneCalls).toBe(2);
       expect(methodTwoCalls).toBe(2);
-      expect(spy1.mock.calls).toHaveLength(1);
-      expect(spy2.mock.calls).toHaveLength(1);
+      expect(spy1.mock.calls).toHaveLength(0);
+      expect(spy2.mock.calls).toHaveLength(0);
     });
   });
 
