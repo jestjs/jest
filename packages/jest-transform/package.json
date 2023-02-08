@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "29.4.1",
+  "version": "29.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -31,7 +31,7 @@
     "micromatch": "^4.0.4",
     "pirates": "^4.0.4",
     "slash": "^3.0.0",
-    "write-file-atomic": "^5.0.0"
+    "write-file-atomic": "^4.0.2"
   },
   "devDependencies": {
     "@jest/test-utils": "workspace:^",
