@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
+
 ### Chore & Maintenance
 
 ### Performance
