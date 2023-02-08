@@ -1069,6 +1069,12 @@ Default: `failure-change`
 
 Specifies notification mode. Requires `notify: true`.
 
+### `openHandlesTimeout` \[number]
+
+Default: `1000`
+
+Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
+
 #### Modes
 
 - `always`: always send a notification.
