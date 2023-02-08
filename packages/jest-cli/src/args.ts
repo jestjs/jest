@@ -423,17 +423,17 @@ export const options: {[key: string]: Options} = {
     description: 'Run tests that failed in the previous execution.',
     type: 'boolean',
   },
-  outputFile: {
-    description:
-      'Write test results to a file when the --json option is ' +
-      'also specified.',
-    type: 'string',
-  },
   openHandlesTimeout: {
     description:
       'Print a warning about probable open handles if Jest does not exit ' +
       'cleanly after this number of milliseconds. `0` to disable.',
     type: 'number',
+  },
+  outputFile: {
+    description:
+      'Write test results to a file when the --json option is ' +
+      'also specified.',
+    type: 'string',
   },
   passWithNoTests: {
     description:
