@@ -2,6 +2,18 @@
 
 ### Features
 
+### Fixes
+
+- `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
+
+### Chore & Maintenance
+
+### Performance
+
+## 29.4.2
+
+### Features
+
 - `[@jest/core]` Instrument significant lifecycle events with [`performance.mark()`](https://nodejs.org/docs/latest-v16.x/api/perf_hooks.html#performancemarkname-options) ([#13859](https://github.com/facebook/jest/pull/13859))
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
 
@@ -9,7 +21,7 @@
 
 - `[expect, @jest/expect]` Provide type of `actual` as a generic argument to `Matchers` to allow better-typed extensions ([#13848](https://github.com/facebook/jest/pull/13848))
 - `[jest-circus]` Added explicit mention of test failing because `done()` is not being called in error message ([#13847](https://github.com/facebook/jest/pull/13847))
-- `[jest-runtime]` Handle CJS re-exports of node core modules from ESM ([#13853](https://github.com/facebook/jest/pull/13853))
+- `[jest-runtime]` Handle CJS re-exports of node core modules from ESM ([#13856](https://github.com/facebook/jest/pull/13856))
 - `[jest-transform]` Downgrade `write-file-atomic` to v4 ([#13853](https://github.com/facebook/jest/pull/13853))
 - `[jest-worker]` Ignore IPC messages not intended for Jest ([#13543](https://github.com/facebook/jest/pull/13543))
 
@@ -17,8 +29,6 @@
 
 - `[*]` make sure to exclude `.eslintcache` from published module ([#13832](https://github.com/facebook/jest/pull/13832))
 - `[docs]` Cleanup incorrect links in CHANGELOG.md ([#13857](https://github.com/facebook/jest/pull/13857))
-
-### Performance
 
 ## 29.4.1
 
