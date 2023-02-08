@@ -788,6 +788,7 @@ export class ModuleMocker {
 
       f.mockRestore = () => {
         f.mockClear();
+        this._mockConfigRegistry.delete(f);
 
         if (spyState != null) {
           spyState.restore();
