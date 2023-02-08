@@ -791,6 +791,7 @@ export class ModuleMocker {
 
         if (spyState != null) {
           spyState.restore();
+          this._spyState.delete(spyState);
         }
       };
 
@@ -1122,7 +1123,7 @@ export class ModuleMocker {
     mock: Mock<UnknownFunction>,
     original: T,
   ) {
-    mock.mockImplementation?.(function (this: unknown) {
+    mock.mockImplementation(function (this: unknown) {
       return original.apply(this, arguments);
     });
   }
