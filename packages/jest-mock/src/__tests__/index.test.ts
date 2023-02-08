@@ -1380,8 +1380,8 @@ describe('moduleMocker', () => {
     });
 
     it('supports resetting all spies', () => {
-      const methodOneReturn = 0;
-      const methodTwoReturn = 0;
+      const methodOneReturn = 10;
+      const methodTwoReturn = 20;
       const obj = {
         methodOne() {
           return methodOneReturn;
@@ -1391,14 +1391,14 @@ describe('moduleMocker', () => {
         },
       };
 
-      moduleMocker.spyOn(obj, 'methodOne').mockReturnValue(10);
-      moduleMocker.spyOn(obj, 'methodTwo').mockReturnValue(20);
+      moduleMocker.spyOn(obj, 'methodOne').mockReturnValue(100);
+      moduleMocker.spyOn(obj, 'methodTwo').mockReturnValue(200);
 
       // Return values are mocked.
-      expect(methodOneReturn).toBe(0);
-      expect(methodTwoReturn).toBe(0);
-      expect(obj.methodOne()).toBe(10);
-      expect(obj.methodTwo()).toBe(20);
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne()).toBe(100);
+      expect(obj.methodTwo()).toBe(200);
 
       expect(moduleMocker.isMockFunction(obj.methodOne)).toBe(true);
       expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
@@ -1410,10 +1410,10 @@ describe('moduleMocker', () => {
       expect(moduleMocker.isMockFunction(obj.methodTwo)).toBe(true);
 
       // After resetting all mocks, the methods return the original return value.
-      expect(methodOneReturn).toBe(0);
-      expect(methodTwoReturn).toBe(0);
-      expect(obj.methodOne()).toBe(0);
-      expect(obj.methodTwo()).toBe(0);
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne()).toBe(10);
+      expect(obj.methodTwo()).toBe(20);
     });
 
     it('supports restoring a spy', () => {
@@ -1623,6 +1623,59 @@ describe('moduleMocker', () => {
       );
     });
 
+    it('supports resetting a spy', () => {
+      const methodOneReturn = 0;
+      const obj = {
+        get methodOne() {
+          return methodOneReturn;
+        },
+      };
+
+      const spy1 = moduleMocker
+        .spyOn(obj, 'methodOne', 'get')
+        .mockReturnValue(10);
+
+      // Return value is mocked.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne).toBe(10);
+
+      spy1.mockReset();
+
+      // After resetting the spy, the method returns the original return value.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne).toBe(0);
+    });
+
+    it('supports resetting all spies', () => {
+      const methodOneReturn = 10;
+      const methodTwoReturn = 20;
+      const obj = {
+        get methodOne() {
+          return methodOneReturn;
+        },
+        get methodTwo() {
+          return methodTwoReturn;
+        },
+      };
+
+      moduleMocker.spyOn(obj, 'methodOne', 'get').mockReturnValue(100);
+      moduleMocker.spyOn(obj, 'methodTwo', 'get').mockReturnValue(200);
+
+      // Return values are mocked.
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne).toBe(100);
+      expect(obj.methodTwo).toBe(200);
+
+      moduleMocker.resetAllMocks();
+
+      // After resetting all mocks, the methods return the original return value.
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne).toBe(10);
+      expect(obj.methodTwo).toBe(20);
+    });
+
     it('supports restoring a spy', () => {
       let methodOneCalls = 0;
       const obj = {
@@ -1753,6 +1806,61 @@ describe('moduleMocker', () => {
       obj.property = true;
       expect(spy).not.toHaveBeenCalled();
       expect(obj.property).toBe(true);
+    });
+
+    it('supports resetting a spy on the prototype chain', () => {
+      const methodOneReturn = 0;
+      const prototype = {
+        get methodOne() {
+          return methodOneReturn;
+        },
+      };
+      const obj = Object.create(prototype, {});
+
+      const spy1 = moduleMocker
+        .spyOn(obj, 'methodOne', 'get')
+        .mockReturnValue(10);
+
+      // Return value is mocked.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne).toBe(10);
+
+      spy1.mockReset();
+
+      // After resetting the spy, the method returns the original return value.
+      expect(methodOneReturn).toBe(0);
+      expect(obj.methodOne).toBe(0);
+    });
+
+    it('supports resetting all spies on the prototype chain', () => {
+      const methodOneReturn = 10;
+      const methodTwoReturn = 20;
+      const prototype = {
+        get methodOne() {
+          return methodOneReturn;
+        },
+        get methodTwo() {
+          return methodTwoReturn;
+        },
+      };
+      const obj = Object.create(prototype, {});
+
+      moduleMocker.spyOn(obj, 'methodOne', 'get').mockReturnValue(100);
+      moduleMocker.spyOn(obj, 'methodTwo', 'get').mockReturnValue(200);
+
+      // Return values are mocked.
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne).toBe(100);
+      expect(obj.methodTwo).toBe(200);
+
+      moduleMocker.resetAllMocks();
+
+      // After resetting all mocks, the methods return the original return value.
+      expect(methodOneReturn).toBe(10);
+      expect(methodTwoReturn).toBe(20);
+      expect(obj.methodOne).toBe(10);
+      expect(obj.methodTwo).toBe(20);
     });
 
     it('supports restoring a spy on the prototype chain', () => {

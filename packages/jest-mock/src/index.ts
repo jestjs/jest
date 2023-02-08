@@ -1301,7 +1301,12 @@ export class ModuleMocker {
         {type: 'function'},
         {
           reset: () => {
-            // TODO
+            (descriptor![accessType] as Mock).mockImplementation(function (
+              this: unknown,
+            ) {
+              // @ts-expect-error - wrong context
+              return original.apply(this, arguments);
+            });
           },
           restore: () => {
             // @ts-expect-error: mock is assignable
