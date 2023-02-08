@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[expect]` Add parameter `ordered` to `toMatchObject` in order to match arrays with elements in different order. ([#13874](https://github.com/facebook/jest/pull/13874))
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
 
 ### Fixes
@@ -17,7 +18,6 @@
 ### Features
 
 - `[@jest/core]` Instrument significant lifecycle events with [`performance.mark()`](https://nodejs.org/docs/latest-v16.x/api/perf_hooks.html#performancemarkname-options) ([#13859](https://github.com/facebook/jest/pull/13859))
-- `[expect]` Add parameter `ordered` to `toMatchObject` in order to match arrays with elements in different order. ([#13874](https://github.com/facebook/jest/pull/13874))
 
 ### Fixes
 
