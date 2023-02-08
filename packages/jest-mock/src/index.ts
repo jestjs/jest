@@ -1118,6 +1118,15 @@ export class ModuleMocker {
     return fn;
   }
 
+  private _attachMockImplementation<T extends Function>(
+    mock: Mock<UnknownFunction>,
+    original: T,
+  ) {
+    mock.mockImplementation(function (this: unknown) {
+      return original.apply(this, arguments);
+    });
+  }
+
   spyOn<
     T extends object,
     K extends PropertyLikeKeys<T>,
@@ -1207,9 +1216,7 @@ export class ModuleMocker {
           {type: 'function'},
           {
             reset: () => {
-              mock.mockImplementation(function (this: unknown) {
-                return original.apply(this, arguments);
-              });
+              this._attachMockImplementation(mock, original);
             },
             restore: () => {
               descriptor!.get = originalGet;
@@ -1224,9 +1231,7 @@ export class ModuleMocker {
           {type: 'function'},
           {
             reset: () => {
-              mock.mockImplementation(function (this: unknown) {
-                return original.apply(this, arguments);
-              });
+              this._attachMockImplementation(mock, original);
             },
             restore: () => {
               if (isMethodOwner) {
@@ -1237,13 +1242,11 @@ export class ModuleMocker {
             },
           },
         );
-        // @ts-expect-error overriding original method with a Mock
+        // @ts-expect-error: overriding original method with a mock
         object[methodKey] = mock;
       }
 
-      mock.mockImplementation(function (this: unknown) {
-        return original.apply(this, arguments);
-      });
+      this._attachMockImplementation(mock, original);
     }
 
     return object[methodKey] as Mock;
@@ -1301,27 +1304,20 @@ export class ModuleMocker {
         {type: 'function'},
         {
           reset: () => {
-            (descriptor![accessType] as Mock).mockImplementation(function (
-              this: unknown,
-            ) {
-              // @ts-expect-error - wrong context
-              return original.apply(this, arguments);
-            });
+            this._attachMockImplementation(
+              descriptor![accessType] as Mock,
+              original,
+            );
           },
           restore: () => {
-            // @ts-expect-error: mock is assignable
+            // @ts-expect-error: overriding original method with a mock
             descriptor![accessType] = original;
             Object.defineProperty(object, propertyKey, descriptor!);
           },
         },
       );
 
-      (descriptor[accessType] as Mock).mockImplementation(function (
-        this: unknown,
-      ) {
-        // @ts-expect-error - wrong context
-        return original.apply(this, arguments);
-      });
+      this._attachMockImplementation(descriptor[accessType] as Mock, original);
     }
 
     Object.defineProperty(object, propertyKey, descriptor);
