@@ -431,21 +431,3 @@ it('should return the error cause if there is one', () => {
   );
   expect(message).toMatchSnapshot();
 });
-
-it('should print all the errors contained in an AggregateError', () => {
-  const error = new AggregateError([
-    new Error('error 1'),
-    new Error('error 2'),
-  ]);
-  const message = formatExecError(
-    error,
-    {
-      rootDir: '',
-      testMatch: [],
-    },
-    {
-      noStackTrace: false,
-    },
-  );
-  console.log(message);
-});
