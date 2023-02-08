@@ -887,7 +887,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(received: object, expected: object) {
+  toMatchObject(received: object, expected: object, ordered: boolean = true) {
     const matcherName = 'toMatchObject';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -914,11 +914,24 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = equals(received, expected, [
-      ...this.customTesters,
-      iterableEquality,
-      subsetEquality,
-    ]);
+    let pass = true;
+    let that = this;
+
+    if (Array.isArray(received) && Array.isArray(expected) && !ordered) {
+      expected.forEach(item => {
+        const item_pass = received.some(
+          another => equals(another, item, [...that.customTesters, iterableEquality, subsetEquality])
+        );
+        pass = pass && item_pass;
+      })
+
+    } else {
+      pass = equals(received, expected, [
+        ...this.customTesters,
+        iterableEquality,
+        subsetEquality,
+      ]);
+    }
 
     const message = pass
       ? () =>
