@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-config]` Add `openHandlesTimeout` option to configure possible open handles warning. ([#XXXX](https://github.com/facebook/jest/pull/XXXXX))
+- `[jest-config]` Add `openHandlesTimeout` option to configure possible open handles warning. ([#13875](https://github.com/facebook/jest/pull/13875))
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
 
 ### Fixes
