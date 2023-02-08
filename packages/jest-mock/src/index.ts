@@ -787,7 +787,7 @@ export class ModuleMocker {
       };
 
       f.mockRestore = () => {
-        f.mockClear().mockReset();
+        f.mockReset();
 
         if (spyState != null) {
           spyState.restore();
