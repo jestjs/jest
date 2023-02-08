@@ -308,7 +308,7 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 ### `--openHandlesTimeout=<milliseconds>`
 
-When `--detectOpenHandles` and `--forceExit` are *disabled*, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
+When `--detectOpenHandles` and `--forceExit` are _disabled_, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
 
 ### `--outputFile=<filename>`
 
