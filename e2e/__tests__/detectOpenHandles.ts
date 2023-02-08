@@ -30,7 +30,10 @@ it('prints message about flag on slow tests', async () => {
 });
 
 it('prints message about flag on slow tests with a custom timeout', async () => {
-  const run = runContinuous('detect-open-handles', ['outside', '--openHandlesTimeout=500']);
+  const run = runContinuous('detect-open-handles', [
+    'outside',
+    '--openHandlesTimeout=500',
+  ]);
   await run.waitUntil(({stderr}) =>
     stderr.includes('Jest did not exit 0.5 seconds'),
   );
