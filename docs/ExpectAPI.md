@@ -680,11 +680,13 @@ describe('grapefruits are healthy', () => {
 });
 ```
 
-### `.toMatchObject(object)`
+### `.toMatchObject(object, ordered)`
 
 Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. It will match received objects with properties that are **not** in the expected object.
 
 You can also pass an array of objects, in which case the method will return true only if each object in the received array matches (in the `toMatchObject` sense described above) the corresponding object in the expected array. This is useful if you want to check that two arrays match in their number of elements, as opposed to `arrayContaining`, which allows for extra elements in the received array.
+
+The `ordered` parameter defaults to `true` and is used when matching two arrays of objects. When `ordered` is `true`, the order of elements in arrays matters. When `ordered` is `false`, the order doesn't matter as long as the element is present. 
 
 You can match properties against values or against matchers.
 
@@ -722,6 +724,27 @@ describe('toMatchObject applied to arrays', () => {
       {foo: 'bar'},
       {baz: 1},
     ]);
+  });
+
+  test('.toMatchObject called with ordered = true. Equivalent as the above test.', () => {
+    expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
+      {foo: 'bar'},
+      {baz: 1},
+    ], true);
+  });
+
+  test('.toMatchObject called with ordered = true. Two arrays do not match because the order of elements is different.', () => {
+    expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).not.toMatchObject([
+      {baz: 1},
+      {foo: 'bar'},
+    ], true);
+  });
+
+  test('.toMatchObject called with ordered = false. Two arrays match despite the difference in order.', () => {
+    expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
+      {baz: 1},
+      {foo: 'bar'},
+    ], false);
   });
 });
 ```
