@@ -429,6 +429,12 @@ export const options: {[key: string]: Options} = {
       'also specified.',
     type: 'string',
   },
+  openHandlesTimeout: {
+    description:
+      'Print a warning about probable open handles if Jest does not exit ' +
+      'cleanly after this number of milliseconds. `0` to disable.',
+    type: 'number',
+  },
   passWithNoTests: {
     description:
       'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
