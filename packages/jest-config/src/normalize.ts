@@ -912,6 +912,7 @@ export default async function normalize(
       case 'notifyMode':
       case 'onlyChanged':
       case 'onlyFailures':
+      case 'openHandlesTimeout':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
