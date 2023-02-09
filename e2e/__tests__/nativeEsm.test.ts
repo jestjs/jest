@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -66,6 +66,20 @@ onNodeVersions('>=16.9.0', () => {
     expect(stdout).toBe('');
     expect(exitCode).toBe(0);
   });
+});
+
+test('support re-exports from CJS of core module', () => {
+  const {exitCode, stderr, stdout} = runJest(
+    DIR,
+    ['native-esm-core-cjs-reexport.test.js'],
+    {nodeOptions: '--experimental-vm-modules --no-warnings'},
+  );
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
 });
 
 test('runs WebAssembly (Wasm) test with native ESM', () => {

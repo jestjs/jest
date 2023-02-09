@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "29.4.1",
+  "version": "29.4.2",
   "private": true,
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -12,6 +12,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@jest/globals": "workspace:^",
     "@jest/types": "workspace:^",
     "@types/node": "*",
     "ansi-regex": "^5.0.1",

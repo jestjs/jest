@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "29.4.1",
+  "version": "29.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -30,7 +30,6 @@
     "walker": "^1.0.8"
   },
   "devDependencies": {
-    "@jest/test-utils": "workspace:^",
     "@types/fb-watchman": "^2.0.0",
     "@types/micromatch": "^4.0.1",
     "slash": "^3.0.0"

@@ -234,6 +234,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iso-constants@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "iso-constants@npm:0.1.2"
+  checksum: 5e59939d03b4603d9426704c4dea8c41a4db14a91e34273a1b129aa84e265d6a63456d3543e3be85f47cdf350be5359bd31c59566e5084bdaee618dc65843804
+  languageName: node
+  linkType: hard
+
 "lodash.snakecase@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.snakecase@npm:4.1.1"
@@ -287,6 +294,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     discord.js: 14.3.0
+    iso-constants: ^0.1.2
     yargs: ^17.5.1
   languageName: unknown
   linkType: soft

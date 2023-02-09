@@ -1,7 +1,7 @@
 {
   "name": "babel-jest",
   "description": "Jest plugin to use babel for transformation.",
-  "version": "29.4.1",
+  "version": "29.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",

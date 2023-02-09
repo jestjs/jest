@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "29.4.1",
+  "version": "29.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -40,6 +40,7 @@
     "source-map-support": "0.5.13"
   },
   "devDependencies": {
+    "@jest/test-utils": "workspace:^",
     "@tsd/typescript": "^4.9.0",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.3",
