@@ -7,35 +7,23 @@
 
 import * as path from 'path';
 import dedent = require('dedent');
-import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
 import which = require('which');
 import type {Config} from '@jest/types';
 
-interface RunResult extends ExecaReturnValue {
-  status: number;
-  error: Error;
-}
 export const run = (
   cmd: string,
   cwd?: string,
   env?: Record<string, string>,
-): RunResult => {
+): ExecaSyncReturnValue => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, env, preferLocal: false, reject: false};
-  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
+  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
 
-  // For compat with cross-spawn
-  result.status = result.exitCode;
-
-  if (result.status !== 0) {
-    throw new Error(dedent`
-      ORIGINAL CMD: ${cmd}
-      STDOUT: ${result.stdout}
-      STDERR: ${result.stderr}
-      STATUS: ${result.status}
-      ERROR: ${result.error}
-    `);
+  if (result.exitCode !== 0) {
+    console.error('Got error running command', result);
+    throw result;
   }
 
   return result;
