@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates., Inc. All rights reserved.
 
 import {afterEach, beforeEach, expect, it, jest} from '@jest/globals';
 import {isLocalhost} from '../utils';
