@@ -6,8 +6,9 @@
  */
 
 import * as path from 'path';
+import * as util from 'util';
 import dedent = require('dedent');
-import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import {ExecaSyncError, ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
 import which = require('which');
 import type {Config} from '@jest/types';
@@ -22,8 +23,14 @@ export const run = (
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
 
   if (result.exitCode !== 0) {
-    console.error('Got error running command', result);
-    throw result;
+    const errorResult = result as ExecaSyncError;
+
+    // have to extract message for the `util.inspect` to be useful for some reason
+    const {message, ...rest} = errorResult;
+
+    errorResult.message += `\n\n${util.inspect(rest)}`;
+
+    throw errorResult;
   }
 
   return result;
