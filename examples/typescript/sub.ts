@@ -1,4 +1,4 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates., Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import sum from './sum';
 

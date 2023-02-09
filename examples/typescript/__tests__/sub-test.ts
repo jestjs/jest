@@ -1,4 +1,4 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates., Inc. All rights reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import {expect, it} from '@jest/globals';
 import sub from '../sub';
