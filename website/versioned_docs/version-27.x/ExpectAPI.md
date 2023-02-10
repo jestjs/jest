@@ -5,7 +5,11 @@ title: Expect
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
+:::tip
+
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
+
+:::
 
 ## Methods
 
@@ -67,9 +71,17 @@ test('numeric ranges', () => {
 });
 ```
 
-_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
+:::info
+
+In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
 ```ts
+expect.extend({
+  toBeWithinRange(received, floor, ceiling) {
+    // ...
+  },
+});
+
 interface CustomMatchers<R = unknown> {
   toBeWithinRange(floor: number, ceiling: number): R;
 }
@@ -82,6 +94,21 @@ declare global {
   }
 }
 ```
+
+If you want to move the typings to a separate file (e.g. `types/jest/index.d.ts`), you may need to an export, e.g.:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+export {};
+```
+
+:::
 
 #### Async Matchers
 
@@ -808,7 +835,11 @@ test('drinkEach drinks each drink', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveReturned()`
 
@@ -907,7 +938,11 @@ test('drink returns expected nth calls', () => {
 });
 ```
 
-Note: the nth argument must be positive integer starting from 1.
+:::note
+
+The nth argument must be positive integer starting from 1.
+
+:::
 
 ### `.toHaveLength(number)`
 
@@ -1359,7 +1394,11 @@ test('throws on octopus', () => {
 });
 ```
 
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+:::tip
+
+You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
+:::
 
 You can provide an optional argument to test that a specific error is thrown:
 

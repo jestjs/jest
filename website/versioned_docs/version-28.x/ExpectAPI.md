@@ -5,7 +5,11 @@ title: Expect
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
+:::tip
+
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
+
+:::
 
 ## Methods
 
@@ -67,7 +71,7 @@ test('numeric ranges', () => {
 });
 ```
 
-:::note
+:::info
 
 In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher in the imported module like this:
 
