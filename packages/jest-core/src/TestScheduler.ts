@@ -336,12 +336,12 @@ class TestScheduler {
   async _setupReporters() {
     const {collectCoverage: coverage, notify, verbose} = this._globalConfig;
     const reporters = this._globalConfig.reporters || [['default', {}]];
-    let summary = false;
+    let summaryOptions;
 
     for (const [reporter, options] of reporters) {
       switch (reporter) {
         case 'default':
-          summary = true;
+          summaryOptions = options;
           verbose
             ? this.addReporter(new VerboseReporter(this._globalConfig))
             : this.addReporter(new DefaultReporter(this._globalConfig));
@@ -353,7 +353,7 @@ class TestScheduler {
             );
           break;
         case 'summary':
-          summary = true;
+          summaryOptions = options;
           break;
         default:
           await this._addCustomReporter(reporter, options);
@@ -368,8 +368,8 @@ class TestScheduler {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    if (summary) {
-      this.addReporter(new SummaryReporter(this._globalConfig));
+    if (summaryOptions) {
+      this.addReporter(new SummaryReporter(this._globalConfig, summaryOptions));
     }
   }
 

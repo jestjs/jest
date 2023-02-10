@@ -63,3 +63,7 @@ export type SummaryOptions = {
   showSeed?: boolean;
   seed?: number;
 };
+
+export type SummaryReporterOptions = {
+  forceFailSummary?: boolean;
+};

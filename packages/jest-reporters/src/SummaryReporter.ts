@@ -17,7 +17,7 @@ import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
 import getSummary from './getSummary';
-import type {ReporterOnStartOptions} from './types';
+import type {ReporterOnStartOptions, SummaryReporterOptions} from './types';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -54,12 +54,17 @@ const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
   private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _options: SummaryReporterOptions;
 
   static readonly filename = __filename;
 
-  constructor(globalConfig: Config.GlobalConfig) {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    options: SummaryReporterOptions = {},
+  ) {
     super();
     this._globalConfig = globalConfig;
+    this._options = options;
     this._estimatedTime = 0;
   }
 
@@ -176,7 +181,8 @@ export default class SummaryReporter extends BaseReporter {
     const runtimeErrors = aggregatedResults.numRuntimeErrorTestSuites;
     if (
       failedTests + runtimeErrors > 0 &&
-      aggregatedResults.numTotalTestSuites > TEST_SUMMARY_THRESHOLD
+      (this._options.forceFailSummary ||
+        aggregatedResults.numTotalTestSuites > TEST_SUMMARY_THRESHOLD)
     ) {
       this.log(chalk.bold('Summary of all failing tests'));
       aggregatedResults.testResults.forEach(testResult => {
