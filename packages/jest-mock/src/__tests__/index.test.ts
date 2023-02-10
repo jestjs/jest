@@ -1143,6 +1143,38 @@ describe('moduleMocker', () => {
 
       expect.assertions(4);
     });
+
+    it('mockImplementationOnce does not bleed into withImplementation', () => {
+      const mock = jest
+        .fn(() => 'outside callback')
+        .mockImplementationOnce(() => 'once');
+
+      mock.withImplementation(
+        () => 'inside callback',
+        () => {
+          expect(mock()).toBe('inside callback');
+        },
+      );
+
+      expect(mock()).toBe('once');
+      expect(mock()).toBe('outside callback');
+    });
+
+    it('mockReturnValueOnce does not bleed into withImplementation', () => {
+      const mock = jest
+        .fn(() => 'outside callback')
+        .mockReturnValueOnce('once');
+
+      mock.withImplementation(
+        () => 'inside callback',
+        () => {
+          expect(mock()).toBe('inside callback');
+        },
+      );
+
+      expect(mock()).toBe('once');
+      expect(mock()).toBe('outside callback');
+    });
   });
 
   test('mockReturnValue does not override mockImplementationOnce', () => {

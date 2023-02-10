@@ -840,16 +840,20 @@ export class ModuleMocker {
         // Remember previous mock implementation, then set new one
         const mockConfig = this._ensureMockConfig(f);
         const previousImplementation = mockConfig.mockImpl;
+        const previousSpecificImplementations = mockConfig.specificMockImpls;
         mockConfig.mockImpl = fn;
+        mockConfig.specificMockImpls = [];
 
         const returnedValue = callback();
 
         if (isPromise(returnedValue)) {
           return returnedValue.then(() => {
             mockConfig.mockImpl = previousImplementation;
+            mockConfig.specificMockImpls = previousSpecificImplementations;
           });
         } else {
           mockConfig.mockImpl = previousImplementation;
+          mockConfig.specificMockImpls = previousSpecificImplementations;
         }
       }
 
