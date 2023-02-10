@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
+- `[jest-types]` Allow fully typed expressions in `.each` tables ([#13897](https://github.com/facebook/jest/pull/13897))
 
 ### Fixes
 
