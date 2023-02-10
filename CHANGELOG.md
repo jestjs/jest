@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
+- `[jest-reporters]` Add `forceFailSummary` option to summary reporter to always print failure messages
 
 ### Fixes
 
