@@ -95,8 +95,8 @@ You can use [Config Function API](https://babeljs.io/docs/en/config-files#config
 
 ```javascript title="babel.config.js"
 module.exports = api => {
-  // Jest will set `process.env.NODE_ENV` to `'test'`, if it is not already 
-  // set to something else. This can help to determine what presets or plugins 
+  // Jest will set `process.env.NODE_ENV` to `'test'`, if it is not already
+  // set to something else. This can help to determine what presets or plugins
   // to include in the configuration.
   const isTest = api.env('test');
 
