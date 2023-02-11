@@ -87,18 +87,16 @@ module.exports = {
 };
 ```
 
-The ideal configuration will depend on your project. See [Babel's documentation](https://babeljs.io/docs/en/) for more details.
+_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
-:::tip
+<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
-You can use [Config Function API](https://babeljs.io/docs/en/config-files#config-function-api) to make your Babel config Jest aware:
+Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
 ```javascript title="babel.config.js"
 module.exports = api => {
-  // Jest will set `process.env.NODE_ENV` to `'test'`, if it is not already 
-  // set to something else. This can help to determine what presets or plugins 
-  // to include in the configuration.
   const isTest = api.env('test');
+  // You can use isTest to determine what presets and plugins to use.
 
   return {
     // ...
@@ -106,11 +104,9 @@ module.exports = api => {
 };
 ```
 
-:::
+:::note
 
-:::info
-
-If a Babel configuration exists in your project, by default `babel-jest` will be used to transform files. To avoid this behavior, you should explicitly set the [`transform`](Configuration.md#transform-objectltstring-pathtotransformer--pathtotransformer-objectgt) configuration option:
+`babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
 ```javascript title="jest.config.js"
 module.exports = {
@@ -119,6 +115,8 @@ module.exports = {
 ```
 
 :::
+
+</details>
 
 ### Using webpack
 
