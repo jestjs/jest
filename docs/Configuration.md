@@ -1345,8 +1345,6 @@ export default config;
 
 The `summaryThreshold` option behaves in the following way, if the total number of test suites surpasses this threshold, a detailed summary of all failed tests will be printed after executing all the tests. It defaults to `20`.
 
-For more information about the available options refer to `SummaryReporterOptions` type in the [reporter type definitions](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts).
-
 #### Custom Reporters
 
 :::tip
