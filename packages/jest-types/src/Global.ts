@@ -72,11 +72,12 @@ type TTimesN<T, N extends number> = TTimesNRecursive<T, N, []>;
  */
 type Flat2DTuple<S extends Array<Array<unknown>>> = S['length'] extends 0
   ? []
-  : S extends [
-      infer T extends Array<unknown>,
-      ...infer Remaining extends Array<Array<unknown>>,
-    ]
-  ? [...T, ...Flat2DTuple<Remaining>]
+  : S extends [infer T, ...infer Remaining]
+  ? T extends Array<unknown>
+    ? Remaining extends Array<Array<unknown>>
+      ? [...T, ...Flat2DTuple<Remaining>]
+      : never
+    : never
   : never;
 
 /*
