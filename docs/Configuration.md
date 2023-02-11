@@ -1327,9 +1327,7 @@ The `summary` reporter accepts options. Since it is included in the `default` re
 ```js tab
 /** @type {import('jest').Config} */
 const config = {
-  reporters: [
-    ['default', {forceFailSummary: true}],
-  ],
+  reporters: [['default', {summaryThreshold: 10}]],
 };
 
 module.exports = config;
@@ -1339,15 +1337,13 @@ module.exports = config;
 import type {Config} from 'jest';
 
 const config: Config = {
-  reporters: [
-    ['default', {forceFailSummary: true}],
-  ],
+  reporters: [['default', {summaryThreshold: 10}]],
 };
 
 export default config;
 ```
 
-The `forceFailSummary` option will force to always print a summary of failed tests after executing all the tests. If not set the default behavior is to print this summary only if the number of test suites surpasses an internal threshold.
+The `summaryThreshold` option behaves in the following way, if the total number of test suites surpasses this threshold, a detailed summary of all failed tests will be printed after executing all the tests. If not set it defaults to an internal value.
 
 For more information about the available options refer to `SummaryReporterOptions` type in the [reporter type definitions](https://github.com/facebook/jest/blob/main/packages/jest-reporters/src/types.ts).
 

@@ -3,7 +3,7 @@
 ### Features
 
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
-- `[jest-reporters]` Add `forceFailSummary` option to summary reporter to always print failure messages
+- `[jest-reporters]` Add `summaryThreshold` option to summary reporter to allow overriding the internal threshold that is used to print the summary of all failed tests when the number of test suites surpasses it ([#13895](https://github.com/facebook/jest/pull/13895))
 
 ### Fixes
 

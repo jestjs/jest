@@ -65,5 +65,5 @@ export type SummaryOptions = {
 };
 
 export type SummaryReporterOptions = {
-  forceFailSummary?: boolean;
+  summaryThreshold?: number;
 };
