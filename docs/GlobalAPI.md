@@ -1079,3 +1079,15 @@ test.each<{a: number; b: number; expected: string; extra?: boolean}>`
   // without the generic argument in this case types would default to `unknown`
 });
 ```
+
+Using a single generic argument sets the type for the test function argument, but it does not ensure that the values inside the table have the correct types. To do that, pass a tuple of Key-Type pairs and the number of rows as generic arguments instead:
+```ts
+test.each<[['a', number], ['b', number], ['expected', string], ['extra', boolean|undefined]], 3>`
+  a    | b    | expected    | extra
+  ${1} | ${2} | ${'three'}  | ${true}
+  ${3} | ${4} | ${'seven'}  | ${false}
+  ${5} | ${6} | ${'eleven'} | ${undefined}
+`('template literal example', ({a, b, expected, extra}) => {
+  /* If the table does not contain the right amount of values, or if a value is not compatible with the provided type, a typescript error will be thrown. */
+});
+```
