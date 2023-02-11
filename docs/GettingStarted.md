@@ -87,7 +87,7 @@ module.exports = {
 };
 ```
 
-_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
