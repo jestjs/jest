@@ -1088,6 +1088,7 @@ test.each<[['a', number], ['b', number], ['expected', string], ['extra', boolean
   ${3} | ${4} | ${'seven'}  | ${false}
   ${5} | ${6} | ${'eleven'} | ${undefined}
 `('template literal example', ({a, b, expected, extra}) => {
-  /* If the table does not contain the right amount of values, or if a value is not compatible with the provided type, a typescript error will be thrown. */
+  // If the table does not contain the right amount of values, or if a value is
+  // not compatible with the provided type, a typescript error will be thrown.
 });
 ```
