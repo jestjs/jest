@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,7 +29,7 @@ type Inverse<Matchers> = {
   not: Matchers;
 };
 
-type JestMatchers<R extends void | Promise<void>, T> = Matchers<R> &
+type JestMatchers<R extends void | Promise<void>, T> = Matchers<R, T> &
   SnapshotMatchers<R, T>;
 
 type PromiseMatchers<T = unknown> = {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -951,11 +951,18 @@ export default class Runtime {
     const namedExports = new Set(exports);
 
     reexports.forEach(reexport => {
-      const resolved = this._resolveCjsModule(modulePath, reexport);
+      if (this._resolver.isCoreModule(reexport)) {
+        const exports = this.requireModule(modulePath, reexport);
+        if (exports !== null && typeof exports === 'object') {
+          Object.keys(exports).forEach(namedExports.add, namedExports);
+        }
+      } else {
+        const resolved = this._resolveCjsModule(modulePath, reexport);
 
-      const exports = this.getExportsOfCjs(resolved);
+        const exports = this.getExportsOfCjs(resolved);
 
-      exports.forEach(namedExports.add, namedExports);
+        exports.forEach(namedExports.add, namedExports);
+      }
     });
 
     this._cjsNamedExports.set(modulePath, namedExports);
@@ -2319,9 +2326,14 @@ export default class Runtime {
           'Your test environment does not support `mocked`, please update it.',
         );
       });
-    const replaceProperty = this._moduleMocker.replaceProperty.bind(
-      this._moduleMocker,
-    );
+    const replaceProperty =
+      typeof this._moduleMocker.replaceProperty === 'function'
+        ? this._moduleMocker.replaceProperty.bind(this._moduleMocker)
+        : () => {
+            throw new Error(
+              'Your test environment does not support `jest.replaceProperty` - please ensure its Jest dependencies are updated to version 29.4 or later',
+            );
+          };
 
     const setTimeout = (timeout: number) => {
       this._environment.global[testTimeoutSymbol] = timeout;

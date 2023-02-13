@@ -41,3 +41,11 @@ Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites."
 `;
+
+exports[`exceeds the timeout specifying that \`done\` has not been called 1`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;

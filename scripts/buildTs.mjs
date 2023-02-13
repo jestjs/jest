@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,7 +10,7 @@ import * as os from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import execa from 'execa';
-import globby from 'globby';
+import glob from 'glob';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
 import stripJsonComments from 'strip-json-comments';
@@ -57,6 +57,12 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
         }
       }
 
+      // only test files depend on '@jest/test-utils', i.e. it is always a dev dependency
+      // see additional checks below
+      if (dep === '@jest/test-utils') {
+        return false;
+      }
+
       return true;
     })
     .map(dep =>
@@ -82,6 +88,60 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
       }. Got:\n\n${references.join(
         '\n',
       )}\nExpected:\n\n${jestDependenciesOfPackage.join('\n')}`,
+    );
+  }
+
+  let hasJestTestUtils = Object.keys(pkg.dependencies || {}).includes(
+    '@jest/test-utils',
+  );
+
+  if (hasJestTestUtils) {
+    throw new Error(
+      chalk.red(
+        `Package '${pkg.name}' declares '@jest/test-utils' as dependency, but it must be declared as dev dependency`,
+      ),
+    );
+  }
+
+  hasJestTestUtils = Object.keys(pkg.devDependencies || {}).includes(
+    '@jest/test-utils',
+  );
+
+  const tsConfigPaths = glob.sync('**/__tests__/tsconfig.json', {
+    absolute: true,
+    cwd: packageDir,
+  });
+
+  const testUtilsReferences = tsConfigPaths.filter(tsConfigPath => {
+    const tsConfig = JSON.parse(
+      stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
+    );
+    const references = tsConfig.references.map(({path}) => path);
+
+    return references.some(reference => /test-utils$/.test(reference));
+  });
+
+  if (hasJestTestUtils && testUtilsReferences.length === 0) {
+    throw new Error(
+      chalk.red(
+        `Package '${
+          pkg.name
+        }' declares '@jest/test-utils' as dev dependency, but it is not referenced in:\n\n${tsConfigPaths.join(
+          '\n',
+        )}`,
+      ),
+    );
+  }
+
+  if (!hasJestTestUtils && testUtilsReferences.length > 0) {
+    throw new Error(
+      chalk.red(
+        `Package '${
+          pkg.name
+        }' does not declare '@jest/test-utils' as dev dependency, but it is referenced in:\n\n${testUtilsReferences.join(
+          '\n',
+        )}`,
+      ),
     );
   }
 });
@@ -125,12 +185,13 @@ try {
   await Promise.all(
     packagesWithTs.map(({packageDir, pkg}) =>
       mutex(async () => {
-        const buildDir = path.resolve(packageDir, 'build/**/*.d.ts');
-
-        const globbed = await globby([buildDir]);
+        const matched = glob.sync('build/**/*.d.ts', {
+          absolute: true,
+          cwd: packageDir,
+        });
 
         const files = await Promise.all(
-          globbed.map(file =>
+          matched.map(file =>
             Promise.all([file, fs.promises.readFile(file, 'utf8')]),
           ),
         );

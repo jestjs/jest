@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -251,12 +251,7 @@ class Card extends React.Component {
 class Hand extends React.Component {
   render() {
     const cards = [0, 1, 2, 3, 4].map(i => <Card key={i} index={i} />);
-    return (
-      <div className="jest-hand">
-        {cards}
-        <script src="/landing.js" />
-      </div>
-    );
+    return <div className="jest-hand">{cards}</div>;
   }
 }
 
