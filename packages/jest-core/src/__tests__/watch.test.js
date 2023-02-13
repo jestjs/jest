@@ -114,7 +114,23 @@ describe('Watch mode flows', () => {
     jest.doMock('jest-util', () => {
       const original = jest.requireActual('jest-util');
 
-      return {...original, isInteractive};
+      return {
+        ...original,
+        isInteractive,
+        // this imports internally, so we need to check `isInteractive` manually
+        preRunMessage: {
+          print: function mockedPrint(stream) {
+            if (isInteractive) {
+              stream.write('Determining test suites to run...');
+            }
+          },
+          remove: function mockedRemove(stream) {
+            if (isInteractive) {
+              original.clearLine(stream);
+            }
+          },
+        },
+      };
     });
     watch = require('../watch').default;
     const config = {
