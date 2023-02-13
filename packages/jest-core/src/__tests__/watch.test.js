@@ -111,7 +111,11 @@ describe('Watch mode flows', () => {
 
   beforeEach(() => {
     isInteractive = true;
-    jest.doMock('jest-util/build/isInteractive', () => isInteractive);
+    jest.doMock('jest-util', () => {
+      const original = jest.requireActual('jest-util');
+
+      return {...original, isInteractive};
+    });
     watch = require('../watch').default;
     const config = {
       rootDir: __dirname,
