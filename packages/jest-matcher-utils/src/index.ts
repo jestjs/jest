@@ -582,3 +582,7 @@ export const matcherHint = (
 
   return hint;
 };
+
+export type MatchObjectOptions = {
+  ignoreElementsOrder: boolean;
+};
