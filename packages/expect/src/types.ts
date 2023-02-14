@@ -324,6 +324,7 @@ export interface Matchers<R extends void | Promise<void>, T = unknown> {
    */
   toMatchObject(
     expected: Record<string, unknown> | Array<Record<string, unknown>>,
+    options: jestMatcherUtils.MatchObjectOptions,
   ): R;
   /**
    * Ensure that a mock function has returned (as opposed to thrown) at least once.
