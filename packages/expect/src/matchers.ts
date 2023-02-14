@@ -24,6 +24,7 @@ import {
   DIM_COLOR,
   EXPECTED_COLOR,
   MatcherHintOptions,
+  MatchObjectOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -887,9 +888,9 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(received: object, expected: object, ordered: boolean = true) {
+  toMatchObject(received: object, expected: object, options: MatchObjectOptions = {ignoreElementsOrder: false}) {
     const matcherName = 'toMatchObject';
-    const options: MatcherHintOptions = {
+    const hintOptions: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -897,7 +898,7 @@ const matchers: MatchersObject = {
     if (typeof received !== 'object' || received === null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherName, undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, hintOptions),
           `${RECEIVED_COLOR('received')} value must be a non-null object`,
           printWithType('Received', received, printReceived),
         ),
@@ -907,7 +908,7 @@ const matchers: MatchersObject = {
     if (typeof expected !== 'object' || expected === null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherName, undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, hintOptions),
           `${EXPECTED_COLOR('expected')} value must be a non-null object`,
           printWithType('Expected', expected, printExpected),
         ),
@@ -917,7 +918,7 @@ const matchers: MatchersObject = {
     let pass = true;
     let that = this;
 
-    if (Array.isArray(received) && Array.isArray(expected) && !ordered) {
+    if (Array.isArray(received) && Array.isArray(expected) && options.ignoreElementsOrder) {
       expected.forEach(item => {
         const item_pass = received.some(
           another => equals(another, item, [...that.customTesters, iterableEquality, subsetEquality])
@@ -936,7 +937,7 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           // eslint-disable-next-line prefer-template
-          matcherHint(matcherName, undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, hintOptions) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}` +
           (stringify(expected) !== stringify(received)
@@ -944,7 +945,7 @@ const matchers: MatchersObject = {
             : '')
       : () =>
           // eslint-disable-next-line prefer-template
-          matcherHint(matcherName, undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, hintOptions) +
           '\n\n' +
           printDiffOrStringify(
             expected,
