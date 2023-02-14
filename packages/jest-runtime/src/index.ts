@@ -21,7 +21,6 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import {satisfies as semverSatisfies} from 'semver';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
@@ -62,11 +61,6 @@ import {
 } from './helpers';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
-
-const runtimeSupportsImportAssertions = semverSatisfies(
-  process.versions.node,
-  '^16.12.0 || >=17.0.0',
-);
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -415,26 +409,11 @@ export default class Runtime {
     );
   }
 
+  // not async _now_, but transform will be
   private async loadEsmModule(
     modulePath: string,
     query = '',
-    importAssertions: ImportAssertions = {},
   ): Promise<VMModule> {
-    if (
-      runtimeSupportsImportAssertions &&
-      modulePath.endsWith('.json') &&
-      importAssertions.type !== 'json'
-    ) {
-      const error: NodeJS.ErrnoException = new Error(
-        `Module "${
-          modulePath + (query ? `?${query}` : '')
-        }" needs an import assertion of type "json"`,
-      );
-      error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
-
-      throw error;
-    }
-
     const cacheKey = modulePath + query;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
@@ -472,7 +451,6 @@ export default class Runtime {
           this.readFileBuffer(modulePath),
           modulePath,
           context,
-          importAssertions,
         );
 
         this._esmoduleRegistry.set(cacheKey, wasm);
@@ -499,54 +477,39 @@ export default class Runtime {
       });
 
       try {
-        let module;
-        if (modulePath.endsWith('.json')) {
-          module = new SyntheticModule(
-            ['default'],
-            function () {
-              const obj = JSON.parse(transformedCode);
-              // @ts-expect-error: TS doesn't know what `this` is
-              this.setExport('default', obj);
-            },
-            {context, identifier: modulePath},
-          );
-        } else {
-          module = new SourceTextModule(transformedCode, {
-            context,
-            identifier: modulePath,
-            importModuleDynamically: async (
-              specifier: string,
-              referencingModule: VMModule,
-              importAssertions?: ImportAssertions,
-            ) => {
-              invariant(
-                runtimeSupportsVmModules,
-                'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-              );
-              const module = await this.resolveModule(
-                specifier,
-                referencingModule.identifier,
-                referencingModule.context,
-                importAssertions,
-              );
+        const module = new SourceTextModule(transformedCode, {
+          context,
+          identifier: modulePath,
+          importModuleDynamically: async (
+            specifier: string,
+            referencingModule: VMModule,
+          ) => {
+            invariant(
+              runtimeSupportsVmModules,
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+            );
+            const module = await this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+            );
 
-              return this.linkAndEvaluateModule(module);
-            },
-            initializeImportMeta: (meta: JestImportMeta) => {
-              meta.url = pathToFileURL(modulePath).href;
+            return this.linkAndEvaluateModule(module);
+          },
+          initializeImportMeta: (meta: JestImportMeta) => {
+            meta.url = pathToFileURL(modulePath).href;
 
-              let jest = this.jestObjectCaches.get(modulePath);
+            let jest = this.jestObjectCaches.get(modulePath);
 
-              if (!jest) {
-                jest = this._createJestObjectFor(modulePath);
+            if (!jest) {
+              jest = this._createJestObjectFor(modulePath);
 
-                this.jestObjectCaches.set(modulePath, jest);
-              }
+              this.jestObjectCaches.set(modulePath, jest);
+            }
 
-              meta.jest = jest;
-            },
-          });
-        }
+            meta.jest = jest;
+          },
+        });
 
         invariant(
           !this._esmoduleRegistry.has(cacheKey),
@@ -576,7 +539,6 @@ export default class Runtime {
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-    importAssertions: ImportAssertions = {},
   ): Promise<T> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -637,7 +599,6 @@ export default class Runtime {
           Buffer.from(match.groups.code, 'base64'),
           specifier,
           context,
-          importAssertions,
         );
       } else {
         let code = match.groups.code;
@@ -666,7 +627,6 @@ export default class Runtime {
             importModuleDynamically: async (
               specifier: string,
               referencingModule: VMModule,
-              importAssertions?: ImportAssertions,
             ) => {
               invariant(
                 runtimeSupportsVmModules,
@@ -676,7 +636,6 @@ export default class Runtime {
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
-                importAssertions,
               );
 
               return this.linkAndEvaluateModule(module);
@@ -713,11 +672,9 @@ export default class Runtime {
 
     if (
       this._resolver.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(resolved) ||
-      // json files are modules when imported in modules
-      resolved.endsWith('.json')
+      this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query, importAssertions);
+      return this.loadEsmModule(resolved, query);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
@@ -739,18 +696,12 @@ export default class Runtime {
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
-        module.link(
-          (
-            specifier: string,
-            referencingModule: VMModule,
-            importCallOptions?: ImportCallOptions,
-          ) =>
-            this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-              importCallOptions?.assert,
-            ),
+        module.link((specifier: string, referencingModule: VMModule) =>
+          this.resolveModule(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          ),
         ),
       );
     }
@@ -1684,11 +1635,7 @@ export default class Runtime {
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: async (
-          specifier: string,
-          _script: Script,
-          importAssertions?: ImportAssertions,
-        ) => {
+        importModuleDynamically: async (specifier: string) => {
           invariant(
             runtimeSupportsVmModules,
             'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
@@ -1702,7 +1649,6 @@ export default class Runtime {
             specifier,
             scriptFilename,
             context,
-            importAssertions,
           );
 
           return this.linkAndEvaluateModule(module);
@@ -1754,7 +1700,6 @@ export default class Runtime {
     source: Buffer,
     identifier: string,
     context: VMContext,
-    importAssertions: ImportAssertions | undefined,
   ) {
     const wasmModule = await WebAssembly.compile(source);
 
@@ -1768,7 +1713,6 @@ export default class Runtime {
           module,
           identifier,
           context,
-          importAssertions,
         );
 
         moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
