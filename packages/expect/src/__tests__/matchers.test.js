@@ -2334,23 +2334,23 @@ describe('toMatchObject()', () => {
     });
   });
 
-  it('toMatchObject takes additional parameter ordered', () => {
+  it('toMatchObject takes additional parameter ignoreElementsOrder as options', () => {
 
-    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{foo: [{a: 1}]}, {baz: 1}], true);
+    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{foo: [{a: 1}]}, {baz: 1}], {ignoreElementsOrder: false});
     jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{foo: [{a: 1}]}, {baz: 1}]);
-    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], true);
+    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], {ignoreElementsOrder: false});
     jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}]);
 
-    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{foo: [{a: 1}]}, {baz: 1}], false);
-    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{baz: 1}, {foo: [{a: 1}]}], false);
+    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{foo: [{a: 1}]}, {baz: 1}], {ignoreElementsOrder: true});
+    jestExpect([{foo: [{a: 1}]}, {baz: 1, extra: 'quux'}]).toMatchObject([{baz: 1}, {foo: [{a: 1}]}], {ignoreElementsOrder: true});
 
-    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{foo: [{a: 1}]}, {baz: 1}], true);
+    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{foo: [{a: 1}]}, {baz: 1}], {ignoreElementsOrder: false});
     jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{foo: [{a: 1}]}, {baz: 1}]);
-    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], true);
+    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], {ignoreElementsOrder: false});
     jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}]);
 
-    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{foo: [{a: 1}]}, {baz: 1}], false);
-    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], false);
+    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{foo: [{a: 1}]}, {baz: 1}], {ignoreElementsOrder: true});
+    jestExpect([{foo: [{a: 2}]}, {baz: 1, extra: 'quux'}]).not.toMatchObject([{baz: 1}, {foo: [{a: 1}]}], {ignoreElementsOrder: true});
 
     
   });
