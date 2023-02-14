@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -1142,6 +1142,38 @@ describe('moduleMocker', () => {
       expect(mock1).toHaveBeenCalled();
 
       expect.assertions(4);
+    });
+
+    it('mockImplementationOnce does not bleed into withImplementation', () => {
+      const mock = jest
+        .fn(() => 'outside callback')
+        .mockImplementationOnce(() => 'once');
+
+      mock.withImplementation(
+        () => 'inside callback',
+        () => {
+          expect(mock()).toBe('inside callback');
+        },
+      );
+
+      expect(mock()).toBe('once');
+      expect(mock()).toBe('outside callback');
+    });
+
+    it('mockReturnValueOnce does not bleed into withImplementation', () => {
+      const mock = jest
+        .fn(() => 'outside callback')
+        .mockReturnValueOnce('once');
+
+      mock.withImplementation(
+        () => 'inside callback',
+        () => {
+          expect(mock()).toBe('inside callback');
+        },
+      );
+
+      expect(mock()).toBe('once');
+      expect(mock()).toBe('outside callback');
     });
   });
 

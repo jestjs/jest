@@ -5,7 +5,11 @@ title: Expect
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
+:::tip
+
 For additional Jest matchers maintained by the Jest Community check out [`jest-extended`](https://github.com/jest-community/jest-extended).
+
+:::
 
 import TypeScriptExamplesNote from './_TypeScriptExamplesNote.md';
 
@@ -646,6 +650,12 @@ describe('the La Croix cans on my desk', () => {
 
 :::tip
 
+`toEqual` ignores object keys with `undefined` properties, `undefined` array items, array sparseness, or object type mismatch. To take these into account use [`.toStrictEqual`](#tostrictequalvalue) instead.
+
+:::
+
+:::info
+
 `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
 
 :::
@@ -746,13 +756,14 @@ Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots)
 
 ### `.toStrictEqual(value)`
 
-Use `.toStrictEqual` to test that objects have the same types as well as structure.
+Use `.toStrictEqual` to test that objects have the same structure and type.
 
 Differences from `.toEqual`:
 
-- Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
-- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
-- Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
+- keys with `undefined` properties are checked, e.g. `{a: undefined, b: 2}` will not equal `{b: 2}`;
+- `undefined` items are taken into account, e.g. `[2]` will not equal `[2, undefined]`;
+- array sparseness is checked, e.g. `[, 1]` will not equal `[undefined, 1]`;
+- object types are checked, e.g. a class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
 class LaCroix {
@@ -1139,7 +1150,7 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 ### `expect.addEqualityTesters(testers)`
 
-You can use `expect.addEqualityTesters` to add your own methods to test if two objects are equal. For example, let's say you have a class in your code that represents volume and it supports determining if two volumes using different units are equal or not. You may want `toEqual` (and other equality matchers) to use this custom equality method when comparing to Volume classes. You can add a custom equality tester to have `toEqual` detect and apply custom logic when comparing Volume classes:
+You can use `expect.addEqualityTesters` to add your own methods to test if two objects are equal. For example, let's say you have a class in your code that represents volume and can determine if two volumes using different units are equal. You may want `toEqual` (and other equality matchers) to use this custom equality method when comparing to Volume classes. You can add a custom equality tester to have `toEqual` detect and apply custom logic when comparing Volume classes:
 
 ```js tab={"span":3} title="Volume.js"
 // For simplicity in this example, we'll just support the units 'L' and 'mL'
@@ -1254,9 +1265,9 @@ test('are equal with different units', () => {
 
 #### Custom equality testers API
 
-Custom testers are functions that return either the result (`true` or `false`) of comparing the equality of the two given arguments or `undefined` if tester does not handle the given the objects and wants to delegate equality to other testers (for example, the built in equality testers).
+Custom testers are functions that return either the result (`true` or `false`) of comparing the equality of the two given arguments or `undefined` if the tester does not handle the given objects and wants to delegate equality to other testers (for example, the builtin equality testers).
 
-Custom testers are called with 3 arguments: the two objects to compare and the array of custom testers (used for recursive testers, see section below).
+Custom testers are called with 3 arguments: the two objects to compare and the array of custom testers (used for recursive testers, see the section below).
 
 These helper functions and properties can be found on `this` inside a custom tester:
 
@@ -1268,15 +1279,15 @@ This is a deep-equality function that will return `true` if two objects have the
 
 Matchers are methods available on `expect`, for example `expect().toEqual()`. `toEqual` is a matcher. A tester is a method used by matchers that do equality checks to determine if objects are the same.
 
-Custom matchers are good to use when you want to provide a custom assertion that test authors can use in their tests. For example, the `toBeWithinRange` example in the [`expect.extend`](#expectextendmatchers) section is a good example of a custom matcher. Sometimes a test author may want to assert two numbers are exactly equal and should use `toBe`. Other times however, a test author may want to allow for some flexibility in their test and `toBeWithinRange` may be a more appropriate assertion.
+Custom matchers are good to use when you want to provide a custom assertion that test authors can use in their tests. For example, the `toBeWithinRange` example in the [`expect.extend`](#expectextendmatchers) section is a good example of a custom matcher. Sometimes a test author may want to assert two numbers are exactly equal and should use `toBe`. Other times, however, a test author may want to allow for some flexibility in their test, and `toBeWithinRange` may be a more appropriate assertion.
 
-Custom equality testers are good to use for globally extending Jest matchers to apply custom equality logic for all equality comparisons. Test authors can't turn on custom testers for certain assertions and turn off for others (a custom matcher should be used instead if that behavior is desired). For example, defining how to check if two `Volume` objects are equal for all matchers would be a good custom equality tester.
+Custom equality testers are good for globally extending Jest matchers to apply custom equality logic for all equality comparisons. Test authors can't turn on custom testers for certain assertions and turn them off for others (a custom matcher should be used instead if that behavior is desired). For example, defining how to check if two `Volume` objects are equal for all matchers would be a good custom equality tester.
 
 #### Recursive custom equality testers
 
-If you custom equality testers is testing objects with properties you'd like to do deep equality with, you should use the `this.equals` helper available to equality testers. This `equals` method is the same deep equals method Jest uses internally for all of its deep equality comparisons. Its the method that invokes your custom equality tester. It accepts an array of custom equality testers as a third argument. Custom equality testers are also given an array of custom testers as their third argument. Pass this argument into the third argument of `equals` so that any further equality checks deeper in your object can also take advantage of custom equality testers.
+If your custom equality testers are testing objects with properties you'd like to do deep equality with, you should use the `this.equals` helper available to equality testers. This `equals` method is the same deep equals method Jest uses internally for all of its deep equality comparisons. It's the method that invokes your custom equality tester. It accepts an array of custom equality testers as a third argument. Custom equality testers are also given an array of custom testers as their third argument. Pass this argument into the third argument of `equals` so that any further equality checks deeper into your object can also take advantage of custom equality testers.
 
-For example, let's say you have a `Book` class that contains an array of `Author` classes and both of these classes have custom testers. The `Book` custom tester would want to do a deep equality check on the array of `Author`s and pass in the custom testers given to it so the `Author`s custom equality tester is applied:
+For example, let's say you have a `Book` class that contains an array of `Author` classes and both of these classes have custom testers. The `Book` custom tester would want to do a deep equality check on the array of `Author`s and pass in the custom testers given to it, so the `Author`s custom equality tester is applied:
 
 ```js title="customEqualityTesters.js"
 function areAuthorEqual(a, b) {
@@ -1638,7 +1649,7 @@ When an assertion fails, the error message should give as much signal as necessa
 
 #### `this.customTesters`
 
-If your matcher does a deep equality check using `this.equals`, you may want to pass user provided custom testers to `this.equals`. The custom equality testers that the user has provided using the `addEqualityTesters` API are available on this property. The built-in Jest matchers pass `this.customTesters` (along with other built-in testers) to `this.equals` to do deep equality, and your custom matchers may want to do the same.
+If your matcher does a deep equality check using `this.equals`, you may want to pass user-provided custom testers to `this.equals`. The custom equality testers the user has provided using the `addEqualityTesters` API are available on this property. The built-in Jest matchers pass `this.customTesters` (along with other built-in testers) to `this.equals` to do deep equality, and your custom matchers may want to do the same.
 
 #### Custom snapshot matchers
 
