@@ -680,13 +680,13 @@ describe('grapefruits are healthy', () => {
 });
 ```
 
-### `.toMatchObject(object, {ignoreElementsOrder: false})`
+### `.toMatchObject(object, options)`
 
 Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. It will match received objects with properties that are **not** in the expected object.
 
 You can also pass an array of objects, in which case the method will return true only if each object in the received array matches (in the `toMatchObject` sense described above) the corresponding object in the expected array. This is useful if you want to check that two arrays match in their number of elements, as opposed to `arrayContaining`, which allows for extra elements in the received array.
 
-The `ignoreElementsOrder` parameter defaults to `false` and is used when matching two arrays of objects. When `ignoreElementsOrder` is `false`, the order of elements in arrays matters. When `ignoreElementsOrder` is `true`, the order doesn't matter as long as the element is present. 
+You can use the boolean value `ignoreElementsOrder` in `options` parameter which defaults to `false` and is used when matching two arrays of objects. When `ignoreElementsOrder` is `false`, the order of elements in arrays matters. When `ignoreElementsOrder` is `true`, the order doesn't matter as long as the element is present. 
 
 You can match properties against values or against matchers.
 
@@ -726,21 +726,21 @@ describe('toMatchObject applied to arrays', () => {
     ]);
   });
 
-  test('.toMatchObject called with gnoreElementsOrder = false. Equivalent as the above test.', () => {
+  test('.toMatchObject called with options.ignoreElementsOrder = false. Equivalent as the above test.', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
       {foo: 'bar'},
       {baz: 1},
     ], {ignoreElementsOrder: false});
   });
 
-  test('.toMatchObject called with gnoreElementsOrder = false. Two arrays do not match because the order of elements is different.', () => {
+  test('.toMatchObject called with options.ignoreElementsOrder = false. Two arrays do not match because the order of elements is different.', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).not.toMatchObject([
       {baz: 1},
       {foo: 'bar'},
     ], {ignoreElementsOrder: false});
   });
 
-  test('.toMatchObject called with ognoreElementsOrder = true. Two arrays match despite the difference in order.', () => {
+  test('.toMatchObject called with options.ignoreElementsOrder = true. Two arrays match despite the difference in order.', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
       {baz: 1},
       {foo: 'bar'},

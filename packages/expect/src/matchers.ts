@@ -23,8 +23,8 @@ import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
-  MatcherHintOptions,
   MatchObjectOptions,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -888,7 +888,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(received: object, expected: object, options: MatchObjectOptions = {ignoreElementsOrder: false}) {
+  toMatchObject(
+    received: object,
+    expected: object,
+    options?: MatchObjectOptions,
+  ) {
     const matcherName = 'toMatchObject';
     const hintOptions: MatcherHintOptions = {
       isNot: this.isNot,
@@ -916,16 +920,24 @@ const matchers: MatchersObject = {
     }
 
     let pass = true;
-    let that = this;
 
-    if (Array.isArray(received) && Array.isArray(expected) && options.ignoreElementsOrder) {
+    if (
+      Array.isArray(received) &&
+      Array.isArray(expected) &&
+      typeof options !== 'undefined' &&
+      typeof options.ignoreElementsOrder !== 'undefined' &&
+      options.ignoreElementsOrder
+    ) {
       expected.forEach(item => {
-        const item_pass = received.some(
-          another => equals(another, item, [...that.customTesters, iterableEquality, subsetEquality])
+        const item_pass = received.some(another =>
+          equals(another, item, [
+            ...this.customTesters,
+            iterableEquality,
+            subsetEquality,
+          ]),
         );
         pass = pass && item_pass;
-      })
-
+      });
     } else {
       pass = equals(received, expected, [
         ...this.customTesters,

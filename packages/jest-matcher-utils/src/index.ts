@@ -584,5 +584,5 @@ export const matcherHint = (
 };
 
 export type MatchObjectOptions = {
-  ignoreElementsOrder: boolean;
+  ignoreElementsOrder?: boolean;
 };
