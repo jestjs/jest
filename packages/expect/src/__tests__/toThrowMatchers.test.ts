@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import {alignedAnsiStyleSerializer, onNodeVersions} from '@jest/test-utils';
 import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -296,19 +296,17 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
         }).not[toThrow](expected);
       });
 
-      test('isNot true, incorrect cause', () => {
-        // only v16 or higher support Error.cause
-        if (Number(process.version.split('.')[0].slice(1)) >= 16) {
+      onNodeVersions('>=16.9.0', () => {
+        test('isNot true, incorrect cause', () => {
           jestExpect(() => {
             throw new Error('good', {cause: errorA});
           }).not[toThrow](expected);
-        }
+        });
       });
     });
 
     describe('fail', () => {
-      // only v16 or higher support Error.cause
-      if (Number(process.version.split('.')[0].slice(1)) >= 16) {
+      onNodeVersions('>=16.9.0', () => {
         test('isNot false, incorrect message', () => {
           expect(() =>
             jestExpect(() => {
@@ -328,7 +326,7 @@ describe.each(['toThrowError', 'toThrow'] as const)('%s', toThrow => {
             /^(?=.*Expected message and cause: ).*Received message and cause: /s,
           );
         });
-      }
+      });
     });
   });
 
