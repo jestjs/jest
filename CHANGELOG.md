@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-core]` allow to use workerIdleMemoryLimit with only 1 worker or runInBand option ([#13846](https://github.com/facebook/jest/pull/13846))
 - `[jest-message-util]` Add support for [error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) ([#13868](https://github.com/facebook/jest/pull/13868) & [#13912](https://github.com/facebook/jest/pull/13912))
 
 ### Fixes
