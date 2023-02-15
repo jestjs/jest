@@ -135,6 +135,29 @@ describe('Custom Reporters Integration', () => {
     expect(stdout).toMatchSnapshot();
   });
 
+  test('shows testCaseResult with todo', () => {
+    writeFiles(DIR, {
+      '__tests__/test.test.js': "it.todo('test');",
+      'package.json': JSON.stringify({
+        jest: {
+          reporters: ['default', '<rootDir>/reporter.js'],
+        },
+      }),
+      'reporter.js': `
+        'use strict';
+        module.exports = class Reporter {
+          onTestCaseResult(test, testCaseResult) {
+            console.log(testCaseResult.title)
+          }
+        };
+      `,
+    });
+
+    const {stdout, exitCode} = runJest(DIR);
+    expect(stdout).toBe('test');
+    expect(exitCode).toBe(0);
+  });
+
   test('prints reporter errors', () => {
     writeFiles(DIR, {
       '__tests__/test.test.js': "test('test', () => {});",
