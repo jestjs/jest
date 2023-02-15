@@ -186,11 +186,6 @@ expectType<void>(
   }),
 );
 expectType<void>(
-  expect([{a: 1}, {b: 2, c: true}]).toMatchObject([{a: 1}, {b: 2}], {
-    ignoreElementsOrder: false,
-  }),
-);
-expectType<void>(
   expect([{a: 1}, {b: 2, c: true}]).toMatchObject([{b: 2}, {a: 1}], {
     ignoreElementsOrder: true,
   }),
