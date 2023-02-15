@@ -36,6 +36,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -64,6 +66,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -78,6 +82,8 @@ jobs:
         run: yarn lint
       - name: run prettier
         run: yarn lint:prettier:ci
+      - name: check changelog
+        run: yarn check-changelog
       - name: check copyright headers
         run: yarn check-copyright-headers
 
@@ -87,6 +93,8 @@ jobs:
     needs: prepare-yarn-cache-ubuntu
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -119,6 +127,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
@@ -142,6 +152,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:

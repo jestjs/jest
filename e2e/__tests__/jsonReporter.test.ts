@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,6 +27,8 @@ describe('JSON Reporter', () => {
 
     runJest('json-reporter', ['--json', `--outputFile=${outputFileName}`]);
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
+
+    expect(testOutput.endsWith('\n')).toBe(true);
 
     try {
       jsonResult = JSON.parse(testOutput);
@@ -71,11 +73,15 @@ describe('JSON Reporter', () => {
   });
 
   it('outputs coverage report', () => {
-    const result = runJest('json-reporter', ['--json']);
+    const result = runJest('json-reporter', ['--json'], {
+      keepTrailingNewline: true,
+    });
     let jsonResult: FormattedTestResults;
 
     expect(result.stderr).toMatch(/1 failed, 1 skipped, 2 passed/);
     expect(result.exitCode).toBe(1);
+
+    expect(result.stdout.endsWith('\n')).toBe(true);
 
     try {
       jsonResult = JSON.parse(result.stdout);

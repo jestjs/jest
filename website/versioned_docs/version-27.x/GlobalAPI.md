@@ -249,7 +249,7 @@ Use `describe.each` if you keep duplicating the same test suites with different 
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.
+- `fn`: `Function` the suite of tests to be run, this is the function that will receive the parameters in each row as function arguments.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -301,7 +301,7 @@ describe.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions, and `$#` for the index of the row.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
+- `fn`: `Function` the suite of tests to be run, this is the function that will receive the test data object.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -370,7 +370,7 @@ describe.only.each([
   });
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -383,13 +383,13 @@ describe.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   test('passes', () => {
     expect(a + b).toBe(expected);
   });
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -435,11 +435,11 @@ describe.skip.each([
   [2, 1, 3],
 ])('.add(%i, %i)', (a, b, expected) => {
   test(`returns ${expected}`, () => {
-    expect(a + b).toBe(expected); // will not be ran
+    expect(a + b).toBe(expected); // will not be run
   });
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -452,13 +452,13 @@ describe.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
-  test('will not be ran', () => {
-    expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
+  test('will not be run', () => {
+    expect(a + b).toBe(expected); // will not be run
   });
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -536,7 +536,7 @@ Use `test.concurrent.each` if you keep duplicating the same test with different 
     - `%o` - Object.
     - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
-- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
+- `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -558,7 +558,7 @@ test.concurrent.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the test to be ran, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
+- `fn`: `Function` the test to be run, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -569,7 +569,7 @@ test.concurrent.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -593,7 +593,7 @@ test.concurrent.only.each([
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -606,11 +606,11 @@ test.concurrent.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -631,10 +631,10 @@ test.concurrent.skip.each([
   [1, 2, 3],
   [2, 1, 3],
 ])('.add(%i, %i)', async (a, b, expected) => {
-  expect(a + b).toBe(expected); // will not be ran
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -647,11 +647,11 @@ test.concurrent.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', async ({a, b, expected}) => {
-  expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', async ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -683,7 +683,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
+- `fn`: `Function` the test to be run, this is the function that will receive the parameters in each row as function arguments.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -715,7 +715,7 @@ test.each([
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 - `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-- `fn`: `Function` the test to be ran, this is the function that will receive the test data object.
+- `fn`: `Function` the test to be run, this is the function that will receive the test data object.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
 
 Example:
@@ -726,7 +726,7 @@ test.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 ```
@@ -774,7 +774,7 @@ test.only.each([
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -787,11 +787,11 @@ test.only.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
   expect(a + b).toBe(expected);
 });
 
-test('will not be ran', () => {
+test('will not be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -834,10 +834,10 @@ test.skip.each([
   [1, 2, 3],
   [2, 1, 3],
 ])('.add(%i, %i)', (a, b, expected) => {
-  expect(a + b).toBe(expected); // will not be ran
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
@@ -850,11 +850,11 @@ test.skip.each`
   ${1} | ${1} | ${2}
   ${1} | ${2} | ${3}
   ${2} | ${1} | ${3}
-`('returns $expected when $a is added $b', ({a, b, expected}) => {
-  expect(a + b).toBe(expected); // will not be ran
+`('returns $expected when $a is added to $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be run
 });
 
-test('will be ran', () => {
+test('will be run', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```

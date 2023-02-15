@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -363,7 +363,7 @@ it('creates error instances for known errors', () => {
   expect(callback3.mock.calls[0][0]).toBe(412);
 });
 
-it('throws when the child process returns a strange message', () => {
+it('does not throw when the child process returns a strange message', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -378,9 +378,14 @@ it('throws when the child process returns a strange message', () => {
   );
 
   // Type 27 does not exist.
-  expect(() => {
-    forkInterface.emit('message', [27]);
-  }).toThrow(TypeError);
+  forkInterface.emit('message', [27]);
+
+  forkInterface.emit('message', 'test');
+  forkInterface.emit('message', {foo: 'bar'});
+  forkInterface.emit('message', 0);
+  forkInterface.emit('message', null);
+  forkInterface.emit('message', Symbol('test'));
+  forkInterface.emit('message', true);
 });
 
 it('does not restart the child if it cleanly exited', () => {

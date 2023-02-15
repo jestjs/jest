@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,13 +11,9 @@ import * as path from 'path';
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 import * as fs from 'graceful-fs';
 
-const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
-const CIRCUS_RUN_PATH = require
-  .resolve('../../build/run')
-  .replace(/\\/g, '\\\\');
-const CIRCUS_STATE_PATH = require
-  .resolve('../../build/state')
-  .replace(/\\/g, '\\\\');
+const CIRCUS_PATH = require.resolve('../').replace(/\\/g, '\\\\');
+const CIRCUS_RUN_PATH = require.resolve('../run').replace(/\\/g, '\\\\');
+const CIRCUS_STATE_PATH = require.resolve('../state').replace(/\\/g, '\\\\');
 const TEST_EVENT_HANDLER_PATH = require
   .resolve('./testEventHandler')
   .replace(/\\/g, '\\\\');

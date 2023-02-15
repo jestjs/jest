@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`logs error annotation when a test has reference error 1`] = `
+exports[`annotations logs error annotation when a test has reference error 1`] = `
 Array [
   "
 ::error file=/user/project/__tests__/example.test.js,line=25,title=example test::ReferenceError: abc is not defined%0A%0A    at Object.abc (__tests__/example.test.js:25:12)
@@ -8,7 +8,7 @@ Array [
 ]
 `;
 
-exports[`logs error annotation when an expectation fails to pass 1`] = `
+exports[`annotations logs error annotation when an expectation fails to pass 1`] = `
 Array [
   "
 ::error file=/user/project/__tests__/example.test.js,line=20,title=example test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
@@ -16,7 +16,7 @@ Array [
 ]
 `;
 
-exports[`logs error annotation when test is wrapped in describe block 1`] = `
+exports[`annotations logs error annotation when test is wrapped in describe block 1`] = `
 Array [
   "
 ::error file=/user/project/__tests__/example.test.js,line=20,title=describe › example test::expect(received).toBe(expected) // Object.is equality%0A%0AExpected: 1%0AReceived: 10%0A%0A    at Object.toBe (__tests__/example.test.js:20:14)
@@ -24,7 +24,7 @@ Array [
 ]
 `;
 
-exports[`logs warning annotation before logging errors when test result includes retry reasons 1`] = `
+exports[`annotations logs warning annotation before logging errors when test result includes retry reasons 1`] = `
 Array [
   Array [
     "
@@ -34,6 +34,124 @@ Array [
   Array [
     "
 ::error file=/user/project/__tests__/example.test.js,line=19,title=example test::expect(received).toBeFalsy()%0A%0AReceived: true%0A%0A    at Object.toBeFalsy (__tests__/example.test.js:19:20)
+",
+  ],
+]
+`;
+
+exports[`logs Reporter interface onTestResult last 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> test1.js (20 ms)
+",
+  ],
+  Array [
+    "  <green>✓</color> test1 (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+  Array [
+    "
+",
+  ],
+  Array [
+    "::group::Errors thrown in test1.js
+",
+  ],
+  Array [
+    "Failure message
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Reporter interface onTestResult not last 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> test1.js (20 ms)
+",
+  ],
+  Array [
+    "  <green>✓</color> test1 (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output failed single test inside describe 1`] = `
+Array [
+  Array [
+    "  <bold><red><inverse>FAIL</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "    Test describe
+",
+  ],
+  Array [
+    "      <red>×</color> test (10 ms)
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output failed single test without describe 1`] = `
+Array [
+  Array [
+    "  <bold><red><inverse>FAIL</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "    <red>×</color> test (10 ms)
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output passed single test inside describe 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "  Test describe
+",
+  ],
+  Array [
+    "    <green>✓</color> test (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
+",
+  ],
+]
+`;
+
+exports[`logs Result tree output passed single test without describe 1`] = `
+Array [
+  Array [
+    "::group::<bold><green><inverse>PASS</inverse></color></intensity> / (20 ms)
+",
+  ],
+  Array [
+    "  <green>✓</color> test (10 ms)
+",
+  ],
+  Array [
+    "::endgroup::
 ",
   ],
 ]

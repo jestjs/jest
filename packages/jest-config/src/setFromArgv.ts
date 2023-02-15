@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,9 +14,12 @@ export default function setFromArgv(
   options: Config.InitialOptions,
   argv: Config.Argv,
 ): Config.InitialOptions {
-  const argvToOptions = Object.keys(argv)
-    .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((options: Record<string, unknown>, key) => {
+  const argvToOptions = Object.keys(argv).reduce(
+    (options: Record<string, unknown>, key) => {
+      if (argv[key] === undefined || specialArgs.includes(key)) {
+        return options;
+      }
+
       switch (key) {
         case 'coverage':
           options.collectCoverage = argv[key];
@@ -48,7 +51,9 @@ export default function setFromArgv(
           options[key] = argv[key];
       }
       return options;
-    }, {});
+    },
+    {},
+  );
 
   return {
     ...options,

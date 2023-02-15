@@ -4,5 +4,5 @@
     "lib": ["es2022.error"]
   },
   "include": ["./**/*"],
-  "references": [{"path": "../../"}]
+  "references": [{"path": "../../"}, {"path": "../../../test-utils"}]
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -233,6 +233,15 @@ module.exports = {
       files: ['**/2016-04-12-jest-11.md/**'],
       rules: {
         'jest/prefer-to-have-length': 'off',
+      },
+    },
+    // snapshot in an example needs to keep escapes
+    {
+      files: [
+        '**/2017-02-21-jest-19-immersive-watch-mode-test-platform-improvements.md/**',
+      ],
+      rules: {
+        'no-useless-escape': 'off',
       },
     },
 

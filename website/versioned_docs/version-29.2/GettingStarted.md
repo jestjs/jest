@@ -87,7 +87,7 @@ module.exports = {
 };
 ```
 
-_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
@@ -124,7 +124,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using Vite
 
-Jest can be used in projects that use [vite](https://vitejs.dev/) to serves source code over native ESM to provide some frontend tooling, vite is an opinionated tool and does offer some out-of-the box workflows. Jest is not fully supported by vite due to how the [plugin system](https://github.com/vitejs/vite/issues/1955#issuecomment-776009094) from vite works, but there is some working examples for first-class jest integration using the `vite-jest`, since this is not fully supported, you might as well read the [limitation of the `vite-jest`](https://github.com/sodatea/vite-jest/tree/main/packages/vite-jest#limitations-and-differences-with-commonjs-tests). Refer to the [vite guide](https://vitejs.dev/guide/) to get started. Alternatively you can use [vitest](https://github.com/vitest-dev/vitest).
+Jest can be used in projects that use [vite](https://vitejs.dev/) to serve source code over native ESM to provide some frontend tooling, vite is an opinionated tool and does offer some out-of-the box workflows. Jest is not fully supported by vite due to how the [plugin system](https://github.com/vitejs/vite/issues/1955#issuecomment-776009094) from vite works, but there are some working examples for first-class jest integration using `vite-jest`, since this is not fully supported, you might as well read the [limitation of the `vite-jest`](https://github.com/sodatea/vite-jest/tree/main/packages/vite-jest#limitations-and-differences-with-commonjs-tests). Refer to the [vite guide](https://vitejs.dev/guide/) to get started.
 
 ### Using Parcel
 
@@ -168,7 +168,13 @@ In order for Jest to transpile TypeScript with `ts-jest`, you may also need to c
 
 There are two ways to have [Jest global APIs](GlobalAPI.md) typed for test files written in TypeScript.
 
-You can use type definitions which ships with Jest and will update each time you update Jest. Simply import the APIs from `@jest/globals` package:
+You can use type definitions which ships with Jest and will update each time you update Jest. Install the `@jest/globals` package:
+
+```bash npm2yarn
+npm install --save-dev @jest/globals
+```
+
+And import the testing APIs from it:
 
 ```ts title="sum.test.ts"
 import {describe, expect, test} from '@jest/globals';

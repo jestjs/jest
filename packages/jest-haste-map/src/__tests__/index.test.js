@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -344,6 +344,14 @@ describe('HasteMap', () => {
     `;
     const {hasteFS} = await (await HasteMap.create(defaultConfig)).build();
     expect(hasteFS.matchFiles('.git')).toEqual([]);
+  });
+
+  it('ignores sapling vcs directories without ignore pattern', async () => {
+    mockFs[path.join('/', 'project', 'fruits', '.sl', 'package.json')] = `
+      invalid}{
+    `;
+    const {hasteFS} = await (await HasteMap.create(defaultConfig)).build();
+    expect(hasteFS.matchFiles('.sl')).toEqual([]);
   });
 
   it('ignores vcs directories with ignore pattern regex', async () => {
