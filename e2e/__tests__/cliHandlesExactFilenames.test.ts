@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -47,5 +47,5 @@ test('CLI skips exact file names if no matchers matched', () => {
 
   expect(result.exitCode).toBe(1);
   expect(result.stdout).toMatch(/No tests found([\S\s]*)2 files checked./);
-  expect(result.stderr).toEqual('');
+  expect(result.stderr).toBe('');
 });

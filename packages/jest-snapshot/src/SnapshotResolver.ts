@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -52,7 +52,7 @@ async function createSnapshotResolver(
   snapshotResolverPath?: string | null,
 ): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
-    ? await createCustomSnapshotResolver(snapshotResolverPath, localRequire)
+    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
     : createDefaultSnapshotResolver();
 }
 

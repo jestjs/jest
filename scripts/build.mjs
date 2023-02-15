@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,8 +16,8 @@
  *  node ./scripts/build.mjs /users/123/jest/packages/jest-111/src/111.js
  */
 
-import assert from 'assert';
-import path from 'path';
+import {strict as assert} from 'assert';
+import * as path from 'path';
 import {fileURLToPath} from 'url';
 import babel from '@babel/core';
 import chalk from 'chalk';

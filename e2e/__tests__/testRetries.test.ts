@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,14 +29,14 @@ describe('Test Retries', () => {
   it('retries failed tests', () => {
     const result = runJest('test-retries', ['e2e.test.js']);
 
-    expect(result.exitCode).toEqual(0);
+    expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);
     expect(result.stderr).not.toContain(logErrorsBeforeRetryErrorMessage);
   });
 
   it('logs error(s) before retry', () => {
     const result = runJest('test-retries', ['logErrorsBeforeRetries.test.js']);
-    expect(result.exitCode).toEqual(0);
+    expect(result.exitCode).toBe(0);
     expect(result.failed).toBe(false);
     expect(result.stderr).toContain(logErrorsBeforeRetryErrorMessage);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();

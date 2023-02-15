@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -158,7 +158,7 @@ describe('when `Config` type is imported from "@jest/types"', () => {
           const config: Config.InitialOptions = {verbose: true};
           export default get config;
           `,
-      'package.json': '{}',
+      'package.json': '{"type": "module"}',
     });
 
     const {stderr, exitCode} = runJest(DIR);
@@ -314,7 +314,7 @@ describe('when `Config` type is imported from "jest"', () => {
           const config: Config = {verbose: true};
           export default get config;
           `,
-      'package.json': '{}',
+      'package.json': '{"type": "module"}',
     });
 
     const {stderr, exitCode} = runJest(DIR);

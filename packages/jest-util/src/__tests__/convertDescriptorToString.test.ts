@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,10 +27,12 @@ describe(convertDescriptorToString, () => {
     ['anonymous class expression', class {}],
   ])('%s', (_, input) => {
     expect(() => {
-      // @ts-expect-error
+      // @ts-expect-error: Testing runtime error
       return convertDescriptorToString(input);
-    }).toThrowError(
-      `Invalid first argument, ${input}. It must be a named class, named function, number, or string.`,
+    }).toThrow(
+      `Invalid first argument, ${String(
+        input,
+      )}. It must be a named class, named function, number, or string.`,
     );
   });
 });

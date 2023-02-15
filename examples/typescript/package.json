@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "name": "example-typescript",
   "dependencies": {
-    "react": "17.0.2",
-    "react-dom": "^17.0.1",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^4.8.2"
   },
   "devDependencies": {
@@ -12,9 +12,10 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.0.0",
-    "@types/jest": "^27.4.0",
+    "@jest/globals": "workspace:^",
     "babel-jest": "workspace:^",
-    "jest": "workspace:^"
+    "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^"
   },
   "scripts": {
     "test": "jest"

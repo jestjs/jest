@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,11 +17,13 @@ globalThis.DTRACE_NET_SERVER_CONNECTION = fake;
 let installCommonGlobals: typeof import('../installCommonGlobals').default;
 
 function getGlobal(): typeof globalThis {
-  return runInContext('this', createContext());
+  return runInContext('this', createContext()) as typeof globalThis;
 }
 
 beforeEach(() => {
-  installCommonGlobals = require('../installCommonGlobals').default;
+  installCommonGlobals = (
+    require('../installCommonGlobals') as typeof import('../installCommonGlobals')
+  ).default;
 });
 
 afterEach(() => {

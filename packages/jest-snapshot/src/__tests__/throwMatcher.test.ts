@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -30,7 +30,7 @@ it('throw matcher can take func', () => {
     false,
   );
 
-  expect(mockedMatch).toBeCalledTimes(1);
+  expect(mockedMatch).toHaveBeenCalledTimes(1);
   expect(mockedMatch).toHaveBeenCalledWith(
     expect.objectContaining({received: 'coconut', testName: ''}),
   );
@@ -45,7 +45,7 @@ describe('throw matcher from promise', () => {
       true,
     );
 
-    expect(mockedMatch).toBeCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
     expect(mockedMatch).toHaveBeenCalledWith(
       expect.objectContaining({received: 'coco', testName: ''}),
     );
@@ -61,7 +61,7 @@ describe('throw matcher from promise', () => {
       true,
     );
 
-    expect(mockedMatch).toBeCalledTimes(1);
+    expect(mockedMatch).toHaveBeenCalledTimes(1);
     expect(mockedMatch).toHaveBeenCalledWith(
       expect.objectContaining({received: 'nut', testName: ''}),
     );

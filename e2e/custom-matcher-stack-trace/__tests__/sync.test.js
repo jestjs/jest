@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -35,7 +35,7 @@ describe('Custom matcher', () => {
       // This expectation should fail,
       // Which is why it's wrapped in a .toThrow() block.
       expect(() => 'foo').toCustomMatch('bar');
-    }).toThrow();
+    }).toThrow('Expected "bar" but got "foo"');
   });
 
   it('preserves error stack', () => {

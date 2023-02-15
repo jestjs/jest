@@ -112,3 +112,18 @@ exports[`should not exclude vendor from stack trace 1`] = `
 <dim>      <dim>at Object.asyncFn (</intensity><dim>__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js<dim>:1:5)</intensity><dim></intensity>
 "
 `;
+
+exports[`should return the error cause if there is one 1`] = `
+"  <bold>● </intensity>Test suite failed to run
+
+    Test exception
+
+      <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:418:17)</intensity>
+
+    Cause:
+     Cause Error
+
+          <dim>at Object.<anonymous> (</intensity>packages/jest-message-util/src/__tests__/messages.test.ts<dim>:421:17)</intensity>
+
+"
+`;

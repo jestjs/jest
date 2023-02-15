@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -106,13 +106,18 @@ const IDVisitor = {
   ) {
     ids.add(path);
   },
-  blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
+  blacklist: [
+    'TypeAnnotation',
+    'TSTypeAnnotation',
+    'TSTypeQuery',
+    'TSTypeReference',
+  ],
 };
 
-const FUNCTIONS: Record<
+const FUNCTIONS = Object.create(null) as Record<
   string,
   <T extends Node>(args: Array<NodePath<T>>) => boolean
-> = Object.create(null);
+>;
 
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
@@ -137,7 +142,7 @@ FUNCTIONS.mock = args => {
       let scope = id.scope;
 
       while (scope !== parentScope) {
-        if (scope.bindings[name]) {
+        if (scope.bindings[name] != null) {
           found = true;
           break;
         }

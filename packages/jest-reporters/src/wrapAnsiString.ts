@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ export default function wrapAnsiString(
 
   while ((match = ANSI_REGEXP.exec(string))) {
     const ansi = match[0];
-    const index = match['index'];
+    const index = match.index;
     if (index != lastIndex) {
       tokens.push(['string', string.slice(lastIndex, index)]);
     }

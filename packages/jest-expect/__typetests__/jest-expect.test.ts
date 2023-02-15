@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,3 +29,16 @@ expectError(() => {
 
 expectAssignable<typeof expect>(jestExpect);
 expectNotAssignable<typeof jestExpect>(expect);
+
+declare module 'expect' {
+  interface Matchers<R, T> {
+    toTypedEqual(expected: T): void;
+  }
+}
+
+expectType<void>(jestExpect(100).toTypedEqual(100));
+expectType<void>(jestExpect(101).not.toTypedEqual(101));
+
+expectError(() => {
+  jestExpect(100).toTypedEqual('three');
+});

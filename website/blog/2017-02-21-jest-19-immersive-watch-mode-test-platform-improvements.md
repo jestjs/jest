@@ -23,7 +23,7 @@ We made a couple of changes to the snapshot format. We don't make changes like t
 
 Before:
 
-```
+```js
 exports[`test snap 1`] = `
 <header>
   <h1>
@@ -37,7 +37,7 @@ exports[`test snap 1`] = `
 
 After (no “test” prefix, better JSX rendering, version header):
 
-```
+```js
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`snap 1`] = `

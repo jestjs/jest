@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -49,7 +49,7 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   ]
     .reduce(
       (hash, chunk) => hash.update('\0', 'utf8').update(chunk || ''),
-      createHash('sha256'),
+      createHash('sha1'),
     )
     .digest('hex')
     .substring(0, 32);
@@ -62,7 +62,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
     const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
 
-    return createHash('sha256')
+    return createHash('sha1')
       .update(globalCacheKey)
       .update('\0', 'utf8')
       .update(sourceText)

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,4 +22,13 @@ test('a resolved Promise', () => {
 
 test('a rejected Promise', () => {
   expect(isPromise(Promise.reject().catch(() => {}))).toBe(true);
+});
+
+test('a thenable', () => {
+  expect(isPromise({then: () => 'hello'})).toBe(true);
+});
+
+test('an async function', () => {
+  async function asyncFn() {}
+  expect(isPromise(asyncFn())).toBe(true);
 });

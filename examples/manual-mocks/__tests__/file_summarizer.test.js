@@ -1,4 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Meta Platforms, Inc. and affiliates.. All Rights Reserved.
 
 'use strict';
 
@@ -20,6 +20,6 @@ describe('listFilesInDirectorySync', () => {
     const fileSummary =
       FileSummarizer.summarizeFilesInDirectorySync('/path/to');
 
-    expect(fileSummary.length).toBe(2);
+    expect(fileSummary).toHaveLength(2);
   });
 });

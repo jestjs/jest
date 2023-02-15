@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getSummary does not print seed value when showSeed is false 1`] = `
+"<bold>Test Suites: </intensity>0 total
+<bold>Tests:       </intensity>0 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s"
+`;
+
+exports[`getSummary does print seed value when showSeed is true 1`] = `
+"<bold>Seed:        </intensity>55555
+<bold>Test Suites: </intensity>0 total
+<bold>Tests:       </intensity>0 total
+<bold>Snapshots:   </intensity>0 total
+<bold>Time:</intensity>        0.01 s"
+`;

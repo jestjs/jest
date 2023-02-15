@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,16 +17,16 @@ describe('without an explicit reset', () => {
     importedFn();
     localFn();
 
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
+    expect(importedFn).toHaveBeenCalledTimes(1);
+    expect(localFn).toHaveBeenCalledTimes(1);
   });
 
   test('second test', () => {
     importedFn();
     localFn();
 
-    expect(importedFn.mock.calls.length).toBe(2);
-    expect(localFn.mock.calls.length).toBe(2);
+    expect(importedFn).toHaveBeenCalledTimes(2);
+    expect(localFn).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -39,15 +39,15 @@ describe('with an explicit reset', () => {
     importedFn();
     localFn();
 
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
+    expect(importedFn).toHaveBeenCalledTimes(1);
+    expect(localFn).toHaveBeenCalledTimes(1);
   });
 
   test('second test', () => {
     importedFn();
     localFn();
 
-    expect(importedFn.mock.calls.length).toBe(1);
-    expect(localFn.mock.calls.length).toBe(1);
+    expect(importedFn).toHaveBeenCalledTimes(1);
+    expect(localFn).toHaveBeenCalledTimes(1);
   });
 });

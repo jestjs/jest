@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ describe('getPlatformExtension', () => {
     expect(getPlatformExtension('/b/c/a.ios.js')).toBe('ios');
     expect(getPlatformExtension('/b/c.android/a.ios.js')).toBe('ios');
     expect(getPlatformExtension('/b/c/a@1.5x.ios.png')).toBe('ios');
-    expect(getPlatformExtension('/b/c/a@1.5x.lol.png')).toBe(null);
-    expect(getPlatformExtension('/b/c/a.lol.png')).toBe(null);
+    expect(getPlatformExtension('/b/c/a@1.5x.lol.png')).toBeNull();
+    expect(getPlatformExtension('/b/c/a.lol.png')).toBeNull();
   });
 });

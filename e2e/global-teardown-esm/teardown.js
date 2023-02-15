@@ -1,12 +1,12 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import crypto from 'crypto';
-import os from 'os';
-import path from 'path';
+import * as crypto from 'crypto';
+import * as os from 'os';
+import * as path from 'path';
 import fs from 'graceful-fs';
 import jestUtil from 'jest-util';
 

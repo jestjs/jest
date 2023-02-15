@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,10 +17,10 @@ import {formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
   private _clock!: InstalledClock;
-  private _config: Config.ProjectConfig;
+  private readonly _config: Config.ProjectConfig;
   private _fakingTime: boolean;
-  private _global: typeof globalThis;
-  private _fakeTimers: FakeTimerWithContext;
+  private readonly _global: typeof globalThis;
+  private readonly _fakeTimers: FakeTimerWithContext;
 
   constructor({
     global,

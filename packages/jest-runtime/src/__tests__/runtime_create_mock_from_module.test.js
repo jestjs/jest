@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -36,7 +36,7 @@ describe('Runtime', () => {
       const mock = module.jest.createMockFromModule('ModuleWithSideEffects');
 
       // Make sure we get a mock.
-      expect(mock.fn()).toBe(undefined);
+      expect(mock.fn()).toBeUndefined();
       expect(module.getModuleStateValue()).toBe(origModuleStateValue);
     });
 

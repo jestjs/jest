@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -114,6 +114,16 @@ export default function getSummary(
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
+  const optionalLines: Array<string> = [];
+
+  if (options?.showSeed === true) {
+    const {seed} = options;
+    if (seed === undefined) {
+      throw new Error('Attempted to display seed but seed value is undefined');
+    }
+    optionalLines.push(`${chalk.bold('Seed:        ') + seed}`);
+  }
+
   const suites = `${
     chalk.bold('Test Suites: ') +
     (suitesFailed ? `${chalk.bold.red(`${suitesFailed} failed`)}, ` : '') +
@@ -183,5 +193,6 @@ export default function getSummary(
   }${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
-  return [suites, tests, snapshots, time].join('\n');
+
+  return [...optionalLines, suites, tests, snapshots, time].join('\n');
 }

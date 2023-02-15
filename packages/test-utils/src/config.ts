@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -47,6 +47,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   reporters: [],
   rootDir: '/test_root_dir/',
   runTestsByPath: false,
+  seed: 1234,
   silent: false,
   skipFilter: false,
   snapshotFormat: {},

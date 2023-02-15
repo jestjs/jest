@@ -242,6 +242,29 @@ Received
 Number of returns: <r>3</>
 `;
 
+exports[`lastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`lastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
+`;
+
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 <d>expect(</><r>received</><d>).</>lastReturnedWith<d>(</><g>expected</><d>)</>
 
@@ -2058,6 +2081,29 @@ Received
 ->     3:     <d>"foo3"</>
 
 Number of returns: <r>3</>
+`;
+
+exports[`toHaveLastReturnedWith returnedWith incomplete recursive calls are handled properly 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>undefined</>
+Received
+       3: function call has not returned yet
+->     4: function call has not returned yet
+
+Number of returns: <r>0</>
+Number of calls:   <r>4</>
+`;
+
+exports[`toHaveLastReturnedWith returnedWith works with more calls than the limit 1`] = `
+<d>expect(</><r>jest.fn()</><d>).</>toHaveLastReturnedWith<d>(</><g>expected</><d>)</>
+
+Expected: <g>"bar"</>
+Received
+       5: <r>"foo5"</>
+->     6: <r>"foo6"</>
+
+Number of returns: <r>6</>
 `;
 
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `

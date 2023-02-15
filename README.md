@@ -10,7 +10,7 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/facebook/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/workflow/status/facebook/jest/Node%20CI?label=CI&logo=GitHub"></a>
+  <a href="https://github.com/facebook/jest/actions/workflows/nodejs.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/facebook/jest/nodejs.yml?label=CI&logo=GitHub"></a>
   <a href="https://codecov.io/github/facebook/jest"><img alt="Coverage Status" src="https://img.shields.io/codecov/c/github/facebook/jest/main.svg?maxAge=43200"></a>
 </p>
 <p align="center">
@@ -151,7 +151,7 @@ module.exports = {
 };
 ```
 
-_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 

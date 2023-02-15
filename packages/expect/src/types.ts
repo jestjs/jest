@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,6 +46,7 @@ export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
 export interface MatcherUtils {
+  customTesters: Array<Tester>;
   dontThrow(): void;
   equals: EqualsFunction;
   utils: typeof jestMatcherUtils & {
@@ -64,6 +65,7 @@ export interface MatcherState {
   isExpectingAssertions: boolean;
   isExpectingAssertionsError?: Error;
   isNot?: boolean;
+  numPassingAsserts: number;
   promise?: string;
   suppressedErrors: Array<Error>;
   testPath?: string;
@@ -86,6 +88,7 @@ export type ExpectedAssertionsErrors = Array<{
 
 export interface BaseExpect {
   assertions(numberOfAssertions: number): void;
+  addEqualityTesters(testers: Array<Tester>): void;
   extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors(): ExpectedAssertionsErrors;
   getState(): MatcherState;
@@ -94,9 +97,9 @@ export interface BaseExpect {
 }
 
 export type Expect = {
-  <T = unknown>(actual: T): Matchers<void> &
-    Inverse<Matchers<void>> &
-    PromiseMatchers;
+  <T = unknown>(actual: T): Matchers<void, T> &
+    Inverse<Matchers<void, T>> &
+    PromiseMatchers<T>;
 } & BaseExpect &
   AsymmetricMatchers &
   Inverse<Omit<AsymmetricMatchers, 'any' | 'anything'>>;
@@ -118,20 +121,28 @@ export interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-type PromiseMatchers = {
+type PromiseMatchers<T = unknown> = {
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  rejects: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
   /**
    * Unwraps the value of a fulfilled promise so any other matcher can be chained.
    * If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<void>> & Inverse<Matchers<Promise<void>>>;
+  resolves: Matchers<Promise<void>, T> & Inverse<Matchers<Promise<void>, T>>;
 };
 
-export interface Matchers<R extends void | Promise<void>> {
+export interface Matchers<R extends void | Promise<void>, T = unknown> {
+  /**
+   * T is a type param for the benefit of users who extend Matchers. It's
+   * intentionally unused and needs to be named T, not _T, for those users.
+   * This makes sure TypeScript agrees.
+   *
+   * @internal
+   */
+  _unusedT(expected: T): R;
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
@@ -139,7 +150,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(expected: unknown): R;
+  lastReturnedWith(expected?: unknown): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
@@ -147,7 +158,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(nth: number, expected: unknown): R;
+  nthReturnedWith(nth: number, expected?: unknown): R;
   /**
    * Checks that a value is what you expect. It calls `Object.is` to compare values.
    * Don't use `toBe` with floating-point numbers.
@@ -262,7 +273,7 @@ export interface Matchers<R extends void | Promise<void>> {
    * If the last call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveLastReturnedWith(expected: unknown): R;
+  toHaveLastReturnedWith(expected?: unknown): R;
   /**
    * Used to check that an object has a `.length` property
    * and it is set to a certain numeric value.
@@ -273,7 +284,7 @@ export interface Matchers<R extends void | Promise<void>> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(nth: number, expected: unknown): R;
+  toHaveNthReturnedWith(nth: number, expected?: unknown): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -303,7 +314,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Use to ensure that a mock function returned a specific value.
    */
-  toHaveReturnedWith(expected: unknown): R;
+  toHaveReturnedWith(expected?: unknown): R;
   /**
    * Check that a string matches a regular expression.
    */
@@ -325,7 +336,7 @@ export interface Matchers<R extends void | Promise<void>> {
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(expected: unknown): R;
+  toReturnWith(expected?: unknown): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */

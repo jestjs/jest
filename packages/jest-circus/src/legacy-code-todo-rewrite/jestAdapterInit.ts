@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -178,7 +178,7 @@ export const runAndTransformResultsToJestFormat = async ({
           : ancestorTitles.join(' '),
         invocations: testResult.invocations,
         location: testResult.location,
-        numPassingAsserts: 0,
+        numPassingAsserts: testResult.numPassingAsserts,
         retryReasons: testResult.retryReasons,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
@@ -238,6 +238,7 @@ const eventHandler = async (event: Circus.Event) => {
       break;
     }
     case 'test_done': {
+      event.test.numPassingAsserts = jestExpect.getState().numPassingAsserts;
       _addSuppressedErrors(event.test);
       _addExpectedAssertionErrors(event.test);
       break;

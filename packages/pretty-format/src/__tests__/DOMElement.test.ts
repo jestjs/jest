@@ -1,11 +1,14 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @jest-environment jsdom
  */
+
+/// <reference lib="dom" />
+
 /* eslint-env browser*/
 
 import prettyFormat, {plugins} from '../';
@@ -18,7 +21,7 @@ setPrettyPrint([DOMElement]);
 describe('pretty-format', () => {
   // Test is not related to plugin but is related to jsdom testing environment.
   it('prints global window as constructor name alone', () => {
-    expect(prettyFormat(window)).toEqual('[Window]');
+    expect(prettyFormat(window)).toBe('[Window]');
   });
 });
 
@@ -392,17 +395,28 @@ Testing.`;
 
     test('jsdom 9 and 10', () => {
       // Mock element objects to make sure the plugin really matches them.
-      function SVGSVGElement(attributes, ...children) {
-        this.nodeType = 1;
-        this.tagName = 'svg'; // lower case
-        this.attributes = attributes;
-        this.childNodes = children;
+      class SVGSVGElement {
+        childNodes: Array<SVGTitleElement>;
+        nodeType = 1;
+        tagName = 'svg'; // lower case;
+
+        constructor(
+          public attributes: Array<Record<string, string>>,
+          ...children: Array<SVGTitleElement>
+        ) {
+          this.childNodes = children;
+        }
       }
-      function SVGTitleElement(title) {
-        this.nodeType = 1;
-        this.tagName = 'title'; // lower case
-        this.attributes = [];
-        this.childNodes = [document.createTextNode(title)];
+
+      class SVGTitleElement {
+        attributes: Array<Record<string, string>> = [];
+        childNodes: Array<ChildNode>;
+        nodeType = 1;
+        tagName = 'title'; // lower case;
+
+        constructor(title: string) {
+          this.childNodes = [document.createTextNode(title)];
+        }
       }
 
       const title = new SVGTitleElement('JS community logo');
@@ -415,11 +429,17 @@ Testing.`;
     });
     test('jsdom 11', () => {
       // Mock element objects to make sure the plugin really matches them.
-      function Element(tagName, attributes, ...children) {
-        this.nodeType = 1;
-        this.tagName = tagName; // lower case
-        this.attributes = attributes;
-        this.childNodes = children;
+      class Element {
+        childNodes: Array<Element | string>;
+        nodeType = 1;
+
+        constructor(
+          public tagName: string,
+          public attributes: Array<Record<string, string>>,
+          ...children: Array<Element | string>
+        ) {
+          this.childNodes = children;
+        }
       }
 
       const title = new Element('title', [], 'JS community logo');

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,14 +14,11 @@ import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import pLimit = require('p-limit');
 import type {Config, Global} from '@jest/types';
+import {isPromise} from 'jest-util';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
 import type {Jasmine} from './types';
-
-function isPromise(obj: any): obj is PromiseLike<unknown> {
-  return obj && typeof obj.then === 'function';
-}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const doneFnNoop = () => {};
