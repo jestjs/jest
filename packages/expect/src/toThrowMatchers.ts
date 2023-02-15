@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -225,14 +225,23 @@ const toThrowExpectedObject = (
   thrown: Thrown | null,
   expected: Error,
 ): SyncExpectationResult => {
-  const pass = thrown !== null && thrown.message === expected.message;
+  const expectedMessageAndCause = createMessageAndCause(expected);
+  const thrownMessageAndCause =
+    thrown !== null ? createMessageAndCause(thrown.value) : null;
+  const pass =
+    thrown !== null &&
+    thrown.message === expected.message &&
+    thrownMessageAndCause === expectedMessageAndCause;
 
   const message = pass
     ? () =>
         // eslint-disable-next-line prefer-template
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: not ', expected.message) +
+        formatExpected(
+          `Expected ${messageAndCause(expected)}: not `,
+          expectedMessageAndCause,
+        ) +
         (thrown !== null && thrown.hasMessage
           ? formatStack(thrown)
           : formatReceived('Received value:       ', thrown, 'value'))
@@ -242,22 +251,27 @@ const toThrowExpectedObject = (
         '\n\n' +
         (thrown === null
           ? // eslint-disable-next-line prefer-template
-            formatExpected('Expected message: ', expected.message) +
+            formatExpected(
+              `Expected ${messageAndCause(expected)}: `,
+              expectedMessageAndCause,
+            ) +
             '\n' +
             DID_NOT_THROW
           : thrown.hasMessage
           ? // eslint-disable-next-line prefer-template
             printDiffOrStringify(
-              expected.message,
-              thrown.message,
-              'Expected message',
-              'Received message',
+              expectedMessageAndCause,
+              thrownMessageAndCause,
+              `Expected ${messageAndCause(expected)}`,
+              `Received ${messageAndCause(thrown.value)}`,
               true,
             ) +
             '\n' +
             formatStack(thrown)
-          : formatExpected('Expected message: ', expected.message) +
-            formatReceived('Received value:   ', thrown, 'value'));
+          : formatExpected(
+              `Expected ${messageAndCause(expected)}: `,
+              expectedMessageAndCause,
+            ) + formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -446,5 +460,27 @@ const formatStack = (thrown: Thrown | null) =>
           noStackTrace: false,
         },
       );
+
+function createMessageAndCauseMessage(error: Error): string {
+  if (error.cause instanceof Error) {
+    return `{ message: ${error.message}, cause: ${createMessageAndCauseMessage(
+      error.cause,
+    )}}`;
+  }
+
+  return `{ message: ${error.message} }`;
+}
+
+function createMessageAndCause(error: Error) {
+  if (error.cause instanceof Error) {
+    return createMessageAndCauseMessage(error);
+  }
+
+  return error.message;
+}
+
+function messageAndCause(error: Error) {
+  return error.cause === undefined ? 'message' : 'message and cause';
+}
 
 export default matchers;

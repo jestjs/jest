@@ -201,7 +201,7 @@ For more complex webpack configurations, you may also want to investigate projec
 In addition to installing `babel-jest` as described earlier, you'll need to add `@babel/preset-env` like so:
 
 ```bash npm2yarn
-	npm install --save-dev @babel/preset-env
+npm install --save-dev @babel/preset-env
 ```
 
 Then, you'll want to configure Babel as follows:

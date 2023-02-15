@@ -2970,6 +2970,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
+    "@jest/globals": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/node": "*"
     "@types/semver": ^7.1.0
@@ -3005,7 +3006,7 @@ __metadata:
     micromatch: ^4.0.4
     pirates: ^4.0.4
     slash: ^3.0.0
-    write-file-atomic: ^5.0.0
+    write-file-atomic: ^4.0.2
   languageName: unknown
   linkType: soft
 
@@ -12768,7 +12769,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jest-haste-map@workspace:packages/jest-haste-map"
   dependencies:
-    "@jest/test-utils": "workspace:^"
     "@jest/types": "workspace:^"
     "@types/fb-watchman": ^2.0.0
     "@types/graceful-fs": ^4.1.3
@@ -12996,6 +12996,7 @@ __metadata:
     "@jest/console": "workspace:^"
     "@jest/environment": "workspace:^"
     "@jest/test-result": "workspace:^"
+    "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
     "@tsd/typescript": ^4.9.0
@@ -13038,7 +13039,6 @@ __metadata:
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    "@types/semver": ^7.1.0
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
@@ -13052,7 +13052,6 @@ __metadata:
     jest-resolve: "workspace:^"
     jest-snapshot: "workspace:^"
     jest-util: "workspace:^"
-    semver: ^7.3.5
     slash: ^3.0.0
     strip-bom: ^4.0.0
   languageName: unknown
@@ -21938,6 +21937,16 @@ __metadata:
     signal-exit: ^3.0.2
     typedarray-to-buffer: ^3.1.5
   checksum: c55b24617cc61c3a4379f425fc62a386cc51916a9b9d993f39734d005a09d5a4bb748bc251f1304e7abd71d0a26d339996c275955f527a131b1dcded67878280
+  languageName: node
+  linkType: hard
+
+"write-file-atomic@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "write-file-atomic@npm:4.0.2"
+  dependencies:
+    imurmurhash: ^0.1.4
+    signal-exit: ^3.0.7
+  checksum: 5da60bd4eeeb935eec97ead3df6e28e5917a6bd317478e4a85a5285e8480b8ed96032bbcc6ecd07b236142a24f3ca871c924ec4a6575e623ec1b11bf8c1c253c
   languageName: node
   linkType: hard
 

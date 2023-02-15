@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -47,8 +47,6 @@ const hasPropertyInObject = (object: object, key: string | symbol): boolean => {
 // the prototype chain for string keys but not for symbols.  (Otherwise, it
 // could find values such as a Set or Map's Symbol.toStringTag, with unexpected
 // results.)
-//
-// Compare with subsetEquality's use of Reflect.ownKeys.
 const getObjectKeys = (object: object) => [
   ...Object.keys(object),
   ...Object.getOwnPropertySymbols(object),
@@ -343,7 +341,7 @@ export const subsetEquality = (
         return undefined;
       }
 
-      return Reflect.ownKeys(subset).every(key => {
+      return getObjectKeys(subset).every(key => {
         if (isObjectWithKeys(subset[key])) {
           if (seenReferences.has(subset[key])) {
             return equals(object[key], subset[key], filteredCustomTesters);
