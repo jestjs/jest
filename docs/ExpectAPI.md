@@ -680,7 +680,7 @@ describe('grapefruits are healthy', () => {
 });
 ```
 
-### `.toMatchObject(object, options)`
+### `.toMatchObject(object, options?)`
 
 Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. It will match received objects with properties that are **not** in the expected object.
 

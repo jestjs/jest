@@ -924,9 +924,7 @@ const matchers: MatchersObject = {
     if (
       Array.isArray(received) &&
       Array.isArray(expected) &&
-      typeof options !== 'undefined' &&
-      typeof options.ignoreElementsOrder !== 'undefined' &&
-      options.ignoreElementsOrder
+      options?.ignoreElementsOrder === true
     ) {
       expected.forEach(item => {
         const item_pass = received.some(another =>
