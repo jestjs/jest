@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[@jest/expect-utils]` `subsetEquality` should consider also an object's inherited string keys ([#13824](https://github.com/facebook/jest/pull/13824))
 - `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
 - `[jest-mock]` Prevent `mockImplementationOnce` and `mockReturnValueOnce` bleeding into `withImplementation` ([#13888](https://github.com/facebook/jest/pull/13888))
 - `[jest-mock]` Do not restore mocks when `jest.resetAllMocks()` is called ([#13866](https://github.com/facebook/jest/pull/13866))
@@ -46,7 +47,6 @@
 ### Fixes
 
 - `[@jest/expect-utils]` `toMatchObject` diffs should include `Symbol` properties ([#13810](https://github.com/facebook/jest/pull/13810))
-- `[@jest/expect-utils]` `subsetEquality` should consider also an object's inherited string keys ([#13824](https://github.com/facebook/jest/pull/13824))
 - `[jest-runtime]` Handle missing `replaceProperty` ([#13823](https://github.com/facebook/jest/pull/13823))
 - `[@jest/types]` Add partial support for `done` callbacks in typings of `each` ([#13756](https://github.com/facebook/jest/pull/13756))
 
