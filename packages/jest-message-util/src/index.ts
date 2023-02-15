@@ -152,7 +152,15 @@ export const formatExecError = (
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
-      } else if (types.isNativeError(error.cause)) {
+      } else if (
+        types.isNativeError(error.cause) ||
+        error.cause instanceof Error
+      ) {
+        /* `isNativeError` is used, because the error might come from another realm.
+         `instanceof Error` is used because `isNativeError` does return `false` for some
+         things that are `instanceof Error` like the errors provided in
+         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
+        */
         const formatted = formatExecError(
           error.cause,
           config,
