@@ -686,7 +686,15 @@ Use `.toMatchObject` to check that a JavaScript object matches a subset of the p
 
 You can also pass an array of objects, in which case the method will return true only if each object in the received array matches (in the `toMatchObject` sense described above) the corresponding object in the expected array. This is useful if you want to check that two arrays match in their number of elements, as opposed to `arrayContaining`, which allows for extra elements in the received array.
 
-You can use the boolean value `ignoreElementsOrder` in `options` parameter which defaults to `false` and is used when matching two arrays of objects. When `ignoreElementsOrder` is `false`, the order of elements in arrays matters. When `ignoreElementsOrder` is `true`, the order doesn't matter as long as the element is present. 
+When matching arrays of objects, you can use `ignoreElementsOrder` option. Setting its value to `true` will ignore the order of array elements. The default is `undefined`.
+
+```js
+test('arrays match despite different elements order', () => {
+  expect([{a: 1}, {b: 2, c: true}]).toMatchObject([{b: 2}, {a: 1}], {
+    ignoreElementsOrder: true,
+  });
+});
+```
 
 You can match properties against values or against matchers.
 

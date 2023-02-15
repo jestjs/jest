@@ -23,7 +23,6 @@ import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
-  MatchObjectOptions,
   MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
@@ -891,7 +890,7 @@ const matchers: MatchersObject = {
   toMatchObject(
     received: object,
     expected: object,
-    options?: MatchObjectOptions,
+    options?: {ignoreElementsOrder?: boolean},
   ) {
     const matcherName = 'toMatchObject';
     const hintOptions: MatcherHintOptions = {
