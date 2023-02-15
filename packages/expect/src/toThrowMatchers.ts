@@ -463,17 +463,17 @@ function createMessageAndCauseMessage(error: Error): string {
     return `{ message: ${error.message}, cause: ${createMessageAndCauseMessage(
       error.cause,
     )}}`;
-  } else {
-    return `{ message: ${error.message} }`;
   }
+
+  return `{ message: ${error.message} }`;
 }
 
 function createMessageAndCause(error: Error) {
   if (error.cause instanceof Error) {
     return createMessageAndCauseMessage(error);
-  } else {
-    return error.message;
   }
+
+  return error.message;
 }
 
 function messageAndCause(error: Error) {
