@@ -458,17 +458,17 @@ const formatStack = (thrown: Thrown | null) =>
         },
       );
 
-const _createMessageAndCause = (error: Error): string => {
-  if (error.cause instanceof Error) {
-    return `{ message: ${error.message}, cause: ${_createMessageAndCause(
-      error.cause,
-    )}}`;
-  } else {
-    return `{ message: ${error.message} }`;
-  }
-};
-
 const createMessageAndCause = (error: Error) => {
+  const _createMessageAndCause = (error: Error): string => {
+    if (error.cause instanceof Error) {
+      return `{ message: ${error.message}, cause: ${_createMessageAndCause(
+        error.cause,
+      )}}`;
+    } else {
+      return `{ message: ${error.message} }`;
+    }
+  };
+
   if (error.cause instanceof Error) {
     return _createMessageAndCause(error);
   } else {
