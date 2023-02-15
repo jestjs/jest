@@ -124,7 +124,7 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`.
 
-:::note
+:::caution
 
 The cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.
 
@@ -226,7 +226,7 @@ Find and run the tests that cover a space separated list of source files that we
 
 Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
 
-:::note
+:::caution
 
 This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly. You can use `--detectOpenHandles` to help track it down.
 
@@ -363,9 +363,9 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `'GET /api/posts with auth'`, then you can use `jest -t=auth`.
 
-:::note
+:::tip
 
 The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks.
 
@@ -417,7 +417,7 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
-Use `--watchAll=false` to explicitly disable the watch mode. N
+Use `--watchAll=false` to explicitly disable the watch mode.
 
 :::tip
 

@@ -8,7 +8,12 @@
 import * as path from 'path';
 import * as util from 'util';
 import dedent = require('dedent');
-import {ExecaSyncError, ExecaSyncReturnValue, sync as spawnSync} from 'execa';
+import {
+  ExecaSyncError,
+  SyncOptions as ExecaSyncOptions,
+  ExecaSyncReturnValue,
+  sync as spawnSync,
+} from 'execa';
 import * as fs from 'graceful-fs';
 import which = require('which');
 import type {Config} from '@jest/types';
@@ -19,7 +24,12 @@ export const run = (
   env?: Record<string, string>,
 ): ExecaSyncReturnValue => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
+  const spawnOptions: ExecaSyncOptions = {
+    cwd,
+    env,
+    preferLocal: false,
+    reject: false,
+  };
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
 
   if (result.exitCode !== 0) {
@@ -36,6 +46,9 @@ export const run = (
   return result;
 };
 
+const yarnInstallImmutable = 'yarn install --immutable';
+const yarnInstallNoImmutable = 'yarn install --no-immutable';
+
 export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
   let exists = true;
@@ -46,11 +59,26 @@ export const runYarnInstall = (cwd: string, env?: Record<string, string>) => {
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(
-    exists ? 'yarn install --immutable' : 'yarn install --no-immutable',
-    cwd,
-    env,
-  );
+  try {
+    return run(
+      exists ? yarnInstallImmutable : yarnInstallNoImmutable,
+      cwd,
+      env,
+    );
+  } catch (error) {
+    try {
+      // retry once in case of e.g. permission errors
+      return run(
+        fs.readFileSync(lockfilePath, 'utf8').trim().length > 0
+          ? yarnInstallImmutable
+          : yarnInstallNoImmutable,
+        cwd,
+        env,
+      );
+    } catch {
+      throw error;
+    }
+  }
 };
 
 export const linkJestPackage = (packageName: string, cwd: string) => {
@@ -72,8 +100,18 @@ export const makeTemplate =
       return values[number - 1];
     });
 
-export const cleanup = (directory: string) =>
-  fs.rmSync(directory, {force: true, recursive: true});
+export const cleanup = (directory: string) => {
+  try {
+    fs.rmSync(directory, {force: true, recursive: true});
+  } catch (error) {
+    try {
+      // retry once in case of e.g. permission errors
+      fs.rmSync(directory, {force: true, recursive: true});
+    } catch {
+      throw error;
+    }
+  }
+};
 
 /**
  * Creates a nested directory with files and their contents
