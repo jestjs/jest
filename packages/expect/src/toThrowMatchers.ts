@@ -458,26 +458,26 @@ const formatStack = (thrown: Thrown | null) =>
         },
       );
 
-const createMessageAndCause = (error: Error) => {
-  const _createMessageAndCause = (error: Error): string => {
-    if (error.cause instanceof Error) {
-      return `{ message: ${error.message}, cause: ${_createMessageAndCause(
-        error.cause,
-      )}}`;
-    } else {
-      return `{ message: ${error.message} }`;
-    }
-  };
-
+function createMessageAndCauseMessage(error: Error): string {
   if (error.cause instanceof Error) {
-    return _createMessageAndCause(error);
+    return `{ message: ${error.message}, cause: ${createMessageAndCauseMessage(
+      error.cause,
+    )}}`;
+  } else {
+    return `{ message: ${error.message} }`;
+  }
+}
+
+function createMessageAndCause(error: Error) {
+  if (error.cause instanceof Error) {
+    return createMessageAndCauseMessage(error);
   } else {
     return error.message;
   }
-};
+}
 
-const messageAndCause = (error: Error) => {
+function messageAndCause(error: Error) {
   return error.cause === undefined ? 'message' : 'message and cause';
-};
+}
 
 export default matchers;
