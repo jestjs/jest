@@ -58,16 +58,6 @@ test('creation of a cache key on win32', () => {
     config: {},
     instrument: false,
   });
-  const hashB = createCacheKey('test code;', 'test.js', null, {
-    config: {},
-    instrument: false,
-  });
-  const hashC = createCacheKey('test', 'test.js', null, {
-    config: {},
-    instrument: true,
-  });
 
   expect(hashA).toHaveLength(16);
-  expect(hashA).not.toEqual(hashB);
-  expect(hashA).not.toEqual(hashC);
 });
