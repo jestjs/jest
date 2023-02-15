@@ -22,7 +22,9 @@ beforeEach(() => {
 afterEach(() => {
   process.env.NODE_ENV = NODE_ENV;
   process.env.BABEL_ENV = BABEL_ENV;
-  process.platform = PLATFORM;
+  Object.defineProperty(process, 'platform', {  
+    value: PLATFORM,
+  });
 });
 
 test('creation of a cache key', () => {
@@ -49,7 +51,9 @@ test('creation of a cache key', () => {
 });
 
 test('creation of a cache key on win32', () => {
-  process.platform = 'win32';
+  Object.defineProperty(process, 'platform', {  
+    value: 'win32',
+  });
   const createCacheKeyFunction = interopRequireDefault(
     require('../index'),
   ).default;
