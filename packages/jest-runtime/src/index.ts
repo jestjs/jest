@@ -409,7 +409,6 @@ export default class Runtime {
     );
   }
 
-  // not async _now_, but transform will be
   private async loadEsmModule(
     modulePath: string,
     query = '',
@@ -477,39 +476,52 @@ export default class Runtime {
       });
 
       try {
-        const module = new SourceTextModule(transformedCode, {
-          context,
-          identifier: modulePath,
-          importModuleDynamically: async (
-            specifier: string,
-            referencingModule: VMModule,
-          ) => {
-            invariant(
-              runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
-            );
-            const module = await this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            );
+        let module;
+        if (modulePath.endsWith('.json')) {
+          module = new SyntheticModule(
+            ['default'],
+            function () {
+              const obj = JSON.parse(transformedCode);
+              // @ts-expect-error: TS doesn't know what `this` is
+              this.setExport('default', obj);
+            },
+            {context, identifier: modulePath},
+          );
+        } else {
+          module = new SourceTextModule(transformedCode, {
+            context,
+            identifier: modulePath,
+            importModuleDynamically: async (
+              specifier: string,
+              referencingModule: VMModule,
+            ) => {
+              invariant(
+                runtimeSupportsVmModules,
+                'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
+              );
+              const module = await this.resolveModule(
+                specifier,
+                referencingModule.identifier,
+                referencingModule.context,
+              );
 
-            return this.linkAndEvaluateModule(module);
-          },
-          initializeImportMeta: (meta: JestImportMeta) => {
-            meta.url = pathToFileURL(modulePath).href;
+              return this.linkAndEvaluateModule(module);
+            },
+            initializeImportMeta: (meta: JestImportMeta) => {
+              meta.url = pathToFileURL(modulePath).href;
 
-            let jest = this.jestObjectCaches.get(modulePath);
+              let jest = this.jestObjectCaches.get(modulePath);
 
-            if (!jest) {
-              jest = this._createJestObjectFor(modulePath);
+              if (!jest) {
+                jest = this._createJestObjectFor(modulePath);
 
-              this.jestObjectCaches.set(modulePath, jest);
-            }
+                this.jestObjectCaches.set(modulePath, jest);
+              }
 
-            meta.jest = jest;
-          },
-        });
+              meta.jest = jest;
+            },
+          });
+        }
 
         invariant(
           !this._esmoduleRegistry.has(cacheKey),
@@ -671,6 +683,8 @@ export default class Runtime {
     const resolved = await this._resolveModule(referencingIdentifier, path);
 
     if (
+      // json files are modules when imported in modules
+      resolved.endsWith('.json') ||
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
