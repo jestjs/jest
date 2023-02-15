@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,6 +46,7 @@ test('should support importing node core modules', () => {
   expect(JSON.parse(readFileSync(packageJsonPath, 'utf8'))).toEqual({
     devDependencies: {
       'discord.js': '14.3.0',
+      'iso-constants': '^0.1.2',
       yargs: '^17.5.1',
     },
     jest: {

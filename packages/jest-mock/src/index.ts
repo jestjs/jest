@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -255,9 +255,10 @@ type MockFunctionState<T extends FunctionLike = UnknownFunction> = {
 type MockFunctionConfig = {
   mockImpl: Function | undefined;
   mockName: string;
-  specificReturnValues: Array<unknown>;
   specificMockImpls: Array<Function>;
 };
+
+type SpyState = {reset?: () => void; restore: () => void};
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
@@ -507,9 +508,8 @@ export class ModuleMocker {
   private readonly _environmentGlobal: typeof globalThis;
   private _mockState: WeakMap<Mock, MockFunctionState>;
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
-  private _spyState: Set<() => void>;
+  private _spyState: Set<SpyState>;
   private _invocationCallCounter: number;
-  private _originalFn: WeakMap<Mock, Function>;
 
   /**
    * @see README.md
@@ -522,7 +522,6 @@ export class ModuleMocker {
     this._mockConfigRegistry = new WeakMap();
     this._spyState = new Set();
     this._invocationCallCounter = 1;
-    this._originalFn = new WeakMap();
   }
 
   private _getSlots(object?: Record<string, any>): Array<string> {
@@ -599,7 +598,6 @@ export class ModuleMocker {
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
-      specificReturnValues: [],
     };
   }
 
@@ -615,27 +613,27 @@ export class ModuleMocker {
 
   private _makeComponent<T extends Record<string, any>>(
     metadata: MockMetadata<T, 'object'>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): T;
   private _makeComponent<T extends Array<unknown>>(
     metadata: MockMetadata<T, 'array'>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): T;
   private _makeComponent<T extends RegExp>(
     metadata: MockMetadata<T, 'regexp'>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): T;
   private _makeComponent<T>(
     metadata: MockMetadata<T, 'constant' | 'collection' | 'null' | 'undefined'>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): T;
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T, 'function'>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): Mock<T>;
   private _makeComponent<T extends UnknownFunction>(
     metadata: MockMetadata<T>,
-    restore?: () => void,
+    spyState?: SpyState,
   ): Record<string, any> | Array<unknown> | RegExp | T | Mock | undefined {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
@@ -756,8 +754,8 @@ export class ModuleMocker {
       f._isMockFunction = true;
       f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl as T;
 
-      if (typeof restore === 'function') {
-        this._spyState.add(restore);
+      if (spyState != null) {
+        this._spyState.add(spyState);
       }
 
       this._mockState.set(f, this._defaultMockState());
@@ -777,18 +775,23 @@ export class ModuleMocker {
 
       f.mockReset = () => {
         f.mockClear();
-        const originalFn = this._originalFn.get(f);
-        const originalMockImpl = {
-          ...this._defaultMockConfig(),
-          mockImpl: originalFn,
-        };
-        this._mockConfigRegistry.set(f, originalMockImpl);
+        this._mockConfigRegistry.delete(f);
+
+        if (spyState != null) {
+          spyState.reset?.();
+        }
+
         return f;
       };
 
       f.mockRestore = () => {
-        f.mockReset();
-        return restore ? restore() : undefined;
+        f.mockClear();
+        this._mockConfigRegistry.delete(f);
+
+        if (spyState != null) {
+          spyState.restore();
+          this._spyState.delete(spyState);
+        }
       };
 
       f.mockReturnValueOnce = (value: ReturnType<T>) =>
@@ -842,16 +845,20 @@ export class ModuleMocker {
         // Remember previous mock implementation, then set new one
         const mockConfig = this._ensureMockConfig(f);
         const previousImplementation = mockConfig.mockImpl;
+        const previousSpecificImplementations = mockConfig.specificMockImpls;
         mockConfig.mockImpl = fn;
+        mockConfig.specificMockImpls = [];
 
         const returnedValue = callback();
 
         if (isPromise(returnedValue)) {
           return returnedValue.then(() => {
             mockConfig.mockImpl = previousImplementation;
+            mockConfig.specificMockImpls = previousSpecificImplementations;
           });
         } else {
           mockConfig.mockImpl = previousImplementation;
+          mockConfig.specificMockImpls = previousSpecificImplementations;
         }
       }
 
@@ -992,14 +999,14 @@ export class ModuleMocker {
     T extends object,
     K extends PropertyLikeKeys<T>,
   >(object: T, propertyKey: K): ReplacedPropertyRestorer<T, K> | undefined {
-    for (const spyState of this._spyState) {
+    for (const {restore} of this._spyState) {
       if (
-        'object' in spyState &&
-        'property' in spyState &&
-        spyState.object === object &&
-        spyState.property === propertyKey
+        'object' in restore &&
+        'property' in restore &&
+        restore.object === object &&
+        restore.property === propertyKey
       ) {
-        return spyState as ReplacedPropertyRestorer<T, K>;
+        return restore as ReplacedPropertyRestorer<T, K>;
       }
     }
 
@@ -1115,6 +1122,15 @@ export class ModuleMocker {
     return fn;
   }
 
+  private _attachMockImplementation<T extends Function>(
+    mock: Mock<UnknownFunction>,
+    original: T,
+  ) {
+    mock.mockImplementation(function (this: unknown) {
+      return original.apply(this, arguments);
+    });
+  }
+
   spyOn<
     T extends object,
     K extends PropertyLikeKeys<T>,
@@ -1200,29 +1216,43 @@ export class ModuleMocker {
 
       if (descriptor && descriptor.get) {
         const originalGet = descriptor.get;
-        mock = this._makeComponent({type: 'function'}, () => {
-          descriptor!.get = originalGet;
-          Object.defineProperty(object, methodKey, descriptor!);
-        });
+        mock = this._makeComponent(
+          {type: 'function'},
+          {
+            reset: () => {
+              this._attachMockImplementation(mock, original);
+            },
+            restore: () => {
+              descriptor!.get = originalGet;
+              Object.defineProperty(object, methodKey, descriptor!);
+            },
+          },
+        );
         descriptor.get = () => mock;
         Object.defineProperty(object, methodKey, descriptor);
       } else {
-        mock = this._makeComponent({type: 'function'}, () => {
-          if (isMethodOwner) {
-            object[methodKey] = original;
-          } else {
-            delete object[methodKey];
-          }
-        });
-        // @ts-expect-error overriding original method with a Mock
+        mock = this._makeComponent(
+          {type: 'function'},
+          {
+            reset: () => {
+              this._attachMockImplementation(mock, original);
+            },
+            restore: () => {
+              if (isMethodOwner) {
+                object[methodKey] = original;
+              } else {
+                delete object[methodKey];
+              }
+            },
+          },
+        );
+        // @ts-expect-error: overriding original method with a mock
         object[methodKey] = mock;
       }
 
-      mock.mockImplementation(function (this: unknown) {
-        return original.apply(this, arguments);
-      });
+      this._attachMockImplementation(mock, original);
     }
-    this._originalFn.set(object[methodKey] as Mock, original);
+
     return object[methodKey] as Mock;
   }
 
@@ -1274,18 +1304,24 @@ export class ModuleMocker {
         );
       }
 
-      descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-expect-error: mock is assignable
-        descriptor![accessType] = original;
-        Object.defineProperty(object, propertyKey, descriptor!);
-      });
+      descriptor[accessType] = this._makeComponent(
+        {type: 'function'},
+        {
+          reset: () => {
+            this._attachMockImplementation(
+              descriptor![accessType] as Mock,
+              original,
+            );
+          },
+          restore: () => {
+            // @ts-expect-error: overriding original method with a mock
+            descriptor![accessType] = original;
+            Object.defineProperty(object, propertyKey, descriptor!);
+          },
+        },
+      );
 
-      (descriptor[accessType] as Mock).mockImplementation(function (
-        this: unknown,
-      ) {
-        // @ts-expect-error - wrong context
-        return original.apply(this, arguments);
-      });
+      this._attachMockImplementation(descriptor[accessType] as Mock, original);
     }
 
     Object.defineProperty(object, propertyKey, descriptor);
@@ -1390,7 +1426,7 @@ export class ModuleMocker {
       restore: () => {
         restore();
 
-        this._spyState.delete(restore);
+        this._spyState.delete({restore});
       },
     };
 
@@ -1398,7 +1434,7 @@ export class ModuleMocker {
     restore.property = propertyKey;
     restore.replaced = replaced;
 
-    this._spyState.add(restore);
+    this._spyState.add({restore});
 
     return replaced.replaceValue(value);
   }
@@ -1408,13 +1444,15 @@ export class ModuleMocker {
   }
 
   resetAllMocks(): void {
-    this._spyState.forEach(reset => reset());
+    this.clearAllMocks();
     this._mockConfigRegistry = new WeakMap();
-    this._mockState = new WeakMap();
+    this._spyState.forEach(spyState => spyState.reset?.());
   }
 
   restoreAllMocks(): void {
-    this._spyState.forEach(restore => restore());
+    this.clearAllMocks();
+    this._mockConfigRegistry = new WeakMap();
+    this._spyState.forEach(spyState => spyState.restore());
     this._spyState = new Set();
   }
 

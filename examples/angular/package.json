@@ -27,6 +27,7 @@
     "babel-jest": "workspace:^",
     "babel-plugin-transform-typescript-metadata": "*",
     "jest": "workspace:^",
+    "jest-environment-jsdom": "workspace:^",
     "jest-zone-patch": "*"
   }
 }

@@ -423,7 +423,7 @@ The glob patterns Jest uses to detect test files. Please refer to the [`testMatc
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like "GET /api/posts with auth", then you can use jest -t=auth.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `'GET /api/posts with auth'`, then you can use `jest -t=auth`.
 
 :::tip
 

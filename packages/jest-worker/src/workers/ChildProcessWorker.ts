@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -255,6 +255,9 @@ export default class ChildProcessWorker
   }
 
   private _onMessage(response: ParentMessage) {
+    // Ignore messages not intended for us
+    if (!Array.isArray(response)) return;
+
     // TODO: Add appropriate type check
     let error: any;
 
@@ -311,7 +314,8 @@ export default class ChildProcessWorker
         break;
 
       default:
-        throw new TypeError(`Unexpected response from worker: ${response[0]}`);
+        // Ignore messages not intended for us
+        break;
     }
   }
 

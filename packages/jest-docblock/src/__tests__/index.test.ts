@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -86,7 +86,7 @@ describe('docblock', () => {
   it('parses directives out of a docblock with comments', () => {
     const code =
       `/**${EOL}` +
-      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL}` +
       ` * @team foo${EOL}` +
       ` * @css a b${EOL}` +
       ` *${EOL}` +
@@ -111,7 +111,7 @@ describe('docblock', () => {
   it('parses multiline directives', () => {
     const code =
       `/**${EOL}` +
-      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL}` +
       ` * @class A long declaration of a class${EOL}` +
       ` *        goes here, so we can read it and enjoy${EOL}` +
       ` *${EOL}` +
@@ -129,7 +129,7 @@ describe('docblock', () => {
   it('parses multiline directives even if there are linecomments within the docblock', () => {
     const code =
       `/**${EOL}` +
-      ` * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}` +
+      ` * Copyright (c) Meta Platforms, Inc. and affiliates.${EOL}` +
       ` * @class A long declaration of a class${EOL}` +
       ` *        goes here, so we can read it and enjoy${EOL}` +
       ` *${EOL}` +
@@ -138,7 +138,7 @@ describe('docblock', () => {
       '// heres a comment' +
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
-      comments: `Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.${EOL}${EOL}And some license here${EOL}// heres a comment`,
+      comments: `Copyright (c) Meta Platforms, Inc. and affiliates.${EOL}${EOL}And some license here${EOL}// heres a comment`,
       pragmas: {
         class:
           'A long declaration of a class goes here, ' +
@@ -300,8 +300,7 @@ describe('docblock', () => {
 
   it('prints docblocks with comments and no keys', () => {
     const pragmas = {};
-    const comments =
-      'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
+    const comments = 'Copyright (c) Meta Platforms, Inc. and affiliates.';
     expect(docblock.print({comments, pragmas})).toBe(
       `/**${EOL} * ${comments}${EOL} */`,
     );

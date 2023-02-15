@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,13 @@ const SLOW_TEST_TIME = 1000;
 export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
-  {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
+  {
+    detectOpenHandles,
+    maxWorkers,
+    watch,
+    watchAll,
+    workerIdleMemoryLimit,
+  }: Config.GlobalConfig,
 ): boolean {
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
@@ -41,8 +47,10 @@ export function shouldRunInBand(
   }
 
   return (
-    oneWorkerOrLess ||
-    oneTestOrLess ||
-    (tests.length <= 20 && timings.length > 0 && areFastTests)
+    // When specifying a memory limit, workers should be used
+    !workerIdleMemoryLimit &&
+    (oneWorkerOrLess ||
+      oneTestOrLess ||
+      (tests.length <= 20 && timings.length > 0 && areFastTests))
   );
 }
