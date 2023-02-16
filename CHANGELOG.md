@@ -7,11 +7,25 @@
 
 ### Fixes
 
-- `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 29.4.3
+
+### Features
+
+- `[expect]` Update `toThrow()` to be able to use error `cause`s ([#13606](https://github.com/facebook/jest/pull/13606))
+- `[jest-core]` allow to use `workerIdleMemoryLimit` with only 1 worker or `runInBand` option ([#13846](https://github.com/facebook/jest/pull/13846))
+- `[jest-message-util]` Add support for [error `cause`s](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) ([#13868](https://github.com/facebook/jest/pull/13868) & [#13912](https://github.com/facebook/jest/pull/13912))
+- `[jest-runtime]` Revert `import assertions` for JSON modules as it's been relegated to Stage 2 ([#13911](https://github.com/facebook/jest/pull/13911))
+
+### Fixes
+
+- `[@jest/expect-utils]` `subsetEquality` should consider also an object's inherited string keys ([#13824](https://github.com/facebook/jest/pull/13824))
+- `[jest-mock]` Clear mock state when `jest.restoreAllMocks()` is called ([#13867](https://github.com/facebook/jest/pull/13867))
+- `[jest-mock]` Prevent `mockImplementationOnce` and `mockReturnValueOnce` bleeding into `withImplementation` ([#13888](https://github.com/facebook/jest/pull/13888))
+- `[jest-mock]` Do not restore mocks when `jest.resetAllMocks()` is called ([#13866](https://github.com/facebook/jest/pull/13866))
 
 ## 29.4.2
 

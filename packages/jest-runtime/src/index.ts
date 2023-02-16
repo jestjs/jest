@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,6 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import {satisfies as semverSatisfies} from 'semver';
 import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
@@ -62,11 +61,6 @@ import {
 } from './helpers';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
-
-const runtimeSupportsImportAssertions = semverSatisfies(
-  process.versions.node,
-  '^16.12.0 || >=17.0.0',
-);
 
 const dataURIRegex =
   /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/;
@@ -158,23 +152,6 @@ const supportsNodeColonModulePrefixInRequire = (() => {
     return false;
   }
 })();
-
-const kImplicitAssertType = Symbol('kImplicitAssertType');
-
-// copied from https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#L20-L32
-const formatTypeMap: {[type: string]: string | typeof kImplicitAssertType} = {
-  // @ts-expect-error - copied
-  __proto__: null,
-  builtin: kImplicitAssertType,
-  commonjs: kImplicitAssertType,
-  json: 'json',
-  module: kImplicitAssertType,
-  wasm: kImplicitAssertType,
-};
-
-const supportedAssertionTypes = new Set(
-  Object.values(formatTypeMap).filter(type => type !== kImplicitAssertType),
-);
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
@@ -435,12 +412,7 @@ export default class Runtime {
   private async loadEsmModule(
     modulePath: string,
     query = '',
-    importAssertions?: ImportAssertions,
   ): Promise<VMModule> {
-    if (runtimeSupportsImportAssertions) {
-      this.validateImportAssertions(modulePath, query, importAssertions);
-    }
-
     const cacheKey = modulePath + query;
 
     if (this._fileTransformsMutex.has(cacheKey)) {
@@ -478,7 +450,6 @@ export default class Runtime {
           this.readFileBuffer(modulePath),
           modulePath,
           context,
-          importAssertions,
         );
 
         this._esmoduleRegistry.set(cacheKey, wasm);
@@ -523,7 +494,6 @@ export default class Runtime {
             importModuleDynamically: async (
               specifier: string,
               referencingModule: VMModule,
-              importAssertions?: ImportAssertions,
             ) => {
               invariant(
                 runtimeSupportsVmModules,
@@ -533,7 +503,6 @@ export default class Runtime {
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
-                importAssertions,
               );
 
               return this.linkAndEvaluateModule(module);
@@ -578,88 +547,10 @@ export default class Runtime {
     return module;
   }
 
-  private validateImportAssertions(
-    modulePath: string,
-    query: string,
-    importAssertions: ImportAssertions = {
-      // @ts-expect-error - copy https://github.com/nodejs/node/blob/7dd458382580f68cf7d718d96c8f4d2d3fe8b9db/lib/internal/modules/esm/assert.js#LL55C50-L55C65
-      __proto__: null,
-    },
-  ) {
-    const format = this.getModuleFormat(modulePath);
-    const validType = formatTypeMap[format];
-    const url = pathToFileURL(modulePath);
-
-    if (query) {
-      url.search = query;
-    }
-
-    const urlString = url.href;
-
-    const assertionType = importAssertions.type;
-
-    switch (validType) {
-      case undefined:
-        // Ignore assertions for module formats we don't recognize, to allow new
-        // formats in the future.
-        return;
-
-      case kImplicitAssertType:
-        // This format doesn't allow an import assertion type, so the property
-        // must not be set on the import assertions object.
-        if (Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
-          handleInvalidAssertionType(urlString, assertionType);
-        }
-        return;
-
-      case assertionType:
-        // The asserted type is the valid type for this format.
-        return;
-
-      default:
-        // There is an expected type for this format, but the value of
-        // `importAssertions.type` might not have been it.
-        if (!Object.prototype.hasOwnProperty.call(importAssertions, 'type')) {
-          // `type` wasn't specified at all.
-          const error: NodeJS.ErrnoException = new Error(
-            `Module "${urlString}" needs an import assertion of type "json"`,
-          );
-          error.code = 'ERR_IMPORT_ASSERTION_TYPE_MISSING';
-
-          throw error;
-        }
-        handleInvalidAssertionType(urlString, assertionType);
-    }
-  }
-
-  private getModuleFormat(modulePath: string) {
-    if (this._resolver.isCoreModule(modulePath)) {
-      return 'builtin';
-    }
-
-    if (isWasm(modulePath)) {
-      return 'wasm';
-    }
-
-    const fileExtension = path.extname(modulePath);
-
-    if (fileExtension === '.json') {
-      return 'json';
-    }
-
-    if (this.unstable_shouldLoadAsEsm(modulePath)) {
-      return 'module';
-    }
-
-    // any unknown format should be treated as JS
-    return 'commonjs';
-  }
-
   private async resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-    importAssertions: ImportAssertions = {},
   ): Promise<T> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
@@ -720,7 +611,6 @@ export default class Runtime {
           Buffer.from(match.groups.code, 'base64'),
           specifier,
           context,
-          importAssertions,
         );
       } else {
         let code = match.groups.code;
@@ -749,7 +639,6 @@ export default class Runtime {
             importModuleDynamically: async (
               specifier: string,
               referencingModule: VMModule,
-              importAssertions?: ImportAssertions,
             ) => {
               invariant(
                 runtimeSupportsVmModules,
@@ -759,7 +648,6 @@ export default class Runtime {
                 specifier,
                 referencingModule.identifier,
                 referencingModule.context,
-                importAssertions,
               );
 
               return this.linkAndEvaluateModule(module);
@@ -795,12 +683,12 @@ export default class Runtime {
     const resolved = await this._resolveModule(referencingIdentifier, path);
 
     if (
-      this._resolver.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(resolved) ||
       // json files are modules when imported in modules
-      resolved.endsWith('.json')
+      resolved.endsWith('.json') ||
+      this._resolver.isCoreModule(resolved) ||
+      this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query, importAssertions);
+      return this.loadEsmModule(resolved, query);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
@@ -822,18 +710,12 @@ export default class Runtime {
       // this method can await it
       this._esmModuleLinkingMap.set(
         module,
-        module.link(
-          (
-            specifier: string,
-            referencingModule: VMModule,
-            importCallOptions?: ImportCallOptions,
-          ) =>
-            this.resolveModule(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-              importCallOptions?.assert,
-            ),
+        module.link((specifier: string, referencingModule: VMModule) =>
+          this.resolveModule(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          ),
         ),
       );
     }
@@ -1767,11 +1649,7 @@ export default class Runtime {
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: async (
-          specifier: string,
-          _script: Script,
-          importAssertions?: ImportAssertions,
-        ) => {
+        importModuleDynamically: async (specifier: string) => {
           invariant(
             runtimeSupportsVmModules,
             'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
@@ -1785,7 +1663,6 @@ export default class Runtime {
             specifier,
             scriptFilename,
             context,
-            importAssertions,
           );
 
           return this.linkAndEvaluateModule(module);
@@ -1837,7 +1714,6 @@ export default class Runtime {
     source: Buffer,
     identifier: string,
     context: VMContext,
-    importAssertions: ImportAssertions | undefined,
   ) {
     const wasmModule = await WebAssembly.compile(source);
 
@@ -1851,7 +1727,6 @@ export default class Runtime {
           module,
           identifier,
           context,
-          importAssertions,
         );
 
         moduleLookup[module] = await this.linkAndEvaluateModule(resolvedModule);
@@ -2607,30 +2482,4 @@ async function evaluateSyntheticModule(module: SyntheticModule) {
   await module.evaluate();
 
   return module;
-}
-
-function handleInvalidAssertionType(url: string, type: unknown) {
-  if (typeof type !== 'string') {
-    throw new TypeError('Import assertion value must be a string');
-  }
-
-  // `type` might not have been one of the types we understand.
-  if (!supportedAssertionTypes.has(type)) {
-    const error: NodeJS.ErrnoException = new Error(
-      `Import assertion type "${type}" is unsupported`,
-    );
-
-    error.code = 'ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED';
-
-    throw error;
-  }
-
-  // `type` was the wrong value for this format.
-  const error: NodeJS.ErrnoException = new Error(
-    `Module "${url}" is not of type "${type}"`,
-  );
-
-  error.code = 'ERR_IMPORT_ASSERTION_TYPE_FAILED';
-
-  throw error;
 }

@@ -3,19 +3,11 @@ id: getting-started
 title: Getting Started
 ---
 
-Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
+Install Jest using your favorite package manager:
 
-```bash
-yarn add --dev jest
-```
-
-Or [`npm`](https://www.npmjs.com/package/jest):
-
-```bash
+```bash npm2yarn
 npm install --save-dev jest
 ```
-
-Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -46,7 +38,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+Finally, run `yarn test` or `npm test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -81,10 +73,10 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](https://babeljs.io/), install required dependencies via `yarn`:
+To use [Babel](https://babeljs.io/), install required dependencies:
 
-```bash
-yarn add --dev babel-jest @babel/core @babel/preset-env
+```bash npm2yarn
+npm install --save-dev babel-jest @babel/core @babel/preset-env
 ```
 
 Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
@@ -95,7 +87,7 @@ module.exports = {
 };
 ```
 
-_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
@@ -138,10 +130,10 @@ Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to
 
 ### Using TypeScript via Babel
 
-Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
+Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript`:
 
-```bash
-yarn add --dev @babel/preset-typescript
+```bash npm2yarn
+npm install --save-dev @babel/preset-typescript
 ```
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
@@ -162,8 +154,8 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 
 [ts-jest](https://github.com/kulshekhar/ts-jest) is a TypeScript preprocessor with source map support for Jest that lets you use Jest to test projects written in TypeScript.
 
-```bash
-yarn add --dev ts-jest
+```bash npm2yarn
+npm install --save-dev ts-jest
 ```
 
 You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
@@ -176,6 +168,6 @@ For `@types/*` modules it's recommended to try to match the version of the assoc
 
 :::
 
-```bash
-yarn add --dev @types/jest
+```bash npm2yarn
+npm install --save-dev @types/jest
 ```

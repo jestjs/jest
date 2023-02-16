@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -118,7 +118,7 @@ const INCLUDED_PATTERNS = [
 ];
 
 const COPYRIGHT_LICENSE = [
-  ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.',
+  ' * Copyright (c) Meta Platforms, Inc. and affiliates.',
   ' *',
   ' * This source code is licensed under the MIT license found in the',
   ' * LICENSE file in the root directory of this source tree.',
@@ -144,7 +144,7 @@ function check() {
   );
 
   if (invalidFiles.length > 0) {
-    console.log(`Facebook copyright header check failed for the following files:
+    console.log(`Meta copyright header check failed for the following files:
 
   ${invalidFiles.join('\n  ')}
 

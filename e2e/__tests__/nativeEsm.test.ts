@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -94,24 +94,22 @@ test('runs WebAssembly (Wasm) test with native ESM', () => {
   expect(exitCode).toBe(0);
 });
 
+test('does not enforce import assertions', () => {
+  const {exitCode, stderr, stdout} = runJest(
+    DIR,
+    ['native-esm-missing-import-assertions.test'],
+    {nodeOptions: '--experimental-vm-modules --no-warnings'},
+  );
+
+  const {summary} = extractSummary(stderr);
+
+  expect(summary).toMatchSnapshot();
+  expect(stdout).toBe('');
+  expect(exitCode).toBe(0);
+});
+
 // version where `vm` API gets `import assertions`
 onNodeVersions('>=16.12.0', () => {
-  test('enforces import assertions', () => {
-    const {exitCode, stderr, stdout} = runJest(
-      DIR,
-      ['native-esm-missing-import-assertions.test'],
-      {nodeOptions: '--experimental-vm-modules --no-warnings'},
-    );
-
-    const {rest} = extractSummary(stderr);
-
-    expect(rest).toContain(
-      'package.json" needs an import assertion of type "json"',
-    );
-    expect(stdout).toBe('');
-    expect(exitCode).toBe(1);
-  });
-
   test('supports import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
@@ -128,20 +126,6 @@ onNodeVersions('>=16.12.0', () => {
 });
 
 onNodeVersions('<16.12.0', () => {
-  test('does not enforce import assertions', () => {
-    const {exitCode, stderr, stdout} = runJest(
-      DIR,
-      ['native-esm-missing-import-assertions.test'],
-      {nodeOptions: '--experimental-vm-modules --no-warnings'},
-    );
-
-    const {summary} = extractSummary(stderr);
-
-    expect(summary).toMatchSnapshot();
-    expect(stdout).toBe('');
-    expect(exitCode).toBe(0);
-  });
-
   test('syntax error for import assertions', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
