@@ -13040,7 +13040,6 @@ __metadata:
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    "@types/semver": ^7.1.0
     chalk: ^4.0.0
     cjs-module-lexer: ^1.0.0
     collect-v8-coverage: ^1.0.0
@@ -13054,7 +13053,6 @@ __metadata:
     jest-resolve: "workspace:^"
     jest-snapshot: "workspace:^"
     jest-util: "workspace:^"
-    semver: ^7.3.5
     slash: ^3.0.0
     strip-bom: ^4.0.0
   languageName: unknown
