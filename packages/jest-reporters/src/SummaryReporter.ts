@@ -17,7 +17,7 @@ import BaseReporter from './BaseReporter';
 import getResultHeader from './getResultHeader';
 import getSnapshotSummary from './getSnapshotSummary';
 import getSummary from './getSummary';
-import type {ReporterOnStartOptions, SummaryReporterOptions} from './types';
+import type {ReporterOnStartOptions} from './types';
 
 const NPM_EVENTS = new Set([
   'prepublish',
@@ -48,6 +48,10 @@ const NPM_EVENTS = new Set([
 
 const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
   process.env;
+
+type SummaryReporterOptions = {
+  summaryThreshold?: number;
+};
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
