@@ -630,6 +630,33 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title containing param values when using fake $variable', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+          ${0} | ${1} | ${1}
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        testFunction(
+          'expected string: a=$a, b=$b, b=$b, b=$b.b, b=$fake, expected=$expected index=$#',
+          noop,
+        );
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: a=0, b=1, b=1, b=1, b=$fake, expected=1 index=0',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: a=1, b=1, b=1, b=1, b=$fake, expected=2 index=1',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   });
 });

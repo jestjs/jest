@@ -100,8 +100,18 @@ export const makeTemplate =
       return values[number - 1];
     });
 
-export const cleanup = (directory: string) =>
-  fs.rmSync(directory, {force: true, recursive: true});
+export const cleanup = (directory: string) => {
+  try {
+    fs.rmSync(directory, {force: true, recursive: true});
+  } catch (error) {
+    try {
+      // retry once in case of e.g. permission errors
+      fs.rmSync(directory, {force: true, recursive: true});
+    } catch {
+      throw error;
+    }
+  }
+};
 
 /**
  * Creates a nested directory with files and their contents

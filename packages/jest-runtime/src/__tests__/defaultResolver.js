@@ -5,5 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import resolver from 'jest-resolve/build/defaultResolver.js';
-module.exports = resolver;
+module.exports = (request, opts) => {
+  return opts.defaultResolver(request, opts);
+};
