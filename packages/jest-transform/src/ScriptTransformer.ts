@@ -964,8 +964,7 @@ const cacheWriteErrorSafeToIgnore = (
   cachePath: string,
 ) =>
   process.platform === 'win32' &&
-  e.code === 'EPERM' &&
-  fs.existsSync(cachePath);
+  e.code === 'EPERM';
 
 const readCacheFile = (cachePath: string): string | null => {
   if (!fs.existsSync(cachePath)) {
