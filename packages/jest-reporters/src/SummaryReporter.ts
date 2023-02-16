@@ -58,18 +58,18 @@ export default class SummaryReporter extends BaseReporter {
 
   constructor(
     globalConfig: Config.GlobalConfig,
-    options: SummaryReporterOptions = {},
+    options?: SummaryReporterOptions,
   ) {
     super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
-    this.validateOptions(options);
-    this._summaryThreshold = options.summaryThreshold || 20;
+    this._validateOptions(options);
+    this._summaryThreshold = options?.summaryThreshold ?? 20;
   }
 
-  private validateOptions(options: SummaryReporterOptions) {
+  private _validateOptions(options?: SummaryReporterOptions) {
     if (
-      options.summaryThreshold &&
+      options?.summaryThreshold &&
       typeof options.summaryThreshold !== 'number'
     ) {
       throw new TypeError('The option summaryThreshold should be a number');
