@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-worker]` Add `setup` method to worker farms
+
 ### Fixes
 
 ### Chore & Maintenance

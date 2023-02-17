@@ -7,6 +7,7 @@
 
 import mergeStream = require('merge-stream');
 import {
+  CHILD_MESSAGE_CALL_SETUP,
   CHILD_MESSAGE_END,
   PoolExitResult,
   WorkerInterface,
@@ -85,6 +86,28 @@ export default class BaseWorkerPool {
 
   createWorker(_workerOptions: WorkerOptions): WorkerInterface {
     throw Error('Missing method createWorker in WorkerPool');
+  }
+
+  async setup(): Promise<void> {
+    await Promise.all(
+      this._workers.map(
+        worker =>
+          new Promise<void>((resolve, reject) => {
+            worker.send(
+              [CHILD_MESSAGE_CALL_SETUP],
+              emptyMethod,
+              error => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve();
+                }
+              },
+              emptyMethod,
+            );
+          }),
+      ),
+    );
   }
 
   async end(): Promise<PoolExitResult> {
