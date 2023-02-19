@@ -410,7 +410,11 @@ export const formatResultsErrors = (
         message = indentAllLines(message);
 
         let cause = '';
-        if ('cause' in errorOrStack && errorOrStack.cause) {
+        if (
+          typeof errorOrStack !== 'string' &&
+          'cause' in errorOrStack &&
+          errorOrStack.cause
+        ) {
           if (
             typeof errorOrStack.cause === 'string' ||
             types.isNativeError(errorOrStack.cause) ||
