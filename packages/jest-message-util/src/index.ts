@@ -377,8 +377,8 @@ export const formatResultsErrors = (
       result.failureMessages.forEach((item, index) => {
         errors.push({
           content: item,
-          result,
           rawError: result.failureDetails[index],
+          result,
         });
       });
       return errors;
