@@ -94,76 +94,76 @@ babelError.stack = babelStack;
 
 const errorWithCauseNestedNested = new Error('boom');
 errorWithCauseNestedNested.stack = `Error: boom
-    at h (/workspaces/jest/plop.test.js:2:9)
-    at h (/workspaces/jest/plop.test.js:6:5)
-    at g (/workspaces/jest/plop.test.js:13:5)
-    at Object.f (/workspaces/jest/plop.test.js:20:5)
-    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at h (cause.test.js:2:9)
+    at h (cause.test.js:6:5)
+    at g (cause.test.js:13:5)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
     at new Promise (<anonymous>)
-    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
-    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
-    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
-    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
-    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
 const errorWithCauseNested = new Error('intercepted by g', {
   cause: errorWithCauseNestedNested,
 });
 errorWithCauseNested.stack = `Error: intercepted by g
-    at g (/workspaces/jest/plop.test.js:8:11)
-    at g (/workspaces/jest/plop.test.js:13:5)
-    at Object.f (/workspaces/jest/plop.test.js:20:5)
-    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at g (cause.test.js:8:11)
+    at g (cause.test.js:13:5)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
     at new Promise (<anonymous>)
-    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
-    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
-    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
-    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
-    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
 const errorWithCause = new Error('intercepted by f', {
   cause: errorWithCauseNested,
 });
 errorWithCause.stack = `Error: intercepted by f
-    at f (/workspaces/jest/plop.test.js:15:11)
-    at Object.f (/workspaces/jest/plop.test.js:20:5)
-    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at f (cause.test.js:15:11)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
     at new Promise (<anonymous>)
-    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
-    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
-    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
-    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
-    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
 const errorWithStringCause = new Error('boom', {
   cause: 'string cause',
 });
 errorWithStringCause.stack = `Error: boom
-    at f (/workspaces/jest/plop.test.js:15:11)
-    at Object.f (/workspaces/jest/plop.test.js:20:5)
-    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at f (cause.test.js:15:11)
+    at Object.f (cause.test.js:20:5)
+    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
     at new Promise (<anonymous>)
-    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
-    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
-    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
-    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
-    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
+    at run (node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
+    at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
 beforeEach(() => {
   jest.clearAllMocks();

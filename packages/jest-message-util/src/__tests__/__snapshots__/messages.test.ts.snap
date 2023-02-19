@@ -45,23 +45,23 @@ exports[`formatStackTrace should properly handle deeply nested causes 1`] = `
 
     intercepted by f
 <dim></intensity>
-<dim>      <dim>at f (</intensity><dim>plop.test.js<dim>:15:11)</intensity><dim></intensity>
-<dim>      <dim>at Object.f (</intensity><dim>plop.test.js<dim>:20:5)</intensity><dim></intensity>
+<dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
     Cause:
     intercepted by g
 <dim></intensity>
-<dim>      <dim>at g (</intensity><dim>plop.test.js<dim>:8:11)</intensity><dim></intensity>
-<dim>      <dim>at g (</intensity><dim>plop.test.js<dim>:13:5)</intensity><dim></intensity>
-<dim>      <dim>at Object.f (</intensity><dim>plop.test.js<dim>:20:5)</intensity><dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:8:11)</intensity><dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
     Cause:
     boom
 <dim></intensity>
-<dim>      <dim>at h (</intensity><dim>plop.test.js<dim>:2:9)</intensity><dim></intensity>
-<dim>      <dim>at h (</intensity><dim>plop.test.js<dim>:6:5)</intensity><dim></intensity>
-<dim>      <dim>at g (</intensity><dim>plop.test.js<dim>:13:5)</intensity><dim></intensity>
-<dim>      <dim>at Object.f (</intensity><dim>plop.test.js<dim>:20:5)</intensity><dim></intensity>
+<dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:2:9)</intensity><dim></intensity>
+<dim>      <dim>at h (</intensity><dim>cause.test.js<dim>:6:5)</intensity><dim></intensity>
+<dim>      <dim>at g (</intensity><dim>cause.test.js<dim>:13:5)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 "
 `;
 
@@ -70,8 +70,8 @@ exports[`formatStackTrace should properly handle string causes 1`] = `
 
     boom
 <dim></intensity>
-<dim>      <dim>at f (</intensity><dim>plop.test.js<dim>:15:11)</intensity><dim></intensity>
-<dim>      <dim>at Object.f (</intensity><dim>plop.test.js<dim>:20:5)</intensity><dim></intensity>
+<dim>      <dim>at f (</intensity><dim>cause.test.js<dim>:15:11)</intensity><dim></intensity>
+<dim>      <dim>at Object.f (</intensity><dim>cause.test.js<dim>:20:5)</intensity><dim></intensity>
 
     Cause:
     string cause
