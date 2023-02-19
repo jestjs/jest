@@ -35,6 +35,8 @@ const unixStackTrace =
   at Object.it (build/__tests__/messages-test.js:45:41)
   at Object.<anonymous> (../jest-jasmine2/build/jasmine-pit.js:35:32)
   at attemptAsync (../jest-jasmine2/build/jasmine-2.4.1.js:1919:24)`;
+const unixError = new Error(unixStackTrace.replace(/\n\s*at [\s\s]*/m, ''));
+unixError.stack = unixStackTrace;
 
 const assertionStack =
   '  ' +
@@ -56,6 +58,10 @@ const assertionStack =
       at process._tickCallback (internal/process/next_tick.js:188:7)
       at internal/process/next_tick.js:188:7
 `;
+const assertionError = new Error(
+  assertionStack.replace(/\n\s*at [\s\s]*/m, ''),
+);
+assertionError.stack = assertionStack;
 
 const vendorStack =
   '  ' +
@@ -83,6 +89,81 @@ const babelStack =
      \u001b[90m 22 | \u001b[39m      )\u001b[33m;\u001b[39m
      \u001b[90m 23 | \u001b[39m    } \u001b[36melse\u001b[39m \u001b[36mif\u001b[39m (\u001b[36mtypeof\u001b[39m render \u001b[33m!==\u001b[39m \u001b[32m'function'\u001b[39m) {\u001b[0m
 `;
+const babelError = new Error(babelStack.replace(/\n\s*at [\s\s]*/m, ''));
+babelError.stack = babelStack;
+
+const errorWithCauseNestedNested = new Error('boom');
+errorWithCauseNestedNested.stack = `Error: boom
+    at h (/workspaces/jest/plop.test.js:2:9)
+    at h (/workspaces/jest/plop.test.js:6:5)
+    at g (/workspaces/jest/plop.test.js:13:5)
+    at Object.f (/workspaces/jest/plop.test.js:20:5)
+    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
+    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
+    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
+    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithCauseNested = new Error('intercepted by g', {
+  cause: errorWithCauseNestedNested,
+});
+errorWithCauseNested.stack = `Error: intercepted by g
+    at g (/workspaces/jest/plop.test.js:8:11)
+    at g (/workspaces/jest/plop.test.js:13:5)
+    at Object.f (/workspaces/jest/plop.test.js:20:5)
+    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
+    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
+    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
+    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithCause = new Error('intercepted by f', {
+  cause: errorWithCauseNested,
+});
+errorWithCause.stack = `Error: intercepted by f
+    at f (/workspaces/jest/plop.test.js:15:11)
+    at Object.f (/workspaces/jest/plop.test.js:20:5)
+    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
+    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
+    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
+    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
+
+const errorWithStringCause = new Error('boom', {
+  cause: 'string cause',
+});
+errorWithStringCause.stack = `Error: boom
+    at f (/workspaces/jest/plop.test.js:15:11)
+    at Object.f (/workspaces/jest/plop.test.js:20:5)
+    at Promise.then.completed (/workspaces/jest/packages/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/workspaces/jest/packages/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/workspaces/jest/packages/jest-circus/build/run.js:248:40)
+    at _runTest (/workspaces/jest/packages/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/workspaces/jest/packages/jest-circus/build/run.js:86:9)
+    at run (/workspaces/jest/packages/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/workspaces/jest/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:74:19)
+    at runTestInternal (/workspaces/jest/packages/jest-runner/build/runTest.js:281:16)
+    at runTest (/workspaces/jest/packages/jest-runner/build/runTest.js:341:7)`;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -94,7 +175,7 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [unixError],
         failureMessages: [unixStackTrace],
         fullName: 'full name',
         invocations: undefined,
@@ -142,7 +223,7 @@ it('formatStackTrace should strip node internals', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [assertionError],
         failureMessages: [assertionStack],
         fullName: 'full name',
         invocations: undefined,
@@ -200,7 +281,7 @@ it('retains message in babel code frame error', () => {
       {
         ancestorTitles: [],
         duration: undefined,
-        failureDetails: [],
+        failureDetails: [babelError],
         failureMessages: [babelStack],
         fullName: 'full name',
         invocations: undefined,
@@ -209,6 +290,64 @@ it('retains message in babel code frame error', () => {
         retryReasons: undefined,
         status: 'failed',
         title: 'Babel test',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('formatStackTrace should properly handle deeply nested causes', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [errorWithCause],
+        failureMessages: [errorWithCause.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'Error with cause test',
+      },
+    ],
+    {
+      rootDir: '',
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('formatStackTrace should properly handle string causes', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        duration: undefined,
+        failureDetails: [errorWithStringCause],
+        failureMessages: [errorWithStringCause.stack || ''],
+        fullName: 'full name',
+        invocations: undefined,
+        location: null,
+        numPassingAsserts: 0,
+        retryReasons: undefined,
+        status: 'failed',
+        title: 'Error with string cause test',
       },
     ],
     {

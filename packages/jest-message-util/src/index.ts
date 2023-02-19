@@ -358,7 +358,11 @@ export const formatStackTrace = (
 };
 
 type FailedResults = Array<{
+  /** Stringified version of the error */
   content: string;
+  /** Error */
+  rawError: unknown;
+  /** Execution result */
   result: TestResult.AssertionResult;
 }>;
 
@@ -370,8 +374,12 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages.forEach(item => {
-        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      result.failureMessages.forEach((item, index) => {
+        errors.push({
+          content: item,
+          result,
+          rawError: result.failureDetails[index],
+        });
       });
       return errors;
     },
@@ -383,15 +391,43 @@ export const formatResultsErrors = (
   }
 
   return failedResults
-    .map(({result, content}) => {
-      let {message, stack} = separateMessageFromStack(content);
-      stack = options.noStackTrace
-        ? ''
-        : `${STACK_TRACE_COLOR(
-            formatStackTrace(stack, config, options, testPath),
-          )}\n`;
+    .map(({result, content, rawError}) => {
+      function formatErrorStack(errorOrStack: Error | string): string {
+        // The stack of new Error('message') contains both the message and the stack,
+        // thuw we need to sanitize and clean it for proper display using separateMessageFromStack.
+        const sourceStack =
+          typeof errorOrStack === 'string'
+            ? errorOrStack
+            : errorOrStack.stack || '';
+        let {message, stack} = separateMessageFromStack(sourceStack);
+        stack = options.noStackTrace
+          ? ''
+          : `${STACK_TRACE_COLOR(
+              formatStackTrace(stack, config, options, testPath),
+            )}\n`;
 
-      message = indentAllLines(message);
+        message = checkForCommonEnvironmentErrors(message);
+        message = indentAllLines(message);
+
+        let cause = '';
+        if (typeof errorOrStack !== 'string' && 'cause' in errorOrStack) {
+          if (
+            typeof errorOrStack.cause === 'string' ||
+            types.isNativeError(errorOrStack.cause) ||
+            errorOrStack.cause instanceof Error
+          ) {
+            const nestedCause = formatErrorStack(errorOrStack.cause);
+            cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
+          }
+        }
+
+        return `${message}\n${stack}${cause}`;
+      }
+
+      const rootErrorOrStack: Error | string =
+        types.isNativeError(rawError) || rawError instanceof Error
+          ? rawError
+          : content;
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +
@@ -401,7 +437,7 @@ export const formatResultsErrors = (
           result.title,
       )}\n`;
 
-      return `${title}\n${message}\n${stack}`;
+      return `${title}\n${formatErrorStack(rootErrorOrStack)}`;
     })
     .join('\n');
 };
