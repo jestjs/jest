@@ -92,6 +92,15 @@ const babelStack =
 const babelError = new Error(babelStack.replace(/\n\s*at [\s\s]*/m, ''));
 babelError.stack = babelStack;
 
+function buildErrorWithCause(message: string, cause: unknown): Error {
+  const error = new Error(message, {cause});
+  if (cause !== error.cause) {
+    // Error with cause not supported in legacy versions of node, we just polyfill it
+    Object.assign(error, {cause});
+  }
+  return error;
+}
+
 const errorWithCauseNestedNested = new Error('boom');
 errorWithCauseNestedNested.stack = `Error: boom
     at h (cause.test.js:2:9)
@@ -110,9 +119,10 @@ errorWithCauseNestedNested.stack = `Error: boom
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithCauseNested = new Error('intercepted by g', {
-  cause: errorWithCauseNestedNested,
-});
+const errorWithCauseNested = buildErrorWithCause(
+  'intercepted by g',
+  errorWithCauseNestedNested,
+);
 errorWithCauseNested.stack = `Error: intercepted by g
     at g (cause.test.js:8:11)
     at g (cause.test.js:13:5)
@@ -129,9 +139,10 @@ errorWithCauseNested.stack = `Error: intercepted by g
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithCause = new Error('intercepted by f', {
-  cause: errorWithCauseNested,
-});
+const errorWithCause = buildErrorWithCause(
+  'intercepted by f',
+  errorWithCauseNested,
+);
 errorWithCause.stack = `Error: intercepted by f
     at f (cause.test.js:15:11)
     at Object.f (cause.test.js:20:5)
@@ -147,9 +158,7 @@ errorWithCause.stack = `Error: intercepted by f
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithStringCause = new Error('boom', {
-  cause: 'string cause',
-});
+const errorWithStringCause = buildErrorWithCause('boom', 'string cause');
 errorWithStringCause.stack = `Error: boom
     at f (cause.test.js:15:11)
     at Object.f (cause.test.js:20:5)
