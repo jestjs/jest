@@ -425,7 +425,7 @@ export const formatResultsErrors = (
       }
 
       const rootErrorOrStack: Error | string =
-        types.isNativeError(rawError) || rawError instanceof Error
+        rawError && (types.isNativeError(rawError) || rawError instanceof Error)
           ? rawError
           : content;
 
