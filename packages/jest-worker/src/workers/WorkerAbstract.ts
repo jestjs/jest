@@ -125,7 +125,7 @@ export default abstract class WorkerAbstract
    * killed off.
    */
   protected _shutdown(): void {
-    this.state === WorkerStates.SHUT_DOWN;
+    this.state = WorkerStates.SHUT_DOWN;
 
     // End the permanent stream so the merged stream end too
     if (this._fakeStream) {
