@@ -90,23 +90,24 @@ export default class BaseWorkerPool {
 
   async start(): Promise<void> {
     await Promise.all(
-      this._workers.map(
-        worker =>
-          new Promise<void>((resolve, reject) => {
-            worker.send(
-              [CHILD_MESSAGE_CALL_SETUP],
-              emptyMethod,
-              error => {
-                if (error) {
-                  reject(error);
-                } else {
-                  resolve();
-                }
-              },
-              emptyMethod,
-            );
-          }),
-      ),
+      this._workers.map(async worker => {
+        await worker.waitForWorkerReady();
+
+        await new Promise<void>((resolve, reject) => {
+          worker.send(
+            [CHILD_MESSAGE_CALL_SETUP],
+            emptyMethod,
+            error => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve();
+              }
+            },
+            emptyMethod,
+          );
+        });
+      }),
     );
   }
 
