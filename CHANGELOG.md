@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it`
+
 ### Fixes
 
 ### Chore & Maintenance
