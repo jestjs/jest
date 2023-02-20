@@ -366,6 +366,50 @@ type FailedResults = Array<{
   result: TestResult.AssertionResult;
 }>;
 
+function formatErrorStack(
+  errorOrStack: Error | string,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: string,
+): string {
+  // The stack of new Error('message') contains both the message and the stack,
+  // thus we need to sanitize and clean it for proper display using separateMessageFromStack.
+  const sourceStack =
+    typeof errorOrStack === 'string' ? errorOrStack : errorOrStack.stack || '';
+  let {message, stack} = separateMessageFromStack(sourceStack);
+  stack = options.noStackTrace
+    ? ''
+    : `${STACK_TRACE_COLOR(
+        formatStackTrace(stack, config, options, testPath),
+      )}\n`;
+
+  message = checkForCommonEnvironmentErrors(message);
+  message = indentAllLines(message);
+
+  let cause = '';
+  if (
+    typeof errorOrStack !== 'string' &&
+    'cause' in errorOrStack &&
+    errorOrStack.cause
+  ) {
+    if (
+      typeof errorOrStack.cause === 'string' ||
+      types.isNativeError(errorOrStack.cause) ||
+      errorOrStack.cause instanceof Error
+    ) {
+      const nestedCause = formatErrorStack(
+        errorOrStack.cause,
+        config,
+        options,
+        testPath,
+      );
+      cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
+    }
+  }
+
+  return `${message}\n${stack}${cause}`;
+}
+
 export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
@@ -392,42 +436,6 @@ export const formatResultsErrors = (
 
   return failedResults
     .map(({result, content, rawError}) => {
-      function formatErrorStack(errorOrStack: Error | string): string {
-        // The stack of new Error('message') contains both the message and the stack,
-        // thuw we need to sanitize and clean it for proper display using separateMessageFromStack.
-        const sourceStack =
-          typeof errorOrStack === 'string'
-            ? errorOrStack
-            : errorOrStack.stack || '';
-        let {message, stack} = separateMessageFromStack(sourceStack);
-        stack = options.noStackTrace
-          ? ''
-          : `${STACK_TRACE_COLOR(
-              formatStackTrace(stack, config, options, testPath),
-            )}\n`;
-
-        message = checkForCommonEnvironmentErrors(message);
-        message = indentAllLines(message);
-
-        let cause = '';
-        if (
-          typeof errorOrStack !== 'string' &&
-          'cause' in errorOrStack &&
-          errorOrStack.cause
-        ) {
-          if (
-            typeof errorOrStack.cause === 'string' ||
-            types.isNativeError(errorOrStack.cause) ||
-            errorOrStack.cause instanceof Error
-          ) {
-            const nestedCause = formatErrorStack(errorOrStack.cause);
-            cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
-          }
-        }
-
-        return `${message}\n${stack}${cause}`;
-      }
-
       const rootErrorOrStack: Error | string =
         rawError && (types.isNativeError(rawError) || rawError instanceof Error)
           ? rawError
@@ -441,7 +449,12 @@ export const formatResultsErrors = (
           result.title,
       )}\n`;
 
-      return `${title}\n${formatErrorStack(rootErrorOrStack)}`;
+      return `${title}\n${formatErrorStack(
+        rootErrorOrStack,
+        config,
+        options,
+        testPath,
+      )}`;
     })
     .join('\n');
 };
