@@ -404,6 +404,108 @@ exports[`works with async failures 1`] = `
       at Object.test (__tests__/asyncFailures.test.js:22:1)"
 `;
 
+exports[`works with error with cause 1`] = `
+"FAIL __tests__/errorWithCause.test.js
+  ✕ error with cause in test
+  describe block
+    ✕ error with cause in describe/it
+
+  ● error with cause in test
+
+    error during f
+
+      16 |     g();
+      17 |   } catch (err) {
+    > 18 |     throw new Error('error during f', {cause: err});
+         |           ^
+      19 |   }
+      20 | }
+      21 |
+
+      at f (__tests__/errorWithCause.test.js:18:11)
+      at Object.f (__tests__/errorWithCause.test.js:23:3)
+
+    Cause:
+    error during g
+
+      10 |
+      11 | function g() {
+    > 12 |   throw new Error('error during g');
+         |         ^
+      13 | }
+      14 | function f() {
+      15 |   try {
+
+      at g (__tests__/errorWithCause.test.js:12:9)
+      at g (__tests__/errorWithCause.test.js:16:5)
+      at Object.f (__tests__/errorWithCause.test.js:23:3)
+
+  ● describe block › error with cause in describe/it
+
+    error during f
+
+      16 |     g();
+      17 |   } catch (err) {
+    > 18 |     throw new Error('error during f', {cause: err});
+         |           ^
+      19 |   }
+      20 | }
+      21 |
+
+      at f (__tests__/errorWithCause.test.js:18:11)
+      at Object.f (__tests__/errorWithCause.test.js:28:5)
+
+    Cause:
+    error during g
+
+      10 |
+      11 | function g() {
+    > 12 |   throw new Error('error during g');
+         |         ^
+      13 | }
+      14 | function f() {
+      15 |   try {
+
+      at g (__tests__/errorWithCause.test.js:12:9)
+      at g (__tests__/errorWithCause.test.js:16:5)
+      at Object.f (__tests__/errorWithCause.test.js:28:5)"
+`;
+
+exports[`works with error with cause thrown outside tests 1`] = `
+"FAIL __tests__/errorWithCauseInDescribe.test.js
+  ● Test suite failed to run
+
+    error during f
+
+      16 |     g();
+      17 |   } catch (err) {
+    > 18 |     throw new Error('error during f', {cause: err});
+         |           ^
+      19 |   }
+      20 | }
+      21 |
+
+      at f (__tests__/errorWithCauseInDescribe.test.js:18:11)
+      at f (__tests__/errorWithCauseInDescribe.test.js:23:3)
+      at Object.describe (__tests__/errorWithCauseInDescribe.test.js:22:1)
+
+    Cause:
+     error during g
+
+          10 |
+          11 | function g() {
+        > 12 |   throw new Error('error during g');
+             |         ^
+          13 | }
+          14 | function f() {
+          15 |   try {
+
+          at g (__tests__/errorWithCauseInDescribe.test.js:12:9)
+          at g (__tests__/errorWithCauseInDescribe.test.js:16:5)
+          at f (__tests__/errorWithCauseInDescribe.test.js:23:3)
+          at Object.describe (__tests__/errorWithCauseInDescribe.test.js:22:1)"
+`;
+
 exports[`works with node assert 1`] = `
 "FAIL __tests__/assertionError.test.js
   ✕ assert

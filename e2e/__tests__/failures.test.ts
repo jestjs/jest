@@ -90,6 +90,20 @@ test('works with snapshot failures with hint', () => {
   ).toMatchSnapshot();
 });
 
+test('works with error with cause', () => {
+  const {stderr} = runJest(dir, ['errorWithCause.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
+test('works with error with cause thrown outside tests', () => {
+  const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
+  const summary = normalizeDots(cleanStderr(stderr));
+
+  expect(summary).toMatchSnapshot();
+});
+
 test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
 
