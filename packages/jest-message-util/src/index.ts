@@ -360,8 +360,8 @@ export const formatStackTrace = (
 type FailedResults = Array<{
   /** Stringified version of the error */
   content: string;
-  /** Error */
-  rawError: unknown;
+  /** Details related to the failure */
+  failureDetails: unknown;
   /** Execution result */
   result: TestResult.AssertionResult;
 }>;
@@ -421,7 +421,7 @@ export const formatResultsErrors = (
       result.failureMessages.forEach((item, index) => {
         errors.push({
           content: item,
-          rawError: result.failureDetails[index],
+          failureDetails: result.failureDetails[index],
           result,
         });
       });
@@ -435,10 +435,11 @@ export const formatResultsErrors = (
   }
 
   return failedResults
-    .map(({result, content, rawError}) => {
+    .map(({result, content, failureDetails}) => {
       const rootErrorOrStack: Error | string =
-        rawError && (types.isNativeError(rawError) || rawError instanceof Error)
-          ? rawError
+        failureDetails &&
+        (types.isNativeError(failureDetails) || failureDetails instanceof Error)
+          ? failureDetails
           : content;
 
       const title = `${chalk.bold.red(
