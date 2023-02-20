@@ -62,7 +62,7 @@ export interface WorkerPoolInterface {
   getWorkers(): Array<WorkerInterface>;
   createWorker(options: WorkerOptions): WorkerInterface;
   send: WorkerCallback;
-  setup(): Promise<void>;
+  start(): Promise<void>;
   end(): Promise<PoolExitResult>;
 }
 

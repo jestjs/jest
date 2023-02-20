@@ -174,8 +174,8 @@ export class Worker {
     return this._workerPool.getStdout();
   }
 
-  async setup(): Promise<void> {
-    await this._workerPool.setup();
+  async start(): Promise<void> {
+    await this._workerPool.start();
   }
 
   async end(): Promise<PoolExitResult> {

@@ -88,7 +88,7 @@ export default class BaseWorkerPool {
     throw Error('Missing method createWorker in WorkerPool');
   }
 
-  async setup(): Promise<void> {
+  async start(): Promise<void> {
     await Promise.all(
       this._workers.map(
         worker =>

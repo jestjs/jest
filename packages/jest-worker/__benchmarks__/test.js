@@ -109,7 +109,7 @@ function testJestWorker() {
     farm.getStderr().pipe(process.stderr);
 
     // Let all workers come up.
-    await farm.setup();
+    await farm.start();
 
     const startProcess = performance.now();
 

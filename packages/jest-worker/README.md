@@ -140,7 +140,7 @@ Returns a `ReadableStream` where the standard output of all workers is piped. No
 
 Returns a `ReadableStream` where the standard error of all workers is piped. Note that the `silent` option of the child workers must be set to `true` to make it work. This is the default set by `jest-worker`, but keep it in mind when overriding options through `forkOptions`.
 
-#### `setup()`
+#### `start()`
 
 Starts up every worker and call their `setup` function, if it exists. Returns a `Promise` which resolves when all workers are running and have completed their `setup`.
 
