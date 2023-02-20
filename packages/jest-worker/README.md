@@ -142,7 +142,7 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 
 #### `start()`
 
-Starts up every worker and call their `setup` function, if it exists. Returns a `Promise` which resolves when all workers are running and have completed their `setup`.
+Starts up every worker and calls their `setup` function, if it exists. Returns a `Promise` which resolves when all workers are running and have completed their `setup`.
 
 This is useful if you want to start up all your workers eagerly before they are used to call any other functions.
 
