@@ -326,6 +326,7 @@ export type InitialOptions = Partial<{
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
   workerIdleMemoryLimit: number | string;
+  workerThreads: boolean;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -419,6 +420,7 @@ export type GlobalConfig = {
     config: Record<string, unknown>;
   }> | null;
   workerIdleMemoryLimit?: number;
+  workerThreads?: boolean;
 };
 
 export type ProjectConfig = {
@@ -574,5 +576,6 @@ export type Argv = Arguments<
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
     workerIdleMemoryLimit: number | string;
+    workerThreads: boolean;
   }>
 >;
