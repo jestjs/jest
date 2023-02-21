@@ -88,6 +88,8 @@ expectError(typedWorkerFarm.runTestAsync());
 expectError(typedWorkerFarm.setup());
 expectError(typedWorkerFarm.teardown());
 
+expectType<Promise<void>>(typedWorkerFarm.start());
+
 expectError<Promise<void>>(typedWorkerFarm.end());
 expectType<Promise<{forceExited: boolean}>>(typedWorkerFarm.end());
 

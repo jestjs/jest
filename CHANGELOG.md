@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-reporters]` Add `summaryThreshold` option to summary reporter to allow overriding the internal threshold that is used to print the summary of all failed tests when the number of test suites surpasses it ([#13895](https://github.com/facebook/jest/pull/13895))
+- `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
 
 ### Fixes
 
