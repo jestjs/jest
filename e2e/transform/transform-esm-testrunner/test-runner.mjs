@@ -23,6 +23,7 @@ export default async function testRunner(
       {
         ancestorTitles: [],
         duration: 2,
+        failureDetails: [],
         failureMessages: [],
         fullName: 'sample test',
         location: null,
