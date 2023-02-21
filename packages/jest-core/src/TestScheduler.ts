@@ -368,7 +368,7 @@ class TestScheduler {
       this.addReporter(new CoverageReporter(this._globalConfig, this._context));
     }
 
-    if (summaryOptions) {
+    if (summaryOptions != null) {
       this.addReporter(new SummaryReporter(this._globalConfig, summaryOptions));
     }
   }
