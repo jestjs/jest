@@ -2,7 +2,8 @@
 
 ### Features
 
-- `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it`
+- `[jest-message-util]` Add support for [Error causes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause) in `test` and `it` ([#13937](https://github.com/facebook/jest/pull/13935))
+- `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
 
 ### Fixes
 

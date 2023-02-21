@@ -180,6 +180,10 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
+### `--coverageDirectory=<path>`
+
+The directory where Jest should output its coverage files.
+
 ### `--coverageProvider=<provider>`
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
