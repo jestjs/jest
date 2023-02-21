@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {isJestJasmineRun} from '@jest/test-utils';
 import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
@@ -90,19 +91,22 @@ test('works with snapshot failures with hint', () => {
   ).toMatchSnapshot();
 });
 
-test('works with error with cause', () => {
+(isJestJasmineRun() ? test.skip : test)('works with error with cause', () => {
   const {stderr} = runJest(dir, ['errorWithCause.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
 
   expect(summary).toMatchSnapshot();
 });
 
-test('works with error with cause thrown outside tests', () => {
-  const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
-  const summary = normalizeDots(cleanStderr(stderr));
+(isJestJasmineRun() ? test.skip : test)(
+  'works with error with cause thrown outside tests',
+  () => {
+    const {stderr} = runJest(dir, ['errorWithCauseInDescribe.test.js']);
+    const summary = normalizeDots(cleanStderr(stderr));
 
-  expect(summary).toMatchSnapshot();
-});
+    expect(summary).toMatchSnapshot();
+  },
+);
 
 test('errors after test has completed', () => {
   const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
