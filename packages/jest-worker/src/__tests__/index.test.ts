@@ -89,6 +89,7 @@ it('exposes the right API using passed worker', () => {
     getStdout: jest.fn(),
     getWorkers: jest.fn(),
     send: jest.fn(),
+    start: jest.fn(),
   }));
 
   const farm = new WorkerFarm('/tmp/baz.js', {
