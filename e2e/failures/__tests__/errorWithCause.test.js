@@ -8,11 +8,11 @@
 
 'use strict';
 
-function buildErrorWithCause(message: string, cause: unknown): Error {
-  const error = new Error(message, {cause});
-  if (cause !== error.cause) {
+function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+  const error = new Error(message, opts);
+  if (opts.cause !== error.cause) {
     // Error with cause not supported in legacy versions of node, we just polyfill it
-    Object.assign(error, {cause});
+    Object.assign(error, opts);
   }
   return error;
 }
@@ -24,7 +24,7 @@ function f() {
   try {
     g();
   } catch (err) {
-    throw buildErrorWithCause('error during f', err);
+    throw buildErrorWithCause('error during f', {cause: err});
   }
 }
 
@@ -38,6 +38,8 @@ describe('describe block', () => {
   });
 
   it('error with string cause in describe/it', () => {
-    throw buildErrorWithCause('with string cause', 'here is the cause');
+    throw buildErrorWithCause('with string cause', {
+      cause: 'here is the cause',
+    });
   });
 });

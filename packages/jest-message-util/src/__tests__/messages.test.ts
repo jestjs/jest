@@ -92,11 +92,11 @@ const babelStack =
 const babelError = new Error(babelStack.replace(/\n\s*at [\s\s]*/m, ''));
 babelError.stack = babelStack;
 
-function buildErrorWithCause(message: string, cause: unknown): Error {
-  const error = new Error(message, {cause});
-  if (cause !== error.cause) {
+function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+  const error = new Error(message, opts);
+  if (opts.cause !== error.cause) {
     // Error with cause not supported in legacy versions of node, we just polyfill it
-    Object.assign(error, {cause});
+    Object.assign(error, opts);
   }
   return error;
 }
@@ -119,10 +119,9 @@ errorWithCauseNestedNested.stack = `Error: boom
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithCauseNested = buildErrorWithCause(
-  'intercepted by g',
-  errorWithCauseNestedNested,
-);
+const errorWithCauseNested = buildErrorWithCause('intercepted by g', {
+  cause: errorWithCauseNestedNested,
+});
 errorWithCauseNested.stack = `Error: intercepted by g
     at g (cause.test.js:8:11)
     at g (cause.test.js:13:5)
@@ -139,10 +138,9 @@ errorWithCauseNested.stack = `Error: intercepted by g
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithCause = buildErrorWithCause(
-  'intercepted by f',
-  errorWithCauseNested,
-);
+const errorWithCause = buildErrorWithCause('intercepted by f', {
+  cause: errorWithCauseNested,
+});
 errorWithCause.stack = `Error: intercepted by f
     at f (cause.test.js:15:11)
     at Object.f (cause.test.js:20:5)
@@ -158,7 +156,9 @@ errorWithCause.stack = `Error: intercepted by f
     at runTestInternal (node_modules/jest-runner/build/runTest.js:281:16)
     at runTest (node_modules/jest-runner/build/runTest.js:341:7)`;
 
-const errorWithStringCause = buildErrorWithCause('boom', 'string cause');
+const errorWithStringCause = buildErrorWithCause('boom', {
+  cause: 'string cause',
+});
 errorWithStringCause.stack = `Error: boom
     at f (cause.test.js:15:11)
     at Object.f (cause.test.js:20:5)

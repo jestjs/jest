@@ -416,12 +416,12 @@ exports[`works with error with cause 1`] = `
     error during f
 
       10 |
-      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
-    > 12 |   const error = new Error(message, {cause});
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
          |                 ^
-      13 |   if (cause !== error.cause) {
+      13 |   if (opts.cause !== error.cause) {
       14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
-      15 |     Object.assign(error, {cause});
+      15 |     Object.assign(error, opts);
 
       at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
       at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
@@ -447,12 +447,12 @@ exports[`works with error with cause 1`] = `
     error during f
 
       10 |
-      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
-    > 12 |   const error = new Error(message, {cause});
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
          |                 ^
-      13 |   if (cause !== error.cause) {
+      13 |   if (opts.cause !== error.cause) {
       14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
-      15 |     Object.assign(error, {cause});
+      15 |     Object.assign(error, opts);
 
       at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
       at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
@@ -478,12 +478,12 @@ exports[`works with error with cause 1`] = `
     with string cause
 
       10 |
-      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
-    > 12 |   const error = new Error(message, {cause});
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
          |                 ^
-      13 |   if (cause !== error.cause) {
+      13 |   if (opts.cause !== error.cause) {
       14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
-      15 |     Object.assign(error, {cause});
+      15 |     Object.assign(error, opts);
 
       at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
       at Object.buildErrorWithCause (__tests__/errorWithCause.test.js:41:11)
@@ -499,12 +499,12 @@ exports[`works with error with cause thrown outside tests 1`] = `
     error during f
 
       10 |
-      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
-    > 12 |   const error = new Error(message, {cause});
+      11 | function buildErrorWithCause(message: string, opts: {cause: unknown}): Error {
+    > 12 |   const error = new Error(message, opts);
          |                 ^
-      13 |   if (cause !== error.cause) {
+      13 |   if (opts.cause !== error.cause) {
       14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
-      15 |     Object.assign(error, {cause});
+      15 |     Object.assign(error, opts);
 
       at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:12:17)
       at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:27:11)
