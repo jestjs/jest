@@ -510,3 +510,9 @@ Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawl
 ### `--workerThreads`
 
 Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+:::caution
+
+This is **experimental feature**. See the [`workerThreads` configuration option](Configuration.md#workerthreads) for more details.
+
+:::
