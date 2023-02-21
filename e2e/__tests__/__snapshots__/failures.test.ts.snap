@@ -409,66 +409,87 @@ exports[`works with error with cause 1`] = `
   ✕ error with cause in test
   describe block
     ✕ error with cause in describe/it
+    ✕ error with string cause in describe/it
 
   ● error with cause in test
 
     error during f
 
-      16 |     g();
-      17 |   } catch (err) {
-    > 18 |     throw new Error('error during f', {cause: err});
-         |           ^
-      19 |   }
-      20 | }
-      21 |
+      10 |
+      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
+    > 12 |   const error = new Error(message, {cause});
+         |                 ^
+      13 |   if (cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, {cause});
 
-      at f (__tests__/errorWithCause.test.js:18:11)
-      at Object.f (__tests__/errorWithCause.test.js:23:3)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
+      at Object.f (__tests__/errorWithCause.test.js:32:3)
 
     Cause:
     error during g
 
-      10 |
-      11 | function g() {
-    > 12 |   throw new Error('error during g');
+      19 |
+      20 | function g() {
+    > 21 |   throw new Error('error during g');
          |         ^
-      13 | }
-      14 | function f() {
-      15 |   try {
+      22 | }
+      23 | function f() {
+      24 |   try {
 
-      at g (__tests__/errorWithCause.test.js:12:9)
-      at g (__tests__/errorWithCause.test.js:16:5)
-      at Object.f (__tests__/errorWithCause.test.js:23:3)
+      at g (__tests__/errorWithCause.test.js:21:9)
+      at g (__tests__/errorWithCause.test.js:25:5)
+      at Object.f (__tests__/errorWithCause.test.js:32:3)
 
   ● describe block › error with cause in describe/it
 
     error during f
 
-      16 |     g();
-      17 |   } catch (err) {
-    > 18 |     throw new Error('error during f', {cause: err});
-         |           ^
-      19 |   }
-      20 | }
-      21 |
+      10 |
+      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
+    > 12 |   const error = new Error(message, {cause});
+         |                 ^
+      13 |   if (cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, {cause});
 
-      at f (__tests__/errorWithCause.test.js:18:11)
-      at Object.f (__tests__/errorWithCause.test.js:28:5)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:27:11)
+      at Object.f (__tests__/errorWithCause.test.js:37:5)
 
     Cause:
     error during g
 
-      10 |
-      11 | function g() {
-    > 12 |   throw new Error('error during g');
+      19 |
+      20 | function g() {
+    > 21 |   throw new Error('error during g');
          |         ^
-      13 | }
-      14 | function f() {
-      15 |   try {
+      22 | }
+      23 | function f() {
+      24 |   try {
 
-      at g (__tests__/errorWithCause.test.js:12:9)
-      at g (__tests__/errorWithCause.test.js:16:5)
-      at Object.f (__tests__/errorWithCause.test.js:28:5)"
+      at g (__tests__/errorWithCause.test.js:21:9)
+      at g (__tests__/errorWithCause.test.js:25:5)
+      at Object.f (__tests__/errorWithCause.test.js:37:5)
+
+  ● describe block › error with string cause in describe/it
+
+    with string cause
+
+      10 |
+      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
+    > 12 |   const error = new Error(message, {cause});
+         |                 ^
+      13 |   if (cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, {cause});
+
+      at buildErrorWithCause (__tests__/errorWithCause.test.js:12:17)
+      at Object.buildErrorWithCause (__tests__/errorWithCause.test.js:41:11)
+
+    Cause:
+    here is the cause"
 `;
 
 exports[`works with error with cause thrown outside tests 1`] = `
@@ -477,33 +498,34 @@ exports[`works with error with cause thrown outside tests 1`] = `
 
     error during f
 
-      16 |     g();
-      17 |   } catch (err) {
-    > 18 |     throw new Error('error during f', {cause: err});
-         |           ^
-      19 |   }
-      20 | }
-      21 |
+      10 |
+      11 | function buildErrorWithCause(message: string, cause: unknown): Error {
+    > 12 |   const error = new Error(message, {cause});
+         |                 ^
+      13 |   if (cause !== error.cause) {
+      14 |     // Error with cause not supported in legacy versions of node, we just polyfill it
+      15 |     Object.assign(error, {cause});
 
-      at f (__tests__/errorWithCauseInDescribe.test.js:18:11)
-      at f (__tests__/errorWithCauseInDescribe.test.js:23:3)
-      at Object.describe (__tests__/errorWithCauseInDescribe.test.js:22:1)
+      at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:12:17)
+      at buildErrorWithCause (__tests__/errorWithCauseInDescribe.test.js:27:11)
+      at f (__tests__/errorWithCauseInDescribe.test.js:32:3)
+      at Object.describe (__tests__/errorWithCauseInDescribe.test.js:31:1)
 
     Cause:
      error during g
 
-          10 |
-          11 | function g() {
-        > 12 |   throw new Error('error during g');
+          19 |
+          20 | function g() {
+        > 21 |   throw new Error('error during g');
              |         ^
-          13 | }
-          14 | function f() {
-          15 |   try {
+          22 | }
+          23 | function f() {
+          24 |   try {
 
-          at g (__tests__/errorWithCauseInDescribe.test.js:12:9)
-          at g (__tests__/errorWithCauseInDescribe.test.js:16:5)
-          at f (__tests__/errorWithCauseInDescribe.test.js:23:3)
-          at Object.describe (__tests__/errorWithCauseInDescribe.test.js:22:1)"
+          at g (__tests__/errorWithCauseInDescribe.test.js:21:9)
+          at g (__tests__/errorWithCauseInDescribe.test.js:25:5)
+          at f (__tests__/errorWithCauseInDescribe.test.js:32:3)
+          at Object.describe (__tests__/errorWithCauseInDescribe.test.js:31:1)"
 `;
 
 exports[`works with node assert 1`] = `
