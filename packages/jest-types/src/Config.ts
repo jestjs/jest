@@ -206,6 +206,7 @@ export type DefaultOptions = {
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerThreads: boolean;
 };
 
 export type DisplayName = {

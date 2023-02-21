@@ -2378,4 +2378,6 @@ This option allows comments in `package.json`. Include the comment text as the v
 
 ### `workerThreads`
 
+Default: `false`
+
 Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
