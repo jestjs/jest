@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-worker]` Add `start` method to worker farms ([#13937](https://github.com/facebook/jest/pull/13937))
+
 ### Fixes
 
 ### Chore & Maintenance
