@@ -436,11 +436,17 @@ export const formatResultsErrors = (
 
   return failedResults
     .map(({result, content, failureDetails}) => {
-      const rootErrorOrStack: Error | string =
-        failureDetails &&
-        (types.isNativeError(failureDetails) || failureDetails instanceof Error)
-          ? failureDetails
-          : content;
+      const rootErrorOrStack: Error | string = failureDetails
+        ? types.isNativeError(failureDetails) || failureDetails instanceof Error
+          ? failureDetails // receiving raw errors for jest-circus
+          : typeof failureDetails === 'object' &&
+            'error' in failureDetails &&
+            failureDetails.error &&
+            (types.isNativeError(failureDetails.error) ||
+              failureDetails.error instanceof Error)
+          ? failureDetails.error // receiving instances of FailedAssertion for jest-jasmine
+          : content
+        : content;
 
       const title = `${chalk.bold.red(
         TITLE_INDENT +
