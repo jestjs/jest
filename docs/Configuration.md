@@ -2386,6 +2386,6 @@ Using worker threads may help to improve [performance](https://github.com/nodejs
 
 :::caution
 
-This is **experimental feature**. The worker threads use structured clone instead of `JSON.stringify()` to serialize messages. This means that built-in JavaScript objects as `BigInt`, `Map` or `Set` will get serialized. However extra properties set on `Error`, `Map` or `Set` will not be passed on through the serialization step. For more details see the article on [structured clone](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+This is **experimental feature**. Keep in mind that the worker threads use structured clone instead of `JSON.stringify()` to serialize messages. This means that built-in JavaScript objects as `BigInt`, `Map` or `Set` will get serialized properly. However extra properties set on `Error`, `Map` or `Set` will not be passed on through the serialization step. For more details see the article on [structured clone](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
 
 :::
