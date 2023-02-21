@@ -421,6 +421,7 @@ export type GlobalConfig = {
     config: Record<string, unknown>;
   }> | null;
   workerIdleMemoryLimit?: number;
+  // TODO: make non-optional in Jest 30
   workerThreads?: boolean;
 };
 
