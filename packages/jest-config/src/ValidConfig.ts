@@ -186,6 +186,7 @@ export const initialOptions: Config.InitialOptions = {
   ],
   watchman: true,
   workerIdleMemoryLimit: multipleValidOptions(0.2, '50%'),
+  workerThreads: true,
 };
 
 export const initialProjectOptions: Config.InitialProjectOptions = {
