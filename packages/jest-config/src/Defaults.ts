@@ -88,6 +88,7 @@ const defaultOptions: Config.DefaultOptions = {
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
+  workerThreads: false,
 };
 
 export default defaultOptions;
