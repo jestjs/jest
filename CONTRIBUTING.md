@@ -1,6 +1,6 @@
 # Cómo Contribuir...
 
-Jest es uno de los proyectos de código abierto de Facebook que se encuentra en un desarrollo muy activo y también se utiliza para enviar código a todos en Facebook.com. Todavía estamos resolviendo los problemas para que contribuir a este proyecto sea lo más fácil y transparente posible, pero aún no hemos llegado a ese punto. Esperamos que este documento aclare el proceso de contribución y responda algunas preguntas que puedas tener.
+Jest es uno de los proyectos de código abierto de Facebook que se encuentra en un desarrollo muy activo y también se utiliza para enviar código a todos en [Facebook.com](https://www.facebook.com). Todavía estamos resolviendo los problemas para que contribuir a este proyecto sea lo más fácil y transparente posible, pero aún no hemos llegado a ese punto. Esperamos que este documento aclare el proceso de contribución y responda algunas preguntas que puedas tener.
 
 Si deseas que un IDE en línea ya configurado contribuya a Jest, ¡puedes usar [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
 
