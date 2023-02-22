@@ -1,120 +1,120 @@
-# How to Contribute
+# Cómo Contribuir...
 
-Jest is one of Facebook's open-source projects that is both under very active development and is also being used to ship code to everybody on [Facebook.com](https://www.facebook.com). We're still working out the kinks to make contributing to this project as easy and transparent as possible, but we're not quite there yet. Hopefully, this document makes the process for contributing clear and answers some questions that you may have.
+Jest es uno de los proyectos de código abierto de Facebook que se encuentra en un desarrollo muy activo y también se utiliza para enviar código a todos en [Facebook.com](https://www.facebook.com). Todavía estamos resolviendo los problemas para que contribuir a este proyecto sea lo más fácil y transparente posible, pero aún no hemos llegado a ese punto. Esperamos que este documento aclare el proceso de contribución y responda algunas preguntas que puedas tener.
 
-If you want an already configured online IDE to contribute to Jest, you can use [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
+Si deseas que un IDE en línea ya configurado contribuya a Jest, ¡puedes usar [Gitpod](https://gitpod.io/#https://github.com/facebook/jest)!
 
-## [Code of Conduct](https://code.facebook.com/codeofconduct)
+## [Código de Conducta](https://code.facebook.com/codeofconduct)
 
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.facebook.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
+Facebook ha adoptado un Código de conducta que esperamos cumplan los participantes del proyecto. Lea [el texto completo](https://code.facebook.com/codeofconduct) para que puedas comprender qué acciones se tolerarán y cuáles no.
 
-## Open Development
+## Desarrollo Abierto
 
-All work on Jest happens directly on [GitHub](/). Both core team members and external contributors send pull requests which go through the same review process.
+Todo el trabajo en Jest ocurre directamente en [GitHub](https://github.com/facebook/jest/blob/main). Tanto los miembros del equipo central como los colaboradores externos envían solicitudes de extracción que pasan por el mismo proceso de revisión.
 
-### `main` is unsafe
+### La `main` no es segura
 
-We will do our best to keep `main` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
+Haremos todo lo posible para mantener la red principal en buen estado, superando las pruebas en todo momento. Pero para avanzar rápido, haremos cambios en la API con los que tu aplicación podría no ser compatible. Haremos todo lo posible para comunicar estos cambios y siempre realizar la versión adecuada para que puedas bloquear una versión específica si es necesario.
 
-### Workflow and Pull Requests
+### Flujo de trabajo y Pull Request
 
-The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delays. We'll do our best to provide updates and feedback throughout the process.
+El equipo central estará monitoreando las solicitudes de incorporación de cambios. Cuando obtengamos uno, primero ejecutaremos algunas pruebas de integración específicas de Facebook. A partir de aquí, necesitaremos que otra persona apruebe los cambios y luego combine la solicitud de extracción. Para los cambios de API, es posible que debamos corregir los usos internos, lo que podría causar algunos retrasos. Haremos todo lo posible para proporcionar actualizaciones y comentarios durante todo el proceso.
 
-_Before_ submitting a pull request, please make sure the following is done…
+_Antes_ de enviar una solicitud de extracción, asegúrese de hacer lo siguiente...
 
-1.  Fork the repo and create your branch from `main`. A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
+1. Bifurca el repositorio y crea tu rama desde `main`. Una guía sobre cómo bifurcar un repositorio: https://help.github.com/articles/fork-a-repo/
 
-    Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
+    Abra la terminal (por ejemplo, Terminal, iTerm, Git Bash o Git Shell) y escriba:
 
     ```sh-session
-    $ git clone https://github.com/<your_username>/jest
+    $ git clone https://github.com/d-caldasCaridad/jest
     $ cd jest
     $ git checkout -b my_branch
     ```
 
-    Note: Replace `<your_username>` with your GitHub username
+    Nota: Reemplace `<your_username>` con tu nombre de usuario de GitHub
 
-1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
+2. Jest usa Yarn para ejecutar scripts de desarrollo. Si aún no lo has hecho, [instale yarn](https://yarnpkg.com/en/docs/install).
 
-1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+3. Asegúrate de tener `Python` instalado. Python es requerido por [node-gyp](https://github.com/nodejs/node-gyp) que se usa cuando se ejecuta `yarn install`.
 
-    To check your version of Python and ensure it's installed you can type:
+    Para verificar tu versión de Python y asegurarse de que esté instalada, puede escribir:
 
     ```sh
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 29th, 2021, `v16.x` is recommended).
+4. Asegúrese de tener instalada una versión compatible del `node` (a partir del 29 de octubre de 2021, se recomienda `v16.x`).
 
     ```sh
     node -v
     ```
 
-1.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
+5. Ejecute `yarn install`. En Windows: para instalar [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) en Windows, es posible que deba descargar node.js o Chocolatey
 
     ```sh
     yarn install
     ```
 
-    To check your version of Yarn and ensure it's installed you can type:
+    Para verificar tu versión de Yarn y asegurarse de que esté instalada, puedes escribir:
 
     ```sh
     yarn --version
     ```
 
-    On Windows `yarn install` may fail with `gyp ERR! build error`. One of the possible solutions:
+¡En Windows, `yarn install` puede fallar con `gyp ERR! build error` Una de las posibles soluciones:
 
     ```sh
-     yarn global add windows-build-tools
+    yarn global add windows-build-tools
     ```
 
-1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
+6. Ejecute `yarn build` para transpilar TypeScript a JavaScript y verifique el código
 
     ```sh
     yarn build
     ```
 
-1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
+7. Si has agregado código que debe probarse, agregue pruebas. Puedes usar el modo reloj que transforma continuamente los archivos modificados para facilitar la vida.
 
     ```sh
-    # in the background
+    # en el background
     yarn watch
     ```
 
-1.  If you've changed APIs, update the documentation.
+8. Si has cambiado las API, actualice la documentación.
 
-1.  Ensure the test suite passes via `yarn jest`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
+9. Asegúrese de que el conjunto de pruebas pase a través de `yarn jest`. Para ejecutar el conjunto de pruebas, es posible que deba instalar [Mercurial](https://www.mercurial-scm.org/) (`hg`). En macOS, esto se puede hacer usando [homebrew](http://brew.sh/): `brew install hg`.
 
     ```sh-session
     $ brew install hg # maybe
     $ yarn test
     ```
 
-1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
+10. Si aún no lo has hecho, complete el [CLA](https://code.facebook.com/cla/).
 
-#### Changelog entries
+#### Entradas de registro de cambios
 
-All changes that add a feature to or fix a bug in any of Jest's packages require a changelog entry containing the names of the packages affected, a description of the change, and the number of and link to the pull request. Try to match the structure of the existing entries.
+Todos los cambios que agregan una función o corrigen un error en cualquiera de los paquetes de Jest requieren una entrada en el registro de cambios que contenga los nombres de los paquetes afectados, una descripción del cambio y el número y el enlace a la solicitud de extracción. Intente hacer coincidir la estructura de las entradas existentes.
 
-For significant changes to the documentation or website and things like cleanup, refactoring, and dependency updates, the "Chore & Maintenance" section of the changelog can be used.
+Para cambios significativos en la documentación o el sitio web y cosas como limpieza, refactorización y actualizaciones de dependencia, se puede usar la sección "Tarea y mantenimiento" del registro de cambios.
 
-You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
+Puedes agregar o editar la entrada del registro de cambios en la interfaz web de GitHub una vez que hayas abierto la solicitud de incorporación de cambios y sepas el número y el enlace a ella.
 
-Make sure to alphabetically order your entry based on the package name. If you have changed multiple packages, separate them with a comma.
+Asegúrese de ordenar alfabéticamente su entrada según el nombre del paquete. Si ha cambiado varios paquetes, sepárelos con una coma.
 
-#### Testing
+##### Pruebas
 
-Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.
+El código escrito debe probarse para asegurarse de que logra el comportamiento deseado. Las pruebas se clasifican en una prueba unitaria o una prueba de integración.
 
-##### Unit tests
+##### Pruebas unitarias
 
-Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much of any setup.
+Algunos de los paquetes dentro de jest tienen un directorio `__tests__`. Aquí es donde residen las pruebas unitarias. Si el alcance de su trabajo solo requiere una prueba unitaria, aquí es donde la escribirá. Las pruebas aquí generalmente no requieren mucha configuración.
 
-##### Integration tests
+##### Pruebas de Integración
 
-There will be situations however where the work you have done cannot be tested alone using unit tests. In situations like this, you should write an integration test for your code. The integration tests reside within the `e2e` directory. Within this directory, there is a `__tests__` directory. This is where you will write the integration test itself. The tests within this directory execute jest itself using `runJest.js` and assertions are usually made on one if not all the output of the following `status`, `stdout` and `stderr`. The other sub directories within the `e2e` directory are where you will write the files that jest will run for your integration tests. Feel free to take a look at any of the tests in the `__tests__` directory within `e2e` to have a better sense of how it is currently being done.
+Sin embargo, habrá situaciones en las que el trabajo que ha realizado no se puede probar solo mediante pruebas unitarias. En situaciones como esta, debes escribir una prueba de integración para tu código. Las pruebas de integración residen dentro del directorio `e2e`. Dentro de este directorio, hay un directorio `__tests__`. Aquí es donde escribirás la prueba de integración en sí. Las pruebas dentro de este directorio se ejecutan en jest utilizando `runJest.js` y las afirmaciones generalmente se realizan en uno, si no en todos, los resultados de los siguientes `status`, `stdout` y `stderr`. Los otros subdirectorios dentro del directorio `e2e` son donde escribirás los archivos que jest ejecutará para sus pruebas de integración. Siéntase libre de echar un vistazo a cualquiera de las pruebas en el directorio `__tests__` dentro de `e2e` para tener una mejor idea de cómo se está haciendo actualmente.
 
-It is possible to run the integration test itself manually to inspect that the new behaviour is indeed correct. Here is a small code snippet of how to do just that. This is useful when debugging a failing test.
+Es posible ejecutar la prueba de integración manualmente para inspeccionar que el nuevo comportamiento sea correcto. Aquí hay un pequeño fragmento de código de cómo hacer precisamente eso. Esto es útil cuando se depura una prueba fallida.
 
 ```bash
 $ cd e2e/clear-cache
@@ -129,64 +129,64 @@ Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
-## Checking Constraints
+## Comprobación de Restricciones
 
-We use [Yarn Constraints](https://yarnpkg.com/features/constraints) to enforce various rules across the repository. They are declared inside the [`constraints.pro` file](https://github.com/facebook/jest/blob/main/constraints.pro) and their purposes are documented with comments.
+Usamos [Yarn Constraints](https://yarnpkg.com/features/constraints) para hacer cumplir varias reglas en todo el repositorio. Se declaran dentro del [archivo `connections.pro`](https://github.com/facebook/jest/blob/main/constraints.pro) y sus propósitos se documentan con comentarios.
 
-Constraints can be checked with `yarn constraints`, and fixed with `yarn constraints --fix`. Generally speaking:
+Las restricciones se pueden verificar con `yarn constrains` y se pueden corregir con `yarn constrains --fix`. Generalmente hablando:
 
-- Workspaces must not depend on conflicting ranges of dependencies. Use the `-i,--interactive` flag and select "Reuse" when installing dependencies and you shouldn't ever have to deal with this rule.
++ Los espacios de trabajo no deben depender de rangos de dependencias en conflicto. Use el indicador `-i,--interactive` y seleccione "Reutilizar" al instalar dependencias y nunca debería tener que lidiar con esta regla.
 
-- A dependency doesn't appear in both `dependencies` and `devDependencies` of the same workspace.
++ Una dependencia no aparece tanto en `dependencies` como en `devDependencies` del mismo espacio de trabajo.
 
-- Workspaces must point our repository through the `repository` field.
++ Los espacios de trabajo deben señalar nuestro repositorio a través del campo del `repository`.
 
-##### Using jest-circus
+##### Usando jest-circus
 
-There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situations like this, set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
+Puede haber casos en los que desee ejecutar jest usando `jest-circus` en lugar de `jest-jasmine2` (que es el ejecutor predeterminado) para las pruebas de integración. En situaciones como esta, establezca la variable de entorno `JEST_CIRCUS` en 1. Eso configurará jest para usar `jest-circus`. Así que algo como esto.
 
 ```bash
 JEST_CIRCUS=1 yarn jest
 ```
 
-#### Additional Workflow for any changes made to website or docs
+#### Flujo de trabajo adicional para cualquier cambio realizado en el sitio web o documentos
 
-If you are making changes to the website or documentation, test the website folder and run the server to check if your changes are being displayed accurately.
+Si estás realizando cambios en el sitio web o en la documentación, pruebe la carpeta del sitio web y ejecute el servidor para comprobar si los cambios se muestran con precisión.
 
-1.  Locate to the website directory and install any website specific dependencies by typing in `yarn`. Following steps are to be followed for this purpose from the root directory.
+1. Localice el directorio del sitio web e instale las dependencias específicas del sitio web escribiendo `yarn`. Se deben seguir los siguientes pasos para este propósito desde el directorio raíz.
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
     $ node fetchSupporters.js
     $ yarn start
     ```
-1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
+2. Puedes ejecutar un servidor de desarrollo para verificar si los cambios que realizó se muestran con precisión ejecutando `yarn start` en el directorio del sitio web.
 
-The Jest website also offers documentation for older versions of Jest, which you can edit in `website/versioned_docs`. After making changes to the current documentation in `docs`, please check if any older versions of the documentation have a copy of the file where the change is also relevant and apply the changes to the `versioned_docs` as well.
+El sitio web de Jest también ofrece documentación para versiones anteriores de Jest, que puedes editar en `website/versioned_docs`. Después de realizar cambios en la documentación actual en docs, verifique si alguna versión anterior de la documentación tiene una copia del archivo donde el cambio también es relevante y aplique los cambios también a `versioned_docs`.
 
-### Contributor License Agreement (CLA)
+### Acuerdo de licencia de colaborador (CLA)
 
-In order to accept your pull request, we need you to submit a CLA. You only need to do this once, so if you've done this for another Facebook open source project, you're good to go. If you are submitting a pull request for the first time, just let us know that you have completed the CLA and we can cross-check with your GitHub username.
+Para aceptar tu solicitud de extracción, necesitamos que envíes un CLA. Solo necesitas hacer esto una vez, así que si lo has hecho para otro proyecto de código abierto de Facebook, puedes continuar.
 
-[Complete your CLA here.](https://code.facebook.com/cla)
+[Complete su CLA aquí.](https://code.facebook.com/cla)
 
-## How to try a development build of Jest in another project
+## Cómo probar una compilación de desarrollo de Jest en otro proyecto
 
-To build Jest:
+Esta compilación es:
 
 ```sh-session
 $ cd /path/to/your/Jest_clone
 
-# Do one of the following:
+# Haz una de las siguientes:
 
-# Check out a commit from another contributor, and then
+# Consulte una confirmación de otro colaborador y a continuación
 $ yarn run build
 
-# Or, save your changes to Jest, and then
+# O bien, guarde sus cambios en Jest y luego
 $ yarn test # which also builds Jest
 ```
 
-To run tests in another project with the development build of Jest:
+Para ejecutar pruebas en otro proyecto con la compilación de desarrollo de Jest:
 
 ```sh-session
 $ cd /path/to/another/project
@@ -194,59 +194,59 @@ $ cd /path/to/another/project
 $ node /path/to/your/JestClone/packages/jest/bin/jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
-- To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
++ Para decidir si especificar alguna opción, consulte `test` en `scripts` en el archivo `package.json` del otro proyecto.
 
 ## Bugs
 
-### Where to Find Known Issues
+### Dónde encontrar problemas conocidos...
 
-We will be using GitHub Issues for our public bugs. We will keep a close eye on this and try to make it clear when we have an internal fix in progress. Before filing a new issue, try to make sure your problem doesn't already exist.
+Usaremos Problemas de GitHub para nuestros errores públicos. Estaremos atentos a esto e intentaremos dejar en claro cuando tengamos una solución interna en progreso. Antes de presentar un problema nuevo, intente asegurarse de que su problema no exista ya.
 
-### Reporting New Issues
+### Informe de nuevos problemas
 
-The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
+La mejor manera de corregir su error es proporcionar un caso de prueba reducido. Proporcione un repositorio público con un ejemplo ejecutable.
 
-### Docs translation
+### Traducción de documentos
 
-We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any and all help is very much appreciated!
+Recibimos traducciones de Crowdin, consulte https://crowdin.com/project/jest-v2. ¡Cualquier y toda ayuda es muy apreciada!
 
-### Security Bugs
+### Bugs de seguridad
 
-Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
+Facebook tiene un [programa de recompensas](https://www.facebook.com/whitehat/) para la divulgación segura de errores de seguridad. Con eso en mente, por favor no presente problemas públicamente; Siga el proceso descrito en esa página.
 
-## How to Get in Touch
+## Cómo ponerse en contacto...
 
 [`#testing` on Reactiflux](https://discord.gg/j6FKKQQrW9)
 
-## Code Conventions
+## Convenciones de código
 
-- 2 spaces for indentation (no tabs).
-- 80 character line length is strongly preferred.
-- Prefer `'` over `"`.
-- ES6 syntax when possible.
-- Use [TypeScript](https://www.typescriptlang.org/).
-- Use semicolons;
-- Trailing commas,
-- Avd abbr wrds.
++ 2 espacios para sangría (sin tabulaciones).
++ Se prefiere una longitud de línea de 80 caracteres.
++ Prefiere `'` sobre `"`.
++ Sintaxis ES6 cuando sea posible.
++ Utilice [TypeScript](https://www.typescriptlang.org/).
++ Utilice punto y coma;
++ comas finales,
++ Avd abreviaturas.
 
-## Credits
+## Créditos
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+Este proyecto existe gracias a todas las personas que [contribuyen](CONTRIBUTING.md).
 
 <a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
-### [Backers](https://opencollective.com/jest#backer)
+### [Partidarios](https://opencollective.com/jest#backer)
 
-Thank you to all our backers! 🙏
+¡Gracias a todos nuestros patrocinadores! 🙏
 
 <a href="https://opencollective.com/jest#backers" target="_blank"><img src="https://opencollective.com/jest/backers.svg?width=890"></a>
 
-### [Sponsors](https://opencollective.com/jest#sponsor)
+### [Patrocinadores](https://opencollective.com/jest#sponsor)
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website.
+Apoya este proyecto convirtiéndote en patrocinador. Tu logotipo aparecerá aquí con un enlace a tu sitio web.
 
 <a href="https://opencollective.com/jest/sponsor/0/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/0/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/1/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/1/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/2/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/2/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/3/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/3/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/4/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/4/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/5/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/5/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/6/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/6/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/7/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/7/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/8/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/8/avatar.svg"></a> <a href="https://opencollective.com/jest/sponsor/9/website" target="_blank"><img src="https://opencollective.com/jest/sponsor/9/avatar.svg"></a>
 
-## License
+## Licencia
 
-By contributing to Jest, you agree that your contributions will be licensed under its MIT license.
+Al contribuir a Jest, aceptas que tus contribuciones se licenciarán bajo su licencia MIT.
