@@ -435,7 +435,7 @@ it('should return the error cause if there is one', () => {
 it('should return the inner errors of an AggregateError', () => {
   // TODO remove this if when the lowest supported Node version is 15.0.0
   // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
-  if (AggregateError) {
+  if (typeof AggregateError !== 'undefined') {
     const aggError = new AggregateError([
       new Error('Err 1'),
       new Error('Err 2'),
