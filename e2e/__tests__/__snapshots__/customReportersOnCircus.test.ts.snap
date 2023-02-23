@@ -9,3 +9,8 @@ exports[`Custom Reporters Integration on jest-circus valid passing assertion cou
 "onTestCaseResult: adds ok, status: passed, numExpectations: 3
 onTestFileResult testCaseResult 0: adds ok, status: passed, numExpectations: 3"
 `;
+
+exports[`Custom Reporters Integration on jest-circus push test case results for todo tests 1`] = `
+"onTestCaseResult: sample, status: todo, numExpectations: 0
+onTestFileResult testCaseResult 0: sample, status: todo, numExpectations: 0"
+`;
