@@ -12,9 +12,9 @@ export type RandomNumberGenerator = {
   next: (from: number, to: number) => number;
 };
 
-export const rngBuilder: (seed: number) => RandomNumberGenerator = (
+export const rngBuilder = (
   seed: number,
-) => {
+): RandomNumberGenerator => {
   const upperBoundSeedValue = 2 ** 31;
   if (seed < -upperBoundSeedValue || seed > upperBoundSeedValue - 1) {
     throw new Error(
