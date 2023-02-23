@@ -121,6 +121,7 @@ export const initialOptions: Config.InitialOptions = {
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
+  randomize: false,
   reporters: [
     'default',
     'custom-reporter-1',

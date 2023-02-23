@@ -281,6 +281,7 @@ export type InitialOptions = Partial<{
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
+  randomize: boolean;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -396,6 +397,7 @@ export type GlobalConfig = {
   openHandlesTimeout: number;
   passWithNoTests: boolean;
   projects: Array<string>;
+  randomize?: boolean;
   replname?: string;
   reporters?: Array<ReporterConfig>;
   runTestsByPath: boolean;
@@ -541,6 +543,7 @@ export type Argv = Arguments<
     preset: string | null | undefined;
     prettierPath: string | null | undefined;
     projects: Array<string>;
+    randomize: boolean;
     reporters: Array<string>;
     resetMocks: boolean;
     resetModules: boolean;

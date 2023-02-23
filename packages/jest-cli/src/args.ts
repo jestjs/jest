@@ -455,6 +455,11 @@ export const options: {[key: string]: Options} = {
     string: true,
     type: 'array',
   },
+  randomize: {
+    description:
+      'Shuffle the order of the tests within a file. In order to choose the seed refer to the `--seed` CLI option.',
+    type: 'boolean',
+  },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
     string: true,

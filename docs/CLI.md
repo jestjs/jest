@@ -332,6 +332,22 @@ If configuration files are found in the specified paths, _all_ projects specifie
 
 :::
 
+### `--randomize`
+
+Shuffle the order of the tests within a file. The shuffling is based on the seed. See [`--seed=<num>`](#--seednum) for more info.
+
+Seed value is displayed when this option is set. Equivalent to setting the CLI option [`--showSeed`](#--showseed).
+
+```bash
+jest --randomize --seed 1234
+```
+
+:::note
+
+This option is only supported using the default `jest-circus` test runner.
+
+:::
+
 ### `--reporters`
 
 Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:

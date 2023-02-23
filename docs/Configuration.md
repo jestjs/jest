@@ -1222,6 +1222,12 @@ With the `projects` option enabled, Jest will copy the root-level configuration 
 
 :::
 
+### `randomize` \[boolean]
+
+Default: `false`
+
+The equivalent of the [`--randomize`](CLI.md#--randomize) flag to randomize the order of the tests in a file.
+
 ### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`
