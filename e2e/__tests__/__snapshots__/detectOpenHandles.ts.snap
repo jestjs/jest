@@ -7,7 +7,13 @@ exports[`prints message about flag on forceExit 1`] = `"Force exiting Jest: Have
 exports[`prints message about flag on slow tests 1`] = `
 "Jest did not exit one second after the test run has completed.
 
-This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
+`;
+
+exports[`prints message about flag on slow tests with a custom timeout 1`] = `
+"Jest did not exit 0.5 seconds after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
 `;
 
 exports[`prints out info about open handlers 1`] = `

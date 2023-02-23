@@ -1340,7 +1340,6 @@ export default class Runtime {
 
   teardown(): void {
     this.restoreAllMocks();
-    this.resetAllMocks();
     this.resetModules();
 
     this._internalModuleRegistry.clear();
