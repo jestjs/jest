@@ -15,6 +15,9 @@ beforeEach(() => {
   process.env.NODE_ENV = 'test';
   BABEL_ENV = process.env.BABEL_ENV;
   process.env.BABEL_ENV = 'test';
+  Object.defineProperty(process, 'platform', {
+    value: 'linux',
+  });
 });
 
 afterEach(() => {
@@ -43,4 +46,20 @@ test('creation of a cache key', () => {
   expect(hashA).toHaveLength(32);
   expect(hashA).not.toEqual(hashB);
   expect(hashA).not.toEqual(hashC);
+});
+
+test('creation of a cache key on win32', () => {
+  Object.defineProperty(process, 'platform', {
+    value: 'win32',
+  });
+  const createCacheKeyFunction = interopRequireDefault(
+    require('../index'),
+  ).default;
+  const createCacheKey = createCacheKeyFunction([], ['value']);
+  const hashA = createCacheKey('test', 'test.js', null, {
+    config: {},
+    instrument: false,
+  });
+
+  expect(hashA).toHaveLength(16);
 });
