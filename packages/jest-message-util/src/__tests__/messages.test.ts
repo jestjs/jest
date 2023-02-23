@@ -437,22 +437,20 @@ it('should return the error cause if there is one', () => {
 onNodeVersions('>=15.0.0', () => {
   it('should return the inner errors of an AggregateError', () => {
     // See https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V15.md#v8-86---35415
-    if (AggregateError) {
-      const aggError = new AggregateError([
-        new Error('Err 1'),
-        new Error('Err 2'),
-      ]);
-      const message = formatExecError(
-        aggError,
-        {
-          rootDir: '',
-          testMatch: [],
-        },
-        {
-          noStackTrace: false,
-        },
-      );
-      expect(message).toMatchSnapshot();
-    }
+    const aggError = new AggregateError([
+      new Error('Err 1'),
+      new Error('Err 2'),
+    ]);
+    const message = formatExecError(
+      aggError,
+      {
+        rootDir: '',
+        testMatch: [],
+      },
+      {
+        noStackTrace: false,
+      },
+    );
+    expect(message).toMatchSnapshot();
   });
 });
