@@ -387,6 +387,18 @@ type FailedResults = Array<{
   result: TestResult.AssertionResult;
 }>;
 
+function isErrorOrStackWithCause(
+  errorOrStack: Error | string,
+): errorOrStack is Error & {cause: Error} {
+  return (
+    typeof errorOrStack !== 'string' &&
+    'cause' in errorOrStack &&
+    (typeof errorOrStack.cause === 'string' ||
+      types.isNativeError(errorOrStack.cause) ||
+      errorOrStack.cause instanceof Error)
+  );
+}
+
 function formatErrorStack(
   errorOrStack: Error | string,
   config: StackTraceConfig,
@@ -408,24 +420,14 @@ function formatErrorStack(
   message = indentAllLines(message);
 
   let cause = '';
-  if (
-    typeof errorOrStack !== 'string' &&
-    'cause' in errorOrStack &&
-    errorOrStack.cause
-  ) {
-    if (
-      typeof errorOrStack.cause === 'string' ||
-      types.isNativeError(errorOrStack.cause) ||
-      errorOrStack.cause instanceof Error
-    ) {
-      const nestedCause = formatErrorStack(
-        errorOrStack.cause,
-        config,
-        options,
-        testPath,
-      );
-      cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
-    }
+  if (isErrorOrStackWithCause(errorOrStack)) {
+    const nestedCause = formatErrorStack(
+      errorOrStack.cause,
+      config,
+      options,
+      testPath,
+    );
+    cause = `\n${MESSAGE_INDENT}Cause:\n${nestedCause}`;
   }
 
   return `${message}\n${stack}${cause}`;
