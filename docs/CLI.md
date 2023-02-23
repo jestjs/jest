@@ -182,6 +182,10 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
+### `--coverageDirectory=<path>`
+
+The directory where Jest should output its coverage files.
+
 ### `--coverageProvider=<provider>`
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
@@ -502,3 +506,13 @@ In most CI environments, this is automatically handled for you.
 ### `--watchman`
 
 Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.
+
+### `--workerThreads`
+
+Whether to use [worker threads](https://nodejs.org/dist/latest/docs/api/worker_threads.html) for parallelization. [Child processes](https://nodejs.org/dist/latest/docs/api/child_process.html) are used by default.
+
+:::caution
+
+This is **experimental feature**. See the [`workerThreads` configuration option](Configuration.md#workerthreads) for more details.
+
+:::

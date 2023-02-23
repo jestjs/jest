@@ -709,4 +709,10 @@ export const options: {[key: string]: Options} = {
       '--no-watchman.',
     type: 'boolean',
   },
+  workerThreads: {
+    description:
+      'Whether to use worker threads for parallelization. Child processes ' +
+      'are used by default.',
+    type: 'boolean',
+  },
 };

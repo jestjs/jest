@@ -138,7 +138,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "useStderr": false,
     "watch": false,
     "watchAll": false,
-    "watchman": true
+    "watchman": true,
+    "workerThreads": false
   },
   "version": "[version]"
 }"
