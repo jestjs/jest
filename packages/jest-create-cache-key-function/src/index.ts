@@ -59,7 +59,10 @@ function getGlobalCacheKey(
     .substring(0, length);
 }
 
-function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
+function getCacheKeyFunction(
+  globalCacheKey: string,
+  length: number,
+): GetCacheKeyFunction {
   return (sourceText, sourcePath, configString, options) => {
     // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
     // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
@@ -75,7 +78,7 @@ function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
       .digest('hex')
-      .substring(0, 32);
+      .substring(0, length);
   };
 }
 
@@ -92,5 +95,5 @@ export default function createCacheKey(
   values: Array<string> = [],
   length = process.platform === 'win32' ? 16 : 32,
 ): GetCacheKeyFunction {
-  return getCacheKeyFunction(getGlobalCacheKey(files, values, length));
+  return getCacheKeyFunction(getGlobalCacheKey(files, values, length), length);
 }
