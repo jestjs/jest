@@ -291,7 +291,6 @@ const runWithoutWatch = async (
     if (!globalConfig.listTests) {
       preRunMessagePrint(outputStream);
     }
-
     return runJest({
       changedFilesPromise,
       contexts,
