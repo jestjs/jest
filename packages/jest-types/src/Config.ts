@@ -178,6 +178,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
@@ -274,6 +275,7 @@ export type InitialOptions = Partial<{
   notifyMode: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   outputFile: string;
   passWithNoTests: boolean;
   preset: string | null | undefined;
@@ -391,6 +393,7 @@ export type GlobalConfig = {
   outputFile?: string;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  openHandlesTimeout: number;
   passWithNoTests: boolean;
   projects: Array<string>;
   replname?: string;
@@ -452,6 +455,7 @@ export type ProjectConfig = {
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
+  openHandlesTimeout: number;
   preset?: string;
   prettierPath: string;
   resetMocks: boolean;

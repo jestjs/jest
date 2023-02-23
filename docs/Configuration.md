@@ -1078,6 +1078,12 @@ Specifies notification mode. Requires `notify: true`.
 - `success-change`: send a notification when tests pass or once when it fails.
 - `failure-change`: send a notification when tests fail or once when it passes.
 
+### `openHandlesTimeout` \[number]
+
+Default: `1000`
+
+Print a warning indicating that there are probable open handles if Jest does not exit cleanly this number of milliseconds after it completes. Use `0` to disable the warning.
+
 ### `preset` \[string]
 
 Default: `undefined`

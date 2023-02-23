@@ -310,6 +310,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--openHandlesTimeout=<milliseconds>`
+
+When `--detectOpenHandles` and `--forceExit` are _disabled_, Jest will print a warning if the process has not exited cleanly after this number of milliseconds. A value of `0` disables the warning. Defaults to `1000`.
+
 ### `--outputFile=<filename>`
 
 Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
