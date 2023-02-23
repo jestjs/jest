@@ -137,6 +137,7 @@ export const formatExecError = (
 
   let message, stack;
   let cause = '';
+  const subErrors = [];
 
   if (typeof error === 'string' || !error) {
     error || (error = 'EMPTY ERROR');
@@ -152,7 +153,15 @@ export const formatExecError = (
       const prefix = '\n\nCause:\n';
       if (typeof error.cause === 'string' || typeof error.cause === 'number') {
         cause += `${prefix}${error.cause}`;
-      } else if (types.isNativeError(error.cause)) {
+      } else if (
+        types.isNativeError(error.cause) ||
+        error.cause instanceof Error
+      ) {
+        /* `isNativeError` is used, because the error might come from another realm.
+         `instanceof Error` is used because `isNativeError` does return `false` for some
+         things that are `instanceof Error` like the errors provided in
+         [verror](https://www.npmjs.com/package/verror) or [axios](https://axios-http.com).
+        */
         const formatted = formatExecError(
           error.cause,
           config,
@@ -162,6 +171,20 @@ export const formatExecError = (
           true,
         );
         cause += `${prefix}${formatted}`;
+      }
+    }
+    if ('errors' in error && Array.isArray(error.errors)) {
+      for (const subError of error.errors) {
+        subErrors.push(
+          formatExecError(
+            subError,
+            config,
+            options,
+            testPath,
+            reuseMessage,
+            true,
+          ),
+        );
       }
     }
   }
@@ -202,8 +225,14 @@ export const formatExecError = (
     messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
   }
   const title = noTitle ? '' : `${TITLE_INDENT + TITLE_BULLET}`;
+  const subErrorStr =
+    subErrors.length > 0
+      ? indentAllLines(
+          `\n\nErrors contained in AggregateError:\n${subErrors.join('\n')}`,
+        )
+      : '';
 
-  return `${title + messageToUse + stack + cause}\n`;
+  return `${title + messageToUse + stack + cause + subErrorStr}\n`;
 };
 
 const removeInternalStackEntries = (

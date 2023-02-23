@@ -87,11 +87,10 @@ function testJestWorker() {
 
     async function countToFinish() {
       if (++count === calls) {
-        farm.end();
         const endTime = performance.now();
 
         // Let all workers go down.
-        await sleep(2000);
+        await farm.end();
 
         resolve({
           globalTime: endTime - startTime - 2000,
@@ -110,7 +109,7 @@ function testJestWorker() {
     farm.getStderr().pipe(process.stderr);
 
     // Let all workers come up.
-    await sleep(2000);
+    await farm.start();
 
     const startProcess = performance.now();
 

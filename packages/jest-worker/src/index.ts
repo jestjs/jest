@@ -174,6 +174,10 @@ export class Worker {
     return this._workerPool.getStdout();
   }
 
+  async start(): Promise<void> {
+    await this._workerPool.start();
+  }
+
   async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');

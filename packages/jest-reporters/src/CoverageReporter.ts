@@ -147,6 +147,7 @@ export default class CoverageReporter extends BaseReporter {
       worker = require('./CoverageWorker');
     } else {
       worker = new Worker(require.resolve('./CoverageWorker'), {
+        enableWorkerThreads: this._globalConfig.workerThreads,
         exposedMethods: ['worker'],
         forkOptions: {serialization: 'json'},
         maxRetries: 2,

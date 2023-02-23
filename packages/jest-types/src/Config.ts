@@ -207,6 +207,7 @@ export type DefaultOptions = {
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
+  workerThreads: boolean;
 };
 
 export type DisplayName = {
@@ -328,6 +329,7 @@ export type InitialOptions = Partial<{
   watchman: boolean;
   watchPlugins: Array<string | [string, Record<string, unknown>]>;
   workerIdleMemoryLimit: number | string;
+  workerThreads: boolean;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -422,6 +424,8 @@ export type GlobalConfig = {
     config: Record<string, unknown>;
   }> | null;
   workerIdleMemoryLimit?: number;
+  // TODO: make non-optional in Jest 30
+  workerThreads?: boolean;
 };
 
 export type ProjectConfig = {
@@ -578,5 +582,6 @@ export type Argv = Arguments<
     watchman: boolean;
     watchPathIgnorePatterns: Array<string>;
     workerIdleMemoryLimit: number | string;
+    workerThreads: boolean;
   }>
 >;
