@@ -11,7 +11,7 @@
 ### Fixes
 
 - `[jest-circus]` Send test case results for `todo` tests ([#13915](https://github.com/facebook/jest/pull/13915))
-- `[jest-circus]` Update message printed on timeout ([#13830](https://github.com/facebook/jest/pull/13830))
+- `[jest-circus]` Update message printed on test timeout ([#13830](https://github.com/facebook/jest/pull/13830))
 
 ### Chore & Maintenance
 
