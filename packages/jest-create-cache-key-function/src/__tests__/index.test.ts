@@ -9,22 +9,20 @@ import {interopRequireDefault} from 'jest-util';
 
 let NODE_ENV: string;
 let BABEL_ENV: string;
-let PLATFORM: string;
 
 beforeEach(() => {
   NODE_ENV = process.env.NODE_ENV;
   process.env.NODE_ENV = 'test';
   BABEL_ENV = process.env.BABEL_ENV;
   process.env.BABEL_ENV = 'test';
-  PLATFORM = process.platform;
+  Object.defineProperty(process, 'platform', {
+    value: 'linux',
+  });
 });
 
 afterEach(() => {
   process.env.NODE_ENV = NODE_ENV;
   process.env.BABEL_ENV = BABEL_ENV;
-  Object.defineProperty(process, 'platform', {  
-    value: PLATFORM,
-  });
 });
 
 test('creation of a cache key', () => {
@@ -51,7 +49,7 @@ test('creation of a cache key', () => {
 });
 
 test('creation of a cache key on win32', () => {
-  Object.defineProperty(process, 'platform', {  
+  Object.defineProperty(process, 'platform', {
     value: 'win32',
   });
   const createCacheKeyFunction = interopRequireDefault(
