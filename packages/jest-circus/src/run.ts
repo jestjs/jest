@@ -33,7 +33,7 @@ const run = async (): Promise<Circus.RunResult> => {
 
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
-  rng?: RandomNumberGenerator,
+  rng: RandomNumberGenerator | undefined,
   isRootBlock = false,
 ) => {
   await dispatch({describeBlock, name: 'run_describe_start'});
